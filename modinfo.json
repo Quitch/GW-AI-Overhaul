@@ -13,7 +13,7 @@
     "ai",
     "gw"
   ],
-  "icon": "https://i.imgur.com/xkcsWnz.png",
+  "icon": "https://i.imgur.com/KX8n6ZJ.png",
   "scenes": {
     "gw_start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"
