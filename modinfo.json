@@ -16,8 +16,7 @@
   "icon": "",
   "scenes": {
     "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"
     ]
   },
   "priority": 90
