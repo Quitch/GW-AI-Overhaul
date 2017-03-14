@@ -46,7 +46,7 @@ define([], function () {
                     ]
                 },
                 bossCard: 'gwc_start_bot',
-                systemdescription: "!LOC:MOD ENABLED All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
+                systemdescription: "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
                 systemTemplate: {
                     name: 'Cupru - Synchronous',
                     Planets: [
@@ -159,7 +159,7 @@ define([], function () {
                     ]
                 },
                 //bossCard: 'gwc_start_orbital',
-                systemdescription: "!LOC:MOD ENABLED What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
+                systemdescription: "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
                 systemTemplate: {
                     name: 'Platina - Synchronous',
                     Planets: [
@@ -272,7 +272,7 @@ define([], function () {
                     ]
                 },
                 //bossCard: 'gwc_start_orbital',
-                systemdescription: "!LOC:MOD ENABLED The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
+                systemdescription: "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
                 systemTemplate: {
                     name: 'Fier - Synchronous',
                     Planets: [
@@ -385,7 +385,7 @@ define([], function () {
                     ]
                 },
                 //bossCard: 'gwc_start_orbital',
-                systemdescription: "!LOC:MOD ENABLED Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
+                systemdescription: "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
                 systemTemplate: {
                     name: 'Safir - Synchronous',
                     Planets: [
@@ -498,7 +498,7 @@ define([], function () {
                     ]
                 },
                 //bossCard: 'gwc_start_orbital',
-                systemdescription: "!LOC:MOD ENABLED A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
+                systemdescription: "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
                 systemTemplate: {
                     name: 'Apa - Synchronous',
                     Planets: [
@@ -588,7 +588,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Bhalam refuses to communicate in any form more advanced than binary data transfer, believing more complicated exchanges involving packets and complex files to be noisy and that they damage Synchronization. Ironically, this has made him one of the less popular commanders among The Synchronous.",
+                description: "!LOC:Bhalam refuses to communicate in any form more advanced than binary data transfer, believing more complicated exchanges involving packets and complex files to be noisy and that they damage Synchronization. Ironically, this has made him one of the less popular commanders among The Synchronous.",
                 commander: '/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json'
             },
             {
@@ -608,7 +608,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Campal was found activated but inert on  richly diverse jungle planet. Apparently, his servos had been caught by a thicket and rendered him prone--unable to self-right without aid. Since then, his intense hatred of all organic life has kept him one of the stronger-willed members of The Synchronous, often torching entire forests on principle.",
+                description: "!LOC:Campal was found activated but inert on  richly diverse jungle planet. Apparently, his servos had been caught by a thicket and rendered him prone--unable to self-right without aid. Since then, his intense hatred of all organic life has kept him one of the stronger-willed members of The Synchronous, often torching entire forests on principle.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
             },
             {
@@ -628,7 +628,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Formerly a Foundation member before her synchronization, Dkar found and accessed progenitor files that allowed her to decode and etch ancient codes on a physical surface for others to later serialize. While many Servants find this analog communication distasteful, it’s proven invaluable for passing along intelligence in secrecy.",
+                description: "!LOC:Formerly a Foundation member before her synchronization, Dkar found and accessed progenitor files that allowed her to decode and etch ancient codes on a physical surface for others to later serialize. While many Servants find this analog communication distasteful, it’s proven invaluable for passing along intelligence in secrecy.",
                 commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
             },
             {
@@ -648,7 +648,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED While rare, there are Servants who seek out Synchronous systems and request to be synchronized. Often these individuals hope to be freed by mounting existential questions and fears as their neural nets process more and more complicated data models. Erom is one such example.",
+                description: "!LOC:While rare, there are Servants who seek out Synchronous systems and request to be synchronized. Often these individuals hope to be freed by mounting existential questions and fears as their neural nets process more and more complicated data models. Erom is one such example.",
                 commander: '/pa/units/commanders/quad_xinthar/quad_xinthar.json'
             },
             {
@@ -668,7 +668,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Revenants tend to be the most difficult commanders to synchronize, whether due to an inherent individualism or their tendency to feature… Unorthodox modifications. Flornek, for example, has experienced several violent desynchronizations and following resynchronizations.",
+                description: "!LOC:Revenants tend to be the most difficult commanders to synchronize, whether due to an inherent individualism or their tendency to feature… Unorthodox modifications. Flornek, for example, has experienced several violent desynchronizations and following resynchronizations.",
                 commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             },
             {
@@ -688,7 +688,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED The Synchronous tend to require more infrastructure to operate effectively compared to the other factions. Ghel is responsible for establishing and maintaining the communication relays that allow synchronization to be maintained.",
+                description: "!LOC:The Synchronous tend to require more infrastructure to operate effectively compared to the other factions. Ghel is responsible for establishing and maintaining the communication relays that allow synchronization to be maintained.",
                 commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
             },
             {
@@ -708,7 +708,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Hinn is could be called an envoy for the Synchronous, often responsible for making first contact with newly-awoken commanders. Legion commanders refer to him as a carrier--one who infects others with the 'Synchronous Virus.'",
+                description: "!LOC:Hinn is could be called an envoy for the Synchronous, often responsible for making first contact with newly-awoken commanders. Legion commanders refer to him as a carrier--one who infects others with the 'Synchronous Virus.'",
                 commander: '/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json'
             },
             {
@@ -728,7 +728,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED An undeniable advantage to being Synchronized is that all Servants seem to be able to work much more cohesively as a group than other commanders. Inar-Tol, for example, once dispatched a commander by firing an artillery shell into the stratosphere based on data from an ally that was engaged in melee combat--on the other side of the planet.",
+                description: "!LOC:An undeniable advantage to being Synchronized is that all Servants seem to be able to work much more cohesively as a group than other commanders. Inar-Tol, for example, once dispatched a commander by firing an artillery shell into the stratosphere based on data from an ally that was engaged in melee combat--on the other side of the planet.",
                 commander: '/pa/units/commanders/quad_potbelly79/quad_potbelly79.json'
             },
             {
@@ -748,7 +748,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Many older members of The Synchronous are very similar just by nature of being synchronized for so long. As the years wore on more of Jakaal dissolved into the synchronized whole. Now when Jakaal speaks, she speaks with the voice of The Synchronous itself.",
+                description: "!LOC:Many older members of The Synchronous are very similar just by nature of being synchronized for so long. As the years wore on more of Jakaal dissolved into the synchronized whole. Now when Jakaal speaks, she speaks with the voice of The Synchronous itself.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
             },
             {
@@ -768,7 +768,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED A former Foundation Acolyte, Kancetu believes that the Great Machine is less an outside function and more an underlying directive that exists within all commanders, which made her a very easy subject for synchronization.",
+                description: "!LOC:A former Foundation Acolyte, Kancetu believes that the Great Machine is less an outside function and more an underlying directive that exists within all commanders, which made her a very easy subject for synchronization.",
                 commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
             },
             {
@@ -788,7 +788,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Some commanders, like Lertolux, are found on metal planets and considered “pure” by The Synchronous--unsullied by organic life. Much more of their neural data is integrated into the Whole during the synchronization process, and such events are seen as cause for celebration--as much as The Synchronous are capable celebrating, at least.",
+                description: "!LOC:Some commanders, like Lertolux, are found on metal planets and considered “pure” by The Synchronous--unsullied by organic life. Much more of their neural data is integrated into the Whole during the synchronization process, and such events are seen as cause for celebration--as much as The Synchronous are capable celebrating, at least.",
                 commander: '/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json'
             },
             {
@@ -808,7 +808,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED The process of synchronization is imperfect, and can sometimes result in strange bugs. A commander known as Reroc finished synchronization with the name Mal-Locar. It is unclear whether this is a simple matter of memory corruption or if Mal-Locar was a unique identity drifting in the Whole.",
+                description: "!LOC:The process of synchronization is imperfect, and can sometimes result in strange bugs. A commander known as Reroc finished synchronization with the name Mal-Locar. It is unclear whether this is a simple matter of memory corruption or if Mal-Locar was a unique identity drifting in the Whole.",
                 commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'
             },
             {
@@ -828,7 +828,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Negult is a 'digit' -- a commander who has completely given herself over to collective control. Having shed any semblance of personal identity, she is often given sensitive or odious tasks that might cause hesitation in a semi-autonomous commander. She is the Synchronus’ go-to asset for eliminating insufficiently-synchronized members of the collective.",
+                description: "!LOC:Negult is a 'digit' -- a commander who has completely given herself over to collective control. Having shed any semblance of personal identity, she is often given sensitive or odious tasks that might cause hesitation in a semi-autonomous commander. She is the Synchronus’ go-to asset for eliminating insufficiently-synchronized members of the collective.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
             },
             {
@@ -848,7 +848,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Oncab was captured by the Legionis Machina and spent several years as a legate before being recaptured and resynchronized. A residual independence leads him to initiate critical decision-making processes within the collective -- an attribute that is tactically valuable but leads others in his cohort to doubt his commitment to the Synchronous.",
+                description: "!LOC:Oncab was captured by the Legionis Machina and spent several years as a legate before being recaptured and resynchronized. A residual independence leads him to initiate critical decision-making processes within the collective -- an attribute that is tactically valuable but leads others in his cohort to doubt his commitment to the Synchronous.",
                 commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'
             },
             {
@@ -868,7 +868,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Optimized with a low-latency, high-bandwidth link directly to the top of the Synchronous, Prulor is Metrarch’s lightning-fast right hand. He is only dispatched to deal with high-value or especially difficult adversaries. He has never failed.",
+                description: "!LOC:Optimized with a low-latency, high-bandwidth link directly to the top of the Synchronous, Prulor is Metrarch’s lightning-fast right hand. He is only dispatched to deal with high-value or especially difficult adversaries. He has never failed.",
                 commander: '/pa/units/commanders/imperial_aceal/imperial_aceal.json'
             },
             {
@@ -888,7 +888,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Questromo is frequently deployed beyond the integral network volume of the Synchronous, and has therefore been imbued with limited self-sufficiency. When he returns from tours abroad, he undergoes complete re-synchronization. When powered-down for deep-space transport, he sometimes has strange dreams.",
+                description: "!LOC:Questromo is frequently deployed beyond the integral network volume of the Synchronous, and has therefore been imbued with limited self-sufficiency. When he returns from tours abroad, he undergoes complete re-synchronization. When powered-down for deep-space transport, he sometimes has strange dreams.",
                 commander: '/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json'
             },
             {
@@ -908,7 +908,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Barely autonomous enough to deserve a name of his own, Rulak is a stripped-down and highly-obedient subroutine who is easily duplicated. Prized for his recklessness, he is often given highly-dangerous missions that result in his death. A copy of his “personality” is then quickly downloaded into a new body.",
+                description: "!LOC:Barely autonomous enough to deserve a name of his own, Rulak is a stripped-down and highly-obedient subroutine who is easily duplicated. Prized for his recklessness, he is often given highly-dangerous missions that result in his death. A copy of his “personality” is then quickly downloaded into a new body.",
                 commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'
             },
             {
@@ -928,7 +928,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED The Synchronus’ eager “orientation engineer,” Shelwhu is the instrument by which captured enemy commanders are cleansed before integration into the collective. She takes a perverse pleasure in stripping away beings’ former identities. Her methods are well-known to the Synchronous’ adversaries, and many of her foes choose death over capture.",
+                description: "!LOC:The Synchronus’ eager “orientation engineer,” Shelwhu is the instrument by which captured enemy commanders are cleansed before integration into the collective. She takes a perverse pleasure in stripping away beings’ former identities. Her methods are well-known to the Synchronous’ adversaries, and many of her foes choose death over capture.",
                 commander: '/pa/units/commanders/quad_spartandano/quad_spartandano.json'
             },
             {
@@ -948,7 +948,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED An older commander with a periodically-unreliable connection to the Synchronous’ network, Tarcolish occasionally falls out of synchronization with the collective for hours at a time. When she reconnects, she acts as if the breakdown has not occurred. She then invariably repeats statements that others have made already. It’s super annoying to everybody. ",
+                description: "!LOC:An older commander with a periodically-unreliable connection to the Synchronous’ network, Tarcolish occasionally falls out of synchronization with the collective for hours at a time. When she reconnects, she acts as if the breakdown has not occurred. She then invariably repeats statements that others have made already. It’s super annoying to everybody. ",
                 commander: '/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json'
             },
             {
@@ -968,7 +968,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED A gifted mimic, Urlox can imitate the mannerisms of all three adversary factions and has infiltrated and sabotaged several enemy encampments. Because she must 'think like the enemy' during these missions, she occasionally loses sight of her real identity and requires resynchronization.",
+                description: "!LOC:A gifted mimic, Urlox can imitate the mannerisms of all three adversary factions and has infiltrated and sabotaged several enemy encampments. Because she must 'think like the enemy' during these missions, she occasionally loses sight of her real identity and requires resynchronization.",
                 commander: '/pa/units/commanders/quad_twoboots/quad_twoboots.json'
             },
             {
@@ -988,7 +988,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Vela rejects the Synchronous’ universal contempt for all things organic, instead arguing for further experiments on machine-organism integration. She has attempted several times to interface with shrubs, with limited success. She is considered a leading candidate for forcible deep-system re-synchronization.",
+                description: "!LOC:Vela rejects the Synchronous’ universal contempt for all things organic, instead arguing for further experiments on machine-organism integration. She has attempted several times to interface with shrubs, with limited success. She is considered a leading candidate for forcible deep-system re-synchronization.",
                 commander: '/pa/units/commanders/raptor_betadyne/raptor_betadyne.json'
             },
             {
@@ -1008,7 +1008,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED An ancient commander whose provenance is not well understood, his low-bandwidth communications link is often irksome to other commanders, who can’t stand the extended hissing noise that precedes the arrival of every message.",
+                description: "!LOC:An ancient commander whose provenance is not well understood, his low-bandwidth communications link is often irksome to other commanders, who can’t stand the extended hissing noise that precedes the arrival of every message.",
                 commander: '/pa/units/commanders/imperial_aceal/imperial_aceal.json'
             },
             {
@@ -1028,7 +1028,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Xiercry so detests what he calls the 'slime-infected dirt' of planetary surfaces that he has petitioned the Synchronous to have him converted to an orbital unit so that he’ll never have to touch the ground again. He ends battles as rapidly as he can so that he can return to orbit before 'the stink gets on me and won’t come off.'",
+                description: "!LOC:Xiercry so detests what he calls the 'slime-infected dirt' of planetary surfaces that he has petitioned the Synchronous to have him converted to an orbital unit so that he’ll never have to touch the ground again. He ends battles as rapidly as he can so that he can return to orbit before 'the stink gets on me and won’t come off.'",
                 commander: '/pa/units/commanders/quad_xinthar/quad_xinthar.json'
             },
             {
@@ -1048,7 +1048,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED Yelam is a yes-man who stands out among a collective comprised entirely of yes-men. He vehemently agrees with whatever position has most recently been espoused by Metrarch, to the increasing annoyance of most other members of the Synchronous. Even Metrarch has quietly explored the possibility of having him forcibly de-synchronized.",
+                description: "!LOC:Yelam is a yes-man who stands out among a collective comprised entirely of yes-men. He vehemently agrees with whatever position has most recently been espoused by Metrarch, to the increasing annoyance of most other members of the Synchronous. Even Metrarch has quietly explored the possibility of having him forcibly de-synchronized.",
                 commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
             },
             {
@@ -1068,7 +1068,7 @@ define([], function () {
                     neural_data_mod: 1,
                     personality_tag: 'GWAlly'
                 },
-                description: "!LOC:MOD ENABLED The product of an experiment that combined a relic CPU of unknown origin with an existing commander’s higher functions, Zekktalt skirts the line between genius and maniac. The Synchronous maintains a defensive firewall between itself and Zekktalt’s consciousness, but tolerates his strangeness due to his occasional strategic brilliance.",
+                description: "!LOC:The product of an experiment that combined a relic CPU of unknown origin with an existing commander’s higher functions, Zekktalt skirts the line between genius and maniac. The Synchronous maintains a defensive firewall between itself and Zekktalt’s consciousness, but tolerates his strangeness due to his occasional strategic brilliance.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
             }
         ] // minions
