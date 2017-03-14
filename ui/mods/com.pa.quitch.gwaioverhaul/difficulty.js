@@ -43,7 +43,8 @@ requireGW([
                 max_advanced_fabbers: 10,
                 personality_tags:
                 [
-                    "SlowerExpansion"
+                    "SlowerExpansion",
+                    "Casual"
                 ],
                 econBase: 0.4,
                 econRatePerDist: 0.05,
@@ -83,6 +84,10 @@ requireGW([
                 max_basic_fabbers: 20,
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 20,
+                personality_tags:
+                [
+                    "Bronze"
+                ],
                 econBase: 0.4,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
@@ -117,6 +122,10 @@ requireGW([
                 max_basic_fabbers: 30,
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 30,
+                personality_tags:
+                [
+                    "Silver"
+                ],
                 econBase: 0.6,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
@@ -153,7 +162,8 @@ requireGW([
                 max_advanced_fabbers: 40,
                 personality_tags:
                 [
-                    "PreventsWaste"
+                    "PreventsWaste",
+                    "Gold"
                 ],
                 econBase: 0.9,
                 econRatePerDist: 0.1,
@@ -191,7 +201,8 @@ requireGW([
                 max_advanced_fabbers: 50,
                 personality_tags:
                 [
-                    "PreventsWaste"
+                    "PreventsWaste",
+                    "Platinum"
                 ],
                 econBase: 1,
                 econRatePerDist: 0.2,
@@ -229,7 +240,8 @@ requireGW([
                 max_advanced_fabbers: 100,
                 personality_tags:
                 [
-                    "PreventsWaste"
+                    "PreventsWaste",
+                    "Uber"
                 ],
                 econBase: 1,
                 econRatePerDist: 0.2,

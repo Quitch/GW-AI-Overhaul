@@ -589,7 +589,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -637,7 +638,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -685,7 +687,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -733,7 +736,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -781,7 +785,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -829,7 +834,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -877,7 +883,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -925,7 +932,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -973,7 +981,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1021,7 +1030,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1069,7 +1079,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1117,7 +1128,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1165,7 +1177,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1213,7 +1226,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1261,7 +1275,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1309,7 +1324,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1357,7 +1373,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1405,7 +1422,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1453,7 +1471,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1501,7 +1520,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1549,7 +1569,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1597,7 +1618,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1645,7 +1667,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1693,7 +1716,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
@@ -1741,7 +1765,8 @@ define([], function () {
                     personality_tags:
                     [
                         "GWAlly",
-                        "PreventsWaste"
+                        "PreventsWaste",
+                        "Uber"
                     ],
                     adv_eco_mod: 1,
                     adv_eco_mod_alone: 0.85,
