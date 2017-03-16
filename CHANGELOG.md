@@ -1,6 +1,6 @@
 # CHANGELOG
 
-### 0.1-beta
+### 0.1 - 2017-03-16
 
  - Assign a general personality to each faction
  - Reduce number of minions per faction to 13
