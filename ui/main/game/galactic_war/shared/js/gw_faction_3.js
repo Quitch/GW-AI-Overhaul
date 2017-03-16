@@ -1207,6 +1207,7 @@ define([], function () {
                 commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             },
             {
+                // Superweapons
                 name: 'Seeker Banditks',
                 econ_rate: 1,
                 personality: {
