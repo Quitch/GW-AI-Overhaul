@@ -445,6 +445,9 @@ requireGW([
                                 ai.personality.energy_demand_check = diffInfo.energyDemandCheck;
                             }
 
+                            if (!isBoss) {
+                                ai.personality.neural_data_mod = diffInfo.neuralDataMod;
+                            }
                             ai.personality.micro_type = diffInfo.microType;
                             ai.personality.go_for_the_kill = diffInfo.goForKill;
                             ai.personality.priority_scout_metal_spots = diffInfo.priority_scout_metal_spots;

@@ -1,40 +1,29 @@
-// General game balance variables
+// Make difficulty levels selectable on the difficulty drop-down
 
-define([
-], function(
-) {
+$('#game-difficulty').append('<option value="4">Q-CASUAL</option>' +
+    '<option value="5">Q-BRONZE</option>' +
+    '<option value="6">Q-SILVER</option>' +
+    '<option value="7">Q-GOLD</option>' +
+    '<option value="8">Q-PLATINUM</option>' +
+    '<option value="9">Q-UBER</option>')
 
-    return {
-        initialCardSlots: 4,
+// Set difficulty level settings and add them to difficultyInfo
 
-        numberOfSystems: [
-                18, // Small
-                24, // Medium
-                36, // Large
-                54, // Uber
-                78 // Rediq
-        ],
-
-        // New ramping feature so that the galaxy size.
-        galaxySizeDiffMod: [
-            1.25,
-            1.2,
-            1.15,
-            1.1,
-            1.0
-        ],
-
-        difficultyInfo: [
+requireGW([
+    'shared/gw_balance'
+],
+    function (balance) {
+        balance.difficultyInfo.push(
             {
+                // Casual
                 rampDifficulty: true,
-                adv_eco_mod: 3.0,
-                adv_eco_mod_alone: 3.0,
+                adv_eco_mod: 3,
+                adv_eco_mod_alone: 3,
                 goForKill: false,
                 microType: 0,
-                neuralDataMod: 5.0,
+                neuralDataMod: 5,
                 mandatoryMinions: 0,
                 minionMod: 0,
-                bossDemandCheckMod: 1.75,
                 priority_scout_metal_spots: false,
                 useEasierSystemTemplate: true,
                 factory_build_delay_min: 180,
@@ -42,73 +31,74 @@ define([
                 unable_to_expand_delay: 1200,
                 enable_commander_danger_responses: false,
                 per_expansion_delay: 1200,
-                fabber_to_factory_ratio_basic: 5.0,
-                fabber_to_factory_ratio_advanced: 1.0,
-                fabber_alone_on_planet_mod: 1.0,
+                fabber_to_factory_ratio_basic: 10,
+                fabber_to_factory_ratio_advanced: 5,
+                fabber_alone_on_planet_mod: 1,
                 basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 1.0,
-                min_basic_fabbers: 8,
+                factory_alone_on_planet_mod: 1,
+                min_basic_fabbers: 10,
                 max_basic_fabbers: 10,
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 10,
                 personality_tags:
                 [
-                    "SlowerExpansion"
+                    "SlowerExpansion",
+                    "Casual"
                 ],
                 econBase: 0.4,
-                econRatePerDist: 0.005,
-                metalDrainCheck: 0.14,
-                metalDrainCheckPerDist: 0.003,
-                metalDemandCheck: 0.21,
-                metalDemandCheckPerDist: 0.004,
-                energyDrainCheck: 0.25,
-                energyDrainCheckPerDist: 0.003,
-                energyDemandCheck: 0.3,
-                energyDemandCheckPerDist: 0.004
+                econRatePerDist: 0.05,
+                metal_drain_check: 0.64,
+                energy_drain_check: 0.77,
+                metal_demand_check: 1.05,
+                energy_demand_check: 0.92,
             },
             {
+                // Bronze
                 rampDifficulty: true,
-                adv_eco_mod: 2.0,
-                adv_eco_mod_alone: 2.0,
+                adv_eco_mod: 2,
+                adv_eco_mod_alone: 2,
                 goForKill: false,
-                microType: 1,
-                neuralDataMod: 2.0,
+                microType: 0,
+                neuralDataMod: 2,
                 mandatoryMinions: 0,
-                minionMod: 0.6,
-                bossDemandCheckMod: 1.25,
-                priority_scout_metal_spots: false,
+                minionMod: 0.25,
+                priority_scout_metal_spots: true,
                 useEasierSystemTemplate: false,
-                factory_build_delay_min: 40,
-                factory_build_delay_max: 60,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
                 unable_to_expand_delay: 0,
-                enable_commander_danger_responses: false,
+                enable_commander_danger_responses: true,
                 per_expansion_delay: 120,
-                fabber_to_factory_ratio_basic: 1.5,
-                fabber_to_factory_ratio_advanced: 1.0,
-                fabber_alone_on_planet_mod: 2.0,
+                fabber_to_factory_ratio_basic: 5,
+                fabber_to_factory_ratio_advanced: 5,
+                fabber_alone_on_planet_mod: 1,
                 basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 1,
+                factory_alone_on_planet_mod: 1,
+                min_basic_fabbers: 5,
                 max_basic_fabbers: 20,
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 20,
-                econBase: 0.55,
-                econRatePerDist: 0.01,
+                personality_tags:
+                [
+                    "Bronze"
+                ],
+                econBase: 0.5,
+                econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
                 energyDrainCheck: 0.95,
                 energyDemandCheck: 0.92,
             },
             {
+                // Silver
                 rampDifficulty: true,
                 adv_eco_mod: 1.5,
                 adv_eco_mod_alone: 1.5,
-                goForKill: false,
-                microType: 2,
-                neuralDataMod: 1.0,
+                goForKill: true,
+                microType: 1,
+                neuralDataMod: 1.5,
                 mandatoryMinions: 0,
-                minionMod: 0.75,
-                bossDemandCheckMod: 1.0,
+                minionMod: 0.5,
                 priority_scout_metal_spots: true,
                 useEasierSystemTemplate: false,
                 factory_build_delay_min: 0,
@@ -116,32 +106,36 @@ define([
                 unable_to_expand_delay: 0,
                 enable_commander_danger_responses: true,
                 per_expansion_delay: 0,
-                fabber_to_factory_ratio_basic: 1.5,
-                fabber_to_factory_ratio_advanced: 1.0,
-                fabber_alone_on_planet_mod: 2.0,
+                fabber_to_factory_ratio_basic: 2,
+                fabber_to_factory_ratio_advanced: 1,
+                fabber_alone_on_planet_mod: 1,
                 basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 1,
+                factory_alone_on_planet_mod: 1,
+                min_basic_fabbers: 4,
                 max_basic_fabbers: 30,
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 30,
-                econBase: 0.7,
-                econRatePerDist: 0.01,
+                personality_tags:
+                [
+                    "Silver"
+                ],
+                econBase: 0.6,
+                econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
                 energyDrainCheck: 0.95,
                 energyDemandCheck: 0.92,
             },
             {
+                // Gold
                 rampDifficulty: true,
                 adv_eco_mod: 1.25,
                 adv_eco_mod_alone: 1.25,
                 goForKill: true,
                 microType: 2,
-                neuralDataMod: 1.0,
+                neuralDataMod: 1.25,
                 mandatoryMinions: 0,
                 minionMod: 0.75,
-                bossDemandCheckMod: 1.0,
                 priority_scout_metal_spots: true,
                 useEasierSystemTemplate: false,
                 factory_build_delay_min: 0,
@@ -149,73 +143,37 @@ define([
                 unable_to_expand_delay: 0,
                 enable_commander_danger_responses: true,
                 per_expansion_delay: 0,
-                fabber_to_factory_ratio_basic: 1.5,
-                fabber_to_factory_ratio_advanced: 1.0,
-                fabber_alone_on_planet_mod: 2.0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 1,
+                fabber_alone_on_planet_mod: 2,
                 basic_to_advanced_factory_ratio: 0,
                 factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 1,
+                min_basic_fabbers: 3,
                 max_basic_fabbers: 40,
-                min_advanced_fabbers: 3,
+                min_advanced_fabbers: 2,
                 max_advanced_fabbers: 40,
                 personality_tags:
                 [
-                    "PreventsWaste"
+                    "PreventsWaste",
+                    "Gold"
                 ],
-                econBase: 0.85,
-                econRatePerDist: 0.01,
+                econBase: 0.9,
+                econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
                 energyDrainCheck: 0.95,
                 energyDemandCheck: 0.92,
             },
             {
+                // Platinum
                 rampDifficulty: true,
-                adv_eco_mod: 1.1,
-                adv_eco_mod_alone: 0.95,
-                goForKill: true,
-                microType: 2,
-                neuralDataMod: 1.0,
-                mandatoryMinions: 0,
-                minionMod: 0.75,
-                bossDemandCheckMod: 1.0,
-                priority_scout_metal_spots: true,
-                useEasierSystemTemplate: false,
-                factory_build_delay_min: 0,
-                factory_build_delay_max: 0,
-                unable_to_expand_delay: 0,
-                enable_commander_danger_responses: true,
-                per_expansion_delay: 0,
-                fabber_to_factory_ratio_basic: 1.5,
-                fabber_to_factory_ratio_advanced: 1.0,
-                fabber_alone_on_planet_mod: 2.0,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 1,
-                max_basic_fabbers: 50,
-                min_advanced_fabbers: 3,
-                max_advanced_fabbers: 50,
-                personality_tags:
-                [
-                    "PreventsWaste"
-                ],
-                econBase: 1.0,
-                econRatePerDist: 0.01,
-                metalDrainCheck: 0.54,
-                metalDemandCheck: 0.77,
-                energyDrainCheck: 0.95,
-                energyDemandCheck: 0.92,
-            },
-            {
-                rampDifficulty: true,
-                adv_eco_mod: 1.0,
+                adv_eco_mod: 1,
                 adv_eco_mod_alone: 0.85,
                 goForKill: true,
                 microType: 2,
-                neuralDataMod: 1.0,
+                neuralDataMod: 1,
                 mandatoryMinions: 0,
-                minionMod: 0.75,
-                bossDemandCheckMod: 1.0,
+                minionMod: 1,
                 priority_scout_metal_spots: true,
                 useEasierSystemTemplate: false,
                 factory_build_delay_min: 0,
@@ -223,9 +181,47 @@ define([
                 unable_to_expand_delay: 0,
                 enable_commander_danger_responses: true,
                 per_expansion_delay: 0,
-                fabber_to_factory_ratio_basic: 1.0,
-                fabber_to_factory_ratio_advanced: 2.0,
-                fabber_alone_on_planet_mod: 4.0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 3,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 2,
+                max_basic_fabbers: 50,
+                min_advanced_fabbers: 2,
+                max_advanced_fabbers: 50,
+                personality_tags:
+                [
+                    "PreventsWaste",
+                    "Platinum"
+                ],
+                econBase: 1,
+                econRatePerDist: 0.2,
+                metalDrainCheck: 0.54,
+                metalDemandCheck: 0.77,
+                energyDrainCheck: 0.95,
+                energyDemandCheck: 0.92,
+            },
+            {
+                // Uber
+                rampDifficulty: true,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0.85,
+                goForKill: true,
+                microType: 2,
+                neuralDataMod: 1,
+                mandatoryMinions: 1,
+                minionMod: 1,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 3,
+                fabber_alone_on_planet_mod: 3,
                 basic_to_advanced_factory_ratio: 0,
                 factory_alone_on_planet_mod: 0.5,
                 min_basic_fabbers: 3,
@@ -234,20 +230,15 @@ define([
                 max_advanced_fabbers: 100,
                 personality_tags:
                 [
-                    "PreventsWaste"
+                    "PreventsWaste",
+                    "Uber"
                 ],
-                econBase: 1.0,
-                econRatePerDist: 0.01,
+                econBase: 1,
+                econRatePerDist: 0.2,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.57,
                 energyDrainCheck: 0.85,
                 energyDemandCheck: 0.82,
             }
-        ],
-
-        workerMetalDrainCheck: [0.75, 0.6],
-        workerEnergyDrainCheck: [0.85, 0.7],
-        workerMetalDemandCheck: [0.9, 0.75],
-        workerEnergyDemandCheck: [1.00, 0.85],
-    };
-});
+        )
+    })
