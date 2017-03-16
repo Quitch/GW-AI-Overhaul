@@ -136,26 +136,26 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ## FAQ
 
-Q. Does this mod work with the regular difficulty levels?
-A. Some of the personality adjustments will work with the standard difficulties, but you should use the new difficulty levels to get the full effect.
+### Does this mod work with the regular difficulty levels?
+Some of the personality adjustments will work with the standard difficulties, but you should use the new difficulty levels to get the full effect.
 
-Q. Can I use an AI mod like Queller?
-A. Not at this time. Queller won't break this mod, it simply won't be used.
+### Can I use an AI mod like Queller?
+Not at this time. Queller won't break this mod, it simply won't be used.
 
-Q. How can I provide feedback?
-A. Please use the mod's [forum thread](https://forums.uberent.com/threads/wip-client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
+### How can I provide feedback?
+Please use the mod's [forum thread](https://forums.uberent.com/threads/wip-client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
-Q. Why don't the descriptions match up with the Commanders' names?
-A. Because that would break the translations, so I've left them untouched.
+### Why don't the descriptions match up with the Commanders' names?
+Because that would break the translations, so I've left them untouched.
 
-Q. Will sub-commanders fighting for me have the same personality if I fight against them?
-A. No, much of an enemy commander's personality is set by the difficulty level.
+### Will sub-commanders fighting for me have the same personality if I fight against them?
+No, much of an enemy commander's personality is set by the difficulty level.
 
-Q. Are all sub-commanders created equal?
-A. No, some are objectively stupider than others.
+### Are all sub-commanders created equal?
+No, some are objectively stupider than others.
 
-Q. Is there a "fair" difficulty level?
-A. No. I felt it was pointless to create a model where each battle is easier than the last.
+### Is there a "fair" difficulty level?
+No. I felt it was pointless to create a model where each battle is easier than the last.
 
 
 ## Incompatible mods
