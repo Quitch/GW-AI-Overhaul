@@ -851,8 +851,8 @@ define([], function () {
                         "Uber",
                         "Bot"
                     ],
-                    adv_eco_mod: 2,
-                    adv_eco_mod_alone: 1.45,
+                    adv_eco_mod: 3,
+                    adv_eco_mod_alone: 0.85,
                     priority_scout_metal_spots: true,
                     factory_build_delay_min: 0,
                     factory_build_delay_max: 0,
