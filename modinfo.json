@@ -4,9 +4,9 @@
   "display_name": "Galactic War AI Overhaul",
   "description": "Creates personality differences between the factions and introduces variations of them within factions for Commanders and sub-commanders: Legonis Machina focus on land, Foundation on air and naval, Revenants on orbital, Synchronous take a balanced approach. Sub-commanders are better at handling their eco. Overhauls the difficulty settings to provide more variety along with greater challenge at the higher settings. Uses the vanilla AI brain. Not compatible with other GW mods which adjust difficulty. One of the difficulties pre-fixed with a Q must be selected for the changes this mod makes to take effect.",
   "author": "Quitch",
-  "version": "dev",
+  "version": "0.1-beta",
   "build": "99377",
-  "date": "2017/03/13",
+  "date": "2017/03/16",
   "signature": " ",
   "forum": "https://forums.uberent.com/threads/challenge-levels-for-galactic-war-1-0-2.71508/",
   "category": [
