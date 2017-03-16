@@ -96,6 +96,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
  - Good ratio of fabbers
  - Takes advantage of owning a planet
  - Multiplanet systems possible
+ - Difficulty increases over distance
 
 ### Platinum
 
