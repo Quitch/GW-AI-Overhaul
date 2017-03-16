@@ -954,7 +954,7 @@ define([], function () {
                     factory_alone_on_planet_mod: 0.25,
                     min_basic_fabbers: 3,
                     max_basic_fabbers: 100,
-                    min_advanced_fabbers: 1,
+                    min_advanced_fabbers: 3,
                     max_advanced_fabbers: 100
                 },
                 description: "!LOC:Retreat is an offense punishable by deactivation within the Legionis Machina. While this law is understood, the truth of the matter is that a commander is too valuable a strategic resource to squander in such a way. So it was that Mallius was pardoned for his crime of retreat.",

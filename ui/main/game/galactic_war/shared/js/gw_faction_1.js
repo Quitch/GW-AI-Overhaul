@@ -1146,7 +1146,7 @@ define([], function () {
                     factory_alone_on_planet_mod: 0.25,
                     min_basic_fabbers: 3,
                     max_basic_fabbers: 100,
-                    min_advanced_fabbers: 1,
+                    min_advanced_fabbers: 3,
                     max_advanced_fabbers: 100
                 },
                 description: "!LOC:In some cases overexposure to progenitor relics results in a commander’s neural algorithms diverging to the point where it becomes difficult to communicate with their peers. Okta, for example, has begun assigning unfamiliar roles to many units under his command, such as 'Combat Associate,' 'Executive Manager,' and 'Explosive Supervisor.'",

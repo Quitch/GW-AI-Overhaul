@@ -1126,7 +1126,7 @@ define([], function () {
                     factory_alone_on_planet_mod: 0.25,
                     min_basic_fabbers: 3,
                     max_basic_fabbers: 100,
-                    min_advanced_fabbers: 1,
+                    min_advanced_fabbers: 3,
                     max_advanced_fabbers: 100
                 },
                 description: "!LOC:Negult is a 'digit' -- a commander who has completely given herself over to collective control. Having shed any semblance of personal identity, she is often given sensitive or odious tasks that might cause hesitation in a semi-autonomous commander. She is the Synchronus’ go-to asset for eliminating insufficiently-synchronized members of the collective.",

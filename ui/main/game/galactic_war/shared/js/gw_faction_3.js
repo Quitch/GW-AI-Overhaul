@@ -1245,6 +1245,7 @@ define([], function () {
                     min_basic_fabbers: 3,
                     max_basic_fabbers: 100,
                     min_advanced_fabbers: 1,
+                    min_advanced_fabbers: 3,
                     max_advanced_fabbers: 100
                 },
                 description: "!LOC:Some seekers are better equipped than others to survive after their rebirth. This was not so with Purtelek. He was activated deep in Legionis Machina territory with a cracked nuclear reactor and a jam-prone cannon. The fact that he still survives serves as a testament to his cunning--do not underestimate him.",
