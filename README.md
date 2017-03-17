@@ -24,11 +24,11 @@ This mod can be installed the in-game Community Mod manager.
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty.
+Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty. I'd recommend starting with Silver and seeing how you go.
 
 ### Casual
 
- - Massive eco penalty
+ - Severe eco penalty
    - Eco slowly increases over distance
  - Very slow to tech
  - Terrible micro
@@ -46,7 +46,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Bronze
 
- - Severe eco penalty
+ - Large eco penalty
    - Eco increases over distance
  - Quite slow to tech
  - Terrible micro
@@ -64,7 +64,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Silver
 
- - Large eco penalty
+ - Small eco penalty
    - Eco increases over distance
  - Slow to tech
  - Poor micro
