@@ -11,7 +11,9 @@
   "forum": "https://forums.uberent.com/threads/challenge-levels-for-galactic-war-1-0-2.71508/",
   "category": [
     "ai",
-    "gw"
+    "gw",
+    "classic",
+    "titans"
   ],
   "icon": "https://i.imgur.com/KX8n6ZJ.png",
   "scenes": {
