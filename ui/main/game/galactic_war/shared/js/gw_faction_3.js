@@ -1207,18 +1207,18 @@ define([], function () {
                 commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             },
             {
-                // Superweapons
+                // Original
                 name: 'Seeker Banditks',
                 econ_rate: 1,
                 personality: {
-                    percent_land: 0,
-                    percent_air: 0,
-                    percent_naval: 0,
-                    percent_orbital: 1,
-                    metal_drain_check: 0.54,
-                    energy_drain_check: 0.57,
-                    metal_demand_check: 0.85,
-                    energy_demand_check: 0.82,
+                    percent_land: 0.55,
+                    percent_air: 0.35,
+                    percent_naval: 0.05,
+                    percent_orbital: 0.05,
+                    metal_drain_check: 0.75,
+                    energy_drain_check: 0.85,
+                    metal_demand_check: 0.75,
+                    energy_demand_check: 0.85,
                     micro_type: 2,
                     go_for_the_kill: true,
                     neural_data_mod: 1,
@@ -1226,11 +1226,9 @@ define([], function () {
                     [
                         "GWAlly",
                         "PreventsWaste",
-                        "Uber",
-                        "Land",
-                        "Orbital"
+                        "Vanilla"
                     ],
-                    adv_eco_mod: 1,
+                    adv_eco_mod: 1.3,
                     adv_eco_mod_alone: 0.85,
                     priority_scout_metal_spots: true,
                     factory_build_delay_min: 0,
@@ -1238,16 +1236,16 @@ define([], function () {
                     unable_to_expand_delay: 0,
                     enable_commander_danger_responses: true,
                     per_expansion_delay: 0,
+                    neural_data_mod: 1,
                     fabber_to_factory_ratio_basic: 1,
-                    fabber_to_factory_ratio_advanced: 3,
-                    fabber_alone_on_planet_mod: 6,
+                    fabber_to_factory_ratio_advanced: 1,
+                    fabber_alone_on_planet_mod: 2,
                     basic_to_advanced_factory_ratio: 0,
-                    factory_alone_on_planet_mod: 0.25,
-                    min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
-                    min_advanced_fabbers: 1,
+                    factory_alone_on_planet_mod: 0.5,
+                    min_basic_fabbers: 2,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Some seekers are better equipped than others to survive after their rebirth. This was not so with Purtelek. He was activated deep in Legionis Machina territory with a cracked nuclear reactor and a jam-prone cannon. The fact that he still survives serves as a testament to his cunning--do not underestimate him.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
