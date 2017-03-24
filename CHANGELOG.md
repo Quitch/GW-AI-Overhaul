@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.2-beta
+## 0.2 - 2017-03-24
 
  - Legate Kapowaz, Acolyte Osiris, Servant Beniesk and Seeker Banditks have undergone a personality change as the previous personality did not perform as intended
  - Properly tagged mod to show support for PA classic and Titans
