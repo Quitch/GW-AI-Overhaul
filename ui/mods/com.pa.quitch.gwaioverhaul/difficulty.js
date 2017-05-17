@@ -26,11 +26,11 @@ requireGW([
                 minionMod: 0,
                 priority_scout_metal_spots: false,
                 useEasierSystemTemplate: true,
-                factory_build_delay_min: 180,
-                factory_build_delay_max: 240,
-                unable_to_expand_delay: 1200,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 12,
+                unable_to_expand_delay: 0,
                 enable_commander_danger_responses: false,
-                per_expansion_delay: 1200,
+                per_expansion_delay: 0,
                 fabber_to_factory_ratio_basic: 10,
                 fabber_to_factory_ratio_advanced: 5,
                 fabber_alone_on_planet_mod: 1,
@@ -65,10 +65,10 @@ requireGW([
                 priority_scout_metal_spots: true,
                 useEasierSystemTemplate: false,
                 factory_build_delay_min: 0,
-                factory_build_delay_max: 0,
+                factory_build_delay_max: 6,
                 unable_to_expand_delay: 0,
                 enable_commander_danger_responses: true,
-                per_expansion_delay: 120,
+                per_expansion_delay: 0,
                 fabber_to_factory_ratio_basic: 5,
                 fabber_to_factory_ratio_advanced: 5,
                 fabber_alone_on_planet_mod: 1,
@@ -82,7 +82,7 @@ requireGW([
                 [
                     "Bronze"
                 ],
-                econBase: 0.5,
+                econBase: 0.6,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
@@ -119,7 +119,7 @@ requireGW([
                 [
                     "Silver"
                 ],
-                econBase: 0.6,
+                econBase: 0.8,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
@@ -157,7 +157,7 @@ requireGW([
                     "PreventsWaste",
                     "Gold"
                 ],
-                econBase: 0.9,
+                econBase: 0.8,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
@@ -195,7 +195,7 @@ requireGW([
                     "PreventsWaste",
                     "Platinum"
                 ],
-                econBase: 1,
+                econBase: 0.8,
                 econRatePerDist: 0.2,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.77,
@@ -233,7 +233,7 @@ requireGW([
                     "PreventsWaste",
                     "Uber"
                 ],
-                econBase: 1,
+                econBase: 0.8,
                 econRatePerDist: 0.2,
                 metalDrainCheck: 0.54,
                 metalDemandCheck: 0.57,
