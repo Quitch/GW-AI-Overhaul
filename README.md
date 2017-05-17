@@ -47,7 +47,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Bronze
 
- - Large eco penalty
+ - Small eco penalty
    - Eco increases over distance
  - Quite slow to tech
  - Terrible micro
@@ -65,7 +65,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Silver
 
- - Small eco penalty
+ - No starting eco handicap
    - Eco increases over distance
  - Slow to tech
  - Poor micro
