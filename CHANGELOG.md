@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.3 - 2017-05-17
+
+ - Reduced base level of eco that Gold through Uber start with
+ - Increased base level of eco that Bronze and Silver start with
+ - Casual's expansion is no longer crippled
+ - Bronze expands a little faster
+ - Casual builds faster from its factories
+ - Bronze builds a little slower from its factories
+
 ## 0.2 - 2017-03-24
 
  - Legate Kapowaz, Acolyte Osiris, Servant Beniesk and Seeker Banditks have undergone a personality change as the previous personality did not perform as intended
