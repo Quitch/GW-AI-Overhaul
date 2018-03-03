@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.1 - 2018-03-03
+
+ - Corrected what appears to be an error in the base game where one of the Foundation bosses was using Legonis Machina personality settings
+
 ## 0.3 - 2017-05-17
 
  - Reduced base level of eco that Gold through Uber start with
