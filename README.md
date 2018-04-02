@@ -17,11 +17,9 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
 
 The boss personalities and those of their minions have not been changed.
 
-
 ## Installation
 
 This mod can be installed via the in-game Community Mod manager.
-
 
 ## Difficulty
 
@@ -135,7 +133,6 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
  - Multiplanet systems possible
  - Difficulty increases over distance
 
-
 ## FAQ
 
 ### Does this mod work with the regular difficulty levels?
@@ -158,7 +155,6 @@ No, some are objectively stupider than others.
 
 ### Is there a "fair" difficulty level?
 No. I felt it was pointless to create a model where each battle is easier than the last.
-
 
 ## Incompatible mods
 
