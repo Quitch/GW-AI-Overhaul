@@ -1,14 +1,12 @@
 // Make difficulty levels selectable on the difficulty drop-down
-
-$('#game-difficulty').append('<option value="4">Q-CASUAL</option>' +
-    '<option value="5">Q-BRONZE</option>' +
-    '<option value="6">Q-SILVER</option>' +
-    '<option value="7">Q-GOLD</option>' +
-    '<option value="8">Q-PLATINUM</option>' +
-    '<option value="9">Q-UBER</option>')
+$('#game-difficulty').append('<option value="4">CASUAL</option>' +
+    '<option value="5">BRONZE</option>' +
+    '<option value="6">SILVER</option>' +
+    '<option value="7">GOLD</option>' +
+    '<option value="8">PLATINUM</option>' +
+    '<option value="9">UBER</option>')
 
 // Set difficulty level settings and add them to difficultyInfo
-
 requireGW([
     'shared/gw_balance'
 ],
@@ -41,10 +39,10 @@ requireGW([
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 10,
                 personality_tags:
-                [
-                    "SlowerExpansion",
-                    "Casual"
-                ],
+                    [
+                        "SlowerExpansion",
+                        "Casual"
+                    ],
                 econBase: 0.4,
                 econRatePerDist: 0.05,
                 metal_drain_check: 0.64,
@@ -79,9 +77,9 @@ requireGW([
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 20,
                 personality_tags:
-                [
-                    "Bronze"
-                ],
+                    [
+                        "Bronze"
+                    ],
                 econBase: 0.6,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
@@ -116,9 +114,9 @@ requireGW([
                 min_advanced_fabbers: 3,
                 max_advanced_fabbers: 30,
                 personality_tags:
-                [
-                    "Silver"
-                ],
+                    [
+                        "Silver"
+                    ],
                 econBase: 0.8,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
@@ -153,10 +151,10 @@ requireGW([
                 min_advanced_fabbers: 2,
                 max_advanced_fabbers: 40,
                 personality_tags:
-                [
-                    "PreventsWaste",
-                    "Gold"
-                ],
+                    [
+                        "PreventsWaste",
+                        "Gold"
+                    ],
                 econBase: 0.8,
                 econRatePerDist: 0.1,
                 metalDrainCheck: 0.54,
@@ -191,10 +189,10 @@ requireGW([
                 min_advanced_fabbers: 2,
                 max_advanced_fabbers: 50,
                 personality_tags:
-                [
-                    "PreventsWaste",
-                    "Platinum"
-                ],
+                    [
+                        "PreventsWaste",
+                        "Platinum"
+                    ],
                 econBase: 0.8,
                 econRatePerDist: 0.2,
                 metalDrainCheck: 0.54,
@@ -229,10 +227,10 @@ requireGW([
                 min_advanced_fabbers: 1,
                 max_advanced_fabbers: 100,
                 personality_tags:
-                [
-                    "PreventsWaste",
-                    "Uber"
-                ],
+                    [
+                        "PreventsWaste",
+                        "Uber"
+                    ],
                 econBase: 0.8,
                 econRatePerDist: 0.2,
                 metalDrainCheck: 0.54,

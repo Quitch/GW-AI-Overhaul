@@ -1,5 +1,9 @@
 # CHANGELOG
 
+##
+
+ - Remove Q prefix from difficulties in vain attempt to clarify that this is **not** using the Queller AI brain
+
 ## 0.3.1 - 2018-03-03
 
  - Corrected what appears to be an error in the base game where one of the Foundation bosses was using Legonis Machina personality settings
