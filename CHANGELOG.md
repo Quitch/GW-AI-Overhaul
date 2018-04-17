@@ -1,6 +1,6 @@
 # CHANGELOG
 
-##
+## 0.4 - 2018-04-17
 
  - Remove Q prefix from difficulties in vain attempt to clarify that this is **not** using the Queller AI brain
 
