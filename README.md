@@ -28,7 +28,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Casual
 
  - Severe eco penalty
-   - Eco slowly increases over distance
+ - Eco slowly increases over distance
  - Very slow to tech
  - Terrible micro
  - Terrible threat assessment
@@ -46,7 +46,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Bronze
 
  - Small eco penalty
-   - Eco increases over distance
+ - Eco increases over distance
  - Quite slow to tech
  - Terrible micro
  - Poor threat assessment
@@ -64,7 +64,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Silver
 
  - No starting eco handicap
-   - Eco increases over distance
+ - Eco increases over distance
  - Slow to tech
  - Poor micro
  - OK threat assessment
@@ -82,7 +82,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Gold
 
  - No starting eco handicap
-   - Eco increases over distance
+ - Eco increases over distance
  - Slightly slow to tech
  - Good micro
  - Good threat assessment
@@ -100,7 +100,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Platinum
 
  - Small eco bonus
-   - Eco rapidly increases over distance
+ - Eco rapidly increases over distance
  - Quick to tech
  - Good micro
  - Excellent threat assessment
@@ -118,7 +118,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Uber
 
  - Small eco bonus
-   - Eco rapidly increases over distance
+ - Eco rapidly increases over distance
  - Quick to tech
  - Good micro
  - Excellent threat assessment
