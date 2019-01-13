@@ -578,7 +578,7 @@ define([], function () {
                     energy_demand_check: 0.92,
                     micro_type: 1,
                     go_for_the_kill: true,
-                    neural_data_mod: 1.25,
+                    neural_data_mod: 1.3,
                     personality_tags:
                     [
                         "GWAlly",
@@ -622,7 +622,7 @@ define([], function () {
                     energy_demand_check: 0.92,
                     micro_type: 2,
                     go_for_the_kill: true,
-                    neural_data_mod: 1.35,
+                    neural_data_mod: 1.45,
                     personality_tags:
                     [
                         "GWAlly",
