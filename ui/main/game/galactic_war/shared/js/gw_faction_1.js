@@ -606,9 +606,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:An eccentric even among Foundation standards, Blaz has taken to adorning her chassis with various trophies from felled enemies in the form of weaponry, circuitry, and armor chunks. She does so to emulate the various warlords depicted in unearthed progenitor records.",
                 commander: '/pa/units/commanders/imperial_progenitor/imperial_progenitor.json'
@@ -650,9 +650,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Chitrik was found by a Foundation scouting party wandering a barren desert planet. He seems to have an affinity for environments composed primarily of silicate, taking his Enlightenment by being immersed in the smallest component parts observable by his optic systems. He will often go years without applying any lubricant to his joints, so as not to wash out any accumulated sand or dirt.",
                 commander: '/pa/units/commanders/imperial_sangudo/imperial_sangudo.json'
@@ -695,9 +695,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:An Oracle within the Foundation is one that is believed to be tuned to the unknown the frequencies necessary to receive instructions from the Great Machine. Devi is one such acolyte.",
                 commander: '/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json'
@@ -740,9 +740,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Some Acolytes within the Foundation find a form of Enlightenment shortly after they are brought into the fold. For some, this definition will change as they are exposed to new information and progenitor relics. Entor’s definition seems to change dramatically with each new planet she visits.",
                 commander: '/pa/units/commanders/imperial_stelarch/imperial_stelarch.json'
@@ -785,9 +785,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Frohl seeks knowledge of the Progenitors with the same fervor as any other Acolyte. However, equally important to finding that information is curating what is and isn’t important. To that end, Frohl has cataloged an extensive library for how to properly prepare a presumably extinct type of feathered organic for consumption by other organics.",
                 commander: '/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json'
@@ -830,9 +830,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:While there is much knowledge of old progenitor technology, progenitor culture and history remains largely a mystery. Glohm is one of the few that has managed to find scraps of progenitor culture in the form of ancient physical images. Each of these has been carefully cataloged.",
                 commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'
@@ -875,9 +875,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Hzok seeks Enlightenment in stillness as much as possible. Even heat vibrations disturb him, and so he often spends long periods of time drifting in space on an Astraeus lander in deep meditation.",
                 commander: '/pa/units/commanders/imperial_toddfather/imperial_toddfather.json'
@@ -1010,9 +1010,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:A convert from the Revenants, Khandzta might be the first of his kind. While most Seekers that are rebirthed show an immediate propensity for war, Khandzta was instead possessed by questions about his origin. He converted during his first encounter with the Foundation.",
                 commander: '/pa/units/commanders/quad_calyx/quad_calyx.json'
@@ -1144,9 +1144,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:In some cases overexposure to progenitor relics results in a commander’s neural algorithms diverging to the point where it becomes difficult to communicate with their peers. Okta, for example, has begun assigning unfamiliar roles to many units under his command, such as 'Combat Associate,' 'Executive Manager,' and 'Explosive Supervisor.'",
                 commander: '/pa/units/commanders/quad_osiris/quad_osiris.json'

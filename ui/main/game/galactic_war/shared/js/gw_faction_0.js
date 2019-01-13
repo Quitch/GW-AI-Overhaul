@@ -423,9 +423,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Awarded several commendations for vigilance, Ancilius has decommissioned many commanders, factories, and metal planets suspected to be infected by the 'Synchronous Virus.'",
                 commander: '/pa/units/commanders/imperial_able/imperial_able.json'
@@ -468,9 +468,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Attius is renowned within the Legion for having the most efficient factories and sturdiest nanolathes. Believing the key to victory is good construction, he spends many cycles obsessing over simulations and prototypes of new fabrication and production line algorithms.",
                 commander: '/pa/units/commanders/imperial_aceal/imperial_aceal.json'
@@ -512,9 +512,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Brutus was actually once a member of The Foundation. When exposed to old progenitor records of great conquerors, he became convinced that Enlightenment lied in the great conquest that Commander Invictus pursued. When swearing allegiance Brutus brought with him valuable Foundation intelligence and the old records that have helped shape the cultural identity of the Legion we know today.",
                 commander: '/pa/units/commanders/imperial_alpha/imperial_alpha.json'
@@ -556,9 +556,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Many commanders in the Legion considered Bassus inefficient at best and defective at worst for his insistence on outfitting himself with armor five times thicker than other commanders at the cost of mobility. Their opinion changed when Bassus was recovered while drifting through space--the sole survivor of a pivotal battle that ended in a moon colliding with his base.",
                 commander: '/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json'
@@ -600,9 +600,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Cassius is a firm practitioner of the ‘lead from the front’ mentality. This often results in he himself leading many daring charges, and intense melee conflicts with woefully unprepared enemy commanders.",
                 commander: '/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json'
@@ -644,9 +644,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:The Legionis Machina tends to follow strict directives in how forces are organized are deployed. This makes innovation among the Legates uncommon. Maximus is an anomaly in his numerous failed prototypes for wheeled transport platform that would supposedly enable him to move across battlefields with swiftness and grace.",
                 commander: '/pa/units/commanders/imperial_mjon/imperial_mjon.json'
@@ -688,9 +688,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Domitius insists on being referred to as King Domitius, regardless of his actual rank. This has resulted in many reportings and personal reprimands from Invictus himself. Regardless, the reign of King Domitius continues.",
                 commander: '/pa/units/commanders/imperial_delta/imperial_delta.json'
@@ -820,9 +820,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Hosidius is one of the most accomplished admirals the Legion has to offer. That being said, he near-refuses to operate any war effort on land. This has made deploying him effectively rather difficult.",
                 commander: '/pa/units/commanders/imperial_gamma/imperial_gamma.json'
@@ -953,9 +953,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Retreat is an offense punishable by deactivation within the Legionis Machina. While this law is understood, the truth of the matter is that a commander is too valuable a strategic resource to squander in such a way. So it was that Mallius was pardoned for his crime of retreat.",
                 commander: '/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json'

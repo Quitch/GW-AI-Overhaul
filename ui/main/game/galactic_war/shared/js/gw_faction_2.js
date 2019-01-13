@@ -608,9 +608,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Bhalam refuses to communicate in any form more advanced than binary data transfer, believing more complicated exchanges involving packets and complex files to be noisy and that they damage Synchronization. Ironically, this has made him one of the less popular commanders among The Synchronous.",
                 commander: '/pa/units/commanders/quad_potbelly79/quad_potbelly79.json'
@@ -652,9 +652,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Campal was found activated but inert on  richly diverse jungle planet. Apparently, his servos had been caught by a thicket and rendered him prone--unable to self-right without aid. Since then, his intense hatred of all organic life has kept him one of the stronger-willed members of The Synchronous, often torching entire forests on principle.",
                 commander: '/pa/units/commanders/quad_raventhornn/quad_raventhornn.json'
@@ -695,9 +695,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Formerly a Foundation member before her synchronization, Dkar found and accessed progenitor files that allowed her to decode and etch ancient codes on a physical surface for others to later serialize. While many Servants find this analog communication distasteful, it’s proven invaluable for passing along intelligence in secrecy.",
                 commander: '/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json'
@@ -738,9 +738,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:While rare, there are Servants who seek out Synchronous systems and request to be synchronized. Often these individuals hope to be freed by mounting existential questions and fears as their neural nets process more and more complicated data models. Erom is one such example.",
                 commander: '/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json'
@@ -781,9 +781,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Revenants tend to be the most difficult commanders to synchronize, whether due to an inherent individualism or their tendency to feature… Unorthodox modifications. Flornek, for example, has experienced several violent desynchronizations and following resynchronizations.",
                 commander: '/pa/units/commanders/quad_spartandano/quad_spartandano.json'
@@ -824,9 +824,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:The Synchronous tend to require more infrastructure to operate effectively compared to the other factions. Ghel is responsible for establishing and maintaining the communication relays that allow synchronization to be maintained.",
                 commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
@@ -867,9 +867,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Hinn is could be called an envoy for the Synchronous, often responsible for making first contact with newly-awoken commanders. Legion commanders refer to him as a carrier--one who infects others with the 'Synchronous Virus.'",
                 commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
@@ -996,9 +996,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:A former Foundation Acolyte, Kancetu believes that the Great Machine is less an outside function and more an underlying directive that exists within all commanders, which made her a very easy subject for synchronization.",
                 commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
@@ -1126,9 +1126,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Negult is a 'digit' -- a commander who has completely given herself over to collective control. Having shed any semblance of personal identity, she is often given sensitive or odious tasks that might cause hesitation in a semi-autonomous commander. She is the Synchronus’ go-to asset for eliminating insufficiently-synchronized members of the collective.",
                 commander: '/pa/units/commanders/raptor_beniesk/raptor_beniesk.json'

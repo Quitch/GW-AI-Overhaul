@@ -704,9 +704,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:While other Seekers tend to replace components as better ones are found, Dis tends to add more parts to her form--particularly nuclear reactors. Somehow, she has rigged herself with three tandem nuclear reactors. This has made her fearsome on the battlefield, and other seekers deployed with her tend to try to find landing zones on opposite sides of the planet, or a different one entirely.",
                 commander: '/pa/units/commanders/raptor_betadyne/raptor_betadyne.json'
@@ -749,9 +749,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Traditionally, a new Seeker is only built once enough suitable parts have been discarded by existing Seekers. Ereshkigal has developed a habit of ‘discarding’ parts much more frequently than other Seekers, and as such has created more new recruits than any other member of The Revenants--an accomplishment she seems very proud of.",
                 commander: '/pa/units/commanders/raptor_centurion/raptor_centurion.json'
@@ -794,9 +794,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Unlike other Seekers that value battlefield effectiveness in their equipment, Freja has begun integrating decorative pieces into her chassis-- from raw materials such as pure gold and iron to strange progenitor artifacts like the four-wheeled vehicle adorning her head.",
                 commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'
@@ -839,9 +839,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:It’s rare for Seekers to be recruited instead of built. Giltine was found inactive and frozen in a glacier. When the Seeker who found her began trying to salvage her, she suddenly activated and blew a hole through his chassis. She was promptly deemed fit to be named a Seeker without the traditional rebirth.",
                 commander: '/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json'
@@ -884,9 +884,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Seekers will often weigh the effectiveness of any given piece of equipment by stress-testing it. Hecate, however, values presence above all. She believes that the bigger and louder the loadout, the sooner the enemy will retreat after poorly assessing their chances of victory.",
                 commander: '/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json'
@@ -929,9 +929,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Possessed by some form of wanderlust, Iku tends to seek uncharted warpways instead of other commanders to fight. This behavior has landed him quite accidentally in several pitched battles deep inside enemy territory.",
                 commander: '/pa/units/commanders/raptor_majuju/raptor_majuju.json'
@@ -974,9 +974,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Revenants tend to prefer wrecked, once densely-populated worlds for their abundance of salvageable scrap. Jektu, however, has an affinity less developed worlds, preferring to claim resources and build new parts manually.",
                 commander: '/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json'
@@ -1109,9 +1109,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Mara favors guns. Mara favors big guns. Mara favors more guns. With each commander destroyed, Mara’s extensive weapons array grows. While most successful Seekers learn early to find ways to moderate their experiments, there are still few, like Mara, who favor more guns above all.",
                 commander: '/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json'
@@ -1243,9 +1243,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 6,
+                    max_basic_fabbers: 100,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 20
+                    max_advanced_fabbers: 100
                 },
                 description: "!LOC:Some seekers are better equipped than others to survive after their rebirth. This was not so with Purtelek. He was activated deep in Legionis Machina territory with a cracked nuclear reactor and a jam-prone cannon. The fact that he still survives serves as a testament to his cunning--do not underestimate him.",
                 commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'

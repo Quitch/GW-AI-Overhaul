@@ -233,10 +233,10 @@ requireGW([
                     ],
                 econBase: 0.8,
                 econRatePerDist: 0.2,
-                metalDrainCheck: 0.54,
-                metalDemandCheck: 0.57,
-                energyDrainCheck: 0.85,
-                energyDemandCheck: 0.82,
+                metal_drain_check: 0.54,
+                energy_drain_check: 0.65,
+                metal_demand_check: 0.71,
+                energy_demand_check: 0.8,
             }
         )
     })
