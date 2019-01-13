@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.5
+##
 
  - Fixed issue with turtling subcommander personalities only building a single factory
 
