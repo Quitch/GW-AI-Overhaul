@@ -4,6 +4,8 @@
 
  - Fixed issue with turtling subcommander personalities only building a single factory
  - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
+ - Updated Uber subcommander personality with latest Queller personality settings
+ - Use default fabber limit for all personalities
 
 ## 0.4 - 2018-04-17
 
