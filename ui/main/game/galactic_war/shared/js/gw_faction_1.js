@@ -667,9 +667,9 @@ define([], function () {
                     percent_naval: 0.3,
                     percent_orbital: 0,
                     metal_drain_check: 0.54,
-                    energy_drain_check: 0.57,
+                    energy_drain_check: 0.65,
                     metal_demand_check: 0.85,
-                    energy_demand_check: 0.82,
+                    energy_demand_check: 0.8,
                     micro_type: 2,
                     go_for_the_kill: true,
                     neural_data_mod: 1,
@@ -695,9 +695,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:An Oracle within the Foundation is one that is believed to be tuned to the unknown the frequencies necessary to receive instructions from the Great Machine. Devi is one such acolyte.",
                 commander: '/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json'

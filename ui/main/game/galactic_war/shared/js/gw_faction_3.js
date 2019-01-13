@@ -766,9 +766,9 @@ define([], function () {
                     percent_naval: 0,
                     percent_orbital: 1,
                     metal_drain_check: 0.54,
-                    energy_drain_check: 0.57,
+                    energy_drain_check: 0.65,
                     metal_demand_check: 0.85,
-                    energy_demand_check: 0.82,
+                    energy_demand_check: 0.8,
                     micro_type: 2,
                     go_for_the_kill: true,
                     neural_data_mod: 1,
@@ -794,9 +794,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Unlike other Seekers that value battlefield effectiveness in their equipment, Freja has begun integrating decorative pieces into her chassis-- from raw materials such as pure gold and iron to strange progenitor artifacts like the four-wheeled vehicle adorning her head.",
                 commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'

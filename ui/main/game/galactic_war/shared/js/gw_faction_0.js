@@ -485,9 +485,9 @@ define([], function () {
                     percent_naval: 0,
                     percent_orbital: 0,
                     metal_drain_check: 0.54,
-                    energy_drain_check: 0.57,
+                    energy_drain_check: 0.65,
                     metal_demand_check: 0.85,
-                    energy_demand_check: 0.82,
+                    energy_demand_check: 0.8,
                     micro_type: 2,
                     go_for_the_kill: true,
                     neural_data_mod: 1,
@@ -512,9 +512,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 1,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Brutus was actually once a member of The Foundation. When exposed to old progenitor records of great conquerors, he became convinced that Enlightenment lied in the great conquest that Commander Invictus pursued. When swearing allegiance Brutus brought with him valuable Foundation intelligence and the old records that have helped shape the cultural identity of the Legion we know today.",
                 commander: '/pa/units/commanders/imperial_alpha/imperial_alpha.json'
