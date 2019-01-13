@@ -121,7 +121,7 @@ requireGW([
         econRatePerDist: 0.1,
         metal_drain_check: 0.54,
         energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
+        metal_demand_check: 0.95,
         energy_demand_check: 0.92,
       },
       {
