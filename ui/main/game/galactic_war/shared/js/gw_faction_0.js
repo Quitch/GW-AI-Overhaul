@@ -718,8 +718,8 @@ define([], function () {
                         "Uber",
                         "Land"
                     ],
-                    adv_eco_mod: 0,
-                    adv_eco_mod_alone: 0,
+                    adv_eco_mod: 1,
+                    adv_eco_mod_alone: 0.85,
                     priority_scout_metal_spots: true,
                     factory_build_delay_min: 0,
                     factory_build_delay_max: 0,
@@ -895,8 +895,8 @@ define([], function () {
                         "Uber",
                         "Land"
                     ],
-                    adv_eco_mod: 0,
-                    adv_eco_mod_alone: 0,
+                    adv_eco_mod: 1,
+                    adv_eco_mod_alone: 0.85,
                     priority_scout_metal_spots: true,
                     factory_build_delay_min: 0,
                     factory_build_delay_max: 0,
