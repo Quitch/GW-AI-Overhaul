@@ -157,6 +157,5 @@ No, some are objectively stupider than others.
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
 ## Incompatible mods
-
  - Enemy ramp for galactic war
  - Challenge Levels for galactic war
