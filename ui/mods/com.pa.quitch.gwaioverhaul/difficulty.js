@@ -47,7 +47,7 @@ requireGW([
         econRatePerDist: 0.05,
         metal_drain_check: 0.64,
         energy_drain_check: 0.77,
-        metal_demand_check: 1.05,
+        metal_demand_check: 0.95,
         energy_demand_check: 0.92,
       },
       {
@@ -82,10 +82,10 @@ requireGW([
           ],
         econBase: 0.6,
         econRatePerDist: 0.1,
-        metalDrainCheck: 0.54,
-        metalDemandCheck: 0.77,
-        energyDrainCheck: 0.95,
-        energyDemandCheck: 0.92,
+        metal_drain_check: 0.54,
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.95,
+        energy_demand_check: 0.92,
       },
       {
         // Silver
@@ -119,10 +119,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.1,
-        metalDrainCheck: 0.54,
-        metalDemandCheck: 0.77,
-        energyDrainCheck: 0.95,
-        energyDemandCheck: 0.92,
+        metal_drain_check: 0.54,
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
       },
       {
         // Gold
@@ -157,10 +157,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.1,
-        metalDrainCheck: 0.54,
-        metalDemandCheck: 0.77,
-        energyDrainCheck: 0.95,
-        energyDemandCheck: 0.92,
+        metal_drain_check: 0.54,
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
       },
       {
         // Platinum
@@ -195,10 +195,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.2,
-        metalDrainCheck: 0.54,
-        metalDemandCheck: 0.77,
-        energyDrainCheck: 0.95,
-        energyDemandCheck: 0.92,
+        metal_drain_check: 0.54,
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
       },
       {
         // Uber
@@ -233,10 +233,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.2,
-        metalDrainCheck: 0.54,
-        metalDemandCheck: 0.57,
-        energyDrainCheck: 0.85,
-        energyDemandCheck: 0.82,
+        metal_drain_check: 0.54,
+        energy_drain_check: 0.65,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.8,
       }
     )
   })
