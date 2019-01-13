@@ -738,9 +738,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:While rare, there are Servants who seek out Synchronous systems and request to be synchronized. Often these individuals hope to be freed by mounting existential questions and fears as their neural nets process more and more complicated data models. Erom is one such example.",
                 commander: '/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json'
@@ -781,9 +781,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Revenants tend to be the most difficult commanders to synchronize, whether due to an inherent individualism or their tendency to feature… Unorthodox modifications. Flornek, for example, has experienced several violent desynchronizations and following resynchronizations.",
                 commander: '/pa/units/commanders/quad_spartandano/quad_spartandano.json'
@@ -824,9 +824,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:The Synchronous tend to require more infrastructure to operate effectively compared to the other factions. Ghel is responsible for establishing and maintaining the communication relays that allow synchronization to be maintained.",
                 commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'

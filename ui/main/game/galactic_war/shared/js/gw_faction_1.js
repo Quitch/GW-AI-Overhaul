@@ -740,9 +740,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Some Acolytes within the Foundation find a form of Enlightenment shortly after they are brought into the fold. For some, this definition will change as they are exposed to new information and progenitor relics. Entor’s definition seems to change dramatically with each new planet she visits.",
                 commander: '/pa/units/commanders/imperial_stelarch/imperial_stelarch.json'
@@ -785,9 +785,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Frohl seeks knowledge of the Progenitors with the same fervor as any other Acolyte. However, equally important to finding that information is curating what is and isn’t important. To that end, Frohl has cataloged an extensive library for how to properly prepare a presumably extinct type of feathered organic for consumption by other organics.",
                 commander: '/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json'
@@ -830,9 +830,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:While there is much knowledge of old progenitor technology, progenitor culture and history remains largely a mystery. Glohm is one of the few that has managed to find scraps of progenitor culture in the form of ancient physical images. Each of these has been carefully cataloged.",
                 commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'

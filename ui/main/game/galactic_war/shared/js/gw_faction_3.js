@@ -839,9 +839,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:It’s rare for Seekers to be recruited instead of built. Giltine was found inactive and frozen in a glacier. When the Seeker who found her began trying to salvage her, she suddenly activated and blew a hole through his chassis. She was promptly deemed fit to be named a Seeker without the traditional rebirth.",
                 commander: '/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json'
@@ -884,9 +884,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Seekers will often weigh the effectiveness of any given piece of equipment by stress-testing it. Hecate, however, values presence above all. She believes that the bigger and louder the loadout, the sooner the enemy will retreat after poorly assessing their chances of victory.",
                 commander: '/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json'
@@ -929,9 +929,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Possessed by some form of wanderlust, Iku tends to seek uncharted warpways instead of other commanders to fight. This behavior has landed him quite accidentally in several pitched battles deep inside enemy territory.",
                 commander: '/pa/units/commanders/raptor_majuju/raptor_majuju.json'

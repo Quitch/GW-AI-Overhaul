@@ -556,9 +556,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 2,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Many commanders in the Legion considered Bassus inefficient at best and defective at worst for his insistence on outfitting himself with armor five times thicker than other commanders at the cost of mobility. Their opinion changed when Bassus was recovered while drifting through space--the sole survivor of a pivotal battle that ended in a moon colliding with his base.",
                 commander: '/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json'
@@ -600,9 +600,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 3,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 2,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:Cassius is a firm practitioner of the ‘lead from the front’ mentality. This often results in he himself leading many daring charges, and intense melee conflicts with woefully unprepared enemy commanders.",
                 commander: '/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json'
@@ -644,9 +644,9 @@ define([], function () {
                     basic_to_advanced_factory_ratio: 0,
                     factory_alone_on_planet_mod: 0.5,
                     min_basic_fabbers: 4,
-                    max_basic_fabbers: 100,
+                    max_basic_fabbers: 6,
                     min_advanced_fabbers: 3,
-                    max_advanced_fabbers: 100
+                    max_advanced_fabbers: 20
                 },
                 description: "!LOC:The Legionis Machina tends to follow strict directives in how forces are organized are deployed. This makes innovation among the Legates uncommon. Maximus is an anomaly in his numerous failed prototypes for wheeled transport platform that would supposedly enable him to move across battlefields with swiftness and grace.",
                 commander: '/pa/units/commanders/imperial_mjon/imperial_mjon.json'
