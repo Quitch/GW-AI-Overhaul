@@ -142,7 +142,7 @@ Some of the personality adjustments will work with the standard difficulties, bu
 Not at this time. Queller won't break this mod, it simply won't be used.
 
 ### How can I provide feedback?
-Please use the mod's [forum thread](https://forums.uberent.com/threads/wip-client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
+Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
 ### Why don't the descriptions match up with the Commanders' names?
 Because that would break the translations, so I've left them untouched.
