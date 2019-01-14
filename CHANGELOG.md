@@ -4,8 +4,7 @@
 
  - Huge overhaul of difficulty levels
    - All difficulties now use minions as a difficulty ramp tool
-   - All difficulties introduce minions earlier in the galaxy
-   - Casual no longer gains additional economy over distance
+   - Platinum and below introduce minions earlier in the galaxy
    - Casual has a higher base economy
    - Casual uses the same system template as all other difficulty levels
    - Bronze has a higher base economy but gains economy over distance slower than before
