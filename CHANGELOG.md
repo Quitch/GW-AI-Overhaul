@@ -3,7 +3,6 @@
 ##
 
  - Huge overhaul of difficulty levels
-   - Gold and Platinum both use optimal economy handling settings
    - All difficulties now use minions as a difficulty ramp tool
    - All difficulties introduce minions earlier in the galaxy
    - Casual no longer gains additional economy over distance
@@ -12,6 +11,7 @@
    - Bronze has a higher base economy but gains economy over distance slower than before
    - Gold moves to T2 slightly later
    - Platinum now always has at least two minions in a system
+   - Platinum handles its economy better
    - Uber is now setup as an ultimate challenge difficulty without attempt to be fair
 
 ## 0.5 - 2019-01-13
