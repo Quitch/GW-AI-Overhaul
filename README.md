@@ -27,57 +27,48 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Casual
 
- - Severe eco penalty
+ - Large eco penalty
  - Eco slowly increases over distance
  - Very slow to tech
- - Terrible micro
+ - Poor micro
  - Terrible threat assessment
  - Doesn't pick on the weakest link
  - Poor scouting
  - Commander doesn't react to danger
- - No additional commanders
+ - Additional Commanders appear late in galaxy
  - Terrible expansion
  - Terrible eco management
  - Terrible ratio of fabbers
- - Doesn't take advantage of owning a planet
- - Multiplanet systems unlikely
- - Difficulty increases over distance
 
 ### Bronze
 
  - Small eco penalty
- - Eco increases over distance
+ - Eco slowly increases over distance
  - Quite slow to tech
- - Terrible micro
+ - Poor micro
  - Poor threat assessment
  - Doesn't pick on the weakest link
  - Good scouting
  - Commander reacts to danger
- - Additional commanders are unlikely
- - Poor expansion
+ - Additional Commanders appear late in galaxy
+ - Good expansion
  - Poor eco handling
  - Poor ratio of fabbers
- - Doesn't take advantage of owning a planet
- - Multiplanet systems possible
- - Difficulty increases over distance
 
 ### Silver
 
  - No starting eco handicap
  - Eco increases over distance
  - Slow to tech
- - Poor micro
+ - OK micro
  - OK threat assessment
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
- - Additional commanders are possible
+ - Additional Commanders appear late in galaxy
  - Good expansion
  - OK eco handling
  - OK ratio of fabbers
- - Doesn't take advantage of owning a planet
- - Multiplanet systems possible
- - Difficulty increases over distance
 
 ### Gold
 
@@ -89,35 +80,14 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
- - Additional commanders are likely
+ - Additional Commanders appear early in galaxy
  - Good expansion
  - Good eco handling
  - Good ratio of fabbers
- - Takes advantage of owning a planet
- - Multiplanet systems possible
- - Difficulty increases over distance
 
 ### Platinum
 
- - Small eco bonus
- - Eco rapidly increases over distance
- - Quick to tech
- - Good micro
- - Excellent threat assessment
- - Picks on the weakest link
- - Good scouting
- - Commander reacts to danger
- - Additional commanders are very likely
- - Good expansion
- - Good eco handling
- - Very good ratio of fabbers
- - Takes advantage of owning a planet
- - Multiplanet systems possible
- - Difficulty increases over distance
-
-### Uber
-
- - Small eco bonus
+ - No starting eco handicap
  - Eco rapidly increases over distance
  - Quick to tech
  - Good micro
@@ -129,9 +99,20 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
  - Good expansion
  - Excellent eco handling
  - Excellent ratio of fabbers
- - Takes advantage of owning a planet
- - Multiplanet systems possible
- - Difficulty increases over distance
+
+### Uber
+
+ - Massive eco bonus
+ - Quick to tech
+ - Good micro
+ - Excellent threat assessment
+ - Picks on the weakest link
+ - Good scouting
+ - Commander reacts to danger
+ - Additional Commanders appear early in galaxy
+ - Good expansion
+ - Excellent eco handling
+ - Excellent ratio of fabbers
 
 ## FAQ
 
