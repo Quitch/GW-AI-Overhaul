@@ -1,6 +1,6 @@
 # CHANGELOG
 
-##
+## 0.6 - 2019-01-14
 
  - Huge overhaul of difficulty levels
    - All difficulties now use minions as a difficulty ramp tool
