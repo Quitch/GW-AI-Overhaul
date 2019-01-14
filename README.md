@@ -21,6 +21,10 @@ The boss personalities and those of their minions have not been changed.
 
 This mod can be installed via the in-game Community Mod manager.
 
+## Translations
+
+Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/project/GMUUxugX7u) to your local language.
+
 ## Difficulty
 
 Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty. I'd recommend starting with Silver and seeing how you go.
