@@ -234,7 +234,7 @@ requireGW([
             "PreventsWaste",
             "Uber"
           ],
-        econBase: 5,
+        econBase: 10,
         econRatePerDist: 0,
         metal_drain_check: 0.54,
         energy_drain_check: 0.65,
