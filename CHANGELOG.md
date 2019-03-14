@@ -4,6 +4,7 @@
 
  - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
  - Uber updated for the increased eco modifier ceiling
+ - Updated gw_start.js shadow
 
 ## 0.6 - 2019-01-14
 

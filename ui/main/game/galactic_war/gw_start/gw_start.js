@@ -219,7 +219,7 @@ requireGW([
                 };
                 self.newGameName = ko.observable(defaultNewGameName());
                 self.newGameSizeIndex = ko.observable(1).extend({ numeric: 0 });
-                self.newGameDifficultyIndex = ko.observable(0).extend({ numeric: 0 });
+                self.newGameDifficultyIndex = ko.observable(1).extend({ numeric: 1 });
                 self.newGameHardcore = ko.observable(false);
 
                 self.startCards = ko.observableArray();
