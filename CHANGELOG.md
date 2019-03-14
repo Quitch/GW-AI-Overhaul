@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.7 - 2019-03-14
+## DEV
 
  - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
  - Uber updated for the increased eco modifier ceiling
