@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
+
 ## 0.6 - 2019-01-14
 
  - Huge overhaul of difficulty levels

@@ -120,9 +120,6 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ## FAQ
 
-### Does this mod work with the regular difficulty levels?
-Some of the personality adjustments will work with the standard difficulties, but you should use the new difficulty levels to get the full effect.
-
 ### Can I use an AI mod like Queller?
 Not at this time. Queller won't break this mod, it simply won't be used.
 
