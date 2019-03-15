@@ -26,7 +26,7 @@ define([], function () {
 
         },
         bossCard: 'gwc_start_artillery',
-        systemdescription: "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
+        systemDescription: "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
         systemTemplate: {
           name: 'Kohr',
           Planets: [
@@ -102,7 +102,7 @@ define([], function () {
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json'
         },
         bossCard: 'gwc_start_combatcdr',
-        systemdescription: "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",
+        systemDescription: "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",
         systemTemplate: {
           name: 'Entara - Legonis Machina',
           Planets: [
@@ -177,7 +177,7 @@ define([], function () {
           },
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json'
         },
-        systemdescription: "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
+        systemDescription: "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
         systemTemplate: {
           name: 'Agoge - Legonis Machina',
           Planets: [
@@ -252,7 +252,7 @@ define([], function () {
           },
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json'
         },
-        systemdescription: "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
+        systemDescription: "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
         systemTemplate: {
           name: 'Tau Leporis - Legonis Machina',
           Planets: [
@@ -327,7 +327,7 @@ define([], function () {
           },
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json'
         },
-        systemdescription: "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
+        systemDescription: "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
         systemTemplate: {
           name: 'Poseidon\'s Wrath - Legonis Machina',
           Planets: [

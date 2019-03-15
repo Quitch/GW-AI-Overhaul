@@ -46,7 +46,7 @@ define([], function () {
           ]
         },
         bossCard: 'gwc_start_air',
-        systemdescription: "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
+        systemDescription: "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
         systemTemplate: {
           name: 'Atlas - Foundation',
           Planets: [
@@ -159,7 +159,7 @@ define([], function () {
           ]
         },
         bossCard: 'gwc_start_allfactory',
-        systemdescription: "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
+        systemDescription: "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
         systemTemplate: {
           name: 'Patagonia - Foundation',
           Planets: [
@@ -271,7 +271,7 @@ define([], function () {
             }
           ]
         },
-        systemdescription: "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
+        systemDescription: "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
         systemTemplate: {
           name: 'Xylcor- Foundation',
           Planets: [
@@ -383,7 +383,7 @@ define([], function () {
             }
           ]
         },
-        systemdescription: "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
+        systemDescription: "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
         systemTemplate: {
           name: 'Blogar\'s Fist - Foundation',
           Planets: [
@@ -495,7 +495,7 @@ define([], function () {
             }
           ]
         },
-        systemdescription: "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
+        systemDescription: "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
         systemTemplate: {
           name: 'Zeta Draconis - Foundation',
           Planets: [
