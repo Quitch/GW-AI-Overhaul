@@ -21,6 +21,10 @@ The boss personalities and those of their minions have not been changed.
 
 This mod can be installed via the in-game Community Mod manager.
 
+## Translations
+
+Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/project/GMUUxugX7u) to your local language.
+
 ## Difficulty
 
 Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty. I'd recommend starting with Silver and seeing how you go.
@@ -115,9 +119,6 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
  - Excellent ratio of fabbers
 
 ## FAQ
-
-### Does this mod work with the regular difficulty levels?
-Some of the personality adjustments will work with the standard difficulties, but you should use the new difficulty levels to get the full effect.
 
 ### Can I use an AI mod like Queller?
 Not at this time. Queller won't break this mod, it simply won't be used.

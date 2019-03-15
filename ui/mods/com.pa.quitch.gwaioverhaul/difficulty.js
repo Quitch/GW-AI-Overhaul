@@ -1,12 +1,15 @@
-// Make difficulty levels selectable on the difficulty drop-down
-$('#game-difficulty').append('<option value="4">CASUAL</option>' +
-  '<option value="5">BRONZE</option>' +
-  '<option value="6">SILVER</option>' +
-  '<option value="7">GOLD</option>' +
-  '<option value="8">PLATINUM</option>' +
-  '<option value="9">UBER</option>')
+// Remove the vanilla difficulties
+$("#game-difficulty").empty()
 
-// Set difficulty level settings and add them to difficultyInfo
+// Add new difficulty levels
+$('#game-difficulty').append('<option value="0">CASUAL</option>' +
+  '<option value="1">BRONZE</option>' +
+  '<option value="2">SILVER</option>' +
+  '<option value="3">GOLD</option>' +
+  '<option value="4">PLATINUM</option>' +
+  '<option value="5">UBER</option>')
+
+// Setup difficulties and add them to difficultyInfo
 requireGW([
   'shared/gw_balance'
 ],
@@ -231,7 +234,7 @@ requireGW([
             "PreventsWaste",
             "Uber"
           ],
-        econBase: 5,
+        econBase: 10,
         econRatePerDist: 0,
         metal_drain_check: 0.54,
         energy_drain_check: 0.65,
