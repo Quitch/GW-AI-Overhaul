@@ -1,9 +1,5 @@
 # CHANGELOG
 
-## DEV
-
- - Fixed a difficulty one lower than selected being applied
-
 ## 0.7 - 2019-03-15
 
  - Mod now removes the vanilla difficulty levels to ensure it is taking full effect

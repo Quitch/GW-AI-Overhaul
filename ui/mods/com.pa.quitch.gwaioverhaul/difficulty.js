@@ -2,12 +2,12 @@
 $("#game-difficulty").empty()
 
 // Add new difficulty levels
-$('#game-difficulty').append('<option value="1">CASUAL</option>' +
-  '<option value="2">BRONZE</option>' +
-  '<option value="3">SILVER</option>' +
-  '<option value="4">GOLD</option>' +
-  '<option value="5">PLATINUM</option>' +
-  '<option value="6">UBER</option>')
+$('#game-difficulty').append('<option value="0">CASUAL</option>' +
+  '<option value="1">BRONZE</option>' +
+  '<option value="2">SILVER</option>' +
+  '<option value="3">GOLD</option>' +
+  '<option value="4">PLATINUM</option>' +
+  '<option value="5">UBER</option>')
 
 // Setup difficulties and add them to difficultyInfo
 requireGW([
