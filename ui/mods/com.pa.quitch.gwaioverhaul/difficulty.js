@@ -9,7 +9,7 @@ $('#game-difficulty').append('<option value="0">CASUAL</option>' +
   '<option value="4">PLATINUM</option>' +
   '<option value="5">UBER</option>')
 
-// Setup difficulties and add them to difficultyInfo
+// Setup and load new difficulties
 requireGW([
   'shared/gw_common',
   'shared/gw_credits',
@@ -30,6 +30,7 @@ requireGW([
   easy_system_templates
 ) {
 
+    // Setup new difficulties
     var difficultyInfo = [
       {
         // Casual
@@ -283,6 +284,8 @@ requireGW([
       }
     ]
 
+    // Replace references to GW.balance.difficultyInfo with difficultyInfo
+    // Remove gw_start.js lines 449 - 452
     var baseNeutralStars = 2;
 
     model.makeGame = function () {
