@@ -480,17 +480,17 @@ requireGW([
 
         var gw_intro_systems = [
           {
-          name: "!LOC:The Progenitors",
-          description: "!LOC:What little is clear is that the galaxy was once inhabited by a sprawling empire, seemingly destroyed by conflict. The commanders refer to these beings as The Progenitors. Many commanders believe answers to their origins lie within the ruins of this once great civilization."
-        },
-        {
-          name: "!LOC:Galactic War",
-          description: "!LOC:Some commanders fight because it's all they know, while others seek answers to their origins. Conflicts in motivation and creed drive the commanders into a war that is poised to ravage the galaxy for centuries."
-        },
-        {
-          name: "!LOC:The Commanders",
-          description: "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago."
-        }
+            name: "!LOC:The Progenitors",
+            description: "!LOC:What little is clear is that the galaxy was once inhabited by a sprawling empire, seemingly destroyed by conflict. The commanders refer to these beings as The Progenitors. Many commanders believe answers to their origins lie within the ruins of this once great civilization."
+          },
+          {
+            name: "!LOC:Galactic War",
+            description: "!LOC:Some commanders fight because it's all they know, while others seek answers to their origins. Conflicts in motivation and creed drive the commanders into a war that is poised to ravage the galaxy for centuries."
+          },
+          {
+            name: "!LOC:The Commanders",
+            description: "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago."
+          }
         ];
 
         var n = 0;
