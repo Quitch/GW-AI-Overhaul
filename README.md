@@ -9,7 +9,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
    - Foundation: air/naval
    - Synchronous: balanced
    - Revenants: orbital
- - Customise each minion/sub-commander
+ - Customise each enemy/sub-commander
    - Unique model
    - Name to match model
    - Unique personality quirks
@@ -33,90 +33,67 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
  - Large eco penalty
  - Eco slowly increases over distance
- - Very slow to tech
  - Poor micro
- - Terrible threat assessment
  - Doesn't pick on the weakest link
  - Poor scouting
  - Commander doesn't react to danger
  - Additional Commanders appear late in galaxy
  - Terrible expansion
- - Terrible eco management
- - Terrible ratio of fabbers
 
 ### Bronze
 
  - Small eco penalty
  - Eco slowly increases over distance
- - Quite slow to tech
  - Poor micro
- - Poor threat assessment
  - Doesn't pick on the weakest link
  - Good scouting
  - Commander reacts to danger
  - Additional Commanders appear late in galaxy
  - Good expansion
- - Poor eco handling
- - Poor ratio of fabbers
 
 ### Silver
 
  - No starting eco handicap
  - Eco increases over distance
- - Slow to tech
  - OK micro
- - OK threat assessment
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
  - Additional Commanders appear late in galaxy
  - Good expansion
- - OK eco handling
- - OK ratio of fabbers
 
 ### Gold
 
  - No starting eco handicap
  - Eco increases over distance
- - Slightly slow to tech
  - Good micro
- - Good threat assessment
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
  - Additional Commanders appear early in galaxy
  - Good expansion
- - Good eco handling
- - Good ratio of fabbers
 
 ### Platinum
 
  - No starting eco handicap
  - Eco rapidly increases over distance
- - Quick to tech
  - Good micro
- - Excellent threat assessment
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
  - Additional commanders are guaranteed
  - Good expansion
- - Excellent eco handling
- - Excellent ratio of fabbers
 
 ### Uber
 
  - Massive eco bonus
- - Quick to tech
+ - Eco remains the same throughout the campaign
  - Good micro
- - Excellent threat assessment
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
  - Additional Commanders appear early in galaxy
  - Good expansion
- - Excellent eco handling
- - Excellent ratio of fabbers
 
 ## FAQ
 
@@ -130,7 +107,7 @@ Please use the mod's [forum thread](https://forums.planetaryannihilation.com/thr
 Because that would break the translations, so I've left them untouched.
 
 ### Will sub-commanders fighting for me have the same personality if I fight against them?
-No, much of an enemy commander's personality is set by the difficulty level.
+Yes.
 
 ### Are all sub-commanders created equal?
 No, some are objectively stupider than others.

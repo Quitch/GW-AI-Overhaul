@@ -1,9 +1,10 @@
 # CHANGELOG
 
-## 0.7.1
+## DEV
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
  - Reduce file shadowing
+ - Enemy Commanders now utilise individual styles
 
 ## 0.7 - 2019-03-15
 

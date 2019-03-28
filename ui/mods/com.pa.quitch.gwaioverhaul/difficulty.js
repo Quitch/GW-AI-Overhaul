@@ -35,11 +35,8 @@ requireGW([
       {
         // Casual
         rampDifficulty: true,
-        adv_eco_mod: 3,
-        adv_eco_mod_alone: 2.65,
         goForKill: false,
         microType: 0,
-        neuralDataMod: 5,
         mandatoryMinions: 0,
         minionMod: 1,
         priority_scout_metal_spots: false,
@@ -49,39 +46,18 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: false,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 10,
-        fabber_to_factory_ratio_advanced: 5,
-        fabber_alone_on_planet_mod: 1,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 1,
-        min_basic_fabbers: 10,
-        max_basic_fabbers: 10,
-        min_advanced_fabbers: 3,
-        max_advanced_fabbers: 10,
         personality_tags:
           [
-            "SlowerExpansion",
-            "Casual"
+            "SlowerExpansion"
           ],
         econBase: 0.5,
-        econRatePerDist: 0.05,
-        metalDrainCheck: 0.64,
-        energyDrainCheck: 0.77,
-        metalDemandCheck: 0.95,
-        energyDemandCheck: 0.92,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0.05
       },
       {
         // Bronze
         rampDifficulty: true,
-        adv_eco_mod: 2,
-        adv_eco_mod_alone: 1.75,
         goForKill: false,
         microType: 0,
-        neuralDataMod: 2,
         mandatoryMinions: 0,
         minionMod: 1,
         priority_scout_metal_spots: true,
@@ -91,38 +67,14 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 5,
-        fabber_to_factory_ratio_advanced: 5,
-        fabber_alone_on_planet_mod: 1,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 1,
-        min_basic_fabbers: 5,
-        max_basic_fabbers: 15,
-        min_advanced_fabbers: 3,
-        max_advanced_fabbers: 15,
-        personality_tags:
-          [
-            "Bronze"
-          ],
         econBase: 0.7,
-        econRatePerDist: 0.05,
-        metalDrainCheck: 0.01,
-        energyDrainCheck: 0.01,
-        metalDemandCheck: 0.01,
-        energyDemandCheck: 0.01,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0.05
       },
       {
         // Silver
         rampDifficulty: true,
-        adv_eco_mod: 1.5,
-        adv_eco_mod_alone: 1.25,
         goForKill: true,
         microType: 1,
-        neuralDataMod: 1.5,
         mandatoryMinions: 0,
         minionMod: 1,
         priority_scout_metal_spots: true,
@@ -132,38 +84,14 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 2,
-        fabber_to_factory_ratio_advanced: 1,
-        fabber_alone_on_planet_mod: 1,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 1,
-        min_basic_fabbers: 4,
-        max_basic_fabbers: 20,
-        min_advanced_fabbers: 3,
-        max_advanced_fabbers: 20,
-        personality_tags:
-          [
-            "Silver"
-          ],
         econBase: 0.8,
-        econRatePerDist: 0.1,
-        metalDrainCheck: 0.54,
-        energyDrainCheck: 0.77,
-        metalDemandCheck: 0.95,
-        energyDemandCheck: 0.92,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0.1
       },
       {
         // Gold
         rampDifficulty: true,
-        adv_eco_mod: 1.35,
-        adv_eco_mod_alone: 1,
         goForKill: true,
         microType: 2,
-        neuralDataMod: 1.25,
         mandatoryMinions: 0,
         minionMod: 2,
         priority_scout_metal_spots: true,
@@ -173,39 +101,18 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 1,
-        fabber_to_factory_ratio_advanced: 1,
-        fabber_alone_on_planet_mod: 2,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 0.5,
-        min_basic_fabbers: 3,
-        max_basic_fabbers: 25,
-        min_advanced_fabbers: 2,
-        max_advanced_fabbers: 25,
         personality_tags:
           [
-            "PreventsWaste",
-            "Gold"
+            "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.1,
-        metalDrainCheck: 0.54,
-        energyDrainCheck: 0.77,
-        metalDemandCheck: 0.85,
-        energyDemandCheck: 0.92,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0.1
       },
       {
         // Platinum
         rampDifficulty: true,
-        adv_eco_mod: 1,
-        adv_eco_mod_alone: 0.85,
         goForKill: true,
         microType: 2,
-        neuralDataMod: 1,
         mandatoryMinions: 1,
         minionMod: 2,
         priority_scout_metal_spots: true,
@@ -215,39 +122,18 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 1,
-        fabber_to_factory_ratio_advanced: 3,
-        fabber_alone_on_planet_mod: 3,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 0.5,
-        min_basic_fabbers: 2,
-        max_basic_fabbers: 30,
-        min_advanced_fabbers: 2,
-        max_advanced_fabbers: 30,
         personality_tags:
           [
-            "PreventsWaste",
-            "Platinum"
+            "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.2,
-        metalDrainCheck: 0.54,
-        energyDrainCheck: 0.65,
-        metalDemandCheck: 0.85,
-        energyDemandCheck: 0.8,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0.2
       },
       {
         // Uber
         rampDifficulty: true,
-        adv_eco_mod: 1,
-        adv_eco_mod_alone: 0.85,
         goForKill: true,
         microType: 2,
-        neuralDataMod: 1,
         mandatoryMinions: 0,
         minionMod: 2,
         priority_scout_metal_spots: true,
@@ -257,35 +143,20 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        fabber_to_factory_ratio_basic: 1,
-        fabber_to_factory_ratio_advanced: 3,
-        fabber_alone_on_planet_mod: 3,
-        basic_to_advanced_factory_ratio: 0,
-        factory_alone_on_planet_mod: 0.5,
-        min_basic_fabbers: 3,
-        max_basic_fabbers: 50,
-        min_advanced_fabbers: 1,
-        max_advanced_fabbers: 50,
         personality_tags:
           [
-            "PreventsWaste",
-            "Uber"
+            "PreventsWaste"
           ],
         econBase: 10,
-        econRatePerDist: 0,
-        metalDrainCheck: 0.54,
-        energyDrainCheck: 0.65,
-        metalDemandCheck: 0.85,
-        energyDemandCheck: 0.8,
-        metalDrainCheckPerDist: 0,
-        metalDemandCheckPerDist: 0,
-        energyDrainCheckPerDist: 0,
-        energyDemandCheckPerDist: 0
+        econRatePerDist: 0
       }
     ]
 
-    // Replace references to GW.balance.difficultyInfo with difficultyInfo
-    // Remove gw_start.js lines 449 - 452
+    /*
+    Modify the makeGame function in gw_start.js with thanks to Wondible
+    Replace GW.balance.difficultyInfo with difficultyInfo
+    Limit data passed to SetAIData
+    */
     var baseNeutralStars = 2;
 
     model.makeGame = function () {
@@ -429,48 +300,17 @@ requireGW([
 
         var setAIData = function (ai, dist, isBoss) {
           //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
-          if (ai.personality === undefined)
-            ai.personality = {};
-          if (diffInfo.rampDifficulty) {
-            ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
-            //console.log(ai.name + " setAI RATE: " + ai.econ_rate);
-
-            var sizeMod = GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
-
-            ai.personality.metalDrainCheck = diffInfo.metalDrainCheck + (dist * diffInfo.metalDrainCheckPerDist * sizeMod);
-            ai.personality.metalDemandCheck = diffInfo.metalDemandCheck + (dist * diffInfo.metalDemandCheckPerDist * sizeMod);
-            ai.personality.energyDrainCheck = diffInfo.energyDrainCheck + (dist * diffInfo.energyDrainCheckPerDist * sizeMod);
-            ai.personality.energyDemandCheck = diffInfo.energyDemandCheck + (dist * diffInfo.energyDemandCheckPerDist * sizeMod);
-          }
-          else {
-            ai.personality.metalDrainCheck = diffInfo.metalDrainCheck;
-            ai.personality.metalDemandCheck = diffInfo.metalDemandCheck;
-            ai.personality.energyDrainCheck = diffInfo.energyDrainCheck;
-            ai.personality.energyDemandCheck = diffInfo.energyDemandCheck;
-          }
-
-          if (!isBoss) {
-            ai.personality.neural_data_mod = diffInfo.neuralDataMod;
-          }
+          if (ai.personality === undefined) ai.personality = {};
+          if (diffInfo.rampDifficulty) ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
+          if (!isBoss) ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
           ai.personality.go_for_the_kill = diffInfo.goForKill;
           ai.personality.priority_scout_metal_spots = diffInfo.priority_scout_metal_spots;
           ai.personality.factory_build_delay_min = diffInfo.factory_build_delay_min;
           ai.personality.factory_build_delay_max = diffInfo.factory_build_delay_max;
-          ai.personality.adv_eco_mod = diffInfo.adv_eco_mod;
-          ai.personality.adv_eco_mod_alone = diffInfo.adv_eco_mod_alone;
           ai.personality.unable_to_expand_delay = diffInfo.unable_to_expand_delay;
           ai.personality.enable_commander_danger_responses = diffInfo.enable_commander_danger_responses;
           ai.personality.per_expansion_delay = diffInfo.per_expansion_delay;
-          ai.personality.fabber_to_factory_ratio_basic = diffInfo.fabber_to_factory_ratio_basic;
-          ai.personality.fabber_to_factory_ratio_advanced = diffInfo.fabber_to_factory_ratio_advanced;
-          ai.personality.fabber_alone_on_planet_mod = diffInfo.fabber_alone_on_planet_mod;
-          ai.personality.basic_to_advanced_factory_ratio = diffInfo.basic_to_advanced_factory_ratio;
-          ai.personality.factory_alone_on_planet_mod = diffInfo.factory_alone_on_planet_mod;
-          ai.personality.min_basic_fabbers = diffInfo.min_basic_fabbers;
-          ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
-          ai.personality.min_advanced_fabbers = diffInfo.min_advanced_fabbers;
-          ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
           ai.personality.personality_tags = diffInfo.personality_tags
 
           //console.log("AI DIFF END: ");
