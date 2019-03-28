@@ -3,6 +3,7 @@
 ## 0.7.1
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
+ - Reduce file shadowing
 
 ## 0.7 - 2019-03-15
 
