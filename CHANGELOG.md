@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.1
+
+ - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
+
 ## 0.7 - 2019-03-15
 
  - Mod now removes the vanilla difficulty levels to ensure it is taking full effect

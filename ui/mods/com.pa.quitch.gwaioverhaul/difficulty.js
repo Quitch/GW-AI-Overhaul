@@ -11,7 +11,6 @@ $('#game-difficulty').append('<option value="0">CASUAL</option>' +
 
 // Setup difficulties and add them to difficultyInfo
 requireGW([
-  'shared/gw_balance',
   'shared/gw_common',
   'shared/gw_credits',
   'shared/gw_factions',
@@ -20,8 +19,7 @@ requireGW([
   'pages/gw_start/gw_teams',
   'main/shared/js/star_system_templates',
   'main/game/galactic_war/shared/js/gw_easy_star_systems'
-], function(
-  balance,
+], function (
   GW,
   GWCredits,
   GWFactions,
@@ -31,7 +29,8 @@ requireGW([
   normal_system_templates, /* this actually won't load -- window.star_system_templates is set instead */
   easy_system_templates
 ) {
-    balance.difficultyInfo.push(
+
+    var difficultyInfo = [
       {
         // Casual
         rampDifficulty: true,
@@ -65,10 +64,10 @@ requireGW([
           ],
         econBase: 0.5,
         econRatePerDist: 0.05,
-        metal_drain_check: 0.64,
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.95,
-        energy_demand_check: 0.92,
+        metalDrainCheck: 0.64,
+        energyDrainCheck: 0.77,
+        metalDemandCheck: 0.95,
+        energyDemandCheck: 0.92
       },
       {
         // Bronze
@@ -102,10 +101,14 @@ requireGW([
           ],
         econBase: 0.7,
         econRatePerDist: 0.05,
-        metal_drain_check: 0.54,
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.95,
-        energy_demand_check: 0.92,
+        metalDrainCheck: 0.01,
+        energyDrainCheck: 0.01,
+        metalDemandCheck: 0.01,
+        energyDemandCheck: 0.01,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       },
       {
         // Silver
@@ -139,10 +142,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.1,
-        metal_drain_check: 0.54,
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.95,
-        energy_demand_check: 0.92,
+        metalDrainCheck: 0.54,
+        energyDrainCheck: 0.77,
+        metalDemandCheck: 0.95,
+        energyDemandCheck: 0.92
       },
       {
         // Gold
@@ -177,10 +180,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.1,
-        metal_drain_check: 0.54,
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
+        metalDrainCheck: 0.54,
+        energyDrainCheck: 0.77,
+        metalDemandCheck: 0.85,
+        energyDemandCheck: 0.92
       },
       {
         // Platinum
@@ -215,10 +218,10 @@ requireGW([
           ],
         econBase: 0.8,
         econRatePerDist: 0.2,
-        metal_drain_check: 0.54,
-        energy_drain_check: 0.65,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.8,
+        metalDrainCheck: 0.54,
+        energyDrainCheck: 0.65,
+        metalDemandCheck: 0.85,
+        energyDemandCheck: 0.8
       },
       {
         // Uber
@@ -253,12 +256,12 @@ requireGW([
           ],
         econBase: 10,
         econRatePerDist: 0,
-        metal_drain_check: 0.54,
-        energy_drain_check: 0.65,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.8,
+        metalDrainCheck: 0.54,
+        energyDrainCheck: 0.65,
+        metalDemandCheck: 0.85,
+        energyDemandCheck: 0.8
       }
-    )
+    ]
 
     var baseNeutralStars = 2;
 
@@ -275,7 +278,7 @@ requireGW([
       game.hardcore(model.newGameHardcore());
       game.content(api.content.activeContent());
 
-      var useEasySystems = GW.balance.difficultyInfo[model.newGameDifficultyIndex() || 0].useEasierSystemTemplate;
+      var useEasySystems = difficultyInfo[model.newGameDifficultyIndex() || 0].useEasierSystemTemplate;
       var systemTemplates = useEasySystems ? easy_system_templates : star_system_templates;
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
@@ -399,7 +402,7 @@ requireGW([
         var maxDist = _.reduce(game.galaxy().stars(), function (value, star) {
           return Math.max(star.distance(), value);
         }, 0);
-        var diffInfo = GW.balance.difficultyInfo[game.galaxy().difficultyIndex];
+        var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
 
         var setAIData = function (ai, dist, isBoss) {
           //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
@@ -411,16 +414,16 @@ requireGW([
 
             var sizeMod = GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
 
-            ai.personality.metal_drain_check = diffInfo.metalDrainCheck + (dist * diffInfo.metalDrainCheckPerDist * sizeMod);
-            ai.personality.metal_demand_check = diffInfo.metalDemandCheck + (dist * diffInfo.metalDemandCheckPerDist * sizeMod);
-            ai.personality.energy_drain_check = diffInfo.energyDrainCheck + (dist * diffInfo.energyDrainCheckPerDist * sizeMod);
-            ai.personality.energy_demand_check = diffInfo.energyDemandCheck + (dist * diffInfo.energyDemandCheckPerDist * sizeMod);
+            ai.personality.metalDrainCheck = diffInfo.metalDrainCheck + (dist * diffInfo.metalDrainCheckPerDist * sizeMod);
+            ai.personality.metalDemandCheck = diffInfo.metalDemandCheck + (dist * diffInfo.metalDemandCheckPerDist * sizeMod);
+            ai.personality.energyDrainCheck = diffInfo.energyDrainCheck + (dist * diffInfo.energyDrainCheckPerDist * sizeMod);
+            ai.personality.energyDemandCheck = diffInfo.energyDemandCheck + (dist * diffInfo.energyDemandCheckPerDist * sizeMod);
           }
           else {
-            ai.personality.metal_drain_check = diffInfo.metalDrainCheck;
-            ai.personality.metal_demand_check = diffInfo.metalDemandCheck;
-            ai.personality.energy_drain_check = diffInfo.energyDrainCheck;
-            ai.personality.energy_demand_check = diffInfo.energyDemandCheck;
+            ai.personality.metalDrainCheck = diffInfo.metalDrainCheck;
+            ai.personality.metalDemandCheck = diffInfo.metalDemandCheck;
+            ai.personality.energyDrainCheck = diffInfo.energyDrainCheck;
+            ai.personality.energyDemandCheck = diffInfo.energyDemandCheck;
           }
 
           if (!isBoss) {
@@ -532,4 +535,4 @@ requireGW([
     }
 
     model.makeGameOrRunCredits();
-})
+  })
