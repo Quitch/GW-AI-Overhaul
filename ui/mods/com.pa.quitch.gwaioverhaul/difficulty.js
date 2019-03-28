@@ -67,7 +67,11 @@ requireGW([
         metalDrainCheck: 0.64,
         energyDrainCheck: 0.77,
         metalDemandCheck: 0.95,
-        energyDemandCheck: 0.92
+        energyDemandCheck: 0.92,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       },
       {
         // Bronze
@@ -145,7 +149,11 @@ requireGW([
         metalDrainCheck: 0.54,
         energyDrainCheck: 0.77,
         metalDemandCheck: 0.95,
-        energyDemandCheck: 0.92
+        energyDemandCheck: 0.92,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       },
       {
         // Gold
@@ -183,7 +191,11 @@ requireGW([
         metalDrainCheck: 0.54,
         energyDrainCheck: 0.77,
         metalDemandCheck: 0.85,
-        energyDemandCheck: 0.92
+        energyDemandCheck: 0.92,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       },
       {
         // Platinum
@@ -221,7 +233,11 @@ requireGW([
         metalDrainCheck: 0.54,
         energyDrainCheck: 0.65,
         metalDemandCheck: 0.85,
-        energyDemandCheck: 0.8
+        energyDemandCheck: 0.8,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       },
       {
         // Uber
@@ -259,7 +275,11 @@ requireGW([
         metalDrainCheck: 0.54,
         energyDrainCheck: 0.65,
         metalDemandCheck: 0.85,
-        energyDemandCheck: 0.8
+        energyDemandCheck: 0.8,
+        metalDrainCheckPerDist: 0,
+        metalDemandCheckPerDist: 0,
+        energyDrainCheckPerDist: 0,
+        energyDemandCheckPerDist: 0
       }
     ]
 
