@@ -20,7 +20,16 @@ define([], function () {
             energy_demand_check: 0.82,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
           minions: [
@@ -39,7 +48,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             },
@@ -58,7 +76,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             }
@@ -152,7 +179,16 @@ define([], function () {
             energy_demand_check: 0.82,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
           minions: [
@@ -171,7 +207,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             },
@@ -190,7 +235,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             }
@@ -284,7 +338,16 @@ define([], function () {
             energy_demand_check: 0.82,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
           minions: [
@@ -303,7 +366,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             },
@@ -322,7 +394,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             }
@@ -416,7 +497,16 @@ define([], function () {
             energy_demand_check: 0.82,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
           minions: [
@@ -435,7 +525,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             },
@@ -454,7 +553,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             }
@@ -548,7 +656,16 @@ define([], function () {
             energy_demand_check: 0.82,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
           minions: [
@@ -567,7 +684,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             },
@@ -586,7 +712,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
             }

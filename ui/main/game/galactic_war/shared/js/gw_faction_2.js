@@ -15,12 +15,21 @@ define([], function () {
             percent_naval: 0.05,
             percent_orbital: 0.35,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
@@ -39,7 +48,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             }
@@ -128,12 +146,21 @@ define([], function () {
             percent_naval: 0.05,
             percent_orbital: 0.35,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
@@ -152,7 +179,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             }
@@ -241,12 +277,21 @@ define([], function () {
             percent_naval: 0.05,
             percent_orbital: 0.35,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
@@ -265,7 +310,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             }
@@ -354,12 +408,21 @@ define([], function () {
             percent_naval: 0.05,
             percent_orbital: 0.35,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
@@ -378,7 +441,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             }
@@ -467,12 +539,21 @@ define([], function () {
             percent_naval: 0.05,
             percent_orbital: 0.35,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
-            neural_data_mod: 1
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 4,
+            min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
@@ -491,7 +572,16 @@ define([], function () {
                 energy_demand_check: 0.82,
                 micro_type: 2,
                 go_for_the_kill: true,
-                neural_data_mod: 1
+                neural_data_mod: 1,
+                adv_eco_mod: 1,
+                adv_eco_mod_alone: 0,
+                fabber_to_factory_ratio_basic: 1,
+                fabber_to_factory_ratio_advanced: 2,
+                fabber_alone_on_planet_mod: 3,
+                basic_to_advanced_factory_ratio: 0,
+                factory_alone_on_planet_mod: 0.5,
+                min_basic_fabbers: 3,
+                min_advanced_fabbers: 1
               },
               commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
             }
