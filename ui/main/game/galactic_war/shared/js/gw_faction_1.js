@@ -8,7 +8,7 @@ define([], function () {
         name: 'Atlas - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 2,
+          econ_rate: 1,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.05,
@@ -139,7 +139,7 @@ define([], function () {
         name: 'Patagonia - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 2,
+          econ_rate: 1,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.05,
@@ -270,7 +270,7 @@ define([], function () {
         name: 'Xylcor - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 2,
+          econ_rate: 1,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.05,
@@ -400,7 +400,7 @@ define([], function () {
         name: 'Blogar\'s Fist - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 2,
+          econ_rate: 1,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.05,
@@ -530,7 +530,7 @@ define([], function () {
         name: 'Zeta Draconis - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 2,
+          econ_rate: 1,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.05,
