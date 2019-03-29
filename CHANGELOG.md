@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 0.8 - 2019-03-29
+
+ - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
+ - Reduce file shadowing with thanks to Wondible
+ - Enemy Commanders now utilise individual styles
+ - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
+ - Updates to Commander personalities
+ - Difficulty settings now fully applied to bosses
+ - Added four new Commanders to each faction
+ - Reduced the effectiveness of all sub-commanders
+ - Foundation lean more heavily into naval tech when they can
+ - Slight increase in boss difficulty through better economy handling and faster teching
+ - Revenants favour land over air
+ - Bronze and Silver micro better
+ - Silver spends excess resources better
+ - Corrected Synchronous only ever building three T1 factories until teching
+ - Foundation slightly more likely to use some ground units
+
 ## 0.7 - 2019-03-15
 
  - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
