@@ -1157,7 +1157,7 @@ define([], function () {
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 2,
+          min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
         description: "!LOC:Nutzo is a young and recent convert from The Revenants. He claims to hear ‘spirits’ from the beyond, and that one of them is the voice of the Great Machine. This is likely more a symptom of his neural processors being stitched together from five other commanders.",

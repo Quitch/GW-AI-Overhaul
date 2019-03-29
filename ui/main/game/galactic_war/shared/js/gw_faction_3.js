@@ -1300,7 +1300,7 @@ define([], function () {
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 2,
+          min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
         description: "!LOC:Ogbuna could be described as terse. Whether by choice or by some manner of glitch, he seems only capable of communicating in the form of single words and concepts. This makes his troop movements erratic and difficult to interpret, both for friends and foes.",
