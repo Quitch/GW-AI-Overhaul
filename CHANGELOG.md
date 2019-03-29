@@ -5,7 +5,7 @@
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
  - Reduce file shadowing with thanks to Wondible
  - Enemy Commanders now utilise individual styles
- - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
+ - Updated difficulty guidance based on more personality controls being assigned to individual Commanders
  - Updates to Commander personalities
  - Difficulty settings now fully applied to bosses
  - Added four new Commanders to each faction
