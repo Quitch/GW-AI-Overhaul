@@ -8,7 +8,7 @@ define([], function () {
         name: 'Alenquer - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.15,
             percent_air: 0.15,
@@ -35,7 +35,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -63,7 +63,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -167,7 +167,7 @@ define([], function () {
         name: 'Xianyao - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.15,
             percent_air: 0.15,
@@ -194,7 +194,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -222,7 +222,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -326,7 +326,7 @@ define([], function () {
         name: 'Epiphany - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.15,
             percent_air: 0.15,
@@ -353,7 +353,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -381,7 +381,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -485,7 +485,7 @@ define([], function () {
         name: 'Varthema - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.15,
             percent_air: 0.15,
@@ -512,7 +512,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -540,7 +540,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -644,7 +644,7 @@ define([], function () {
         name: 'Chernykh - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.15,
             percent_air: 0.15,
@@ -671,7 +671,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
@@ -699,7 +699,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[236, 34, 35], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,

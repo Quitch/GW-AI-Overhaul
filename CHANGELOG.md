@@ -12,6 +12,7 @@
  - Reduce the effectiveness of all sub-Commanders
  - Foundation lean more heavily into naval tech when they can
  - Adjusted bosses to try and make them slightly more difficult
+ - Increased the economic buff all bosses and their minions receive
 
 ## 0.7 - 2019-03-15
 

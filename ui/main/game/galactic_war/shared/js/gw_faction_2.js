@@ -8,7 +8,7 @@ define([], function () {
         name: 'Cupru - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.3,
             percent_air: 0.3,
@@ -35,7 +35,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[244, 125, 31], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
@@ -139,7 +139,7 @@ define([], function () {
         name: 'Platina - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.3,
             percent_air: 0.3,
@@ -166,7 +166,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[244, 125, 31], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
@@ -270,7 +270,7 @@ define([], function () {
         name: 'Fier - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.3,
             percent_air: 0.3,
@@ -297,7 +297,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[244, 125, 31], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
@@ -401,7 +401,7 @@ define([], function () {
         name: 'Safir - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.3,
             percent_air: 0.3,
@@ -428,7 +428,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[244, 125, 31], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
@@ -532,7 +532,7 @@ define([], function () {
         name: 'Apa - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
-          econ_rate: 1,
+          econ_rate: 1.5,
           personality: {
             percent_land: 0.3,
             percent_air: 0.3,
@@ -559,7 +559,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
-              econ_rate: 0.7,
+              econ_rate: 1,
               color: [[244, 125, 31], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,

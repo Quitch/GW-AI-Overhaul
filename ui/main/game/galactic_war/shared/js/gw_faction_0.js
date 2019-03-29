@@ -8,7 +8,7 @@ define([], function () {
         name: 'Kohr - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 2.5,
           personality: {
             percent_land: 0.4,
             percent_air: 0.35,
@@ -94,7 +94,7 @@ define([], function () {
         name: 'Entara - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 2.5,
           personality: {
             percent_land: 0.4,
             percent_air: 0.35,
@@ -179,7 +179,7 @@ define([], function () {
         name: 'Agoge - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 2.5,
           personality: {
             percent_land: 0.4,
             percent_air: 0.35,
@@ -263,7 +263,7 @@ define([], function () {
         name: 'Tau Leporis - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 2.5,
           personality: {
             percent_land: 0.4,
             percent_air: 0.35,
@@ -347,7 +347,7 @@ define([], function () {
         name: 'Poseidon\'s Wrath - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 2.5,
           personality: {
             percent_land: 0.4,
             percent_air: 0.35,
