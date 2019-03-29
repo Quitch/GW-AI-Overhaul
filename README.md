@@ -98,22 +98,22 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ## FAQ
 
-### Can I use an AI mod like Queller?
+#### Can I use an AI mod like Queller?
 Not at this time. Queller won't break this mod, it simply won't be used.
 
-### How can I provide feedback?
+#### How can I provide feedback?
 Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
-### Why don't the descriptions match up with the Commanders' names?
+#### Why don't the descriptions match up with the Commanders' names?
 Because that would break the translations, so I've left them untouched.
 
-### Will sub-commanders fighting for me have the same personality if I fight against them?
+#### Will sub-commanders fighting for me have the same personality if I fight against them?
 Yes. Mostly.
 
-### Are all sub-commanders created equal?
+#### Are all sub-commanders created equal?
 No, some are objectively stupider than others.
 
-### Is there a "fair" difficulty level?
+#### Is there a "fair" difficulty level?
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
 ## Incompatible mods
