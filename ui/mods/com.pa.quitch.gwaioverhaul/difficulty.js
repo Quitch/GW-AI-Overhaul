@@ -169,7 +169,7 @@ requireGW([
     ]
 
     /*
-    Modify the makeGame function in gw_start.js with thanks to Wondible
+    Modify the makeGame function from gw_start.js with thanks to Wondible
     Replace GW.balance.difficultyInfo with difficultyInfo
     Limit data passed to SetAIData
     */
