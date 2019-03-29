@@ -59,7 +59,7 @@ requireGW([
         // Bronze
         rampDifficulty: true,
         goForKill: false,
-        microType: 0,
+        microType: 1,
         mandatoryMinions: 0,
         minionMod: 1,
         priority_scout_metal_spots: true,
@@ -78,7 +78,7 @@ requireGW([
         // Silver
         rampDifficulty: true,
         goForKill: true,
-        microType: 1,
+        microType: 2,
         mandatoryMinions: 0,
         minionMod: 1,
         priority_scout_metal_spots: true,
@@ -88,6 +88,10 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
+        personality_tags:
+          [
+            "PreventsWaste"
+          ],
         econBase: 0.8,
         econRatePerDist: 0.1,
         max_basic_fabbers: 30,

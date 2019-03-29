@@ -13,6 +13,8 @@
  - Foundation lean more heavily into naval tech when they can
  - Bosses handle their eco better
  - Revenants favour land over air
+ - Bronze and Silver micro better
+ - Silver spends excess resources better
 
 ## 0.7 - 2019-03-15
 
