@@ -1102,7 +1102,6 @@ define([], function () {
           unable_to_expand_delay: 0,
           enable_commander_danger_responses: true,
           per_expansion_delay: 0,
-          neural_data_mod: 1,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
           fabber_alone_on_planet_mod: 2,
