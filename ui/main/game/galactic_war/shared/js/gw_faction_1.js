@@ -1332,32 +1332,32 @@ define([], function () {
         commander: '/pa/units/commanders/imperial_visionik/imperial_visionik.json'
       },
       {
-        // Normal
+        // Bronze
         name: 'Acolyte Commandonut',
         econ_rate: 1,
         personality: {
-          percent_land: 0.05,
+          percent_land: 0.7,
           percent_air: 0.2,
-          percent_naval: 0.7,
+          percent_naval: 0.05,
           percent_orbital: 0.05,
-          metal_drain_check: 0.14,
-          energy_drain_check: 0.25,
-          metal_demand_check: 0.21,
-          energy_demand_check: 0.3,
+          metal_drain_check: 0.54,
+          energy_drain_check: 0.77,
+          metal_demand_check: 0.95,
+          energy_demand_check: 0.92,
           micro_type: 0,
           go_for_the_kill: false,
-          neural_data_mod: 2,
+          neural_data_mod: 1.6,
           personality_tags:
             [
               "GWAlly",
               "SlowerExpansion"
             ],
-          adv_eco_mod: 3,
-          adv_eco_mod_alone: 3,
+            adv_eco_mod: 0.5,
+            adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
-          factory_build_delay_min: 15,
-          factory_build_delay_max: 30,
-          unable_to_expand_delay: 60,
+          factory_build_delay_min: 0,
+          factory_build_delay_max: 6,
+          unable_to_expand_delay: 0,
           enable_commander_danger_responses: false,
           per_expansion_delay: 120,
           fabber_to_factory_ratio_basic: 5,
