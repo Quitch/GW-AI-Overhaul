@@ -6,6 +6,7 @@
  - Reduce file shadowing
  - Enemy Commanders now utilise individual styles
  - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
+ - Updates to Commander personalities
 
 ## 0.7 - 2019-03-15
 
