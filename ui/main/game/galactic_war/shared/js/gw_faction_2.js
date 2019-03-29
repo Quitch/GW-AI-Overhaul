@@ -682,7 +682,7 @@ define([], function () {
               "GWAlly",
               "SlowerExpansion"
             ],
-          adv_eco_mod: 1.35,
+          adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -724,7 +724,7 @@ define([], function () {
               "GWAlly",
               "SlowerExpansion"
             ],
-          adv_eco_mod: 1.35,
+          adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -1018,7 +1018,7 @@ define([], function () {
               "GWAlly",
               "SlowerExpansion"
             ],
-          adv_eco_mod: 1.35,
+          adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -1060,7 +1060,7 @@ define([], function () {
               "GWAlly",
               "SlowerExpansion"
             ],
-          adv_eco_mod: 1.35,
+          adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
