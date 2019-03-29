@@ -17,7 +17,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
 
 ## Installation
 
-This mod can be installed via the in-game Community Mod manager.
+This mod can be installed via the Planetary Annihilation TITANS in-game Community Mod manager.
 
 ## Translations
 
