@@ -302,7 +302,7 @@ requireGW([
           //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
           if (ai.personality === undefined) ai.personality = {};
           if (diffInfo.rampDifficulty) ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
-          if (!isBoss) ai.personality.neural_data_mod = diffInfo.neuralDataMod;
+          ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
           ai.personality.go_for_the_kill = diffInfo.goForKill;
           ai.personality.priority_scout_metal_spots = diffInfo.priority_scout_metal_spots;

@@ -7,6 +7,7 @@
  - Enemy Commanders now utilise individual styles
  - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
  - Updates to Commander personalities
+ - Difficulty settings now fully applied to bosses
 
 ## 0.7 - 2019-03-15
 
