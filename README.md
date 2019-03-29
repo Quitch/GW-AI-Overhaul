@@ -11,8 +11,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
    - Revenants: orbital
  - Customise each enemy/sub-commander
    - Unique model
-   - Name to match model
-   - Unique personality quirks
+   - Unique personality
  - Five new difficulties
 
 The boss personalities and those of their minions have not been changed.
