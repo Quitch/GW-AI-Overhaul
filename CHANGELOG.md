@@ -14,7 +14,6 @@
  - Bosses handle their eco better
  - Increased the economic buff all bosses and their minions receive
  - Revenants favour land over air
- - Synchronous favour land over air
 
 ## 0.7 - 2019-03-15
 
