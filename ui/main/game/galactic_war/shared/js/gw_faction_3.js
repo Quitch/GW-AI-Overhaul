@@ -848,7 +848,7 @@ define([], function () {
         name: 'Seeker Centurion',
         econ_rate: 1,
         personality: {
-          percent_land: 0.05,
+          percent_land: 0,
           percent_air: 0.5,
           percent_naval: 0,
           percent_orbital: 0.5,
