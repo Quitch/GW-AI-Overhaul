@@ -932,6 +932,174 @@ define([], function () {
         },
         description: "!LOC:Retreat is an offense punishable by deactivation within the Legionis Machina. While this law is understood, the truth of the matter is that a commander is too valuable a strategic resource to squander in such a way. So it was that Mallius was pardoned for his crime of retreat.",
         commander: '/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json'
+      },
+      {
+        // Absurd
+        name: 'Legate JT100010117',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.54,
+          energy_drain_check: 0.65,
+          metal_demand_check: 0.71,
+          energy_demand_check: 0.8,
+          micro_type: 2,
+          go_for_the_kill: true,
+          neural_data_mod: 1,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.3,
+          adv_eco_mod_alone: 0.85,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 0,
+          factory_build_delay_max: 0,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1,
+          fabber_to_factory_ratio_advanced: 1,
+          fabber_alone_on_planet_mod: 2,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 100,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 100
+        },
+        description: "!LOC:The Legionis Machina tends to follow strict directives in how forces are organized are deployed. This makes innovation among the Legates uncommon. Maximus is an anomaly in his numerous failed prototypes for wheeled transport platform that would supposedly enable him to move across battlefields with swiftness and grace.",
+        commander: '/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json'
+      },
+      {
+        // Relentless
+        name: 'Legate Kevin4001',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.44,
+          energy_drain_check: 0.55,
+          metal_demand_check: 0.61,
+          energy_demand_check: 0.7,
+          micro_type: 1,
+          go_for_the_kill: true,
+          neural_data_mod: 1.2,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.2,
+          adv_eco_mod_alone: 0.95,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 0,
+          factory_build_delay_max: 0,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 2.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 10,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 30
+        },
+        description: "!LOC:Commanders outside of The Synchronous tend to diverge further and further from their core programming with age. This can manifest in many ways. In the case of Nero, it has manifested as a concerningly fervent interest in fire and its many forms and applications.",
+        commander: '/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json'
+      },
+      {
+        // Hard
+        name: 'Legate Mostlikely',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.34,
+          energy_drain_check: 0.45,
+          metal_demand_check: 0.51,
+          energy_demand_check: 0.6,
+          micro_type: 0,
+          go_for_the_kill: false,
+          neural_data_mod: 1.5,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.1,
+          adv_eco_mod_alone: 1.0,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 1,
+          factory_build_delay_max: 3,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 2.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 6,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 20
+        },
+        description: "!LOC:Octavius has made a habit of broadcasting a sequence of tones to his whole army in battle, along with usual command and directive data. He claims that this constant audio input has increased combat effectiveness by 15.83222%",
+        commander: '/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json'
+      },
+      {
+        // Normal
+        name: 'Legate Nagasher',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.14,
+          energy_drain_check: 0.25,
+          metal_demand_check: 0.21,
+          energy_demand_check: 0.3,
+          micro_type: 0,
+          go_for_the_kill: false,
+          neural_data_mod: 2.0,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 3.0,
+          adv_eco_mod_alone: 3.0,
+          priority_scout_metal_spots: false,
+          factory_build_delay_min: 15,
+          factory_build_delay_max: 30,
+          unable_to_expand_delay: 60,
+          enable_commander_danger_responses: false,
+          per_expansion_delay: 120,
+          fabber_to_factory_ratio_basic: 5.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 1.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 1.0,
+          min_basic_fabbers: 5,
+          max_basic_fabbers: 15,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 20
+        },
+        description: "!LOC:Pompey was desynchronized after a bold strike by the Legionis Machina cut off the Synchronous infrastructure that supported his sector. Since then he has worked hard to earn the trust of his fellow Legates, but declines to share the fact that his command systems still experience heavy interference when in synchronous territory.",
+        commander: '/pa/units/commanders/imperial_nagasher/imperial_nagasher.json'
       }
     ], // minions
   };

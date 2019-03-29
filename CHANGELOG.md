@@ -8,6 +8,7 @@
  - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
  - Updates to Commander personalities
  - Difficulty settings now fully applied to bosses
+ - Added four new Commanders to each faction
 
 ## 0.7 - 2019-03-15
 

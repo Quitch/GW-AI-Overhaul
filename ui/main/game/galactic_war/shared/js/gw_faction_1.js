@@ -1115,6 +1115,174 @@ define([], function () {
         },
         description: "!LOC:In some cases overexposure to progenitor relics results in a commander’s neural algorithms diverging to the point where it becomes difficult to communicate with their peers. Okta, for example, has begun assigning unfamiliar roles to many units under his command, such as 'Combat Associate,' 'Executive Manager,' and 'Explosive Supervisor.'",
         commander: '/pa/units/commanders/quad_osiris/quad_osiris.json'
+      },
+      {
+        // Absurd
+        name: 'Acolyte Tykus24',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.54,
+          energy_drain_check: 0.65,
+          metal_demand_check: 0.71,
+          energy_demand_check: 0.8,
+          micro_type: 2,
+          go_for_the_kill: true,
+          neural_data_mod: 1,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.3,
+          adv_eco_mod_alone: 0.85,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 0,
+          factory_build_delay_max: 0,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1,
+          fabber_to_factory_ratio_advanced: 1,
+          fabber_alone_on_planet_mod: 2,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 100,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 100
+        },
+        description: "!LOC:More so than other factions, The Foundation wages ideological as well as physical warfare in many of their battles. Whereas most factions recruit through subjugation or assimilation, The Foundation prefers willing converts. While still young, Pidbok was easily swayed by the promise of serving a Grand Purpose for the Great Machine, instead of just being one of Invictus’ many grunts.",
+        commander: '/pa/units/commanders/imperial_tykus24/imperial_tykus24.json'
+      },
+      {
+        // Relentless
+        name: 'Acolyte Vidicarus',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.44,
+          energy_drain_check: 0.55,
+          metal_demand_check: 0.61,
+          energy_demand_check: 0.7,
+          micro_type: 1,
+          go_for_the_kill: true,
+          neural_data_mod: 1.2,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.2,
+          adv_eco_mod_alone: 0.95,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 0,
+          factory_build_delay_max: 0,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 2.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 10,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 30
+        },
+        description: "!LOC:Qadir plans his strategies in unorthodox ways, taking intelligence from the movement of the celestial bodies in his system rather than actual strategic data. He believes he has developed a series of algorithms that can deduce enemy movements purely from the current gravitational forces acting on the battlefield. Strange as it sounds, he remains undefeated.",
+        commander: '/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json'
+      },
+      {
+        // Hard
+        name: 'Acolyte Visionik',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.34,
+          energy_drain_check: 0.45,
+          metal_demand_check: 0.51,
+          energy_demand_check: 0.6,
+          micro_type: 0,
+          go_for_the_kill: false,
+          neural_data_mod: 1.5,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 1.1,
+          adv_eco_mod_alone: 1.0,
+          priority_scout_metal_spots: true,
+          factory_build_delay_min: 1,
+          factory_build_delay_max: 3,
+          unable_to_expand_delay: 0,
+          enable_commander_danger_responses: true,
+          per_expansion_delay: 0,
+          fabber_to_factory_ratio_basic: 1.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 2.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 0.5,
+          min_basic_fabbers: 2,
+          max_basic_fabbers: 6,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 20
+        },
+        description: "!LOC:Imitating a rumored practice of the Progenitors, Rinkol gives himself a “wider awareness” by wafting burning embers of the Incendicus Tree into his cooling system intakes before battle. His calmness is renowned -- he is said to have slipped into a dormant recharging mode in the middle of an attack on a Revenant outpost.",
+        commander: '/pa/units/commanders/imperial_visionik/imperial_visionik.json'
+      },
+      {
+        // Normal
+        name: 'Acolyte Commandonut',
+        econ_rate: 1,
+        personality: {
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.14,
+          energy_drain_check: 0.25,
+          metal_demand_check: 0.21,
+          energy_demand_check: 0.3,
+          micro_type: 0,
+          go_for_the_kill: false,
+          neural_data_mod: 2.0,
+          personality_tags:
+            [
+              "GWAlly",
+              "PreventsWaste"
+            ],
+          adv_eco_mod: 3.0,
+          adv_eco_mod_alone: 3.0,
+          priority_scout_metal_spots: false,
+          factory_build_delay_min: 15,
+          factory_build_delay_max: 30,
+          unable_to_expand_delay: 60,
+          enable_commander_danger_responses: false,
+          per_expansion_delay: 120,
+          fabber_to_factory_ratio_basic: 5.0,
+          fabber_to_factory_ratio_advanced: 1.0,
+          fabber_alone_on_planet_mod: 1.0,
+          basic_to_advanced_factory_ratio: 0,
+          factory_alone_on_planet_mod: 1.0,
+          min_basic_fabbers: 5,
+          max_basic_fabbers: 15,
+          min_advanced_fabbers: 3,
+          max_advanced_fabbers: 20
+        },
+        description: "!LOC:Having achieved fame for discovering a cache of Progenitor artifacts only days after coming online, Sasaki fancies herself a legendary archaeologist. When assigned to frontier duty, she spends most of her time digging around for “another epic haul.” She has found nothing of value since her initial bonanza.",
+        commander: '/pa/units/commanders/quad_commandonut/quad_commandonut.json'
       }
     ] // minions
   };
