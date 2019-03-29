@@ -51,7 +51,9 @@ requireGW([
             "SlowerExpansion"
           ],
         econBase: 0.5,
-        econRatePerDist: 0.05
+        econRatePerDist: 0.05,
+        max_basic_fabbers: 10,
+        max_advanced_fabbers: 10
       },
       {
         // Bronze
@@ -68,7 +70,9 @@ requireGW([
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         econBase: 0.7,
-        econRatePerDist: 0.05
+        econRatePerDist: 0.05,
+        max_basic_fabbers: 20,
+        max_advanced_fabbers: 20
       },
       {
         // Silver
@@ -85,7 +89,9 @@ requireGW([
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         econBase: 0.8,
-        econRatePerDist: 0.1
+        econRatePerDist: 0.1,
+        max_basic_fabbers: 30,
+        max_advanced_fabbers: 30
       },
       {
         // Gold
@@ -106,7 +112,9 @@ requireGW([
             "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.1
+        econRatePerDist: 0.1,
+        max_basic_fabbers: 40,
+        max_advanced_fabbers: 40
       },
       {
         // Platinum
@@ -127,7 +135,9 @@ requireGW([
             "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.2
+        econRatePerDist: 0.2,
+        max_basic_fabbers: 50,
+        max_advanced_fabbers: 50
       },
       {
         // Uber
@@ -148,7 +158,9 @@ requireGW([
             "PreventsWaste"
           ],
         econBase: 10,
-        econRatePerDist: 0
+        econRatePerDist: 0,
+        max_basic_fabbers: 100,
+        max_advanced_fabbers: 100
       }
     ]
 
@@ -311,6 +323,8 @@ requireGW([
           ai.personality.unable_to_expand_delay = diffInfo.unable_to_expand_delay;
           ai.personality.enable_commander_danger_responses = diffInfo.enable_commander_danger_responses;
           ai.personality.per_expansion_delay = diffInfo.per_expansion_delay;
+          ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
+          ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
           ai.personality.personality_tags = diffInfo.personality_tags
 
           //console.log("AI DIFF END: ");
