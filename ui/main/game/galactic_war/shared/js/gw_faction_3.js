@@ -836,9 +836,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:While other Seekers tend to replace components as better ones are found, Dis tends to add more parts to her form--particularly nuclear reactors. Somehow, she has rigged herself with three tandem nuclear reactors. This has made her fearsome on the battlefield, and other seekers deployed with her tend to try to find landing zones on opposite sides of the planet, or a different one entirely.",
         commander: '/pa/units/commanders/raptor_betadyne/raptor_betadyne.json'
@@ -878,9 +878,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Traditionally, a new Seeker is only built once enough suitable parts have been discarded by existing Seekers. Ereshkigal has developed a habit of ‘discarding’ parts much more frequently than other Seekers, and as such has created more new recruits than any other member of The Revenants--an accomplishment she seems very proud of.",
         commander: '/pa/units/commanders/raptor_centurion/raptor_centurion.json'
@@ -920,9 +920,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Unlike other Seekers that value battlefield effectiveness in their equipment, Freja has begun integrating decorative pieces into her chassis-- from raw materials such as pure gold and iron to strange progenitor artifacts like the four-wheeled vehicle adorning her head.",
         commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'
@@ -962,9 +962,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:It’s rare for Seekers to be recruited instead of built. Giltine was found inactive and frozen in a glacier. When the Seeker who found her began trying to salvage her, she suddenly activated and blew a hole through his chassis. She was promptly deemed fit to be named a Seeker without the traditional rebirth.",
         commander: '/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json'
@@ -1004,9 +1004,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Seekers will often weigh the effectiveness of any given piece of equipment by stress-testing it. Hecate, however, values presence above all. She believes that the bigger and louder the loadout, the sooner the enemy will retreat after poorly assessing their chances of victory.",
         commander: '/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json'
@@ -1046,9 +1046,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Possessed by some form of wanderlust, Iku tends to seek uncharted warpways instead of other commanders to fight. This behavior has landed him quite accidentally in several pitched battles deep inside enemy territory.",
         commander: '/pa/units/commanders/raptor_majuju/raptor_majuju.json'
@@ -1088,9 +1088,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Revenants tend to prefer wrecked, once densely-populated worlds for their abundance of salvageable scrap. Jektu, however, has an affinity less developed worlds, preferring to claim resources and build new parts manually.",
         commander: '/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json'
@@ -1130,9 +1130,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Kormo remembers the name and designation of every commander he has taken parts from, believing each to still be activated through him. This has lead to a number of cases of friendly fire which he promptly blamed on his missile launcher, salvaged from a Legion commander.",
         commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json'
@@ -1172,9 +1172,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Lampades has rigged a rather ingenious array of flood and strobe lights to her chassis. Rather than be concerned with subterfuge, she instead uses intense light to confuse targeting systems.",
         commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
@@ -1214,9 +1214,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Mara favors guns. Mara favors big guns. Mara favors more guns. With each commander destroyed, Mara’s extensive weapons array grows. While most successful Seekers learn early to find ways to moderate their experiments, there are still few, like Mara, who favor more guns above all.",
         commander: '/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json'
@@ -1256,9 +1256,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:The Revenants are pretty loosely bound together. As Osiris tends to focus more on his own conquests than The Revenants as a whole, it falls to Seekers like Nephthys to coordinate large-scale strategy and long-term survival.",
         commander: '/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json'
@@ -1298,9 +1298,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Ogbuna could be described as terse. Whether by choice or by some manner of glitch, he seems only capable of communicating in the form of single words and concepts. This makes his troop movements erratic and difficult to interpret, both for friends and foes.",
         commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
@@ -1340,9 +1340,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Some seekers are better equipped than others to survive after their rebirth. This was not so with Purtelek. He was activated deep in Legionis Machina territory with a cracked nuclear reactor and a jam-prone cannon. The fact that he still survives serves as a testament to his cunning--do not underestimate him.",
         commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
@@ -1382,9 +1382,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 100,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 100
+          max_advanced_fabbers: 10
         },
         description: "!LOC:A former member of the Foundation, Qamm is no longer content to merely catalog his archaeological discoveries. He prefers to “become history” by integrating Progenitor technology into his own body. He thinks of himself as a living museum, and will talk at length about the historical significance of each of his components to any listener unlucky enough to be stuck with him in an enclosed space.",
         commander: '/pa/units/commanders/raptor_spz58624/raptor_spz58624.json'
@@ -1426,7 +1426,7 @@ define([], function () {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 30
+          max_advanced_fabbers: 10
         },
         description: "!LOC:A berzerker who has returned from battles with less than ten percent of his original body remaining, Rul-Mot has no discernible instinct for self-preservation. He is unpopular among field units, but his impressive combat record cannot be denied.",
         commander: '/pa/units/commanders/raptor_xov/raptor_xov.json'
@@ -1466,9 +1466,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 6,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 20
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Shingon is especially picky about what kinds of parts he harvests from fallen adversaries, prizing 'authenticity' above all other attributes. He is especially obsessed with original parts that predate the modern era. 'The new stuff is just too blocky,' he explains.",
         commander: '/pa/units/commanders/tank_reaver/tank_reaver.json'
@@ -1508,9 +1508,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 1,
           min_basic_fabbers: 5,
-          max_basic_fabbers: 15,
+          max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 20
+          max_advanced_fabbers: 10
         },
         description: "!LOC:Thanatos salvaged and assimilated a Synchronous network module in an attempt to predict the movement of Synchronous units on the battlefield. After a brief exposure to the thoughts of the collective, she tore the module from her cortex and swore everlasting vengeance on the Synchronous. She refuses to share any details about what she learned.",
         commander: '/pa/units/commanders/tank_sadiga/tank_sadiga.json'
