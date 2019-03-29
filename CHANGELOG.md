@@ -15,6 +15,7 @@
  - Revenants favour land over air
  - Bronze and Silver micro better
  - Silver spends excess resources better
+ - Correct an issue with Synchronous only ever building three T1 factories until teching
 
 ## 0.7 - 2019-03-15
 

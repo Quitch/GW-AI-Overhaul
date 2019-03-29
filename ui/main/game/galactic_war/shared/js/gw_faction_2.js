@@ -667,7 +667,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
@@ -750,8 +750,8 @@ define([], function () {
         name: 'Servant SacrificialLamb',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -792,8 +792,8 @@ define([], function () {
         name: 'Servant Shadowdaemon',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -834,8 +834,8 @@ define([], function () {
         name: 'Servant Spartandano',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -876,8 +876,8 @@ define([], function () {
         name: 'Servant Xenosentry',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -918,8 +918,8 @@ define([], function () {
         name: 'Servant TheFlax',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -960,8 +960,8 @@ define([], function () {
         name: 'Servant Tokamaktech',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -1002,8 +1002,8 @@ define([], function () {
         name: 'Servant Twoboots',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -1044,8 +1044,8 @@ define([], function () {
         name: 'Servant XenosentryPrime',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
-          percent_air: 0.2,
+          percent_land: 0.41,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -1088,7 +1088,7 @@ define([], function () {
         personality: {
           percent_bot: 0.4,
           percent_vehicle: 0,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
           metal_drain_check: 0.54,
@@ -1214,7 +1214,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
@@ -1256,7 +1256,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.44,
@@ -1298,7 +1298,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.34,
@@ -1340,7 +1340,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.2,
+          percent_air: 0.19,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
