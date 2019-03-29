@@ -2,7 +2,7 @@
   "context": "client",
   "identifier": "com.pa.quitch.gwaioverhaul-dev",
   "display_name": "Galactic War AI Overhaul DEV",
-  "description": "Creates personality differences between the factions and introduces variations of them within factions for Commanders and sub-commanders: Legonis Machina focus on land, Foundation on air and naval, Revenants on orbital, Synchronous take a balanced approach. Sub-commanders are better at handling their eco. Overhauls the difficulty settings to provide more variety along with greater challenge at the higher settings. Uses the vanilla AI brain. Not compatible with other Galactic War mods which adjust difficulty.",
+  "description": "Creates personality differences between the factions and each individual enemy Commander and friendly sub-commander. Legonis Machina focus on land, Foundation on naval and air, Revenants on orbital, Synchronous take a balanced approach. Sub-commanders are less able to carry the game for you. Overhauls the difficulty settings to provide more variety along with a much greater challenge at the higher settings. Uses the vanilla AI brain. Not compatible with other Galactic War mods which adjust difficulty.",
   "author": "Quitch",
   "version": "dev",
   "build": "113074",
