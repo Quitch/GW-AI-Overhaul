@@ -104,7 +104,7 @@ Please use the mod's [forum thread](https://forums.planetaryannihilation.com/thr
 Because that would break the translations, so I've left them untouched.
 
 ### Will sub-commanders fighting for me have the same personality if I fight against them?
-Yes.
+Yes. Mostly.
 
 ### Are all sub-commanders created equal?
 No, some are objectively stupider than others.
