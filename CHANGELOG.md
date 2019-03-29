@@ -9,7 +9,7 @@
  - Updates to Commander personalities
  - Difficulty settings now fully applied to bosses
  - Added four new Commanders to each faction
- - Reduce the effectiveness of all sub-Commanders
+ - Reduced the effectiveness of all sub-commanders
  - Foundation lean more heavily into naval tech when they can
  - Bosses handle their eco better
  - Increased the economic buff all bosses and their minions receive
