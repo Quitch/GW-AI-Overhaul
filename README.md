@@ -13,6 +13,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
    - Unique model
    - Unique personality
  - Five new difficulties
+ - Reduced sub-commander power
 
 ## Installation
 
