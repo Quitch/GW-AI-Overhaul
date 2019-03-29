@@ -1359,7 +1359,7 @@ define([], function () {
           factory_build_delay_max: 6,
           unable_to_expand_delay: 0,
           enable_commander_danger_responses: false,
-          per_expansion_delay: 120,
+          per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 5,
           fabber_to_factory_ratio_advanced: 1,
           fabber_alone_on_planet_mod: 1,
