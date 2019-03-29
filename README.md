@@ -27,7 +27,7 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty. I'd recommend starting with Silver and seeing how you go.
+Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty.
 
 ### Casual
 
