@@ -6,7 +6,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
 
  - Restore faction personalities
    - Legonis Machina: land
-   - Foundation: air/naval
+   - Foundation: naval/air
    - Synchronous: balanced
    - Revenants: orbital
  - Customise each enemy/sub-commander

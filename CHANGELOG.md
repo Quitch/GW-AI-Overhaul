@@ -10,6 +10,7 @@
  - Difficulty settings now fully applied to bosses
  - Added four new Commanders to each faction
  - Reduce the effectiveness of all sub-Commanders
+ - Foundation lean more heavily into naval tech when they can
 
 ## 0.7 - 2019-03-15
 
