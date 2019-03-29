@@ -581,22 +581,22 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
 
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -624,21 +624,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -666,21 +666,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.85,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 2,
@@ -708,21 +708,21 @@ define([], function () {
           energy_drain_check: 0.77,
           metal_demand_check: 0.85,
           energy_demand_check: 0.92,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1.15,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 2,
@@ -750,21 +750,21 @@ define([], function () {
           energy_drain_check: 0.77,
           metal_demand_check: 0.85,
           energy_demand_check: 0.92,
-          micro_type: 1,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1.3,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 0.5,
           fabber_to_factory_ratio_advanced: 1,
@@ -792,21 +792,21 @@ define([], function () {
           energy_drain_check: 0.77,
           metal_demand_check: 0.95,
           energy_demand_check: 0.92,
-          micro_type: 1,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1.45,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 2,
           fabber_to_factory_ratio_advanced: 1,
@@ -834,21 +834,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 3,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -876,21 +876,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -918,21 +918,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 0.5,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -960,21 +960,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 2,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -1002,21 +1002,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 2,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -1044,21 +1044,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 0.25,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 5,
           fabber_to_factory_ratio_advanced: 5,
@@ -1086,21 +1086,21 @@ define([], function () {
           energy_drain_check: 0.85,
           metal_demand_check: 0.75,
           energy_demand_check: 0.85,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -1128,21 +1128,21 @@ define([], function () {
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
-          micro_type: 2,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1,
           fabber_to_factory_ratio_advanced: 1,
@@ -1170,21 +1170,21 @@ define([], function () {
           energy_drain_check: 0.55,
           metal_demand_check: 0.61,
           energy_demand_check: 0.7,
-          micro_type: 1,
-          go_for_the_kill: true,
+          micro_type: 0,
+          go_for_the_kill: false,
           neural_data_mod: 1.2,
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.2,
           adv_eco_mod_alone: 0.95,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
           factory_build_delay_max: 0,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1.0,
           fabber_to_factory_ratio_advanced: 1.0,
@@ -1218,15 +1218,15 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 1.1,
           adv_eco_mod_alone: 1.0,
-          priority_scout_metal_spots: true,
+          priority_scout_metal_spots: false,
           factory_build_delay_min: 1,
           factory_build_delay_max: 3,
           unable_to_expand_delay: 0,
-          enable_commander_danger_responses: true,
+          enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 1.0,
           fabber_to_factory_ratio_advanced: 1.0,
@@ -1260,7 +1260,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste"
+              "SlowerExpansion"
             ],
           adv_eco_mod: 3.0,
           adv_eco_mod_alone: 3.0,
