@@ -12,8 +12,8 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
  - Customise each enemy/sub-commander
    - Unique model
    - Unique personality
- - Five new difficulties
- - Reduced sub-commander power
+ - Six new difficulties suitable for anyone from a new player to a veteran of the game
+ - Reduced sub-commander power so they won't carry the game for you anymore
 
 ## Installation
 
