@@ -1086,7 +1086,8 @@ define([], function () {
         name: 'Servant Xinthar',
         econ_rate: 1,
         personality: {
-          percent_land: 0.4,
+          percent_bot: 0.4,
+          percent_vehicle: 0,
           percent_air: 0.2,
           percent_naval: 0.2,
           percent_orbital: 0.2,
