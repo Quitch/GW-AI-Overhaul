@@ -11,7 +11,7 @@
  - Added four new Commanders to each faction
  - Reduce the effectiveness of all sub-Commanders
  - Foundation lean more heavily into naval tech when they can
- - Adjusted bosses to try and make them slightly more difficult
+ - Bosses handle their eco better
  - Increased the economic buff all bosses and their minions receive
 
 ## 0.7 - 2019-03-15
