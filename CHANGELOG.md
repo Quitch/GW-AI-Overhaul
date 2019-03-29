@@ -11,7 +11,7 @@
  - Added four new Commanders to each faction
  - Reduced the effectiveness of all sub-commanders
  - Foundation lean more heavily into naval tech when they can
- - Bosses handle their eco better
+ - Slight increase in boss difficulty through better economy handling and faster teching
  - Revenants favour land over air
  - Bronze and Silver micro better
  - Silver spends excess resources better
