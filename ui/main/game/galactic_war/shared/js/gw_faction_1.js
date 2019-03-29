@@ -587,9 +587,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air"
+              "PreventsWaste"
 
             ],
           adv_eco_mod: 1.35,
@@ -632,9 +630,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
@@ -676,10 +672,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
@@ -721,10 +714,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
@@ -766,10 +756,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
@@ -811,10 +798,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
@@ -856,10 +840,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 3,
@@ -901,10 +882,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
@@ -946,10 +924,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
@@ -991,10 +966,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1.35,
           adv_eco_mod_alone: 0.85,
@@ -1036,10 +1008,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 0.85,
@@ -1081,10 +1050,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Uber",
-              "Air",
-              "Naval"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
@@ -1126,8 +1092,7 @@ define([], function () {
           personality_tags:
             [
               "GWAlly",
-              "PreventsWaste",
-              "Vanilla"
+              "PreventsWaste"
             ],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
