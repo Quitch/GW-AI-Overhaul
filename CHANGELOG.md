@@ -5,6 +5,7 @@
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
  - Reduce file shadowing
  - Enemy Commanders now utilise individual styles
+ - Updated difficulty guidance based on more personality controls being assinged to individual Commanders
 
 ## 0.7 - 2019-03-15
 
