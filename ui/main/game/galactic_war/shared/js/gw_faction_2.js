@@ -1170,10 +1170,10 @@ define([], function () {
         name: 'Servant Beniesk',
         econ_rate: 1,
         personality: {
-          percent_land: 0.55,
-          percent_air: 0.35,
+          percent_land: 0.3,
+          percent_air: 0.3,
           percent_naval: 0.05,
-          percent_orbital: 0.05,
+          percent_orbital: 0.35,
           metal_drain_check: 0.75,
           energy_drain_check: 0.85,
           metal_demand_check: 0.75,

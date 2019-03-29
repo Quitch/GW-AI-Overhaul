@@ -940,9 +940,9 @@ define([], function () {
         name: 'Legate Kapowaz',
         econ_rate: 1,
         personality: {
-          percent_land: 0.55,
+          percent_land: 0.4,
           percent_air: 0.35,
-          percent_naval: 0.05,
+          percent_naval: 0.2,
           percent_orbital: 0.05,
           metal_drain_check: 0.75,
           energy_drain_check: 0.85,
