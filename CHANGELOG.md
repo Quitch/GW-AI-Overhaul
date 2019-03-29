@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.8 - 2019-03-29
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
  - Reduce file shadowing with thanks to Wondible
