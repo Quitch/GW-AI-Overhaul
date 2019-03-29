@@ -1479,10 +1479,10 @@ define([], function () {
         name: 'Seeker Sadiga',
         econ_rate: 1,
         personality: {
-          percent_land: 0.7,
-          percent_air: 0.2,
+          percent_land: 0.2,
+          percent_air: 0.05,
           percent_naval: 0.05,
-          percent_orbital: 0.05,
+          percent_orbital: 0.7,
           metal_drain_check: 0.54,
           energy_drain_check: 0.77,
           metal_demand_check: 0.95,

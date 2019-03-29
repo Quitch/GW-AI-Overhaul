@@ -1129,10 +1129,11 @@ define([], function () {
         name: 'Servant Beast',
         econ_rate: 1,
         personality: {
-          percent_land: 1,
-          percent_air: 0,
-          percent_naval: 0,
-          percent_orbital: 0,
+          percent_bot: 0.4,
+          percent_vehicle: 0,
+          percent_air: 0.19,
+          percent_naval: 0.2,
+          percent_orbital: 0.2,
           metal_drain_check: 0.54,
           energy_drain_check: 0.65,
           metal_demand_check: 0.71,
@@ -1214,7 +1215,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.19,
+          percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
@@ -1256,7 +1257,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.19,
+          percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.44,
@@ -1298,7 +1299,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.19,
+          percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.34,
@@ -1340,7 +1341,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.19,
+          percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
