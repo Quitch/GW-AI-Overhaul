@@ -667,7 +667,7 @@ define([], function () {
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
-          percent_air: 0.19,
+          percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,

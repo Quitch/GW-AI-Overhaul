@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Fix minor error in a Synchronous personality
+
 ## 0.8 - 2019-03-29
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
