@@ -3,6 +3,8 @@
 ## DEV
 
  - Fix minor error in a Synchronous personality
+ - Assigned each Commander a unique colour
+ - Synchronous is now green to ensure enough distinct shades for all Commanders
 
 ## 0.8 - 2019-03-29
 

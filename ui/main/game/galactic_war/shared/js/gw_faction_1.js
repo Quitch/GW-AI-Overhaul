@@ -2,7 +2,7 @@
 define([], function () {
   return {
     name: 'Foundation',
-    color: [[145, 87, 199], [192, 192, 192]],
+    color: [[145, 87, 199], [145, 87, 199]],
     teams: [
       {
         name: 'Atlas - Foundation',
@@ -36,7 +36,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[161, 97, 219], [145, 87, 199]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -167,7 +167,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[161, 97, 219], [145, 87, 199]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -298,7 +298,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[161, 97, 219], [145, 87, 199]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -428,7 +428,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[161, 97, 219], [145, 87, 199]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -558,7 +558,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[161, 97, 219], [145, 87, 199]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -661,6 +661,7 @@ define([], function () {
       {
         // All Air
         name: 'Acolyte Progenitor',
+        color: [[229, 204, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0,
@@ -704,6 +705,7 @@ define([], function () {
       {
         // All Naval
         name: 'Acolyte Sangudo',
+        color: [[204, 153, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0,
@@ -746,6 +748,7 @@ define([], function () {
       {
         // Uber
         name: 'Acolyte Seniorhelix',
+        color: [[178, 102, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -788,6 +791,7 @@ define([], function () {
       {
         // Platinum
         name: 'Acolyte Stelarch',
+        color: [[153, 51, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -830,6 +834,7 @@ define([], function () {
       {
         // Gold
         name: 'Acolyte TheChessKnight',
+        color: [[127, 0, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -872,6 +877,7 @@ define([], function () {
       {
         // Silver
         name: 'Acolyte Theta',
+        color: [[102, 0, 204], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -914,6 +920,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Acolyte ToddFather',
+        color: [[76, 0, 153], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -956,6 +963,7 @@ define([], function () {
       {
         // Tech
         name: 'Acolyte Ajax',
+        color: [[255, 204, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -998,6 +1006,7 @@ define([], function () {
       {
         // Cautious
         name: 'Acolyte Armalisk',
+        color: [[255, 153, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1040,6 +1049,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Acolyte Calyx',
+        color: [[255, 102, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1082,6 +1092,7 @@ define([], function () {
       {
         // Rush
         name: 'Acolyte Gambitdfa',
+        color: [[255, 0, 255], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1124,6 +1135,7 @@ define([], function () {
       {
         // Turtle
         name: 'Acolyte Berlinetta',
+        color: [[204, 0, 204], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1166,6 +1178,7 @@ define([], function () {
       {
         // Original
         name: 'Acolyte Osiris',
+        color: [[153, 0, 153], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1208,6 +1221,7 @@ define([], function () {
       {
         // Absurd
         name: 'Acolyte Tykus24',
+        color: [[255, 204, 229], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1250,6 +1264,7 @@ define([], function () {
       {
         // Relentless
         name: 'Acolyte Vidicarus',
+        color: [[255, 153, 204], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1292,6 +1307,7 @@ define([], function () {
       {
         // Hard
         name: 'Acolyte Visionik',
+        color: [[255, 102, 178], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1334,6 +1350,7 @@ define([], function () {
       {
         // Bronze
         name: 'Acolyte Commandonut',
+        color: [[255, 51, 153], [145, 87, 199]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,

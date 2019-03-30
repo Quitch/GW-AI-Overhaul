@@ -2,7 +2,7 @@
 define([], function () {
   return {
     name: 'Legonis Machina',
-    color: [[0, 176, 255], [192, 192, 192]],
+    color: [[0, 176, 255], [0, 176, 255]],
     teams: [
       {
         name: 'Kohr - Legonis Machina',
@@ -432,6 +432,7 @@ define([], function () {
       {
         // All Tanks
         name: 'Legate Able',
+        color: [[204, 255, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_vehicle: 1,
@@ -475,6 +476,7 @@ define([], function () {
       {
         // All Bots
         name: 'Legate AceAI',
+        color: [[153, 255, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_vehicle: 0,
@@ -517,6 +519,7 @@ define([], function () {
       {
         // Uber
         name: 'Legate Alpha',
+        color: [[102, 255, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -559,6 +562,7 @@ define([], function () {
       {
         // Platinum
         name: 'Legate Aryst0krat',
+        color: [[0, 255, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -601,6 +605,7 @@ define([], function () {
       {
         // Gold
         name: 'Legate Chronoblip',
+        color: [[0, 204, 204], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -643,6 +648,7 @@ define([], function () {
       {
         // Silver
         name: 'Legate Mjon',
+        color: [[0, 153, 153], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -685,6 +691,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Legate Delta',
+        color: [[153, 204, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -727,6 +734,7 @@ define([], function () {
       {
         // Tech
         name: 'Legate Enzomatrix',
+        color: [[102, 178, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -769,6 +777,7 @@ define([], function () {
       {
         // Cautious
         name: 'Legate Fiveleafclover',
+        color: [[51, 153, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -811,6 +820,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Legate Gamma',
+        color: [[0, 128, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -853,6 +863,7 @@ define([], function () {
       {
         // Rush
         name: 'Legate Gnugfur',
+        color: [[0, 102, 204], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_bot: 1,
@@ -896,6 +907,7 @@ define([], function () {
       {
         // Turtle
         name: 'Legate Invictus',
+        color: [[0, 76, 153], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 1,
@@ -938,6 +950,7 @@ define([], function () {
       {
         // Original
         name: 'Legate Kapowaz',
+        color: [[0, 0, 153], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 0.4,
@@ -980,6 +993,7 @@ define([], function () {
       {
         // Absurd
         name: 'Legate JT100010117',
+        color: [[0, 0, 204], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1022,6 +1036,7 @@ define([], function () {
       {
         // Relentless
         name: 'Legate Kevin4001',
+        color: [[0, 0, 225], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1064,6 +1079,7 @@ define([], function () {
       {
         // Hard
         name: 'Legate Mostlikely',
+        color: [[51, 51, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1106,6 +1122,7 @@ define([], function () {
       {
         // Bronze
         name: 'Legate Nagasher',
+        color: [[204, 229, 255], [0, 176, 255]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
