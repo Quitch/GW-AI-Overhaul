@@ -45,7 +45,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
  - Small eco penalty
  - Eco slowly increases over distance
- - Poor micro
+ - OK micro
  - Doesn't pick on the weakest link
  - Good scouting
  - Commander reacts to danger
@@ -56,7 +56,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
  - No starting eco handicap
  - Eco increases over distance
- - OK micro
+ - Good micro
  - Picks on the weakest link
  - Good scouting
  - Commander reacts to danger
