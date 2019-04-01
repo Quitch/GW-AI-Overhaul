@@ -19,6 +19,9 @@
   "scenes": {
     "gw_start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"
+    ],
+    "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js"
     ]
   },
   "priority": 90

@@ -119,3 +119,7 @@ No. I felt it was pointless to create a model where each battle is easier than t
 ## Incompatible mods
  - Enemy ramp for galactic war
  - Challenge Levels for galactic war
+
+## Thanks to
+
+ - wondible, who continues to be amazing with his JavaScript support
