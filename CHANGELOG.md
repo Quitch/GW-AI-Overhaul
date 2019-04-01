@@ -8,7 +8,7 @@
   - Identify which enemy Commander is the biggest threat
  - Synchronous is now green to ensure enough distinct shades for all Commanders
  - Ensure systems display faction colour and not Commander colour
- - Many thanks to wondible for his help with the JavaScript in this release
+ - Many thanks to wondible for all his work on the JavaScript for this release
 
 ## 0.8 - 2019-03-29
 
