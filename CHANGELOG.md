@@ -4,7 +4,7 @@
 
  - Fix minor error in a Synchronous personality
  - Assigned each Commander a unique colour
-  - See which sub-commmanders perform well for you and drop the bad ones
+  - See which sub-commanders perform well for you and drop the bad ones
   - Identify which enemy Commander is the biggest threat
  - Synchronous is now green to ensure enough distinct shades for all Commanders
  - Ensure systems display faction colour and not Commander colour
