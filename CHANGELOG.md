@@ -1,9 +1,20 @@
 # CHANGELOG
 
+## 0.9 - 2019-01-4
+
+ - Fix minor error in a Synchronous personality
+ - Assigned each Commander a unique colour
+  - See which sub-commmanders perform well for you and drop the bad ones
+  - Identify which enemy Commander is the biggest threat
+ - Synchronous is now green to ensure enough distinct shades for all Commanders
+ - Ensure systems display faction colour and not Commander colour
+ - Many thanks to wondible for all his work on the JavaScript for this release
+ - Tweaked newest profiles to better match core intent and make them more distinctive across factions
+
 ## 0.8 - 2019-03-29
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
- - Reduce file shadowing with thanks to Wondible
+ - Reduced file shadowing with thanks to Wondible
  - Enemy Commanders now utilise individual styles
  - Updated difficulty guidance based on more personality controls being assigned to individual Commanders
  - Updates to Commander personalities

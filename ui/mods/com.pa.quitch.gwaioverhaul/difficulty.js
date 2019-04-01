@@ -352,7 +352,8 @@ requireGW([
               _.times(numMinions, function () {
                 var mnn = _.sample(GWFactions[info.faction].minions);
                 setAIData(mnn, dist, false);
-                mnn.color = worker.ai.color;
+                // Assign each minion its own colour
+                mnn.color = mnn.color || worker.ai.color;
                 worker.ai.minions.push(mnn);
               });
             }
