@@ -996,7 +996,8 @@ define([], function () {
         color: [[0, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
-          percent_land: 0.7,
+          percent_vehicle: 0.45,
+          percent_bot: 0.25,
           percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
@@ -1039,7 +1040,8 @@ define([], function () {
         color: [[0, 0, 225], [192, 192, 192]],
         econ_rate: 1,
         personality: {
-          percent_land: 0.7,
+          percent_vehicle: 0.45,
+          percent_bot: 0.25,
           percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
@@ -1082,7 +1084,8 @@ define([], function () {
         color: [[51, 51, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
-          percent_land: 0.7,
+          percent_vehicle: 0.45,
+          percent_bot: 0.25,
           percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,

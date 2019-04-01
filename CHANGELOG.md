@@ -9,6 +9,7 @@
  - Synchronous is now green to ensure enough distinct shades for all Commanders
  - Ensure systems display faction colour and not Commander colour
  - Many thanks to wondible for all his work on the JavaScript for this release
+ - Tweaked newest profiles to better match core intent and make them more distinctive across factions
 
 ## 0.8 - 2019-03-29
 
