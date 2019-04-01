@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.9 - 2019-01-4
 
  - Fix minor error in a Synchronous personality
  - Assigned each Commander a unique colour
