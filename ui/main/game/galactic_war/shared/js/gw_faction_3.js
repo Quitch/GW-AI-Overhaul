@@ -2,7 +2,7 @@
 define([], function () {
   return {
     name: 'Revenants',
-    color: [[236, 34, 35], [236, 34, 35]],
+    color: [[236, 34, 35], [192, 192, 192]],
     teams: [
       {
         name: 'Alenquer - Revenants',
@@ -36,7 +36,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
-              color: [[244, 124, 125], [236, 34, 35]],
+              color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -64,7 +64,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[195, 16, 18], [236, 34, 35]],
+              color: [[195, 16, 18], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -195,7 +195,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
-              color: [[244, 124, 125], [236, 34, 35]],
+              color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -223,7 +223,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[195, 16, 18], [236, 34, 35]],
+              color: [[195, 16, 18], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -354,7 +354,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
-              color: [[244, 124, 125], [236, 34, 35]],
+              color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -382,7 +382,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[195, 16, 18], [236, 34, 35]],
+              color: [[195, 16, 18], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -513,7 +513,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
-              color: [[244, 124, 125], [236, 34, 35]],
+              color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -541,7 +541,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[195, 16, 18], [236, 34, 35]],
+              color: [[195, 16, 18], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -672,7 +672,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
-              color: [[244, 124, 125], [236, 34, 35]],
+              color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -700,7 +700,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[195, 16, 18], [236, 34, 35]],
+              color: [[195, 16, 18], [192, 192, 192]],
               personality: {
                 percent_land: 0.35,
                 percent_orbital: 0.3,
@@ -804,7 +804,7 @@ define([], function () {
       {
         // Orbital & Land
         name: 'Seeker Betadyne',
-        color: [[255, 204, 204], [236, 34, 35]],
+        color: [[255, 204, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.5,
@@ -847,7 +847,7 @@ define([], function () {
       {
         // Orbital & Air
         name: 'Seeker Centurion',
-        color: [[255, 153, 153], [236, 34, 35]],
+        color: [[255, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0,
@@ -890,7 +890,7 @@ define([], function () {
       {
         // Uber
         name: 'Seeker Diremachine',
-        color: [[255, 102, 102], [236, 34, 35]],
+        color: [[255, 102, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -933,7 +933,7 @@ define([], function () {
       {
         // Platinum
         name: 'Seeker Enderstryke71',
-        color: [[255, 0, 0], [236, 34, 35]],
+        color: [[255, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -976,7 +976,7 @@ define([], function () {
       {
         // Gold
         name: 'Seeker Iwmiked',
-        color: [[204, 0, 0], [236, 34, 35]],
+        color: [[204, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1019,7 +1019,7 @@ define([], function () {
       {
         // Silver
         name: 'Seeker Majuju',
-        color: [[153, 0, 0], [236, 34, 35]],
+        color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1062,7 +1062,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Seeker Nefelpitou',
-        color: [[255, 204, 153], [236, 34, 35]],
+        color: [[255, 204, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1105,7 +1105,7 @@ define([], function () {
       {
         // Tech
         name: 'Seeker Nemicus',
-        color: [[255, 178, 102], [236, 34, 35]],
+        color: [[255, 178, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1148,7 +1148,7 @@ define([], function () {
       {
         // Cautious
         name: 'Seeker Rallus',
-        color: [[255, 153, 51], [236, 34, 35]],
+        color: [[255, 153, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1191,7 +1191,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Seeker Stickman9000',
-        color: [[255, 128, 0], [236, 34, 35]],
+        color: [[255, 128, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1234,7 +1234,7 @@ define([], function () {
       {
         // Rush
         name: 'Seeker Zaazzaa',
-        color: [[204, 102, 0], [236, 34, 35]],
+        color: [[204, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_bot: 0.05,
@@ -1278,7 +1278,7 @@ define([], function () {
       {
         // Turtle
         name: 'Seeker Aeson',
-        color: [[255, 255, 204], [236, 34, 35]],
+        color: [[255, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.05,
@@ -1321,7 +1321,7 @@ define([], function () {
       {
         // Original
         name: 'Seeker Banditks',
-        color: [[255, 255, 153], [236, 34, 35]],
+        color: [[255, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.16,
@@ -1364,7 +1364,7 @@ define([], function () {
       {
         // Absurd
         name: 'Seeker SPZ58624',
-        color: [[255, 255, 102], [236, 34, 35]],
+        color: [[255, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.2,
@@ -1407,7 +1407,7 @@ define([], function () {
       {
         // Relentless
         name: 'Seeker XOV',
-        color: [[255, 255, 0], [236, 34, 35]],
+        color: [[255, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.2,
@@ -1450,7 +1450,7 @@ define([], function () {
       {
         // Hard
         name: 'Seeker Reaver',
-        color: [[204, 204, 0], [236, 34, 35]],
+        color: [[204, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.2,
@@ -1493,7 +1493,7 @@ define([], function () {
       {
         // Bronze
         name: 'Seeker Sadiga',
-        color: [[153, 153, 0], [236, 34, 35]],
+        color: [[153, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.2,

@@ -2,7 +2,7 @@
 define([], function () {
   return {
     name: 'Synchronous',
-    color: [[126, 226, 101], [126, 226, 101]],
+    color: [[126, 226, 101], [192, 192, 192]],
     teams: [
       {
         name: 'Cupru - Synchronous',
@@ -36,7 +36,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [126, 226, 101]],
+              color: [[132, 246, 111], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -167,7 +167,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [126, 226, 101]],
+              color: [[132, 246, 111], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -298,7 +298,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [126, 226, 101]],
+              color: [[132, 246, 111], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -429,7 +429,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [126, 226, 101]],
+              color: [[132, 246, 111], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -560,7 +560,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [126, 226, 101]],
+              color: [[132, 246, 111], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -664,7 +664,7 @@ define([], function () {
       {
         // Land heavy
         name: 'Servant Potbelly79',
-        color: [[229, 255, 204], [126, 226, 101]],
+        color: [[229, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -707,7 +707,7 @@ define([], function () {
       {
         // Air heavy
         name: 'Servant Raventhornn',
-        color: [[204, 255, 153], [126, 226, 101]],
+        color: [[204, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.2,
@@ -750,7 +750,7 @@ define([], function () {
       {
         // Uber
         name: 'Servant SacrificialLamb',
-        color: [[178, 255, 102], [126, 226, 101]],
+        color: [[178, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -793,7 +793,7 @@ define([], function () {
       {
         // Platinum
         name: 'Servant Shadowdaemon',
-        color: [[153, 255, 51], [126, 226, 101]],
+        color: [[153, 255, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -836,7 +836,7 @@ define([], function () {
       {
         // Gold
         name: 'Servant Spartandano',
-        color: [[128, 255, 0], [126, 226, 101]],
+        color: [[128, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -879,7 +879,7 @@ define([], function () {
       {
         // Silver
         name: 'Servant Xenosentry',
-        color: [[102, 204, 0], [126, 226, 101]],
+        color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -922,7 +922,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Servant TheFlax',
-        color: [[76, 153, 0], [126, 226, 101]],
+        color: [[76, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -965,7 +965,7 @@ define([], function () {
       {
         // Tech
         name: 'Servant Tokamaktech',
-        color: [[204, 255, 204], [126, 226, 101]],
+        color: [[204, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -1008,7 +1008,7 @@ define([], function () {
       {
         // Cautious
         name: 'Servant Twoboots',
-        color: [[153, 255, 153], [126, 226, 101]],
+        color: [[153, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -1051,7 +1051,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Servant XenosentryPrime',
-        color: [[102, 255, 102], [126, 226, 101]],
+        color: [[102, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.41,
@@ -1094,7 +1094,7 @@ define([], function () {
       {
         // Rush
         name: 'Servant Xinthar',
-        color: [[0, 255, 0], [126, 226, 101]],
+        color: [[0, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_bot: 0.4,
@@ -1138,7 +1138,7 @@ define([], function () {
       {
         // Turtle
         name: 'Servant Beast',
-        color: [[0, 204, 0], [126, 226, 101]],
+        color: [[0, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_bot: 0.4,
@@ -1182,7 +1182,7 @@ define([], function () {
       {
         // Original
         name: 'Servant Beniesk',
-        color: [[0, 153, 0], [126, 226, 101]],
+        color: [[0, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.3,
@@ -1225,7 +1225,7 @@ define([], function () {
       {
         // Absurd
         name: 'Servant Locust',
-        color: [[0, 102, 0], [126, 226, 101]],
+        color: [[0, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1268,7 +1268,7 @@ define([], function () {
       {
         // Relentless
         name: 'Servant Zancrowe',
-        color: [[0, 153, 76], [126, 226, 101]],
+        color: [[0, 153, 76], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1311,7 +1311,7 @@ define([], function () {
       {
         // Hard
         name: 'Servant Damubbster',
-        color: [[0, 204, 102], [126, 226, 101]],
+        color: [[0, 204, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
@@ -1354,7 +1354,7 @@ define([], function () {
       {
         // Bronze
         name: 'Servant Raizell',
-        color: [[0, 255, 128], [126, 226, 101]],
+        color: [[0, 255, 128], [192, 192, 192]],
         econ_rate: 1,
         personality: {
           percent_land: 0.7,
