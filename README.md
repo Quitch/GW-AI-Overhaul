@@ -118,6 +118,10 @@ No, some are objectively stupider than others.
 #### Is there a "fair" difficulty level?
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
+## Recommended mods
+ - Shared Systems for galactic war
+ - Section of Foreign Intelligence for galactic war
+
 ## Incompatible mods
  - Enemy ramp for galactic war
  - Challenge Levels for galactic war
