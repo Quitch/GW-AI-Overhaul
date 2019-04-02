@@ -142,7 +142,7 @@ define([
           alliance_group: 2
         });
       });
-      // Add foes to separate alliance_group to allow for FFAs
+      // Galactic War AI Overhaul - Add foes to separate alliance_group to allow for FFAs
       _.forEach(ai.foes, function (foe) {
         armies.push({
           slots: [{
