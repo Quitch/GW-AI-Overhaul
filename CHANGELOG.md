@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - You will sometimes find another faction is contesting a system leading to a FFA occuring
+
 ## 0.9 - 2019-04-01
 
  - Fix minor error in a Synchronous personality
