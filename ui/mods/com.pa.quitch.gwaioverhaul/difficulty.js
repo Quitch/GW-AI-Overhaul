@@ -172,6 +172,7 @@ requireGW([
     Modify the makeGame function from gw_start.js with thanks to Wondible
     Replace GW.balance.difficultyInfo with difficultyInfo
     Limit data passed to SetAIData
+    Minions use minion colour not worker colour
     */
     var baseNeutralStars = 2;
 
