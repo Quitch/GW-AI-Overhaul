@@ -4,7 +4,7 @@
 
  - You will sometimes find another faction is contesting a system leading to a FFA occurring
  - Added Section of Foreign Intelligence for galactic war as a dependency mod
- - Improved distictiveness of boss minion colours
+ - Improved distinctiveness of boss minion colours
  - Bosses given smarter personalities
 
 ## 0.9 - 2019-04-01
