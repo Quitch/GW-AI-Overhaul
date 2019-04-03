@@ -64,7 +64,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[168, 10, 10], [192, 192, 192]],
+              color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
                 percent_air: 0.1,
@@ -223,7 +223,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[168, 10, 10], [192, 192, 192]],
+              color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
                 percent_air: 0.1,
@@ -382,7 +382,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[168, 10, 10], [192, 192, 192]],
+              color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
                 percent_air: 0.1,
@@ -541,7 +541,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[168, 10, 10], [192, 192, 192]],
+              color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
                 percent_air: 0.1,
@@ -700,7 +700,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
-              color: [[168, 10, 10], [192, 192, 192]],
+              color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
                 percent_air: 0.1,
