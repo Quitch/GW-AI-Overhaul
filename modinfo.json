@@ -24,5 +24,8 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js"
     ]
   },
+  "dependencies": [
+    "com.wondible.pa.section_of_foreign_intelligence"
+  ],
   "priority": 90
 }

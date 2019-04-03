@@ -3,6 +3,7 @@
 ## 0.10 - 2019-04-03
 
  - You will sometimes find another faction is contesting a system leading to a FFA occuring
+ - Added Section of Foreign Intelligence for galactic war as a dependency mod
 
 ## 0.9 - 2019-04-01
 
