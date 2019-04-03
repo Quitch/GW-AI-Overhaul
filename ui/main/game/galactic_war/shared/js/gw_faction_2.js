@@ -36,7 +36,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [192, 192, 192]],
+              color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -167,7 +167,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [192, 192, 192]],
+              color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -298,7 +298,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [192, 192, 192]],
+              color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -429,7 +429,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [192, 192, 192]],
+              color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_land: 0.375,
                 percent_orbital: 0.15,
@@ -560,7 +560,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 0.7,
-              color: [[132, 246, 111], [192, 192, 192]],
+              color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,

@@ -36,7 +36,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -167,7 +167,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -298,7 +298,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -428,7 +428,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
@@ -558,7 +558,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              color: [[161, 97, 219], [192, 192, 192]],
+              color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.05,
                 percent_orbital: 0.05,
