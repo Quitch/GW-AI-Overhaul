@@ -12,9 +12,11 @@ This mod works with both Planetary Annihilation and Planetary Annihilation Titan
  - Customise each enemy/sub-commander
    - Unique model
    - Unique personality
-   - Fight according to your faction's preferred style
+   - Unique colour
+   - Fight according to their faction's preferred style
  - Six new difficulties suitable for anyone from a new player to a veteran of the game
  - Reduced sub-commander power so they won't carry the game for you anymore
+ - Adds the possibility of multiple factions in a system and a FFA occuring
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -115,6 +117,10 @@ No, some are objectively stupider than others.
 
 #### Is there a "fair" difficulty level?
 No. I felt it was pointless to create a model where each battle is easier than the last.
+
+## Recommended mods
+ - Shared Systems for galactic war
+ - Section of Foreign Intelligence for galactic war
 
 ## Incompatible mods
  - Enemy ramp for galactic war
