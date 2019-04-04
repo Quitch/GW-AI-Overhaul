@@ -361,6 +361,7 @@ requireGW([
           _.forEach(info.workers, function (worker) {
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
+            //console.log("Minion maxDist:", maxDist)
             var numMinions = Math.floor((diffInfo.mandatoryMinions + ((worker.star.distance() / maxDist) * 2)) * diffInfo.minionMod);
             if (numMinions > 0) {
               worker.ai.minions = [];
