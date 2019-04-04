@@ -1,9 +1,5 @@
 # CHANGELOG
 
-## DEV
-
- - Platinum uses less minions
-
 ## 0.10 - 2019-04-03
 
  - You will sometimes find another faction is contesting a system leading to a FFA occurring

@@ -124,7 +124,7 @@ requireGW([
         // Platinum
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 0.4,
+        mandatoryMinions: 1,
         minionMod: 2,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
