@@ -339,9 +339,7 @@ requireGW([
 
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
-        //console.log("AI factions excluding player faction", aiFactions);
         var sizeMod = GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
-        //console.log("FFA chance", diffInfo.ffa_chance * sizeMod);
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
@@ -355,7 +353,6 @@ requireGW([
           _.forEach(info.workers, function (worker) {
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            //console.log("Minion maxDist:", maxDist)
             var numMinions = Math.floor((diffInfo.mandatoryMinions + ((worker.star.distance() / maxDist) * 2)) * diffInfo.minionMod);
             if (numMinions > 0) {
               worker.ai.minions = [];
@@ -368,10 +365,8 @@ requireGW([
               });
             }
             // Assign foes
-            //console.log("AI faction", worker.ai.faction);
             if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
               var hostileFactions = _.sample(_.without(aiFactions, worker.ai.faction));
-              //console.log("Chosen foe", hostileFactions);
               worker.ai.foes = [];
               var fnn = _.sample(GWFactions[hostileFactions].minions);
               setAIData(fnn, dist, false);
