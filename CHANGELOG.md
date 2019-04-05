@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.10.1 - 2019-04-05
 
  - Fixed Platinum having one too many minions in each system
 
