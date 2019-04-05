@@ -120,7 +120,6 @@ No. I felt it was pointless to create a model where each battle is easier than t
 
 ## Recommended mods
  - Shared Systems for galactic war
- - Section of Foreign Intelligence for galactic war
 
 ## Incompatible mods
  - Enemy ramp for galactic war

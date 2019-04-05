@@ -34,7 +34,6 @@ requireGW([
     var difficultyInfo = [
       {
         // Casual
-        rampDifficulty: true,
         goForKill: false,
         microType: 0,
         mandatoryMinions: 0,
@@ -58,7 +57,6 @@ requireGW([
       },
       {
         // Bronze
-        rampDifficulty: true,
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
@@ -78,7 +76,6 @@ requireGW([
       },
       {
         // Silver
-        rampDifficulty: true,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
@@ -102,7 +99,6 @@ requireGW([
       },
       {
         // Gold
-        rampDifficulty: true,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
@@ -126,10 +122,9 @@ requireGW([
       },
       {
         // Platinum
-        rampDifficulty: true,
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 1,
+        mandatoryMinions: 0.5,
         minionMod: 2,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
@@ -150,7 +145,6 @@ requireGW([
       },
       {
         // Uber
-        rampDifficulty: true,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
@@ -326,7 +320,7 @@ requireGW([
         var setAIData = function (ai, dist, isBoss) {
           //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
           if (ai.personality === undefined) ai.personality = {};
-          if (diffInfo.rampDifficulty) ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
+          ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
           ai.personality.go_for_the_kill = diffInfo.goForKill;
@@ -345,9 +339,7 @@ requireGW([
 
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
-        //console.log("AI factions excluding player faction", aiFactions);
         var sizeMod = GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
-        //console.log("FFA chance", diffInfo.ffa_chance * sizeMod);
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
@@ -373,10 +365,8 @@ requireGW([
               });
             }
             // Assign foes
-            //console.log("AI faction", worker.ai.faction);
             if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
               var hostileFactions = _.sample(_.without(aiFactions, worker.ai.faction));
-              //console.log("Chosen foe", hostileFactions);
               worker.ai.foes = [];
               var fnn = _.sample(GWFactions[hostileFactions].minions);
               setAIData(fnn, dist, false);
