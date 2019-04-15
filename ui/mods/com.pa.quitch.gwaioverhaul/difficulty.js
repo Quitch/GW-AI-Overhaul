@@ -37,7 +37,7 @@ requireGW([
         goForKill: false,
         microType: 0,
         mandatoryMinions: 0,
-        minionMod: 1,
+        minionMod: 0.3,
         priority_scout_metal_spots: false,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -60,7 +60,7 @@ requireGW([
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
-        minionMod: 1,
+        minionMod: 0.35,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -79,7 +79,7 @@ requireGW([
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 1,
+        minionMod: 0.49,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -102,7 +102,7 @@ requireGW([
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 2,
+        minionMod: 0.7,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -124,8 +124,8 @@ requireGW([
         // Platinum
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 0.5,
-        minionMod: 2,
+        mandatoryMinions: 1,
+        minionMod: 0.7,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -148,7 +148,7 @@ requireGW([
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 2,
+        minionMod: 0.7,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -353,7 +353,7 @@ requireGW([
           _.forEach(info.workers, function (worker) {
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            var numMinions = Math.floor((diffInfo.mandatoryMinions + ((worker.star.distance() / maxDist) * 2)) * diffInfo.minionMod);
+            var numMinions = Math.floor(diffInfo.mandatoryMinions + (worker.star.distance() * diffInfo.minionMod));
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function () {

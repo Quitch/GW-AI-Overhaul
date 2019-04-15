@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.11 - 2019-04-15
+
+ - Replaced vanilla Commander number scaling formula so that larger galaxies grow to use larger Commander counts
+ - Casual grows Commander count slightly slower
+
 ## 0.10.1 - 2019-04-05
 
  - Fixed Platinum having one too many minions in each system

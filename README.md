@@ -2,7 +2,7 @@
 
 ## Description
 
-This mod works with both Planetary Annihilation and Planetary Annihilation Titans. It changes the following elements of Galactic War:
+This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
 
  - Restore faction personalities
    - Legonis Machina: land
@@ -22,7 +22,7 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 ## Installation
 
-This mod can be installed via the Planetary Annihilation TITANS in-game Community Mod manager.
+This mod can be installed via the Planetary Annihilation: TITANS in-game Community Mod manager.
 
 ## Translations
 
