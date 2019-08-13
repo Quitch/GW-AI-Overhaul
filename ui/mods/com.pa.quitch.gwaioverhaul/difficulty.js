@@ -317,8 +317,7 @@ requireGW([
         }, 0);
         var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
 
-        var setAIData = function (ai, dist, isBoss) {
-          //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
+        var setAIData = function (ai, dist) {
           if (ai.personality === undefined) ai.personality = {};
           ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           ai.personality.neural_data_mod = diffInfo.neuralDataMod;
