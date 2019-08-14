@@ -319,8 +319,6 @@ requireGW([
 
         var setAIData = function (ai, dist) {
           if (ai.personality === undefined) ai.personality = {};
-          console.log(ai.name);
-          console.log(ai.faction);
           ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
