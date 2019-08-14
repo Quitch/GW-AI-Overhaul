@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Teching to T2 scales with eco modifier to prevent premature teching
+
 ## 0.11 - 2019-04-15
 
  - Replaced vanilla Commander number scaling formula so that larger galaxies grow to use larger Commander counts

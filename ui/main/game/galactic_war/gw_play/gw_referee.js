@@ -116,6 +116,9 @@ define([
           alliance_group: 1
         });
       });
+      // Galatic War AI Overhaul - Prevent premature teching
+      ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate,
+      ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate,
       armies.push({
         slots: [{
           ai: true,
@@ -129,6 +132,9 @@ define([
         alliance_group: 2
       });
       _.forEach(ai.minions, function (minion) {
+        // Galatic War AI Overhaul - Prevent premature teching
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * minion.econ_rate,
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * ai.econ_rate,
         armies.push({
           slots: [{
             ai: true,
@@ -144,6 +150,9 @@ define([
       });
       // Galactic War AI Overhaul - Add foes to separate alliance_group to allow for FFAs
       _.forEach(ai.foes, function (foe) {
+        // Galatic War AI Overhaul - Prevent premature teching
+        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate,
+        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate,        
         armies.push({
           slots: [{
             ai: true,
