@@ -124,7 +124,9 @@ define([
         slots: [{
           ai: true,
           name: ai.name,
-          commander: fixupCommander(ai.commander)
+          commander: fixupCommander(ai.commander),
+          // Galactic War AI Overhaul - Support landing policies
+          landing_policy: ai.landing_policy || 'no_restriction'
         }],
         color: ai.color,
         econ_rate: ai.econ_rate,
@@ -140,7 +142,9 @@ define([
           slots: [{
             ai: true,
             name: minion.name || 'Helper',
-            commander: fixupCommander(minion.commander || ai.commander)
+            commander: fixupCommander(minion.commander || ai.commander),
+            // Galactic War AI Overhaul - Support landing policies
+            landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: minion.color,
           econ_rate: minion.econ_rate || ai.econ_rate,
@@ -158,7 +162,9 @@ define([
           slots: [{
             ai: true,
             name: foe.name || 'Hindrance',
-            commander: fixupCommander(foe.commander || ai.commander)
+            commander: fixupCommander(foe.commander || ai.commander),
+            // Galactic War AI Overhaul - Support landing policies
+            landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: foe.color,
           econ_rate: foe.econ_rate || ai.econ_rate,
