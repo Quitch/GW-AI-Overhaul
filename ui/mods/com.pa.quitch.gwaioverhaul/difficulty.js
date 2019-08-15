@@ -317,9 +317,8 @@ requireGW([
         }, 0);
         var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
 
-        var setAIData = function (ai, dist) {
+        var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
           ai.personality.go_for_the_kill = diffInfo.goForKill;
@@ -332,6 +331,12 @@ requireGW([
           ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
           ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
           ai.personality.personality_tags = diffInfo.personality_tags
+          if (!isBoss) {
+            ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
+          }
+          else {
+            ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * 2;
+          }
 
           //console.log("AI DIFF END: ");
         };

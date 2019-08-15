@@ -3,6 +3,7 @@
 ## DEV
 
  - AI accounts for its eco modifier when teching to T2 to prevent premature teching
+ - Bosses now enjoy an eco boost over surrounding systems
 
 ## 0.11 - 2019-04-15
 
