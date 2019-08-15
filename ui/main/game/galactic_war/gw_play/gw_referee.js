@@ -1,3 +1,4 @@
+/*global parse loadScript*/
 define([
   'shared/gw_common'
 ], function (
