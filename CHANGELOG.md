@@ -4,6 +4,8 @@
 
  - AI accounts for its eco modifier when teching to T2 to prevent premature teching
  - Bosses now enjoy an eco boost over surrounding systems
+ - Bosses try to start on a different planet to you
+ - Boss minions try to start on the same planet as you
 
 ## 0.11 - 2019-04-15
 

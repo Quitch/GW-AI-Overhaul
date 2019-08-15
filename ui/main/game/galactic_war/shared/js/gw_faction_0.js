@@ -9,6 +9,7 @@ define([], function () {
         boss: {
           name: 'Imperator Invictus',
           econ_rate: 1.5,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -96,6 +97,7 @@ define([], function () {
         boss: {
           name: 'Imperator Invictus',
           econ_rate: 1.5,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -182,6 +184,7 @@ define([], function () {
         boss: {
           name: 'Imperator Invictus',
           econ_rate: 1.5,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -268,6 +271,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.5,
           personality: {
+            landing_policy: 'off_player_planet',
             percent_vehicle: 0.45,
             percent_bot: 0.25,
             percent_air: 0.2,
@@ -352,6 +356,7 @@ define([], function () {
         boss: {
           name: 'Imperator Invictus',
           econ_rate: 1.5,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,

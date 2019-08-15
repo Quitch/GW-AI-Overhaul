@@ -9,6 +9,7 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -36,6 +37,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
+              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.55,
@@ -140,6 +142,7 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -167,6 +170,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
+              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.55,
@@ -271,6 +275,7 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -298,6 +303,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
+              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.55,
@@ -401,15 +407,16 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
             percent_air: 0.55,
             percent_naval: 0,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
             neural_data_mod: 1,
@@ -428,6 +435,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
+              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.55,
@@ -531,15 +539,16 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
             percent_air: 0.55,
             percent_naval: 0,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
             neural_data_mod: 1,
@@ -558,6 +567,7 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
+              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.55,

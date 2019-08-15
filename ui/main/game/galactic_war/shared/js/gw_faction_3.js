@@ -9,6 +9,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -36,6 +37,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -64,6 +66,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -168,6 +171,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -195,6 +199,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -223,6 +228,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -327,6 +333,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -354,6 +361,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -382,6 +390,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -486,6 +495,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -513,6 +523,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -541,6 +552,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -645,6 +657,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 1,
+          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -672,6 +685,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -700,6 +714,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 0.7,
+              landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
