@@ -7,6 +7,7 @@
  - Bosses try to start on a different planet to you
  - Boss minions try to start on the same planet as you
  - The Foundation's boss Acolyte will provide greater ground cover for the Inquisitor's air
+ - The Seekers accompanying First Seeker Osiris now display distinct behaviour from one another
 
 ## 0.11 - 2019-04-15
 
