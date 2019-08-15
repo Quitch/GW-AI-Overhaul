@@ -88,7 +88,7 @@ define([], function () {
             },
             {
               name: 'Atlas Beta',
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -221,7 +221,7 @@ define([], function () {
             },
             {
               name: 'Patagonia Beta',
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -353,7 +353,7 @@ define([], function () {
             },
             {
               name: 'Xylcor Beta',
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -485,7 +485,7 @@ define([], function () {
             },
             {
               name: 'Blogar\'s Fist Beta',
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -617,7 +617,7 @@ define([], function () {
             },
             {
               name: 'Zeta Draconis Beta',
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
