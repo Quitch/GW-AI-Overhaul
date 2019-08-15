@@ -8,6 +8,7 @@
  - Boss minions try to start on the same planet as you
  - The Foundation's boss Acolyte will provide greater ground cover for the Inquisitor's air
  - The Seekers accompanying First Seeker Osiris now display distinct behaviour from one another
+ - Synchronous boss personalities updated to better reflect their spawning behaviours
 
 ## 0.11 - 2019-04-15
 
