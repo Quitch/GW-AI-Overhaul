@@ -371,7 +371,7 @@ requireGW([
               setAIData(fnn, dist, false);
               fnn.color = fnn.color || worker.ai.color;
               worker.ai.foes.push(fnn);
-            };
+            }
           });
         });
 
