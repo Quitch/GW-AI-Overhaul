@@ -9,7 +9,6 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
-          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -37,12 +36,11 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -142,7 +140,6 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
-          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -170,12 +167,11 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -275,7 +271,6 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
-          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -303,12 +298,11 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -407,7 +401,6 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
-          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -435,12 +428,11 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -539,7 +531,6 @@ define([], function () {
         boss: {
           name: 'Inquisitor Nemicus',
           econ_rate: 1,
-          landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -567,12 +558,11 @@ define([], function () {
             {
               name: 'Acolyte Agatho',
               econ_rate: 1,
-              landing_policy: 'on_player_planet',
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
