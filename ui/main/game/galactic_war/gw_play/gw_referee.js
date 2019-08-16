@@ -118,8 +118,8 @@ define([
         });
       });
       // Galatic War AI Overhaul - Prevent premature teching
-      ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate,
-      ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate,
+      ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
+      ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
       armies.push({
         slots: [{
           ai: true,
@@ -157,7 +157,7 @@ define([
       _.forEach(ai.foes, function (foe) {
         // Galatic War AI Overhaul - Prevent premature teching
         foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate,
-        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate,        
+        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate,
         armies.push({
           slots: [{
             ai: true,
