@@ -34,7 +34,6 @@ define([], function () {
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json',
-
         },
         bossCard: 'gwc_start_artillery',
         systemDescription: "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
