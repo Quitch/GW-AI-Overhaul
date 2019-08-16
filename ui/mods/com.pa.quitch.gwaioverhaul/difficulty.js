@@ -311,7 +311,6 @@ requireGW([
           return;
 
         // DIFFICULTY RAMPING CODE
-        //console.log(" START DIFFICULTY RAMPING ");
         var maxDist = _.reduce(game.galaxy().stars(), function (value, star) {
           return Math.max(star.distance(), value);
         }, 0);
@@ -337,8 +336,6 @@ requireGW([
           else {
             ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * ai.econ_rate;
           }
-
-          //console.log("AI DIFF END: ");
         };
 
         var aiFactions = _.range(GWFactions.length);
