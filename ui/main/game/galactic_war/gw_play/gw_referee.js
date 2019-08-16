@@ -108,7 +108,9 @@ define([
           slots: [{
             ai: true,
             name: minion.name || 'Helper',
-            commander: fixupCommander(minion.commander || playerCommander)
+            commander: fixupCommander(minion.commander || playerCommander),
+            // Galactic War AI Overhaul - Support landing policies
+            landing_policy: 'on_player_planet'
           }],
           color: minion.color || [playerColor[1], playerColor[0]],
           econ_rate: minion.econ_rate || 1,
