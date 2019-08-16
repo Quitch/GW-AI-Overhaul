@@ -12,6 +12,7 @@
  - Bronze and Silver start with a slightly lower eco
  - Gold eco ramps up slightly faster
  - Subcommanders will always try to spawn on the same planet as the player
+ - Increased the chance of a FFA occuring at Silver and above
 
 ## 0.11 - 2019-04-15
 

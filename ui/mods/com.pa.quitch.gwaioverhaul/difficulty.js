@@ -95,7 +95,7 @@ requireGW([
         econRatePerDist: 0.1,
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
-        ffa_chance: 15
+        ffa_chance: 20
       },
       {
         // Gold
@@ -118,7 +118,7 @@ requireGW([
         econRatePerDist: 0.15,
         max_basic_fabbers: 40,
         max_advanced_fabbers: 40,
-        ffa_chance: 15
+        ffa_chance: 25
       },
       {
         // Platinum
@@ -141,7 +141,7 @@ requireGW([
         econRatePerDist: 0.2,
         max_basic_fabbers: 50,
         max_advanced_fabbers: 50,
-        ffa_chance: 15
+        ffa_chance: 25
       },
       {
         // Uber
@@ -164,7 +164,7 @@ requireGW([
         econRatePerDist: 0,
         max_basic_fabbers: 100,
         max_advanced_fabbers: 100,
-        ffa_chance: 15
+        ffa_chance: 25
       }
     ]
 
