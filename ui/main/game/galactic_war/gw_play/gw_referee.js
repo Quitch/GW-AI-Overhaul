@@ -107,7 +107,7 @@ define([
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Helper',
+            name: minion.name || 'Subcommander',
             commander: fixupCommander(minion.commander || playerCommander),
             // Galactic War AI Overhaul - Support landing policies
             landing_policy: 'on_player_planet'
@@ -143,7 +143,7 @@ define([
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Helper',
+            name: minion.name || 'Minion',
             commander: fixupCommander(minion.commander || ai.commander),
             // Galactic War AI Overhaul - Support landing policies
             landing_policy: ai.landing_policy || 'no_restriction'
@@ -163,7 +163,7 @@ define([
         armies.push({
           slots: [{
             ai: true,
-            name: foe.name || 'Hindrance',
+            name: foe.name || 'Foe',
             commander: fixupCommander(foe.commander || ai.commander),
             // Galactic War AI Overhaul - Support landing policies
             landing_policy: ai.landing_policy || 'no_restriction'
