@@ -8,7 +8,7 @@ define([], function () {
         name: 'Alenquer - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
           landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
@@ -36,7 +36,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
@@ -66,7 +66,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
@@ -172,7 +172,7 @@ define([], function () {
         name: 'Xianyao - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
           landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
@@ -200,7 +200,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
@@ -230,7 +230,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
@@ -336,7 +336,7 @@ define([], function () {
         name: 'Epiphany - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
           landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
@@ -364,7 +364,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
@@ -394,7 +394,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
@@ -500,7 +500,7 @@ define([], function () {
         name: 'Varthema - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
           landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
@@ -528,7 +528,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
@@ -558,7 +558,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
@@ -664,7 +664,7 @@ define([], function () {
         name: 'Chernykh - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
           landing_policy: 'off_player_planet',
           personality: {
             percent_land: 0.2,
@@ -692,7 +692,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
@@ -722,7 +722,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
               landing_policy: 'on_player_planet',
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {

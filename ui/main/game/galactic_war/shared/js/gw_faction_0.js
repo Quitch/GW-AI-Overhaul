@@ -8,7 +8,7 @@ define([], function () {
         name: 'Kohr - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 3,
           landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
@@ -96,7 +96,7 @@ define([], function () {
         name: 'Entara - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 3,
           landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
@@ -183,7 +183,7 @@ define([], function () {
         name: 'Agoge - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 3,
           landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,
@@ -269,7 +269,7 @@ define([], function () {
         name: 'Tau Leporis - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 3,
           personality: {
             landing_policy: 'off_player_planet',
             percent_vehicle: 0.45,
@@ -355,7 +355,7 @@ define([], function () {
         name: 'Poseidon\'s Wrath - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 3,
           landing_policy: 'off_player_planet',
           personality: {
             percent_vehicle: 0.45,

@@ -8,7 +8,7 @@ define([], function () {
         name: 'Atlas - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -35,7 +35,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -139,7 +139,7 @@ define([], function () {
         name: 'Patagonia - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -166,7 +166,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -270,7 +270,7 @@ define([], function () {
         name: 'Xylcor - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -297,7 +297,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -400,7 +400,7 @@ define([], function () {
         name: 'Blogar\'s Fist - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -427,7 +427,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
@@ -530,7 +530,7 @@ define([], function () {
         name: 'Zeta Draconis - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -557,7 +557,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
                 percent_land: 0.8,
