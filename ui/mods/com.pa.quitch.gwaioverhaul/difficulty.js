@@ -336,8 +336,6 @@ requireGW([
           }
           else {
             ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * ai.econ_rate;
-            console.log("BOSS: " + ai.name);
-            console.log("Eco rate: " + ai.econ_rate);
           }
 
           //console.log("AI DIFF END: ");
