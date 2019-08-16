@@ -9,6 +9,8 @@
  - The acolyte of Inquisitor Nemicus will provide greater ground cover for the Inquisitor's air
  - The Seekers accompanying First Seeker Osiris now display distinct behaviour from one another
  - Metrarch the Machinist and Servant Aust have personalities reflective of their new spawning behaviours
+ - Silver starts with a slightly lower eco
+ - Gold eco ramps up slightly faster
 
 ## 0.11 - 2019-04-15
 

@@ -91,7 +91,7 @@ requireGW([
           [
             "PreventsWaste"
           ],
-        econBase: 0.8,
+        econBase: 0.7,
         econRatePerDist: 0.1,
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
@@ -115,7 +115,7 @@ requireGW([
             "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.1,
+        econRatePerDist: 0.15,
         max_basic_fabbers: 40,
         max_advanced_fabbers: 40,
         ffa_chance: 15
@@ -335,7 +335,9 @@ requireGW([
             ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           }
           else {
-            ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * 2;
+            ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * ai.econ_rate;
+            console.log("BOSS: " + ai.name);
+            console.log("Eco rate: " + ai.econ_rate);
           }
 
           //console.log("AI DIFF END: ");
