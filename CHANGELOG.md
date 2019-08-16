@@ -2,13 +2,13 @@
 
 ## DEV
 
- - AI accounts for its eco modifier when teching to T2 to prevent premature teching
+ - Enemies account for their eco modifier when teching to T2
  - Bosses now enjoy an eco boost over surrounding systems
  - Bosses try to start on a different planet to you
  - Boss minions try to start on the same planet as you
- - The Foundation's boss Acolyte will provide greater ground cover for the Inquisitor's air
+ - The acolyte of Inquisitor Nemicus will provide greater ground cover for the Inquisitor's air
  - The Seekers accompanying First Seeker Osiris now display distinct behaviour from one another
- - Synchronous boss personalities updated to better reflect their spawning behaviours
+ - Metrarch the Machinist and Servant Aust have personalities reflective of their new spawning behaviours
 
 ## 0.11 - 2019-04-15
 
