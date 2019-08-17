@@ -10,7 +10,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 2,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policies: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -98,7 +98,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 2,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policies: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -186,7 +186,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 2,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policies: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -273,7 +273,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 2,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policies: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -360,7 +360,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 2,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policies: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
