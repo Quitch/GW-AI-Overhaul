@@ -84,6 +84,7 @@ define([
       return commander;
     };
 
+
     var generateConfig = function () {
       var self = this;
 
@@ -98,6 +99,8 @@ define([
       var armies = [];
       var slotsArray = [];
       var count = ai.copies || 1;
+
+      // Setup the player
       armies.push({
         slots: [{ name: 'Player' }],
         color: playerColor,
@@ -105,13 +108,13 @@ define([
         spec_tag: '.player',
         alliance_group: 1
       });
+      // Setup the player's subcommanders
       _.forEach(inventory.minions(), function (minion) {
         armies.push({
           slots: [{
             ai: true,
             name: minion.name || 'Subcommander',
             commander: fixupCommander(minion.commander || playerCommander),
-            // Galactic War AI Overhaul - Support landing policies
             landing_policy: 'on_player_planet'
           }],
           color: minion.color || [playerColor[1], playerColor[0]],
@@ -121,16 +124,16 @@ define([
           alliance_group: 1
         });
       });
-      // Galatic War AI Overhaul - Prevent premature teching
+
+      // Setup the AI
       ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
       ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
-      // Galactic War AI Overhaul - Support for shared armies
+      // Support for shared armies
       for (var i = 0; i < count; i++) {
         slotsArray.push({
           ai: true,
           name: ai.name,
           commander: fixupCommander(ai.commander),
-          // Galactic War AI Overhaul - Support landing policies
           landing_policy: ai.landing_policy[i] || 'no_restriction'
         });
       }
@@ -143,7 +146,6 @@ define([
         alliance_group: 2
       });
       _.forEach(ai.minions, function (minion) {
-        // Galatic War AI Overhaul - Prevent premature teching
         minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * minion.econ_rate;
         minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * ai.econ_rate;
         armies.push({
@@ -151,7 +153,6 @@ define([
             ai: true,
             name: minion.name || 'Minion',
             commander: fixupCommander(minion.commander || ai.commander),
-            // Galactic War AI Overhaul - Support landing policies
             landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: minion.color,
@@ -161,9 +162,8 @@ define([
           alliance_group: 2
         });
       });
-      // Galactic War AI Overhaul - Add foes to separate alliance_group to allow for FFAs
+      // Add foes to separate alliance_group to allow for FFAs
       _.forEach(ai.foes, function (foe) {
-        // Galatic War AI Overhaul - Prevent premature teching
         foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
         foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;
         armies.push({
@@ -171,7 +171,6 @@ define([
             ai: true,
             name: foe.name || 'Foe',
             commander: fixupCommander(foe.commander || ai.commander),
-            // Galactic War AI Overhaul - Support landing policies
             landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: foe.color,
@@ -181,6 +180,7 @@ define([
           alliance_group: 3
         });
       });
+
       var config = {
         files: self.files(),
         armies: armies,
