@@ -96,6 +96,8 @@ define([
       var playerColor = inventory.getTag('global', 'playerColor');
       var playerCommander = inventory.getTag('global', 'commander');
       var armies = [];
+      var slotsArray = [];
+      var count = ai.copies || 1;
       armies.push({
         slots: [{ name: 'Player' }],
         color: playerColor,
@@ -122,14 +124,18 @@ define([
       // Galatic War AI Overhaul - Prevent premature teching
       ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
       ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
-      armies.push({
-        slots: [{
+      // Galactic War AI Overhaul - Support for shared armies
+      for (var i = 0; i < count; i++) {
+        slotsArray.push({
           ai: true,
           name: ai.name,
           commander: fixupCommander(ai.commander),
           // Galactic War AI Overhaul - Support landing policies
-          landing_policy: ai.landing_policy || 'no_restriction'
-        }],
+          landing_policy: ai.landing_policy[i] || 'no_restriction'
+        });
+      }
+      armies.push({
+        slots: slotsArray,
         color: ai.color,
         econ_rate: ai.econ_rate,
         personality: ai.personality,
