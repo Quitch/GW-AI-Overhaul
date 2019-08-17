@@ -58,7 +58,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub-commanders a
 
 ### Silver
 
- - No starting eco handicap
+ - Tiny eco penalty
  - Eco increases over distance
  - Good micro
  - Picks on the weakest link
@@ -70,7 +70,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub-commanders a
 ### Gold
 
  - No starting eco handicap
- - Eco increases over distance
+ - Eco quickly increases over distance
  - Good micro
  - Picks on the weakest link
  - Good scouting
