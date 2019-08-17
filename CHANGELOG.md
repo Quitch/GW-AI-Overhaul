@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.12 - 2019-08-17
 
  - Enemies account for their eco modifier when teching to T2
  - Bosses and their minions now enjoy an eco boost over surrounding systems
