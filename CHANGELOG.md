@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Fix for fights failing to start in some circumstances
+
 ## 0.12 - 2019-08-17
 
  - Enemies account for their eco modifier when teching to T2
