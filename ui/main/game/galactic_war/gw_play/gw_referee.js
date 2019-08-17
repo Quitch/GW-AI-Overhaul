@@ -146,6 +146,7 @@ define([
           landing_policy: ai.landing_policy || 'no_restriction'
         });
       }
+      // Add system owner AI
       armies.push({
         slots: slotsArray,
         color: ai.color,
@@ -171,7 +172,7 @@ define([
           alliance_group: 2
         });
       });
-      // Add foes to separate alliance_group to allow for FFAs
+      // Add system invader AI for FFA if any
       _.forEach(ai.foes, function (foe) {
         foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
         foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;
