@@ -11,10 +11,10 @@ define([], function () {
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
