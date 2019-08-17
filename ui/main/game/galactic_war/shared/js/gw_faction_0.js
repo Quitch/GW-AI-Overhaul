@@ -8,8 +8,9 @@ define([], function () {
         name: 'Kohr - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 3,
-          landing_policy: 'off_player_planet',
+          econ_rate: 2,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -95,8 +96,9 @@ define([], function () {
         name: 'Entara - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 3,
-          landing_policy: 'off_player_planet',
+          econ_rate: 2,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -182,8 +184,9 @@ define([], function () {
         name: 'Agoge - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 3,
-          landing_policy: 'off_player_planet',
+          econ_rate: 2,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -268,9 +271,10 @@ define([], function () {
         name: 'Tau Leporis - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 3,
+          econ_rate: 2,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
-            landing_policy: 'off_player_planet',
             percent_vehicle: 0.45,
             percent_bot: 0.25,
             percent_air: 0.2,
@@ -354,8 +358,9 @@ define([], function () {
         name: 'Poseidon\'s Wrath - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 3,
-          landing_policy: 'off_player_planet',
+          econ_rate: 2,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,

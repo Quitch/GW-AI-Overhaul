@@ -13,6 +13,7 @@
  - Gold eco ramps up slightly faster
  - Subcommanders will always try to spawn on the same planet as the player
  - Increased the chance of a FFA occuring at Silver and above
+ - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
 
 ## 0.11 - 2019-04-15
 
