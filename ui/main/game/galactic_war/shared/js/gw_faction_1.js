@@ -8,7 +8,7 @@ define([], function () {
         name: 'Atlas - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -35,12 +35,12 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -139,7 +139,7 @@ define([], function () {
         name: 'Patagonia - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -166,12 +166,12 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -270,7 +270,7 @@ define([], function () {
         name: 'Xylcor - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -297,12 +297,12 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -400,16 +400,16 @@ define([], function () {
         name: 'Blogar\'s Fist - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
             percent_air: 0.55,
             percent_naval: 0,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
             neural_data_mod: 1,
@@ -427,12 +427,12 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
@@ -530,16 +530,16 @@ define([], function () {
         name: 'Zeta Draconis - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
-          econ_rate: 1,
+          econ_rate: 2,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
             percent_air: 0.55,
             percent_naval: 0,
             metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
             neural_data_mod: 1,
@@ -557,12 +557,12 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
-              econ_rate: 1,
+              econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
-                percent_land: 0.55,
+                percent_land: 0.8,
                 percent_orbital: 0.05,
-                percent_air: 0.4,
+                percent_air: 0.15,
                 percent_naval: 0,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,

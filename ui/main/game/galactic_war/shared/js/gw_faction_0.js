@@ -8,7 +8,9 @@ define([], function () {
         name: 'Kohr - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 1.75,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -33,7 +35,6 @@ define([], function () {
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/imperial_invictus/imperial_invictus.json',
-
         },
         bossCard: 'gwc_start_artillery',
         systemDescription: "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
@@ -95,7 +96,9 @@ define([], function () {
         name: 'Entara - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 1.75,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -181,7 +184,9 @@ define([], function () {
         name: 'Agoge - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 1.75,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -266,7 +271,9 @@ define([], function () {
         name: 'Tau Leporis - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 1.75,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -351,7 +358,9 @@ define([], function () {
         name: 'Poseidon\'s Wrath - Legonis Machina',
         boss: {
           name: 'Imperator Invictus',
-          econ_rate: 1.5,
+          econ_rate: 1.75,
+          copies: 3,
+          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,

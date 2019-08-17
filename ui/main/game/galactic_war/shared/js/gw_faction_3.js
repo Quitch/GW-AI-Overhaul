@@ -8,12 +8,13 @@ define([], function () {
         name: 'Alenquer - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
+          landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
@@ -35,13 +36,15 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0.9,
+                percent_bot: 0,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -63,13 +66,15 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0,
+                percent_bot: 0.9,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -87,7 +92,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -167,12 +172,13 @@ define([], function () {
         name: 'Xianyao - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
+          landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
@@ -194,13 +200,15 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0.9,
+                percent_bot: 0,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -222,13 +230,15 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0,
+                percent_bot: 0.9,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -246,7 +256,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -326,12 +336,13 @@ define([], function () {
         name: 'Epiphany - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
+          landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
@@ -353,13 +364,15 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0.9,
+                percent_bot: 0,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -381,13 +394,15 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0,
+                percent_bot: 0.9,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -405,7 +420,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -485,12 +500,13 @@ define([], function () {
         name: 'Varthema - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
+          landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
@@ -512,13 +528,15 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0.9,
+                percent_bot: 0,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -540,13 +558,15 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0,
+                percent_bot: 0.9,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -564,7 +584,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -644,12 +664,13 @@ define([], function () {
         name: 'Chernykh - Revenants',
         boss: {
           name: 'First Seeker Osiris',
-          econ_rate: 1,
+          econ_rate: 2,
+          landing_policy: ['off_player_planet'],
           personality: {
-            percent_land: 0.2,
-            percent_air: 0.05,
+            percent_land: 0.05,
+            percent_air: 0,
             percent_naval: 0,
-            percent_orbital: 0.75,
+            percent_orbital: 0.95,
             metal_drain_check: 0.54,
             energy_drain_check: 0.57,
             metal_demand_check: 0.85,
@@ -671,13 +692,15 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0.9,
+                percent_bot: 0,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -699,13 +722,15 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
-              econ_rate: 0.7,
+              econ_rate: 1.2,
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
-                percent_land: 0.8,
-                percent_air: 0.1,
+                percent_vehicle: 0,
+                percent_bot: 0.9,
+                percent_air: 0.05,
                 percent_naval: 0,
-                percent_orbital: 0.1,
+                percent_orbital: 0.05,
                 metal_drain_check: 0.54,
                 energy_drain_check: 0.57,
                 metal_demand_check: 0.85,
@@ -723,7 +748,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },

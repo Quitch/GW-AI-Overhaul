@@ -68,7 +68,7 @@ requireGW([
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        econBase: 0.7,
+        econBase: 0.6,
         econRatePerDist: 0.05,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
@@ -91,11 +91,11 @@ requireGW([
           [
             "PreventsWaste"
           ],
-        econBase: 0.8,
+        econBase: 0.7,
         econRatePerDist: 0.1,
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
-        ffa_chance: 15
+        ffa_chance: 20
       },
       {
         // Gold
@@ -115,10 +115,10 @@ requireGW([
             "PreventsWaste"
           ],
         econBase: 0.8,
-        econRatePerDist: 0.1,
+        econRatePerDist: 0.15,
         max_basic_fabbers: 40,
         max_advanced_fabbers: 40,
-        ffa_chance: 15
+        ffa_chance: 25
       },
       {
         // Platinum
@@ -141,7 +141,7 @@ requireGW([
         econRatePerDist: 0.2,
         max_basic_fabbers: 50,
         max_advanced_fabbers: 50,
-        ffa_chance: 15
+        ffa_chance: 25
       },
       {
         // Uber
@@ -164,7 +164,7 @@ requireGW([
         econRatePerDist: 0,
         max_basic_fabbers: 100,
         max_advanced_fabbers: 100,
-        ffa_chance: 15
+        ffa_chance: 25
       }
     ]
 
@@ -311,16 +311,13 @@ requireGW([
           return;
 
         // DIFFICULTY RAMPING CODE
-        //console.log(" START DIFFICULTY RAMPING ");
         var maxDist = _.reduce(game.galaxy().stars(), function (value, star) {
           return Math.max(star.distance(), value);
         }, 0);
         var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
 
         var setAIData = function (ai, dist, isBoss) {
-          //console.log("AI DIFF START: " + ai + " dist: " + dist + " boss: " + isBoss);
           if (ai.personality === undefined) ai.personality = {};
-          ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
           ai.personality.neural_data_mod = diffInfo.neuralDataMod;
           ai.personality.micro_type = diffInfo.microType;
           ai.personality.go_for_the_kill = diffInfo.goForKill;
@@ -333,8 +330,12 @@ requireGW([
           ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
           ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
           ai.personality.personality_tags = diffInfo.personality_tags
-
-          //console.log("AI DIFF END: ");
+          if (!isBoss) {
+            ai.econ_rate = diffInfo.econBase + (dist * diffInfo.econRatePerDist);
+          }
+          else {
+            ai.econ_rate = (diffInfo.econBase + (dist * diffInfo.econRatePerDist)) * ai.econ_rate;
+          }
         };
 
         var aiFactions = _.range(GWFactions.length);
@@ -372,7 +373,7 @@ requireGW([
               setAIData(fnn, dist, false);
               fnn.color = fnn.color || worker.ai.color;
               worker.ai.foes.push(fnn);
-            };
+            }
           });
         });
 

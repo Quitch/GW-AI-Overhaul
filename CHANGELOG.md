@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 0.12 - 2019-08-17
+
+ - Enemies account for their eco modifier when teching to T2
+ - Bosses and their minions now enjoy an eco boost over surrounding systems
+ - Metrarch the Machinist and First Seeker Osiris try to start on a different planet to you
+ - The minions of Metrarch the Machinist and First Seeker Osiris try to start on the same planet as you
+ - Acolyte Agatho will provide greater ground cover for Inquisitor Nemicus's air
+ - Seeker Ankou and Seeker Barastyr now display distinct behaviour from one another
+ - Metrarch the Machinist and Servant Aust have personalities reflective of their new spawning behaviours
+ - Bronze and Silver start with a slightly lower eco
+ - Gold eco ramps up slightly faster
+ - Subcommanders will always try to spawn on the same planet as the player
+ - Increased the chance of a FFA occuring at Silver and above
+ - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
+ - First Seeker Osiris has a greater focus on orbital
+
 ## 0.11 - 2019-04-15
 
  - Replaced vanilla Commander number scaling formula so that larger galaxies grow to use larger Commander counts

@@ -1,3 +1,4 @@
+/*global parse loadScript*/
 define([
   'shared/gw_common'
 ], function (
@@ -83,6 +84,7 @@ define([
       return commander;
     };
 
+
     var generateConfig = function () {
       var self = this;
 
@@ -95,6 +97,10 @@ define([
       var playerColor = inventory.getTag('global', 'playerColor');
       var playerCommander = inventory.getTag('global', 'commander');
       var armies = [];
+      var slotsArray = [];
+      var count = ai.copies || 1;
+
+      // Setup the player
       armies.push({
         slots: [{ name: 'Player' }],
         color: playerColor,
@@ -102,12 +108,14 @@ define([
         spec_tag: '.player',
         alliance_group: 1
       });
+      // Setup the player's subcommanders
       _.forEach(inventory.minions(), function (minion) {
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Helper',
-            commander: fixupCommander(minion.commander || playerCommander)
+            name: minion.name || 'Subcommander',
+            commander: fixupCommander(minion.commander || playerCommander),
+            landing_policy: 'on_player_planet'
           }],
           color: minion.color || [playerColor[1], playerColor[0]],
           econ_rate: minion.econ_rate || 1,
@@ -116,12 +124,21 @@ define([
           alliance_group: 1
         });
       });
-      armies.push({
-        slots: [{
+
+      // Setup the AI
+      ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
+      ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
+      // Support for shared armies
+      for (var i = 0; i < count; i++) {
+        slotsArray.push({
           ai: true,
           name: ai.name,
-          commander: fixupCommander(ai.commander)
-        }],
+          commander: fixupCommander(ai.commander),
+          landing_policy: ai.landing_policy[i] || 'no_restriction'
+        });
+      }
+      armies.push({
+        slots: slotsArray,
         color: ai.color,
         econ_rate: ai.econ_rate,
         personality: ai.personality,
@@ -129,11 +146,14 @@ define([
         alliance_group: 2
       });
       _.forEach(ai.minions, function (minion) {
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * minion.econ_rate;
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * ai.econ_rate;
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Helper',
-            commander: fixupCommander(minion.commander || ai.commander)
+            name: minion.name || 'Minion',
+            commander: fixupCommander(minion.commander || ai.commander),
+            landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: minion.color,
           econ_rate: minion.econ_rate || ai.econ_rate,
@@ -142,13 +162,16 @@ define([
           alliance_group: 2
         });
       });
-      // Galactic War AI Overhaul - Add foes to separate alliance_group to allow for FFAs
+      // Add foes to separate alliance_group to allow for FFAs
       _.forEach(ai.foes, function (foe) {
+        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
+        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;
         armies.push({
           slots: [{
             ai: true,
-            name: foe.name || 'Hindrance',
-            commander: fixupCommander(foe.commander || ai.commander)
+            name: foe.name || 'Foe',
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: ai.landing_policy || 'no_restriction'
           }],
           color: foe.color,
           econ_rate: foe.econ_rate || ai.econ_rate,
@@ -157,6 +180,7 @@ define([
           alliance_group: 3
         });
       });
+
       var config = {
         files: self.files(),
         armies: armies,
