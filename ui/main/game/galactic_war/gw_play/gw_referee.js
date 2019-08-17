@@ -134,7 +134,7 @@ define([
           ai: true,
           name: ai.name,
           commander: fixupCommander(ai.commander),
-          landing_policy: ai.landing_policies[i] || ai.landing_policy || 'no_restriction'
+          landing_policy: ai.landing_policy[i] || 'no_restriction'
         });
       }
       armies.push({

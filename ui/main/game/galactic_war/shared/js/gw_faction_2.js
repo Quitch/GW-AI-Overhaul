@@ -9,7 +9,7 @@ define([], function () {
         boss: {
           name: 'Metrarch the Machinist',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -38,7 +38,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 1.5,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.45,
@@ -144,7 +144,7 @@ define([], function () {
         boss: {
           name: 'Metrarch the Machinist',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -173,7 +173,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 1.5,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.45,
@@ -279,7 +279,7 @@ define([], function () {
         boss: {
           name: 'Metrarch the Machinist',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -308,7 +308,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 1.5,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.45,
@@ -414,7 +414,7 @@ define([], function () {
         boss: {
           name: 'Metrarch the Machinist',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -443,7 +443,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 1.5,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.45,
@@ -549,7 +549,7 @@ define([], function () {
         boss: {
           name: 'Metrarch the Machinist',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -578,7 +578,7 @@ define([], function () {
             {
               name: 'Servant Aust',
               econ_rate: 1.5,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.45,

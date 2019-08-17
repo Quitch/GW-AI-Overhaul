@@ -9,7 +9,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -37,7 +37,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.9,
@@ -67,7 +67,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0,
@@ -92,7 +92,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -173,7 +173,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -201,7 +201,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.9,
@@ -231,7 +231,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0,
@@ -256,7 +256,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -337,7 +337,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -365,7 +365,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.9,
@@ -395,7 +395,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0,
@@ -420,7 +420,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -501,7 +501,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -529,7 +529,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.9,
@@ -559,7 +559,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0,
@@ -584,7 +584,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
@@ -665,7 +665,7 @@ define([], function () {
         boss: {
           name: 'First Seeker Osiris',
           econ_rate: 2,
-          landing_policy: 'off_player_planet',
+          landing_policy: ['off_player_planet'],
           personality: {
             percent_land: 0.2,
             percent_air: 0.05,
@@ -693,7 +693,7 @@ define([], function () {
             {
               name: 'Seeker Ankou',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0.9,
@@ -723,7 +723,7 @@ define([], function () {
             {
               name: 'Seeker Barastyr',
               econ_rate: 1.2,
-              landing_policy: 'on_player_planet',
+              landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
               personality: {
                 percent_vehicle: 0,
@@ -748,7 +748,7 @@ define([], function () {
                 min_basic_fabbers: 3,
                 min_advanced_fabbers: 1
               },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
             }
           ]
         },
