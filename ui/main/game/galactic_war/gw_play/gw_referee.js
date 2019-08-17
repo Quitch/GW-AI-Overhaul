@@ -98,7 +98,6 @@ define([
       var playerCommander = inventory.getTag('global', 'commander');
       var armies = [];
       var slotsArray = [];
-      var count = ai.copies || 1;
 
       // Setup the player
       armies.push({
@@ -130,7 +129,7 @@ define([
       ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
       // Support for shared armies
       if (Array.isArray(ai.landing_policy)) {
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < ai.landing_policy.length; i++) {
           slotsArray.push({
             ai: true,
             name: ai.name,
