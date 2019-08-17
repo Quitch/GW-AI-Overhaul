@@ -9,13 +9,13 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
    - Foundation: air/naval
    - Synchronous: balanced
    - Revenants: orbital
- - Customise each enemy/sub-commander
+ - Customise each enemy/Sub-commander
    - Unique model
    - Unique personality
    - Unique colour
    - Fight according to their faction's preferred style
  - Six new difficulties suitable for anyone from a new player to a veteran of the game
- - Reduced sub-commander power so they won't carry the game for you anymore
+ - Reduced Sub-commander power so they won't carry the game for you anymore
  - Adds the possibility of multiple factions in a system and a FFA occuring
  - Adds support for enemy armies with multiple commanders
  - Bosses are distinctly more difficult than the surrounding systems
@@ -32,7 +32,7 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders are not impacted by difficulty.
+Each difficulty describes the enemy AI behaviour and handicaps; Sub-commanders are not impacted by difficulty.
 
 ### Casual
 
@@ -58,7 +58,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 
 ### Silver
 
- - No starting eco handicap
+ - Tiny eco penalty
  - Eco increases over distance
  - Good micro
  - Picks on the weakest link
@@ -70,7 +70,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; sub-commanders a
 ### Gold
 
  - No starting eco handicap
- - Eco increases over distance
+ - Eco quickly increases over distance
  - Good micro
  - Picks on the weakest link
  - Good scouting
@@ -111,10 +111,10 @@ Please use the mod's [forum thread](https://forums.planetaryannihilation.com/thr
 #### Why don't the descriptions match up with the Commanders' names?
 Because that would break the translations, so I've left them untouched.
 
-#### Will sub-commanders fighting for me have the same personality if I fight against them?
+#### Will Sub-commanders fighting for me have the same personality if I fight against them?
 Yes. Mostly.
 
-#### Are all sub-commanders created equal?
+#### Are all Sub-commanders created equal?
 No, some are objectively stupider than others.
 
 #### Is there a "fair" difficulty level?

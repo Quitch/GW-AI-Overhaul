@@ -108,12 +108,12 @@ define([
         spec_tag: '.player',
         alliance_group: 1
       });
-      // Setup the player's subcommanders
+      // Setup the player's Sub-commanders
       _.forEach(inventory.minions(), function (minion) {
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Subcommander',
+            name: minion.name || 'Sub-commander',
             commander: fixupCommander(minion.commander || playerCommander),
             landing_policy: 'on_player_planet'
           }],
@@ -129,12 +129,22 @@ define([
       ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
       ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
       // Support for shared armies
-      for (var i = 0; i < count; i++) {
+      if (Array.isArray(ai.landing_policy)) {
+        for (var i = 0; i < count; i++) {
+          slotsArray.push({
+            ai: true,
+            name: ai.name,
+            commander: fixupCommander(ai.commander),
+            landing_policy: ai.landing_policy[i]
+          });
+        }
+      }
+      else {
         slotsArray.push({
           ai: true,
           name: ai.name,
           commander: fixupCommander(ai.commander),
-          landing_policy: ai.landing_policy[i] || 'no_restriction'
+          landing_policy: ai.landing_policy || 'no_restriction'
         });
       }
       armies.push({

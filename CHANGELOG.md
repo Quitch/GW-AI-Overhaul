@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.12.1 - 2019-08-17
+
+ - Fix for fights failing to start in some circumstances
+
 ## 0.12 - 2019-08-17
 
  - Enemies account for their eco modifier when teching to T2
@@ -11,7 +15,7 @@
  - Metrarch the Machinist and Servant Aust have personalities reflective of their new spawning behaviours
  - Bronze and Silver start with a slightly lower eco
  - Gold eco ramps up slightly faster
- - Subcommanders will always try to spawn on the same planet as the player
+ - Sub-commanders will always try to spawn on the same planet as the player
  - Increased the chance of a FFA occuring at Silver and above
  - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
  - First Seeker Osiris has a greater focus on orbital
@@ -36,7 +40,7 @@
 
  - Fix minor error in a Synchronous personality
  - Assigned each Commander a unique colour
-  - See which sub-commanders perform well for you and drop the bad ones
+  - See which Sub-commanders perform well for you and drop the bad ones
   - Identify which enemy Commander is the biggest threat
  - Synchronous is now green to ensure enough distinct shades for all Commanders
  - Ensure systems display faction colour and not Commander colour
@@ -52,7 +56,7 @@
  - Updates to Commander personalities
  - Difficulty settings now fully applied to bosses
  - Added four new Commanders to each faction
- - Reduced the effectiveness of all sub-commanders
+ - Reduced the effectiveness of all Sub-commanders
  - Foundation lean more heavily into naval tech when they can
  - Slight increase in boss difficulty through better economy handling and faster teching
  - Revenants favour land over air
@@ -82,9 +86,9 @@
 
 ## 0.5 - 2019-01-13
 
- - Fixed issue with turtling subcommander personalities only building a single factory
+ - Fixed issue with turtling Sub-commander personalities only building a single factory
  - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
- - Updated Queller subcommander personalities with latest Queller personality settings
+ - Updated Queller Sub-commander personalities with latest Queller personality settings
  - Updated difficulty levels to use the latest Queller economic personality settings
 
 ## 0.4 - 2018-04-17
@@ -116,5 +120,5 @@
  - Reduce number of minions per faction to 13
  - Assign a unique commander model to each minion
  - Name minion after commander to allow identification
- - Assign unique personality to each sub-commander
+ - Assign unique personality to each Sub-commander
  - Append five new difficulty levels to Galactic War
