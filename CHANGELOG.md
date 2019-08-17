@@ -4,10 +4,10 @@
 
  - Enemies account for their eco modifier when teching to T2
  - Bosses and their minions now enjoy an eco boost over surrounding systems
- - Bosses try to start on a different planet to you
- - Boss minions try to start on the same planet as you
- - The acolyte of Inquisitor Nemicus will provide greater ground cover for the Inquisitor's air
- - The Seekers accompanying First Seeker Osiris now display distinct behaviour from one another
+ - Metrarch the Machinist and First Seeker Osiris try to start on a different planet to you
+ - The minions of Metrarch the Machinist and First Seeker Osiris try to start on the same planet as you
+ - Acolyte Agatho will provide greater ground cover for Inquisitor Nemicus's air
+ - Seeker Ankou and Seeker Barastyr now display distinct behaviour from one another
  - Metrarch the Machinist and Servant Aust have personalities reflective of their new spawning behaviours
  - Bronze and Silver start with a slightly lower eco
  - Gold eco ramps up slightly faster
