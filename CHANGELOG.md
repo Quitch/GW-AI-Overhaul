@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Sub Commanders display their personality when you find their card
+
 ## 0.12.1 - 2019-08-17
 
  - Fix for fights failing to start in some circumstances

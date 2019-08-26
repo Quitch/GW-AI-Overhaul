@@ -684,6 +684,7 @@ define([], function () {
       {
         // Land heavy
         name: 'Servant Potbelly79',
+        character: 'Land',
         color: [[229, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -727,6 +728,7 @@ define([], function () {
       {
         // Air heavy
         name: 'Servant Raventhornn',
+        character: 'Air',
         color: [[204, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -770,6 +772,7 @@ define([], function () {
       {
         // Uber
         name: 'Servant SacrificialLamb',
+        character: 'Uber',
         color: [[178, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -813,6 +816,7 @@ define([], function () {
       {
         // Platinum
         name: 'Servant Shadowdaemon',
+        character: 'Platinum',
         color: [[153, 255, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -856,6 +860,7 @@ define([], function () {
       {
         // Gold
         name: 'Servant Spartandano',
+        character: 'Gold',
         color: [[128, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -899,6 +904,7 @@ define([], function () {
       {
         // Silver
         name: 'Servant Xenosentry',
+        character: 'Silver',
         color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -942,6 +948,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Servant TheFlax',
+        character: 'Basic Tech',
         color: [[76, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -985,6 +992,7 @@ define([], function () {
       {
         // Tech
         name: 'Servant Tokamaktech',
+        character: 'Advanced Tech',
         color: [[204, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1028,6 +1036,7 @@ define([], function () {
       {
         // Cautious
         name: 'Servant Twoboots',
+        character: 'Cautious',
         color: [[153, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1071,6 +1080,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Servant XenosentryPrime',
+        character: 'Aggressive',
         color: [[102, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1114,6 +1124,7 @@ define([], function () {
       {
         // Rush
         name: 'Servant Xinthar',
+        character: 'Rush',
         color: [[0, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1158,6 +1169,7 @@ define([], function () {
       {
         // Turtle
         name: 'Servant Beast',
+        character: 'Turtle',
         color: [[0, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1202,6 +1214,7 @@ define([], function () {
       {
         // Original
         name: 'Servant Beniesk',
+        character: 'Vanilla',
         color: [[0, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1245,6 +1258,7 @@ define([], function () {
       {
         // Absurd
         name: 'Servant Locust',
+        character: 'Absurd',
         color: [[0, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1288,6 +1302,7 @@ define([], function () {
       {
         // Relentless
         name: 'Servant Zancrowe',
+        character: 'Relentless',
         color: [[0, 153, 76], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1331,6 +1346,7 @@ define([], function () {
       {
         // Hard
         name: 'Servant Damubbster',
+        character: 'Hard',
         color: [[0, 204, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1374,6 +1390,7 @@ define([], function () {
       {
         // Bronze
         name: 'Servant Raizell',
+        character: 'Bronze',
         color: [[0, 255, 128], [192, 192, 192]],
         econ_rate: 1,
         personality: {
