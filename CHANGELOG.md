@@ -4,6 +4,7 @@
 
  - Sub Commanders display their personality when you find their card
  - Pre-fixed difficulties to further differentiate them from skirmish and galaxy size
+ - Reduced the number of Commanders in the initial Platinum systems
 
 ## 0.12.1 - 2019-08-17
 
