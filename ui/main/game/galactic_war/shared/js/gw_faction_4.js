@@ -445,7 +445,7 @@ define([], function () {
     minions: [
       {
         // All Tanks
-        name: 'Captain Able',
+        name: 'General Able',
         character: 'Tank',
         color: [[204, 255, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -490,7 +490,7 @@ define([], function () {
       },
       {
         // All Bots
-        name: 'Captain AceAI',
+        name: 'General AceAI',
         character: 'Bot',
         color: [[153, 255, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -534,7 +534,7 @@ define([], function () {
       },
       {
         // Uber
-        name: 'Captain Alpha',
+        name: 'General Alpha',
         character: 'Uber',
         color: [[102, 255, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -578,7 +578,7 @@ define([], function () {
       },
       {
         // Platinum
-        name: 'Captain Aryst0krat',
+        name: 'General Aryst0krat',
         character: 'Platinum',
         color: [[0, 255, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -622,7 +622,7 @@ define([], function () {
       },
       {
         // Gold
-        name: 'Captain Chronoblip',
+        name: 'General Chronoblip',
         character: 'Gold',
         color: [[0, 204, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -666,7 +666,7 @@ define([], function () {
       },
       {
         // Silver
-        name: 'Captain Mjon',
+        name: 'General Mjon',
         character: 'Silver',
         color: [[0, 153, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -710,7 +710,7 @@ define([], function () {
       },
       {
         // Low Tech
-        name: 'Captain Delta',
+        name: 'General Delta',
         character: 'Basic Tech',
         color: [[153, 204, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -754,7 +754,7 @@ define([], function () {
       },
       {
         // Tech
-        name: 'Captain Enzomatrix',
+        name: 'General Enzomatrix',
         character: 'Advanced Tech',
         color: [[102, 178, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -798,7 +798,7 @@ define([], function () {
       },
       {
         // Cautious
-        name: 'Captain Fiveleafclover',
+        name: 'General Fiveleafclover',
         character: 'Cautious',
         color: [[51, 153, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -842,7 +842,7 @@ define([], function () {
       },
       {
         // Aggressive
-        name: 'Captain Gamma',
+        name: 'General Gamma',
         character: 'Aggressive',
         color: [[0, 128, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -886,7 +886,7 @@ define([], function () {
       },
       {
         // Rush
-        name: 'Captain Gnugfur',
+        name: 'General Gnugfur',
         character: 'Rush',
         color: [[0, 102, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -931,7 +931,7 @@ define([], function () {
       },
       {
         // Turtle
-        name: 'Captain Invictus',
+        name: 'General Invictus',
         character: 'Turtle',
         color: [[0, 76, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -975,7 +975,7 @@ define([], function () {
       },
       {
         // Original
-        name: 'Captain Kapowaz',
+        name: 'General Kapowaz',
         character: 'Vanilla',
         color: [[0, 0, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -1019,7 +1019,7 @@ define([], function () {
       },
       {
         // Absurd
-        name: 'Captain JT100010117',
+        name: 'General JT100010117',
         character: 'Absurd',
         color: [[0, 0, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -1064,7 +1064,7 @@ define([], function () {
       },
       {
         // Relentless
-        name: 'Captain Kevin4001',
+        name: 'General Kevin4001',
         character: 'Relentless',
         color: [[0, 0, 225], [192, 192, 192]],
         econ_rate: 1,
@@ -1109,7 +1109,7 @@ define([], function () {
       },
       {
         // Hard
-        name: 'Captain Mostlikely',
+        name: 'General Mostlikely',
         character: 'Hard',
         color: [[51, 51, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1154,7 +1154,7 @@ define([], function () {
       },
       {
         // Bronze
-        name: 'Captain Nagasher',
+        name: 'General Nagasher',
         character: 'Bronze',
         color: [[204, 229, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1198,7 +1198,7 @@ define([], function () {
       },
       {
         // All Air
-        name: 'Captain Progenitor',
+        name: 'General Progenitor',
         character: 'Air',
         color: [[229, 204, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1243,7 +1243,7 @@ define([], function () {
       },
       {
         // All Naval
-        name: 'Captain Sangudo',
+        name: 'General Sangudo',
         character: 'Naval',
         color: [[204, 153, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1287,7 +1287,7 @@ define([], function () {
       },
       {
         // Uber
-        name: 'Captain Seniorhelix',
+        name: 'General Seniorhelix',
         character: 'Uber',
         color: [[178, 102, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1331,7 +1331,7 @@ define([], function () {
       },
       {
         // Platinum
-        name: 'Captain Stelarch',
+        name: 'General Stelarch',
         character: 'Platinum',
         color: [[153, 51, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1375,7 +1375,7 @@ define([], function () {
       },
       {
         // Gold
-        name: 'Captain TheChessKnight',
+        name: 'General TheChessKnight',
         character: 'Gold',
         color: [[127, 0, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1419,7 +1419,7 @@ define([], function () {
       },
       {
         // Silver
-        name: 'Captain Theta',
+        name: 'General Theta',
         character: 'Silver',
         color: [[102, 0, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -1463,7 +1463,7 @@ define([], function () {
       },
       {
         // Low Tech
-        name: 'Captain ToddFather',
+        name: 'General ToddFather',
         character: 'Basic Tech',
         color: [[76, 0, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -1507,7 +1507,7 @@ define([], function () {
       },
       {
         // Tech
-        name: 'Captain Ajax',
+        name: 'General Ajax',
         character: 'Advanced Tech',
         color: [[255, 204, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1551,7 +1551,7 @@ define([], function () {
       },
       {
         // Cautious
-        name: 'Captain Armalisk',
+        name: 'General Armalisk',
         character: 'Cautious',
         color: [[255, 153, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1595,7 +1595,7 @@ define([], function () {
       },
       {
         // Aggressive
-        name: 'Captain Calyx',
+        name: 'General Calyx',
         character: 'Aggressive',
         color: [[255, 102, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1639,7 +1639,7 @@ define([], function () {
       },
       {
         // Rush
-        name: 'Captain Gambitdfa',
+        name: 'General Gambitdfa',
         character: 'Rush',
         color: [[255, 0, 255], [192, 192, 192]],
         econ_rate: 1,
@@ -1683,7 +1683,7 @@ define([], function () {
       },
       {
         // Turtle
-        name: 'Captain Berlinetta',
+        name: 'General Berlinetta',
         character: 'Turtle',
         color: [[204, 0, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -1727,7 +1727,7 @@ define([], function () {
       },
       {
         // Original
-        name: 'Captain Osiris',
+        name: 'General Osiris',
         character: 'Vanilla',
         color: [[153, 0, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -1771,7 +1771,7 @@ define([], function () {
       },
       {
         // Absurd
-        name: 'Captain Tykus24',
+        name: 'General Tykus24',
         character: 'Absurd',
         color: [[255, 204, 229], [192, 192, 192]],
         econ_rate: 1,
@@ -1815,7 +1815,7 @@ define([], function () {
       },
       {
         // Relentless
-        name: 'Captain Vidicarus',
+        name: 'General Vidicarus',
         character: 'Relentless',
         color: [[255, 153, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -1859,7 +1859,7 @@ define([], function () {
       },
       {
         // Hard
-        name: 'Captain Visionik',
+        name: 'General Visionik',
         character: 'Hard',
         color: [[255, 102, 178], [192, 192, 192]],
         econ_rate: 1,
@@ -1903,7 +1903,7 @@ define([], function () {
       },
       {
         // Bronze
-        name: 'Captain Commandonut',
+        name: 'General Commandonut',
         character: 'Bronze',
         color: [[255, 51, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -1947,7 +1947,7 @@ define([], function () {
       },
       {
         // Air heavy
-        name: 'Captain Raventhornn',
+        name: 'General Raventhornn',
         character: 'Air',
         color: [[204, 255, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -1991,7 +1991,7 @@ define([], function () {
       },
       {
         // Uber
-        name: 'Captain SacrificialLamb',
+        name: 'General SacrificialLamb',
         character: 'Uber',
         color: [[178, 255, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -2035,7 +2035,7 @@ define([], function () {
       },
       {
         // Platinum
-        name: 'Captain Shadowdaemon',
+        name: 'General Shadowdaemon',
         character: 'Platinum',
         color: [[153, 255, 51], [192, 192, 192]],
         econ_rate: 1,
@@ -2079,7 +2079,7 @@ define([], function () {
       },
       {
         // Gold
-        name: 'Captain Spartandano',
+        name: 'General Spartandano',
         character: 'Gold',
         color: [[128, 255, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2123,7 +2123,7 @@ define([], function () {
       },
       {
         // Silver
-        name: 'Captain Xenosentry',
+        name: 'General Xenosentry',
         character: 'Silver',
         color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2167,7 +2167,7 @@ define([], function () {
       },
       {
         // Low Tech
-        name: 'Captain TheFlax',
+        name: 'General TheFlax',
         character: 'Basic Tech',
         color: [[76, 153, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2211,7 +2211,7 @@ define([], function () {
       },
       {
         // Tech
-        name: 'Captain Tokamaktech',
+        name: 'General Tokamaktech',
         character: 'Advanced Tech',
         color: [[204, 255, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -2255,7 +2255,7 @@ define([], function () {
       },
       {
         // Cautious
-        name: 'Captain Twoboots',
+        name: 'General Twoboots',
         character: 'Cautious',
         color: [[153, 255, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -2299,7 +2299,7 @@ define([], function () {
       },
       {
         // Aggressive
-        name: 'Captain XenosentryPrime',
+        name: 'General XenosentryPrime',
         character: 'Aggressive',
         color: [[102, 255, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -2343,7 +2343,7 @@ define([], function () {
       },
       {
         // Rush
-        name: 'Captain Xinthar',
+        name: 'General Xinthar',
         character: 'Rush',
         color: [[0, 255, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2388,7 +2388,7 @@ define([], function () {
       },
       {
         // Turtle
-        name: 'Captain Beast',
+        name: 'General Beast',
         character: 'Turtle',
         color: [[0, 204, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2433,7 +2433,7 @@ define([], function () {
       },
       {
         // Original
-        name: 'Captain Beniesk',
+        name: 'General Beniesk',
         character: 'Vanilla',
         color: [[0, 153, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2477,7 +2477,7 @@ define([], function () {
       },
       {
         // Absurd
-        name: 'Captain Locust',
+        name: 'General Locust',
         character: 'Absurd',
         color: [[0, 102, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2521,7 +2521,7 @@ define([], function () {
       },
       {
         // Relentless
-        name: 'Captain Zancrowe',
+        name: 'General Zancrowe',
         character: 'Relentless',
         color: [[0, 153, 76], [192, 192, 192]],
         econ_rate: 1,
@@ -2565,7 +2565,7 @@ define([], function () {
       },
       {
         // Hard
-        name: 'Captain Damubbster',
+        name: 'General Damubbster',
         character: 'Hard',
         color: [[0, 204, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -2609,7 +2609,7 @@ define([], function () {
       },
       {
         // Bronze
-        name: 'Captain Raizell',
+        name: 'General Raizell',
         character: 'Bronze',
         color: [[0, 255, 128], [192, 192, 192]],
         econ_rate: 1,
@@ -2653,7 +2653,7 @@ define([], function () {
       },
       {
         // Orbital & Land
-        name: 'Captain Betadyne',
+        name: 'General Betadyne',
         character: 'Orbital and Land',
         color: [[255, 204, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -2697,7 +2697,7 @@ define([], function () {
       },
       {
         // Orbital & Air
-        name: 'Captain Centurion',
+        name: 'General Centurion',
         character: 'Orbital and Air',
         color: [[255, 153, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -2741,7 +2741,7 @@ define([], function () {
       },
       {
         // Uber
-        name: 'Captain Diremachine',
+        name: 'General Diremachine',
         character: 'Uber',
         color: [[255, 102, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -2785,7 +2785,7 @@ define([], function () {
       },
       {
         // Platinum
-        name: 'Captain Enderstryke71',
+        name: 'General Enderstryke71',
         character: 'Platinum',
         color: [[255, 0, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2829,7 +2829,7 @@ define([], function () {
       },
       {
         // Gold
-        name: 'Captain Iwmiked',
+        name: 'General Iwmiked',
         character: 'Gold',
         color: [[204, 0, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2873,7 +2873,7 @@ define([], function () {
       },
       {
         // Silver
-        name: 'Captain Majuju',
+        name: 'General Majuju',
         character: 'Silver',
         color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -2917,7 +2917,7 @@ define([], function () {
       },
       {
         // Low Tech
-        name: 'Captain Nefelpitou',
+        name: 'General Nefelpitou',
         character: 'Basic Tech',
         color: [[255, 204, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -2961,7 +2961,7 @@ define([], function () {
       },
       {
         // Tech
-        name: 'Captain Nemicus',
+        name: 'General Nemicus',
         character: 'Advanced Tech',
         color: [[255, 178, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -3005,7 +3005,7 @@ define([], function () {
       },
       {
         // Cautious
-        name: 'Captain Rallus',
+        name: 'General Rallus',
         character: 'Cautious',
         color: [[255, 153, 51], [192, 192, 192]],
         econ_rate: 1,
@@ -3049,7 +3049,7 @@ define([], function () {
       },
       {
         // Aggressive
-        name: 'Captain Stickman9000',
+        name: 'General Stickman9000',
         character: 'Aggressive',
         color: [[255, 128, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -3093,7 +3093,7 @@ define([], function () {
       },
       {
         // Rush
-        name: 'Captain Zaazzaa',
+        name: 'General Zaazzaa',
         character: 'Rush',
         color: [[204, 102, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -3138,7 +3138,7 @@ define([], function () {
       },
       {
         // Turtle
-        name: 'Captain Aeson',
+        name: 'General Aeson',
         character: 'Turtle',
         color: [[255, 255, 204], [192, 192, 192]],
         econ_rate: 1,
@@ -3182,7 +3182,7 @@ define([], function () {
       },
       {
         // Original
-        name: 'Captain Banditks',
+        name: 'General Banditks',
         character: 'Vanilla',
         color: [[255, 255, 153], [192, 192, 192]],
         econ_rate: 1,
@@ -3226,7 +3226,7 @@ define([], function () {
       },
       {
         // Absurd
-        name: 'Captain SPZ58624',
+        name: 'General SPZ58624',
         character: 'Absurd',
         color: [[255, 255, 102], [192, 192, 192]],
         econ_rate: 1,
@@ -3271,7 +3271,7 @@ define([], function () {
       },
       {
         // Relentless
-        name: 'Captain XOV',
+        name: 'General XOV',
         character: 'Relentless',
         color: [[255, 255, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -3316,7 +3316,7 @@ define([], function () {
       },
       {
         // Hard
-        name: 'Captain Reaver',
+        name: 'General Reaver',
         character: 'Hard',
         color: [[204, 204, 0], [192, 192, 192]],
         econ_rate: 1,
@@ -3361,7 +3361,7 @@ define([], function () {
       },
       {
         // Bronze
-        name: 'Captain Sadiga',
+        name: 'General Sadiga',
         character: 'Bronze',
         color: [[153, 153, 0], [192, 192, 192]],
         econ_rate: 1,
