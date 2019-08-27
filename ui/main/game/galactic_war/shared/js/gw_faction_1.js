@@ -661,6 +661,7 @@ define([], function () {
       {
         // All Air
         name: 'Acolyte Progenitor',
+        character: 'Air',
         color: [[229, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -705,6 +706,7 @@ define([], function () {
       {
         // All Naval
         name: 'Acolyte Sangudo',
+        character: 'Naval',
         color: [[204, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -748,6 +750,7 @@ define([], function () {
       {
         // Uber
         name: 'Acolyte Seniorhelix',
+        character: 'Uber',
         color: [[178, 102, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -791,6 +794,7 @@ define([], function () {
       {
         // Platinum
         name: 'Acolyte Stelarch',
+        character: 'Platinum',
         color: [[153, 51, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -834,6 +838,7 @@ define([], function () {
       {
         // Gold
         name: 'Acolyte TheChessKnight',
+        character: 'Gold',
         color: [[127, 0, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -877,6 +882,7 @@ define([], function () {
       {
         // Silver
         name: 'Acolyte Theta',
+        character: 'Silver',
         color: [[102, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -920,6 +926,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Acolyte ToddFather',
+        character: 'Basic Tech',
         color: [[76, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -963,6 +970,7 @@ define([], function () {
       {
         // Tech
         name: 'Acolyte Ajax',
+        character: 'Advanced Tech',
         color: [[255, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1006,6 +1014,7 @@ define([], function () {
       {
         // Cautious
         name: 'Acolyte Armalisk',
+        character: 'Cautious',
         color: [[255, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1049,6 +1058,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Acolyte Calyx',
+        character: 'Aggressive',
         color: [[255, 102, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1092,6 +1102,7 @@ define([], function () {
       {
         // Rush
         name: 'Acolyte Gambitdfa',
+        character: 'Rush',
         color: [[255, 0, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1135,6 +1146,7 @@ define([], function () {
       {
         // Turtle
         name: 'Acolyte Berlinetta',
+        character: 'Turtle',
         color: [[204, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1178,6 +1190,7 @@ define([], function () {
       {
         // Original
         name: 'Acolyte Osiris',
+        character: 'Vanilla',
         color: [[153, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1221,6 +1234,7 @@ define([], function () {
       {
         // Absurd
         name: 'Acolyte Tykus24',
+        character: 'Absurd',
         color: [[255, 204, 229], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1264,6 +1278,7 @@ define([], function () {
       {
         // Relentless
         name: 'Acolyte Vidicarus',
+        character: 'Relentless',
         color: [[255, 153, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1307,6 +1322,7 @@ define([], function () {
       {
         // Hard
         name: 'Acolyte Visionik',
+        character: 'Hard',
         color: [[255, 102, 178], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1350,6 +1366,7 @@ define([], function () {
       {
         // Bronze
         name: 'Acolyte Commandonut',
+        character: 'Bronze',
         color: [[255, 51, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {

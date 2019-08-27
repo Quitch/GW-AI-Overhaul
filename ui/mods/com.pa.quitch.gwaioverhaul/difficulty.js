@@ -2,12 +2,12 @@
 $("#game-difficulty").empty()
 
 // Add new difficulty levels
-$('#game-difficulty').append('<option value="0">CASUAL</option>' +
-  '<option value="1">BRONZE</option>' +
-  '<option value="2">SILVER</option>' +
-  '<option value="3">GOLD</option>' +
-  '<option value="4">PLATINUM</option>' +
-  '<option value="5">UBER</option>')
+$('#game-difficulty').append('<option value="0">GW-CASUAL</option>' +
+  '<option value="1">GW-BRONZE</option>' +
+  '<option value="2">GW-SILVER</option>' +
+  '<option value="3">GW-GOLD</option>' +
+  '<option value="4">GW-PLATINUM</option>' +
+  '<option value="5">GW-UBER</option>')
 
 // Setup and load new difficulties
 requireGW([
@@ -124,8 +124,8 @@ requireGW([
         // Platinum
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 1,
-        minionMod: 0.7,
+        mandatoryMinions: 0,
+        minionMod: 0.8,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -137,7 +137,7 @@ requireGW([
           [
             "PreventsWaste"
           ],
-        econBase: 0.8,
+        econBase: 0.9,
         econRatePerDist: 0.2,
         max_basic_fabbers: 50,
         max_advanced_fabbers: 50,

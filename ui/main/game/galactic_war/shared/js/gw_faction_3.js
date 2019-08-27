@@ -829,6 +829,7 @@ define([], function () {
       {
         // Orbital & Land
         name: 'Seeker Betadyne',
+        character: 'Orbital and Land',
         color: [[255, 204, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -872,6 +873,7 @@ define([], function () {
       {
         // Orbital & Air
         name: 'Seeker Centurion',
+        character: 'Orbital and Air',
         color: [[255, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -915,6 +917,7 @@ define([], function () {
       {
         // Uber
         name: 'Seeker Diremachine',
+        character: 'Uber',
         color: [[255, 102, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -958,6 +961,7 @@ define([], function () {
       {
         // Platinum
         name: 'Seeker Enderstryke71',
+        character: 'Platinum',
         color: [[255, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1001,6 +1005,7 @@ define([], function () {
       {
         // Gold
         name: 'Seeker Iwmiked',
+        character: 'Gold',
         color: [[204, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1044,6 +1049,7 @@ define([], function () {
       {
         // Silver
         name: 'Seeker Majuju',
+        character: 'Silver',
         color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1087,6 +1093,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Seeker Nefelpitou',
+        character: 'Basic Tech',
         color: [[255, 204, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1130,6 +1137,7 @@ define([], function () {
       {
         // Tech
         name: 'Seeker Nemicus',
+        character: 'Advanced Tech',
         color: [[255, 178, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1173,6 +1181,7 @@ define([], function () {
       {
         // Cautious
         name: 'Seeker Rallus',
+        character: 'Cautious',
         color: [[255, 153, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1216,6 +1225,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Seeker Stickman9000',
+        character: 'Aggressive',
         color: [[255, 128, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1259,6 +1269,7 @@ define([], function () {
       {
         // Rush
         name: 'Seeker Zaazzaa',
+        character: 'Rush',
         color: [[204, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1303,6 +1314,7 @@ define([], function () {
       {
         // Turtle
         name: 'Seeker Aeson',
+        character: 'Turtle',
         color: [[255, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1346,6 +1358,7 @@ define([], function () {
       {
         // Original
         name: 'Seeker Banditks',
+        character: 'Vanilla',
         color: [[255, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1389,6 +1402,7 @@ define([], function () {
       {
         // Absurd
         name: 'Seeker SPZ58624',
+        character: 'Absurd',
         color: [[255, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1433,6 +1447,7 @@ define([], function () {
       {
         // Relentless
         name: 'Seeker XOV',
+        character: 'Relentless',
         color: [[255, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1477,6 +1492,7 @@ define([], function () {
       {
         // Hard
         name: 'Seeker Reaver',
+        character: 'Hard',
         color: [[204, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1521,6 +1537,7 @@ define([], function () {
       {
         // Bronze
         name: 'Seeker Sadiga',
+        character: 'Bronze',
         color: [[153, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

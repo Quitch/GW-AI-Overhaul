@@ -98,7 +98,6 @@ define([
       var playerCommander = inventory.getTag('global', 'commander');
       var armies = [];
       var slotsArray = [];
-      var count = ai.copies || 1;
 
       // Setup the player
       armies.push({
@@ -108,12 +107,12 @@ define([
         spec_tag: '.player',
         alliance_group: 1
       });
-      // Setup the player's Sub-commanders
+      // Setup the player's Sub Commanders
       _.forEach(inventory.minions(), function (minion) {
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Sub-commander',
+            name: minion.name || 'Sub Commander',
             commander: fixupCommander(minion.commander || playerCommander),
             landing_policy: 'on_player_planet'
           }],
@@ -130,7 +129,7 @@ define([
       ai.personality.adv_eco_mod_alone = ai.personality.adv_eco_mod_alone * ai.econ_rate;
       // Support for shared armies
       if (Array.isArray(ai.landing_policy)) {
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < ai.landing_policy.length; i++) {
           slotsArray.push({
             ai: true,
             name: ai.name,
@@ -147,6 +146,7 @@ define([
           landing_policy: ai.landing_policy || 'no_restriction'
         });
       }
+      // Add system owner AI
       armies.push({
         slots: slotsArray,
         color: ai.color,
@@ -172,7 +172,7 @@ define([
           alliance_group: 2
         });
       });
-      // Add foes to separate alliance_group to allow for FFAs
+      // Add system invader AI for FFA if any
       _.forEach(ai.foes, function (foe) {
         foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
         foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;

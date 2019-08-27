@@ -10,7 +10,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.75,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -98,7 +98,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.75,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -186,7 +186,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.75,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -273,7 +273,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.75,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -360,7 +360,7 @@ define([], function () {
           name: 'Imperator Invictus',
           econ_rate: 1.75,
           copies: 3,
-          landing_policy: ['off_player_planet','on_player_planet','no_restriction'],
+          landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -446,6 +446,7 @@ define([], function () {
       {
         // All Tanks
         name: 'Legate Able',
+        character: 'Tank',
         color: [[204, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -490,6 +491,7 @@ define([], function () {
       {
         // All Bots
         name: 'Legate AceAI',
+        character: 'Bot',
         color: [[153, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -533,6 +535,7 @@ define([], function () {
       {
         // Uber
         name: 'Legate Alpha',
+        character: 'Uber',
         color: [[102, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -576,6 +579,7 @@ define([], function () {
       {
         // Platinum
         name: 'Legate Aryst0krat',
+        character: 'Platinum',
         color: [[0, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -619,6 +623,7 @@ define([], function () {
       {
         // Gold
         name: 'Legate Chronoblip',
+        character: 'Gold',
         color: [[0, 204, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -662,6 +667,7 @@ define([], function () {
       {
         // Silver
         name: 'Legate Mjon',
+        character: 'Silver',
         color: [[0, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -705,6 +711,7 @@ define([], function () {
       {
         // Low Tech
         name: 'Legate Delta',
+        character: 'Basic Tech',
         color: [[153, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -748,6 +755,7 @@ define([], function () {
       {
         // Tech
         name: 'Legate Enzomatrix',
+        character: 'Advanced Tech',
         color: [[102, 178, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -791,6 +799,7 @@ define([], function () {
       {
         // Cautious
         name: 'Legate Fiveleafclover',
+        character: 'Cautious',
         color: [[51, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -834,6 +843,7 @@ define([], function () {
       {
         // Aggressive
         name: 'Legate Gamma',
+        character: 'Aggressive',
         color: [[0, 128, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -877,6 +887,7 @@ define([], function () {
       {
         // Rush
         name: 'Legate Gnugfur',
+        character: 'Rush',
         color: [[0, 102, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -921,6 +932,7 @@ define([], function () {
       {
         // Turtle
         name: 'Legate Invictus',
+        character: 'Turtle',
         color: [[0, 76, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -964,6 +976,7 @@ define([], function () {
       {
         // Original
         name: 'Legate Kapowaz',
+        character: 'Vanilla',
         color: [[0, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1007,6 +1020,7 @@ define([], function () {
       {
         // Absurd
         name: 'Legate JT100010117',
+        character: 'Absurd',
         color: [[0, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1051,6 +1065,7 @@ define([], function () {
       {
         // Relentless
         name: 'Legate Kevin4001',
+        character: 'Relentless',
         color: [[0, 0, 225], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1095,6 +1110,7 @@ define([], function () {
       {
         // Hard
         name: 'Legate Mostlikely',
+        character: 'Hard',
         color: [[51, 51, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1139,6 +1155,7 @@ define([], function () {
       {
         // Bronze
         name: 'Legate Nagasher',
+        character: 'Bronze',
         color: [[204, 229, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
