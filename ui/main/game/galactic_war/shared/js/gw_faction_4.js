@@ -7,7 +7,7 @@ define([], function () {
       {
         name: 'Kohr - Legonis Machina',
         boss: {
-          name: 'Imperator Invictus',
+          name: 'Supreme Commander',
           econ_rate: 1.75,
           copies: 3,
           landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
@@ -95,7 +95,7 @@ define([], function () {
       {
         name: 'Entara - Legonis Machina',
         boss: {
-          name: 'Imperator Invictus',
+          name: 'Supreme Commander',
           econ_rate: 1.75,
           copies: 3,
           landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
@@ -183,7 +183,7 @@ define([], function () {
       {
         name: 'Agoge - Legonis Machina',
         boss: {
-          name: 'Imperator Invictus',
+          name: 'Supreme Commander',
           econ_rate: 1.75,
           copies: 3,
           landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
@@ -270,7 +270,7 @@ define([], function () {
       {
         name: 'Tau Leporis - Legonis Machina',
         boss: {
-          name: 'Imperator Invictus',
+          name: 'Supreme Commander',
           econ_rate: 1.75,
           copies: 3,
           landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
@@ -357,7 +357,7 @@ define([], function () {
       {
         name: 'Poseidon\'s Wrath - Legonis Machina',
         boss: {
-          name: 'Imperator Invictus',
+          name: 'Supreme Commander',
           econ_rate: 1.75,
           copies: 3,
           landing_policy: ['off_player_planet', 'on_player_planet', 'no_restriction'],
