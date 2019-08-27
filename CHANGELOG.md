@@ -3,7 +3,7 @@
 ## 0.13 - 2019-08-27
 
  - Sub Commanders display their personality when you find their card
- - Pre-fixed difficulties to further differentiate them from skirmish and galaxy size
+ - Prefixed difficulties to further differentiate them from skirmish and galaxy size
  - Reduced the number of Commanders in the initial Platinum systems
  - Platinum starts with a slightly higher eco
 
@@ -23,7 +23,7 @@
  - Bronze and Silver start with a slightly lower eco
  - Gold eco ramps up slightly faster
  - Sub Commanders will always try to spawn on the same planet as the player
- - Increased the chance of a FFA occuring at Silver and above
+ - Increased the chance of a FFA occurring at Silver and above
  - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
  - First Seeker Osiris has a greater focus on orbital
 
@@ -57,7 +57,7 @@
 ## 0.8 - 2019-03-29
 
  - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
- - Reduced file shadowing with thanks to Wondible
+ - Reduced file shadowing with thanks to wondible
  - Enemy Commanders now utilise individual styles
  - Updated difficulty guidance based on more personality controls being assigned to individual Commanders
  - Updates to Commander personalities
