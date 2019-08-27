@@ -137,7 +137,7 @@ requireGW([
           [
             "PreventsWaste"
           ],
-        econBase: 0.8,
+        econBase: 0.9,
         econRatePerDist: 0.2,
         max_basic_fabbers: 50,
         max_advanced_fabbers: 50,
