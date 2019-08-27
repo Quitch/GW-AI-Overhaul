@@ -107,12 +107,12 @@ define([
         spec_tag: '.player',
         alliance_group: 1
       });
-      // Setup the player's Sub-commanders
+      // Setup the player's Sub Commanders
       _.forEach(inventory.minions(), function (minion) {
         armies.push({
           slots: [{
             ai: true,
-            name: minion.name || 'Sub-commander',
+            name: minion.name || 'Sub Commander',
             commander: fixupCommander(minion.commander || playerCommander),
             landing_policy: 'on_player_planet'
           }],
