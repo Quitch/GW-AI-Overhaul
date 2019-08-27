@@ -3,6 +3,7 @@
 ## DEV
 
  - Sub Commanders display their personality when you find their card
+ - Pre-fixed difficulties to further differentiate them from skirmish and galaxy size
 
 ## 0.12.1 - 2019-08-17
 
