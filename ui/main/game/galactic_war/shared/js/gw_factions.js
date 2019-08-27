@@ -4,7 +4,8 @@ define([
   'shared/gw_faction_2',
   'shared/gw_faction_3',
   'shared/gw_faction_4'
-], function (
+], 
+function (
   faction0,
   faction1,
   faction2,
