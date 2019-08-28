@@ -7,7 +7,7 @@
 ## 0.13 - 2019-08-27
 
  - Sub Commanders display their personality when you find their card
- - Prefixed difficulties to further differentiate them from skirmish and galaxy size
+ - Prefixed difficulties to further differentiate them from skirmish difficulty and galaxy size
  - Reduced the number of Commanders in the initial Platinum systems
  - Platinum starts with a slightly higher eco
 
