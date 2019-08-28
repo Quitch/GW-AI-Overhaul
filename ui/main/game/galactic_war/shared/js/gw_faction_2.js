@@ -946,7 +946,7 @@ define([], function () {
         commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
       },
       {
-        // Low Tech
+        // Basic Tech
         name: 'Servant TheFlax',
         character: 'Basic Tech',
         color: [[76, 153, 0], [192, 192, 192]],
@@ -990,7 +990,7 @@ define([], function () {
         commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
       },
       {
-        // Tech
+        // Advanced Tech
         name: 'Servant Tokamaktech',
         character: 'Advanced Tech',
         color: [[204, 255, 204], [192, 192, 192]],

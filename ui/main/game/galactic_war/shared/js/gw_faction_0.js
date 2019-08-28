@@ -709,7 +709,7 @@ define([], function () {
         commander: '/pa/units/commanders/imperial_mjon/imperial_mjon.json'
       },
       {
-        // Low Tech
+        // Basic Tech
         name: 'Legate Delta',
         character: 'Basic Tech',
         color: [[153, 204, 255], [192, 192, 192]],
@@ -753,7 +753,7 @@ define([], function () {
         commander: '/pa/units/commanders/imperial_delta/imperial_delta.json'
       },
       {
-        // Tech
+        // Advanced Tech
         name: 'Legate Enzomatrix',
         character: 'Advanced Tech',
         color: [[102, 178, 255], [192, 192, 192]],
