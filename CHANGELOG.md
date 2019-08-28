@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Fixed enemies not always teching at the correct time
+
 ## 0.13 - 2019-08-27
 
  - Sub Commanders display their personality when you find their card

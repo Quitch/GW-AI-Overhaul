@@ -158,8 +158,8 @@ define([
         alliance_group: 2
       });
       _.forEach(ai.minions, function (minion) {
-        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * minion.econ_rate;
-        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * ai.econ_rate;
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * (minion.econ_rate || ai.econ_rate);
         armies.push({
           slots: [{
             ai: true,
