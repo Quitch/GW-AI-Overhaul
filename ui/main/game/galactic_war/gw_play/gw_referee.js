@@ -141,14 +141,12 @@ define([
         }
       }
       else {
-        for (var a = 0; a < ai.copiesWorker; a++) {
           slotsArray.push({
             ai: true,
             name: ai.name,
             commander: fixupCommander(ai.commander),
             landing_policy: ai.landing_policy || 'no_restriction'
           });
-        }
       }
       // Add system owner AI
       armies.push({
