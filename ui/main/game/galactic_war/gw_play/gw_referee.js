@@ -176,8 +176,8 @@ define([
       });
       // Add system invader AI for FFA if any
       _.forEach(ai.foes, function (foe) {
-        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
-        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;
+        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
         armies.push({
           slots: [{
             ai: true,
