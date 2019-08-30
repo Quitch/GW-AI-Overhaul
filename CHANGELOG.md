@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.13.1 - 2019-08-30
 
  - Fixed enemies not always teching at the correct time
 
