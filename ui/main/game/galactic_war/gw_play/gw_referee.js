@@ -109,6 +109,8 @@ define([
       });
       // Setup the player's Sub Commanders
       _.forEach(inventory.minions(), function (minion) {
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * (minion.econ_rate || 1);
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * (minion.econ_rate || 1);
         armies.push({
           slots: [{
             ai: true,
