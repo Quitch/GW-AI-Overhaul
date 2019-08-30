@@ -924,7 +924,7 @@ define([], function () {
         commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'
       },
       {
-        // Low Tech
+        // Basic Tech
         name: 'Acolyte ToddFather',
         character: 'Basic Tech',
         color: [[76, 0, 153], [192, 192, 192]],
@@ -968,7 +968,7 @@ define([], function () {
         commander: '/pa/units/commanders/imperial_toddfather/imperial_toddfather.json'
       },
       {
-        // Tech
+        // Advanced Tech
         name: 'Acolyte Ajax',
         character: 'Advanced Tech',
         color: [[255, 204, 255], [192, 192, 192]],

@@ -1091,7 +1091,7 @@ define([], function () {
         commander: '/pa/units/commanders/raptor_majuju/raptor_majuju.json'
       },
       {
-        // Low Tech
+        // Basic Tech
         name: 'Seeker Nefelpitou',
         character: 'Basic Tech',
         color: [[255, 204, 153], [192, 192, 192]],
@@ -1135,7 +1135,7 @@ define([], function () {
         commander: '/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json'
       },
       {
-        // Tech
+        // Advanced Tech
         name: 'Seeker Nemicus',
         character: 'Advanced Tech',
         color: [[255, 178, 102], [192, 192, 192]],

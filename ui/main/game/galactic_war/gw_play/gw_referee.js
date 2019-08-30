@@ -109,6 +109,8 @@ define([
       });
       // Setup the player's Sub Commanders
       _.forEach(inventory.minions(), function (minion) {
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * (minion.econ_rate || 1);
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * (minion.econ_rate || 1);
         armies.push({
           slots: [{
             ai: true,
@@ -139,12 +141,12 @@ define([
         }
       }
       else {
-        slotsArray.push({
-          ai: true,
-          name: ai.name,
-          commander: fixupCommander(ai.commander),
-          landing_policy: ai.landing_policy || 'no_restriction'
-        });
+          slotsArray.push({
+            ai: true,
+            name: ai.name,
+            commander: fixupCommander(ai.commander),
+            landing_policy: ai.landing_policy || 'no_restriction'
+          });
       }
       // Add system owner AI
       armies.push({
@@ -156,8 +158,8 @@ define([
         alliance_group: 2
       });
       _.forEach(ai.minions, function (minion) {
-        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * minion.econ_rate;
-        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * ai.econ_rate;
+        minion.personality.adv_eco_mod = minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod_alone = minion.personality.adv_eco_mod_alone * (minion.econ_rate || ai.econ_rate);
         armies.push({
           slots: [{
             ai: true,
@@ -174,8 +176,8 @@ define([
       });
       // Add system invader AI for FFA if any
       _.forEach(ai.foes, function (foe) {
-        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
-        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * ai.econ_rate;
+        foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+        foe.personality.adv_eco_mod_alone = foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
         armies.push({
           slots: [{
             ai: true,
