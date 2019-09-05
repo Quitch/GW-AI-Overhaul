@@ -965,9 +965,9 @@ define([], function () {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 4,
+          min_basic_fabbers: 5,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 3,
+          min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
         description: "!LOC:Livius is one of the oldest activated commanders in the Legionis Machina, and possibly the galaxy for that matter. Despite the disrepair his form exists in, he wields a significant amount of power in the court of Commander Invictus. This has lead to rumors that Livius found and reactivated Invictus, rather than the common belief that Invictus was the first commander to awaken.",

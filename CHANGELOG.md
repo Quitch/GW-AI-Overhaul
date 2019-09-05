@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Turtle personality makes more initial fabbers at each tech level
+
 ## 0.13.1 - 2019-08-30
 
  - Fixed enemies not always teching at the correct time

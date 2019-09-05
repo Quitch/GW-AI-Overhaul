@@ -1203,9 +1203,9 @@ define([], function () {
           fabber_alone_on_planet_mod: 3,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 4,
+          min_basic_fabbers: 5,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 3,
+          min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
         description: "!LOC:The process of synchronization is imperfect, and can sometimes result in strange bugs. A commander known as Reroc finished synchronization with the name Mal-Locar. It is unclear whether this is a simple matter of memory corruption or if Mal-Locar was a unique identity drifting in the Whole.",
