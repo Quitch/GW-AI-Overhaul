@@ -700,7 +700,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:An eccentric even among Foundation standards, Blaz has taken to adorning her chassis with various trophies from felled enemies in the form of weaponry, circuitry, and armor chunks. She does so to emulate the various warlords depicted in unearthed progenitor records.",
         commander: '/pa/units/commanders/imperial_progenitor/imperial_progenitor.json'
       },
       {
@@ -744,7 +743,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Chitrik was found by a Foundation scouting party wandering a barren desert planet. He seems to have an affinity for environments composed primarily of silicate, taking his Enlightenment by being immersed in the smallest component parts observable by his optic systems. He will often go years without applying any lubricant to his joints, so as not to wash out any accumulated sand or dirt.",
         commander: '/pa/units/commanders/imperial_sangudo/imperial_sangudo.json'
       },
       {
@@ -788,7 +786,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:An Oracle within the Foundation is one that is believed to be tuned to the unknown the frequencies necessary to receive instructions from the Great Machine. Devi is one such acolyte.",
         commander: '/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json'
       },
       {
@@ -832,7 +829,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Some Acolytes within the Foundation find a form of Enlightenment shortly after they are brought into the fold. For some, this definition will change as they are exposed to new information and progenitor relics. Entor’s definition seems to change dramatically with each new planet she visits.",
         commander: '/pa/units/commanders/imperial_stelarch/imperial_stelarch.json'
       },
       {
@@ -876,7 +872,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Frohl seeks knowledge of the Progenitors with the same fervor as any other Acolyte. However, equally important to finding that information is curating what is and isn’t important. To that end, Frohl has cataloged an extensive library for how to properly prepare a presumably extinct type of feathered organic for consumption by other organics.",
         commander: '/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json'
       },
       {
@@ -920,7 +915,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:While there is much knowledge of old progenitor technology, progenitor culture and history remains largely a mystery. Glohm is one of the few that has managed to find scraps of progenitor culture in the form of ancient physical images. Each of these has been carefully cataloged.",
         commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'
       },
       {
@@ -964,7 +958,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Hzok seeks Enlightenment in stillness as much as possible. Even heat vibrations disturb him, and so he often spends long periods of time drifting in space on an Astraeus lander in deep meditation.",
         commander: '/pa/units/commanders/imperial_toddfather/imperial_toddfather.json'
       },
       {
@@ -1008,7 +1001,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Commanders in general tend to communicate through direct data transfer as opposed to the encoded indirect communication that the progenitors seemed to practice. Intoka has become one of the Foundation’s only linguists, storing and sharing data for interpreting the progenitors’ many codes.",
         commander: '/pa/units/commanders/quad_ajax/quad_ajax.json'
       },
       {
@@ -1052,7 +1044,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Juhst was reactivated on a world with a dense atmosphere and constant gale force winds. Since then she has been obsessed with the power of wind currents and has lobbied heavily to utilize them for power generation as opposed to conventional solar and nuclear solutions.",
         commander: '/pa/units/commanders/quad_armalisk/quad_armalisk.json'
       },
       {
@@ -1096,7 +1087,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:A convert from the Revenants, Khandzta might be the first of his kind. While most Seekers that are rebirthed show an immediate propensity for war, Khandzta was instead possessed by questions about his origin. He converted during his first encounter with the Foundation.",
         commander: '/pa/units/commanders/quad_calyx/quad_calyx.json'
       },
       {
@@ -1140,7 +1130,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:All commanders awaken with the data necessary to wage war and little else. While most simply accept war as their nature, this fact has become unsettling to some older Acolytes. Lok in an extreme case has begun trying to actively avoid conflict, but in this galaxy it always seems to find him.",
         commander: '/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json'
       },
       {
@@ -1184,7 +1173,6 @@ define([], function () {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Nutzo is a young and recent convert from The Revenants. He claims to hear ‘spirits’ from the beyond, and that one of them is the voice of the Great Machine. This is likely more a symptom of his neural processors being stitched together from five other commanders.",
         commander: '/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json'
       },
       {
@@ -1228,7 +1216,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:In some cases overexposure to progenitor relics results in a commander’s neural algorithms diverging to the point where it becomes difficult to communicate with their peers. Okta, for example, has begun assigning unfamiliar roles to many units under his command, such as 'Combat Associate,' 'Executive Manager,' and 'Explosive Supervisor.'",
         commander: '/pa/units/commanders/quad_osiris/quad_osiris.json'
       },
       {
@@ -1272,7 +1259,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:More so than other factions, The Foundation wages ideological as well as physical warfare in many of their battles. Whereas most factions recruit through subjugation or assimilation, The Foundation prefers willing converts. While still young, Pidbok was easily swayed by the promise of serving a Grand Purpose for the Great Machine, instead of just being one of Invictus’ many grunts.",
         commander: '/pa/units/commanders/imperial_tykus24/imperial_tykus24.json'
       },
       {
@@ -1316,7 +1302,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Qadir plans his strategies in unorthodox ways, taking intelligence from the movement of the celestial bodies in his system rather than actual strategic data. He believes he has developed a series of algorithms that can deduce enemy movements purely from the current gravitational forces acting on the battlefield. Strange as it sounds, he remains undefeated.",
         commander: '/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json'
       },
       {
@@ -1360,7 +1345,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Imitating a rumored practice of the Progenitors, Rinkol gives himself a “wider awareness” by wafting burning embers of the Incendicus Tree into his cooling system intakes before battle. His calmness is renowned -- he is said to have slipped into a dormant recharging mode in the middle of an attack on a Revenant outpost.",
         commander: '/pa/units/commanders/imperial_visionik/imperial_visionik.json'
       },
       {
@@ -1404,7 +1388,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Having achieved fame for discovering a cache of Progenitor artifacts only days after coming online, Sasaki fancies herself a legendary archaeologist. When assigned to frontier duty, she spends most of her time digging around for “another epic haul.” She has found nothing of value since her initial bonanza.",
         commander: '/pa/units/commanders/quad_commandonut/quad_commandonut.json'
       }
     ] // minions
