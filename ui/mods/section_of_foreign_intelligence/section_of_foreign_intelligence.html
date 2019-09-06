@@ -4,7 +4,10 @@
     Surface Area
     <span class="area" data-bind="text: $root.systemSurfaceArea"></span>k<sup>2</sup>
   </div>
-  <h3>System Owner</h3>
+  </ul>
+  <div data-bind="visible: model.selection.system().star.ai()">
+    <h3>System Owner</h3>
+  </div>
   <ul data-bind="foreach: $root.system_owner">
     <li class="commander">
       <div class="div_player_icon">
@@ -17,7 +20,9 @@
       <span class="commander-evaluation" data-bind="text: evaluation"></span>
     </li>
   </ul>
-  <h3>Additional Factions</h3>
+  <div data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes">
+    <h3>Additional Factions</h3>
+  </div>
   <ul data-bind="foreach: $root.ffa_opponents">
     <li class="commander">
       <div class="div_player_icon">
