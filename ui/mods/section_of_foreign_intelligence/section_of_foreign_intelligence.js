@@ -3,14 +3,24 @@
 (function () {
   var evaluation = function (rate) {
     if (!rate) { return 'unspecified' }
-    else if (rate < 0.5) { return 'helpless' }
-    else if (rate < 0.75) { return 'incompetent' }
-    else if (rate < 0.95) { return 'weak' }
+    else if (rate < 0.55) { return 'worthless' }
+    else if (rate < 0.65) { return 'helpless' }
+    else if (rate < 0.75) { return 'weak' }
+    else if (rate < 0.85) { return 'inexperienced' }
+    else if (rate < 0.95) { return 'novice' }
     else if (rate < 1.05) { return 'competent' }
-    else if (rate < 1.25) { return 'strong' }
-    else if (rate < 1.5) { return 'dangerous' }
-    else if (rate < 1.75) { return 'deadly' }
-    else { return 'unstoppable' }
+    else if (rate < 1.15) { return 'skilled' }
+    else if (rate < 1.25) { return 'experienced' }
+    else if (rate < 1.35) { return 'veteran' }
+    else if (rate < 1.45) { return 'masterful' }
+    else if (rate < 1.65) { return 'hardcore' }
+    else if (rate < 1.85) { return 'dangerous' }
+    else if (rate < 2.05) { return 'deadly' }
+    else if (rate < 2.35) { return 'inhuman' }
+    else if (rate < 2.65) { return 'genocidal' }
+    else if (rate < 3) { return 'nightmare' }
+    else if (rate < 10) { return 'demigod' }
+    else { return 'godlike' }
   }
 
   var rgb = function (color) {
