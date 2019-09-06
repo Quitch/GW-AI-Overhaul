@@ -1,0 +1,19 @@
+<div class="section_of_foreign_intelligence">
+  <h3>Foreign Intelligence</h3>
+  <div class="surface-area">
+    Surface Area
+    <span class="area" data-bind="text: $root.systemSurfaceArea"></span>k<sup>2</sup>
+  </div><br>
+  <ul data-bind="foreach: $root.foreign_intelligence">
+    <li class="commander">
+      <div class="div_player_icon">
+        <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>
+        <div class="outline">
+          <img src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png" />
+        </div>
+      </div>
+      <span class="commander-name" data-bind="text: name"></span><br>
+      <span class="commander-evaluation" data-bind="text: evaluation"></span>
+    </li>
+  </ul>
+</div>

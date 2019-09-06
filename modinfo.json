@@ -22,11 +22,10 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"
     ],
     "gw_play": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js",
+      "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
+      "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ]
   },
-  "dependencies": [
-    "com.wondible.pa.section_of_foreign_intelligence"
-  ],
   "priority": 90
 }
