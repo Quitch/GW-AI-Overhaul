@@ -314,6 +314,8 @@ requireGW([
       var maxDist = _.reduce(game.galaxy().stars(), function (value, star) {
         return Math.max(star.distance(), value);
       }, 0);
+      //console.log('Max Distance: ' + maxDist);
+
       var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
 
       var setAIData = function (ai, dist, isBoss) {
@@ -355,6 +357,7 @@ requireGW([
           var dist = worker.star.distance();
           setAIData(worker.ai, dist, false);
           var numMinions = Math.floor(diffInfo.mandatoryMinions + (worker.star.distance() * diffInfo.minionMod));
+          //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
           if (numMinions > 0) {
             worker.ai.minions = [];
             _.times(numMinions, function () {
