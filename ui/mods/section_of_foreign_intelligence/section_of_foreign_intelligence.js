@@ -53,7 +53,8 @@
 
   var km2 = 1000000
 
-  var formatedString = function () {
+  var formatedString = function (number) {
+    // eslint-disable-next-line no-redeclare
     var number = number / km2
     if (number < 1000) {
       return number.toPrecision(3)
