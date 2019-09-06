@@ -3,8 +3,22 @@
   <div class="surface-area">
     Surface Area
     <span class="area" data-bind="text: $root.systemSurfaceArea"></span>k<sup>2</sup>
-  </div><br>
-  <ul data-bind="foreach: $root.foreign_intelligence">
+  </div>
+  <h3>System Owner</h3>
+  <ul data-bind="foreach: $root.system_owner">
+    <li class="commander">
+      <div class="div_player_icon">
+        <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>
+        <div class="outline">
+          <img src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png" />
+        </div>
+      </div>
+      <span class="commander-name" data-bind="text: name"></span><br>
+      <span class="commander-evaluation" data-bind="text: evaluation"></span>
+    </li>
+  </ul>
+  <h3>Additional Factions</h3>
+  <ul data-bind="foreach: $root.ffa_opponents">
     <li class="commander">
       <div class="div_player_icon">
         <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>

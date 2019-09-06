@@ -35,7 +35,7 @@
     }
   }
 
-  model.foreign_intelligence = ko.computed(function () {
+  model.system_owner = ko.computed(function () {
     var primary = model.selection.system().star.ai()
     var commanders = []
     if (primary) {
@@ -43,11 +43,16 @@
       if (primary.minions) {
         commanders = commanders.concat(primary.minions.map(intelligence))
       }
-      // Support for Galatic War AI Overhaul
-      if (primary.foes) {
-        commanders = commanders.concat(primary.foes.map(intelligence))
-      }
     }
+    return commanders
+  })
+
+  model.ffa_opponents = ko.computed(function () {
+    var primary = model.selection.system().star.ai()
+    var commanders = []
+    if (primary && primary.foes) {
+        commanders = primary.foes.map(intelligence)
+      }
     return commanders
   })
 
