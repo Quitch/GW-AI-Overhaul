@@ -51,15 +51,13 @@
     return commanders
   })
 
-  var km2 = 1000000
-
-  var formatedString = function (number) {
-    // eslint-disable-next-line no-redeclare
-    var number = number / km2
-    if (number < 1000) {
-      return number.toPrecision(3)
+  var formatedString = function (planetSizes) {
+    var km2 = 1000000
+    var surfaceArea = planetSizes / km2
+    if (surfaceArea < 1000) {
+      return surfaceArea.toPrecision(3)
     } else {
-      return Math.floor(number)
+      return Math.floor(surfaceArea)
     }
   };
 
