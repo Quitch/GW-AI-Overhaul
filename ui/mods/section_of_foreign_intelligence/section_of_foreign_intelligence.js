@@ -51,8 +51,8 @@
     var primary = model.selection.system().star.ai()
     var commanders = []
     if (primary && primary.foes) {
-        commanders = primary.foes.map(intelligence)
-      }
+      commanders = primary.foes.map(intelligence)
+    }
     return commanders
   })
 
