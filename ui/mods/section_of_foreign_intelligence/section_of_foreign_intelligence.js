@@ -53,7 +53,7 @@
 
   var km2 = 1000000
 
-  var formatedString = function (number) {
+  var formatedString = function () {
     var number = number / km2
     if (number < 1000) {
       return number.toPrecision(3)
@@ -72,7 +72,7 @@
     return formatedString(area)
   })
 
-  url = 'coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html'
+  var url = 'coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html'
   $.get(url, function (html) {
     console.log("Loaded html " + url);
     var $fi = $(html)
