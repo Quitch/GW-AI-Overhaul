@@ -7,6 +7,8 @@
  - Increased granularity of threat assessments
  - Removed all enemy system descriptions to make more space for useful information
  - Clearly identify additional factions in a system
+ - Added an overall system threat rating
+ - Each enemy shows their personality on the galaxy map
 
 ## 0.13.1 - 2019-08-30
 
