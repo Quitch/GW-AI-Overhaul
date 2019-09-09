@@ -30,7 +30,7 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
@@ -197,7 +197,7 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
@@ -364,7 +364,7 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
@@ -531,7 +531,7 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
@@ -698,7 +698,7 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',

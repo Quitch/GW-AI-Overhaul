@@ -9,6 +9,7 @@
  - Clearly identify additional factions in a system
  - Added an overall system threat rating
  - Each enemy shows their personality on the galaxy map
+ - Adjusted the number of fabbers each boss builds initially
 
 ## 0.13.1 - 2019-08-30
 
