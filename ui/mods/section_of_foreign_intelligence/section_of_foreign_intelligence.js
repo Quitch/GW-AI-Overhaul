@@ -23,6 +23,20 @@
     else { return 'Godlike' }
   }
 
+  var totalThreat = function (totalRate) {
+    if (!totalRate) { return 'None' }
+    else if (totalRate < 1) { return 'Very Low' }
+    else if (totalRate < 2) { return 'Low' }
+    else if (totalRate < 3) { return 'Moderate' }
+    else if (totalRate < 4) { return 'Significant' }
+    else if (totalRate < 6) { return 'Substantional' }
+    else if (totalRate < 8) { return 'Severe' }
+    else if (totalRate < 10) { return 'Exceptional' }
+    else if (totalRate < 20) { return 'Critical' }
+    else if (totalRate < 30) { return 'Suicidal' }
+    else { return 'Abandon All Hope' }
+  }
+
   var rgb = function (color) {
     return 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
   }
@@ -57,7 +71,7 @@
     return commanders
   })
 
-  model.danger = ko.computed(function () {
+  model.systemThreat = ko.computed(function () {
     var primary = model.selection.system().star.ai()
     if (primary) {
       var totalEco = primary.econ_rate
@@ -72,8 +86,8 @@
         });
       }
     }
-    console.log(totalEco)
-    return totalEco
+    var danger = totalThreat(totalEco)
+    return danger
   })
 
   var formatedString = function (planetSizes) {
