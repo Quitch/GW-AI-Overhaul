@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.14 - 2019-09-09
 
  - Turtle personality makes more initial fabbers at each tech level
  - Integrated wondible's Section of Foreign Intelligence for Galactic War
