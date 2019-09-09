@@ -23,7 +23,7 @@
   <div data-bind="visible: model.selection.system().star.ai()">
     <h3>System Faction</h3>
   </div>
-  <ul data-bind="foreach: $root.system_owner">
+  <ul data-bind="foreach: $root.systemOwner">
     <li class="commander">
       <div class="div_player_icon">
         <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>
@@ -55,7 +55,7 @@
   <div data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes">
     <h3>Additional Factions</h3>
   </div>
-  <ul data-bind="foreach: $root.ffa_opponents">
+  <ul data-bind="foreach: $root.ffaOpponents">
     <li class="commander">
       <div class="div_player_icon">
         <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>

@@ -50,7 +50,7 @@
     }
   }
 
-  model.system_owner = ko.computed(function () {
+  model.systemOwner = ko.computed(function () {
     var primary = model.selection.system().star.ai()
     var commanders = []
     if (primary) {
@@ -62,7 +62,7 @@
     return commanders
   })
 
-  model.ffa_opponents = ko.computed(function () {
+  model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai()
     var commanders = []
     if (primary && primary.foes) {
