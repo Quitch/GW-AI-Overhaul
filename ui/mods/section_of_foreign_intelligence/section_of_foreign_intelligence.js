@@ -1,11 +1,11 @@
 // Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
 
 (function () {
-  var evaluation = function (rate) {
-    if (!rate) { return 'unspecified' }
+  var threat = function (rate) {
+    if (!rate) { return 'unknown' }
     else if (rate < 0.55) { return 'worthless' }
     else if (rate < 0.65) { return 'helpless' }
-    else if (rate < 0.75) { return 'weak' }
+    else if (rate < 0.75) { return 'weakling' }
     else if (rate < 0.85) { return 'inexperienced' }
     else if (rate < 0.95) { return 'novice' }
     else if (rate < 1.05) { return 'competent' }
@@ -30,8 +30,9 @@
   var intelligence = function (commander) {
     return {
       name: commander.name,
-      evaluation: evaluation(commander.econ_rate), // + commander.econ_rate.toPrecision(2),
+      threat: threat(commander.econ_rate), // + commander.econ_rate.toPrecision(2),
       color: rgb((commander.color && commander.color[0]) || [255, 255, 255]),
+      character: commander.character,
     }
   }
 
