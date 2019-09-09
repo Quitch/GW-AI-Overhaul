@@ -57,6 +57,25 @@
     return commanders
   })
 
+  model.danger = ko.computed(function () {
+    var primary = model.selection.system().star.ai()
+    if (primary) {
+      var totalEco = primary.econ_rate
+      if (primary.minions) {
+        _.forEach(primary.minions, function (minion) {
+          totalEco = totalEco + minion.econ_rate
+        });
+      }
+      if (primary.foes) {
+        _.forEach(primary.foes, function (foe) {
+          totalEco = totalEco + foe.econ_rate
+        });
+      }
+    }
+    console.log(totalEco)
+    return totalEco
+  })
+
   var formatedString = function (planetSizes) {
     var km2 = 1000000
     var surfaceArea = planetSizes / km2
