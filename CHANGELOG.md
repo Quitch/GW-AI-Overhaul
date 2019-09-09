@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.14 - 2019-09-09
+
+ - Turtle personality makes more initial fabbers at each tech level
+ - Integrated wondible's Section of Foreign Intelligence for Galactic War
+ - Increased granularity of threat assessments
+ - Removed all enemy system descriptions to make more space for useful information
+ - Clearly identify additional factions in a system
+ - Added an overall system threat rating
+ - Each enemy shows their personality on the galaxy map
+ - Adjusted the number of fabbers each boss builds initially
+
 ## 0.13.1 - 2019-08-30
 
  - Fixed enemies not always teching at the correct time

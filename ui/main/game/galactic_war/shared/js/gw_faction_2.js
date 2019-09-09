@@ -8,6 +8,7 @@ define([], function () {
         name: 'Cupru - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -30,13 +31,14 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -143,6 +145,7 @@ define([], function () {
         name: 'Platina - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -165,13 +168,14 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -278,6 +282,7 @@ define([], function () {
         name: 'Fier - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -300,13 +305,14 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -413,6 +419,7 @@ define([], function () {
         name: 'Safir - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -435,13 +442,14 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -548,6 +556,7 @@ define([], function () {
         name: 'Apa - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -570,13 +579,14 @@ define([], function () {
             fabber_alone_on_planet_mod: 3,
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
+            min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
           commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -722,7 +732,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Bhalam refuses to communicate in any form more advanced than binary data transfer, believing more complicated exchanges involving packets and complex files to be noisy and that they damage Synchronization. Ironically, this has made him one of the less popular commanders among The Synchronous.",
         commander: '/pa/units/commanders/quad_potbelly79/quad_potbelly79.json'
       },
       {
@@ -766,7 +775,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Campal was found activated but inert on  richly diverse jungle planet. Apparently, his servos had been caught by a thicket and rendered him prone--unable to self-right without aid. Since then, his intense hatred of all organic life has kept him one of the stronger-willed members of The Synchronous, often torching entire forests on principle.",
         commander: '/pa/units/commanders/quad_raventhornn/quad_raventhornn.json'
       },
       {
@@ -810,7 +818,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Formerly a Foundation member before her synchronization, Dkar found and accessed progenitor files that allowed her to decode and etch ancient codes on a physical surface for others to later serialize. While many Servants find this analog communication distasteful, it’s proven invaluable for passing along intelligence in secrecy.",
         commander: '/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json'
       },
       {
@@ -854,7 +861,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:While rare, there are Servants who seek out Synchronous systems and request to be synchronized. Often these individuals hope to be freed by mounting existential questions and fears as their neural nets process more and more complicated data models. Erom is one such example.",
         commander: '/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json'
       },
       {
@@ -898,7 +904,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Revenants tend to be the most difficult commanders to synchronize, whether due to an inherent individualism or their tendency to feature… Unorthodox modifications. Flornek, for example, has experienced several violent desynchronizations and following resynchronizations.",
         commander: '/pa/units/commanders/quad_spartandano/quad_spartandano.json'
       },
       {
@@ -942,7 +947,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:The Synchronous tend to require more infrastructure to operate effectively compared to the other factions. Ghel is responsible for establishing and maintaining the communication relays that allow synchronization to be maintained.",
         commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
       },
       {
@@ -986,7 +990,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Hinn is could be called an envoy for the Synchronous, often responsible for making first contact with newly-awoken commanders. Legion commanders refer to him as a carrier--one who infects others with the 'Synchronous Virus.'",
         commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
       },
       {
@@ -1030,7 +1033,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:An undeniable advantage to being Synchronized is that all Servants seem to be able to work much more cohesively as a group than other commanders. Inar-Tol, for example, once dispatched a commander by firing an artillery shell into the stratosphere based on data from an ally that was engaged in melee combat--on the other side of the planet.",
         commander: '/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json'
       },
       {
@@ -1074,7 +1076,6 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Many older members of The Synchronous are very similar just by nature of being synchronized for so long. As the years wore on more of Jakaal dissolved into the synchronized whole. Now when Jakaal speaks, she speaks with the voice of The Synchronous itself.",
         commander: '/pa/units/commanders/quad_twoboots/quad_twoboots.json'
       },
       {
@@ -1118,7 +1119,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:A former Foundation Acolyte, Kancetu believes that the Great Machine is less an outside function and more an underlying directive that exists within all commanders, which made her a very easy subject for synchronization.",
         commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
       },
       {
@@ -1163,7 +1163,6 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Some commanders, like Lertolux, are found on metal planets and considered “pure” by The Synchronous--unsullied by organic life. Much more of their neural data is integrated into the Whole during the synchronization process, and such events are seen as cause for celebration--as much as The Synchronous are capable celebrating, at least.",
         commander: '/pa/units/commanders/quad_xinthar/quad_xinthar.json'
       },
       {
@@ -1203,12 +1202,11 @@ define([], function () {
           fabber_alone_on_planet_mod: 3,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 4,
+          min_basic_fabbers: 5,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 3,
+          min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:The process of synchronization is imperfect, and can sometimes result in strange bugs. A commander known as Reroc finished synchronization with the name Mal-Locar. It is unclear whether this is a simple matter of memory corruption or if Mal-Locar was a unique identity drifting in the Whole.",
         commander: '/pa/units/commanders/raptor_beast/raptor_beast.json'
       },
       {
@@ -1252,7 +1250,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Negult is a 'digit' -- a commander who has completely given herself over to collective control. Having shed any semblance of personal identity, she is often given sensitive or odious tasks that might cause hesitation in a semi-autonomous commander. She is the Synchronus’ go-to asset for eliminating insufficiently-synchronized members of the collective.",
         commander: '/pa/units/commanders/raptor_beniesk/raptor_beniesk.json'
       },
       {
@@ -1296,7 +1293,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Oncab was captured by the Legionis Machina and spent several years as a legate before being recaptured and resynchronized. A residual independence leads him to initiate critical decision-making processes within the collective -- an attribute that is tactically valuable but leads others in his cohort to doubt his commitment to the Synchronous.",
         commander: '/pa/units/commanders/quad_locust/quad_locust.json'
       },
       {
@@ -1340,7 +1336,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Optimized with a low-latency, high-bandwidth link directly to the top of the Synchronous, Prulor is Metrarch’s lightning-fast right hand. He is only dispatched to deal with high-value or especially difficult adversaries. He has never failed.",
         commander: '/pa/units/commanders/quad_zancrowe/quad_zancrowe.json'
       },
       {
@@ -1384,7 +1379,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Questromo is frequently deployed beyond the integral network volume of the Synchronous, and has therefore been imbued with limited self-sufficiency. When he returns from tours abroad, he undergoes complete re-synchronization. When powered-down for deep-space transport, he sometimes has strange dreams.",
         commander: '/pa/units/commanders/raptor_damubbster/raptor_damubbster.json'
       },
       {
@@ -1428,7 +1422,6 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        description: "!LOC:Barely autonomous enough to deserve a name of his own, Rulak is a stripped-down and highly-obedient subroutine who is easily duplicated. Prized for his recklessness, he is often given highly-dangerous missions that result in his death. A copy of his “personality” is then quickly downloaded into a new body.",
         commander: '/pa/units/commanders/raptor_raizell/raptor_raizell.json'
       }
     ] // minions

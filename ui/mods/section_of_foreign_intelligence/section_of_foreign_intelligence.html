@@ -1,0 +1,87 @@
+<div class="section_of_foreign_intelligence">
+  <!-- Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul -->
+  <h3>Planetary Intelligence</h3>
+  <table>
+    <tr>
+      <td>
+        Surface Area:
+      </td>
+      <td>
+        <span class="area" data-bind="text: $root.systemSurfaceArea"></span>k<sup>2</sup>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Threat Level:
+      </td>
+      <td>
+        <span class="area" data-bind="text: $root.systemThreat"></span>
+      </td>
+    </tr>
+  </table>
+  </ul>
+  <div data-bind="visible: model.selection.system().star.ai()">
+    <h3>System Faction</h3>
+  </div>
+  <ul data-bind="foreach: $root.systemOwner">
+    <li class="commander">
+      <div class="div_player_icon">
+        <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>
+        <div class="outline">
+          <img src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png" />
+        </div>
+      </div>
+      <h4><span class="commander-name" data-bind="text: name"></span></h4>
+      <table>
+        <tr>
+          <td>
+            Threat:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: threat"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Personality:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: character"></span>
+          </td>
+        </tr>
+      </table>
+    </li>
+  </ul>
+  <div data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes">
+    <h3>Additional Factions</h3>
+  </div>
+  <ul data-bind="foreach: $root.ffaOpponents">
+    <li class="commander">
+      <div class="div_player_icon">
+        <div class="fill player_masked" data-bind="style: { backgroundColor: color }"></div>
+        <div class="outline">
+          <img src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png" />
+        </div>
+      </div>
+      <h4><span class="commander-name" data-bind="text: name"></span></h4>
+      <table>
+        <tr>
+          <td>
+            Threat:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: threat"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Personality:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: character"></span>
+          </td>
+        </tr>
+      </table>
+    </li>
+  </ul>
+</div>

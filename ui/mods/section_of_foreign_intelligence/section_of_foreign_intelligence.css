@@ -1,0 +1,37 @@
+.section_of_foreign_intelligence {
+  color: #88DBFF;
+}
+
+.section_of_foreign_intelligence h3 {
+  color: white;
+}
+
+.section_of_foreign_intelligence .commander-name {
+  margin-left: 18px;
+}
+
+.section_of_foreign_intelligence .commander-evaluation,
+.section_of_foreign_intelligence .area {
+  font-weight: bold;
+  color: white;
+  margin-left: 2em;
+}
+
+.div_player_icon {
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    opacity: 1;
+}
+
+.player_masked {
+    height: 16px;
+    width: 16px;
+    -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+    -webkit-mask-size: cover;
+    mask: url("#player-mask");
+}
+
+.div_player_icon .fill, .div_player_icon .outline {
+    position: absolute;
+}
