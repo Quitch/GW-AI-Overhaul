@@ -3,24 +3,24 @@
 (function () {
   var threat = function (rate) {
     if (!rate) { return 'unknown' }
-    else if (rate < 0.55) { return 'worthless' }
-    else if (rate < 0.65) { return 'helpless' }
-    else if (rate < 0.75) { return 'weakling' }
-    else if (rate < 0.85) { return 'inexperienced' }
-    else if (rate < 0.95) { return 'novice' }
-    else if (rate < 1.05) { return 'competent' }
-    else if (rate < 1.15) { return 'skilled' }
-    else if (rate < 1.25) { return 'experienced' }
-    else if (rate < 1.35) { return 'veteran' }
-    else if (rate < 1.45) { return 'masterful' }
-    else if (rate < 1.65) { return 'hardcore' }
-    else if (rate < 1.85) { return 'dangerous' }
-    else if (rate < 2.05) { return 'deadly' }
-    else if (rate < 2.35) { return 'inhuman' }
-    else if (rate < 2.65) { return 'genocidal' }
-    else if (rate < 3) { return 'nightmare' }
-    else if (rate < 10) { return 'demigod' }
-    else { return 'godlike' }
+    else if (rate < 0.55) { return 'Worthless' }
+    else if (rate < 0.65) { return 'Helpless' }
+    else if (rate < 0.75) { return 'Weakling' }
+    else if (rate < 0.85) { return 'Inexperienced' }
+    else if (rate < 0.95) { return 'Novice' }
+    else if (rate < 1.05) { return 'Competent' }
+    else if (rate < 1.15) { return 'Skilled' }
+    else if (rate < 1.25) { return 'Experienced' }
+    else if (rate < 1.35) { return 'Veteran' }
+    else if (rate < 1.45) { return 'Masterful' }
+    else if (rate < 1.65) { return 'Hardcore' }
+    else if (rate < 1.85) { return 'Dangerous' }
+    else if (rate < 2.05) { return 'Deadly' }
+    else if (rate < 2.35) { return 'Inhuman' }
+    else if (rate < 2.65) { return 'Genocidal' }
+    else if (rate < 3) { return 'Nightmare' }
+    else if (rate < 10) { return 'Demigod' }
+    else { return 'Godlike' }
   }
 
   var rgb = function (color) {
