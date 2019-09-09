@@ -1,4 +1,4 @@
-// Modified by Quitch
+// Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
 
 (function () {
   var evaluation = function (rate) {
