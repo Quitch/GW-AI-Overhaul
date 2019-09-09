@@ -8,6 +8,7 @@ define([], function () {
         name: 'Alenquer - Revenants',
         boss: {
           name: 'First Seeker Osiris',
+          character: 'Explorer',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -36,6 +37,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
@@ -66,6 +68,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
@@ -172,6 +175,7 @@ define([], function () {
         name: 'Xianyao - Revenants',
         boss: {
           name: 'First Seeker Osiris',
+          character: 'Explorer',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -200,6 +204,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
@@ -230,6 +235,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
@@ -336,6 +342,7 @@ define([], function () {
         name: 'Epiphany - Revenants',
         boss: {
           name: 'First Seeker Osiris',
+          character: 'Explorer',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -364,6 +371,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
@@ -394,6 +402,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
@@ -500,6 +509,7 @@ define([], function () {
         name: 'Varthema - Revenants',
         boss: {
           name: 'First Seeker Osiris',
+          character: 'Explorer',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -528,6 +538,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
@@ -558,6 +569,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],
@@ -664,6 +676,7 @@ define([], function () {
         name: 'Chernykh - Revenants',
         boss: {
           name: 'First Seeker Osiris',
+          character: 'Explorer',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -692,6 +705,7 @@ define([], function () {
           minions: [
             {
               name: 'Seeker Ankou',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[244, 124, 125], [192, 192, 192]],
@@ -722,6 +736,7 @@ define([], function () {
             },
             {
               name: 'Seeker Barastyr',
+              character: 'Security',
               econ_rate: 1.2,
               landing_policy: ['on_player_planet'],
               color: [[168, 0, 0], [192, 192, 192]],

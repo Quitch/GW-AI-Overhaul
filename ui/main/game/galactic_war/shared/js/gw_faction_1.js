@@ -8,6 +8,7 @@ define([], function () {
         name: 'Atlas - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
+          character: 'Stars and Sky',
           econ_rate: 2,
           personality: {
             percent_land: 0.05,
@@ -35,6 +36,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
+              character: 'Ground Pounder',
               econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
@@ -139,6 +141,7 @@ define([], function () {
         name: 'Patagonia - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
+          character: 'Stars and Sky',
           econ_rate: 2,
           personality: {
             percent_land: 0.05,
@@ -166,6 +169,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
+              character: 'Ground Pounder',
               econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
@@ -270,6 +274,7 @@ define([], function () {
         name: 'Xylcor - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
+          character: 'Stars and Sky',
           econ_rate: 2,
           personality: {
             percent_land: 0.05,
@@ -297,6 +302,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
+              character: 'Ground Pounder',
               econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
@@ -400,6 +406,7 @@ define([], function () {
         name: 'Blogar\'s Fist - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
+          character: 'Stars and Sky',
           econ_rate: 2,
           personality: {
             percent_land: 0.05,
@@ -427,6 +434,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
+              character: 'Ground Pounder',
               econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {
@@ -530,6 +538,7 @@ define([], function () {
         name: 'Zeta Draconis - Foundation',
         boss: {
           name: 'Inquisitor Nemicus',
+          character: 'Stars and Sky',
           econ_rate: 2,
           personality: {
             percent_land: 0.05,
@@ -557,6 +566,7 @@ define([], function () {
           minions: [
             {
               name: 'Acolyte Agatho',
+              character: 'Ground Pounder',
               econ_rate: 1.5,
               color: [[192, 131, 246], [192, 192, 192]],
               personality: {

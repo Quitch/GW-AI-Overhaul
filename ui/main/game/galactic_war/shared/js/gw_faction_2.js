@@ -8,6 +8,7 @@ define([], function () {
         name: 'Cupru - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -37,6 +38,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -143,6 +145,7 @@ define([], function () {
         name: 'Platina - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -172,6 +175,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -278,6 +282,7 @@ define([], function () {
         name: 'Fier - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -307,6 +312,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -413,6 +419,7 @@ define([], function () {
         name: 'Safir - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -442,6 +449,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
@@ -548,6 +556,7 @@ define([], function () {
         name: 'Apa - Synchronous',
         boss: {
           name: 'Metrarch the Machinist',
+          character: 'Roboticist',
           econ_rate: 2,
           landing_policy: ['off_player_planet'],
           personality: {
@@ -577,6 +586,7 @@ define([], function () {
           minions: [
             {
               name: 'Servant Aust',
+              character: 'Mechanic',
               econ_rate: 1.5,
               landing_policy: ['on_player_planet'],
               color: [[203, 255, 195], [192, 192, 192]],
