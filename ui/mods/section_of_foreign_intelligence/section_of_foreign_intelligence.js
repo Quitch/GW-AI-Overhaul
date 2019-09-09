@@ -23,20 +23,6 @@
     else { return 'Godlike' }
   }
 
-  var totalThreat = function (totalRate) {
-    if (!totalRate) { return 'None' }
-    else if (totalRate < 1) { return 'Very Low' }
-    else if (totalRate < 2) { return 'Low' }
-    else if (totalRate < 3) { return 'Moderate' }
-    else if (totalRate < 4) { return 'High' }
-    else if (totalRate < 6) { return 'Very High' }
-    else if (totalRate < 8) { return 'Extreme' }
-    else if (totalRate < 10) { return 'Critical' }
-    else if (totalRate < 20) { return 'Suicidal' }
-    else if (totalRate < 30) { return 'Impossible' }
-    else { return 'Skynet' }
-  }
-
   var rgb = function (color) {
     return 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
   }
@@ -70,6 +56,20 @@
     }
     return commanders
   })
+
+  var totalThreat = function (totalRate) {
+    if (!totalRate) { return 'None' }
+    else if (totalRate < 1) { return 'Very Low' }
+    else if (totalRate < 2) { return 'Low' }
+    else if (totalRate < 3) { return 'Moderate' }
+    else if (totalRate < 4) { return 'High' }
+    else if (totalRate < 6) { return 'Very High' }
+    else if (totalRate < 8) { return 'Extreme' }
+    else if (totalRate < 10) { return 'Critical' }
+    else if (totalRate < 20) { return 'Suicidal' }
+    else if (totalRate < 30) { return 'Impossible' }
+    else { return 'Skynet' }
+  }
 
   model.systemThreat = ko.computed(function () {
     var primary = model.selection.system().star.ai()
