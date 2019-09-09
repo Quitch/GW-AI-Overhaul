@@ -2,7 +2,7 @@
 <div class="section_of_foreign_intelligence">
   <h3>Planetary Intelligence</h3>
   <div class="surface-area">
-    Surface Area
+    Surface Area:
     <span class="area" data-bind="text: $root.systemSurfaceArea"></span>k<sup>2</sup>
   </div>
   </ul>
@@ -18,10 +18,24 @@
         </div>
       </div>
       <h4><span class="commander-name" data-bind="text: name"></span></h4>
-      Threat:
-      <span class="commander-threat" data-bind="text: threat"></span><br>
-      Personality:
-      <span class="commander-threat" data-bind="text: character"></span>
+      <table>
+        <tr>
+          <td>
+            Threat:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: threat"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Personality:
+          </td>
+          <td>
+            <span class="commander-evaluation" data-bind="text: character"></span>
+          </td>
+        </tr>
+      </table>
     </li>
   </ul>
   <div data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes">
@@ -36,10 +50,24 @@
         </div>
       </div>
       <h4><span class="commander-name" data-bind="text: name"></span></h4>
-      Threat:
-      <span class="commander-threat" data-bind="text: threat"></span><br>
-      Personality:
-      <span class="commander-threat" data-bind="text: character"></span>
+      <table>
+          <tr>
+            <td>
+              Threat:
+            </td>
+            <td>
+              <span class="commander-evaluation" data-bind="text: threat"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Personality:
+            </td>
+            <td>
+              <span class="commander-evaluation" data-bind="text: character"></span>
+            </td>
+          </tr>
+        </table>
     </li>
   </ul>
 </div>
