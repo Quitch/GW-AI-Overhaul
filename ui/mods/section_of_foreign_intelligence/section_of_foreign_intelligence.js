@@ -28,13 +28,13 @@
     else if (totalRate < 1) { return 'Very Low' }
     else if (totalRate < 2) { return 'Low' }
     else if (totalRate < 3) { return 'Moderate' }
-    else if (totalRate < 4) { return 'Significant' }
-    else if (totalRate < 6) { return 'Substantional' }
-    else if (totalRate < 8) { return 'Severe' }
-    else if (totalRate < 10) { return 'Exceptional' }
-    else if (totalRate < 20) { return 'Critical' }
-    else if (totalRate < 30) { return 'Suicidal' }
-    else { return 'Abandon All Hope' }
+    else if (totalRate < 4) { return 'High' }
+    else if (totalRate < 6) { return 'Very High' }
+    else if (totalRate < 8) { return 'Extreme' }
+    else if (totalRate < 10) { return 'Critical' }
+    else if (totalRate < 20) { return 'Suicidal' }
+    else if (totalRate < 30) { return 'Impossible' }
+    else { return 'Skynet' }
   }
 
   var rgb = function (color) {
