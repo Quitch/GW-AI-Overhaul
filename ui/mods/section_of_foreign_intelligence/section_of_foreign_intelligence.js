@@ -89,14 +89,13 @@
     return totalThreat(totalEco)
   })
 
-  var formatedString = function (planetSizes) {
+  var formatedString = function (number) {
     var km2 = 1000000
-    var surfaceArea = planetSizes / km2
-    if (surfaceArea < 1000) {
-      return surfaceArea.toPrecision(3)
-    }
-    else {
-      return Math.floor(surfaceArea)
+    number = number / km2
+    if (number < 1000) {
+      return number.toPrecision(3)
+    } else {
+      return Math.floor(number)
     }
   };
 
