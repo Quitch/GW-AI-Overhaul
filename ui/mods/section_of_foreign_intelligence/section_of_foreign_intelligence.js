@@ -95,7 +95,8 @@
     var surfaceArea = planetSizes / km2
     if (surfaceArea < 1000) {
       return surfaceArea.toPrecision(3)
-    } else {
+    }
+    else {
       return Math.floor(surfaceArea)
     }
   };
