@@ -93,7 +93,7 @@
     var km2 = 1000000
     number = number / km2
     if (number < 1000) {
-      return number.toPrecision(3)
+      return number.toPrecision(5)
     } else {
       return Math.floor(number)
     }
