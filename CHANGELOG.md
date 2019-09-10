@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+ - Aggressive AIs are more aggressive
+
 ## 0.14 - 2019-09-09
 
  - Turtle personality makes more initial fabbers at each tech level
