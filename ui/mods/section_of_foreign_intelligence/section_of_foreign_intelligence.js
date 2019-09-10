@@ -86,8 +86,7 @@
         });
       }
     }
-    var danger = totalThreat(totalEco)
-    return danger
+    return totalThreat(totalEco)
   })
 
   var formatedString = function (planetSizes) {
