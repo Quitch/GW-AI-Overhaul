@@ -3,7 +3,7 @@
 ## DEV
 
  - Aggressive AIs are more aggressive
- - Workaround for issue with surface area not always updating
+ - Fixed surface area not always updating when system selection was changed
 
 ## 0.14 - 2019-09-09
 
