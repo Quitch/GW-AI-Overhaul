@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.14.1 - 2019-09-11
+
+ - Aggressive AIs are more aggressive
+ - Fixed surface area not always updating when system selection was changed
+
 ## 0.14 - 2019-09-09
 
  - Turtle personality makes more initial fabbers at each tech level

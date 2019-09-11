@@ -1,3 +1,5 @@
+/* Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul */
+
 .section_of_foreign_intelligence {
   color: #88DBFF;
 }
@@ -10,11 +12,15 @@
   margin-left: 18px;
 }
 
-.section_of_foreign_intelligence .commander-evaluation,
-.section_of_foreign_intelligence .area {
+.section_of_foreign_intelligence .data {
   font-weight: bold;
   color: white;
-  margin-left: 2em;
+  display: table-cell;
+}
+
+.section_of_foreign_intelligence .inline {
+  font-weight: bold;
+  color: white;
 }
 
 .div_player_icon {
@@ -34,4 +40,19 @@
 
 .div_player_icon .fill, .div_player_icon .outline {
     position: absolute;
+}
+
+.section_of_foreign_intelligence .table {
+   display: table;
+   table-layout: fixed;
+   width: 70%;
+}
+.section_of_foreign_intelligence .tablebody {
+   display: table-row-group;
+}
+.section_of_foreign_intelligence .tr { 
+  display: table-row;
+}
+.section_of_foreign_intelligence .td { 
+  display: table-cell;
 }

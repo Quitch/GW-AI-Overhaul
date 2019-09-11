@@ -1,8 +1,9 @@
 // Remove the vanilla difficulties
-$("#game-difficulty").empty()
+document.getElementById('game-difficulty').innerHTML = ""
 
 // Add new difficulty levels
-$('#game-difficulty').append('<option value="0">GW-CASUAL</option>' +
+document.getElementById('game-difficulty').insertAdjacentHTML('afterbegin',
+  '<option value="0">GW-CASUAL</option>' +
   '<option value="1">GW-BRONZE</option>' +
   '<option value="2">GW-SILVER</option>' +
   '<option value="3">GW-GOLD</option>' +

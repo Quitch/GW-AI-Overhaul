@@ -4,9 +4,9 @@
   "display_name": "Galactic War AI Overhaul",
   "description": "Creates personality differences between the factions and each individual enemy Commander and friendly Sub-commander. Legonis Machina focus on land, Foundation on air and naval, Revenants on orbital, Synchronous take a balanced approach. Sub Commanders are less able to carry the game for you. Fight FFAs when another faction is contesting the system. Overhauls the difficulty settings to provide more variety along with a much greater challenge at the higher settings. Uses the vanilla AI brain. Not compatible with other Galactic War mods which adjust difficulty.",
   "author": "Quitch",
-  "version": "0.14",
-  "build": "113612",
-  "date": "2019/09/09",
+  "version": "0.14.1",
+  "build": "113635",
+  "date": "2019/09/11",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/rel-client-galactic-war-ai-overhaul.72360/",
   "category": [
