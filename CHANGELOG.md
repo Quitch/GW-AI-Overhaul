@@ -3,6 +3,7 @@
 ## DEV
 
  - Aggressive AIs are more aggressive
+ - Workaround for issue with surface area not always updating
 
 ## 0.14 - 2019-09-09
 
