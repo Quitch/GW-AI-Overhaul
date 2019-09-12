@@ -753,7 +753,7 @@ define([], function () {
       {
         // Advanced Tech
         name: 'Legate Enzomatrix',
-        character: 'Advanced Tech',
+        character: 'Technologist',
         color: [[102, 178, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -969,7 +969,7 @@ define([], function () {
       {
         // Original
         name: 'Legate Kapowaz',
-        character: 'Vanilla',
+        character: 'Original',
         color: [[0, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {

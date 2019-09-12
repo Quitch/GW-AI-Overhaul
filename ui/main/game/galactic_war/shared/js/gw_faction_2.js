@@ -995,7 +995,7 @@ define([], function () {
       {
         // Advanced Tech
         name: 'Servant Tokamaktech',
-        character: 'Advanced Tech',
+        character: 'Technologist',
         color: [[204, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1212,7 +1212,7 @@ define([], function () {
       {
         // Original
         name: 'Servant Beniesk',
-        character: 'Vanilla',
+        character: 'Original',
         color: [[0, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

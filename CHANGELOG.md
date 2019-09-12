@@ -3,6 +3,7 @@
 ## DEV
 
  - Fixed some personality names causing wrapping on the intel panel
+ - Renamed some personalities
 
 ## 0.14.1 - 2019-09-11
 

@@ -973,7 +973,7 @@ define([], function () {
       {
         // Advanced Tech
         name: 'Acolyte Ajax',
-        character: 'Advanced Tech',
+        character: 'Technologist',
         color: [[255, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1188,7 +1188,7 @@ define([], function () {
       {
         // Original
         name: 'Acolyte Osiris',
-        character: 'Vanilla',
+        character: 'Original',
         color: [[153, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {

@@ -1145,7 +1145,7 @@ define([], function () {
       {
         // Advanced Tech
         name: 'Seeker Nemicus',
-        character: 'Advanced Tech',
+        character: 'Technologist',
         color: [[255, 178, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1361,7 +1361,7 @@ define([], function () {
       {
         // Original
         name: 'Seeker Banditks',
-        character: 'Vanilla',
+        character: 'Original',
         color: [[255, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
