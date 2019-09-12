@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 0.14.2 - 2019-09-12
 
  - Fixed some personality names causing wrapping on the intel panel
  - Renamed some personalities
