@@ -2,7 +2,6 @@
 
 ## DEV
 
- - Renamed some of the personalities
  - Fixed personalities causing wrapping
 
 ## 0.14.1 - 2019-09-11
