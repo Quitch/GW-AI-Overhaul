@@ -2,7 +2,7 @@
 
 ## DEV
 
- - Fixed personalities causing wrapping
+ - Fixed some personality names causing wrapping on the intel panel
 
 ## 0.14.1 - 2019-09-11
 
