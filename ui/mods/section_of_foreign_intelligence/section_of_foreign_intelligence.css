@@ -33,8 +33,8 @@
 .player_masked {
   height: 16px;
   width: 16px;
-  mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
-  mask-size: cover;
+  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+  -webkit-mask-size: cover;
   mask: url("#player-mask");
 }
 
