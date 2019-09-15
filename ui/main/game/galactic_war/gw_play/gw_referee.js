@@ -1,4 +1,3 @@
-/*global parse loadScript*/
 define(["shared/gw_common"], function(GW) {
   var GWReferee = function(game) {
     var self = this;
