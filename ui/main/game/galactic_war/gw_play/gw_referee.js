@@ -292,15 +292,12 @@ define(["shared/gw_common"], function(GW) {
 
   return {
     hire: function(game) {
-      var result = new $.Deferred();
       var ref = new GWReferee(game);
       return _.bind(generateGameFiles, ref)()
         .then(_.bind(generateConfig, ref))
         .then(function() {
           return ref;
         });
-
-      return result.promise();
     }
   };
 });
