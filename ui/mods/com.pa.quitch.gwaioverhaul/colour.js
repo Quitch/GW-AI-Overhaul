@@ -1,5 +1,5 @@
 requireGW(["shared/gw_factions"], function(GWFactions) {
-  _.forEach(model.galaxy.systems(), function(system, star) {
+  _.forEach(model.galaxy.systems(), function(system) {
     ko.computed(function() {
       var ai = system.star.ai();
       if (!ai) return;
