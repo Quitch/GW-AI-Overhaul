@@ -443,7 +443,7 @@ requireGW(
         });
       });
 
-      var deal = dealBossCards.then(function() {
+      dealBossCards.then(function() {
         if (model.makeGameBusy() !== busyToken) return;
 
         model.makeGameBusy(false);
