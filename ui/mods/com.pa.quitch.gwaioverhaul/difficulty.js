@@ -1,7 +1,4 @@
-// Remove the vanilla difficulties
 document.getElementById("game-difficulty").innerHTML = "";
-
-// Add new difficulty levels
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
@@ -14,7 +11,6 @@ document
       '<option value="5">GW-UBER</option>'
   );
 
-// Setup and load new difficulties
 requireGW(
   [
     "shared/gw_common",
@@ -36,7 +32,6 @@ requireGW(
     normal_system_templates /* this actually won't load -- window.star_system_templates is set instead */,
     easy_system_templates
   ) {
-    // Setup new difficulties
     var difficultyInfo = [
       {
         // Casual
