@@ -375,12 +375,10 @@ requireGW(
               _.times(numMinions, function() {
                 var mnn = _.sample(GWFactions[info.faction].minions);
                 setAIData(mnn, dist, false);
-                // Assign each minion its own colour
                 mnn.color = mnn.color || worker.ai.color;
                 worker.ai.minions.push(mnn);
               });
             }
-            // Assign foes
             if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
               var hostileFactions = _.sample(
                 _.without(aiFactions, worker.ai.faction)
