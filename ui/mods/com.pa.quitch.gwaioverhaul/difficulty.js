@@ -67,7 +67,7 @@ requireGW(
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         econBase: 0.6,
-        econRatePerDist: 0.05,
+        econRatePerDist: 0.75,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
         ffa_chance: 15
