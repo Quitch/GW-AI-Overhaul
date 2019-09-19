@@ -58,7 +58,7 @@ requireGW(
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
-        minionMod: 0.35,
+        minionMod: 0.39,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -97,7 +97,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 0.7,
+        minionMod: 0.5,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -117,7 +117,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 0.8,
+        minionMod: 0.7,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -354,6 +354,7 @@ requireGW(
           GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
 
         _.forEach(teamInfo, function(info) {
+          console.log(info.boss);
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             if (info.boss.minions) {
