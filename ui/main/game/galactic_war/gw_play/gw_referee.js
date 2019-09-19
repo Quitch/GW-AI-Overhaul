@@ -133,7 +133,7 @@ define(["shared/gw_common"], function(GW) {
             ai: true,
             name: minion.name || "Sub Commander",
             commander: fixupCommander(minion.commander || playerCommander),
-            landing_policy: "on_player_planet"
+            landing_policy: "no_restriction"
           }
         ],
         color: minion.color || [playerColor[1], playerColor[0]],
