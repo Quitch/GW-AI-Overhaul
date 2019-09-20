@@ -12,6 +12,8 @@
 - Reduce delay in Casual building from factories
 - Remove delay for Bronze building from factories
 - Platinum and Uber always start with at least two armies
+- Reduced the eco bonus bosses receive
+- All bosses use shared armies now and attempt to spawn on multiple planets
 
 ## 0.14.2 - 2019-09-12
 

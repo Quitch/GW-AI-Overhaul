@@ -9,8 +9,8 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Dreamer",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -179,8 +179,8 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Dreamer",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -349,8 +349,8 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Dreamer",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -519,8 +519,8 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Dreamer",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -689,8 +689,8 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Dreamer",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,

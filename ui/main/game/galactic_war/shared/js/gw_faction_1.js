@@ -9,7 +9,7 @@ define([], function() {
         boss: {
           name: "Inquisitor Nemicus",
           character: "Explorer",
-          econ_rate: 2,
+          econ_rate: 1.25,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -143,7 +143,7 @@ define([], function() {
         boss: {
           name: "Inquisitor Nemicus",
           character: "Explorer",
-          econ_rate: 2,
+          econ_rate: 1.25,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -277,7 +277,7 @@ define([], function() {
         boss: {
           name: "Inquisitor Nemicus",
           character: "Explorer",
-          econ_rate: 2,
+          econ_rate: 1.25,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -410,7 +410,7 @@ define([], function() {
         boss: {
           name: "Inquisitor Nemicus",
           character: "Explorer",
-          econ_rate: 2,
+          econ_rate: 1.25,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -543,7 +543,7 @@ define([], function() {
         boss: {
           name: "Inquisitor Nemicus",
           character: "Explorer",
-          econ_rate: 2,
+          econ_rate: 1.25,
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,

@@ -9,13 +9,8 @@ define([], function() {
         boss: {
           name: "Imperator Invictus",
           character: "Legion",
-          econ_rate: 1.75,
-          copies: 3,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -104,13 +99,8 @@ define([], function() {
         boss: {
           name: "Imperator Invictus",
           character: "Legion",
-          econ_rate: 1.75,
-          copies: 3,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -199,13 +189,8 @@ define([], function() {
         boss: {
           name: "Imperator Invictus",
           character: "Legion",
-          econ_rate: 1.75,
-          copies: 3,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -293,13 +278,8 @@ define([], function() {
         boss: {
           name: "Imperator Invictus",
           character: "Legion",
-          econ_rate: 1.75,
-          copies: 3,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,
@@ -387,13 +367,8 @@ define([], function() {
         boss: {
           name: "Imperator Invictus",
           character: "Legion",
-          econ_rate: 1.75,
-          copies: 3,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.45,
             percent_bot: 0.25,

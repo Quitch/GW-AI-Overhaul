@@ -9,8 +9,8 @@ define([], function() {
         boss: {
           name: "Metrarch the Machinist",
           character: "Roboticist",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -147,8 +147,8 @@ define([], function() {
         boss: {
           name: "Metrarch the Machinist",
           character: "Roboticist",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -285,8 +285,8 @@ define([], function() {
         boss: {
           name: "Metrarch the Machinist",
           character: "Roboticist",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -423,8 +423,8 @@ define([], function() {
         boss: {
           name: "Metrarch the Machinist",
           character: "Roboticist",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -561,8 +561,8 @@ define([], function() {
         boss: {
           name: "Metrarch the Machinist",
           character: "Roboticist",
-          econ_rate: 2,
-          landing_policy: ["off_player_planet"],
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
