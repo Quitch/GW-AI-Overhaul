@@ -3,7 +3,7 @@
 (function() {
   var threat = function(rate) {
     if (!rate) {
-      return "unknown";
+      return "Unknown";
     } else if (rate < 0.55) {
       return "Worthless";
     } else if (rate < 0.65) {
