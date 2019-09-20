@@ -364,10 +364,10 @@ requireGW(
               if (numMinions > 0) {
                 info.boss.minions = [];
                 _.times(numMinions, function() {
-                  var mnn = _.sample(GWFactions[info.faction].minions);
-                  setAIData(mnn, maxDist, true);
-                  mnn.color = mnn.color || info.boss.color;
-                  info.boss.minions.push(mnn);
+                  var bossMinions = _.sample(GWFactions[info.faction].minions);
+                  setAIData(bossMinions, maxDist, true);
+                  bossMinions.color = bossMinions.color || info.boss.color;
+                  info.boss.minions.push(bossMinions);
                 });
               }
             }
@@ -383,10 +383,10 @@ requireGW(
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function() {
-                var mnn = _.sample(GWFactions[info.faction].minions);
-                setAIData(mnn, dist, false);
-                mnn.color = mnn.color || worker.ai.color;
-                worker.ai.minions.push(mnn);
+                var minions = _.sample(GWFactions[info.faction].minions);
+                setAIData(minions, dist, false);
+                minions.color = minions.color || worker.ai.color;
+                worker.ai.minions.push(minions);
               });
             }
             if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
@@ -394,10 +394,10 @@ requireGW(
                 _.without(aiFactions, worker.ai.faction)
               );
               worker.ai.foes = [];
-              var fnn = _.sample(GWFactions[hostileFactions].minions);
-              setAIData(fnn, dist, false);
-              fnn.color = fnn.color || worker.ai.color;
-              worker.ai.foes.push(fnn);
+              var ffaMinions = _.sample(GWFactions[hostileFactions].minions);
+              setAIData(ffaMinions, dist, false);
+              ffaMinions.color = ffaMinions.color || worker.ai.color;
+              worker.ai.foes.push(ffaMinions);
             }
           });
         });
