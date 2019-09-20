@@ -34,40 +34,7 @@ define([], function() {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-          minions: [
-            {
-              name: "Servant Aust",
-              character: "Mechanic",
-              econ_rate: 1.5,
-              landing_policy: ["on_player_planet"],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         bossCard: "gwc_start_bot",
         systemDescription:
@@ -172,40 +139,7 @@ define([], function() {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-          minions: [
-            {
-              name: "Servant Aust",
-              character: "Mechanic",
-              econ_rate: 1.5,
-              landing_policy: ["on_player_planet"],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -310,40 +244,7 @@ define([], function() {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-          minions: [
-            {
-              name: "Servant Aust",
-              character: "Mechanic",
-              econ_rate: 1.5,
-              landing_policy: ["on_player_planet"],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -448,40 +349,7 @@ define([], function() {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-          minions: [
-            {
-              name: "Servant Aust",
-              character: "Mechanic",
-              econ_rate: 1.5,
-              landing_policy: ["on_player_planet"],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -586,40 +454,7 @@ define([], function() {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-          minions: [
-            {
-              name: "Servant Aust",
-              character: "Mechanic",
-              econ_rate: 1.5,
-              landing_policy: ["on_player_planet"],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
