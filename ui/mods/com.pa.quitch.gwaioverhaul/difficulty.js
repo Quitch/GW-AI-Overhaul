@@ -357,16 +357,27 @@ requireGW(
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             if (info.boss.minions) {
-              _.forEach(info.boss.minions, function(minion) {
-                setAIData(minion, maxDist, true);
-              });
+              var numMinions = Math.floor(
+                diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
+              );
+              //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
+              if (numMinions > 0) {
+                info.boss.minions = [];
+                _.times(numMinions, function() {
+                  var mnn = _.sample(GWFactions[info.faction].minions);
+                  setAIData(mnn, maxDist, true);
+                  mnn.color = mnn.color || info.boss.color;
+                  info.boss.minions.push(mnn);
+                });
+              }
             }
           }
           _.forEach(info.workers, function(worker) {
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
-              diffInfo.mandatoryMinions + dist * diffInfo.minionMod
+              diffInfo.mandatoryMinions +
+                worker.star.distance() * diffInfo.minionMod
             );
             //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
             if (numMinions > 0) {
