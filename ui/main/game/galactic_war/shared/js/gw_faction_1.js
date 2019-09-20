@@ -10,6 +10,7 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Explorer",
           econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -89,7 +90,7 @@ define([], function() {
             },
             {
               name: "Atlas Beta",
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -144,6 +145,7 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Explorer",
           econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -223,7 +225,7 @@ define([], function() {
             },
             {
               name: "Patagonia Beta",
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -278,6 +280,7 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Explorer",
           econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -356,7 +359,7 @@ define([], function() {
             },
             {
               name: "Xylcor Beta",
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -411,6 +414,7 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Explorer",
           econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -489,7 +493,7 @@ define([], function() {
             },
             {
               name: "Blogar's Fist Beta",
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -544,6 +548,7 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Explorer",
           econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -622,7 +627,7 @@ define([], function() {
             },
             {
               name: "Zeta Draconis Beta",
-              starting_planet: false,
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
