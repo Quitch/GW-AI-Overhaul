@@ -356,20 +356,18 @@ requireGW(
         _.forEach(teamInfo, function(info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
-            if (info.boss.minions) {
-              var numMinions = Math.floor(
-                diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
-              );
-              //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
-              if (numMinions > 0) {
-                info.boss.minions = [];
-                _.times(numMinions, function() {
-                  var bossMinions = _.sample(GWFactions[info.faction].minions);
-                  setAIData(bossMinions, maxDist, true);
-                  bossMinions.color = bossMinions.color || info.boss.color;
-                  info.boss.minions.push(bossMinions);
-                });
-              }
+            var numMinions = Math.floor(
+              diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
+            );
+            //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
+            if (numMinions > 0) {
+              info.boss.minions = [];
+              _.times(numMinions, function() {
+                var bossMinions = _.sample(GWFactions[info.faction].minions);
+                setAIData(bossMinions, maxDist, true);
+                bossMinions.color = bossMinions.color || info.boss.color;
+                info.boss.minions.push(bossMinions);
+              });
             }
           }
           _.forEach(info.workers, function(worker) {
