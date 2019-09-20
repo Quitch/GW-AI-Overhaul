@@ -8,7 +8,7 @@ define([], function() {
         name: "Cupru - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Roboticist",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -146,7 +146,7 @@ define([], function() {
         name: "Platina - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Roboticist",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -284,7 +284,7 @@ define([], function() {
         name: "Fier - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Roboticist",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -422,7 +422,7 @@ define([], function() {
         name: "Safir - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Roboticist",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -560,7 +560,7 @@ define([], function() {
         name: "Apa - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Roboticist",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {

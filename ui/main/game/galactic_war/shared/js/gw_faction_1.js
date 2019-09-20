@@ -8,7 +8,7 @@ define([], function() {
         name: "Atlas - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Explorer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -143,7 +143,7 @@ define([], function() {
         name: "Patagonia - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Explorer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -278,7 +278,7 @@ define([], function() {
         name: "Xylcor - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Explorer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -412,7 +412,7 @@ define([], function() {
         name: "Blogar's Fist - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Explorer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -546,7 +546,7 @@ define([], function() {
         name: "Zeta Draconis - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Explorer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {

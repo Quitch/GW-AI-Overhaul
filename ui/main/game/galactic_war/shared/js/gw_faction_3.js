@@ -8,7 +8,7 @@ define([], function() {
         name: "Alenquer - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Dreamer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -178,7 +178,7 @@ define([], function() {
         name: "Xianyao - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Dreamer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -348,7 +348,7 @@ define([], function() {
         name: "Epiphany - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Dreamer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -518,7 +518,7 @@ define([], function() {
         name: "Varthema - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Dreamer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
@@ -688,7 +688,7 @@ define([], function() {
         name: "Chernykh - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Dreamer",
+          character: "Boss",
           econ_rate: 1.25,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {

@@ -15,6 +15,7 @@
 - Reduced the eco bonus bosses receive
 - All bosses use shared armies now and attempt to spawn on multiple planets
 - Foundation now has multiple starting planets in its boss system
+- Bosses hide their personality
 
 ## 0.14.2 - 2019-09-12
 
