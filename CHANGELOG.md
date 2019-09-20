@@ -18,6 +18,7 @@
 - Bosses hide their personality
 - Bosses scale their armies to the size of the system
 - Correct lowest threat rating being too low on the scale to ever register
+- Account for floats when generating threat ratings
 
 ## 0.14.2 - 2019-09-12
 

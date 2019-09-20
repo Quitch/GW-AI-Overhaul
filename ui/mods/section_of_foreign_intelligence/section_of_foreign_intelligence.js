@@ -4,33 +4,33 @@
   var threat = function(rate) {
     if (!rate) {
       return "Unknown";
-    } else if (rate < 0.65) {
+    } else if (rate < 0.649) {
       return "Worthless";
-    } else if (rate < 0.75) {
+    } else if (rate < 0.749) {
       return "Helpless";
-    } else if (rate < 0.85) {
+    } else if (rate < 0.849) {
       return "Weakling";
-    } else if (rate < 0.95) {
+    } else if (rate < 0.949) {
       return "Inexperienced";
-    } else if (rate < 1.05) {
+    } else if (rate < 1.049) {
       return "Competent";
-    } else if (rate < 1.15) {
+    } else if (rate < 1.149) {
       return "Skilled";
-    } else if (rate < 1.25) {
+    } else if (rate < 1.249) {
       return "Experienced";
-    } else if (rate < 1.35) {
+    } else if (rate < 1.349) {
       return "Veteran";
-    } else if (rate < 1.45) {
+    } else if (rate < 1.449) {
       return "Masterful";
-    } else if (rate < 1.65) {
+    } else if (rate < 1.649) {
       return "Hardcore";
-    } else if (rate < 1.85) {
+    } else if (rate < 1.849) {
       return "Dangerous";
-    } else if (rate < 2.05) {
+    } else if (rate < 2.049) {
       return "Deadly";
-    } else if (rate < 2.35) {
+    } else if (rate < 2.349) {
       return "Inhuman";
-    } else if (rate < 2.65) {
+    } else if (rate < 2.649) {
       return "Genocidal";
     } else if (rate < 3) {
       return "Nightmare";
