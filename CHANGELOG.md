@@ -17,6 +17,7 @@
 - Foundation now has multiple starting planets in its boss system
 - Bosses hide their personality
 - Bosses scale their armies to the size of the system
+- Correct lowest threat rating being too low on the scale to ever register
 
 ## 0.14.2 - 2019-09-12
 

@@ -4,16 +4,14 @@
   var threat = function(rate) {
     if (!rate) {
       return "Unknown";
-    } else if (rate < 0.55) {
-      return "Worthless";
     } else if (rate < 0.65) {
-      return "Helpless";
+      return "Worthless";
     } else if (rate < 0.75) {
-      return "Weakling";
+      return "Helpless";
     } else if (rate < 0.85) {
-      return "Inexperienced";
+      return "Weakling";
     } else if (rate < 0.95) {
-      return "Novice";
+      return "Inexperienced";
     } else if (rate < 1.05) {
       return "Competent";
     } else if (rate < 1.15) {
