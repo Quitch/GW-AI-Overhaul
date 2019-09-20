@@ -2,11 +2,11 @@
 
 ## DEV
 
-- Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
 - Bronze will use more minions towards the end of larger systems
 - Gold and Platinum are slower to increase the number of minions
 - Minor increases to the starting eco of Gold and Platinum
+- Silver grows its eco slower than before
 
 ## 0.14.2 - 2019-09-12
 

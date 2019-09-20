@@ -67,7 +67,7 @@ requireGW(
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         econBase: 0.6,
-        econRatePerDist: 0.75,
+        econRatePerDist: 0.05,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
         ffa_chance: 15
@@ -87,7 +87,7 @@ requireGW(
         per_expansion_delay: 0,
         personality_tags: ["PreventsWaste"],
         econBase: 0.7,
-        econRatePerDist: 0.1,
+        econRatePerDist: 0.075,
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
         ffa_chance: 20
