@@ -354,7 +354,6 @@ requireGW(
           GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
 
         _.forEach(teamInfo, function(info) {
-          console.log(info.boss);
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             if (info.boss.minions) {
@@ -367,8 +366,7 @@ requireGW(
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
-              diffInfo.mandatoryMinions +
-                worker.star.distance() * diffInfo.minionMod
+              diffInfo.mandatoryMinions + dist * diffInfo.minionMod
             );
             //console.log('Distance: ' + dist + ' | Econ Rate: ' + worker.ai.econ_rate + ' | Minion Count: ' + numMinions);
             if (numMinions > 0) {
