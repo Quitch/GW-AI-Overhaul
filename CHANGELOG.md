@@ -5,20 +5,18 @@
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
 - Bronze will use more armies towards the end of larger systems
-- Casual through Platinum are slower to increase the number of armies
-- Platinum and Uber won't scale up armies as dramatically in larger galaxies
+- All difficulties are slower to increase the number of armies
 - Minor increases to the starting eco of Gold and Platinum
-- Silver grows its eco slower than before
 - Reduce delay in Casual building from factories
 - Remove delay for Bronze building from factories
 - Platinum and Uber always start with at least two armies
 - Reduced the eco bonus bosses receive
-- All bosses use shared armies now and attempt to spawn on multiple planets
+- All bosses use shared armies and attempt to spawn on multiple planets
 - Foundation now has multiple starting planets in its boss system
 - Bosses hide their personality
-- Bosses scale their armies to the size of the system
-- Correct lowest threat rating being too low on the scale to ever register
-- Account for floats when generating threat ratings
+- Bosses scale their armies according to the size of the galaxy
+- Corrected lowest threat rating being too low on the scale to ever register
+- Improved accuracy of threat ratings
 
 ## 0.14.2 - 2019-09-12
 
