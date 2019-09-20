@@ -7,6 +7,7 @@
 - Gold and Platinum are slower to increase the number of minions
 - Minor increases to the starting eco of Gold and Platinum
 - Silver grows its eco slower than before
+- Reduce delay in Casual building from factories
 
 ## 0.14.2 - 2019-09-12
 
