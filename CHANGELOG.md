@@ -4,7 +4,7 @@
 
 - Sub Commanders will once again spawn wherever they want
 - Bronze will use more minions towards the end of larger systems
-- Gold and Platinum are slower to increase the number of minions
+- Casual through Platinum are slower to increase the number of minions
 - Minor increases to the starting eco of Gold and Platinum
 - Silver grows its eco slower than before
 - Reduce delay in Casual building from factories
