@@ -116,8 +116,8 @@ requireGW(
         // Platinum
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 0,
-        minionMod: 0.7,
+        mandatoryMinions: 1,
+        minionMod: 0.49,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -136,8 +136,8 @@ requireGW(
         // Uber
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 0,
-        minionMod: 0.7,
+        mandatoryMinions: 1,
+        minionMod: 0.49,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,

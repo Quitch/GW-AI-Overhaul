@@ -6,10 +6,12 @@
 - Sub Commanders will once again spawn wherever they want
 - Bronze will use more minions towards the end of larger systems
 - Casual through Platinum are slower to increase the number of minions
+- Platinum and Uber won't scale up as dramatically in larger galaxies
 - Minor increases to the starting eco of Gold and Platinum
 - Silver grows its eco slower than before
 - Reduce delay in Casual building from factories
 - Remove delay for Bronze building from factories
+- Platinum and Uber always start with at least two armies
 
 ## 0.14.2 - 2019-09-12
 
