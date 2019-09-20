@@ -2,6 +2,7 @@
 
 ## DEV
 
+- Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
 - Bronze will use more minions towards the end of larger systems
 - Casual through Platinum are slower to increase the number of minions
