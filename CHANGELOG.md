@@ -7,7 +7,6 @@
 - Bronze will use more armies towards the end of larger systems
 - All difficulties are slower to increase the number of armies
 - Minor increases to the starting eco of Gold and Platinum
-- Reduce delay in Casual building from factories
 - Remove delay for Bronze building from factories
 - Platinum and Uber always start with at least two armies
 - Reduced the eco bonus bosses receive

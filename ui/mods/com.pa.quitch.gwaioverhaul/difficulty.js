@@ -42,7 +42,7 @@ requireGW(
         priority_scout_metal_spots: false,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
-        factory_build_delay_max: 6,
+        factory_build_delay_max: 12,
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: false,
         per_expansion_delay: 0,
