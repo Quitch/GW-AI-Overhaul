@@ -85,7 +85,6 @@ requireGW(
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        personality_tags: ["PreventsWaste"],
         econBase: 0.7,
         econRatePerDist: 0.1,
         max_basic_fabbers: 30,
