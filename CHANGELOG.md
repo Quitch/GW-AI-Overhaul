@@ -18,6 +18,7 @@
 - Corrected lowest threat rating being too low on the scale to ever register
 - Improved accuracy of threat ratings
 - Silver less effective at using higher levels of eco
+- Bronze expands slower
 
 ## 0.14.2 - 2019-09-12
 

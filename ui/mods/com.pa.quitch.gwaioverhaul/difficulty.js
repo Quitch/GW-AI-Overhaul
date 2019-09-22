@@ -66,6 +66,7 @@ requireGW(
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
+        personality_tags: ["SlowerExpansion"],
         econBase: 0.6,
         econRatePerDist: 0.075,
         max_basic_fabbers: 20,
