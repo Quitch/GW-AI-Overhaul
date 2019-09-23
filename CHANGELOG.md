@@ -8,7 +8,6 @@
 
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
-- Bronze will use more armies towards the end of larger systems
 - All difficulties are slower to increase the number of armies
 - Minor increases to the starting eco of Gold and Platinum
 - Remove delay for Bronze building from factories
