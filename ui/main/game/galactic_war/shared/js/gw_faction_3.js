@@ -529,7 +529,7 @@ define([], function() {
       {
         // Orbital & Land
         name: "Seeker Betadyne",
-        character: "Orbital and Land",
+        character: "Space Invader",
         color: [[255, 204, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -568,7 +568,7 @@ define([], function() {
       {
         // Orbital & Air
         name: "Seeker Centurion",
-        character: "Orbital and Air",
+        character: "Astronaut",
         color: [[255, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -765,7 +765,7 @@ define([], function() {
       {
         // Basic Tech
         name: "Seeker Nefelpitou",
-        character: "Basic Tech",
+        character: "Luddite",
         color: [[255, 204, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {

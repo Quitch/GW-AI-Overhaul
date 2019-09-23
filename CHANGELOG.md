@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Update personality names to avoid wrapping and make them more interesting
+
 ## 1.0 - 2019-09-23
 
 - Bronze increases its eco slightly faster over distance
