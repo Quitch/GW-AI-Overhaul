@@ -18,6 +18,7 @@
 - Improved accuracy of threat ratings
 - Silver less effective at using higher levels of eco
 - Bronze expands slower
+- Added tooltip to explain the difficulty options
 
 ## 0.14.2 - 2019-09-12
 

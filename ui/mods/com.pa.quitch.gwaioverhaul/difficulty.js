@@ -10,6 +10,12 @@ document
       '<option value="4">GW-PLATINUM</option>' +
       '<option value="5">GW-UBER</option>'
   );
+document
+  .getElementById("game-difficulty-label")
+  .insertAdjacentHTML(
+    "afterend",
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL - You completed the tutorial<br>BRONZE - You have some experience<br>SILVER - You can beat Absurd AI<br>GOLD - One enemy is no challenge<br>PLATINUM - Your loadouts are OP.<br>UBER - You hate winning.\'">?</span>'
+  );
 
 requireGW(
   [
