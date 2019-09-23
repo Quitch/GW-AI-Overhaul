@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## 1.0.1 - 2019-09-23
 
 - Update personality names to avoid wrapping and make them more interesting
 
