@@ -119,9 +119,9 @@ Not at this time. Queller won't break this mod, it simply won't be used.
 
 Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
-#### Why don't the descriptions match up with the Commanders' names?
+#### Where did the system descriptions go?
 
-Because that would break the translations, so I've left them untouched.
+They were removed to make space for planetary intelligence.
 
 #### Will Sub Commanders fighting for me have the same personality if I fight against them?
 
@@ -134,6 +134,10 @@ No, some are objectively stupider than others.
 #### Is there a "fair" difficulty level?
 
 No. I felt it was pointless to create a model where each battle is easier than the last.
+
+### Why am I not seeing the latest changes in my war?
+
+Many changes will only apply to new wars.
 
 ## Recommended mods
 
