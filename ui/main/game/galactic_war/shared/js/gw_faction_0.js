@@ -456,7 +456,7 @@ define([], function() {
       {
         // All Tanks
         name: "Legate Able",
-        character: "Tank",
+        character: "Armour",
         color: [[204, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -496,7 +496,7 @@ define([], function() {
       {
         // All Bots
         name: "Legate AceAI",
-        character: "Bot",
+        character: "Roboticist",
         color: [[153, 255, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -693,7 +693,7 @@ define([], function() {
       {
         // Basic Tech
         name: "Legate Delta",
-        character: "Basic Tech",
+        character: "Luddite",
         color: [[153, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {

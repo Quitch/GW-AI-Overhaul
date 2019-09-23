@@ -534,7 +534,7 @@ define([], function() {
       {
         // Land heavy
         name: "Servant Potbelly79",
-        character: "Land",
+        character: "Ground Pounder",
         color: [[229, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -573,7 +573,7 @@ define([], function() {
       {
         // Air heavy
         name: "Servant Raventhornn",
-        character: "Air",
+        character: "Dragoon",
         color: [[204, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -771,7 +771,7 @@ define([], function() {
       {
         // Basic Tech
         name: "Servant TheFlax",
-        character: "Basic Tech",
+        character: "Luddite",
         color: [[76, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

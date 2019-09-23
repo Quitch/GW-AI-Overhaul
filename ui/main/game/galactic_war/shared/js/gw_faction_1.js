@@ -526,7 +526,7 @@ define([], function() {
       {
         // All Air
         name: "Acolyte Progenitor",
-        character: "Air",
+        character: "Air Force",
         color: [[229, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -566,7 +566,7 @@ define([], function() {
       {
         // All Naval
         name: "Acolyte Sangudo",
-        character: "Naval",
+        character: "Navy",
         color: [[204, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -764,7 +764,7 @@ define([], function() {
       {
         // Basic Tech
         name: "Acolyte ToddFather",
-        character: "Basic Tech",
+        character: "Luddite",
         color: [[76, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
