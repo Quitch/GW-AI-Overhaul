@@ -43,7 +43,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 - Poor scouting
 - Commander doesn't react to danger
 - Additional Commanders appear late in galaxy
-- Terrible expansion
+- Poor expansion
 
 ### Bronze
 
@@ -54,7 +54,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 - Good scouting
 - Commander reacts to danger
 - Additional Commanders appear late in galaxy
-- Good expansion
+- Poor expansion
 
 ### Silver
 
@@ -80,7 +80,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 
 ### Platinum
 
-- No starting eco handicap
+- Small eco bonus
 - Eco rapidly increases over distance
 - Good micro
 - Picks on the weakest link
@@ -97,7 +97,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 - Picks on the weakest link
 - Good scouting
 - Commander reacts to danger
-- Additional Commanders appear early in galaxy
+- Additional commanders are guaranteed
 - Good expansion
 
 ## FAQ
