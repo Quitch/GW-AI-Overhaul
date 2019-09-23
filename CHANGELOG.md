@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.15 - 2019-09-23
+## 1.0 - 2019-09-23
 
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
