@@ -15,10 +15,11 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Unique colour
   - Fight according to their faction's preferred style
 - Six new difficulties suitable for anyone from a new player to a veteran of the game
-- Reduced Sub Commander power so they won't carry the game for you anymore
+- Reduced Sub Commander effectiveness
 - Adds the possibility of multiple factions in a system and a FFA occuring
 - Adds support for shared army enemies
 - Bosses are distinctly more difficult than the surrounding systems
+- Added planetary intelligence to allow you to make meaningful decisions on the galactic map
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
