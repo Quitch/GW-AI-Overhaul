@@ -9,13 +9,13 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Foundation: air/naval
   - Synchronous: balanced
   - Revenants: orbital
-- Customise each enemy/Sub-commander
+- Customise each enemy/Sub Commander
   - Unique model
   - Unique personality
   - Unique colour
   - Fight according to their faction's preferred style
 - Six new difficulties suitable for anyone from a new player to a veteran of the game
-- Reduced Sub-commander power so they won't carry the game for you anymore
+- Reduced Sub Commander power so they won't carry the game for you anymore
 - Adds the possibility of multiple factions in a system and a FFA occuring
 - Adds support for shared army enemies
 - Bosses are distinctly more difficult than the surrounding systems
@@ -32,7 +32,7 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; Sub-commanders are not impacted by difficulty.
+Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty.
 
 ### Casual
 
@@ -114,11 +114,11 @@ Please use the mod's [forum thread](https://forums.planetaryannihilation.com/thr
 
 Because that would break the translations, so I've left them untouched.
 
-#### Will Sub-commanders fighting for me have the same personality if I fight against them?
+#### Will Sub Commanders fighting for me have the same personality if I fight against them?
 
 Yes. Mostly.
 
-#### Are all Sub-commanders created equal?
+#### Are all Sub Commanders created equal?
 
 No, some are objectively stupider than others.
 
