@@ -1,16 +1,16 @@
 // !LOCNS:galactic_war
-define([], function () {
+define([], function() {
   return {
-    name: 'Synchronous',
+    name: "Synchronous",
     color: [[126, 226, 101], [192, 192, 192]],
     teams: [
       {
-        name: 'Cupru - Synchronous',
+        name: "Cupru - Synchronous",
         boss: {
-          name: 'Metrarch the Machinist',
-          character: 'Roboticist',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "Metrarch the Machinist",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -34,48 +34,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
-          minions: [
-            {
-              name: 'Servant Aust',
-              character: 'Mechanic',
-              econ_rate: 1.5,
-              landing_policy: ['on_player_planet'],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
-        bossCard: 'gwc_start_bot',
-        systemDescription: "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
+        bossCard: "gwc_start_bot",
+        systemDescription:
+          "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
         systemTemplate: {
-          name: 'Cupru - Synchronous',
+          name: "Cupru - Synchronous",
           Planets: [
             {
-              name: 'Cupru Prime',
+              name: "Cupru Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -88,10 +56,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ['earth']
+              Biomes: ["earth"]
             },
             {
-              name: 'Cupru Beta',
+              name: "Cupru Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -104,10 +72,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Cupru Halley',
+              name: "Cupru Halley",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -120,10 +88,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Cupru Catalyst',
+              name: "Cupru Catalyst",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],
@@ -136,155 +104,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ['metal']
-            }
-          ]
-        },
-      },
-      {
-        name: 'Platina - Synchronous',
-        boss: {
-          name: 'Metrarch the Machinist',
-          character: 'Roboticist',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
-          personality: {
-            percent_vehicle: 0.25,
-            percent_bot: 0.45,
-            percent_air: 0.05,
-            percent_naval: 0,
-            percent_orbital: 0.25,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 1,
-            adv_eco_mod_alone: 0,
-            fabber_to_factory_ratio_basic: 2,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
-          },
-          commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
-          minions: [
-            {
-              name: 'Servant Aust',
-              character: 'Mechanic',
-              econ_rate: 1.5,
-              landing_policy: ['on_player_planet'],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
-            }
-          ]
-        },
-        //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
-        systemTemplate: {
-          name: 'Platina - Synchronous',
-          Planets: [
-            {
-              name: 'Platina Prime',
-              starting_planet: true,
-              mass: 50000,
-              Thrust: [0, 0],
-              Radius: [500, 500],
-              Height: [10, 20],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [75, 90],
-              MetalClusters: [24, 49],
-              BiomeScale: [100, 100],
-              Position: [-25000, 0],
-              Velocity: [0, -141.4213],
-              Biomes: ['desert']
-            },
-            {
-              name: 'Platina Beta',
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [250, 250],
-              Height: [10, 20],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [100, 100],
-              BiomeScale: [100, 100],
-              Position: [-21500, 0],
-              Velocity: [0, -260.944213],
-              Biomes: ['metal_boss']
-            },
-            {
-              name: 'Platina Halley',
-              starting_planet: false,
-              mass: 35000,
-              Thrust: [3, 3],
-              Radius: [499, 499],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [50, 50],
-              MetalClusters: [25, 49],
-              BiomeScale: [100, 100],
-              Position: [-75000, 1000],
-              Velocity: [1.08851337, 81.6387787],
-              Biomes: ['metal_boss']
-            },
-            {
-              name: 'Platina Catalyst',
-              starting_planet: false,
-              mass: 35000,
-              Thrust: [0, 0],
-              Radius: [500, 500],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [50, 50],
-              MetalClusters: [25, 49],
-              BiomeScale: [100, 100],
-              Position: [-75000, -1000],
-              Velocity: [1.08851337, -81.6387787],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             }
           ]
         }
       },
       {
-        name: 'Fier - Synchronous',
+        name: "Platina - Synchronous",
         boss: {
-          name: 'Metrarch the Machinist',
-          character: 'Roboticist',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "Metrarch the Machinist",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -308,48 +139,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
-          minions: [
-            {
-              name: 'Servant Aust',
-              character: 'Mechanic',
-              econ_rate: 1.5,
-              landing_policy: ['on_player_planet'],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
+        systemDescription:
+          "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
         systemTemplate: {
-          name: 'Fier - Synchronous',
+          name: "Platina - Synchronous",
           Planets: [
             {
-              name: 'Fier Prime',
+              name: "Platina Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -362,10 +161,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ['tropical']
+              Biomes: ["desert"]
             },
             {
-              name: 'Fier Beta',
+              name: "Platina Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -378,10 +177,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Fier Halley',
+              name: "Platina Halley",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -394,10 +193,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Fier Catalyst',
+              name: "Platina Catalyst",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],
@@ -410,18 +209,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             }
           ]
         }
       },
       {
-        name: 'Safir - Synchronous',
+        name: "Fier - Synchronous",
         boss: {
-          name: 'Metrarch the Machinist',
-          character: 'Roboticist',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "Metrarch the Machinist",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -445,48 +244,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
-          minions: [
-            {
-              name: 'Servant Aust',
-              character: 'Mechanic',
-              econ_rate: 1.5,
-              landing_policy: ['on_player_planet'],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
+        systemDescription:
+          "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
         systemTemplate: {
-          name: 'Safir - Synchronous',
+          name: "Fier - Synchronous",
           Planets: [
             {
-              name: 'Safir Prime',
+              name: "Fier Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -499,10 +266,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ['earth']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Safir Beta',
+              name: "Fier Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -515,10 +282,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Safir Halley',
+              name: "Fier Halley",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -531,10 +298,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ['desert']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Safir Catalyst',
+              name: "Fier Catalyst",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],
@@ -547,18 +314,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             }
           ]
         }
       },
       {
-        name: 'Apa - Synchronous',
+        name: "Safir - Synchronous",
         boss: {
-          name: 'Metrarch the Machinist',
-          character: 'Roboticist',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "Metrarch the Machinist",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_vehicle: 0.25,
             percent_bot: 0.45,
@@ -582,48 +349,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/tank_aeson/tank_aeson.json',
-          minions: [
-            {
-              name: 'Servant Aust',
-              character: 'Mechanic',
-              econ_rate: 1.5,
-              landing_policy: ['on_player_planet'],
-              color: [[203, 255, 195], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.45,
-                percent_bot: 0.25,
-                percent_air: 0.2,
-                percent_naval: 0,
-                percent_orbital: 0.1,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
-            }
-          ]
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
+        systemDescription:
+          "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
         systemTemplate: {
-          name: 'Apa - Synchronous',
+          name: "Safir - Synchronous",
           Planets: [
             {
-              name: 'Apa Prime',
+              name: "Safir Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -636,10 +371,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ['lava']
+              Biomes: ["earth"]
             },
             {
-              name: 'Apa Beta',
+              name: "Safir Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -652,10 +387,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ['metal_boss']
+              Biomes: ["metal_boss"]
             },
             {
-              name: 'Apa Halley',
+              name: "Safir Halley",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -668,10 +403,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ['metal_boss']
+              Biomes: ["desert"]
             },
             {
-              name: 'Apa Catalyst',
+              name: "Safir Catalyst",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],
@@ -684,7 +419,112 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ['metal']
+              Biomes: ["metal"]
+            }
+          ]
+        }
+      },
+      {
+        name: "Apa - Synchronous",
+        boss: {
+          name: "Metrarch the Machinist",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
+          personality: {
+            percent_vehicle: 0.25,
+            percent_bot: 0.45,
+            percent_air: 0.05,
+            percent_naval: 0,
+            percent_orbital: 0.25,
+            metal_drain_check: 0.54,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+            energy_demand_check: 0.8,
+            micro_type: 2,
+            go_for_the_kill: true,
+            neural_data_mod: 1,
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 0,
+            fabber_to_factory_ratio_basic: 2,
+            fabber_to_factory_ratio_advanced: 2,
+            fabber_alone_on_planet_mod: 3,
+            basic_to_advanced_factory_ratio: 0,
+            factory_alone_on_planet_mod: 0.5,
+            min_basic_fabbers: 5,
+            min_advanced_fabbers: 1
+          },
+          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+        },
+        //bossCard: 'gwc_start_orbital',
+        systemDescription:
+          "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
+        systemTemplate: {
+          name: "Apa - Synchronous",
+          Planets: [
+            {
+              name: "Apa Prime",
+              starting_planet: true,
+              mass: 50000,
+              Thrust: [0, 0],
+              Radius: [500, 500],
+              Height: [10, 20],
+              Water: [0, 0],
+              Temp: [0, 100],
+              MetalDensity: [75, 90],
+              MetalClusters: [24, 49],
+              BiomeScale: [100, 100],
+              Position: [-25000, 0],
+              Velocity: [0, -141.4213],
+              Biomes: ["lava"]
+            },
+            {
+              name: "Apa Beta",
+              starting_planet: true,
+              mass: 5000,
+              Thrust: [0, 0],
+              Radius: [250, 250],
+              Height: [10, 20],
+              Water: [0, 0],
+              Temp: [0, 100],
+              MetalDensity: [100, 100],
+              MetalClusters: [100, 100],
+              BiomeScale: [100, 100],
+              Position: [-21500, 0],
+              Velocity: [0, -260.944213],
+              Biomes: ["metal_boss"]
+            },
+            {
+              name: "Apa Halley",
+              starting_planet: false,
+              mass: 35000,
+              Thrust: [3, 3],
+              Radius: [499, 499],
+              Height: [0, 0],
+              Water: [0, 0],
+              Temp: [0, 100],
+              MetalDensity: [50, 50],
+              MetalClusters: [25, 49],
+              BiomeScale: [100, 100],
+              Position: [-75000, 1000],
+              Velocity: [1.08851337, 81.6387787],
+              Biomes: ["metal_boss"]
+            },
+            {
+              name: "Apa Catalyst",
+              starting_planet: false,
+              mass: 35000,
+              Thrust: [0, 0],
+              Radius: [500, 500],
+              Height: [0, 0],
+              Water: [0, 0],
+              Temp: [0, 100],
+              MetalDensity: [50, 50],
+              MetalClusters: [25, 49],
+              BiomeScale: [100, 100],
+              Position: [-75000, -1000],
+              Velocity: [1.08851337, -81.6387787],
+              Biomes: ["metal"]
             }
           ]
         }
@@ -693,8 +533,8 @@ define([], function () {
     minions: [
       {
         // Land heavy
-        name: 'Servant Potbelly79',
-        character: 'Land',
+        name: "Servant Potbelly79",
+        character: "Land",
         color: [[229, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -709,11 +549,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -732,12 +568,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_potbelly79/quad_potbelly79.json'
+        commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json"
       },
       {
         // Air heavy
-        name: 'Servant Raventhornn',
-        character: 'Air',
+        name: "Servant Raventhornn",
+        character: "Air",
         color: [[204, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -752,11 +588,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -775,12 +607,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_raventhornn/quad_raventhornn.json'
+        commander: "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json"
       },
       {
         // Uber
-        name: 'Servant SacrificialLamb',
-        character: 'Uber',
+        name: "Servant SacrificialLamb",
+        character: "Uber",
         color: [[178, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -795,11 +627,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -818,12 +646,13 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json'
+        commander:
+          "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json"
       },
       {
         // Platinum
-        name: 'Servant Shadowdaemon',
-        character: 'Platinum',
+        name: "Servant Shadowdaemon",
+        character: "Platinum",
         color: [[153, 255, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -838,11 +667,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.15,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -861,12 +686,13 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json'
+        commander:
+          "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json"
       },
       {
         // Gold
-        name: 'Servant Spartandano',
-        character: 'Gold',
+        name: "Servant Spartandano",
+        character: "Gold",
         color: [[128, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -881,11 +707,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.3,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -904,12 +726,12 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_spartandano/quad_spartandano.json'
+        commander: "/pa/units/commanders/quad_spartandano/quad_spartandano.json"
       },
       {
         // Silver
-        name: 'Servant Xenosentry',
-        character: 'Silver',
+        name: "Servant Xenosentry",
+        character: "Silver",
         color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -924,11 +746,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.45,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -947,12 +765,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
+        commander:
+          "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json"
       },
       {
         // Basic Tech
-        name: 'Servant TheFlax',
-        character: 'Basic Tech',
+        name: "Servant TheFlax",
+        character: "Basic Tech",
         color: [[76, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -967,11 +786,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 3,
           priority_scout_metal_spots: false,
@@ -990,12 +805,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_theflax/quad_theflax.json'
+        commander: "/pa/units/commanders/quad_theflax/quad_theflax.json"
       },
       {
         // Advanced Tech
-        name: 'Servant Tokamaktech',
-        character: 'Technologist',
+        name: "Servant Tokamaktech",
+        character: "Technologist",
         color: [[204, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1010,11 +825,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1033,12 +844,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json'
+        commander: "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json"
       },
       {
         // Cautious
-        name: 'Servant Twoboots',
-        character: 'Cautious',
+        name: "Servant Twoboots",
+        character: "Cautious",
         color: [[153, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1053,11 +864,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.75,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1076,12 +883,12 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_twoboots/quad_twoboots.json'
+        commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json"
       },
       {
         // Aggressive
-        name: 'Servant XenosentryPrime',
-        character: 'Aggressive',
+        name: "Servant XenosentryPrime",
+        character: "Aggressive",
         color: [[102, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1096,11 +903,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1119,12 +922,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
+        commander:
+          "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json"
       },
       {
         // Rush
-        name: 'Servant Xinthar',
-        character: 'Rush',
+        name: "Servant Xinthar",
+        character: "Rush",
         color: [[0, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1140,11 +944,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.25,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1163,12 +963,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_xinthar/quad_xinthar.json'
+        commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json"
       },
       {
         // Turtle
-        name: 'Servant Beast',
-        character: 'Turtle',
+        name: "Servant Beast",
+        character: "Turtle",
         color: [[0, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1184,11 +984,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.85,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1207,12 +1003,12 @@ define([], function () {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_beast/raptor_beast.json'
+        commander: "/pa/units/commanders/raptor_beast/raptor_beast.json"
       },
       {
         // Original
-        name: 'Servant Beniesk',
-        character: 'Original',
+        name: "Servant Beniesk",
+        character: "Original",
         color: [[0, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1227,11 +1023,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1250,12 +1042,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_beniesk/raptor_beniesk.json'
+        commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json"
       },
       {
         // Absurd
-        name: 'Servant Locust',
-        character: 'Absurd',
+        name: "Servant Locust",
+        character: "Absurd",
         color: [[0, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1270,11 +1062,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1293,12 +1081,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_locust/quad_locust.json'
+        commander: "/pa/units/commanders/quad_locust/quad_locust.json"
       },
       {
         // Relentless
-        name: 'Servant Zancrowe',
-        character: 'Relentless',
+        name: "Servant Zancrowe",
+        character: "Relentless",
         color: [[0, 153, 76], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1313,11 +1101,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.2,
           adv_eco_mod_alone: 0.95,
           priority_scout_metal_spots: false,
@@ -1336,12 +1120,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_zancrowe/quad_zancrowe.json'
+        commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json"
       },
       {
         // Hard
-        name: 'Servant Damubbster',
-        character: 'Hard',
+        name: "Servant Damubbster",
+        character: "Hard",
         color: [[0, 204, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1356,11 +1140,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.1,
           adv_eco_mod_alone: 1,
           priority_scout_metal_spots: false,
@@ -1379,12 +1159,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_damubbster/raptor_damubbster.json'
+        commander:
+          "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json"
       },
       {
         // Bronze
-        name: 'Servant Raizell',
-        character: 'Bronze',
+        name: "Servant Raizell",
+        character: "Bronze",
         color: [[0, 255, 128], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1399,11 +1180,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.6,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1422,7 +1199,7 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_raizell/raptor_raizell.json'
+        commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json"
       }
     ] // minions
   };

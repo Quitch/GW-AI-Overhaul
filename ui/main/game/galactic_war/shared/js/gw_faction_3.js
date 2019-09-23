@@ -1,16 +1,16 @@
 // !LOCNS:galactic_war
-define([], function () {
+define([], function() {
   return {
-    name: 'Revenants',
+    name: "Revenants",
     color: [[236, 34, 35], [192, 192, 192]],
     teams: [
       {
-        name: 'Alenquer - Revenants',
+        name: "Alenquer - Revenants",
         boss: {
-          name: 'First Seeker Osiris',
-          character: 'Dreamer',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "First Seeker Osiris",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -33,79 +33,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
-          minions: [
-            {
-              name: 'Seeker Ankou',
-              character: 'Armour',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[244, 124, 125], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.9,
-                percent_bot: 0,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
-            },
-            {
-              name: 'Seeker Barastyr',
-              character: 'Infantry',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[168, 0, 0], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0,
-                percent_bot: 0.9,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
-            }
-          ]
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
         },
-        bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
+        bossCard: "gwc_start_orbital",
+        systemDescription:
+          "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
         systemTemplate: {
-          name: 'Alenquer - Revenants',
+          name: "Alenquer - Revenants",
           Planets: [
             {
-              name: 'Alenquer Prime',
+              name: "Alenquer Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -118,10 +55,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             },
             {
-              name: 'Alenquer Beta',
+              name: "Alenquer Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -134,10 +71,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Alenquer Gamma',
+              name: "Alenquer Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -150,10 +87,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Alenquer Delta',
+              name: "Alenquer Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -166,18 +103,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             }
           ]
         }
       },
       {
-        name: 'Xianyao - Revenants',
+        name: "Xianyao - Revenants",
         boss: {
-          name: 'First Seeker Osiris',
-          character: 'Dreamer',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "First Seeker Osiris",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -200,79 +137,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
-          minions: [
-            {
-              name: 'Seeker Ankou',
-              character: 'Armour',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[244, 124, 125], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.9,
-                percent_bot: 0,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
-            },
-            {
-              name: 'Seeker Barastyr',
-              character: 'Infantry',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[168, 0, 0], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0,
-                percent_bot: 0.9,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
-            }
-          ]
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
         },
-        bossCard: 'gwc_start_subcdr',
-        systemDescription: "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
+        bossCard: "gwc_start_subcdr",
+        systemDescription:
+          "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
         systemTemplate: {
-          name: 'Xianyao - Revenants',
+          name: "Xianyao - Revenants",
           Planets: [
             {
-              name: 'Xianyao Prime',
+              name: "Xianyao Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -285,10 +159,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             },
             {
-              name: 'Xianyao Beta',
+              name: "Xianyao Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -301,10 +175,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Xianyao Gamma',
+              name: "Xianyao Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -317,10 +191,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Xianyao Delta',
+              name: "Xianyao Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -333,18 +207,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             }
           ]
         }
       },
       {
-        name: 'Epiphany - Revenants',
+        name: "Epiphany - Revenants",
         boss: {
-          name: 'First Seeker Osiris',
-          character: 'Dreamer',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "First Seeker Osiris",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -367,79 +241,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
-          minions: [
-            {
-              name: 'Seeker Ankou',
-              character: 'Armour',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[244, 124, 125], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.9,
-                percent_bot: 0,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
-            },
-            {
-              name: 'Seeker Barastyr',
-              character: 'Infantry',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[168, 0, 0], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0,
-                percent_bot: 0.9,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
-            }
-          ]
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:The Revenants are unique in that their motivations are individual rather than collective. Each Seeker follows in the example of their legendary Osiris--they seek battle to become stronger through their fallen enemies, and to create more Revenants.",
+        systemDescription:
+          "!LOC:The Revenants are unique in that their motivations are individual rather than collective. Each Seeker follows in the example of their legendary Osiris--they seek battle to become stronger through their fallen enemies, and to create more Revenants.",
         systemTemplate: {
-          name: 'Epiphany - Revenants',
+          name: "Epiphany - Revenants",
           Planets: [
             {
-              name: 'Epiphany Prime',
+              name: "Epiphany Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -452,10 +263,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             },
             {
-              name: 'Epiphany Beta',
+              name: "Epiphany Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -468,10 +279,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Epiphany Gamma',
+              name: "Epiphany Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -484,10 +295,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Epiphany Delta',
+              name: "Epiphany Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -500,18 +311,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             }
           ]
         }
       },
       {
-        name: 'Varthema - Revenants',
+        name: "Varthema - Revenants",
         boss: {
-          name: 'First Seeker Osiris',
-          character: 'Dreamer',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "First Seeker Osiris",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -534,79 +345,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
-          minions: [
-            {
-              name: 'Seeker Ankou',
-              character: 'Armour',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[244, 124, 125], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.9,
-                percent_bot: 0,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
-            },
-            {
-              name: 'Seeker Barastyr',
-              character: 'Infantry',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[168, 0, 0], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0,
-                percent_bot: 0.9,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
-            }
-          ]
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:Osiris holds no interest in ruling, and instead serves more as an exemplar, whether he cares to or not. Therefore, it falls to a small council of older Seekers to direct the affairs of The Revenants at large--primarily making sure that they're fighting the other factions instead of amongst themselves.",
+        systemDescription:
+          "!LOC:Osiris holds no interest in ruling, and instead serves more as an exemplar, whether he cares to or not. Therefore, it falls to a small council of older Seekers to direct the affairs of The Revenants at large--primarily making sure that they're fighting the other factions instead of amongst themselves.",
         systemTemplate: {
-          name: 'Varthema - Revenants',
+          name: "Varthema - Revenants",
           Planets: [
             {
-              name: 'Varthema Prime',
+              name: "Varthema Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -619,10 +367,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             },
             {
-              name: 'Varthema Beta',
+              name: "Varthema Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -635,10 +383,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Varthema Gamma',
+              name: "Varthema Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -651,10 +399,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Varthema Delta',
+              name: "Varthema Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -667,18 +415,18 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             }
           ]
         }
       },
       {
-        name: 'Chernykh - Revenants',
+        name: "Chernykh - Revenants",
         boss: {
-          name: 'First Seeker Osiris',
-          character: 'Dreamer',
-          econ_rate: 2,
-          landing_policy: ['off_player_planet'],
+          name: "First Seeker Osiris",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_air: 0,
@@ -701,79 +449,16 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/quad_osiris/quad_osiris.json',
-          minions: [
-            {
-              name: 'Seeker Ankou',
-              character: 'Armour',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[244, 124, 125], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0.9,
-                percent_bot: 0,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json'
-            },
-            {
-              name: 'Seeker Barastyr',
-              character: 'Infantry',
-              econ_rate: 1.2,
-              landing_policy: ['on_player_planet'],
-              color: [[168, 0, 0], [192, 192, 192]],
-              personality: {
-                percent_vehicle: 0,
-                percent_bot: 0.9,
-                percent_air: 0.05,
-                percent_naval: 0,
-                percent_orbital: 0.05,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json'
-            }
-          ]
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
         },
         //bossCard: 'gwc_start_orbital',
-        systemDescription: "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
+        systemDescription:
+          "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
         systemTemplate: {
-          name: 'Chernykh - Revenants',
+          name: "Chernykh - Revenants",
           Planets: [
             {
-              name: 'Chernykh Prime',
+              name: "Chernykh Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -786,10 +471,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ['metal']
+              Biomes: ["metal"]
             },
             {
-              name: 'Chernykh Beta',
+              name: "Chernykh Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -802,10 +487,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Chernykh Gamma',
+              name: "Chernykh Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -818,10 +503,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             },
             {
-              name: 'Chernykh Delta',
+              name: "Chernykh Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -834,7 +519,7 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ['moon']
+              Biomes: ["moon"]
             }
           ]
         }
@@ -843,8 +528,8 @@ define([], function () {
     minions: [
       {
         // Orbital & Land
-        name: 'Seeker Betadyne',
-        character: 'Orbital and Land',
+        name: "Seeker Betadyne",
+        character: "Orbital and Land",
         color: [[255, 204, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -859,11 +544,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -882,12 +563,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_betadyne/raptor_betadyne.json'
+        commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json"
       },
       {
         // Orbital & Air
-        name: 'Seeker Centurion',
-        character: 'Orbital and Air',
+        name: "Seeker Centurion",
+        character: "Orbital and Air",
         color: [[255, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -902,11 +583,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -925,12 +602,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_centurion/raptor_centurion.json'
+        commander: "/pa/units/commanders/raptor_centurion/raptor_centurion.json"
       },
       {
         // Uber
-        name: 'Seeker Diremachine',
-        character: 'Uber',
+        name: "Seeker Diremachine",
+        character: "Uber",
         color: [[255, 102, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -945,11 +622,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -968,12 +641,13 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_diremachine/raptor_diremachine.json'
+        commander:
+          "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json"
       },
       {
         // Platinum
-        name: 'Seeker Enderstryke71',
-        character: 'Platinum',
+        name: "Seeker Enderstryke71",
+        character: "Platinum",
         color: [[255, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -988,11 +662,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.15,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1011,12 +681,13 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json'
+        commander:
+          "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json"
       },
       {
         // Gold
-        name: 'Seeker Iwmiked',
-        character: 'Gold',
+        name: "Seeker Iwmiked",
+        character: "Gold",
         color: [[204, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1031,11 +702,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.3,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1054,12 +721,12 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json'
+        commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json"
       },
       {
         // Silver
-        name: 'Seeker Majuju',
-        character: 'Silver',
+        name: "Seeker Majuju",
+        character: "Silver",
         color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1074,11 +741,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.45,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1097,12 +760,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_majuju/raptor_majuju.json'
+        commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json"
       },
       {
         // Basic Tech
-        name: 'Seeker Nefelpitou',
-        character: 'Basic Tech',
+        name: "Seeker Nefelpitou",
+        character: "Basic Tech",
         color: [[255, 204, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1117,11 +780,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 3,
           priority_scout_metal_spots: false,
@@ -1140,12 +799,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json'
+        commander:
+          "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json"
       },
       {
         // Advanced Tech
-        name: 'Seeker Nemicus',
-        character: 'Technologist',
+        name: "Seeker Nemicus",
+        character: "Technologist",
         color: [[255, 178, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1160,11 +820,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1183,12 +839,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json'
+        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
       },
       {
         // Cautious
-        name: 'Seeker Rallus',
-        character: 'Cautious',
+        name: "Seeker Rallus",
+        character: "Cautious",
         color: [[255, 153, 51], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1203,11 +859,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.75,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion",
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1226,12 +878,12 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
+        commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json"
       },
       {
         // Aggressive
-        name: 'Seeker Stickman9000',
-        character: 'Aggressive',
+        name: "Seeker Stickman9000",
+        character: "Aggressive",
         color: [[255, 128, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1246,11 +898,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion",
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1269,12 +917,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json'
+        commander:
+          "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json"
       },
       {
         // Rush
-        name: 'Seeker Zaazzaa',
-        character: 'Rush',
+        name: "Seeker Zaazzaa",
+        character: "Rush",
         color: [[204, 102, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1290,11 +939,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.25,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1313,12 +958,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json'
+        commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json"
       },
       {
         // Turtle
-        name: 'Seeker Aeson',
-        character: 'Turtle',
+        name: "Seeker Aeson",
+        character: "Turtle",
         color: [[255, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1333,11 +978,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.85,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1356,12 +997,12 @@ define([], function () {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/tank_aeson/tank_aeson.json'
+        commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
       },
       {
         // Original
-        name: 'Seeker Banditks',
-        character: 'Original',
+        name: "Seeker Banditks",
+        character: "Original",
         color: [[255, 255, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1376,11 +1017,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1399,12 +1036,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/tank_banditks/tank_banditks.json'
+        commander: "/pa/units/commanders/tank_banditks/tank_banditks.json"
       },
       {
         // Absurd
-        name: 'Seeker SPZ58624',
-        character: 'Absurd',
+        name: "Seeker SPZ58624",
+        character: "Absurd",
         color: [[255, 255, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1420,11 +1057,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1443,12 +1076,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_spz58624/raptor_spz58624.json'
+        commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json"
       },
       {
         // Relentless
-        name: 'Seeker XOV',
-        character: 'Relentless',
+        name: "Seeker XOV",
+        character: "Relentless",
         color: [[255, 255, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1464,11 +1097,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.2,
           adv_eco_mod_alone: 0.95,
           priority_scout_metal_spots: false,
@@ -1487,12 +1116,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/raptor_xov/raptor_xov.json'
+        commander: "/pa/units/commanders/raptor_xov/raptor_xov.json"
       },
       {
         // Hard
-        name: 'Seeker Reaver',
-        character: 'Hard',
+        name: "Seeker Reaver",
+        character: "Hard",
         color: [[204, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1508,11 +1137,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.1,
           adv_eco_mod_alone: 1,
           priority_scout_metal_spots: false,
@@ -1531,12 +1156,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/tank_reaver/tank_reaver.json'
+        commander: "/pa/units/commanders/tank_reaver/tank_reaver.json"
       },
       {
         // Bronze
-        name: 'Seeker Sadiga',
-        character: 'Bronze',
+        name: "Seeker Sadiga",
+        character: "Bronze",
         color: [[153, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1551,11 +1176,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.6,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1574,7 +1195,7 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/tank_sadiga/tank_sadiga.json'
+        commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json"
       }
     ] // minions
   };

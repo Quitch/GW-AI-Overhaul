@@ -1,15 +1,16 @@
 // !LOCNS:galactic_war
-define([], function () {
+define([], function() {
   return {
-    name: 'Foundation',
+    name: "Foundation",
     color: [[145, 87, 199], [192, 192, 192]],
     teams: [
       {
-        name: 'Atlas - Foundation',
+        name: "Atlas - Foundation",
         boss: {
-          name: 'Inquisitor Nemicus',
-          character: 'Explorer',
-          econ_rate: 2,
+          name: "Inquisitor Nemicus",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -32,46 +33,16 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json',
-          minions: [
-            {
-              name: 'Acolyte Agatho',
-              character: 'Ground Pounder',
-              econ_rate: 1.5,
-              color: [[192, 131, 246], [192, 192, 192]],
-              personality: {
-                percent_land: 0.8,
-                percent_orbital: 0.05,
-                percent_air: 0.15,
-                percent_naval: 0,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
-            }
-          ]
+          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
         },
-        bossCard: 'gwc_start_air',
-        systemDescription: "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
+        bossCard: "gwc_start_air",
+        systemDescription:
+          "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
         systemTemplate: {
-          name: 'Atlas - Foundation',
+          name: "Atlas - Foundation",
           Planets: [
             {
-              name: 'Atlas Prime',
+              name: "Atlas Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -84,11 +55,11 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ['ice_boss']
+              Biomes: ["ice_boss"]
             },
             {
-              name: 'Atlas Beta',
-              starting_planet: false,
+              name: "Atlas Beta",
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -100,10 +71,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ['tropical']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Atlas Gamma',
+              name: "Atlas Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -116,10 +87,10 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             },
             {
-              name: 'Atlas Delta',
+              name: "Atlas Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -132,17 +103,18 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             }
           ]
         }
       },
       {
-        name: 'Patagonia - Foundation',
+        name: "Patagonia - Foundation",
         boss: {
-          name: 'Inquisitor Nemicus',
-          character: 'Explorer',
-          econ_rate: 2,
+          name: "Inquisitor Nemicus",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -165,46 +137,16 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json',
-          minions: [
-            {
-              name: 'Acolyte Agatho',
-              character: 'Ground Pounder',
-              econ_rate: 1.5,
-              color: [[192, 131, 246], [192, 192, 192]],
-              personality: {
-                percent_land: 0.8,
-                percent_orbital: 0.05,
-                percent_air: 0.15,
-                percent_naval: 0,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
-            }
-          ]
+          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
         },
-        bossCard: 'gwc_start_allfactory',
-        systemDescription: "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
+        bossCard: "gwc_start_allfactory",
+        systemDescription:
+          "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
         systemTemplate: {
-          name: 'Patagonia - Foundation',
+          name: "Patagonia - Foundation",
           Planets: [
             {
-              name: 'Patagonia Prime',
+              name: "Patagonia Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -217,11 +159,11 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ['ice_boss']
+              Biomes: ["ice_boss"]
             },
             {
-              name: 'Patagonia Beta',
-              starting_planet: false,
+              name: "Patagonia Beta",
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -233,10 +175,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ['tropical']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Patagonia Gamma',
+              name: "Patagonia Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -249,10 +191,10 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             },
             {
-              name: 'Patagonia Delta',
+              name: "Patagonia Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -265,17 +207,18 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             }
           ]
         }
       },
       {
-        name: 'Xylcor - Foundation',
+        name: "Xylcor - Foundation",
         boss: {
-          name: 'Inquisitor Nemicus',
-          character: 'Explorer',
-          econ_rate: 2,
+          name: "Inquisitor Nemicus",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -298,45 +241,15 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json',
-          minions: [
-            {
-              name: 'Acolyte Agatho',
-              character: 'Ground Pounder',
-              econ_rate: 1.5,
-              color: [[192, 131, 246], [192, 192, 192]],
-              personality: {
-                percent_land: 0.8,
-                percent_orbital: 0.05,
-                percent_air: 0.15,
-                percent_naval: 0,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
-            }
-          ]
+          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
         },
-        systemDescription: "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
+        systemDescription:
+          "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
         systemTemplate: {
-          name: 'Xylcor- Foundation',
+          name: "Xylcor- Foundation",
           Planets: [
             {
-              name: 'Xylcor Prime',
+              name: "Xylcor Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -349,11 +262,11 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ['ice_boss']
+              Biomes: ["ice_boss"]
             },
             {
-              name: 'Xylcor Beta',
-              starting_planet: false,
+              name: "Xylcor Beta",
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -365,10 +278,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ['tropical']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Xylcor Gamma',
+              name: "Xylcor Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -381,10 +294,10 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             },
             {
-              name: 'Xylcor Delta',
+              name: "Xylcor Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -397,17 +310,18 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             }
           ]
         }
       },
       {
-        name: 'Blogar\'s Fist - Foundation',
+        name: "Blogar's Fist - Foundation",
         boss: {
-          name: 'Inquisitor Nemicus',
-          character: 'Explorer',
-          econ_rate: 2,
+          name: "Inquisitor Nemicus",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -430,45 +344,15 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json',
-          minions: [
-            {
-              name: 'Acolyte Agatho',
-              character: 'Ground Pounder',
-              econ_rate: 1.5,
-              color: [[192, 131, 246], [192, 192, 192]],
-              personality: {
-                percent_land: 0.8,
-                percent_orbital: 0.05,
-                percent_air: 0.15,
-                percent_naval: 0,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
-            }
-          ]
+          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
         },
-        systemDescription: "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
+        systemDescription:
+          "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
         systemTemplate: {
-          name: 'Blogar\'s Fist - Foundation',
+          name: "Blogar's Fist - Foundation",
           Planets: [
             {
-              name: 'Blogar\'s Fist Prime',
+              name: "Blogar's Fist Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -481,11 +365,11 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ['ice_boss']
+              Biomes: ["ice_boss"]
             },
             {
-              name: 'Blogar\'s Fist Beta',
-              starting_planet: false,
+              name: "Blogar's Fist Beta",
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -497,10 +381,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ['tropical']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Blogar\'s Fist Gamma',
+              name: "Blogar's Fist Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -513,10 +397,10 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             },
             {
-              name: 'Blogar\'s Fist Delta',
+              name: "Blogar's Fist Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -529,17 +413,18 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             }
           ]
         }
       },
       {
-        name: 'Zeta Draconis - Foundation',
+        name: "Zeta Draconis - Foundation",
         boss: {
-          name: 'Inquisitor Nemicus',
-          character: 'Explorer',
-          econ_rate: 2,
+          name: "Inquisitor Nemicus",
+          character: "Boss",
+          econ_rate: 1.25,
+          landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_land: 0.05,
             percent_orbital: 0.4,
@@ -562,45 +447,15 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1
           },
-          commander: '/pa/units/commanders/raptor_nemicus/raptor_nemicus.json',
-          minions: [
-            {
-              name: 'Acolyte Agatho',
-              character: 'Ground Pounder',
-              econ_rate: 1.5,
-              color: [[192, 131, 246], [192, 192, 192]],
-              personality: {
-                percent_land: 0.8,
-                percent_orbital: 0.05,
-                percent_air: 0.15,
-                percent_naval: 0,
-                metal_drain_check: 0.54,
-                energy_drain_check: 0.57,
-                metal_demand_check: 0.85,
-                energy_demand_check: 0.82,
-                micro_type: 2,
-                go_for_the_kill: true,
-                neural_data_mod: 1,
-                adv_eco_mod: 1,
-                adv_eco_mod_alone: 0,
-                fabber_to_factory_ratio_basic: 1,
-                fabber_to_factory_ratio_advanced: 2,
-                fabber_alone_on_planet_mod: 3,
-                basic_to_advanced_factory_ratio: 0,
-                factory_alone_on_planet_mod: 0.5,
-                min_basic_fabbers: 3,
-                min_advanced_fabbers: 1
-              },
-              commander: '/pa/units/commanders/raptor_rallus/raptor_rallus.json'
-            }
-          ]
+          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
         },
-        systemDescription: "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
+        systemDescription:
+          "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
         systemTemplate: {
-          name: 'Zeta Draconis - Foundation',
+          name: "Zeta Draconis - Foundation",
           Planets: [
             {
-              name: 'Zeta Draconis Prime',
+              name: "Zeta Draconis Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -613,11 +468,11 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ['ice_boss']
+              Biomes: ["ice_boss"]
             },
             {
-              name: 'Zeta Draconis Beta',
-              starting_planet: false,
+              name: "Zeta Draconis Beta",
+              starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
               Radius: [300, 300],
@@ -629,10 +484,10 @@ define([], function () {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ['tropical']
+              Biomes: ["tropical"]
             },
             {
-              name: 'Zeta Draconis Gamma',
+              name: "Zeta Draconis Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -645,10 +500,10 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             },
             {
-              name: 'Zeta Draconis Delta',
+              name: "Zeta Draconis Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -661,17 +516,17 @@ define([], function () {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ['gas']
+              Biomes: ["gas"]
             }
           ]
         }
-      },
+      }
     ], // teams
     minions: [
       {
         // All Air
-        name: 'Acolyte Progenitor',
-        character: 'Air',
+        name: "Acolyte Progenitor",
+        character: "Air",
         color: [[229, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -686,12 +541,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -710,12 +560,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_progenitor/imperial_progenitor.json'
+        commander:
+          "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json"
       },
       {
         // All Naval
-        name: 'Acolyte Sangudo',
-        character: 'Naval',
+        name: "Acolyte Sangudo",
+        character: "Naval",
         color: [[204, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -730,11 +581,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -753,12 +600,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_sangudo/imperial_sangudo.json'
+        commander: "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json"
       },
       {
         // Uber
-        name: 'Acolyte Seniorhelix',
-        character: 'Uber',
+        name: "Acolyte Seniorhelix",
+        character: "Uber",
         color: [[178, 102, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -773,11 +620,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -796,12 +639,13 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json'
+        commander:
+          "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json"
       },
       {
         // Platinum
-        name: 'Acolyte Stelarch',
-        character: 'Platinum',
+        name: "Acolyte Stelarch",
+        character: "Platinum",
         color: [[153, 51, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -816,11 +660,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.15,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -839,12 +679,13 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_stelarch/imperial_stelarch.json'
+        commander:
+          "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json"
       },
       {
         // Gold
-        name: 'Acolyte TheChessKnight',
-        character: 'Gold',
+        name: "Acolyte TheChessKnight",
+        character: "Gold",
         color: [[127, 0, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -859,11 +700,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.3,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -882,12 +719,13 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json'
+        commander:
+          "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json"
       },
       {
         // Silver
-        name: 'Acolyte Theta',
-        character: 'Silver',
+        name: "Acolyte Theta",
+        character: "Silver",
         color: [[102, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -902,11 +740,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.45,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -925,12 +759,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_theta/imperial_theta.json'
+        commander: "/pa/units/commanders/imperial_theta/imperial_theta.json"
       },
       {
         // Basic Tech
-        name: 'Acolyte ToddFather',
-        character: 'Basic Tech',
+        name: "Acolyte ToddFather",
+        character: "Basic Tech",
         color: [[76, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -945,11 +779,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 3,
           priority_scout_metal_spots: false,
@@ -968,12 +798,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_toddfather/imperial_toddfather.json'
+        commander:
+          "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json"
       },
       {
         // Advanced Tech
-        name: 'Acolyte Ajax',
-        character: 'Technologist',
+        name: "Acolyte Ajax",
+        character: "Technologist",
         color: [[255, 204, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -988,11 +819,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1011,12 +838,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_ajax/quad_ajax.json'
+        commander: "/pa/units/commanders/quad_ajax/quad_ajax.json"
       },
       {
         // Cautious
-        name: 'Acolyte Armalisk',
-        character: 'Cautious',
+        name: "Acolyte Armalisk",
+        character: "Cautious",
         color: [[255, 153, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1031,11 +858,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.75,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1054,12 +877,12 @@ define([], function () {
           min_advanced_fabbers: 2,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_armalisk/quad_armalisk.json'
+        commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json"
       },
       {
         // Aggressive
-        name: 'Acolyte Calyx',
-        character: 'Aggressive',
+        name: "Acolyte Calyx",
+        character: "Aggressive",
         color: [[255, 102, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1074,11 +897,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1097,12 +916,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_calyx/quad_calyx.json'
+        commander: "/pa/units/commanders/quad_calyx/quad_calyx.json"
       },
       {
         // Rush
-        name: 'Acolyte Gambitdfa',
-        character: 'Rush',
+        name: "Acolyte Gambitdfa",
+        character: "Rush",
         color: [[255, 0, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1117,11 +936,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.25,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1140,12 +955,12 @@ define([], function () {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json'
+        commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json"
       },
       {
         // Turtle
-        name: 'Acolyte Berlinetta',
-        character: 'Turtle',
+        name: "Acolyte Berlinetta",
+        character: "Turtle",
         color: [[204, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1160,11 +975,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 0.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.85,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1183,12 +994,13 @@ define([], function () {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json'
+        commander:
+          "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json"
       },
       {
         // Original
-        name: 'Acolyte Osiris',
-        character: 'Original',
+        name: "Acolyte Osiris",
+        character: "Original",
         color: [[153, 0, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1203,11 +1015,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1226,12 +1034,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_osiris/quad_osiris.json'
+        commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
       },
       {
         // Absurd
-        name: 'Acolyte Tykus24',
-        character: 'Absurd',
+        name: "Acolyte Tykus24",
+        character: "Absurd",
         color: [[255, 204, 229], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1246,11 +1054,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.3,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
@@ -1269,12 +1073,12 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_tykus24/imperial_tykus24.json'
+        commander: "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json"
       },
       {
         // Relentless
-        name: 'Acolyte Vidicarus',
-        character: 'Relentless',
+        name: "Acolyte Vidicarus",
+        character: "Relentless",
         color: [[255, 153, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1289,11 +1093,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.2,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.2,
           adv_eco_mod_alone: 0.95,
           priority_scout_metal_spots: false,
@@ -1312,12 +1112,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json'
+        commander:
+          "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json"
       },
       {
         // Hard
-        name: 'Acolyte Visionik',
-        character: 'Hard',
+        name: "Acolyte Visionik",
+        character: "Hard",
         color: [[255, 102, 178], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1332,11 +1133,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.5,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 1.1,
           adv_eco_mod_alone: 1,
           priority_scout_metal_spots: false,
@@ -1355,12 +1152,13 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/imperial_visionik/imperial_visionik.json'
+        commander:
+          "/pa/units/commanders/imperial_visionik/imperial_visionik.json"
       },
       {
         // Bronze
-        name: 'Acolyte Commandonut',
-        character: 'Bronze',
+        name: "Acolyte Commandonut",
+        character: "Bronze",
         color: [[255, 51, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1375,11 +1173,7 @@ define([], function () {
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1.6,
-          personality_tags:
-            [
-              "GWAlly",
-              "SlowerExpansion"
-            ],
+          personality_tags: ["GWAlly", "SlowerExpansion"],
           adv_eco_mod: 0.5,
           adv_eco_mod_alone: 0,
           priority_scout_metal_spots: false,
@@ -1398,7 +1192,7 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 10
         },
-        commander: '/pa/units/commanders/quad_commandonut/quad_commandonut.json'
+        commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json"
       }
     ] // minions
   };

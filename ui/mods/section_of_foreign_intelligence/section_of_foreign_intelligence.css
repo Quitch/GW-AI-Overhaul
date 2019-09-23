@@ -1,7 +1,7 @@
 /* Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul */
 
 .section_of_foreign_intelligence {
-  color: #88DBFF;
+  color: #88dbff;
 }
 
 .section_of_foreign_intelligence h3 {
@@ -24,35 +24,36 @@
 }
 
 .div_player_icon {
-    height: 16px;
-    width: 16px;
-    position: absolute;
-    opacity: 1;
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  opacity: 1;
 }
 
 .player_masked {
-    height: 16px;
-    width: 16px;
-    -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
-    -webkit-mask-size: cover;
-    mask: url("#player-mask");
+  height: 16px;
+  width: 16px;
+  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+  -webkit-mask-size: cover;
+  mask: url("#player-mask");
 }
 
-.div_player_icon .fill, .div_player_icon .outline {
-    position: absolute;
+.div_player_icon .fill,
+.div_player_icon .outline {
+  position: absolute;
 }
 
 .section_of_foreign_intelligence .table {
-   display: table;
-   table-layout: fixed;
-   width: 80%;
+  display: table;
+  table-layout: fixed;
+  width: 80%;
 }
 .section_of_foreign_intelligence .tablebody {
-   display: table-row-group;
+  display: table-row-group;
 }
-.section_of_foreign_intelligence .tr { 
+.section_of_foreign_intelligence .tr {
   display: table-row;
 }
-.section_of_foreign_intelligence .td { 
+.section_of_foreign_intelligence .td {
   display: table-cell;
 }

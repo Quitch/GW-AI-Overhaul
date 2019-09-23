@@ -2,25 +2,17 @@
   "context": "client",
   "identifier": "com.pa.quitch.gwaioverhaul",
   "display_name": "Galactic War AI Overhaul",
-  "description": "Creates personality differences between the factions and each individual enemy Commander and friendly Sub-commander. Legonis Machina focus on land, Foundation on air and naval, Revenants on orbital, Synchronous take a balanced approach. Sub Commanders are less able to carry the game for you. Fight FFAs when another faction is contesting the system. Overhauls the difficulty settings to provide more variety along with a much greater challenge at the higher settings. Uses the vanilla AI brain. Not compatible with other Galactic War mods which adjust difficulty.",
+  "description": "Add some much needed variety and challenge to Galactic War. Includes a wide array of difficulty levels for all abilities, from someone who has only just completed the tutorial to the those with every loadout unlocked. Get intelligence reports for each system before you choose to fight. Fight in FFAs against more than one faction. Unique colours mean you can clearly identify who is who. Bosses offer a real challenge over surrounding systems. Each faction has its own style of play and each Commander its own personality. In larger galaxies the number of enemies will scale to provide you the epic battles you always wanted to have. For even more variety check out the mod 'Shared Systems for Galactic War', which works in conjunction with your maps and installed map packs to provide far more systems to fight in.",
   "author": "Quitch",
-  "version": "0.14.2",
-  "build": "113636",
-  "date": "2019/09/12",
+  "version": "1.0",
+  "build": "113681",
+  "date": "2019/09/23",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/rel-client-galactic-war-ai-overhaul.72360/",
-  "category": [
-    "ai",
-    "gw",
-    "gameplay",
-    "classic",
-    "titans"
-  ],
+  "category": ["ai", "gw", "gameplay", "classic", "titans"],
   "icon": "https://i.imgur.com/KX8n6ZJ.png",
   "scenes": {
-    "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"
-    ],
+    "gw_start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
