@@ -136,7 +136,7 @@ No, some are objectively stupider than others.
 
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
-### Why am I not seeing the latest changes in my war?
+#### Why am I not seeing the latest changes in my war?
 
 Many changes will only apply to new wars.
 
