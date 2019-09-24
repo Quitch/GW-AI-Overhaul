@@ -534,7 +534,7 @@ define([], function() {
       {
         // Land heavy
         name: "Servant Potbelly79",
-        character: "Ground Pounder",
+        character: "Grunt",
         color: [[229, 255, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {

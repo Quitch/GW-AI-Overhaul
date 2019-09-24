@@ -15,10 +15,11 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Unique colour
   - Fight according to their faction's preferred style
 - Six new difficulties suitable for anyone from a new player to a veteran of the game
-- Reduced Sub Commander power so they won't carry the game for you anymore
+- Reduced Sub Commander effectiveness
 - Adds the possibility of multiple factions in a system and a FFA occuring
 - Adds support for shared army enemies
 - Bosses are distinctly more difficult than the surrounding systems
+- Added planetary intelligence to allow you to make meaningful decisions on the galactic map
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -104,10 +105,10 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 
 Each system will display four pieces of information:
 
-**System Area**: the total surface size of all planets, excluding gas giants.
-**Threat Level**: based on the total eco score of all enemies.
-**Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
-**Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
+- **System Area**: the total surface size of all planets, excluding gas giants.
+- **Threat Level**: based on the total eco score of all enemies.
+- **Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
+- **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
 ## FAQ
 
@@ -135,7 +136,7 @@ No, some are objectively stupider than others.
 
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
-### Why am I not seeing the latest changes in my war?
+#### Why am I not seeing the latest changes in my war?
 
 Many changes will only apply to new wars.
 

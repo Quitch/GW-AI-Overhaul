@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2 - 2019-09-24
+
+- Further correction of personality word wrapping
+
 ## 1.0.1 - 2019-09-23
 
 - Update personality names to avoid wrapping and make them more interesting
@@ -8,7 +12,6 @@
 
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
-- Bronze will use more armies towards the end of larger systems
 - All difficulties are slower to increase the number of armies
 - Minor increases to the starting eco of Gold and Platinum
 - Remove delay for Bronze building from factories
