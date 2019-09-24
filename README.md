@@ -105,10 +105,10 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 
 Each system will display four pieces of information:
 
-**System Area**: the total surface size of all planets, excluding gas giants.
-**Threat Level**: based on the total eco score of all enemies.
-**Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
-**Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
+- **System Area**: the total surface size of all planets, excluding gas giants.
+- **Threat Level**: based on the total eco score of all enemies.
+- **Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
+- **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
 ## FAQ
 
