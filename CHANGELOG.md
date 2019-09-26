@@ -4,6 +4,7 @@
 
 - Rush spends less time at T1
 - Rush is more aggressive
+- Synchronous turtles prefer vehicles over bots
 
 ## 1.0.2 - 2019-09-24
 

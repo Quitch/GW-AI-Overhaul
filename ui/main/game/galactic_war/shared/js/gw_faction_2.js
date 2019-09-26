@@ -972,8 +972,8 @@ define([], function() {
         color: [[0, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
-          percent_bot: 0.4,
-          percent_vehicle: 0,
+          percent_bot: 0,
+          percent_vehicle: 0.4,
           percent_air: 0.19,
           percent_naval: 0.2,
           percent_orbital: 0.2,
