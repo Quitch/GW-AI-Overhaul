@@ -6,6 +6,7 @@
 - Rush is more aggressive
 - Synchronous turtles prefer vehicles over bots
 - Corrected number of fabbers turtles try to build when alone
+- Implemented support for the new personality tags which allow configuration of different opening factories
 
 ## 1.0.2 - 2019-09-24
 
