@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Rush spends less time at T1
+- Rush is more aggressive
+
 ## 1.0.2 - 2019-09-24
 
 - Further correction of personality word wrapping
