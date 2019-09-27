@@ -75,8 +75,8 @@ requireGW(
         personality_tags: ["SlowerExpansion"],
         econBase: 0.6,
         econRatePerDist: 0.075,
-        max_basic_fabbers: 20,
-        max_advanced_fabbers: 20,
+        max_basic_fabbers: 15,
+        max_advanced_fabbers: 15,
         ffa_chance: 15
       },
       {
@@ -94,8 +94,8 @@ requireGW(
         per_expansion_delay: 0,
         econBase: 0.7,
         econRatePerDist: 0.1,
-        max_basic_fabbers: 30,
-        max_advanced_fabbers: 30,
+        max_basic_fabbers: 20,
+        max_advanced_fabbers: 20,
         ffa_chance: 20
       },
       {
@@ -114,8 +114,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 0.85,
         econRatePerDist: 0.15,
-        max_basic_fabbers: 40,
-        max_advanced_fabbers: 40,
+        max_basic_fabbers: 25,
+        max_advanced_fabbers: 25,
         ffa_chance: 25
       },
       {
@@ -134,8 +134,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 1,
         econRatePerDist: 0.2,
-        max_basic_fabbers: 50,
-        max_advanced_fabbers: 50,
+        max_basic_fabbers: 30,
+        max_advanced_fabbers: 30,
         ffa_chance: 25
       },
       {
@@ -154,8 +154,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 10,
         econRatePerDist: 0,
-        max_basic_fabbers: 100,
-        max_advanced_fabbers: 100,
+        max_basic_fabbers: 35,
+        max_advanced_fabbers: 35,
         ffa_chance: 25
       }
     ];

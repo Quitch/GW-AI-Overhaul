@@ -8,6 +8,7 @@
 - Corrected number of fabbers turtles try to build when alone
 - Implemented support for the new personality tags which allow configuration of different opening factories
 - Platinum and Uber Commander personalities behave slightly more distinctly from other personalities across all factions
+- Reduced maximum number of fabbers per army at all levels above Casual
 
 ## 1.0.2 - 2019-09-24
 
