@@ -9,7 +9,7 @@
 - Implemented support for the new personality tags which allow configuration of different opening factories
 - Platinum and Uber Commander personalities behave slightly more distinctly from other personalities across all factions
 - Reduced maximum number of fabbers per army at all levels above Casual
-- Adjusted how Technologists fabber builds to compensate for their factory builds
+- Adjusted Technologist fabber builds to compensate for their factory builds
 
 ## 1.0.2 - 2019-09-24
 
