@@ -10,6 +10,8 @@
 - Platinum and Uber Commander personalities behave slightly more distinctly from other personalities across all factions
 - Reduced maximum number of fabbers per army at all levels above Casual
 - Adjusted Technologist fabber builds to compensate for their factory builds
+- Fix Silver difficulty not expanding properly
+- Fix Silver not building Catalysts
 
 ## 1.0.2 - 2019-09-24
 
