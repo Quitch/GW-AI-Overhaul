@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v1.1.0 - 2019-10-05
 
 - Rush spends less time at T1
 - Rush is more aggressive
