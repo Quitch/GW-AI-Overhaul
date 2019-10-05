@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Removed Bronze, Silver and Hard personalities
+- Each faction has one traitor from each of the other factions which brings its faction style with it
+
 ## v1.1.0 - 2019-10-05
 
 - Rush spends less time at T1
