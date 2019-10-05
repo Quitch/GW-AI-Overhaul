@@ -9,7 +9,7 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Boss",
-          econ_rate: 1.25,
+          econ_rate: 1,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_open_vehicle: 0.5,
@@ -118,7 +118,7 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Boss",
-          econ_rate: 1.25,
+          econ_rate: 1,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_open_vehicle: 0.5,
@@ -227,7 +227,7 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Boss",
-          econ_rate: 1.25,
+          econ_rate: 1,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_open_vehicle: 0.5,
@@ -336,7 +336,7 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Boss",
-          econ_rate: 1.25,
+          econ_rate: 1,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_open_vehicle: 0.5,
@@ -445,7 +445,7 @@ define([], function() {
         boss: {
           name: "First Seeker Osiris",
           character: "Boss",
-          econ_rate: 1.25,
+          econ_rate: 1,
           landing_policy: ["off_player_planet", "on_player_planet"],
           personality: {
             percent_open_vehicle: 0.5,
