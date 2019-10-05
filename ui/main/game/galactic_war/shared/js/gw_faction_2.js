@@ -781,9 +781,9 @@ define([], function() {
         commander: "/pa/units/commanders/quad_spartandano/quad_spartandano.json"
       },
       {
-        // Legonis
+        // Legonis Machina
         name: "Servant Xenosentry",
-        character: "Legonis",
+        character: "Legonis Machina",
         color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

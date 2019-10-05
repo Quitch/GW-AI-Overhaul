@@ -776,9 +776,9 @@ define([], function() {
         commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json"
       },
       {
-        // Legonis
+        // Legonis Machina
         name: "Seeker Majuju",
-        character: "Legonis",
+        character: "Legonis Machina",
         color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

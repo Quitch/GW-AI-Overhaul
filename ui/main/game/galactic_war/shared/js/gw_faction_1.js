@@ -775,9 +775,9 @@ define([], function() {
           "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json"
       },
       {
-        // Legonis
+        // Legonis Machina
         name: "Acolyte Theta",
-        character: "Legonis",
+        character: "Legonis Machina",
         color: [[102, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
