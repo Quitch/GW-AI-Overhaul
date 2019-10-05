@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v1.1.0 - 2019-10-05
+
+- Rush spends less time at T1
+- Rush is more aggressive
+- Synchronous turtles prefer vehicles over bots
+- Corrected number of fabbers turtles try to build when alone
+- Implemented support for the new personality tags which allow configuration of different opening factories
+- Platinum and Uber Commander personalities behave slightly more distinctly from other personalities across all factions
+- Reduced maximum number of fabbers per army at all levels above Casual
+- Adjusted Technologist fabber builds to compensate for their factory builds
+
 ## 1.0.2 - 2019-09-24
 
 - Further correction of personality word wrapping
