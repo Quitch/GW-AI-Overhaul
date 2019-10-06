@@ -198,20 +198,23 @@ define(["shared/gw_common"], function(GW) {
       });
     });
     // Add system invader AI for FFA if any
+    var slotsArrayFoes = [];
     _.forEach(ai.foes, function(foe) {
       foe.personality.adv_eco_mod =
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
+      var numFoeCommanders = foe.landing_policy.length;
+      for (var i = 0; i < numFoeCommanders; i++) {
+        slotsArrayFoes.push({
+          ai: true,
+          name: foe.name || "Foe",
+          commander: fixupCommander(foe.commander || ai.commander),
+          landing_policy: foe.landing_policy[i]
+        });
+      }
       armies.push({
-        slots: [
-          {
-            ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
-            landing_policy: ai.landing_policy || "no_restriction"
-          }
-        ],
+        slots: slotsArrayFoes,
         color: foe.color,
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,

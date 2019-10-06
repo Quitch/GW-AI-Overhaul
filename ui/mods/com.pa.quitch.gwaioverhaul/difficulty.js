@@ -400,6 +400,12 @@ requireGW(
               worker.ai.foes = [];
               var ffaMinions = _.sample(GWFactions[hostileFactions].minions);
               setAIData(ffaMinions, dist, false);
+              var numFoes = numMinions + 1;
+              var landingPolicyFoes = [];
+              _.times(numFoes, function() {
+                landingPolicyFoes.push("no_restriction");
+              });
+              ffaMinions.landing_policy = landingPolicyFoes;
               ffaMinions.color = ffaMinions.color || worker.ai.color;
               worker.ai.foes.push(ffaMinions);
             }

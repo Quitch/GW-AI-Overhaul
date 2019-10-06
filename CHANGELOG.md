@@ -8,6 +8,7 @@
 - Fixed a bug causing some enemy Commanders to have incredibly high eco bonuses
 - Bosses scale their eco bonus to match the size of the galaxy rather than their position within it
 - Each boss now has three Commanders in its army instead of two
+- An invading FFA enemy may bring multiple Commanders within its single army
 
 ## v1.1.0 - 2019-10-05
 
