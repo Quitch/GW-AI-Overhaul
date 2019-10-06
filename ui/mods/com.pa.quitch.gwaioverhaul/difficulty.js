@@ -345,12 +345,11 @@ requireGW(
           ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
           ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
           ai.personality.personality_tags = diffInfo.personality_tags;
-          if (!isBoss) {
-            ai.econ_rate = diffInfo.econBase + dist * diffInfo.econRatePerDist;
-          } else {
+          if (isBoss) {
             ai.econ_rate =
-              (diffInfo.econBase + dist * diffInfo.econRatePerDist) *
-              ai.econ_rate;
+              diffInfo.econBase + maxDist * diffInfo.econRatePerDist;
+          } else {
+            ai.econ_rate = diffInfo.econBase + dist * diffInfo.econRatePerDist;
           }
         };
 

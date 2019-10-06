@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v1.2.0 - 2019-10-06
+
+- Removed Bronze, Silver and Hard personalities
+- Each faction has three Commanders which have adopted the playstyle of one of the other factions
+- Removed boss eco bonus
+- Fixed a bug causing some enemy Commanders to have incredibly high eco bonuses
+- Bosses scale their eco bonus to match the size of the galaxy rather than their position within it
+- Each boss now has three Commanders in its army instead of two
+
 ## v1.1.0 - 2019-10-05
 
 - Rush spends less time at T1
@@ -11,15 +20,15 @@
 - Reduced maximum number of fabbers per army at all levels above Casual
 - Adjusted Technologist fabber builds to compensate for their factory builds
 
-## 1.0.2 - 2019-09-24
+## v1.0.2 - 2019-09-24
 
 - Further correction of personality word wrapping
 
-## 1.0.1 - 2019-09-23
+## v1.0.1 - 2019-09-23
 
 - Update personality names to avoid wrapping and make them more interesting
 
-## 1.0 - 2019-09-23
+## v1.0 - 2019-09-23
 
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
@@ -38,17 +47,17 @@
 - Bronze expands slower
 - Added tooltip to explain the difficulty options
 
-## 0.14.2 - 2019-09-12
+## v0.14.2 - 2019-09-12
 
 - Fixed some personality names causing wrapping on the intel panel
 - Renamed some personalities
 
-## 0.14.1 - 2019-09-11
+## v0.14.1 - 2019-09-11
 
 - Aggressive AIs are more aggressive
 - Fixed surface area not always updating when system selection was changed
 
-## 0.14 - 2019-09-09
+## v0.14 - 2019-09-09
 
 - Turtle personality makes more initial fabbers at each tech level
 - Integrated wondible's Section of Foreign Intelligence for Galactic War
@@ -59,22 +68,22 @@
 - Each enemy shows their personality on the galaxy map
 - Adjusted the number of fabbers each boss builds initially
 
-## 0.13.1 - 2019-08-30
+## v0.13.1 - 2019-08-30
 
 - Fixed enemies not always teching at the correct time
 
-## 0.13 - 2019-08-27
+## v0.13 - 2019-08-27
 
 - Sub Commanders display their personality when you find their card
 - Prefixed difficulties to further differentiate them from skirmish difficulty and galaxy size
 - Reduced the number of Commanders in the initial Platinum systems
 - Platinum starts with a slightly higher eco
 
-## 0.12.1 - 2019-08-17
+## v0.12.1 - 2019-08-17
 
 - Fix for fights failing to start in some circumstances
 
-## 0.12 - 2019-08-17
+## v0.12 - 2019-08-17
 
 - Enemies account for their eco modifier when teching to T2
 - Bosses and their minions now enjoy an eco boost over surrounding systems
@@ -90,23 +99,23 @@
 - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
 - First Seeker Osiris has a greater focus on orbital
 
-## 0.11 - 2019-04-15
+## v0.11 - 2019-04-15
 
 - Replaced vanilla Commander number scaling formula so that larger galaxies grow to use larger Commander counts
 - Casual grows Commander count slightly slower
 
-## 0.10.1 - 2019-04-05
+## v0.10.1 - 2019-04-05
 
 - Fixed Platinum having one too many minions in each system
 
-## 0.10 - 2019-04-03
+## v0.10 - 2019-04-03
 
 - You will sometimes find another faction is contesting a system leading to a FFA occurring
 - Added Section of Foreign Intelligence for galactic war as a dependency mod
 - Improved distinctiveness of boss minion colours
 - Bosses given smarter personalities
 
-## 0.9 - 2019-04-01
+## v0.9 - 2019-04-01
 
 - Fix minor error in a Synchronous personality
 - Assigned each Commander a unique colour
@@ -117,7 +126,7 @@
 - Many thanks to wondible for all his work on the JavaScript for this release
 - Tweaked newest profiles to better match core intent and make them more distinctive across factions
 
-## 0.8 - 2019-03-29
+## v0.8 - 2019-03-29
 
 - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
 - Reduced file shadowing with thanks to wondible
@@ -135,13 +144,13 @@
 - Corrected Synchronous only ever building three T1 factories until teching
 - Foundation slightly more likely to use some ground units
 
-## 0.7 - 2019-03-15
+## v0.7 - 2019-03-15
 
 - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
 - Uber updated for the increased eco modifier ceiling
 - Updated shadowed files
 
-## 0.6 - 2019-01-14
+## v0.6 - 2019-01-14
 
 - Huge overhaul of difficulty levels
   - All difficulties now use minions as a difficulty ramp tool
@@ -154,22 +163,22 @@
   - Platinum handles its economy better
   - Uber is now setup as an ultimate challenge difficulty without attempt to be fair
 
-## 0.5 - 2019-01-13
+## v0.5 - 2019-01-13
 
 - Fixed issue with turtling Sub Commander personalities only building a single factory
 - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
 - Updated Queller Sub Commander personalities with latest Queller personality settings
 - Updated difficulty levels to use the latest Queller economic personality settings
 
-## 0.4 - 2018-04-17
+## v0.4 - 2018-04-17
 
 - Remove Q prefix from difficulties in vain attempt to clarify that this is **not** using the Queller AI brain
 
-## 0.3.1 - 2018-03-03
+## v0.3.1 - 2018-03-03
 
 - Corrected what appears to be an error in the base game where one of the Foundation bosses was using Legonis Machina personality settings
 
-## 0.3 - 2017-05-17
+## v0.3 - 2017-05-17
 
 - Reduced base level of eco that Gold through Uber start with
 - Increased base level of eco that Bronze and Silver start with
@@ -178,13 +187,13 @@
 - Casual builds faster from its factories
 - Bronze builds a little slower from its factories
 
-## 0.2 - 2017-03-24
+## v0.2 - 2017-03-24
 
 - Legate Kapowaz, Acolyte Osiris, Servant Beniesk and Seeker Banditks have undergone a personality change as the previous personality did not perform as intended
 - Properly tagged mod to show support for PA classic and Titans
 - Forum link goes to the right thread
 
-## 0.1 - 2017-03-16
+## v0.1 - 2017-03-16
 
 - Assign a general personality to each faction
 - Reduce number of minions per faction to 13
