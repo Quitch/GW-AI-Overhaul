@@ -1,12 +1,13 @@
 # CHANGELOG
 
-## DEV
+## v1.2.0 - 2019-10-06
 
 - Removed Bronze, Silver and Hard personalities
 - Each faction has one traitor from each of the other factions which brings its faction style with it
 - Remove boss eco bonus as they receive one through having an additional Commander
 - Fixed a bug causing numerous enemies to have incredibly high eco bonuses
 - Bosses scale their eco bonus to match the size of the galaxy rather than their position within it
+- Each boss now has three Commanders in its army instead of two
 
 ## v1.1.0 - 2019-10-05
 
