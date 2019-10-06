@@ -5,9 +5,11 @@
 - Removed Bronze, Silver and Hard personalities
 - Each faction has three Commanders which have adopted the playstyle of one of the other factions
 - Removed boss eco bonus
-- Fixed a bug causing some enemy Commanders to have incredibly high eco bonuses
+- Fixed a bug which was causing some enemy Commanders to have incredibly high eco bonuses
 - Bosses scale their eco bonus to match the size of the galaxy rather than their position within it
 - Each boss now has three Commanders in its army instead of two
+- An invading FFA enemy may bring multiple Commanders within its single army
+- Chance of FFA lower at lower difficulties and higher at Uber
 
 ## v1.1.0 - 2019-10-05
 
