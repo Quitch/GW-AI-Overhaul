@@ -205,8 +205,7 @@ define(["shared/gw_common"], function(GW) {
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
       if (foe.landing_policy) {
-        var numFoeCommanders = foe.landing_policy.length;
-        for (var i = 0; i < numFoeCommanders; i++) {
+        for (var i = 0; i < foe.landing_policy.length; i++) {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
