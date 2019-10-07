@@ -205,12 +205,21 @@ define(["shared/gw_common"], function(GW) {
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
       var numFoeCommanders = foe.landing_policy.length;
-      for (var i = 0; i < numFoeCommanders; i++) {
+      if (numFoeCommanders) {
+        for (var i = 0; i < numFoeCommanders; i++) {
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name || "Foe",
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: foe.landing_policy[i]
+          });
+        }
+      } else {
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
           commander: fixupCommander(foe.commander || ai.commander),
-          landing_policy: foe.landing_policy[i]
+          landing_policy: foe.landing_policy || "no_restriction"
         });
       }
       armies.push({
