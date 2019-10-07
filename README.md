@@ -112,31 +112,31 @@ Each system will display four pieces of information:
 
 ## FAQ
 
-#### Can I use an AI mod like Queller?
+**Can I use an AI mod like Queller?**
 
 Not at this time. Queller won't break this mod, it simply won't be used.
 
-#### How can I provide feedback?
+**How can I provide feedback?**
 
 Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
-#### Where did the system descriptions go?
+**Where did the system descriptions go?**
 
 They were removed to make space for planetary intelligence.
 
-#### Will Sub Commanders fighting for me have the same personality if I fight against them?
+**Will Sub Commanders fighting for me have the same personality if I fight against them?**
 
 Yes. Mostly.
 
-#### Are all Sub Commanders created equal?
+**Are all Sub Commanders created equal?**
 
 No, some are objectively stupider than others.
 
-#### Is there a "fair" difficulty level?
+**Is there a "fair" difficulty level?**
 
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
-#### Why am I not seeing the latest changes in my war?
+**Why am I not seeing the latest changes in my war?**
 
 Many changes will only apply to new wars.
 

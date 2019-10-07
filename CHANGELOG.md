@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.1 - 2019-10-07
+
+- Fixed battles failing to launch if you were playing a war started with v1.1.0 or earlier and the battle was a FFA
+
 ## v1.2.0 - 2019-10-06
 
 - Removed Bronze, Silver and Hard personalities
