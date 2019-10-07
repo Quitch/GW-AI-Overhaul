@@ -204,8 +204,8 @@ define(["shared/gw_common"], function(GW) {
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
-      var numFoeCommanders = foe.landing_policy.length;
-      if (numFoeCommanders) {
+      if (foe.landing_policy) {
+        var numFoeCommanders = foe.landing_policy.length;
         for (var i = 0; i < numFoeCommanders; i++) {
           slotsArrayFoes.push({
             ai: true,
@@ -215,6 +215,7 @@ define(["shared/gw_common"], function(GW) {
           });
         }
       } else {
+        // Support for wars started under prior to v1.2.0
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
