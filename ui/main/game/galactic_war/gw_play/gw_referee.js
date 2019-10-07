@@ -215,7 +215,7 @@ define(["shared/gw_common"], function(GW) {
           });
         }
       } else {
-        // Support for wars started under prior to v1.2.0
+        // Support for wars started prior to v1.2.0
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
