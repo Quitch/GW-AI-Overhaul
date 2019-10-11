@@ -140,6 +140,10 @@ No. I felt it was pointless to create a model where each battle is easier than t
 
 Many changes will only apply to new wars.
 
+**Why am I seeing multiple Commanders for a single enemy army?**
+
+Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them more additional build power and more lives. In the case of bosses it allows them to very quickly connect multiple planets.
+
 ## Recommended mods
 
 - Shared Systems for galactic war
