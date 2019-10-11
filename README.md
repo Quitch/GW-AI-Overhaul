@@ -144,6 +144,11 @@ Many changes will only apply to new wars.
 
 Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them more additional build power and more lives. In the case of bosses it allows them to very quickly connect multiple planets.
 
+## Known Issues
+
+1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to workaround this.
+2. Changing faction can cause the General Commander's first two Sub Commanders to have eco modifiers applied to them.
+
 ## Recommended mods
 
 - Shared Systems for galactic war
