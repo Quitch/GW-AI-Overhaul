@@ -4,7 +4,8 @@
 
 - Tried to improve the clarify of the difficulty tooltip for players for whom English is a second language
 - The additional faction in a FFA has less Commanders
-- Higher chance of a FFA at Bronze and Silver difficulties
+- Higher chance of a FFA at Casual, Bronze, Silver and Gold difficulties
+- Lower chance of a FFA at Uber difficulty
 - FFAs will sometimes be 4-way instead of 3-way
 
 ## v1.2.1 - 2019-10-07
