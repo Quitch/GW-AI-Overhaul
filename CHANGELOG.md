@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v1.3.0 - 2019-10-11
 
 - Tried to improve the clarity of the difficulty tooltip for players for whom English is a second language
 - The additional faction in a FFA has less Commanders
