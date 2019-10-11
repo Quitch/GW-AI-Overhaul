@@ -364,7 +364,7 @@ requireGW(
             var numMinions = Math.floor(
               diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
             );
-            //console.log("BOSS | istance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
+            //console.log("BOSS | Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function() {
