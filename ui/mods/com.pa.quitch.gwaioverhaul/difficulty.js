@@ -14,7 +14,7 @@ document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat Absurd AI<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat the top AI skirmish difficulty<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning\'">?</span>'
   );
 
 requireGW(
@@ -53,11 +53,11 @@ requireGW(
         enable_commander_danger_responses: false,
         per_expansion_delay: 0,
         personality_tags: ["SlowerExpansion"],
-        econBase: 0.5,
+        econBase: 0.4,
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 10,
-        ffa_chance: 5
+        ffa_chance: 25
       },
       {
         // Bronze
@@ -73,11 +73,11 @@ requireGW(
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         personality_tags: ["SlowerExpansion"],
-        econBase: 0.6,
+        econBase: 0.55,
         econRatePerDist: 0.075,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
-        ffa_chance: 10
+        ffa_chance: 25
       },
       {
         // Silver
@@ -96,7 +96,7 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
-        ffa_chance: 15
+        ffa_chance: 25
       },
       {
         // Gold
@@ -116,7 +116,7 @@ requireGW(
         econRatePerDist: 0.15,
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
-        ffa_chance: 20
+        ffa_chance: 25
       },
       {
         // Platinum
@@ -156,7 +156,7 @@ requireGW(
         econRatePerDist: 0,
         max_basic_fabbers: 35,
         max_advanced_fabbers: 35,
-        ffa_chance: 30
+        ffa_chance: 25
       }
     ];
 
@@ -364,8 +364,7 @@ requireGW(
             var numMinions = Math.floor(
               diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
             );
-            //console.log("BOSS");
-            //console.log("Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
+            //console.log("BOSS | Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function() {
@@ -383,7 +382,6 @@ requireGW(
               diffInfo.mandatoryMinions +
                 worker.star.distance() * diffInfo.minionMod
             );
-            //console.log("Distance: " + dist + " | Econ Rate: " + worker.ai.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function() {
@@ -398,17 +396,33 @@ requireGW(
                 _.without(aiFactions, worker.ai.faction)
               );
               worker.ai.foes = [];
-              var ffaMinions = _.sample(GWFactions[hostileFactions].minions);
-              setAIData(ffaMinions, dist, false);
-              var numFoes = numMinions + 1;
+              var ffaFirstFaction = _.sample(
+                GWFactions[hostileFactions].minions
+              );
+              setAIData(ffaFirstFaction, dist, false);
+              var numFoes = Math.round((numMinions + 1) / 2);
+              ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
               var landingPolicyFoes = [];
               _.times(numFoes, function() {
                 landingPolicyFoes.push("no_restriction");
               });
-              ffaMinions.landing_policy = landingPolicyFoes;
-              ffaMinions.color = ffaMinions.color || worker.ai.color;
-              worker.ai.foes.push(ffaMinions);
+              ffaFirstFaction.landing_policy = landingPolicyFoes;
+              worker.ai.foes.push(ffaFirstFaction);
+              if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
+                var hostileFactionsRemaining = _.sample(
+                  _.without(aiFactions, worker.ai.faction, hostileFactions)
+                );
+                var ffaSecondFaction = _.sample(
+                  GWFactions[hostileFactionsRemaining].minions
+                );
+                setAIData(ffaSecondFaction, dist, false);
+                ffaSecondFaction.color =
+                  ffaSecondFaction.color || worker.ai.color;
+                ffaSecondFaction.landing_policy = landingPolicyFoes;
+                worker.ai.foes.push(ffaSecondFaction);
+              }
             }
+            //console.log("Distance:", dist, "| Econ Rate:", worker.ai.econ_rate, "| Minion Count:", numMinions, "| Foe Commanders:", numFoes, "| Third Faction", hostileFactionsRemaining);
           });
         });
 

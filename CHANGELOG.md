@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v1.3.0 - 2019-10-11
+
+- Tried to improve the clarity of the difficulty tooltip for players for whom English is a second language
+- The additional faction in a FFA has less Commanders
+- Higher chance of a FFA at Casual, Bronze, Silver and Gold difficulties
+- Lower chance of a FFA at Uber difficulty
+- FFAs will sometimes be 4-way instead of 3-way
+- Decreased the starting eco of Casual and Bronze
+
 ## v1.2.1 - 2019-10-07
 
 - Fixed battles failing to launch if you were playing a war started with v1.1.0 or earlier and the battle was a FFA
