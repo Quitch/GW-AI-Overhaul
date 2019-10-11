@@ -396,18 +396,33 @@ requireGW(
                 _.without(aiFactions, worker.ai.faction)
               );
               worker.ai.foes = [];
-              var ffaMinions = _.sample(GWFactions[hostileFactions].minions);
-              setAIData(ffaMinions, dist, false);
+              var ffaFirstFaction = _.sample(
+                GWFactions[hostileFactions].minions
+              );
+              setAIData(ffaFirstFaction, dist, false);
               var numFoes = Math.round((numMinions + 1) / 2);
+              ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
               var landingPolicyFoes = [];
               _.times(numFoes, function() {
                 landingPolicyFoes.push("no_restriction");
               });
-              ffaMinions.landing_policy = landingPolicyFoes;
-              ffaMinions.color = ffaMinions.color || worker.ai.color;
-              worker.ai.foes.push(ffaMinions);
+              ffaFirstFaction.landing_policy = landingPolicyFoes;
+              worker.ai.foes.push(ffaFirstFaction);
+              if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
+                var hostileFactionsRemaining = _.sample(
+                  _.without(aiFactions, worker.ai.faction, hostileFactions)
+                );
+                var ffaSecondFaction = _.sample(
+                  GWFactions[hostileFactionsRemaining].minions
+                );
+                setAIData(ffaSecondFaction, dist, false);
+                ffaSecondFaction.color =
+                  ffaSecondFaction.color || worker.ai.color;
+                ffaSecondFaction.landing_policy = landingPolicyFoes;
+                worker.ai.foes.push(ffaSecondFaction);
+              }
             }
-            //console.log("Distance:", dist, "| Econ Rate:", worker.ai.econ_rate, "| Minion Count:", numMinions, "| Foe Count:", numFoes);
+            //console.log("Distance:", dist, "| Econ Rate:", worker.ai.econ_rate, "| Minion Count:", numMinions, "| Foe Commanders:", numFoes, "| Third Faction", hostileFactionsRemaining);
           });
         });
 

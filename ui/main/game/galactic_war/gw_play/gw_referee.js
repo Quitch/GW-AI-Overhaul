@@ -198,8 +198,10 @@ define(["shared/gw_common"], function(GW) {
       });
     });
     // Add system invader AI for FFA if any
-    var slotsArrayFoes = [];
+    var allianceGroup = 3;
     _.forEach(ai.foes, function(foe) {
+      var slotsArrayFoes = [];
+      console.log(foe.name, allianceGroup);
       foe.personality.adv_eco_mod =
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
@@ -228,8 +230,9 @@ define(["shared/gw_common"], function(GW) {
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,
         spec_tag: ".ai",
-        alliance_group: 3
+        alliance_group: allianceGroup
       });
+      allianceGroup = allianceGroup + 1;
     });
 
     var config = {
