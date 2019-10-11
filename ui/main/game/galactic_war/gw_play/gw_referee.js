@@ -197,7 +197,7 @@ define(["shared/gw_common"], function(GW) {
         alliance_group: 2
       });
     });
-    // Add system invader AI for FFA if any
+    // Add Additional Factions for FFA if any
     var allianceGroup = 3;
     _.forEach(ai.foes, function(foe) {
       var slotsArrayFoes = [];
