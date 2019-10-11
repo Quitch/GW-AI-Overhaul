@@ -398,7 +398,7 @@ requireGW(
               worker.ai.foes = [];
               var ffaMinions = _.sample(GWFactions[hostileFactions].minions);
               setAIData(ffaMinions, dist, false);
-              var numFoes = numMinions + 1;
+              var numFoes = Math.round((numMinions + 1) / 2);
               var landingPolicyFoes = [];
               _.times(numFoes, function() {
                 landingPolicyFoes.push("no_restriction");
