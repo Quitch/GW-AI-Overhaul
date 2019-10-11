@@ -364,8 +364,7 @@ requireGW(
             var numMinions = Math.floor(
               diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
             );
-            //console.log("BOSS");
-            //console.log("Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
+            //console.log("BOSS | istance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function() {
@@ -383,7 +382,6 @@ requireGW(
               diffInfo.mandatoryMinions +
                 worker.star.distance() * diffInfo.minionMod
             );
-            //console.log("Distance: " + dist + " | Econ Rate: " + worker.ai.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function() {
@@ -409,6 +407,7 @@ requireGW(
               ffaMinions.color = ffaMinions.color || worker.ai.color;
               worker.ai.foes.push(ffaMinions);
             }
+            //console.log("Distance:", dist, "| Econ Rate:", worker.ai.econ_rate, "| Minion Count:", numMinions, "| Foe Count:", numFoes);
           });
         });
 
