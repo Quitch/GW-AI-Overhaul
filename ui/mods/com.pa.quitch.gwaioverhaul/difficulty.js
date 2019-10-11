@@ -57,7 +57,7 @@ requireGW(
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 10,
-        ffa_chance: 5
+        ffa_chance: 10
       },
       {
         // Bronze
@@ -77,7 +77,7 @@ requireGW(
         econRatePerDist: 0.075,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
-        ffa_chance: 10
+        ffa_chance: 20
       },
       {
         // Silver
@@ -96,7 +96,7 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
-        ffa_chance: 15
+        ffa_chance: 20
       },
       {
         // Gold
