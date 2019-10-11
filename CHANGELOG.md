@@ -7,6 +7,7 @@
 - Higher chance of a FFA at Casual, Bronze, Silver and Gold difficulties
 - Lower chance of a FFA at Uber difficulty
 - FFAs will sometimes be 4-way instead of 3-way
+- Decreased the starting eco of Casual and Bronze
 
 ## v1.2.1 - 2019-10-07
 
