@@ -17,18 +17,25 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat the top AI skirmish difficulty<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning\'">?</span>'
   );
 
-model.gwaioCustomDifficulty = ko.observable(false);
-model.gwaioMandatoryMinions = ko
-  .observable(0)
-  .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } });
+var customDifficultySettings = {
+  customDifficulty: ko.observable(false),
+  goForKill: ko.observable(false),
+  mandatoryMinions: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } })
+};
+
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
     "afterend",
-    '<div class="sub_options" data-bind="visible: !$root.gwaioCustomDifficulty()">' +
+    '<div class="sub_options" data-bind="visible: !customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
-      '<div><label id="GWAIO-input-label" for="GWAIO-input"><loc>Mandatory Minions:</loc></label><span style="margin-left: 6px;"></span>' +
-      '<label id="GWAIO-input"><input type="number" style="width: 40px; padding-bottom: 0px;" data-bind="textInput: gwaioMandatoryMinions" />' +
+      '<div><loc>Target Weakest:</loc></label><span style="margin-left: 6px;"></span>' +
+      '<input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy\'">?</span></div>' +
+      '<div><loc>Mandatory Minions:</loc></label><span style="margin-left: 6px;"></span>' +
+      '<input type="number" style="width: 40px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system\'">?</span></div>' +
       "</div></div>"
   );
@@ -57,6 +64,7 @@ requireGW(
     var difficultyInfo = [
       {
         // Casual
+        customDifficulty: false,
         goForKill: false,
         microType: 0,
         mandatoryMinions: 0,
@@ -77,6 +85,7 @@ requireGW(
       },
       {
         // Bronze
+        customDifficulty: false,
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
@@ -97,6 +106,7 @@ requireGW(
       },
       {
         // Silver
+        customDifficulty: false,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
@@ -116,6 +126,7 @@ requireGW(
       },
       {
         // Gold
+        customDifficulty: false,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
@@ -136,6 +147,7 @@ requireGW(
       },
       {
         // Platinum
+        customDifficulty: false,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 1,
@@ -156,6 +168,7 @@ requireGW(
       },
       {
         // Uber
+        customDifficulty: false,
         goForKill: true,
         microType: 2,
         mandatoryMinions: 1,
@@ -200,7 +213,10 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
-      model.gwaioMandatoryMinions(
+      customDifficultySettings.goForKill(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
+      );
+      customDifficultySettings.mandatoryMinions(
         difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
       );
 
