@@ -12,7 +12,10 @@
   "category": ["ai", "gw", "gameplay", "classic", "titans"],
   "icon": "https://i.imgur.com/KX8n6ZJ.png",
   "scenes": {
-    "gw_start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js"],
+    "gw_start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.css"
+    ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
