@@ -200,6 +200,10 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
+      model.gwaioMandatoryMinions(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
+      );
+
       if (model.creditsMode()) {
         size = _.reduce(
           GWFactions,
