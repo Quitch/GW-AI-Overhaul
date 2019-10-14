@@ -8,7 +8,8 @@ document
       '<option value="2">GW-SILVER</option>' +
       '<option value="3">GW-GOLD</option>' +
       '<option value="4">GW-PLATINUM</option>' +
-      '<option value="5">GW-UBER</option>'
+      '<option value="5">GW-UBER</option>' +
+      '<option value="6">GW-CUSTOM</option>'
   );
 document
   .getElementById("game-difficulty-label")
@@ -199,6 +200,10 @@ requireGW(
         : star_system_templates;
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
+
+      model.gwaioMandatoryMinions(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
+      );
 
       if (model.creditsMode()) {
         size = _.reduce(
