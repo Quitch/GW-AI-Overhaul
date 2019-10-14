@@ -17,6 +17,22 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat the top AI skirmish difficulty<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning\'">?</span>'
   );
 
+model.gwaioCustomDifficulty = ko.observable(false);
+model.gwaioMandatoryMinions = ko
+  .observable(0)
+  .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } });
+document
+  .getElementById("game-difficulty")
+  .insertAdjacentHTML(
+    "afterend",
+    '<div class="sub_options" data-bind="visible: !$root.gwaioCustomDifficulty()">' +
+      '<div class="form-group">' +
+      '<div><label id="GWAIO-input-label" for="GWAIO-input"><loc>Mandatory Minions:</loc></label><span style="margin-left: 6px;"></span>' +
+      '<label id="GWAIO-input"><input type="number" style="width: 40px; padding-bottom: 0px;" data-bind="textInput: gwaioMandatoryMinions" />' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system\'">?</span></div>' +
+      "</div></div>"
+  );
+
 requireGW(
   [
     "shared/gw_common",
