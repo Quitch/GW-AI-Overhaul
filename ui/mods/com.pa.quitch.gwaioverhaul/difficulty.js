@@ -19,24 +19,96 @@ document
 
 var customDifficultySettings = {
   customDifficulty: ko.observable(false),
-  goForKill: ko.observable(false),
-  mandatoryMinions: ko
-    .observable(0)
-    .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } })
+  goForKill: ko.observable(),
+  microType: ko.observableArray(["0", "1", "2"]),
+  microTypeDescription: ko.observable({
+    "0": "!LOC:None",
+    "1": "!LOC:Basic",
+    "2": "!LOC:Advanced"
+  }),
+  mandatoryMinions: ko.observable(),
+  minionMod: ko.observable(),
+  priorityScoutMetalSpots: ko.observable(),
+  useEasierSystemTemplate: ko.observable(),
+  factoryBuildDelayMin: ko.observable(),
+  factoryBuildDelayMax: ko.observable(),
+  unableToExpandDelay: ko.observable(),
+  enableCommanderDangerResponses: ko.observable(),
+  perExpansionDelay: ko.observable(),
+  personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
+  personalityTagsDescription: ko.observable({
+    SlowerExpansion: "!LOC:Slower Expansion",
+    PreventsWaste: "!LOC:Better Eco Efficiency"
+  }),
+  econBase: ko.observable(),
+  econRatePerDist: ko.observable(),
+  maxBasicFabbers: ko.observable(),
+  maxAdvancedFabbers: ko.observable(),
+  ffaChance: ko.observable()
 };
-
+customDifficultySettings.getmicroTypeDescription = function(value) {
+  return loc(customDifficultySettings.microTypeDescription()[value]);
+};
+customDifficultySettings.getpersonalityTagsDescription = function(value) {
+  return loc(customDifficultySettings.personalityTagsDescription()[value]);
+};
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
     "afterend",
-    '<div class="sub_options" data-bind="visible: !customDifficultySettings.customDifficulty()">' +
+    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: !customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
-      '<div><loc>Target Weakest:</loc></label><span style="margin-left: 6px;"></span>' +
-      '<input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
+      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
+      '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy\'">?</span></div>' +
-      '<div><loc>Mandatory Minions:</loc></label><span style="margin-left: 6px;"></span>' +
-      '<input type="number" style="width: 40px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
+      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system\'">?</span></div>' +
+      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI micros its armies\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.minionMod" />' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders\'">?</span></div>' +
+      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.priorityScoutMetalSpots" />' +
+      '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random\'">?</span></div>' +
+      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.useEasierSystemTemplate" />' +
+      '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.factoryBuildDelayMin" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.factoryBuildDelayMax" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.unableToExpandDelay" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained\'">?</span></div>' +
+      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
+      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.perExpansionDelay" />' +
+      '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases\'">?</span></div>' +
+      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription", multiple="true"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Better Eco Efficiency = turns excess eco into more factories\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econBase" />' +
+      '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%, 1.1 = 110%, 0.9 = 90%, etc.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econRatePerDist" />' +
+      '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each star from the starting star the enemy is located\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.maxBasicFabbers" />' +
+      '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.maxAdvancedFabbers" />' +
+      '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.ffaChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance of a FFA occuring per star\'">?</span></div>' +
       "</div></div>"
   );
 
@@ -212,13 +284,6 @@ requireGW(
         : star_system_templates;
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
-
-      customDifficultySettings.goForKill(
-        difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
-      );
-      customDifficultySettings.mandatoryMinions(
-        difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
-      );
 
       if (model.creditsMode()) {
         size = _.reduce(
