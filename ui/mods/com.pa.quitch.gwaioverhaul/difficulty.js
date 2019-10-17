@@ -290,6 +290,14 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
+      if (
+        difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
+      ) {
+        customDifficultySettings.customDifficulty(true);
+      } else {
+        customDifficultySettings.customDifficulty(false);
+      }
+
       if (model.creditsMode()) {
         size = _.reduce(
           GWFactions,
