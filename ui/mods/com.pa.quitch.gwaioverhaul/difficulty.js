@@ -290,6 +290,63 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
+      customDifficultySettings.goForKill(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
+      );
+      customDifficultySettings.microType(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].microType
+      );
+      customDifficultySettings.mandatoryMinions(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
+      );
+      customDifficultySettings.minionMod(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].minionMod
+      );
+      customDifficultySettings.priorityScoutMetalSpots(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .priority_scout_metal_spots
+      );
+      customDifficultySettings.useEasierSystemTemplate(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .useEasierSystemTemplate
+      );
+      customDifficultySettings.factoryBuildDelayMin(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .factory_build_delay_min
+      );
+      customDifficultySettings.factoryBuildDelayMax(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .factory_build_delay_max
+      );
+      customDifficultySettings.unableToExpandDelay(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .unable_to_expand_delay
+      );
+      customDifficultySettings.enableCommanderDangerResponses(
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .enable_commander_danger_responses
+      );
+      customDifficultySettings.perExpansionDelay(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].per_expansion_delay
+      );
+      customDifficultySettings.personalityTags(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
+      );
+      customDifficultySettings.econBase(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
+      );
+      customDifficultySettings.econRatePerDist(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].econRatePerDist
+      );
+      customDifficultySettings.maxBasicFabbers(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].max_basic_fabbers
+      );
+      customDifficultySettings.maxAdvancedFabbers(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].max_advanced_fabbers
+      );
+      customDifficultySettings.ffaChance(
+        difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
+      );
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
