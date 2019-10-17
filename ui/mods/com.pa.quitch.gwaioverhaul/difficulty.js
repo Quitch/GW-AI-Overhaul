@@ -8,7 +8,8 @@ document
       '<option value="2">GW-SILVER</option>' +
       '<option value="3">GW-GOLD</option>' +
       '<option value="4">GW-PLATINUM</option>' +
-      '<option value="5">GW-UBER</option>'
+      '<option value="5">GW-UBER</option>' +
+      '<option value="6">GW-CUSTOM</option>'
   );
 document
   .getElementById("game-difficulty-label")
@@ -258,6 +259,10 @@ requireGW(
         max_basic_fabbers: 35,
         max_advanced_fabbers: 35,
         ffa_chance: 25
+      },
+      {
+        // Custom
+        customDifficulty: true
       }
     ];
 
