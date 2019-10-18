@@ -292,7 +292,9 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
-      if (!customDifficultySettings.customDifficulty()) {
+      if (
+        !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
+      ) {
         customDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
