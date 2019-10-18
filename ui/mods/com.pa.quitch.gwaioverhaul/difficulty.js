@@ -27,6 +27,7 @@ var customDifficultySettings = {
     "1": "!LOC:Basic",
     "2": "!LOC:Advanced"
   }),
+  chosenMicroType: ko.observable(),
   mandatoryMinions: ko.observable(),
   minionMod: ko.observable(),
   priorityScoutMetalSpots: ko.observable(),
@@ -105,7 +106,7 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
+      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription, value:customDifficultySettings.chosenMicroType"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat\'">?</span></div>' +
       '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
@@ -294,7 +295,7 @@ requireGW(
       customDifficultySettings.goForKill(
         difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
       );
-      customDifficultySettings.microType(
+      customDifficultySettings.chosenMicroType(
         difficultyInfo[model.newGameDifficultyIndex() || 0].microType
       );
       customDifficultySettings.mandatoryMinions(
