@@ -111,7 +111,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
       '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.<br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "</div></div>"
   );
 
