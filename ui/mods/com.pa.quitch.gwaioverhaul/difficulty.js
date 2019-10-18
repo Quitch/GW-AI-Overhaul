@@ -94,7 +94,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econRatePerDist" />' +
       '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each star from the starting star the enemy is located\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each hop the enemey is from the starting star\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.maxBasicFabbers" />' +
       '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build\'">?</span></div>' +
@@ -103,10 +103,10 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance of a FFA occuring per star\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring\'">?</span></div>' +
       '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI micros its armies\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat\'">?</span></div>' +
       '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Better Eco Efficiency = turns excess eco into more factories\'">?</span></div>' +
