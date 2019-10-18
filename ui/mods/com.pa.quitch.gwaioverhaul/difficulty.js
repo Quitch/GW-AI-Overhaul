@@ -39,8 +39,9 @@ var customDifficultySettings = {
   personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
   personalityTagsDescription: ko.observable({
     SlowerExpansion: "!LOC:Slower Expansion",
-    PreventsWaste: "!LOC:Better Eco Efficiency"
+    PreventsWaste: "!LOC:Prevent Wastage"
   }),
+  chosenPersonalityTags: ko.observableArray(["SlowerExpansion"]),
   econBase: ko.observable(),
   econRatePerDist: ko.observable(),
   maxBasicFabbers: ko.observable(),
@@ -107,9 +108,9 @@ document
       '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription", multiple="true"></select>' +
+      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Better Eco Efficiency = turns excess eco into more factories\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Prevent Wastage = turns excess eco into more factories\'">?</span></div>' +
       "</div></div>"
   );
 
@@ -329,7 +330,7 @@ requireGW(
       customDifficultySettings.perExpansionDelay(
         difficultyInfo[model.newGameDifficultyIndex() || 0].per_expansion_delay
       );
-      customDifficultySettings.personalityTags(
+      customDifficultySettings.chosenPersonalityTags(
         difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
       );
       customDifficultySettings.econBase(
