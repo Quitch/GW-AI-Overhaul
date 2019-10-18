@@ -59,7 +59,7 @@ document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
     "afterend",
-    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: !customDifficultySettings.customDifficulty()">' +
+    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
       '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
       '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
