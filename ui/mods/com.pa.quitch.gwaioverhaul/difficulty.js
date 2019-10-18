@@ -62,21 +62,21 @@ document
       '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
       '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
-      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI micros its armies\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.minionMod" />' +
-      '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders\'">?</span></div>' +
       '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.priorityScoutMetalSpots" />' +
       '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random\'">?</span></div>' +
       '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.useEasierSystemTemplate" />' +
       '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
+      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
+      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
+      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.minionMod" />' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.factoryBuildDelayMin" />' +
       '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory\'">?</span></div>' +
@@ -86,15 +86,9 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.unableToExpandDelay" />' +
       '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained\'">?</span></div>' +
-      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
-      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.perExpansionDelay" />' +
       '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription", multiple="true"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Better Eco Efficiency = turns excess eco into more factories\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econBase" />' +
       '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%, 1.1 = 110%, 0.9 = 90%, etc.\'">?</span></div>' +
@@ -110,6 +104,12 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance of a FFA occuring per star\'">?</span></div>' +
+      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI micros its armies\'">?</span></div>' +
+      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription", multiple="true"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy<br>Better Eco Efficiency = turns excess eco into more factories\'">?</span></div>' +
       "</div></div>"
   );
 
