@@ -91,7 +91,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econBase" />' +
       '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%, 1.1 = 110%, 0.9 = 90%, etc.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econRatePerDist" />' +
       '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each star from the starting star the enemy is located\'">?</span></div>' +
