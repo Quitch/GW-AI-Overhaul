@@ -15,7 +15,7 @@ document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat the top AI skirmish difficulty<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial<br>BRONZE: you have some experience<br>SILVER: you can beat the top AI skirmish difficulty<br>GOLD: one enemy is no challenge<br>PLATINUM: your loadouts are OP<br>UBER: you hate winning<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty\'">?</span>'
   );
 
 var customDifficultySettings = {
