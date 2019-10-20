@@ -24,7 +24,7 @@ model.customDifficultySettings = {
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
   microTypeDescription: ko.observable({
-    0: "!LOC:None",
+    0: "!LOC:No",
     1: "!LOC:Basic",
     2: "!LOC:Advanced"
   }),
@@ -195,6 +195,9 @@ document
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
       '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span></div>' +
+      '<div><select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
       '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
@@ -228,12 +231,9 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
-      '<div><select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.<br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Wastage = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"
