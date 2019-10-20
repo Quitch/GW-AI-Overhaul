@@ -21,11 +21,11 @@ document
 var customDifficultySettings = {
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(),
-  microType: ko.observableArray(["0", "1", "2"]),
+  microType: ko.observableArray([0, 1, 2]),
   microTypeDescription: ko.observable({
-    "0": "!LOC:None",
-    "1": "!LOC:Basic",
-    "2": "!LOC:Advanced"
+    0: "!LOC:None",
+    1: "!LOC:Basic",
+    2: "!LOC:Advanced"
   }),
   chosenMicroType: ko.observable(),
   getmicroTypeDescription: function(value) {
