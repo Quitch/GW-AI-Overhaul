@@ -505,32 +505,27 @@ requireGW(
         );
         //console.log("Max Distance: " + maxDist);
 
-        var diffInfo = difficultyInfo[game.galaxy().difficultyIndex];
-
         var setAIData = function(ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.personality.neural_data_mod = diffInfo.neuralDataMod;
-          ai.personality.micro_type = diffInfo.microType;
-          ai.personality.go_for_the_kill = diffInfo.goForKill;
-          ai.personality.priority_scout_metal_spots =
-            diffInfo.priority_scout_metal_spots;
-          ai.personality.factory_build_delay_min =
-            diffInfo.factory_build_delay_min;
-          ai.personality.factory_build_delay_max =
-            diffInfo.factory_build_delay_max;
-          ai.personality.unable_to_expand_delay =
-            diffInfo.unable_to_expand_delay;
-          ai.personality.enable_commander_danger_responses =
-            diffInfo.enable_commander_danger_responses;
-          ai.personality.per_expansion_delay = diffInfo.per_expansion_delay;
-          ai.personality.max_basic_fabbers = diffInfo.max_basic_fabbers;
-          ai.personality.max_advanced_fabbers = diffInfo.max_advanced_fabbers;
-          ai.personality.personality_tags = diffInfo.personality_tags;
+          ai.personality.micro_type = customDifficultySettings.chosenMicroType();
+          ai.personality.go_for_the_kill = customDifficultySettings.goForKill();
+          ai.personality.priorityscoutmetalspots = customDifficultySettings.priorityScoutMetalSpots();
+          ai.personality.factory_build_delay_min = customDifficultySettings.factoryBuildDelayMin();
+          ai.personality.factory_build_delay_max = customDifficultySettings.factoryBuildDelayMax();
+          ai.personality.unable_to_expand_delay = customDifficultySettings.unableToExpandDelay();
+          ai.personality.enable_commander_danger_responses = customDifficultySettings.enableCommanderDangerResponses();
+          ai.personality.per_expansion_delay = customDifficultySettings.perExpansionDelay();
+          ai.personality.max_basic_fabbers = customDifficultySettings.maxBasicFabbers();
+          ai.personality.max_advanced_fabbers = customDifficultySettings.maxAdvancedFabbers();
+          ai.personality.personality_tags = customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
             ai.econ_rate =
-              diffInfo.econBase + maxDist * diffInfo.econRatePerDist;
+              customDifficultySettings.econBase() +
+              maxDist * customDifficultySettings.econRatePerDist();
           } else {
-            ai.econ_rate = diffInfo.econBase + dist * diffInfo.econRatePerDist;
+            ai.econ_rate =
+              customDifficultySettings.econBase() +
+              dist * customDifficultySettings.econRatePerDist();
           }
         };
 
@@ -543,7 +538,8 @@ requireGW(
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             var numMinions = Math.floor(
-              diffInfo.mandatoryMinions + maxDist * diffInfo.minionMod
+              customDifficultySettings.mandatoryMinions() +
+                maxDist * customDifficultySettings.minionMod()
             );
             //console.log("BOSS | Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
@@ -560,8 +556,8 @@ requireGW(
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
-              diffInfo.mandatoryMinions +
-                worker.star.distance() * diffInfo.minionMod
+              customDifficultySettings.mandatoryMinions() +
+                worker.star.distance() * customDifficultySettings.minionMod()
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
@@ -572,7 +568,10 @@ requireGW(
                 worker.ai.minions.push(minions);
               });
             }
-            if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
+            if (
+              Math.random() * 100 <=
+              customDifficultySettings.ffaChance() * sizeMod
+            ) {
               var hostileFactions = _.sample(
                 _.without(aiFactions, worker.ai.faction)
               );
@@ -589,7 +588,10 @@ requireGW(
               });
               ffaFirstFaction.landing_policy = landingPolicyFoes;
               worker.ai.foes.push(ffaFirstFaction);
-              if (Math.random() * 100 <= diffInfo.ffa_chance * sizeMod) {
+              if (
+                Math.random() * 100 <=
+                customDifficultySettings.ffaChance() * sizeMod
+              ) {
                 var hostileFactionsRemaining = _.sample(
                   _.without(aiFactions, worker.ai.faction, hostileFactions)
                 );
