@@ -28,26 +28,26 @@ var customDifficultySettings = {
     "2": "!LOC:Advanced"
   }),
   chosenMicroType: ko.observable(),
-  mandatoryMinions: ko.observable().extend({ numeric: 0 }),
-  minionMod: ko.observable().extend({ numeric: 2 }),
+  mandatoryMinions: ko.observable(),
+  minionMod: ko.observable(),
   priorityScoutMetalSpots: ko.observable(),
   useEasierSystemTemplate: ko.observable(),
-  factoryBuildDelayMin: ko.observable().extend({ numeric: 0 }),
-  factoryBuildDelayMax: ko.observable().extend({ numeric: 0 }),
-  unableToExpandDelay: ko.observable().extend({ numeric: 0 }),
+  factoryBuildDelayMin: ko.observable(),
+  factoryBuildDelayMax: ko.observable(),
+  unableToExpandDelay: ko.observable(),
   enableCommanderDangerResponses: ko.observable(),
-  perExpansionDelay: ko.observable().extend({ numeric: 0 }),
+  perExpansionDelay: ko.observable(),
   personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
   personalityTagsDescription: ko.observable({
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Wastage"
   }),
   chosenPersonalityTags: ko.observableArray(["SlowerExpansion"]),
-  econBase: ko.observable().extend({ numeric: 2 }),
-  econRatePerDist: ko.observable().extend({ numeric: 3 }),
-  maxBasicFabbers: ko.observable().extend({ numeric: 0 }),
-  maxAdvancedFabbers: ko.observable().extend({ numeric: 0 }),
-  ffaChance: ko.observable().extend({ numeric: 0 }),
+  econBase: ko.observable(),
+  econRatePerDist: ko.observable(),
+  maxBasicFabbers: ko.observable(),
+  maxAdvancedFabbers: ko.observable(),
+  ffaChance: ko.observable(),
   save: model.makeGame()
 };
 customDifficultySettings.getmicroTypeDescription = function(value) {
@@ -56,6 +56,62 @@ customDifficultySettings.getmicroTypeDescription = function(value) {
 customDifficultySettings.getpersonalityTagsDescription = function(value) {
   return loc(customDifficultySettings.personalityTagsDescription()[value]);
 };
+// Turn strings into numbers to make sure our equations work later on
+customDifficultySettings.mandatoryMinions.subscribe(function(value) {
+  customDifficultySettings.mandatoryMinions(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.minionMod.subscribe(function(value) {
+  customDifficultySettings.minionMod(
+    Math.max(0, Number(Number(value).toFixed(2)))
+  );
+});
+customDifficultySettings.factoryBuildDelayMin.subscribe(function(value) {
+  customDifficultySettings.factoryBuildDelayMin(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.factoryBuildDelayMax.subscribe(function(value) {
+  customDifficultySettings.factoryBuildDelayMax(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.unableToExpandDelay.subscribe(function(value) {
+  customDifficultySettings.unableToExpandDelay(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.perExpansionDelay.subscribe(function(value) {
+  customDifficultySettings.perExpansionDelay(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.econBase.subscribe(function(value) {
+  customDifficultySettings.econBase(
+    Math.max(0, Number(Number(value).toFixed(2)))
+  );
+});
+customDifficultySettings.econRatePerDist.subscribe(function(value) {
+  customDifficultySettings.econRatePerDist(
+    Math.max(0, Number(Number(value).toFixed(3)))
+  );
+});
+customDifficultySettings.maxBasicFabbers.subscribe(function(value) {
+  customDifficultySettings.maxBasicFabbers(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.maxAdvancedFabbers.subscribe(function(value) {
+  customDifficultySettings.maxAdvancedFabbers(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
+customDifficultySettings.ffaChance.subscribe(function(value) {
+  customDifficultySettings.ffaChance(
+    Math.max(0, Number(Number(value).toFixed(0)))
+  );
+});
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
