@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Added a custom difficulty to allow you to configure all the difficulty settings
+
 ## v1.3.0 - 2019-10-11
 
 - Tried to improve the clarity of the difficulty tooltip for players for whom English is a second language
