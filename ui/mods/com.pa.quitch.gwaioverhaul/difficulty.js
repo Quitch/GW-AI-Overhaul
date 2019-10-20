@@ -28,26 +28,26 @@ var customDifficultySettings = {
     "2": "!LOC:Advanced"
   }),
   chosenMicroType: ko.observable(),
-  mandatoryMinions: ko.observable(),
-  minionMod: ko.observable(),
+  mandatoryMinions: ko.observable().extend({ numeric: 0 }),
+  minionMod: ko.observable().extend({ numeric: 2 }),
   priorityScoutMetalSpots: ko.observable(),
   useEasierSystemTemplate: ko.observable(),
-  factoryBuildDelayMin: ko.observable(),
-  factoryBuildDelayMax: ko.observable(),
-  unableToExpandDelay: ko.observable(),
+  factoryBuildDelayMin: ko.observable().extend({ numeric: 0 }),
+  factoryBuildDelayMax: ko.observable().extend({ numeric: 0 }),
+  unableToExpandDelay: ko.observable().extend({ numeric: 0 }),
   enableCommanderDangerResponses: ko.observable(),
-  perExpansionDelay: ko.observable(),
+  perExpansionDelay: ko.observable().extend({ numeric: 0 }),
   personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
   personalityTagsDescription: ko.observable({
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Wastage"
   }),
   chosenPersonalityTags: ko.observableArray(["SlowerExpansion"]),
-  econBase: ko.observable(),
-  econRatePerDist: ko.observable(),
-  maxBasicFabbers: ko.observable(),
-  maxAdvancedFabbers: ko.observable(),
-  ffaChance: ko.observable(),
+  econBase: ko.observable().extend({ numeric: 2 }),
+  econRatePerDist: ko.observable().extend({ numeric: 3 }),
+  maxBasicFabbers: ko.observable().extend({ numeric: 0 }),
+  maxAdvancedFabbers: ko.observable().extend({ numeric: 0 }),
+  ffaChance: ko.observable().extend({ numeric: 0 }),
   save: model.makeGame()
 };
 customDifficultySettings.getmicroTypeDescription = function(value) {
@@ -561,6 +561,16 @@ requireGW(
             var numMinions = Math.floor(
               customDifficultySettings.mandatoryMinions() +
                 worker.star.distance() * customDifficultySettings.minionMod()
+            );
+            console.log(
+              "Mandatory minions:",
+              customDifficultySettings.mandatoryMinions(),
+              "Distance",
+              worker.star.distance(),
+              "Minion modifier:",
+              customDifficultySettings.minionMod(),
+              "Actual minions:",
+              numMinions
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
