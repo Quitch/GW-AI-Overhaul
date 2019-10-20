@@ -617,16 +617,6 @@ requireGW(
               customDifficultySettings.mandatoryMinions() +
                 worker.star.distance() * customDifficultySettings.minionMod()
             );
-            console.log(
-              "Mandatory minions:",
-              customDifficultySettings.mandatoryMinions(),
-              "Distance",
-              worker.star.distance(),
-              "Minion modifier:",
-              customDifficultySettings.minionMod(),
-              "Actual minions:",
-              numMinions
-            );
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function() {
