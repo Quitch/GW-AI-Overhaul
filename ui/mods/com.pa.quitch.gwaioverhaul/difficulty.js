@@ -20,40 +20,40 @@ document
 
 var customDifficultySettings = {
   customDifficulty: ko.observable(false),
-  goForKill: ko.observable(),
+  goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
   microTypeDescription: ko.observable({
     0: "!LOC:None",
     1: "!LOC:Basic",
     2: "!LOC:Advanced"
   }),
-  chosenMicroType: ko.observable(),
+  chosenMicroType: ko.observable(0),
   getmicroTypeDescription: function(value) {
     return loc(customDifficultySettings.microTypeDescription()[value]);
   },
-  mandatoryMinions: ko.observable(),
-  minionMod: ko.observable(),
-  priorityScoutMetalSpots: ko.observable(),
-  useEasierSystemTemplate: ko.observable(),
-  factoryBuildDelayMin: ko.observable(),
-  factoryBuildDelayMax: ko.observable(),
-  unableToExpandDelay: ko.observable(),
-  enableCommanderDangerResponses: ko.observable(),
-  perExpansionDelay: ko.observable(),
+  mandatoryMinions: ko.observable(0),
+  minionMod: ko.observable(0),
+  priorityScoutMetalSpots: ko.observable(false),
+  useEasierSystemTemplate: ko.observable(false),
+  factoryBuildDelayMin: ko.observable(0),
+  factoryBuildDelayMax: ko.observable(0),
+  unableToExpandDelay: ko.observable(0),
+  enableCommanderDangerResponses: ko.observable(false),
+  perExpansionDelay: ko.observable(0),
   personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
   personalityTagsDescription: ko.observable({
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Wastage"
   }),
-  chosenPersonalityTags: ko.observableArray(["SlowerExpansion"]),
+  chosenPersonalityTags: ko.observableArray([]),
   getpersonalityTagsDescription: function(value) {
     return loc(customDifficultySettings.personalityTagsDescription()[value]);
   },
-  econBase: ko.observable(),
-  econRatePerDist: ko.observable(),
-  maxBasicFabbers: ko.observable(),
-  maxAdvancedFabbers: ko.observable(),
-  ffaChance: ko.observable(),
+  econBase: ko.observable(0),
+  econRatePerDist: ko.observable(0),
+  maxBasicFabbers: ko.observable(0),
+  maxAdvancedFabbers: ko.observable(0),
+  ffaChance: ko.observable(0),
   unsavedChanges: ko.observable(false)
 };
 
