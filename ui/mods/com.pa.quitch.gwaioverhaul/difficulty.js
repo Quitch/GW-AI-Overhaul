@@ -649,7 +649,7 @@ requireGW(
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
-          ai.personality.priorityscoutmetalspots = model.customDifficultySettings.priorityScoutMetalSpots();
+          ai.personality.priority_scout_metal_spots = model.customDifficultySettings.priorityScoutMetalSpots();
           ai.personality.factory_build_delay_min = model.customDifficultySettings.factoryBuildDelayMin();
           ai.personality.factory_build_delay_max = model.customDifficultySettings.factoryBuildDelayMax();
           ai.personality.unable_to_expand_delay = model.customDifficultySettings.unableToExpandDelay();
