@@ -33,7 +33,9 @@ model.customDifficultySettings = {
     return loc(model.customDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0),
-  minionMod: ko.observable(0),
+  minionMod: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko.observable(0),
@@ -52,8 +54,12 @@ model.customDifficultySettings = {
       model.customDifficultySettings.personalityTagsDescription()[value]
     );
   },
-  econBase: ko.observable(0),
-  econRatePerDist: ko.observable(0),
+  econBase: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } }),
+  econRatePerDist: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750, method: "notifyWhenChangesStop" } }),
   maxBasicFabbers: ko.observable(0),
   maxAdvancedFabbers: ko.observable(0),
   ffaChance: ko.observable(0),
