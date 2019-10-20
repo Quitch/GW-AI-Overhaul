@@ -18,7 +18,8 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty.\'">?</span>'
   );
 
-var customDifficultySettings = {
+// gw_start uses ko.applyBindings(model) so we put ourselves within that variable
+model.customDifficultySettings = {
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -29,7 +30,7 @@ var customDifficultySettings = {
   }),
   chosenMicroType: ko.observable(0),
   getmicroTypeDescription: function(value) {
-    return loc(customDifficultySettings.microTypeDescription()[value]);
+    return loc(model.customDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0),
   minionMod: ko.observable(0),
@@ -47,7 +48,9 @@ var customDifficultySettings = {
   }),
   chosenPersonalityTags: ko.observableArray([]),
   getpersonalityTagsDescription: function(value) {
-    return loc(customDifficultySettings.personalityTagsDescription()[value]);
+    return loc(
+      model.customDifficultySettings.personalityTagsDescription()[value]
+    );
   },
   econBase: ko.observable(0),
   econRatePerDist: ko.observable(0),
@@ -57,112 +60,114 @@ var customDifficultySettings = {
   unsavedChanges: ko.observable(false)
 };
 
-customDifficultySettings.goForKill.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+model.customDifficultySettings.goForKill.subscribe(function() {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.chosenMicroType.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+model.customDifficultySettings.chosenMicroType.subscribe(function() {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.priorityScoutMetalSpots.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+model.customDifficultySettings.priorityScoutMetalSpots.subscribe(function() {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.useEasierSystemTemplate.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+model.customDifficultySettings.useEasierSystemTemplate.subscribe(function() {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.enableCommanderDangerResponses.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
-});
-customDifficultySettings.chosenPersonalityTags.subscribe(function() {
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+model.customDifficultySettings.enableCommanderDangerResponses.subscribe(
+  function() {
+    if (model.customDifficultySettings.customDifficulty())
+      model.customDifficultySettings.unsavedChanges(true);
+  }
+);
+model.customDifficultySettings.chosenPersonalityTags.subscribe(function() {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
 
-customDifficultySettings.mandatoryMinions.subscribe(function(value) {
-  customDifficultySettings.mandatoryMinions(
+model.customDifficultySettings.mandatoryMinions.subscribe(function(value) {
+  model.customDifficultySettings.mandatoryMinions(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.minionMod.subscribe(function(value) {
-  customDifficultySettings.minionMod(
+model.customDifficultySettings.minionMod.subscribe(function(value) {
+  model.customDifficultySettings.minionMod(
     Math.max(0, Number(Number(value).toFixed(2)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.factoryBuildDelayMin.subscribe(function(value) {
-  customDifficultySettings.factoryBuildDelayMin(
+model.customDifficultySettings.factoryBuildDelayMin.subscribe(function(value) {
+  model.customDifficultySettings.factoryBuildDelayMin(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.factoryBuildDelayMax.subscribe(function(value) {
-  customDifficultySettings.factoryBuildDelayMax(
+model.customDifficultySettings.factoryBuildDelayMax.subscribe(function(value) {
+  model.customDifficultySettings.factoryBuildDelayMax(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.unableToExpandDelay.subscribe(function(value) {
-  customDifficultySettings.unableToExpandDelay(
+model.customDifficultySettings.unableToExpandDelay.subscribe(function(value) {
+  model.customDifficultySettings.unableToExpandDelay(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.perExpansionDelay.subscribe(function(value) {
-  customDifficultySettings.perExpansionDelay(
+model.customDifficultySettings.perExpansionDelay.subscribe(function(value) {
+  model.customDifficultySettings.perExpansionDelay(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.econBase.subscribe(function(value) {
-  customDifficultySettings.econBase(
+model.customDifficultySettings.econBase.subscribe(function(value) {
+  model.customDifficultySettings.econBase(
     Math.max(0, Number(Number(value).toFixed(2)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.econRatePerDist.subscribe(function(value) {
-  customDifficultySettings.econRatePerDist(
+model.customDifficultySettings.econRatePerDist.subscribe(function(value) {
+  model.customDifficultySettings.econRatePerDist(
     Math.max(0, Number(Number(value).toFixed(3)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.maxBasicFabbers.subscribe(function(value) {
-  customDifficultySettings.maxBasicFabbers(
+model.customDifficultySettings.maxBasicFabbers.subscribe(function(value) {
+  model.customDifficultySettings.maxBasicFabbers(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.maxAdvancedFabbers.subscribe(function(value) {
-  customDifficultySettings.maxAdvancedFabbers(
+model.customDifficultySettings.maxAdvancedFabbers.subscribe(function(value) {
+  model.customDifficultySettings.maxAdvancedFabbers(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
-customDifficultySettings.ffaChance.subscribe(function(value) {
-  customDifficultySettings.ffaChance(
+model.customDifficultySettings.ffaChance.subscribe(function(value) {
+  model.customDifficultySettings.ffaChance(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
-  if (customDifficultySettings.customDifficulty())
-    customDifficultySettings.unsavedChanges(true);
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
 });
 
 // eslint-disable-next-line no-unused-vars
 function saveCustomDifficultySettings() {
-  customDifficultySettings.unsavedChanges(false);
+  model.customDifficultySettings.unsavedChanges(false);
   model.makeGame();
 }
 
@@ -170,60 +175,60 @@ document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
     "afterend",
-    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: customDifficultySettings.customDifficulty()">' +
+    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
-      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.goForKill" />' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
       '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.priorityScoutMetalSpots" />' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
       '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.useEasierSystemTemplate" />' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
       '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
       '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
       '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.minionMod" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
       '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.factoryBuildDelayMin" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
       '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.factoryBuildDelayMax" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
       '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.unableToExpandDelay" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
       '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.perExpansionDelay" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
       '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econBase" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
       '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.econRatePerDist" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
       '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each hop the enemey is from the starting star.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.maxBasicFabbers" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
       '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.maxAdvancedFabbers" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
       '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.ffaChance" />' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.microType, optionsText: customDifficultySettings.getmicroTypeDescription, value:customDifficultySettings.chosenMicroType"></select>' +
+      '<div><select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
-      '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
+      '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.<br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
-      "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !customDifficultySettings.unsavedChanges() }\">" +
+      "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"
   );
@@ -409,63 +414,63 @@ requireGW(
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
-        customDifficultySettings.goForKill(
+        model.customDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
-        customDifficultySettings.chosenMicroType(
+        model.customDifficultySettings.chosenMicroType(
           difficultyInfo[model.newGameDifficultyIndex() || 0].microType
         );
-        customDifficultySettings.mandatoryMinions(
+        model.customDifficultySettings.mandatoryMinions(
           difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
         );
-        customDifficultySettings.minionMod(
+        model.customDifficultySettings.minionMod(
           difficultyInfo[model.newGameDifficultyIndex() || 0].minionMod
         );
-        customDifficultySettings.priorityScoutMetalSpots(
+        model.customDifficultySettings.priorityScoutMetalSpots(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .priority_scout_metal_spots
         );
-        customDifficultySettings.useEasierSystemTemplate(
+        model.customDifficultySettings.useEasierSystemTemplate(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .useEasierSystemTemplate
         );
-        customDifficultySettings.factoryBuildDelayMin(
+        model.customDifficultySettings.factoryBuildDelayMin(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .factory_build_delay_min
         );
-        customDifficultySettings.factoryBuildDelayMax(
+        model.customDifficultySettings.factoryBuildDelayMax(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .factory_build_delay_max
         );
-        customDifficultySettings.unableToExpandDelay(
+        model.customDifficultySettings.unableToExpandDelay(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .unable_to_expand_delay
         );
-        customDifficultySettings.enableCommanderDangerResponses(
+        model.customDifficultySettings.enableCommanderDangerResponses(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .enable_commander_danger_responses
         );
-        customDifficultySettings.perExpansionDelay(
+        model.customDifficultySettings.perExpansionDelay(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .per_expansion_delay
         );
-        customDifficultySettings.chosenPersonalityTags(
+        model.customDifficultySettings.chosenPersonalityTags(
           difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
         );
-        customDifficultySettings.econBase(
+        model.customDifficultySettings.econBase(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
         );
-        customDifficultySettings.econRatePerDist(
+        model.customDifficultySettings.econRatePerDist(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econRatePerDist
         );
-        customDifficultySettings.maxBasicFabbers(
+        model.customDifficultySettings.maxBasicFabbers(
           difficultyInfo[model.newGameDifficultyIndex() || 0].max_basic_fabbers
         );
-        customDifficultySettings.maxAdvancedFabbers(
+        model.customDifficultySettings.maxAdvancedFabbers(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .max_advanced_fabbers
         );
-        customDifficultySettings.ffaChance(
+        model.customDifficultySettings.ffaChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
         );
       }
@@ -473,9 +478,9 @@ requireGW(
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
-        customDifficultySettings.customDifficulty(true);
+        model.customDifficultySettings.customDifficulty(true);
       } else {
-        customDifficultySettings.customDifficulty(false);
+        model.customDifficultySettings.customDifficulty(false);
       }
 
       if (model.creditsMode()) {
@@ -620,25 +625,25 @@ requireGW(
 
         var setAIData = function(ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.personality.micro_type = customDifficultySettings.chosenMicroType();
-          ai.personality.go_for_the_kill = customDifficultySettings.goForKill();
-          ai.personality.priorityscoutmetalspots = customDifficultySettings.priorityScoutMetalSpots();
-          ai.personality.factory_build_delay_min = customDifficultySettings.factoryBuildDelayMin();
-          ai.personality.factory_build_delay_max = customDifficultySettings.factoryBuildDelayMax();
-          ai.personality.unable_to_expand_delay = customDifficultySettings.unableToExpandDelay();
-          ai.personality.enable_commander_danger_responses = customDifficultySettings.enableCommanderDangerResponses();
-          ai.personality.per_expansion_delay = customDifficultySettings.perExpansionDelay();
-          ai.personality.max_basic_fabbers = customDifficultySettings.maxBasicFabbers();
-          ai.personality.max_advanced_fabbers = customDifficultySettings.maxAdvancedFabbers();
-          ai.personality.personality_tags = customDifficultySettings.chosenPersonalityTags();
+          ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
+          ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
+          ai.personality.priorityscoutmetalspots = model.customDifficultySettings.priorityScoutMetalSpots();
+          ai.personality.factory_build_delay_min = model.customDifficultySettings.factoryBuildDelayMin();
+          ai.personality.factory_build_delay_max = model.customDifficultySettings.factoryBuildDelayMax();
+          ai.personality.unable_to_expand_delay = model.customDifficultySettings.unableToExpandDelay();
+          ai.personality.enable_commander_danger_responses = model.customDifficultySettings.enableCommanderDangerResponses();
+          ai.personality.per_expansion_delay = model.customDifficultySettings.perExpansionDelay();
+          ai.personality.max_basic_fabbers = model.customDifficultySettings.maxBasicFabbers();
+          ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
+          ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
             ai.econ_rate =
-              customDifficultySettings.econBase() +
-              maxDist * customDifficultySettings.econRatePerDist();
+              model.customDifficultySettings.econBase() +
+              maxDist * model.customDifficultySettings.econRatePerDist();
           } else {
             ai.econ_rate =
-              customDifficultySettings.econBase() +
-              dist * customDifficultySettings.econRatePerDist();
+              model.customDifficultySettings.econBase() +
+              dist * model.customDifficultySettings.econRatePerDist();
           }
         };
 
@@ -651,8 +656,8 @@ requireGW(
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             var numMinions = Math.floor(
-              customDifficultySettings.mandatoryMinions() +
-                maxDist * customDifficultySettings.minionMod()
+              model.customDifficultySettings.mandatoryMinions() +
+                maxDist * model.customDifficultySettings.minionMod()
             );
             //console.log("BOSS | Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
@@ -669,8 +674,9 @@ requireGW(
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
-              customDifficultySettings.mandatoryMinions() +
-                worker.star.distance() * customDifficultySettings.minionMod()
+              model.customDifficultySettings.mandatoryMinions() +
+                worker.star.distance() *
+                  model.customDifficultySettings.minionMod()
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
@@ -683,7 +689,7 @@ requireGW(
             }
             if (
               Math.random() * 100 <=
-              customDifficultySettings.ffaChance() * sizeMod
+              model.customDifficultySettings.ffaChance() * sizeMod
             ) {
               var hostileFactions = _.sample(
                 _.without(aiFactions, worker.ai.faction)
@@ -703,7 +709,7 @@ requireGW(
               worker.ai.foes.push(ffaFirstFaction);
               if (
                 Math.random() * 100 <=
-                customDifficultySettings.ffaChance() * sizeMod
+                model.customDifficultySettings.ffaChance() * sizeMod
               ) {
                 var hostileFactionsRemaining = _.sample(
                   _.without(aiFactions, worker.ai.faction, hostileFactions)
