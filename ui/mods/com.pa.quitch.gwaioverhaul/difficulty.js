@@ -47,8 +47,7 @@ var customDifficultySettings = {
   econRatePerDist: ko.observable(),
   maxBasicFabbers: ko.observable(),
   maxAdvancedFabbers: ko.observable(),
-  ffaChance: ko.observable(),
-  save: model.makeGame()
+  ffaChance: ko.observable()
 };
 customDifficultySettings.getmicroTypeDescription = function(value) {
   return loc(customDifficultySettings.microTypeDescription()[value]);
@@ -169,7 +168,7 @@ document
       '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.<br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
-      "<div class='btn_std' data-bind=\"click: customDifficultySettings.save, click_sound: 'default', rollover_sound: 'default'\">" +
+      "<div class='btn_std' data-bind=\"click: model.makeGame(), click_sound: 'default', rollover_sound: 'default'\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"
   );
