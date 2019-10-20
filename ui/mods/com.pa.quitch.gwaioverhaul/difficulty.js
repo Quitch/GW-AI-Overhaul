@@ -166,16 +166,16 @@ document
     "afterend",
     '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
-      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.goForKill" />' +
+      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.goForKill" />' +
       '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span></div>' +
-      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.priorityScoutMetalSpots" />' +
+      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.priorityScoutMetalSpots" />' +
       '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span></div>' +
-      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.useEasierSystemTemplate" />' +
+      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.useEasierSystemTemplate" />' +
       '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
-      '<div><input type="checkbox" style="pointer-events: none !important;" data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
+      '<div><input type="checkbox", data-bind="checked: customDifficultySettings.enableCommanderDangerResponses" />' +
       '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: customDifficultySettings.mandatoryMinions" />' +
