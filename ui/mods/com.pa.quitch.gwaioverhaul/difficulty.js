@@ -47,7 +47,8 @@ var customDifficultySettings = {
   econRatePerDist: ko.observable(),
   maxBasicFabbers: ko.observable(),
   maxAdvancedFabbers: ko.observable(),
-  ffaChance: ko.observable()
+  ffaChance: ko.observable(),
+  unsavedChanges: ko.observable(false)
 };
 customDifficultySettings.getmicroTypeDescription = function(value) {
   return loc(customDifficultySettings.microTypeDescription()[value]);
@@ -55,62 +56,110 @@ customDifficultySettings.getmicroTypeDescription = function(value) {
 customDifficultySettings.getpersonalityTagsDescription = function(value) {
   return loc(customDifficultySettings.personalityTagsDescription()[value]);
 };
-// Turn strings into numbers to make sure our equations work later on
+
+customDifficultySettings.goForKill.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+customDifficultySettings.chosenMicroType.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+customDifficultySettings.priorityScoutMetalSpots.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+customDifficultySettings.useEasierSystemTemplate.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+customDifficultySettings.enableCommanderDangerResponses.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+customDifficultySettings.chosenPersonalityTags.subscribe(function() {
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
+});
+
 customDifficultySettings.mandatoryMinions.subscribe(function(value) {
   customDifficultySettings.mandatoryMinions(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.minionMod.subscribe(function(value) {
   customDifficultySettings.minionMod(
     Math.max(0, Number(Number(value).toFixed(2)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.factoryBuildDelayMin.subscribe(function(value) {
   customDifficultySettings.factoryBuildDelayMin(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.factoryBuildDelayMax.subscribe(function(value) {
   customDifficultySettings.factoryBuildDelayMax(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.unableToExpandDelay.subscribe(function(value) {
   customDifficultySettings.unableToExpandDelay(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.perExpansionDelay.subscribe(function(value) {
   customDifficultySettings.perExpansionDelay(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.econBase.subscribe(function(value) {
   customDifficultySettings.econBase(
     Math.max(0, Number(Number(value).toFixed(2)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.econRatePerDist.subscribe(function(value) {
   customDifficultySettings.econRatePerDist(
     Math.max(0, Number(Number(value).toFixed(3)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.maxBasicFabbers.subscribe(function(value) {
   customDifficultySettings.maxBasicFabbers(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.maxAdvancedFabbers.subscribe(function(value) {
   customDifficultySettings.maxAdvancedFabbers(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
 customDifficultySettings.ffaChance.subscribe(function(value) {
   customDifficultySettings.ffaChance(
     Math.max(0, Number(Number(value).toFixed(0)))
   );
+  if (customDifficultySettings.customDifficulty())
+    customDifficultySettings.unsavedChanges(true);
 });
+
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
@@ -168,7 +217,7 @@ document
       '<div><select data-bind="options: customDifficultySettings.personalityTags, optionsText: customDifficultySettings.getpersonalityTagsDescription, selectedOptions: customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br>Prevent Wastage = turns excess eco into more factories.<br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
-      "<div class='btn_std' data-bind=\"click: model.makeGame(), click_sound: 'default', rollover_sound: 'default'\">" +
+      "<div class='btn_hero' data-bind=\"click: model.makeGame(), click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"
   );
