@@ -28,6 +28,9 @@ var customDifficultySettings = {
     "2": "!LOC:Advanced"
   }),
   chosenMicroType: ko.observable(),
+  getmicroTypeDescription: function(value) {
+    return loc(customDifficultySettings.microTypeDescription()[value]);
+  },
   mandatoryMinions: ko.observable(),
   minionMod: ko.observable(),
   priorityScoutMetalSpots: ko.observable(),
@@ -43,18 +46,15 @@ var customDifficultySettings = {
     PreventsWaste: "!LOC:Prevent Wastage"
   }),
   chosenPersonalityTags: ko.observableArray(["SlowerExpansion"]),
+  getpersonalityTagsDescription: function(value) {
+    return loc(customDifficultySettings.personalityTagsDescription()[value]);
+  },
   econBase: ko.observable(),
   econRatePerDist: ko.observable(),
   maxBasicFabbers: ko.observable(),
   maxAdvancedFabbers: ko.observable(),
   ffaChance: ko.observable(),
   unsavedChanges: ko.observable(false)
-};
-customDifficultySettings.getmicroTypeDescription = function(value) {
-  return loc(customDifficultySettings.microTypeDescription()[value]);
-};
-customDifficultySettings.getpersonalityTagsDescription = function(value) {
-  return loc(customDifficultySettings.personalityTagsDescription()[value]);
 };
 
 customDifficultySettings.goForKill.subscribe(function() {
