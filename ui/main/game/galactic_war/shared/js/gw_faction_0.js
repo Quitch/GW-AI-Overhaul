@@ -152,7 +152,7 @@ define([], function() {
           name: "Entara - Legonis Machina",
           Planets: [
             {
-              name: "Entara  Prime",
+              name: "Entara Prime",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
