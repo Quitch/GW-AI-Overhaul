@@ -674,8 +674,6 @@ requireGW(
 
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
-        var sizeMod =
-          GW.balance.galaxySizeDiffMod[model.newGameSizeIndex() || 0];
 
         _.forEach(teamInfo, function(info) {
           if (info.boss) {
