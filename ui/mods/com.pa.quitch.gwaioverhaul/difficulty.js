@@ -168,6 +168,11 @@ model.customDifficultySettings.ffaChance.subscribe(function(value) {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
+model.customDifficultySettings.customDifficulty.subscribe(function() {
+  if (!model.customDifficultySettings.customDifficulty()) {
+    model.customDifficultySettings.unsavedChanges(false);
+  }
+});
 
 // eslint-disable-next-line no-unused-vars
 function saveCustomDifficultySettings() {
@@ -794,3 +799,12 @@ requireGW(
     model.makeGameOrRunCredits();
   }
 );
+
+// Don't let the player go to war with unsaved custom difficulty changes
+model.ready = ko.computed(function() {
+  return (
+    !!model.newGame() &&
+    !!model.activeStartCard() &&
+    !model.customDifficultySettings.unsavedChanges()
+  );
+});
