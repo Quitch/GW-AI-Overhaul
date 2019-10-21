@@ -2,7 +2,7 @@
 
 ## DEV
 
-- Added a custom difficulty to allow you to configure all the difficulty settings
+- Added a custom difficulty (beta) to allow you to configure all the difficulty settings
 
 ## v1.3.0 - 2019-10-11
 
