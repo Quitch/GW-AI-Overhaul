@@ -797,7 +797,7 @@ define([], function() {
       {
         // Legonis Machina
         name: "Acolyte Theta",
-        character: "Legonis Machina",
+        character: "Legate",
         color: [[102, 0, 204], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1241,7 +1241,7 @@ define([], function() {
       {
         // Synchronous
         name: "Acolyte Visionik",
-        character: "Synchronous",
+        character: "Servant",
         color: [[255, 102, 178], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1286,7 +1286,7 @@ define([], function() {
       {
         // Revenants
         name: "Acolyte Commandonut",
-        character: "Revenants",
+        character: "Seeker",
         color: [[255, 51, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {

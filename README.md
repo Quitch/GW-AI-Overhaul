@@ -101,6 +101,11 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 - Additional commanders are guaranteed
 - Good expansion
 
+### Custom
+
+- Adjust all the settings to suit your desired challenge
+- Remembers the settings from the last difficulty level selected
+
 ## Planetary Intelligence
 
 Each system will display four pieces of information:

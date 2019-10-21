@@ -122,11 +122,8 @@ define(["shared/gw_common"], function(GW) {
       alliance_group: 1
     });
     // Setup the player's Sub Commanders
+    // eslint-disable-next-line lodash/prefer-map
     _.forEach(inventory.minions(), function(minion) {
-      minion.personality.adv_eco_mod =
-        minion.personality.adv_eco_mod * (minion.econ_rate || 1);
-      minion.personality.adv_eco_mod_alone =
-        minion.personality.adv_eco_mod_alone * (minion.econ_rate || 1);
       armies.push({
         slots: [
           {
@@ -137,7 +134,7 @@ define(["shared/gw_common"], function(GW) {
           }
         ],
         color: minion.color || [playerColor[1], playerColor[0]],
-        econ_rate: minion.econ_rate || 1,
+        econ_rate: 1,
         personality: minion.personality,
         spec_tag: ".player",
         alliance_group: 1
@@ -149,7 +146,7 @@ define(["shared/gw_common"], function(GW) {
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     // Support for shared armies
-    if (Array.isArray(ai.landing_policy)) {
+    if (ai.character === "Boss") {
       for (var i = 0; i < ai.landing_policy.length; i++) {
         slotsArray.push({
           ai: true,
@@ -243,6 +240,7 @@ define(["shared/gw_common"], function(GW) {
       system: system
     };
     _.forEach(config.armies, function(army) {
+      // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function(slot) {
         if (slot.ai)
           slot.commander += army.alliance_group === 1 ? ".player" : ".ai";

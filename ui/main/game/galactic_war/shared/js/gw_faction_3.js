@@ -798,7 +798,7 @@ define([], function() {
       {
         // Legonis Machina
         name: "Seeker Majuju",
-        character: "Legonis Machina",
+        character: "Legate",
         color: [[153, 0, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1244,7 +1244,7 @@ define([], function() {
       {
         // Foundation
         name: "Seeker Reaver",
-        character: "Foundation",
+        character: "Acolyte",
         color: [[204, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1288,7 +1288,7 @@ define([], function() {
       {
         // Synchronous
         name: "Seeker Sadiga",
-        character: "Synchronous",
+        character: "Servant",
         color: [[153, 153, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {

@@ -152,7 +152,7 @@ define([], function() {
           name: "Entara - Legonis Machina",
           Planets: [
             {
-              name: "Entara  Prime",
+              name: "Entara Prime",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -726,7 +726,7 @@ define([], function() {
       {
         // Foundation
         name: "Legate Mjon",
-        character: "Foundation",
+        character: "Acolyte",
         color: [[0, 153, 153], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1174,7 +1174,7 @@ define([], function() {
       {
         // Synchronous
         name: "Legate Mostlikely",
-        character: "Synchronous",
+        character: "Servant",
         color: [[51, 51, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1219,7 +1219,7 @@ define([], function() {
       {
         // Revenants
         name: "Legate Nagasher",
-        character: "Revenants",
+        character: "Seeker",
         color: [[204, 229, 255], [192, 192, 192]],
         econ_rate: 1,
         personality: {
