@@ -18,6 +18,38 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty.\'">?</span>'
   );
 
+ko.extenders.precision = function(target, precision) {
+  //create a writable computed observable to intercept writes to our observable
+  var result = ko
+    .pureComputed({
+      read: target, //always return the original observables value
+      write: function(newValue) {
+        var current = target(),
+          roundingMultiplier = Math.pow(10, precision),
+          newValueAsNum = isNaN(newValue) ? 0 : +newValue,
+          valueToWrite =
+            Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
+
+        //only write if it changed
+        if (valueToWrite !== current) {
+          target(valueToWrite);
+        } else {
+          //if the rounded value is the same, but a different value was written, force a notification for the current field
+          if (newValue !== current) {
+            target.notifySubscribers(valueToWrite);
+          }
+        }
+      }
+    })
+    .extend({ notify: "always" });
+
+  //initialize with current value to make sure it is rounded appropriately
+  result(target());
+
+  //return the new computed observable
+  return result;
+};
+
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
   customDifficulty: ko.observable(false),
@@ -32,19 +64,27 @@ model.customDifficultySettings = {
   getmicroTypeDescription: function(value) {
     return loc(model.customDifficultySettings.microTypeDescription()[value]);
   },
-  mandatoryMinions: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
-  minionMod: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
+  mandatoryMinions: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+  minionMod: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 500 } }),
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   factoryBuildDelayMax: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 500 } }),
-  unableToExpandDelay: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+  unableToExpandDelay: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   enableCommanderDangerResponses: ko.observable(false),
-  perExpansionDelay: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
+  perExpansionDelay: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
   personalityTagsDescription: ko.observable({
     SlowerExpansion: "!LOC:Slower Expansion",
@@ -56,11 +96,21 @@ model.customDifficultySettings = {
       model.customDifficultySettings.personalityTagsDescription()[value]
     );
   },
-  econBase: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
-  econRatePerDist: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
-  maxBasicFabbers: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
-  maxAdvancedFabbers: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
-  ffaChance: ko.observable(0).extend({ rateLimit: { timeout: 500 } }),
+  econBase: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+  econRatePerDist: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+  maxBasicFabbers: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+  maxAdvancedFabbers: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+  ffaChance: ko
+    .observable(0)
+    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   unsavedChanges: ko.observable(false)
 };
 
@@ -90,81 +140,47 @@ model.customDifficultySettings.chosenPersonalityTags.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-
-model.customDifficultySettings.mandatoryMinions.subscribe(function(value) {
-  model.customDifficultySettings.mandatoryMinions(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.mandatoryMinions.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.minionMod.subscribe(function(value) {
-  model.customDifficultySettings.minionMod(
-    Math.max(0, Number(Number(value).toFixed(2)))
-  );
+model.customDifficultySettings.minionMod.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.factoryBuildDelayMin.subscribe(function(value) {
-  model.customDifficultySettings.factoryBuildDelayMin(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.factoryBuildDelayMin.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.factoryBuildDelayMax.subscribe(function(value) {
-  model.customDifficultySettings.factoryBuildDelayMax(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.factoryBuildDelayMax.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.unableToExpandDelay.subscribe(function(value) {
-  model.customDifficultySettings.unableToExpandDelay(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.unableToExpandDelay.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.perExpansionDelay.subscribe(function(value) {
-  model.customDifficultySettings.perExpansionDelay(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.perExpansionDelay.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.econBase.subscribe(function(value) {
-  model.customDifficultySettings.econBase(
-    Math.max(0, Number(Number(value).toFixed(2)))
-  );
+model.customDifficultySettings.econBase.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.econRatePerDist.subscribe(function(value) {
-  model.customDifficultySettings.econRatePerDist(
-    Math.max(0, Number(Number(value).toFixed(3)))
-  );
+model.customDifficultySettings.econRatePerDist.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.maxBasicFabbers.subscribe(function(value) {
-  model.customDifficultySettings.maxBasicFabbers(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.maxBasicFabbers.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.maxAdvancedFabbers.subscribe(function(value) {
-  model.customDifficultySettings.maxAdvancedFabbers(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.maxAdvancedFabbers.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.ffaChance.subscribe(function(value) {
-  model.customDifficultySettings.ffaChance(
-    Math.max(0, Number(Number(value).toFixed(0)))
-  );
+model.customDifficultySettings.ffaChance.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
