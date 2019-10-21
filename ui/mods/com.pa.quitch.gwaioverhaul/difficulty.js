@@ -714,7 +714,7 @@ requireGW(
             }
             if (
               Math.random() * 100 <=
-              model.customDifficultySettings.ffaChance() * sizeMod
+              model.customDifficultySettings.ffaChance()
             ) {
               var hostileFactions = _.sample(
                 _.without(aiFactions, worker.ai.faction)
@@ -734,7 +734,7 @@ requireGW(
               worker.ai.foes.push(ffaFirstFaction);
               if (
                 Math.random() * 100 <=
-                model.customDifficultySettings.ffaChance() * sizeMod
+                model.customDifficultySettings.ffaChance()
               ) {
                 var hostileFactionsRemaining = _.sample(
                   _.without(aiFactions, worker.ai.faction, hostileFactions)
