@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v1.4.0 - 2019-10-21
 
 - Added a custom difficulty to allow you to configure all the difficulty settings
 - Updated some personality names to prevent word wrapping with new fonts
