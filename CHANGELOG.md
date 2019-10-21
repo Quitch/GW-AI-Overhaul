@@ -6,7 +6,6 @@
 - Updated some personality names to prevent word wrapping with new fonts
 - Galaxy size no longer has any effect on the chance of a FFA occuring
 - Fixed the enemy system owner sometimes spawning with multiple Commanders
-  - Note that this breaks compatibility with all wars started pre-v1.0
 
 ## v1.3.0 - 2019-10-11
 
