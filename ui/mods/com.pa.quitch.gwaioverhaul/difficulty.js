@@ -646,7 +646,6 @@ requireGW(
           },
           0
         );
-        //console.log("Max Distance: " + maxDist);
 
         var setAIData = function(ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
@@ -682,7 +681,6 @@ requireGW(
               model.customDifficultySettings.mandatoryMinions() +
                 maxDist * model.customDifficultySettings.minionMod()
             );
-            //console.log("BOSS | Distance: " + maxDist + " | Econ Rate: " + info.boss.econ_rate + " | Minion Count: " + numMinions);
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function() {
@@ -747,7 +745,6 @@ requireGW(
                 worker.ai.foes.push(ffaSecondFaction);
               }
             }
-            //console.log("Distance:", dist, "| Econ Rate:", worker.ai.econ_rate, "| Minion Count:", numMinions, "| Foe Commanders:", numFoes, "| Third Faction", hostileFactionsRemaining);
           });
         });
 
