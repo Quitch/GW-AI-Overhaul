@@ -123,10 +123,6 @@ define(["shared/gw_common"], function(GW) {
     });
     // Setup the player's Sub Commanders
     _.forEach(inventory.minions(), function(minion) {
-      minion.personality.adv_eco_mod =
-        minion.personality.adv_eco_mod * (minion.econ_rate || 1);
-      minion.personality.adv_eco_mod_alone =
-        minion.personality.adv_eco_mod_alone * (minion.econ_rate || 1);
       armies.push({
         slots: [
           {
@@ -137,7 +133,7 @@ define(["shared/gw_common"], function(GW) {
           }
         ],
         color: minion.color || [playerColor[1], playerColor[0]],
-        econ_rate: minion.econ_rate || 1,
+        econ_rate: 1,
         personality: minion.personality,
         spec_tag: ".player",
         alliance_group: 1

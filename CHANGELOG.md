@@ -6,6 +6,7 @@
 - Updated some personality names to prevent word wrapping with new fonts
 - Galaxy size no longer has any effect on the chance of a FFA occuring
 - Fixed the enemy system owner sometimes spawning with multiple Commanders
+- Fixed a bug in the base game causing the General Commander's Sub Commanders to sometimes have an eco modifier applied
 
 ## v1.3.0 - 2019-10-11
 
