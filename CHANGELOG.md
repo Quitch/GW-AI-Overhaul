@@ -3,6 +3,7 @@
 ## DEV
 
 - Added a custom difficulty to allow you to configure all the difficulty settings
+- Updated some personality names to prevent word wrapping with new fonts
 
 ## v1.3.0 - 2019-10-11
 

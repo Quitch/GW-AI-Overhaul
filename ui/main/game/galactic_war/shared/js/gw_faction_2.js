@@ -803,7 +803,7 @@ define([], function() {
       {
         // Legonis Machina
         name: "Servant Xenosentry",
-        character: "Legonis Machina",
+        character: "Legate",
         color: [[102, 204, 0], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1248,7 +1248,7 @@ define([], function() {
       {
         // Foundation
         name: "Servant Damubbster",
-        character: "Foundation",
+        character: "Acolyte",
         color: [[0, 204, 102], [192, 192, 192]],
         econ_rate: 1,
         personality: {
@@ -1293,7 +1293,7 @@ define([], function() {
       {
         // Revenants
         name: "Servant Raizell",
-        character: "Revenants",
+        character: "Seeker",
         color: [[0, 255, 128], [192, 192, 192]],
         econ_rate: 1,
         personality: {
