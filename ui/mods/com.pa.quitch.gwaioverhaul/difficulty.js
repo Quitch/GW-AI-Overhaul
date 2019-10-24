@@ -93,7 +93,7 @@ model.customDifficultySettings = {
   personalityTagsDescription: ko.observable({
     Tutorial: "!LOC:Labotomy",
     SlowerExpansion: "!LOC:Slower Expansion",
-    PreventsWaste: "!LOC:Prevent Wastage"
+    PreventsWaste: "!LOC:Prevent Waste"
   }),
   chosenPersonalityTags: ko.observableArray([]),
   getpersonalityTagsDescription: function(value) {
