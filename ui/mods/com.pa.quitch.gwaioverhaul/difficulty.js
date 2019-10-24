@@ -85,10 +85,15 @@ model.customDifficultySettings = {
   perExpansionDelay: ko
     .observable(0)
     .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
-  personalityTags: ko.observableArray(["SlowerExpansion", "PreventsWaste"]),
+  personalityTags: ko.observableArray([
+    "Tutorial",
+    "SlowerExpansion",
+    "PreventsWaste"
+  ]),
   personalityTagsDescription: ko.observable({
+    Tutorial: "!LOC:Lobotomy",
     SlowerExpansion: "!LOC:Slower Expansion",
-    PreventsWaste: "!LOC:Prevent Wastage"
+    PreventsWaste: "!LOC:Prevent Waste"
   }),
   chosenPersonalityTags: ko.observableArray([]),
   getpersonalityTagsDescription: function(value) {
@@ -221,7 +226,7 @@ document
       '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
-      '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
       '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
@@ -240,7 +245,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
       '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifer for each hop the enemey is from the starting star.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
       '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span></div>' +
@@ -251,8 +256,8 @@ document
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Wastage = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
+      '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"

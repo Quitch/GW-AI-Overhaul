@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.4.1 - 2019-10-24
+
+- Added support for the tutorial personality tag in custom difficulty mode
+- Fixed some spelling errors
+
 ## v1.4.0 - 2019-10-21
 
 - Added a custom difficulty to allow you to configure all the difficulty settings
