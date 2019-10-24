@@ -226,7 +226,7 @@ document
       '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
-      '<span style="margin-left: 6px;"></span><loc>Minion Modifer</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc></label>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
       '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
