@@ -91,7 +91,7 @@ model.customDifficultySettings = {
     "PreventsWaste"
   ]),
   personalityTagsDescription: ko.observable({
-    Tutorial: "!LOC:Labotomy",
+    Tutorial: "!LOC:Lobotomy",
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Waste"
   }),
@@ -257,7 +257,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Aditional Settings</loc></label>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Labotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>"
