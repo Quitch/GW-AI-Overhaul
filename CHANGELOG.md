@@ -3,6 +3,7 @@
 ## DEV
 
 - Added support for the tutorial personality tag in custom difficulty mode
+- Fixed some spelling errors
 
 ## v1.4.0 - 2019-10-21
 
