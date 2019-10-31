@@ -210,8 +210,7 @@ document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
     "afterend",
-    '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
-      '<div class="form-group">' +
+    '<div class="form-group" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
       '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span></div>' +
@@ -265,7 +264,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
-      "</div></div>" +
+      "</div>" +
       '<div class="form-group" id="easier-start">' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
       '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
