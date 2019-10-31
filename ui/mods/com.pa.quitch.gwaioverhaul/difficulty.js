@@ -214,62 +214,62 @@ document
     '<div class="sub_options" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
       '<div class="form-group">' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
-      '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span></div>' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
-      '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span></div>' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
-      '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
-      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Micro</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Micro</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
-      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
-      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
-      '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
-      '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
-      '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
-      '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
-      '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
-      '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div></div>" +
       '<div class="form-group" id="easier-start">' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
-      '<span style="margin-left: 6px;"></span><loc>Easier Start</loc></label>' +
+      '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span></div>' +
       "</div>"
   );
