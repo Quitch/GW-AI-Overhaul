@@ -35,6 +35,8 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty.
 
+At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+
 ### Casual
 
 - Large eco penalty
