@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Clarified difficulty tooltip for custom difficulty
+
 ## v1.5.0 - 2019-10-31
 
 - Added Copper difficulty as a stepping stone between Bronze and Silver
