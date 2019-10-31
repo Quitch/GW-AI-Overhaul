@@ -1,24 +1,3 @@
-document.getElementById("game-difficulty").innerHTML = "";
-document
-  .getElementById("game-difficulty")
-  .insertAdjacentHTML(
-    "afterbegin",
-    '<option value="0">GW-CASUAL</option>' +
-      '<option value="1">GW-BRONZE</option>' +
-      '<option value="2">GW-COPPER</option>' +
-      '<option value="3">GW-SILVER</option>' +
-      '<option value="4">GW-GOLD</option>' +
-      '<option value="5">GW-PLATINUM</option>' +
-      '<option value="6">GW-UBER</option>' +
-      '<option value="7">GW-CUSTOM</option>'
-  );
-document
-  .getElementById("game-difficulty-label")
-  .insertAdjacentHTML(
-    "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>COPPER: you play AI skirmish.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Uses the settings of the last selected difficulty as a baseline.\'">?</span>'
-  );
-
 ko.extenders.precision = function(target, precision) {
   //create a writable computed observable to intercept writes to our observable
   var result = ko
@@ -207,6 +186,26 @@ function saveCustomDifficultySettings() {
   model.makeGame();
 }
 
+document.getElementById("game-difficulty").innerHTML = "";
+document
+  .getElementById("game-difficulty")
+  .insertAdjacentHTML(
+    "afterbegin",
+    '<option value="0">GW-CASUAL</option>' +
+      '<option value="1">GW-BRONZE</option>' +
+      '<option value="2">GW-COPPER</option>' +
+      '<option value="3">GW-SILVER</option>' +
+      '<option value="4">GW-GOLD</option>' +
+      '<option value="5">GW-PLATINUM</option>' +
+      '<option value="6">GW-UBER</option>' +
+      '<option value="7">GW-CUSTOM</option>'
+  );
+document
+  .getElementById("game-difficulty-label")
+  .insertAdjacentHTML(
+    "afterend",
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>COPPER: you play AI skirmish.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Uses the settings of the last selected difficulty as a baseline.\'">?</span>'
+  );
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
