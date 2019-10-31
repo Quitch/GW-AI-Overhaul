@@ -5,17 +5,18 @@ document
     "afterbegin",
     '<option value="0">GW-CASUAL</option>' +
       '<option value="1">GW-BRONZE</option>' +
-      '<option value="2">GW-SILVER</option>' +
-      '<option value="3">GW-GOLD</option>' +
-      '<option value="4">GW-PLATINUM</option>' +
-      '<option value="5">GW-UBER</option>' +
-      '<option value="6">GW-CUSTOM</option>'
+      '<option value="2">GW-COPPER</option>' +
+      '<option value="3">GW-SILVER</option>' +
+      '<option value="4">GW-GOLD</option>' +
+      '<option value="5">GW-PLATINUM</option>' +
+      '<option value="6">GW-UBER</option>' +
+      '<option value="7">GW-CUSTOM</option>'
   );
 document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty.\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>COPPER: you play AI skirmish.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty.\'">?</span>'
   );
 
 ko.extenders.precision = function(target, precision) {
@@ -325,6 +326,26 @@ requireGW(
         econRatePerDist: 0.075,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
+        ffa_chance: 25
+      },
+      {
+        // Copper
+        customDifficulty: false,
+        goForKill: true,
+        microType: 2,
+        mandatoryMinions: 0,
+        minionMod: 0.33,
+        priority_scout_metal_spots: true,
+        useEasierSystemTemplate: false,
+        factory_build_delay_min: 0,
+        factory_build_delay_max: 0,
+        unable_to_expand_delay: 0,
+        enable_commander_danger_responses: true,
+        per_expansion_delay: 0,
+        econBase: 0.7,
+        econRatePerDist: 0.1,
+        max_basic_fabbers: 20,
+        max_advanced_fabbers: 20,
         ffa_chance: 25
       },
       {

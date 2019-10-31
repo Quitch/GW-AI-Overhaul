@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- A new Copper difficulty has been created as a stepping stone between Bronze and Silver
+
 ## v1.4.1 - 2019-10-24
 
 - Added support for the tutorial personality tag in custom difficulty mode
