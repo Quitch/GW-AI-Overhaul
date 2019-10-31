@@ -53,6 +53,7 @@ ko.extenders.precision = function(target, precision) {
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
+  easierStart: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -119,6 +120,10 @@ model.customDifficultySettings = {
     .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   unsavedChanges: ko.observable(false)
 };
+
+model.customDifficultySettings.easierStart.subscribe(function() {
+  model.makeGame();
+});
 
 model.customDifficultySettings.goForKill.subscribe(function() {
   if (model.customDifficultySettings.customDifficulty())
@@ -261,7 +266,12 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that poses almost no threat.<br><br>Slower Expansion = takes longer to grow its presence and economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
-      "</div></div>"
+      "</div></div>" +
+      '<div class="form-group" id="easier-start">' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
+      '<span style="margin-left: 6px;"></span><loc>Easier Start</loc></label>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span></div>' +
+      "</div>"
   );
 
 requireGW(
@@ -437,10 +447,13 @@ requireGW(
       }
     ];
 
-    var baseNeutralStars = 2;
-
     model.makeGame = function() {
       model.newGame(undefined);
+
+      if (model.customDifficultySettings.easierStart())
+        var baseNeutralStars = 4;
+      else baseNeutralStars = 2;
+      console.log(baseNeutralStars);
 
       var busyToken = {};
       model.makeGameBusy(busyToken);

@@ -3,6 +3,7 @@
 ## DEV
 
 - Added Copper difficulty as a stepping stone between Bronze and Silver
+- Added Easier Start option which adds more neutral systems with free tech
 
 ## v1.4.1 - 2019-10-24
 
