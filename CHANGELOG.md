@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v1.5.0 - 2019-10-31
 
 - Added Copper difficulty as a stepping stone between Bronze and Silver
 - Added Easier Start option which adds more neutral systems with free tech
