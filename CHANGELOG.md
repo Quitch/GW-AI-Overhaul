@@ -2,7 +2,7 @@
 
 ## DEV
 
-- A new Copper difficulty has been created as a stepping stone between Bronze and Silver
+- Added Copper difficulty as a stepping stone between Bronze and Silver
 
 ## v1.4.1 - 2019-10-24
 
