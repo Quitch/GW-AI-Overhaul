@@ -19,7 +19,7 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>BRONZE: you have some experience.<br>COPPER: you play AI skirmish.<br>SILVER: you can beat the top AI skirmish difficulty.<br>GOLD: one enemy is no challenge.<br>PLATINUM: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge. Remembers the settings of the last selected difficulty.\'">?</span>'
   );
 
-ko.extenders.precision = function(target, precision) {
+/*ko.extenders.precision = function(target, precision) {
   //create a writable computed observable to intercept writes to our observable
   var result = ko
     .pureComputed({
@@ -49,7 +49,7 @@ ko.extenders.precision = function(target, precision) {
 
   //return the new computed observable
   return result;
-};
+};*/
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
