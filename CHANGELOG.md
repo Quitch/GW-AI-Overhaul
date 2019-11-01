@@ -3,6 +3,14 @@
 ## DEV
 
 - Clarified difficulty tooltip for custom difficulty
+- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve
+  - Bronze has become Iron
+  - Copper has become Bronze
+  - Gold grow its additional Commander count slower and starts later
+  - Platinum has the additional Commander growth rate that Gold had previously
+  - Platinum grows its eco slightly slower
+  - Added Diamond difficulty which is identical to the old Platinum difficulty but with a higher starting eco
+- Fixed a bug which was causing all enemies to have no eco if you didn't change any difficulty settings during setup
 
 ## v1.5.0 - 2019-10-31
 
