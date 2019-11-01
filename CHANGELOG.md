@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.5.2 - 2019-11-01
+
+- Disabled custom difficulty until I can resolve the underlying bug
+
 ## v1.5.1 - 2019-11-01
 
 - Fixed enemies having no eco if the difficulty level wasn't applied

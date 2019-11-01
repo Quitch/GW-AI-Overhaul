@@ -9,8 +9,7 @@ document
       '<option value="3">GW-SILVER</option>' +
       '<option value="4">GW-GOLD</option>' +
       '<option value="5">GW-PLATINUM</option>' +
-      '<option value="6">GW-UBER</option>' +
-      '<option value="7">GW-CUSTOM</option>'
+      '<option value="6">GW-UBER</option>'
   );
 document
   .getElementById("game-difficulty-label")
