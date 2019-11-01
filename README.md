@@ -14,7 +14,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Unique personality
   - Unique colour
   - Fight according to their faction's preferred style
-- Six new difficulties suitable for anyone from a new player to a veteran of the game
+- Eight new difficulties suitable for anyone from a new player to a veteran of the game
 - Reduced Sub Commander effectiveness
 - Adds the possibility of multiple factions in a system and a FFA occuring
 - Adds support for shared army enemies
@@ -35,62 +35,65 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-**Casual**: for when you've completed the tutorial and are new to the game.
+- **Casual**: for when you've completed the tutorial and are new to the game.
 
-**Iron**: for when you've played an RTS before and have an idea of what you're doing.
+- **Iron**: for when you've played an RTS before and have an idea of what you're doing.
 
-**Bronze**: for when you've some PA experience under your belt.
+- **Bronze**: for when you've some PA experience under your belt.
 
-**Silver**: for when you're ready for the AI to start really pushing back.
+- **Silver**: for when you're ready for the AI to start really pushing back.
 
-**Gold**: for when AI skirmish at the top difficulty level is too easy.
+- **Gold**: for when AI skirmish at the top difficulty level is too easy.
 
-**Platinum**: for when one enemy Commander is no longer a worthy challenge.
+- **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
-**Diamond**: for when your loadouts become too powerful.
+- **Diamond**: for when your loadouts become too powerful.
 
-**Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+- **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
 ## Planetary Intelligence
 
 Each system will display four pieces of information:
 
 - **System Area**: the total surface size of all planets, excluding gas giants.
+
 - **Threat Level**: based on the total eco score of all enemies.
+
 - **Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
+
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
 ## FAQ
 
-**Can I use an AI mod like Queller?**
+**Q. Can I use an AI mod like Queller?**
 
 Not at this time. Queller won't break this mod, it simply won't be used.
 
-**How can I provide feedback?**
+**Q. How can I provide feedback?**
 
 Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
 
-**Where did the system descriptions go?**
+**Q. Where did the system descriptions go?**
 
 They were removed to make space for planetary intelligence.
 
-**Will Sub Commanders fighting for me have the same personality if I fight against them?**
+**Q. Will Sub Commanders fighting for me have the same personality if I fight against them?**
 
 Yes. Mostly.
 
-**Are all Sub Commanders created equal?**
+**Q. Are all Sub Commanders created equal?**
 
 No, some are objectively stupider than others.
 
-**Is there a "fair" difficulty level?**
+**Q. Is there a "fair" difficulty level?**
 
 No. I felt it was pointless to create a model where each battle is easier than the last.
 
-**Why am I not seeing the latest changes in my war?**
+**Q. Why am I not seeing the latest changes in my war?**
 
 Many changes will only apply to new wars.
 
-**Why am I seeing multiple Commanders for a single enemy army?**
+**Q. Why am I seeing multiple Commanders for a single enemy army?**
 
 Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them more additional build power and more lives. In the case of bosses it allows them to very quickly connect multiple planets.
 
