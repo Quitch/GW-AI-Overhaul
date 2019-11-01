@@ -33,91 +33,23 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty.
+Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+**Casual**: for when you've completed the tutorial and are new to the game.
 
-### Casual
+**Iron**: for when you've played an RTS before and have an idea of what you're doing.
 
-- Large eco penalty
-- Eco slowly increases over distance
-- Poor micro
-- Doesn't pick on the weakest link
-- Poor scouting
-- Commander doesn't react to danger
-- Additional Commanders appear very late in galaxy
-- Poor expansion
+**Bronze**: for when you've some PA experience under your belt.
 
-### Bronze
+**Silver**: for when you're ready for the AI to start really pushing back.
 
-- Small eco penalty
-- Eco slowly increases over distance
-- OK micro
-- Doesn't pick on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional Commanders appear late in galaxy
-- Poor expansion
+**Gold**: for when AI skirmish at the top difficulty level is too easy.
 
-### Copper
+**Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
-- Tiny eco penalty
-- Eco increases over distance
-- Good micro
-- Picks on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional Commanders appear late in galaxy
-- Good expansion
+**Diamond**: for when your loadouts become too powerful.
 
-### Silver
-
-- Tiny eco penalty
-- Eco increases over distance
-- Good micro
-- Picks on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional Commanders appear early in galaxy
-- Good expansion
-
-### Gold
-
-- No starting eco handicap
-- Eco quickly increases over distance
-- Good micro
-- Picks on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional Commanders appear almost immediately
-- Good expansion
-
-### Platinum
-
-- Small eco bonus
-- Eco rapidly increases over distance
-- Good micro
-- Picks on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional commanders are guaranteed
-- Good expansion
-
-### Uber
-
-- Massive eco bonus
-- Eco remains the same throughout the campaign
-- Good micro
-- Picks on the weakest link
-- Good scouting
-- Commander reacts to danger
-- Additional commanders are guaranteed
-- Good expansion
-
-### Custom
-
-- Adjust all the settings to suit your desired challenge
-- Remembers the settings from the last difficulty level selected
+**Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
 ## Planetary Intelligence
 
