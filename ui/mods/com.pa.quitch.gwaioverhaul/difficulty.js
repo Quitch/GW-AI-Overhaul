@@ -47,7 +47,7 @@ model.customDifficultySettings = {
   },
   mandatoryMinions: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
   minionMod: ko
     .observable(0)
     .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
