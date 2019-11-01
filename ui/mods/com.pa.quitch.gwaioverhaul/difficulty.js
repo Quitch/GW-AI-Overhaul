@@ -186,6 +186,15 @@ function saveCustomDifficultySettings() {
   model.makeGame();
 }
 
+// Don't let the player go to war with unsaved custom difficulty changes
+model.ready = ko.computed(function() {
+  return (
+    !!model.newGame() &&
+    !!model.activeStartCard() &&
+    !model.customDifficultySettings.unsavedChanges()
+  );
+});
+
 document.getElementById("game-difficulty").innerHTML = "";
 document
   .getElementById("game-difficulty")
@@ -497,6 +506,7 @@ requireGW(
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
+        console.log("Tracking custom values");
         model.customDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
@@ -541,6 +551,10 @@ requireGW(
           difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
         );
         model.customDifficultySettings.econBase(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
+        );
+        console.log(model.customDifficultySettings.econBase());
+        console.log(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
         );
         model.customDifficultySettings.econRatePerDist(
@@ -732,6 +746,7 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
+        console.log("SPAWNING AI");
         _.forEach(teamInfo, function(info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
@@ -803,6 +818,7 @@ requireGW(
                 worker.ai.foes.push(ffaSecondFaction);
               }
             }
+            console.log(worker.ai.name, worker.ai.econ_rate);
           });
         });
 
@@ -868,12 +884,3 @@ requireGW(
     model.makeGameOrRunCredits();
   }
 );
-
-// Don't let the player go to war with unsaved custom difficulty changes
-model.ready = ko.computed(function() {
-  return (
-    !!model.newGame() &&
-    !!model.activeStartCard() &&
-    !model.customDifficultySettings.unsavedChanges()
-  );
-});
