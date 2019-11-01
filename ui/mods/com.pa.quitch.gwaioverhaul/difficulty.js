@@ -1,35 +1,3 @@
-ko.extenders.precision = function(target, precision) {
-  //create a writable computed observable to intercept writes to our observable
-  var result = ko
-    .pureComputed({
-      read: target, //always return the original observables value
-      write: function(newValue) {
-        var current = target(),
-          roundingMultiplier = Math.pow(10, precision),
-          newValueAsNum = isNaN(newValue) ? 0 : +newValue,
-          valueToWrite =
-            Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
-
-        //only write if it changed
-        if (valueToWrite !== current) {
-          target(valueToWrite);
-        } else {
-          //if the rounded value is the same, but a different value was written, force a notification for the current field
-          if (newValue !== current) {
-            target.notifySubscribers(valueToWrite);
-          }
-        }
-      }
-    })
-    .extend({ notify: "always" });
-
-  //initialize with current value to make sure it is rounded appropriately
-  result(target());
-
-  //return the new computed observable
-  return result;
-};
-
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
   easierStart: ko.observable(false),
@@ -98,6 +66,38 @@ model.customDifficultySettings = {
     .observable(0)
     .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
   unsavedChanges: ko.observable(false)
+};
+
+ko.extenders.precision = function(target, precision) {
+  //create a writable computed observable to intercept writes to our observable
+  var result = ko
+    .pureComputed({
+      read: target, //always return the original observables value
+      write: function(newValue) {
+        var current = target(),
+          roundingMultiplier = Math.pow(10, precision),
+          newValueAsNum = isNaN(newValue) ? 0 : +newValue,
+          valueToWrite =
+            Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
+
+        //only write if it changed
+        if (valueToWrite !== current) {
+          target(valueToWrite);
+        } else {
+          //if the rounded value is the same, but a different value was written, force a notification for the current field
+          if (newValue !== current) {
+            target.notifySubscribers(valueToWrite);
+          }
+        }
+      }
+    })
+    .extend({ notify: "always" });
+
+  //initialize with current value to make sure it is rounded appropriately
+  result(target());
+
+  //return the new computed observable
+  return result;
 };
 
 model.customDifficultySettings.easierStart.subscribe(function() {
@@ -506,7 +506,6 @@ requireGW(
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
-        console.log("Tracking custom values");
         model.customDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
@@ -551,10 +550,6 @@ requireGW(
           difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
         );
         model.customDifficultySettings.econBase(
-          difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
-        );
-        console.log(model.customDifficultySettings.econBase());
-        console.log(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
         );
         model.customDifficultySettings.econRatePerDist(
@@ -746,7 +741,6 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
-        console.log("SPAWNING AI");
         _.forEach(teamInfo, function(info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
@@ -818,7 +812,6 @@ requireGW(
                 worker.ai.foes.push(ffaSecondFaction);
               }
             }
-            console.log(worker.ai.name, worker.ai.econ_rate);
           });
         });
 
