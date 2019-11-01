@@ -473,7 +473,6 @@ requireGW(
       if (model.customDifficultySettings.easierStart())
         var baseNeutralStars = 4;
       else baseNeutralStars = 2;
-      console.log(baseNeutralStars);
 
       var busyToken = {};
       model.makeGameBusy(busyToken);
