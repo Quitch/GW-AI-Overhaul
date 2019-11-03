@@ -3,7 +3,7 @@
 ## v2.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
-- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve
+- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve:
   - Bronze has become Iron
   - Copper has become Bronze
   - Gold grow its additional Commander count slower and starts later
