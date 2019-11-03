@@ -10,6 +10,7 @@
   - Platinum has the additional Commander growth rate that Gold had previously
   - Platinum grows its eco slightly slower
   - Added Diamond difficulty which is identical to the old Platinum difficulty but with a higher starting eco
+- Re-enabled custom difficulty as I have fixed the underlying bug
 
 ## v1.5.2 - 2019-11-01
 

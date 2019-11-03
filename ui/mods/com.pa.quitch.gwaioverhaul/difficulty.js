@@ -47,25 +47,25 @@ model.customDifficultySettings = {
   },
   mandatoryMinions: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
   minionMod: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   factoryBuildDelayMax: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   unableToExpandDelay: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   enableCommanderDangerResponses: ko.observable(false),
   perExpansionDelay: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   personalityTags: ko.observableArray([
     "Tutorial",
     "SlowerExpansion",
@@ -84,19 +84,19 @@ model.customDifficultySettings = {
   },
   econBase: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
   econRatePerDist: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 3 }),
+    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
   maxBasicFabbers: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   maxAdvancedFabbers: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   ffaChance: ko
     .observable(0)
-    .extend({ rateLimit: { timeout: 750 }, precision: 0 }),
+    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
   unsavedChanges: ko.observable(false)
 };
 
