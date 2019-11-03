@@ -45,27 +45,33 @@ model.customDifficultySettings = {
   getmicroTypeDescription: function(value) {
     return loc(model.customDifficultySettings.microTypeDescription()[value]);
   },
-  mandatoryMinions: ko
-    .observable(0)
-    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
-  minionMod: ko
-    .observable(0)
-    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
+  mandatoryMinions: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  minionMod: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
-  factoryBuildDelayMin: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
-  factoryBuildDelayMax: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
-  unableToExpandDelay: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
+  factoryBuildDelayMin: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  factoryBuildDelayMax: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  unableToExpandDelay: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
   enableCommanderDangerResponses: ko.observable(false),
-  perExpansionDelay: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
+  perExpansionDelay: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
   personalityTags: ko.observableArray([
     "Tutorial",
     "SlowerExpansion",
@@ -82,21 +88,26 @@ model.customDifficultySettings = {
       model.customDifficultySettings.personalityTagsDescription()[value]
     );
   },
-  econBase: ko
-    .observable(0)
-    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
-  econRatePerDist: ko
-    .observable(0)
-    .extend({ precision: 3, rateLimit: { timeout: 750 } }),
-  maxBasicFabbers: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
-  maxAdvancedFabbers: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
-  ffaChance: ko
-    .observable(0)
-    .extend({ precision: 0, rateLimit: { timeout: 750 } }),
+  econBase: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  econRatePerDist: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  maxBasicFabbers: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  maxAdvancedFabbers: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
+  ffaChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+  }),
   unsavedChanges: ko.observable(false)
 };
 
