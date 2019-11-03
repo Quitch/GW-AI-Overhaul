@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v1.6.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
 - Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve
