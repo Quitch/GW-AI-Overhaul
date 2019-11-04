@@ -867,6 +867,7 @@ requireGW(
         ];
 
         var n = 0;
+        gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function(star) {
           var ai = star.ai();
           if (!ai) {
