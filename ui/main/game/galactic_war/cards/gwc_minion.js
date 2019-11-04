@@ -27,11 +27,6 @@ define(["shared/gw_factions"], function(GWFactions) {
         result.push("!LOC:Personality: ");
         result.push(" " + minion.character);
       }
-      if (minion.econ_rate && minion.econ_rate != 1) {
-        result.push("<br>");
-        result.push("!LOC:Economy boost: ");
-        result.push(Math.round(minion.econ_rate * 100 - 100).toString() + "%");
-      }
       return result;
     },
     summarize: function() {
