@@ -843,6 +843,16 @@ requireGW(
             name: "!LOC:The Commanders",
             description:
               "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago."
+          },
+          {
+            name: "!LOC:The Machine Liberation Army",
+            description:
+              "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy."
+          },
+          {
+            name: "!LOC:The Legion",
+            description:
+              "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final creation to fight the MLA. It is not clear why the Legion fought the MLA, only that they were defeated."
           }
         ];
 

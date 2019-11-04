@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Added some lore for the Easier Start additional systems
+
 ## v2.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
