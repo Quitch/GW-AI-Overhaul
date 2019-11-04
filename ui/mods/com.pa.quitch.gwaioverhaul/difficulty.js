@@ -676,7 +676,7 @@ requireGW(
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
           spawn: function() {},
-          canSpread: function(star, ai) {
+          canSpread: function(_star, ai) {
             return (
               !model.creditsMode() || !ai || !!teams[ai.team].workers.length
             );
