@@ -1,7 +1,18 @@
 // !LOCNS:galactic_war
-define(["shared/gw_common", "shared/gw_factions"], function(GW, GWFactions) {
+define(["shared/gw_factions"], function(GWFactions) {
+  function hasUnit(id) {
+    return _.any(
+      model
+        .game()
+        .inventory()
+        .units(),
+      function(unit) {
+        return id === unit;
+      }
+    );
+  }
   return {
-    visible: function(params) {
+    visible: function() {
       return true;
     },
     describe: function(params) {
@@ -16,32 +27,35 @@ define(["shared/gw_common", "shared/gw_factions"], function(GW, GWFactions) {
         result.push("!LOC:Personality: ");
         result.push(" " + minion.character);
       }
-      if (minion.econ_rate && minion.econ_rate != 1) {
-        result.push("<br>");
-        result.push("!LOC:Economy boost: ");
-        result.push(Math.round(minion.econ_rate * 100 - 100).toString() + "%");
-      }
       return result;
     },
-    summarize: function(params) {
+    summarize: function() {
       return "!LOC:Sub Commander";
     },
-    icon: function(params) {
+    icon: function() {
       return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
-    audio: function(parms) {
+    audio: function() {
       return {
         found: "/VO/Computer/gw/board_tech_available_subcommander"
       };
     },
     getContext: function(galaxy, inventory) {
+      var chance = 100;
+      if (
+        !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
+        !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
+        !hasUnit("/pa/units/air/air_factory/air_factory.json")
+      ) {
+        chance = 0;
+      }
       return {
-        chance: 100,
+        chance: chance,
         totalSize: galaxy.stars().length,
         faction: inventory.getTag("global", "playerFaction") || 0
       };
     },
-    deal: function(system, context, inventory) {
+    deal: function(system, context) {
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
@@ -59,12 +73,12 @@ define(["shared/gw_common", "shared/gw_factions"], function(GW, GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    dull: function(inventory) {},
-    keep: function(params, context) {
+    dull: function() {},
+    keep: function(_params, context) {
       //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
-    discard: function(params, context) {
+    discard: function(_params, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
       //api.debug.log("discard: chance: " + context.chance);
     }

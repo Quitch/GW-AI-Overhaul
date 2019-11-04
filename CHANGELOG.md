@@ -1,9 +1,14 @@
 # CHANGELOG
 
+## v2.0.1 - 2019-11-04
+
+- Added some more lore to ensure full system coverage when Easier Start is selected
+- You will no longer be offered a Sub Commander if you don't have a factory they can open with (air/bot/vehicle)
+
 ## v2.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
-- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve
+- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve:
   - Bronze has become Iron
   - Copper has become Bronze
   - Gold grow its additional Commander count slower and starts later

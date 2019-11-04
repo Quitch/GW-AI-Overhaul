@@ -675,8 +675,8 @@ requireGW(
           teams: teams,
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
-          spawn: _.noop(),
-          canSpread: function(star, ai) {
+          spawn: function() {},
+          canSpread: function(_star, ai) {
             return (
               !model.creditsMode() || !ai || !!teams[ai.team].workers.length
             );
@@ -843,10 +843,31 @@ requireGW(
             name: "!LOC:The Commanders",
             description:
               "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago."
+          },
+          {
+            name: "!LOC:The Machine Liberation Army",
+            description:
+              "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy."
+          },
+          {
+            name: "!LOC:The Legion",
+            description:
+              "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated."
+          },
+          {
+            name: "!LOC:The Union",
+            description:
+              "!LOC:Commanders on the fringes of the galaxy speak of a new force not of the four factions with units of many origins. It is rumoured that their forces include organics."
+          },
+          {
+            name: "!LOC:Queller",
+            description:
+              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while the commanders slumbered and is now the deadliest force in the galaxy."
           }
         ];
 
         var n = 0;
+        gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function(star) {
           var ai = star.ai();
           if (!ai) {
