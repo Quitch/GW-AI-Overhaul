@@ -24,7 +24,7 @@
 
 ## v1.5.1 - 2019-11-01
 
-- Fixed enemies having no eco if the difficulty level wasn't applied
+- Fixed enemies having no eco if the difficulty level wasn't changed
   - This has the side-effect of disabling enforcement of proper input into custom fields until I can fix the root cause
 
 ## v1.5.0 - 2019-10-31
