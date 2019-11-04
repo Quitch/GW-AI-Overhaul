@@ -857,7 +857,7 @@ requireGW(
           {
             name: "!LOC:The Union",
             description:
-              "!LOC:Commanders on the fringes of the galaxy speak of a union of organic races. Each individually defeated by the commanders, they have since allied together and seek to reclaim their worlds."
+              "!LOC:Commanders on the fringes of the galaxy speak of a new force not of the four factions with units of many origins. It is rumoured that their forces include organics."
           },
           {
             name: "!LOC:Queller",
