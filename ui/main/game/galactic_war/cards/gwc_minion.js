@@ -1,5 +1,16 @@
 // !LOCNS:galactic_war
 define(["shared/gw_common", "shared/gw_factions"], function(GW, GWFactions) {
+  function hasUnit(id) {
+    return _.any(
+      model
+        .game()
+        .inventory()
+        .units(),
+      function(unit) {
+        return id === unit;
+      }
+    );
+  }
   return {
     visible: function(params) {
       return true;
@@ -35,8 +46,16 @@ define(["shared/gw_common", "shared/gw_factions"], function(GW, GWFactions) {
       };
     },
     getContext: function(galaxy, inventory) {
+      var chance = 100;
+      if (
+        !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
+        !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
+        !hasUnit("/pa/units/air/air_factory/air_factory.json")
+      ) {
+        chance = 0;
+      }
       return {
-        chance: 100,
+        chance: chance,
         totalSize: galaxy.stars().length,
         faction: inventory.getTag("global", "playerFaction") || 0
       };
