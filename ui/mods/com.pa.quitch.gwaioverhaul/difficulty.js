@@ -853,6 +853,11 @@ requireGW(
             name: "!LOC:The Legion",
             description:
               "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final creation to fight the MLA. It is not clear why the Legion fought the MLA, only that they were defeated."
+          },
+          {
+            name: "!LOC:The Union",
+            description:
+              "!LOC:Commanders on the fringes of the galaxy speak of a unions of organic races. Each individually defeated by the commanders, they seek to reclaim their worlds by allying together."
           }
         ];
 
