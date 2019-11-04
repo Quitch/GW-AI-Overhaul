@@ -857,7 +857,7 @@ requireGW(
           {
             name: "!LOC:The Union",
             description:
-              "!LOC:Commanders on the fringes of the galaxy speak of a unions of organic races. Each individually defeated by the commanders, they seek to reclaim their worlds by allying together."
+              "!LOC:Commanders on the fringes of the galaxy speak of a union of organic races. Each individually defeated by the commanders, they seek to reclaim their worlds by allying together."
           }
         ];
 
