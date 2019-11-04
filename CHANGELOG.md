@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
 - You will no longer be offered a Sub Commander if you don't have a factory they can open with (air/bot/vehicle)
