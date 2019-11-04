@@ -858,6 +858,11 @@ requireGW(
             name: "!LOC:The Union",
             description:
               "!LOC:Commanders on the fringes of the galaxy speak of a union of organic races. Each individually defeated by the commanders, they seek to reclaim their worlds by allying together."
+          },
+          {
+            name: "!LOC:Queller",
+            description:
+              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while the commanders slumbered and is now the deadliest force in the galaxy."
           }
         ];
 
