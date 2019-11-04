@@ -33,7 +33,7 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
 - **Casual**: for when you've completed the tutorial and are new to the game.
 
@@ -101,7 +101,7 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 ## Known Issues
 
-1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to workaround this.
+1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
 
 ## Recommended mods
 
