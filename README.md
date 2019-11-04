@@ -51,7 +51,7 @@ Each difficulty describes the enemy AI behaviour and handicaps; Sub Commanders a
 
 - **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
-- **Custom**: create your own challenge.
+- **Custom**: for when you want to create your own challenge.
 
 ## Planetary Intelligence
 
