@@ -513,7 +513,7 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
-      // Track the previously selected difficulty values
+      // Track the selected difficulty values
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
@@ -577,7 +577,7 @@ requireGW(
           difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
         );
       }
-      // Only show the custom fields if custom difficulty is selected
+      // Only show the custom difficulty fields if custom difficulty is selected
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
