@@ -111,6 +111,7 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
+- Section of Foreign Intelligence for galactic war
 
 ## Thanks to
 
