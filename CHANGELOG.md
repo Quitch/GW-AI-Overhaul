@@ -120,7 +120,7 @@
 ## v0.14 - 2019-09-09
 
 - Turtle personality makes more initial fabbers at each tech level
-- Integrated wondible's Section of Foreign Intelligence for Galactic War
+- Integrated wondible's Section of Foreign Intelligence for galactic war
 - Increased granularity of threat assessments
 - Removed all enemy system descriptions to make more space for useful information
 - Clearly identify additional factions in a system
