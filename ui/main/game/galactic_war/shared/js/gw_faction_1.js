@@ -2,7 +2,10 @@
 define([], function() {
   return {
     name: "Foundation",
-    color: [[145, 87, 199], [192, 192, 192]],
+    color: [
+      [145, 87, 199],
+      [192, 192, 192]
+    ],
     teams: [
       {
         name: "Atlas - Foundation",
@@ -572,7 +575,10 @@ define([], function() {
         // All Air
         name: "Acolyte Progenitor",
         character: "Air Force",
-        color: [[229, 204, 255], [192, 192, 192]],
+        color: [
+          [229, 204, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -617,7 +623,10 @@ define([], function() {
         // All Naval
         name: "Acolyte Sangudo",
         character: "Navy",
-        color: [[204, 153, 255], [192, 192, 192]],
+        color: [
+          [204, 153, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -661,7 +670,10 @@ define([], function() {
         // Uber
         name: "Acolyte Seniorhelix",
         character: "Uber",
-        color: [[178, 102, 255], [192, 192, 192]],
+        color: [
+          [178, 102, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -707,7 +719,10 @@ define([], function() {
         // Platinum
         name: "Acolyte Stelarch",
         character: "Platinum",
-        color: [[153, 51, 255], [192, 192, 192]],
+        color: [
+          [153, 51, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -753,7 +768,10 @@ define([], function() {
         // Gold
         name: "Acolyte TheChessKnight",
         character: "Gold",
-        color: [[127, 0, 255], [192, 192, 192]],
+        color: [
+          [127, 0, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.34,
@@ -798,7 +816,10 @@ define([], function() {
         // Legonis Machina
         name: "Acolyte Theta",
         character: "Legate",
-        color: [[102, 0, 204], [192, 192, 192]],
+        color: [
+          [102, 0, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -843,7 +864,10 @@ define([], function() {
         // Basic Tech
         name: "Acolyte ToddFather",
         character: "Luddite",
-        color: [[76, 0, 153], [192, 192, 192]],
+        color: [
+          [76, 0, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -888,7 +912,10 @@ define([], function() {
         // Advanced Tech
         name: "Acolyte Ajax",
         character: "Technologist",
-        color: [[255, 204, 255], [192, 192, 192]],
+        color: [
+          [255, 204, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -932,7 +959,10 @@ define([], function() {
         // Cautious
         name: "Acolyte Armalisk",
         character: "Cautious",
-        color: [[255, 153, 255], [192, 192, 192]],
+        color: [
+          [255, 153, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -976,7 +1006,10 @@ define([], function() {
         // Aggressive
         name: "Acolyte Calyx",
         character: "Aggressive",
-        color: [[255, 102, 255], [192, 192, 192]],
+        color: [
+          [255, 102, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -1020,7 +1053,10 @@ define([], function() {
         // Rush
         name: "Acolyte Gambitdfa",
         character: "Rush",
-        color: [[255, 0, 255], [192, 192, 192]],
+        color: [
+          [255, 0, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -1064,7 +1100,10 @@ define([], function() {
         // Turtle
         name: "Acolyte Berlinetta",
         character: "Turtle",
-        color: [[204, 0, 204], [192, 192, 192]],
+        color: [
+          [204, 0, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.9,
@@ -1109,7 +1148,10 @@ define([], function() {
         // Original
         name: "Acolyte Osiris",
         character: "Original",
-        color: [[153, 0, 153], [192, 192, 192]],
+        color: [
+          [153, 0, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.025,
@@ -1153,7 +1195,10 @@ define([], function() {
         // Absurd
         name: "Acolyte Tykus24",
         character: "Absurd",
-        color: [[255, 204, 229], [192, 192, 192]],
+        color: [
+          [255, 204, 229],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.13,
@@ -1197,7 +1242,10 @@ define([], function() {
         // Relentless
         name: "Acolyte Vidicarus",
         character: "Relentless",
-        color: [[255, 153, 204], [192, 192, 192]],
+        color: [
+          [255, 153, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.13,
@@ -1242,7 +1290,10 @@ define([], function() {
         // Synchronous
         name: "Acolyte Visionik",
         character: "Servant",
-        color: [[255, 102, 178], [192, 192, 192]],
+        color: [
+          [255, 102, 178],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.37,
@@ -1287,7 +1338,10 @@ define([], function() {
         // Revenants
         name: "Acolyte Commandonut",
         character: "Seeker",
-        color: [[255, 51, 153], [192, 192, 192]],
+        color: [
+          [255, 51, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
