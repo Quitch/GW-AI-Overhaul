@@ -3,6 +3,7 @@
 ## v2.0.2 - 2020-01-25
 
 - Update the mod's description
+- Avoid multiple Invictus commanders within the Legonis Machina
 
 ## v2.0.1 - 2019-11-04
 

@@ -911,7 +911,7 @@ define([], function() {
       },
       {
         // Advanced Tech
-        name: "Seeker Nemicus",
+        name: "Seeker Invictus",
         character: "Technologist",
         color: [
           [255, 178, 102],
@@ -954,7 +954,8 @@ define([], function() {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+        commander:
+          "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
       },
       {
         // Cautious

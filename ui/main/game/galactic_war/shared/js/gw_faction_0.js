@@ -1028,7 +1028,7 @@ define([], function() {
       },
       {
         // Turtle
-        name: "Legate Invictus",
+        name: "Legate Nemicus",
         character: "Turtle",
         color: [
           [0, 76, 153],
@@ -1071,8 +1071,7 @@ define([], function() {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        commander:
-          "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
       },
       {
         // Original
