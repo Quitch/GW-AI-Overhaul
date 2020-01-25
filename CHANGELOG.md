@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.0.2 - 2020-01-25
+
+- Update the mod's description
+- Avoid multiple Invictus commanders within the Legonis Machina
+
 ## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
@@ -11,7 +16,7 @@
 - Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve:
   - Bronze has become Iron
   - Copper has become Bronze
-  - Gold grow its additional Commander count slower and starts later
+  - Gold grows its additional Commander count slower and starts later
   - Platinum has the additional Commander growth rate that Gold had previously
   - Platinum grows its eco slightly slower
   - Added Diamond difficulty which is identical to the old Platinum difficulty but with a higher starting eco
@@ -24,7 +29,7 @@
 
 ## v1.5.1 - 2019-11-01
 
-- Fixed enemies having no eco if the difficulty level wasn't applied
+- Fixed enemies having no eco if the difficulty level wasn't changed
   - This has the side-effect of disabling enforcement of proper input into custom fields until I can fix the root cause
 
 ## v1.5.0 - 2019-10-31
@@ -120,7 +125,7 @@
 ## v0.14 - 2019-09-09
 
 - Turtle personality makes more initial fabbers at each tech level
-- Integrated wondible's Section of Foreign Intelligence for Galactic War
+- Integrated wondible's Section of Foreign Intelligence for galactic war
 - Increased granularity of threat assessments
 - Removed all enemy system descriptions to make more space for useful information
 - Clearly identify additional factions in a system

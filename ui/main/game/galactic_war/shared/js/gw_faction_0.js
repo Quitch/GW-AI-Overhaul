@@ -2,7 +2,10 @@
 define([], function() {
   return {
     name: "Legonis Machina",
-    color: [[0, 176, 255], [192, 192, 192]],
+    color: [
+      [0, 176, 255],
+      [192, 192, 192]
+    ],
     teams: [
       {
         name: "Kohr - Legonis Machina",
@@ -502,7 +505,10 @@ define([], function() {
         // All Tanks
         name: "Legate Able",
         character: "Armour",
-        color: [[204, 255, 255], [192, 192, 192]],
+        color: [
+          [204, 255, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 1,
@@ -547,7 +553,10 @@ define([], function() {
         // All Bots
         name: "Legate AceAI",
         character: "Roboticist",
-        color: [[153, 255, 255], [192, 192, 192]],
+        color: [
+          [153, 255, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -591,7 +600,10 @@ define([], function() {
         // Uber
         name: "Legate Alpha",
         character: "Uber",
-        color: [[102, 255, 255], [192, 192, 192]],
+        color: [
+          [102, 255, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -636,7 +648,10 @@ define([], function() {
         // Platinum
         name: "Legate Aryst0krat",
         character: "Platinum",
-        color: [[0, 255, 255], [192, 192, 192]],
+        color: [
+          [0, 255, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -682,7 +697,10 @@ define([], function() {
         // Gold
         name: "Legate Chronoblip",
         character: "Gold",
-        color: [[0, 204, 204], [192, 192, 192]],
+        color: [
+          [0, 204, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.34,
@@ -727,7 +745,10 @@ define([], function() {
         // Foundation
         name: "Legate Mjon",
         character: "Acolyte",
-        color: [[0, 153, 153], [192, 192, 192]],
+        color: [
+          [0, 153, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.13,
@@ -771,7 +792,10 @@ define([], function() {
         // Basic Tech
         name: "Legate Delta",
         character: "Luddite",
-        color: [[153, 204, 255], [192, 192, 192]],
+        color: [
+          [153, 204, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.5,
@@ -815,7 +839,10 @@ define([], function() {
         // Advanced Tech
         name: "Legate Enzomatrix",
         character: "Technologist",
-        color: [[102, 178, 255], [192, 192, 192]],
+        color: [
+          [102, 178, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.5,
@@ -860,7 +887,10 @@ define([], function() {
         // Cautious
         name: "Legate Fiveleafclover",
         character: "Cautious",
-        color: [[51, 153, 255], [192, 192, 192]],
+        color: [
+          [51, 153, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.6,
@@ -905,7 +935,10 @@ define([], function() {
         // Aggressive
         name: "Legate Gamma",
         character: "Aggressive",
-        color: [[0, 128, 255], [192, 192, 192]],
+        color: [
+          [0, 128, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.4,
@@ -949,7 +982,10 @@ define([], function() {
         // Rush
         name: "Legate Gnugfur",
         character: "Rush",
-        color: [[0, 102, 204], [192, 192, 192]],
+        color: [
+          [0, 102, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -992,9 +1028,12 @@ define([], function() {
       },
       {
         // Turtle
-        name: "Legate Invictus",
+        name: "Legate Nemicus",
         character: "Turtle",
-        color: [[0, 76, 153], [192, 192, 192]],
+        color: [
+          [0, 76, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.9,
@@ -1032,14 +1071,16 @@ define([], function() {
           min_advanced_fabbers: 4,
           max_advanced_fabbers: 10
         },
-        commander:
-          "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
       },
       {
         // Original
         name: "Legate Kapowaz",
         character: "Original",
-        color: [[0, 0, 153], [192, 192, 192]],
+        color: [
+          [0, 0, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.27,
@@ -1083,7 +1124,10 @@ define([], function() {
         // Absurd
         name: "Legate JT100010117",
         character: "Absurd",
-        color: [[0, 0, 204], [192, 192, 192]],
+        color: [
+          [0, 0, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -1129,7 +1173,10 @@ define([], function() {
         // Relentless
         name: "Legate Kevin4001",
         character: "Relentless",
-        color: [[0, 0, 225], [192, 192, 192]],
+        color: [
+          [0, 0, 225],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -1175,7 +1222,10 @@ define([], function() {
         // Synchronous
         name: "Legate Mostlikely",
         character: "Servant",
-        color: [[51, 51, 255], [192, 192, 192]],
+        color: [
+          [51, 51, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.37,
@@ -1220,7 +1270,10 @@ define([], function() {
         // Revenants
         name: "Legate Nagasher",
         character: "Seeker",
-        color: [[204, 229, 255], [192, 192, 192]],
+        color: [
+          [204, 229, 255],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,

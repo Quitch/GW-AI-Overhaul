@@ -2,7 +2,10 @@
 define([], function() {
   return {
     name: "Revenants",
-    color: [[236, 34, 35], [192, 192, 192]],
+    color: [
+      [236, 34, 35],
+      [192, 192, 192]
+    ],
     teams: [
       {
         name: "Alenquer - Revenants",
@@ -575,7 +578,10 @@ define([], function() {
         // Orbital & Land
         name: "Seeker Betadyne",
         character: "Space Invader",
-        color: [[255, 204, 204], [192, 192, 192]],
+        color: [
+          [255, 204, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.5,
@@ -619,7 +625,10 @@ define([], function() {
         // Orbital & Air
         name: "Seeker Centurion",
         character: "Astronaut",
-        color: [[255, 153, 153], [192, 192, 192]],
+        color: [
+          [255, 153, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -663,7 +672,10 @@ define([], function() {
         // Uber
         name: "Seeker Diremachine",
         character: "Uber",
-        color: [[255, 102, 102], [192, 192, 192]],
+        color: [
+          [255, 102, 102],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -709,7 +721,10 @@ define([], function() {
         // Platinum
         name: "Seeker Enderstryke71",
         character: "Platinum",
-        color: [[255, 0, 0], [192, 192, 192]],
+        color: [
+          [255, 0, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -755,7 +770,10 @@ define([], function() {
         // Gold
         name: "Seeker Iwmiked",
         character: "Gold",
-        color: [[204, 0, 0], [192, 192, 192]],
+        color: [
+          [204, 0, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.34,
@@ -799,7 +817,10 @@ define([], function() {
         // Legonis Machina
         name: "Seeker Majuju",
         character: "Legate",
-        color: [[153, 0, 0], [192, 192, 192]],
+        color: [
+          [153, 0, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -844,7 +865,10 @@ define([], function() {
         // Basic Tech
         name: "Seeker Nefelpitou",
         character: "Luddite",
-        color: [[255, 204, 153], [192, 192, 192]],
+        color: [
+          [255, 204, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.5,
@@ -887,9 +911,12 @@ define([], function() {
       },
       {
         // Advanced Tech
-        name: "Seeker Nemicus",
+        name: "Seeker Invictus",
         character: "Technologist",
-        color: [[255, 178, 102], [192, 192, 192]],
+        color: [
+          [255, 178, 102],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.5,
@@ -927,13 +954,17 @@ define([], function() {
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10
         },
-        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+        commander:
+          "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
       },
       {
         // Cautious
         name: "Seeker Rallus",
         character: "Cautious",
-        color: [[255, 153, 51], [192, 192, 192]],
+        color: [
+          [255, 153, 51],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.6,
@@ -977,7 +1008,10 @@ define([], function() {
         // Aggressive
         name: "Seeker Stickman9000",
         character: "Aggressive",
-        color: [[255, 128, 0], [192, 192, 192]],
+        color: [
+          [255, 128, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.4,
@@ -1022,7 +1056,10 @@ define([], function() {
         // Rush
         name: "Seeker Zaazzaa",
         character: "Rush",
-        color: [[204, 102, 0], [192, 192, 192]],
+        color: [
+          [204, 102, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -1067,7 +1104,10 @@ define([], function() {
         // Turtle
         name: "Seeker Aeson",
         character: "Turtle",
-        color: [[255, 255, 204], [192, 192, 192]],
+        color: [
+          [255, 255, 204],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.9,
@@ -1111,7 +1151,10 @@ define([], function() {
         // Original
         name: "Seeker Banditks",
         character: "Original",
-        color: [[255, 255, 153], [192, 192, 192]],
+        color: [
+          [255, 255, 153],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.187,
@@ -1155,7 +1198,10 @@ define([], function() {
         // Absurd
         name: "Seeker SPZ58624",
         character: "Absurd",
-        color: [[255, 255, 102], [192, 192, 192]],
+        color: [
+          [255, 255, 102],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -1200,7 +1246,10 @@ define([], function() {
         // Relentless
         name: "Seeker XOV",
         character: "Relentless",
-        color: [[255, 255, 0], [192, 192, 192]],
+        color: [
+          [255, 255, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.45,
@@ -1245,7 +1294,10 @@ define([], function() {
         // Foundation
         name: "Seeker Reaver",
         character: "Acolyte",
-        color: [[204, 204, 0], [192, 192, 192]],
+        color: [
+          [204, 204, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.13,
@@ -1289,7 +1341,10 @@ define([], function() {
         // Synchronous
         name: "Seeker Sadiga",
         character: "Servant",
-        color: [[153, 153, 0], [192, 192, 192]],
+        color: [
+          [153, 153, 0],
+          [192, 192, 192]
+        ],
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.37,
