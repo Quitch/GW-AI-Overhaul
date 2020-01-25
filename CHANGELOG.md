@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.0.2 - 2020-01-25
+
+- Update the mod's description
+
 ## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
