@@ -9,7 +9,19 @@
   "date": "2020/01/25",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/",
-  "category": ["ai", "gw", "gameplay", "classic", "titans"],
+  "category": [
+    "ai",
+    "ki",
+    "ia",
+    "si",
+    "ИИ",
+    "电脑",
+    "電腦",
+    "gw",
+    "gameplay",
+    "classic",
+    "titans"
+  ],
   "icon": "https://i.imgur.com/KX8n6ZJ.png",
   "scenes": {
     "gw_start": [
