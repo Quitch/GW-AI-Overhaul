@@ -16,7 +16,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Fight according to their faction's preferred style
 - Eight new difficulties suitable for anyone from a new player to a veteran of the game
 - Reduced Sub Commander effectiveness
-- Adds the possibility of multiple factions in a system and a FFA occuring
+- Adds the possibility of multiple factions in a system and an FFA occurring
 - Adds support for shared army enemies
 - Bosses are distinctly more difficult than the surrounding systems
 - Added planetary intelligence to allow you to make meaningful decisions on the galactic map
@@ -33,7 +33,7 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 ## Difficulty
 
-Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+Sub Commanders are not impacted by difficulty. At any difficulty level, you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
 - **Casual**: for when you've completed the tutorial and are new to the game.
 
@@ -61,7 +61,7 @@ Each system will display four pieces of information:
 
 - **Threat Level**: based on the total eco score of all enemies.
 
-- **Threat**: eco threat of that Commander. This increases the deeper you proceed into the galaxy.
+- **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
@@ -97,7 +97,7 @@ Many changes will only apply to new wars.
 
 **Q. Why am I seeing multiple Commanders for a single enemy army?**
 
-Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them more additional build power and more lives. In the case of bosses it allows them to very quickly connect multiple planets.
+Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to very quickly connect multiple planets.
 
 ## Known Issues
 
