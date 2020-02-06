@@ -35,23 +35,23 @@ Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/proje
 
 Sub Commanders are not impacted by difficulty. At any difficulty level, you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-- **Casual**: for when you've completed the tutorial and are new to the game.
+![Casual badge](./images/casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
-- **Iron**: for when you've played an RTS before and have an idea of what you're doing.
+![Iron badge](./images/iron.png) **Iron**: for when you've played an RTS before and have an idea of what you're doing.
 
-- **Bronze**: for when you've some PA experience under your belt.
+![Bronze badge](./images/bronze.png) **Bronze**: for when you've some PA experience under your belt.
 
-- **Silver**: for when you're ready for the AI to start really pushing back.
+![Silver badge](./images/silver.png) **Silver**: for when you're ready for the AI to start really pushing back.
 
-- **Gold**: for when AI skirmish at the top difficulty level is too easy.
+![Gold badge](./images/gold.png) **Gold**: for when AI skirmish at the top difficulty level is too easy.
 
-- **Platinum**: for when one enemy Commander is no longer a worthy challenge.
+![Platinum badge](./images/platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
-- **Diamond**: for when your loadouts become too powerful.
+![Diamond badge](./images/diamond.png) **Diamond**: for when your loadouts become too powerful.
 
-- **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+![Uber badge](./images/Uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
-- **Custom**: for when you want to create your own challenge.
+![Custom badge](./images/custom.png) **Custom**: for when you want to create your own challenge.
 
 ## Planetary Intelligence
 
