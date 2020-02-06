@@ -22,7 +22,7 @@
     "classic",
     "titans"
   ],
-  "icon": "https://i.imgur.com/KX8n6ZJ.png",
+  "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/images/icon.png",
   "scenes": {
     "gw_start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js",
