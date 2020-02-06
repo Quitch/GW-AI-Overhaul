@@ -49,7 +49,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level, you can 
 
 ![Diamond badge](./images/diamond.png) **Diamond**: for when your loadouts become too powerful.
 
-![Uber badge](./images/Uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+![Uber badge](./images/uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
 ![Custom badge](./images/custom.png) **Custom**: for when you want to create your own challenge.
 
