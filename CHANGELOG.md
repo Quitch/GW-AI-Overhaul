@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.0.3 - 2020-02-06
+
+- Corrected grammatical errors
+
 ## v2.0.2 - 2020-01-25
 
 - Update the mod's description
@@ -13,7 +17,7 @@
 ## v2.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
-- Switched to a more recognisable ranking system for difficulty and smoothed the difficulty curve:
+- Switched to a more recognisable ranking system for difficulty levels and smoothed the difficulty curve:
   - Bronze has become Iron
   - Copper has become Bronze
   - Gold grows its additional Commander count slower and starts later
@@ -46,22 +50,22 @@
 
 - Added a custom difficulty to allow you to configure all the difficulty settings
 - Updated some personality names to prevent word wrapping with new fonts
-- Galaxy size no longer has any effect on the chance of a FFA occuring
+- Galaxy size no longer has any effect on the chance of an FFA occurring
 - Fixed the enemy system owner sometimes spawning with multiple Commanders
 - Fixed a bug in the base game causing the General Commander's Sub Commanders to sometimes have an eco modifier applied
 
 ## v1.3.0 - 2019-10-11
 
 - Tried to improve the clarity of the difficulty tooltip for players for whom English is a second language
-- The additional faction in a FFA has less Commanders
-- Higher chance of a FFA at Casual, Bronze, Silver and Gold difficulties
-- Lower chance of a FFA at Uber difficulty
+- The additional faction in an FFA has fewer Commanders
+- Higher chance of an FFA at Casual, Bronze, Silver and Gold difficulties
+- Lower chance of an FFA at Uber difficulty
 - FFAs will sometimes be 4-way instead of 3-way
 - Decreased the starting eco of Casual and Bronze
 
 ## v1.2.1 - 2019-10-07
 
-- Fixed battles failing to launch if you were playing a war started with v1.1.0 or earlier and the battle was a FFA
+- Fixed battles failing to launch if you were playing a war started with v1.1.0 or earlier and the battle was an FFA
 
 ## v1.2.0 - 2019-10-06
 
@@ -151,7 +155,7 @@
 ## v0.12 - 2019-08-17
 
 - Enemies account for their eco modifier when teching to T2
-- Bosses and their minions now enjoy an eco boost over surrounding systems
+- Bosses and their minions now enjoy an eco-boost over surrounding systems
 - Metrarch the Machinist and First Seeker Osiris try to start on a different planet to you
 - The minions of Metrarch the Machinist and First Seeker Osiris try to start on the same planet as you
 - Acolyte Agatho will provide greater ground cover for Inquisitor Nemicus's air
@@ -160,7 +164,7 @@
 - Bronze and Silver start with a slightly lower eco
 - Gold eco ramps up slightly faster
 - Sub Commanders will always try to spawn on the same planet as the player
-- Increased the chance of a FFA occurring at Silver and above
+- Increased the chance of an FFA occurring at Silver and above
 - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
 - First Seeker Osiris has a greater focus on orbital
 
@@ -201,8 +205,8 @@
 - Difficulty settings now fully applied to bosses
 - Added four new Commanders to each faction
 - Reduced the effectiveness of all Sub Commanders
-- Foundation lean more heavily into naval tech when they can
-- Slight increase in boss difficulty through better economy handling and faster teching
+- Foundation leans more heavily into naval tech when they can
+- A slight increase in boss difficulty through better economy handling and faster teching
 - Revenants favour land over air
 - Bronze and Silver micro better
 - Silver spends excess resources better
@@ -217,7 +221,7 @@
 
 ## v0.6 - 2019-01-14
 
-- Huge overhaul of difficulty levels
+- A huge overhaul of difficulty levels
   - All difficulties now use minions as a difficulty ramp tool
   - Platinum and below introduce minions earlier in the galaxy
   - Casual has a higher base economy
@@ -226,7 +230,7 @@
   - Gold moves to T2 slightly later
   - Platinum now always has at least two minions in a system
   - Platinum handles its economy better
-  - Uber is now setup as an ultimate challenge difficulty without attempt to be fair
+  - Uber is now set up as an ultimate challenge difficulty without any attempt to be fair
 
 ## v0.5 - 2019-01-13
 
@@ -237,7 +241,7 @@
 
 ## v0.4 - 2018-04-17
 
-- Remove Q prefix from difficulties in vain attempt to clarify that this is **not** using the Queller AI brain
+- Remove Q prefix from difficulties in a vain attempt to clarify that this is **not** using the Queller AI brain
 
 ## v0.3.1 - 2018-03-03
 
@@ -245,8 +249,8 @@
 
 ## v0.3 - 2017-05-17
 
-- Reduced base level of eco that Gold through Uber start with
-- Increased base level of eco that Bronze and Silver start with
+- Reduced the base level of eco that Gold through Uber start with
+- Increased the base level of eco that Bronze and Silver start with
 - Casual's expansion is no longer crippled
 - Bronze expands a little faster
 - Casual builds faster from its factories
@@ -261,8 +265,8 @@
 ## v0.1 - 2017-03-16
 
 - Assign a general personality to each faction
-- Reduce number of minions per faction to 13
+- Reduce the number of minions per faction to 13
 - Assign a unique commander model to each minion
 - Name minion after commander to allow identification
-- Assign unique personality to each Sub Commander
+- Assign a unique personality to each Sub Commander
 - Append five new difficulty levels to Galactic War
