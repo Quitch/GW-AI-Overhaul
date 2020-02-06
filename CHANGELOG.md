@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Corrected grammatical errors in tooltips
+
 ## v2.0.2 - 2020-01-25
 
 - Update the mod's description
