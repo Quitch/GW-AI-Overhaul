@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.0.3 - 2020-02-06
 
 - Corrected grammatical errors
 
