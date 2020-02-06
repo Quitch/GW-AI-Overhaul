@@ -2,7 +2,7 @@
 
 ## DEV
 
-- Corrected grammatical errors in tooltips
+- Corrected grammatical errors
 
 ## v2.0.2 - 2020-01-25
 

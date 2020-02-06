@@ -862,7 +862,7 @@ requireGW(
           {
             name: "!LOC:Queller",
             description:
-              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while the commanders slumbered and is now the deadliest force in the galaxy."
+              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy."
           }
         ];
 
