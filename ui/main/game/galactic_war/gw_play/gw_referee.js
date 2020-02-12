@@ -122,7 +122,6 @@ define(["shared/gw_common"], function(GW) {
       alliance_group: 1
     });
     // Setup the player's Sub Commanders
-    // eslint-disable-next-line lodash/prefer-map
     _.forEach(inventory.minions(), function(minion) {
       armies.push({
         slots: [
