@@ -88,13 +88,13 @@
       return "High";
     } else if (totalRate < 6) {
       return "Very High";
-    } else if (totalRate < 8) {
+    } else if (totalRate < 9) {
       return "Extreme";
-    } else if (totalRate < 10) {
+    } else if (totalRate < 13) {
       return "Critical";
-    } else if (totalRate < 20) {
+    } else if (totalRate < 18) {
       return "Suicidal";
-    } else if (totalRate < 30) {
+    } else if (totalRate < 24) {
       return "Impossible";
     } else {
       return "Skynet";

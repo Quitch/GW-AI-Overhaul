@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Improved the granularity with how system threat is displayed at the upper bounds
+
 ## v2.0.3 - 2020-02-06
 
 - Corrected grammatical errors
