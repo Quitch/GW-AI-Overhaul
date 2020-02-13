@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.0.4 - 2020-02-13
 
 - Improved the granularity with how system threat is displayed at the upper bounds
 
