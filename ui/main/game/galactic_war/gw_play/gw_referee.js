@@ -122,7 +122,6 @@ define(["shared/gw_common"], function(GW) {
       alliance_group: 1
     });
     // Setup the player's Sub Commanders
-    // eslint-disable-next-line lodash/prefer-map
     _.forEach(inventory.minions(), function(minion) {
       armies.push({
         slots: [
@@ -240,7 +239,6 @@ define(["shared/gw_common"], function(GW) {
       system: system
     };
     _.forEach(config.armies, function(army) {
-      // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function(slot) {
         if (slot.ai)
           slot.commander += army.alliance_group === 1 ? ".player" : ".ai";

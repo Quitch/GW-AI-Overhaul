@@ -27,9 +27,11 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 This mod can be installed via the Planetary Annihilation: TITANS in-game Community Mod manager.
 
-## Translations
+## In Action
 
-Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/project/GMUUxugX7u) to your local language.
+Maréchal Gryzzly takes on GW-Uber difficulty, which is the ultimate Galactic War challenge, not intended to be even remotely fair.
+
+[![Maréchal Gryzzly fights GW-Uber](https://img.youtube.com/vi/ldXdL8GtDOg/0.jpg)](https://www.youtube.com/watch?v=ldXdL8GtDOg)
 
 ## Difficulty
 
@@ -98,6 +100,10 @@ Many changes will only apply to new wars.
 **Q. Why am I seeing multiple Commanders for a single enemy army?**
 
 Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to very quickly connect multiple planets.
+
+## Translations
+
+Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/project/GMUUxugX7u) to your local language.
 
 ## Known Issues
 
