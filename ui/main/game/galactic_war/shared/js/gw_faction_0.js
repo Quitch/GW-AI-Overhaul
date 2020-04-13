@@ -1,10 +1,10 @@
 // !LOCNS:galactic_war
-define([], function() {
+define([], function () {
   return {
     name: "Legonis Machina",
     color: [
       [0, 176, 255],
-      [192, 192, 192]
+      [192, 192, 192],
     ],
     teams: [
       {
@@ -16,7 +16,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 1,
@@ -44,10 +44,10 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
           commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
         },
         bossCard: "gwc_start_artillery",
         systemDescription:
@@ -69,7 +69,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-47500, 0],
               Velocity: [0, -294.3776],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Kohr Beta",
@@ -85,7 +85,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-32500, 0],
               Velocity: [0, -70.7708],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Kohr Gamma",
@@ -101,10 +101,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [-40000, 0],
               Velocity: [0, -111.8034],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Entara - Legonis Machina",
@@ -115,7 +115,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 1,
@@ -143,10 +143,10 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
           commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
         },
         bossCard: "gwc_start_combatcdr",
         systemDescription:
@@ -168,7 +168,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-47500, 0],
               Velocity: [0, -294.3776],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Entara Beta",
@@ -184,7 +184,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-32500, 0],
               Velocity: [0, -70.7708],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Entara Gamma",
@@ -200,10 +200,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [-40000, 0],
               Velocity: [0, -111.8034],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Agoge - Legonis Machina",
@@ -214,7 +214,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 1,
@@ -242,10 +242,10 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
           commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
         },
         systemDescription:
           "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
@@ -266,7 +266,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-47500, 0],
               Velocity: [0, -294.3776],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Agoge Beta",
@@ -282,7 +282,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-32500, 0],
               Velocity: [0, -70.7708],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Agoge Gamma",
@@ -298,10 +298,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [-40000, 0],
               Velocity: [0, -111.8034],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Tau Leporis - Legonis Machina",
@@ -312,7 +312,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 1,
@@ -340,10 +340,10 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
           commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
         },
         systemDescription:
           "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
@@ -364,7 +364,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-47500, 0],
               Velocity: [0, -294.3776],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Tau Leporis Beta",
@@ -380,7 +380,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-32500, 0],
               Velocity: [0, -70.7708],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Tau Leporis Gamma",
@@ -396,10 +396,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [-40000, 0],
               Velocity: [0, -111.8034],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Poseidon's Wrath - Legonis Machina",
@@ -410,7 +410,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 1,
@@ -438,10 +438,10 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
           commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
         },
         systemDescription:
           "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
@@ -462,7 +462,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-47500, 0],
               Velocity: [0, -294.3776],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Poseidon's Wrath Beta",
@@ -478,7 +478,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-32500, 0],
               Velocity: [0, -70.7708],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Poseidon's Wrath Gamma",
@@ -494,11 +494,11 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [-40000, 0],
               Velocity: [0, -111.8034],
-              Biomes: ["gas"]
-            }
-          ]
-        }
-      }
+              Biomes: ["gas"],
+            },
+          ],
+        },
+      },
     ], // teams
     minions: [
       {
@@ -507,7 +507,7 @@ define([], function() {
         character: "Armour",
         color: [
           [204, 255, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -545,9 +545,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_able/imperial_able.json"
+        commander: "/pa/units/commanders/imperial_able/imperial_able.json",
       },
       {
         // All Bots
@@ -555,7 +555,7 @@ define([], function() {
         character: "Roboticist",
         color: [
           [153, 255, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -592,9 +592,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json"
+        commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json",
       },
       {
         // Uber
@@ -602,7 +602,7 @@ define([], function() {
         character: "Uber",
         color: [
           [102, 255, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -640,9 +640,9 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json"
+        commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
       },
       {
         // Platinum
@@ -650,7 +650,7 @@ define([], function() {
         character: "Platinum",
         color: [
           [0, 255, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -688,10 +688,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json"
+          "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
       },
       {
         // Gold
@@ -699,7 +699,7 @@ define([], function() {
         character: "Gold",
         color: [
           [0, 204, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -736,10 +736,10 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json"
+          "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json",
       },
       {
         // Foundation
@@ -747,7 +747,7 @@ define([], function() {
         character: "Acolyte",
         color: [
           [0, 153, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -784,9 +784,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json"
+        commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
       },
       {
         // Basic Tech
@@ -794,7 +794,7 @@ define([], function() {
         character: "Luddite",
         color: [
           [153, 204, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -831,9 +831,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_delta/imperial_delta.json"
+        commander: "/pa/units/commanders/imperial_delta/imperial_delta.json",
       },
       {
         // Advanced Tech
@@ -841,7 +841,7 @@ define([], function() {
         character: "Technologist",
         color: [
           [102, 178, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -878,10 +878,10 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json"
+          "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json",
       },
       {
         // Cautious
@@ -889,7 +889,7 @@ define([], function() {
         character: "Cautious",
         color: [
           [51, 153, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -926,10 +926,10 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json"
+          "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json",
       },
       {
         // Aggressive
@@ -937,7 +937,7 @@ define([], function() {
         character: "Aggressive",
         color: [
           [0, 128, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -974,9 +974,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json"
+        commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json",
       },
       {
         // Rush
@@ -984,7 +984,7 @@ define([], function() {
         character: "Rush",
         color: [
           [0, 102, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1022,9 +1022,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json"
+        commander:
+          "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json",
       },
       {
         // Turtle
@@ -1032,7 +1033,7 @@ define([], function() {
         character: "Turtle",
         color: [
           [0, 76, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1069,9 +1070,9 @@ define([], function() {
           min_basic_fabbers: 5,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 4,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+        commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
       },
       {
         // Original
@@ -1079,7 +1080,7 @@ define([], function() {
         character: "Original",
         color: [
           [0, 0, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1116,9 +1117,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json"
+        commander:
+          "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json",
       },
       {
         // Absurd
@@ -1126,7 +1128,7 @@ define([], function() {
         character: "Absurd",
         color: [
           [0, 0, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1164,10 +1166,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json"
+          "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
       },
       {
         // Relentless
@@ -1175,7 +1177,7 @@ define([], function() {
         character: "Relentless",
         color: [
           [0, 0, 225],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1213,10 +1215,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json"
+          "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",
       },
       {
         // Synchronous
@@ -1224,7 +1226,7 @@ define([], function() {
         character: "Servant",
         color: [
           [51, 51, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1261,10 +1263,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json"
+          "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
       },
       {
         // Revenants
@@ -1272,7 +1274,7 @@ define([], function() {
         character: "Seeker",
         color: [
           [204, 229, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1310,11 +1312,11 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json"
-      }
-    ] // minions
+          "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json",
+      },
+    ], // minions
   };
 });

@@ -1,7 +1,7 @@
 // Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
 
-(function() {
-  var threat = function(rate) {
+(function () {
+  var threat = function (rate) {
     if (!rate) {
       return "Unknown";
     } else if (rate < 0.649) {
@@ -41,20 +41,20 @@
     }
   };
 
-  var rgb = function(color) {
+  var rgb = function (color) {
     return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
   };
 
-  var intelligence = function(commander) {
+  var intelligence = function (commander) {
     return {
       name: commander.name,
       threat: threat(commander.econ_rate), // + commander.econ_rate.toPrecision(2),
       color: rgb((commander.color && commander.color[0]) || [255, 255, 255]),
-      character: commander.character
+      character: commander.character,
     };
   };
 
-  model.systemOwner = ko.computed(function() {
+  model.systemOwner = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     var commanders = [];
     if (primary) {
@@ -66,7 +66,7 @@
     return commanders;
   });
 
-  model.ffaOpponents = ko.computed(function() {
+  model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     var commanders = [];
     if (primary && primary.foes) {
@@ -75,7 +75,7 @@
     return commanders;
   });
 
-  var totalThreat = function(totalRate) {
+  var totalThreat = function (totalRate) {
     if (!totalRate) {
       return "None";
     } else if (totalRate < 1) {
@@ -101,17 +101,17 @@
     }
   };
 
-  model.systemThreat = ko.computed(function() {
+  model.systemThreat = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     if (primary) {
       var totalEco = primary.econ_rate;
       if (primary.minions) {
-        _.forEach(primary.minions, function(minion) {
+        _.forEach(primary.minions, function (minion) {
           totalEco = totalEco + minion.econ_rate;
         });
       }
       if (primary.foes) {
-        _.forEach(primary.foes, function(foe) {
+        _.forEach(primary.foes, function (foe) {
           totalEco = totalEco + foe.econ_rate;
         });
       }
@@ -119,7 +119,7 @@
     return totalThreat(totalEco);
   });
 
-  var formatedString = function(number) {
+  var formatedString = function (number) {
     var km2 = 1000000;
     number = number / km2;
     if (number < 1000) {
@@ -129,12 +129,12 @@
     }
   };
 
-  model.systemSurfaceArea = ko.computed(function() {
+  model.systemSurfaceArea = ko.computed(function () {
     var area = 0;
     model.selection
       .system()
       .planets()
-      .forEach(function(planet) {
+      .forEach(function (planet) {
         if (planet.generator && planet.generator.biom != "gas") {
           area += 4 * Math.PI * Math.pow(planet.generator.radius, 2);
         }
@@ -144,7 +144,7 @@
 
   var url =
     "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
-  $.get(url, function(html) {
+  $.get(url, function (html) {
     console.log("Loaded html " + url);
     var $fi = $(html);
     $("#system-detail").append($fi);

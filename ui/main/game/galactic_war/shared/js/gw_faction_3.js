@@ -1,10 +1,10 @@
 // !LOCNS:galactic_war
-define([], function() {
+define([], function () {
   return {
     name: "Revenants",
     color: [
       [236, 34, 35],
-      [192, 192, 192]
+      [192, 192, 192],
     ],
     teams: [
       {
@@ -16,7 +16,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 0.5,
@@ -43,9 +43,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
         },
         bossCard: "gwc_start_orbital",
         systemDescription:
@@ -67,7 +67,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ["metal"]
+              Biomes: ["metal"],
             },
             {
               name: "Alenquer Beta",
@@ -83,7 +83,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Alenquer Gamma",
@@ -99,7 +99,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Alenquer Delta",
@@ -115,10 +115,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ["moon"]
-            }
-          ]
-        }
+              Biomes: ["moon"],
+            },
+          ],
+        },
       },
       {
         name: "Xianyao - Revenants",
@@ -129,7 +129,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 0.5,
@@ -156,9 +156,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
         },
         bossCard: "gwc_start_subcdr",
         systemDescription:
@@ -180,7 +180,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ["metal"]
+              Biomes: ["metal"],
             },
             {
               name: "Xianyao Beta",
@@ -196,7 +196,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Xianyao Gamma",
@@ -212,7 +212,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Xianyao Delta",
@@ -228,10 +228,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ["moon"]
-            }
-          ]
-        }
+              Biomes: ["moon"],
+            },
+          ],
+        },
       },
       {
         name: "Epiphany - Revenants",
@@ -242,7 +242,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 0.5,
@@ -269,9 +269,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -293,7 +293,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ["metal"]
+              Biomes: ["metal"],
             },
             {
               name: "Epiphany Beta",
@@ -309,7 +309,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Epiphany Gamma",
@@ -325,7 +325,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Epiphany Delta",
@@ -341,10 +341,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ["moon"]
-            }
-          ]
-        }
+              Biomes: ["moon"],
+            },
+          ],
+        },
       },
       {
         name: "Varthema - Revenants",
@@ -355,7 +355,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 0.5,
@@ -382,9 +382,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -406,7 +406,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ["metal"]
+              Biomes: ["metal"],
             },
             {
               name: "Varthema Beta",
@@ -422,7 +422,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Varthema Gamma",
@@ -438,7 +438,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Varthema Delta",
@@ -454,10 +454,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ["moon"]
-            }
-          ]
-        }
+              Biomes: ["moon"],
+            },
+          ],
+        },
       },
       {
         name: "Chernykh - Revenants",
@@ -468,7 +468,7 @@ define([], function() {
           landing_policy: [
             "off_player_planet",
             "on_player_planet",
-            "no_restriction"
+            "no_restriction",
           ],
           personality: {
             percent_open_vehicle: 0.5,
@@ -495,9 +495,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -519,7 +519,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, 0],
               Velocity: [0, 111.803],
-              Biomes: ["metal"]
+              Biomes: ["metal"],
             },
             {
               name: "Chernykh Beta",
@@ -535,7 +535,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [40000, -5000],
               Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Chernykh Gamma",
@@ -551,7 +551,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [35700, 2500],
               Velocity: [112.683, 305.6186],
-              Biomes: ["moon"]
+              Biomes: ["moon"],
             },
             {
               name: "Chernykh Delta",
@@ -567,11 +567,11 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [44300, 2500],
               Velocity: [112.683, -82.0126],
-              Biomes: ["moon"]
-            }
-          ]
-        }
-      }
+              Biomes: ["moon"],
+            },
+          ],
+        },
+      },
     ], // teams
     minions: [
       {
@@ -580,7 +580,7 @@ define([], function() {
         character: "Space Invader",
         color: [
           [255, 204, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -617,9 +617,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json"
+        commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
       },
       {
         // Orbital & Air
@@ -627,7 +627,7 @@ define([], function() {
         character: "Astronaut",
         color: [
           [255, 153, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -664,9 +664,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_centurion/raptor_centurion.json"
+        commander:
+          "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
       },
       {
         // Uber
@@ -674,7 +675,7 @@ define([], function() {
         character: "Uber",
         color: [
           [255, 102, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -712,10 +713,10 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json"
+          "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
       },
       {
         // Platinum
@@ -723,7 +724,7 @@ define([], function() {
         character: "Platinum",
         color: [
           [255, 0, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -761,10 +762,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json"
+          "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
       },
       {
         // Gold
@@ -772,7 +773,7 @@ define([], function() {
         character: "Gold",
         color: [
           [204, 0, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -809,9 +810,9 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json"
+        commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
       },
       {
         // Legonis Machina
@@ -819,7 +820,7 @@ define([], function() {
         character: "Legate",
         color: [
           [153, 0, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -857,9 +858,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json"
+        commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
       },
       {
         // Basic Tech
@@ -867,7 +868,7 @@ define([], function() {
         character: "Luddite",
         color: [
           [255, 204, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -904,10 +905,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json"
+          "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
       },
       {
         // Advanced Tech
@@ -915,7 +916,7 @@ define([], function() {
         character: "Technologist",
         color: [
           [255, 178, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -952,10 +953,10 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_invictus/imperial_invictus.json"
+          "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
       },
       {
         // Cautious
@@ -963,7 +964,7 @@ define([], function() {
         character: "Cautious",
         color: [
           [255, 153, 51],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1000,9 +1001,9 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json"
+        commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
       },
       {
         // Aggressive
@@ -1010,7 +1011,7 @@ define([], function() {
         character: "Aggressive",
         color: [
           [255, 128, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1047,10 +1048,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json"
+          "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
       },
       {
         // Rush
@@ -1058,7 +1059,7 @@ define([], function() {
         character: "Rush",
         color: [
           [204, 102, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1096,9 +1097,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json"
+        commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
       },
       {
         // Turtle
@@ -1106,7 +1107,7 @@ define([], function() {
         character: "Turtle",
         color: [
           [255, 255, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1143,9 +1144,9 @@ define([], function() {
           min_basic_fabbers: 5,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 4,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+        commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
       },
       {
         // Original
@@ -1153,7 +1154,7 @@ define([], function() {
         character: "Original",
         color: [
           [255, 255, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1190,9 +1191,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/tank_banditks/tank_banditks.json"
+        commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
       },
       {
         // Absurd
@@ -1200,7 +1201,7 @@ define([], function() {
         character: "Absurd",
         color: [
           [255, 255, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1238,9 +1239,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json"
+        commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
       },
       {
         // Relentless
@@ -1248,7 +1249,7 @@ define([], function() {
         character: "Relentless",
         color: [
           [255, 255, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1286,9 +1287,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_xov/raptor_xov.json"
+        commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
       },
       {
         // Foundation
@@ -1296,7 +1297,7 @@ define([], function() {
         character: "Acolyte",
         color: [
           [204, 204, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1333,9 +1334,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/tank_reaver/tank_reaver.json"
+        commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
       },
       {
         // Synchronous
@@ -1343,7 +1344,7 @@ define([], function() {
         character: "Servant",
         color: [
           [153, 153, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1380,10 +1381,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json"
-      }
-    ] // minions
+        commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
+      },
+    ], // minions
   };
 });
