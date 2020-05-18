@@ -20,7 +20,8 @@
     "gw",
     "gameplay",
     "classic",
-    "titans"
+    "titans",
+    "gwaio"
   ],
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
