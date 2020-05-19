@@ -19,7 +19,7 @@ define(["shared/gw_factions"], function (GWFactions) {
       result.push(minion.name);
       if (minion.character) {
         result.push("<br>");
-        result.push("!LOC:Personality: ");
+        result.push("!LOC:Personality:");
         result.push(" " + minion.character);
       }
       return result;
