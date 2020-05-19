@@ -824,11 +824,7 @@ requireGW(
               setAIData(ffaFirstFaction, dist, false);
               var numFoes = Math.round((numMinions + 1) / 2);
               ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
-              var landingPolicyFoes = [];
-              _.times(numFoes, function () {
-                landingPolicyFoes.push("no_restriction");
-              });
-              ffaFirstFaction.landing_policy = landingPolicyFoes;
+              ffaFirstFaction.commanderCount = numFoes;
               worker.ai.foes.push(ffaFirstFaction);
               if (
                 Math.random() * 100 <=
@@ -843,7 +839,7 @@ requireGW(
                 setAIData(ffaSecondFaction, dist, false);
                 ffaSecondFaction.color =
                   ffaSecondFaction.color || worker.ai.color;
-                ffaSecondFaction.landing_policy = landingPolicyFoes;
+                ffaSecondFaction.commanderCount = numFoes;
                 worker.ai.foes.push(ffaSecondFaction);
               }
             }

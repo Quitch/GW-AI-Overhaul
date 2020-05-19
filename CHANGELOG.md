@@ -7,6 +7,7 @@
 - All bosses now use the Pumpkin commander to make them clearly identifiable via their icon
 - Allied and enemy commanders will sometimes change which spawn they use on multi-planet systems
 - The number of commanders in a boss army is now controlled by difficulty
+- If an additional faction is present in a multi-planet system and has multiple commanders they may spawn on multiple worlds
 
 ## v2.0.4 - 2020-02-13
 

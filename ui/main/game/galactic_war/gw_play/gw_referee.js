@@ -217,8 +217,18 @@ define(["shared/gw_common"], function (GW) {
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
-      if (foe.landing_policy) {
-        for (var i = 0; i < foe.landing_policy.length; i++) {
+      if (foe.commanderCount) {
+        for (var i = 0; i < foe.commanderCount; i++) {
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name || "Foe",
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+      } else if (foe.landing_policy) {
+        // Support v1.2.0 - v2.0.4
+        for (var j = 0; j < foe.landing_policy.length; j++) {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
@@ -227,7 +237,7 @@ define(["shared/gw_common"], function (GW) {
           });
         }
       } else {
-        // Support for wars started prior to v1.2.0
+        // Support v1.1.0 and earlier
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
