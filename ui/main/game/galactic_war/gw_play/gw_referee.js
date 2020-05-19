@@ -161,7 +161,7 @@ define(["shared/gw_common"], function (GW) {
         }
       } else {
         // Support v2.0.4 and earlier
-        for (var j = 0; j < ai.landingPolicy.length; j++) {
+        for (var j = 0; j < ai.landing_policy.length; j++) {
           slotsArray.push({
             ai: true,
             name: ai.name,
