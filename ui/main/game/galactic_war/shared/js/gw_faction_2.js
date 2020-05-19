@@ -13,11 +13,6 @@ define([], function () {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -127,11 +122,6 @@ define([], function () {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -241,11 +231,6 @@ define([], function () {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -355,11 +340,6 @@ define([], function () {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -469,11 +449,6 @@ define([], function () {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,

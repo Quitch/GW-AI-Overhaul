@@ -13,11 +13,6 @@ define([], function () {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -126,11 +121,6 @@ define([], function () {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -239,11 +229,6 @@ define([], function () {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -351,11 +336,6 @@ define([], function () {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -463,11 +443,6 @@ define([], function () {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction",
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,

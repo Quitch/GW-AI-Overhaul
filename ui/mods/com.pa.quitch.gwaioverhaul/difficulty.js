@@ -108,6 +108,10 @@ model.customDifficultySettings = {
     precision: 0,
     rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
   }),
+  bossCommanders: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+  }),
   unsavedChanges: ko.observable(false),
 };
 
@@ -182,6 +186,10 @@ model.customDifficultySettings.maxAdvancedFabbers.subscribe(function () {
     model.customDifficultySettings.unsavedChanges(true);
 });
 model.customDifficultySettings.ffaChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.bossCommanders.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
@@ -280,6 +288,9 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
+      '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
@@ -335,6 +346,7 @@ requireGW(
         max_basic_fabbers: 10,
         max_advanced_fabbers: 10,
         ffa_chance: 25,
+        bossCommanders: 2,
       },
       {
         // Iron
@@ -356,6 +368,7 @@ requireGW(
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
         ffa_chance: 25,
+        bossCommanders: 2,
       },
       {
         // Bronze
@@ -376,6 +389,7 @@ requireGW(
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
         ffa_chance: 25,
+        bossCommanders: 3,
       },
       {
         // Silver
@@ -396,6 +410,7 @@ requireGW(
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
         ffa_chance: 25,
+        bossCommanders: 3,
       },
       {
         // Gold
@@ -417,6 +432,7 @@ requireGW(
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
         ffa_chance: 25,
+        bossCommanders: 4,
       },
       {
         // Platinum
@@ -438,6 +454,7 @@ requireGW(
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
         ffa_chance: 25,
+        bossCommanders: 4,
       },
       {
         // Diamond
@@ -459,6 +476,7 @@ requireGW(
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
         ffa_chance: 25,
+        bossCommanders: 5,
       },
       {
         // Uber
@@ -480,6 +498,7 @@ requireGW(
         max_basic_fabbers: 35,
         max_advanced_fabbers: 35,
         ffa_chance: 25,
+        bossCommanders: 5,
       },
       {
         // Custom
@@ -575,6 +594,9 @@ requireGW(
         );
         model.customDifficultySettings.ffaChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
+        );
+        model.customDifficultySettings.bossCommanders(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
         );
       }
       // Only show the custom difficulty fields if custom difficulty is selected
@@ -742,6 +764,7 @@ requireGW(
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
+            ai.bossCommanders = model.customDifficultySettings.bossCommanders();
           } else {
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
