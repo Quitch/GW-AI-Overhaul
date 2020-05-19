@@ -112,6 +112,11 @@ define(["shared/gw_common"], function (GW) {
     var playerCommander = inventory.getTag("global", "commander");
     var armies = [];
     var slotsArray = [];
+    var aiLandingOptions = [
+      "off_player_planet",
+      "on_player_planet",
+      "no_restriction",
+    ];
 
     // Setup the player
     armies.push({
@@ -129,7 +134,7 @@ define(["shared/gw_common"], function (GW) {
             ai: true,
             name: minion.name || "Sub Commander",
             commander: fixupCommander(minion.commander || playerCommander),
-            landing_policy: "no_restriction",
+            landing_policy: _.sample(aiLandingOptions),
           },
         ],
         color: minion.color || [playerColor[1], playerColor[0]],
@@ -151,7 +156,7 @@ define(["shared/gw_common"], function (GW) {
           ai: true,
           name: ai.name,
           commander: fixupCommander(ai.commander),
-          landing_policy: ai.landing_policy[i],
+          landing_policy: _.sample(aiLandingOptions),
         });
       }
     } else {
@@ -159,7 +164,7 @@ define(["shared/gw_common"], function (GW) {
         ai: true,
         name: ai.name,
         commander: fixupCommander(ai.commander),
-        landing_policy: ai.landing_policy || "no_restriction",
+        landing_policy: _.sample(aiLandingOptions),
       });
     }
     // Add system owner AI
@@ -183,7 +188,7 @@ define(["shared/gw_common"], function (GW) {
             ai: true,
             name: minion.name || "Minion",
             commander: fixupCommander(minion.commander || ai.commander),
-            landing_policy: ai.landing_policy || "no_restriction",
+            landing_policy: _.sample(aiLandingOptions),
           },
         ],
         color: minion.color,
@@ -207,7 +212,7 @@ define(["shared/gw_common"], function (GW) {
             ai: true,
             name: foe.name || "Foe",
             commander: fixupCommander(foe.commander || ai.commander),
-            landing_policy: foe.landing_policy[i],
+            landing_policy: _.sample(aiLandingOptions),
           });
         }
       } else {
@@ -216,7 +221,7 @@ define(["shared/gw_common"], function (GW) {
           ai: true,
           name: foe.name || "Foe",
           commander: fixupCommander(foe.commander || ai.commander),
-          landing_policy: foe.landing_policy || "no_restriction",
+          landing_policy: _.sample(aiLandingOptions),
         });
       }
       armies.push({
