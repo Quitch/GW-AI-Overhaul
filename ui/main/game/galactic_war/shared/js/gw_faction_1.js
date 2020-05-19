@@ -45,7 +45,7 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_air",
         systemDescription:
@@ -158,7 +158,7 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_allfactory",
         systemDescription:
@@ -271,7 +271,7 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
@@ -383,7 +383,7 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
@@ -495,7 +495,7 @@ define([], function () {
             min_basic_fabbers: 3,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",

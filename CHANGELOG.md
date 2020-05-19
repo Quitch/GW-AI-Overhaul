@@ -4,6 +4,7 @@
 
 - Removed the traitor personalities
 - Added three new personalities: Defender, Swarm, and Economist
+- All bosses now use the Pumpkin commander to make them clearly identifiable via their icon
 
 ## v2.0.4 - 2020-02-13
 

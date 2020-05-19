@@ -46,8 +46,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_artillery",
         systemDescription:
@@ -145,8 +144,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_combatcdr",
         systemDescription:
@@ -244,8 +242,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
@@ -342,8 +339,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
@@ -440,8 +436,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",

@@ -46,7 +46,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_bot",
         systemDescription:
@@ -160,7 +160,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -274,7 +274,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -388,7 +388,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -502,7 +502,7 @@ define([], function () {
             min_basic_fabbers: 5,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
