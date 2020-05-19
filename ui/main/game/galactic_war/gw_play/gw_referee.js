@@ -149,7 +149,6 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    // Support for shared armies
     if (ai.character === "Boss") {
       if (ai.bossCommanders) {
         for (var i = 0; i < ai.bossCommanders; i++) {
