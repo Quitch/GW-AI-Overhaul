@@ -151,13 +151,25 @@ define(["shared/gw_common"], function (GW) {
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     // Support for shared armies
     if (ai.character === "Boss") {
-      for (var i = 0; i < ai.bossCommanders; i++) {
-        slotsArray.push({
-          ai: true,
-          name: ai.name,
-          commander: fixupCommander(ai.commander),
-          landing_policy: _.sample(aiLandingOptions),
-        });
+      if (ai.bossCommanders) {
+        for (var i = 0; i < ai.bossCommanders; i++) {
+          slotsArray.push({
+            ai: true,
+            name: ai.name,
+            commander: fixupCommander(ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+      } else {
+        // Support v2.0.4 and earlier
+        for (var j = 0; j < ai.landingPolicy.length; j++) {
+          slotsArray.push({
+            ai: true,
+            name: ai.name,
+            commander: fixupCommander(ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
       }
     } else {
       slotsArray.push({
