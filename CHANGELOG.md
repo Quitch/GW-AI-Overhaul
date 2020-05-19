@@ -3,7 +3,7 @@
 ## DEV
 
 - Removed personalities: Legate, Acolyte, Servant, Seeker
-- Added three new personalities: Defender, Swarm, and Economist
+- Added personalities: Defender, Swarm, and Economist
 - All bosses now use the Pumpkin commander to make them clearly identifiable via their icon
 - Allied and enemy commanders will sometimes change which spawn they use on multi-planet systems
 
