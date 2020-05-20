@@ -130,7 +130,7 @@ define(["shared/gw_common"], function (GW) {
         });
       };
       var setupSubCommander = function (minion) {
-        console.debug("Setup Sub Commander");
+        console.debug("Setup sub commander");
         armies.push({
           slots: [
             {
@@ -154,7 +154,6 @@ define(["shared/gw_common"], function (GW) {
         playerArmies.push(setupSubCommander);
       });
       playerArmies = _.shuffle(playerArmies);
-      console.debug(playerArmies);
       _.forEach(playerArmies, function (playerArmy) {
         if (playerArmy === setupSubCommander)
           playerArmy(inventory.minions()[subCommander]);
@@ -163,6 +162,7 @@ define(["shared/gw_common"], function (GW) {
     };
 
     var setupAIFactionArmy = function () {
+      console.debug("Setup AI faction army");
       if (ai.character === "Boss") {
         if (ai.bossCommanders) {
           for (var i = 0; i < ai.bossCommanders; i++) {
@@ -226,6 +226,7 @@ define(["shared/gw_common"], function (GW) {
     };
 
     var setupAdditionalFactionArmy = function (foe) {
+      console.debug("Setup additional faction army");
       var slotsArrayFoes = [];
       // Ensure the AI doesn't have a weak early game due to eco boosts
       foe.personality.adv_eco_mod =
@@ -283,15 +284,15 @@ define(["shared/gw_common"], function (GW) {
     var spawnOrder = [setupPlayerArmy, setupAIFactionArmy];
     if (ai.foes) {
       ai.foes = _.shuffle(ai.foes);
-      for (var i = 0; i < ai.foes.length; i++)
+      _.forEach(ai.foes, function () {
         spawnOrder.push(setupAdditionalFactionArmy);
+      });
     }
     spawnOrder = _.shuffle(spawnOrder);
-    for (i = 0; i < spawnOrder.length; i++) {
-      if (spawnOrder[i] === setupAdditionalFactionArmy)
-        spawnOrder[i](ai.foes[foeArmy]);
-      else spawnOrder[i]();
-    }
+    _.forEach(spawnOrder, function (spawnArmy) {
+      if (spawnArmy === setupAdditionalFactionArmy) spawnArmy(ai.foes[foeArmy]);
+      else spawnArmy();
+    });
 
     var config = {
       files: self.files(),
