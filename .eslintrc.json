@@ -26,5 +26,9 @@
     "star_system_templates": "readonly",
     "parse": "readonly",
     "loadScript": "readonly"
+  },
+  "rules": {
+    "lodash/preferred-alias": [2, { "ignoreMethods": ["extend"] }],
+    "lodash/prefer-lodash-method": 0
   }
 }
