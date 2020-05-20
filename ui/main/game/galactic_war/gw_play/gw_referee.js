@@ -120,7 +120,6 @@ define(["shared/gw_common"], function (GW) {
 
     var setupPlayerArmy = function () {
       var setupPlayer = function () {
-        console.debug("Setup player");
         armies.push({
           slots: [{ name: "Player" }],
           color: playerColor,
@@ -130,7 +129,6 @@ define(["shared/gw_common"], function (GW) {
         });
       };
       var setupSubCommander = function (minion) {
-        console.debug("Setup sub commander");
         armies.push({
           slots: [
             {
@@ -153,9 +151,7 @@ define(["shared/gw_common"], function (GW) {
       playerArmies = _.times(inventory.minions().length, function () {
         return setupSubCommander;
       });
-      console.debug(playerArmies.length);
       playerArmies.unshift(setupPlayer);
-      console.debug(playerArmies.length);
       playerArmies = _.shuffle(playerArmies);
       _.forEach(playerArmies, function (playerArmy) {
         if (playerArmy === setupSubCommander)
@@ -165,7 +161,6 @@ define(["shared/gw_common"], function (GW) {
     };
 
     var setupAIFactionArmy = function () {
-      console.debug("Setup AI faction army");
       if (ai.character === "Boss") {
         if (ai.bossCommanders) {
           for (var i = 0; i < ai.bossCommanders; i++) {
@@ -229,7 +224,6 @@ define(["shared/gw_common"], function (GW) {
     };
 
     var setupAdditionalFactionArmy = function (foe) {
-      console.debug("Setup additional faction army");
       var slotsArrayFoes = [];
       // Ensure the AI doesn't have a weak early game due to eco boosts
       foe.personality.adv_eco_mod =
