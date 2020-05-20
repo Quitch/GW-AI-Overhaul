@@ -1,12 +1,14 @@
 // !LOCNS:galactic_war
 define(["shared/gw_factions"], function (GWFactions) {
   function hasUnit(id) {
+    // eslint-disable-next-line lodash/preferred-alias
     return _.any(model.game().inventory().units(), function (unit) {
       return id === unit;
     });
   }
 
   return {
+    // eslint-disable-next-line lodash/prefer-constant
     visible: function () {
       return true;
     },
@@ -24,9 +26,11 @@ define(["shared/gw_factions"], function (GWFactions) {
       }
       return result;
     },
+    // eslint-disable-next-line lodash/prefer-constant
     summarize: function () {
       return "!LOC:Sub Commander";
     },
+    // eslint-disable-next-line lodash/prefer-constant
     icon: function () {
       return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
@@ -68,6 +72,7 @@ define(["shared/gw_factions"], function (GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
+    // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
     keep: function (_params, context) {
       //api.debug.log("Sub CDR: KEEP");

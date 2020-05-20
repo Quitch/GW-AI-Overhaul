@@ -697,6 +697,7 @@ requireGW(
           teams: teams,
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
+          // eslint-disable-next-line lodash/prefer-noop
           spawn: function () {},
           canSpread: function (_star, ai) {
             return (
@@ -707,6 +708,7 @@ requireGW(
             var team = teams[ai.team];
             return GWTeams.makeWorker(star, ai, team).then(function () {
               if (team.workers)
+                // eslint-disable-next-line lodash/matches-prop-shorthand
                 _.remove(team.workers, function (worker) {
                   return worker.name === ai.name;
                 });
