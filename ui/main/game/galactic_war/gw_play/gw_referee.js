@@ -259,6 +259,7 @@ define(["shared/gw_common"], function (GW) {
       allianceGroup += 1;
     };
 
+    // Spawn the teams (not armies) in a random order
     var foeArmy = 0;
     var allianceGroup = 3;
     var spawnOrder = [setupPlayerArmy, setupAIFactionArmy];
