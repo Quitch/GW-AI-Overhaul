@@ -1,7 +1,6 @@
 // !LOCNS:galactic_war
 define(["shared/gw_factions"], function (GWFactions) {
   function hasUnit(id) {
-    // eslint-disable-next-line lodash/preferred-alias
     return _.any(model.game().inventory().units(), function (unit) {
       return id === unit;
     });

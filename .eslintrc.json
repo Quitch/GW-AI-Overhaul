@@ -28,7 +28,7 @@
     "loadScript": "readonly"
   },
   "rules": {
-    "lodash/preferred-alias": [2, { "ignoreMethods": ["extend"] }],
+    "lodash/preferred-alias": [2, { "ignoreMethods": ["extend", "any"] }],
     "lodash/prefer-lodash-method": 0
   }
 }
