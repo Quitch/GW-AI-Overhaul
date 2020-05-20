@@ -272,7 +272,9 @@ define(["shared/gw_common"], function (GW) {
     }
     spawnOrder = _.shuffle(spawnOrder);
     for (i = 0; i < spawnOrder.length; i++) {
-      spawnOrder[i](ai.foes[foeArmy]);
+      if (spawnOrder[i] === setupAdditionalFactionArmy)
+        spawnOrder[i](ai.foes[foeArmy]);
+      else spawnOrder[i]();
     }
 
     var config = {
