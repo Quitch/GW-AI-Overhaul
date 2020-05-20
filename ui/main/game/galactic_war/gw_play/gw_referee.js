@@ -149,7 +149,8 @@ define(["shared/gw_common"], function (GW) {
         subCommander += 1;
       };
       var subCommander = 0;
-      var playerArmies = _.times(inventory.minions().length, function () {
+      var playerArmies = [];
+      playerArmies = _.times(inventory.minions().length, function () {
         return setupSubCommander;
       });
       console.debug(playerArmies.length);
@@ -283,13 +284,14 @@ define(["shared/gw_common"], function (GW) {
     // Spawn the teams (not armies) in a random order
     var foeArmy = 0;
     var allianceGroup = 3;
+    var spawnOrder = [];
     if (ai.foes) {
       ai.foes = _.shuffle(ai.foes);
-      var spawnOrder = _.times(ai.foes.length, function () {
+      spawnOrder = _.times(ai.foes.length, function () {
         return setupAdditionalFactionArmy;
       });
-      spawnOrder.unshift(setupPlayerArmy, setupAIFactionArmy);
     }
+    spawnOrder.unshift(setupPlayerArmy, setupAIFactionArmy);
     spawnOrder = _.shuffle(spawnOrder);
     _.forEach(spawnOrder, function (spawnArmy) {
       if (spawnArmy === setupAdditionalFactionArmy) spawnArmy(ai.foes[foeArmy]);
