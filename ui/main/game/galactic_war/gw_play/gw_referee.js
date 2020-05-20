@@ -119,15 +119,18 @@ define(["shared/gw_common"], function (GW) {
     ];
 
     var setupPlayerArmy = function () {
-      armies.push({
-        slots: [{ name: "Player" }],
-        color: playerColor,
-        econ_rate: 1,
-        spec_tag: ".player",
-        alliance_group: 1,
-      });
-      // Setup the player's Sub Commanders
-      _.forEach(inventory.minions(), function (minion) {
+      var setupPlayer = function () {
+        console.debug("Setup player");
+        armies.push({
+          slots: [{ name: "Player" }],
+          color: playerColor,
+          econ_rate: 1,
+          spec_tag: ".player",
+          alliance_group: 1,
+        });
+      };
+      var setupSubCommander = function (minion) {
+        console.debug("Setup Sub Commander");
         armies.push({
           slots: [
             {
@@ -143,6 +146,19 @@ define(["shared/gw_common"], function (GW) {
           spec_tag: ".player",
           alliance_group: 1,
         });
+        subCommander += 1;
+      };
+      var playerArmies = [setupPlayer];
+      var subCommander = 0;
+      _.forEach(inventory.minions(), function () {
+        playerArmies.push(setupSubCommander);
+      });
+      playerArmies = _.shuffle(playerArmies);
+      console.debug(playerArmies);
+      _.forEach(playerArmies, function (playerArmy) {
+        if (playerArmy === setupSubCommander)
+          playerArmy(inventory.minions()[subCommander]);
+        else playerArmy();
       });
     };
 
