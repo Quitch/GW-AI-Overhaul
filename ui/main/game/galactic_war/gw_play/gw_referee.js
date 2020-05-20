@@ -148,11 +148,13 @@ define(["shared/gw_common"], function (GW) {
         });
         subCommander += 1;
       };
-      var playerArmies = [setupPlayer];
       var subCommander = 0;
-      _.forEach(inventory.minions(), function () {
-        playerArmies.push(setupSubCommander);
+      var playerArmies = _.times(inventory.minions().length, function () {
+        return setupSubCommander;
       });
+      console.debug(playerArmies.length);
+      playerArmies.unshift(setupPlayer);
+      console.debug(playerArmies.length);
       playerArmies = _.shuffle(playerArmies);
       _.forEach(playerArmies, function (playerArmy) {
         if (playerArmy === setupSubCommander)
@@ -281,12 +283,12 @@ define(["shared/gw_common"], function (GW) {
     // Spawn the teams (not armies) in a random order
     var foeArmy = 0;
     var allianceGroup = 3;
-    var spawnOrder = [setupPlayerArmy, setupAIFactionArmy];
     if (ai.foes) {
       ai.foes = _.shuffle(ai.foes);
-      _.forEach(ai.foes, function () {
-        spawnOrder.push(setupAdditionalFactionArmy);
+      var spawnOrder = _.times(ai.foes.length, function () {
+        return setupAdditionalFactionArmy;
       });
+      spawnOrder.unshift(setupPlayerArmy, setupAIFactionArmy);
     }
     spawnOrder = _.shuffle(spawnOrder);
     _.forEach(spawnOrder, function (spawnArmy) {
@@ -303,6 +305,7 @@ define(["shared/gw_common"], function (GW) {
       system: system,
     };
     _.forEach(config.armies, function (army) {
+      // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function (slot) {
         if (slot.ai)
           slot.commander += army.alliance_group === 1 ? ".player" : ".ai";
@@ -344,6 +347,7 @@ define(["shared/gw_common"], function (GW) {
     }
 
     var cookedFiles = _.mapValues(allFiles, function (value) {
+      // eslint-disable-next-line lodash/prefer-lodash-typecheck
       if (typeof value !== "string") return JSON.stringify(value);
       else return value;
     });
