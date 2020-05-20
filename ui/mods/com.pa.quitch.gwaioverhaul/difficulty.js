@@ -47,30 +47,30 @@ model.customDifficultySettings = {
   },
   mandatoryMinions: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   minionMod: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   factoryBuildDelayMax: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   unableToExpandDelay: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   enableCommanderDangerResponses: ko.observable(false),
   perExpansionDelay: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   personalityTags: ko.observableArray([
     "Tutorial",
@@ -90,27 +90,27 @@ model.customDifficultySettings = {
   },
   econBase: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   econRatePerDist: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   maxBasicFabbers: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   maxAdvancedFabbers: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   ffaChance: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   bossCommanders: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" },
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   unsavedChanges: ko.observable(false),
 };
