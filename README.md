@@ -20,6 +20,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Adds support for shared army enemies
 - Bosses are distinctly more difficult than the surrounding systems
 - Added planetary intelligence to allow you to make meaningful decisions on the galactic map
+- Randomised spawn assignments so maps remain fresh on replay
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 

@@ -1,0 +1,34 @@
+{
+  "parserOptions": {
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "jquery": true,
+    "amd": true
+  },
+  "settings": {
+    "lodash": {
+      "version": 3,
+      "pragma": "_"
+    }
+  },
+  "extends": ["eslint:recommended", "prettier", "plugin:lodash/v3"],
+  "globals": {
+    "api": "readonly",
+    "model": "readonly",
+    "_": "readonly",
+    "loc": "readonly",
+    "ko": "readonly",
+    "requireGW": "readonly",
+    "star_system_templates": "readonly",
+    "parse": "readonly",
+    "loadScript": "readonly"
+  },
+  "rules": {
+    "lodash/preferred-alias": [2, { "ignoreMethods": ["extend", "any"] }],
+    "lodash/prefer-lodash-method": 0
+  }
+}

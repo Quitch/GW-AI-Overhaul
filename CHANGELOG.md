@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v2.1.0 - 2020-05-20
+
+- Removed personalities: Legate, Acolyte, Servant, Seeker
+- Added personalities: Defender, Swarm, and Economist
+- All bosses now use the Pumpkin Commander to make them clearly identifiable via their icon
+- Allied and enemy commanders will sometimes change which available spawn they use on multi-planet systems
+- The number of commanders in a boss army is now controlled by difficulty
+- If an additional faction is present in a multi-planet system and has multiple commanders they may spawn on multiple worlds
+- Team spawn assignments are randomised each time you start a battle
+- Custom difficulty responds to setting changes slightly faster
+
 ## v2.0.4 - 2020-02-13
 
 - Improved the granularity with which system threat is displayed at the upper bounds

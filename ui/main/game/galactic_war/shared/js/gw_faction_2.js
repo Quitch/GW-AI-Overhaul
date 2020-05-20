@@ -1,10 +1,10 @@
 // !LOCNS:galactic_war
-define([], function() {
+define([], function () {
   return {
     name: "Synchronous",
     color: [
       [126, 226, 101],
-      [192, 192, 192]
+      [192, 192, 192],
     ],
     teams: [
       {
@@ -13,11 +13,6 @@ define([], function() {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -44,9 +39,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_bot",
         systemDescription:
@@ -68,7 +63,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Cupru Beta",
@@ -84,7 +79,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Cupru Halley",
@@ -100,7 +95,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Cupru Catalyst",
@@ -116,10 +111,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"]
-            }
-          ]
-        }
+              Biomes: ["metal"],
+            },
+          ],
+        },
       },
       {
         name: "Platina - Synchronous",
@@ -127,11 +122,6 @@ define([], function() {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -158,9 +148,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -182,7 +172,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ["desert"]
+              Biomes: ["desert"],
             },
             {
               name: "Platina Beta",
@@ -198,7 +188,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Platina Halley",
@@ -214,7 +204,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Platina Catalyst",
@@ -230,10 +220,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"]
-            }
-          ]
-        }
+              Biomes: ["metal"],
+            },
+          ],
+        },
       },
       {
         name: "Fier - Synchronous",
@@ -241,11 +231,6 @@ define([], function() {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -272,9 +257,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -296,7 +281,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Fier Beta",
@@ -312,7 +297,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Fier Halley",
@@ -328,7 +313,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Fier Catalyst",
@@ -344,10 +329,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"]
-            }
-          ]
-        }
+              Biomes: ["metal"],
+            },
+          ],
+        },
       },
       {
         name: "Safir - Synchronous",
@@ -355,11 +340,6 @@ define([], function() {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -386,9 +366,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -410,7 +390,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ["earth"]
+              Biomes: ["earth"],
             },
             {
               name: "Safir Beta",
@@ -426,7 +406,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Safir Halley",
@@ -442,7 +422,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ["desert"]
+              Biomes: ["desert"],
             },
             {
               name: "Safir Catalyst",
@@ -458,10 +438,10 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"]
-            }
-          ]
-        }
+              Biomes: ["metal"],
+            },
+          ],
+        },
       },
       {
         name: "Apa - Synchronous",
@@ -469,11 +449,6 @@ define([], function() {
           name: "Metrarch the Machinist",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0,
             percent_open_bot: 1,
@@ -500,9 +475,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 5,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         //bossCard: 'gwc_start_orbital',
         systemDescription:
@@ -524,7 +499,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-25000, 0],
               Velocity: [0, -141.4213],
-              Biomes: ["lava"]
+              Biomes: ["lava"],
             },
             {
               name: "Apa Beta",
@@ -540,7 +515,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-21500, 0],
               Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Apa Halley",
@@ -556,7 +531,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, 1000],
               Velocity: [1.08851337, 81.6387787],
-              Biomes: ["metal_boss"]
+              Biomes: ["metal_boss"],
             },
             {
               name: "Apa Catalyst",
@@ -572,11 +547,11 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [-75000, -1000],
               Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"]
-            }
-          ]
-        }
-      }
+              Biomes: ["metal"],
+            },
+          ],
+        },
+      },
     ], // teams
     minions: [
       {
@@ -585,7 +560,7 @@ define([], function() {
         character: "Grunt",
         color: [
           [229, 255, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -622,9 +597,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json"
+        commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json",
       },
       {
         // Air heavy
@@ -632,7 +607,7 @@ define([], function() {
         character: "Dragoon",
         color: [
           [204, 255, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -669,9 +644,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json"
+        commander:
+          "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json",
       },
       {
         // Uber
@@ -679,7 +655,7 @@ define([], function() {
         character: "Uber",
         color: [
           [178, 255, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -717,10 +693,10 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json"
+          "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
       },
       {
         // Platinum
@@ -728,7 +704,7 @@ define([], function() {
         character: "Platinum",
         color: [
           [153, 255, 51],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -766,10 +742,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json"
+          "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
       },
       {
         // Gold
@@ -777,7 +753,7 @@ define([], function() {
         character: "Gold",
         color: [
           [128, 255, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -814,39 +790,39 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_spartandano/quad_spartandano.json"
+        commander:
+          "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
       },
       {
-        // Legonis Machina
+        // Structures
         name: "Servant Xenosentry",
-        character: "Legate",
+        character: "Defender",
         color: [
           [102, 204, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.47,
-          percent_open_bot: 0.26,
+          percent_open_vehicle: 0.37,
+          percent_open_bot: 0.37,
           percent_open_air: 0.21,
-          percent_open_naval: 0.06,
+          percent_open_naval: 0.05,
           percent_open_orbital: 0,
-          percent_vehicle: 0.45,
-          percent_bot: 0.25,
+          percent_land: 0.7,
           percent_air: 0.2,
           percent_naval: 0.05,
           percent_orbital: 0.05,
-          metal_drain_check: 0.54,
-          energy_drain_check: 0.65,
-          metal_demand_check: 0.71,
-          energy_demand_check: 0.8,
+          metal_drain_check: 0.71,
+          energy_drain_check: 0.8,
+          metal_demand_check: 0.54,
+          energy_demand_check: 0.65,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags: ["GWAlly", "SlowerExpansion"],
-          adv_eco_mod: 1.3,
+          adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -859,13 +835,13 @@ define([], function() {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 2,
+          min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json"
+          "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json",
       },
       {
         // Basic Tech
@@ -873,7 +849,7 @@ define([], function() {
         character: "Luddite",
         color: [
           [76, 153, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -910,9 +886,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_theflax/quad_theflax.json"
+        commander: "/pa/units/commanders/quad_theflax/quad_theflax.json",
       },
       {
         // Advanced Tech
@@ -920,7 +896,7 @@ define([], function() {
         character: "Technologist",
         color: [
           [204, 255, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -957,9 +933,10 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json"
+        commander:
+          "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json",
       },
       {
         // Cautious
@@ -967,7 +944,7 @@ define([], function() {
         character: "Cautious",
         color: [
           [153, 255, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1004,9 +981,9 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json"
+        commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json",
       },
       {
         // Aggressive
@@ -1014,7 +991,7 @@ define([], function() {
         character: "Aggressive",
         color: [
           [102, 255, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1051,10 +1028,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json"
+          "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json",
       },
       {
         // Rush
@@ -1062,7 +1039,7 @@ define([], function() {
         character: "Rush",
         color: [
           [0, 255, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1100,9 +1077,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json"
+        commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json",
       },
       {
         // Turtle
@@ -1110,7 +1087,7 @@ define([], function() {
         character: "Turtle",
         color: [
           [0, 204, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1148,9 +1125,9 @@ define([], function() {
           min_basic_fabbers: 5,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 4,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_beast/raptor_beast.json"
+        commander: "/pa/units/commanders/raptor_beast/raptor_beast.json",
       },
       {
         // Original
@@ -1158,7 +1135,7 @@ define([], function() {
         character: "Original",
         color: [
           [0, 153, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1195,9 +1172,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json"
+        commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
       },
       {
         // Absurd
@@ -1205,7 +1182,7 @@ define([], function() {
         character: "Absurd",
         color: [
           [0, 102, 0],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1242,9 +1219,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_locust/quad_locust.json"
+        commander: "/pa/units/commanders/quad_locust/quad_locust.json",
       },
       {
         // Relentless
@@ -1252,7 +1229,7 @@ define([], function() {
         character: "Relentless",
         color: [
           [0, 153, 76],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1289,33 +1266,33 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json"
+        commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
       },
       {
-        // Foundation
+        // Factories
         name: "Servant Damubbster",
-        character: "Acolyte",
+        character: "Swarm",
         color: [
           [0, 204, 102],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.13,
-          percent_open_bot: 0.13,
-          percent_open_air: 0.48,
-          percent_open_naval: 0.26,
+          percent_open_vehicle: 0.37,
+          percent_open_bot: 0.37,
+          percent_open_air: 0.21,
+          percent_open_naval: 0.05,
           percent_open_orbital: 0,
-          percent_land: 0.25,
-          percent_air: 0.45,
-          percent_naval: 0.25,
+          percent_land: 0.7,
+          percent_air: 0.2,
+          percent_naval: 0.05,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
           energy_drain_check: 0.65,
-          metal_demand_check: 0.71,
-          energy_demand_check: 0.8,
+          metal_demand_check: 0.99,
+          energy_demand_check: 0.99,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
@@ -1335,41 +1312,40 @@ define([], function() {
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          min_advanced_fabbers: 1,
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json"
+          "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
       },
       {
-        // Revenants
+        // High Efficiency
         name: "Servant Raizell",
-        character: "Seeker",
+        character: "Economist",
         color: [
           [0, 255, 128],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.45,
-          percent_open_bot: 0.35,
-          percent_open_air: 0.1,
-          percent_open_naval: 0.1,
+          percent_open_vehicle: 0.37,
+          percent_open_bot: 0.37,
+          percent_open_air: 0.21,
+          percent_open_naval: 0.05,
           percent_open_orbital: 0,
-          percent_vehicle: 0.25,
-          percent_bot: 0.2,
-          percent_air: 0.05,
+          percent_land: 0.7,
+          percent_air: 0.2,
           percent_naval: 0.05,
-          percent_orbital: 0.45,
-          metal_drain_check: 0.54,
-          energy_drain_check: 0.65,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.71,
+          energy_drain_check: 0.8,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags: ["GWAlly", "SlowerExpansion"],
-          adv_eco_mod: 1.3,
+          adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -1382,13 +1358,13 @@ define([], function() {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 2,
+          min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json"
-      }
-    ] // minions
+        commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
+      },
+    ], // minions
   };
 });

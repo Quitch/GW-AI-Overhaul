@@ -1,9 +1,9 @@
-ko.extenders.precision = function(target, precision) {
+ko.extenders.precision = function (target, precision) {
   //create a writable computed observable to intercept writes to our observable
   var result = ko
     .pureComputed({
       read: target, //always return the original observables value
-      write: function(newValue) {
+      write: function (newValue) {
         var current = target(),
           roundingMultiplier = Math.pow(10, precision),
           newValueAsNum = isNaN(newValue) ? 0 : +newValue,
@@ -19,7 +19,7 @@ ko.extenders.precision = function(target, precision) {
             target.notifySubscribers(valueToWrite);
           }
         }
-      }
+      },
     })
     .extend({ notify: "always" });
 
@@ -39,153 +39,161 @@ model.customDifficultySettings = {
   microTypeDescription: ko.observable({
     0: "!LOC:No",
     1: "!LOC:Basic",
-    2: "!LOC:Advanced"
+    2: "!LOC:Advanced",
   }),
   chosenMicroType: ko.observable(0),
-  getmicroTypeDescription: function(value) {
+  getmicroTypeDescription: function (value) {
     return loc(model.customDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   minionMod: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   factoryBuildDelayMax: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   unableToExpandDelay: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   enableCommanderDangerResponses: ko.observable(false),
   perExpansionDelay: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   personalityTags: ko.observableArray([
     "Tutorial",
     "SlowerExpansion",
-    "PreventsWaste"
+    "PreventsWaste",
   ]),
   personalityTagsDescription: ko.observable({
     Tutorial: "!LOC:Lobotomy",
     SlowerExpansion: "!LOC:Slower Expansion",
-    PreventsWaste: "!LOC:Prevent Waste"
+    PreventsWaste: "!LOC:Prevent Waste",
   }),
   chosenPersonalityTags: ko.observableArray([]),
-  getpersonalityTagsDescription: function(value) {
+  getpersonalityTagsDescription: function (value) {
     return loc(
       model.customDifficultySettings.personalityTagsDescription()[value]
     );
   },
   econBase: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   econRatePerDist: ko.observable(0).extend({
     precision: 3,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   maxBasicFabbers: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   maxAdvancedFabbers: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   ffaChance: ko.observable(0).extend({
     precision: 0,
-    rateLimit: { timeout: 750, method: "notifyWhenChangesStop" }
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
-  unsavedChanges: ko.observable(false)
+  bossCommanders: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  unsavedChanges: ko.observable(false),
 };
 
-model.customDifficultySettings.easierStart.subscribe(function() {
+model.customDifficultySettings.easierStart.subscribe(function () {
   model.makeGame();
 });
 
-model.customDifficultySettings.goForKill.subscribe(function() {
+model.customDifficultySettings.goForKill.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.chosenMicroType.subscribe(function() {
+model.customDifficultySettings.chosenMicroType.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.priorityScoutMetalSpots.subscribe(function() {
+model.customDifficultySettings.priorityScoutMetalSpots.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.useEasierSystemTemplate.subscribe(function() {
+model.customDifficultySettings.useEasierSystemTemplate.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
 model.customDifficultySettings.enableCommanderDangerResponses.subscribe(
-  function() {
+  function () {
     if (model.customDifficultySettings.customDifficulty())
       model.customDifficultySettings.unsavedChanges(true);
   }
 );
-model.customDifficultySettings.chosenPersonalityTags.subscribe(function() {
+model.customDifficultySettings.chosenPersonalityTags.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.mandatoryMinions.subscribe(function() {
+model.customDifficultySettings.mandatoryMinions.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.minionMod.subscribe(function() {
+model.customDifficultySettings.minionMod.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.factoryBuildDelayMin.subscribe(function() {
+model.customDifficultySettings.factoryBuildDelayMin.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.factoryBuildDelayMax.subscribe(function() {
+model.customDifficultySettings.factoryBuildDelayMax.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.unableToExpandDelay.subscribe(function() {
+model.customDifficultySettings.unableToExpandDelay.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.perExpansionDelay.subscribe(function() {
+model.customDifficultySettings.perExpansionDelay.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.econBase.subscribe(function() {
+model.customDifficultySettings.econBase.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.econRatePerDist.subscribe(function() {
+model.customDifficultySettings.econRatePerDist.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.maxBasicFabbers.subscribe(function() {
+model.customDifficultySettings.maxBasicFabbers.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.maxAdvancedFabbers.subscribe(function() {
+model.customDifficultySettings.maxAdvancedFabbers.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.ffaChance.subscribe(function() {
+model.customDifficultySettings.ffaChance.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.customDifficulty.subscribe(function() {
+model.customDifficultySettings.bossCommanders.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.customDifficulty.subscribe(function () {
   if (!model.customDifficultySettings.customDifficulty()) {
     model.customDifficultySettings.unsavedChanges(false);
   }
@@ -198,7 +206,7 @@ function saveCustomDifficultySettings() {
 }
 
 // Don't let the player go to war with unsaved custom difficulty changes
-model.ready = ko.computed(function() {
+model.ready = ko.computed(function () {
   return (
     !!model.newGame() &&
     !!model.activeStartCard() &&
@@ -280,6 +288,9 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
       '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
+      '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
@@ -302,9 +313,9 @@ requireGW(
     "pages/gw_start/gw_dealer",
     "pages/gw_start/gw_teams",
     "main/shared/js/star_system_templates",
-    "main/game/galactic_war/shared/js/gw_easy_star_systems"
+    "main/game/galactic_war/shared/js/gw_easy_star_systems",
   ],
-  function(
+  function (
     GW,
     GWCredits,
     GWFactions,
@@ -334,7 +345,8 @@ requireGW(
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 10,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 2,
       },
       {
         // Iron
@@ -355,7 +367,8 @@ requireGW(
         econRatePerDist: 0.075,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 2,
       },
       {
         // Bronze
@@ -375,7 +388,8 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 3,
       },
       {
         // Silver
@@ -395,7 +409,8 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 3,
       },
       {
         // Gold
@@ -416,7 +431,8 @@ requireGW(
         econRatePerDist: 0.15,
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 4,
       },
       {
         // Platinum
@@ -437,7 +453,8 @@ requireGW(
         econRatePerDist: 0.175,
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 4,
       },
       {
         // Diamond
@@ -458,7 +475,8 @@ requireGW(
         econRatePerDist: 0.2,
         max_basic_fabbers: 30,
         max_advanced_fabbers: 30,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 5,
       },
       {
         // Uber
@@ -479,15 +497,16 @@ requireGW(
         econRatePerDist: 0,
         max_basic_fabbers: 35,
         max_advanced_fabbers: 35,
-        ffa_chance: 25
+        ffa_chance: 25,
+        bossCommanders: 5,
       },
       {
         // Custom
-        customDifficulty: true
-      }
+        customDifficulty: true,
+      },
     ];
 
-    model.makeGame = function() {
+    model.makeGame = function () {
       model.newGame(undefined);
 
       if (model.customDifficultySettings.easierStart())
@@ -576,6 +595,9 @@ requireGW(
         model.customDifficultySettings.ffaChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
         );
+        model.customDifficultySettings.bossCommanders(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
+        );
       }
       // Only show the custom difficulty fields if custom difficulty is selected
       if (
@@ -589,10 +611,10 @@ requireGW(
       if (model.creditsMode()) {
         size = _.reduce(
           GWFactions,
-          function(factionSum, faction) {
+          function (factionSum, faction) {
             return _.reduce(
               faction.teams,
-              function(teamSum, team) {
+              function (teamSum, team) {
                 return teamSum + (team.workers || []).length;
               },
               factionSum + 1
@@ -617,16 +639,16 @@ requireGW(
         minStarDistance: 2,
         maxStarDistance: 4,
         maxConnections: 4,
-        minimumDistanceBonus: 8
+        minimumDistanceBonus: 8,
       });
-      var dealStartCard = buildGalaxy.then(function(galaxy) {
+      var dealStartCard = buildGalaxy.then(function (galaxy) {
         if (model.makeGameBusy() !== busyToken) return;
         return GWDealer.dealCard({
           id: model.activeStartCard().id(),
           inventory: game.inventory(),
           galaxy: galaxy,
-          star: galaxy.stars()[galaxy.origin()]
-        }).then(function(startCardProduct) {
+          star: galaxy.stars()[galaxy.origin()],
+        }).then(function (startCardProduct) {
           game
             .inventory()
             .cards.push(
@@ -634,7 +656,7 @@ requireGW(
             );
         });
       });
-      var moveIn = dealStartCard.then(function() {
+      var moveIn = dealStartCard.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
         game.move(game.galaxy().origin());
 
@@ -643,7 +665,7 @@ requireGW(
 
         game.gameState(GW.Game.gameStates.active);
       });
-      var populate = moveIn.then(function() {
+      var populate = moveIn.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
         // Scatter some AIs
@@ -653,16 +675,16 @@ requireGW(
         var teams = _.map(aiFactions, GWTeams.getTeam);
         if (model.creditsMode()) {
           // Duplicate the workers so we can keep them unique
-          _.forEach(teams, function(team) {
+          _.forEach(teams, function (team) {
             team.workers = (team.workers || []).slice(0);
           });
         }
 
-        var teamInfo = _.map(teams, function(team, teamIndex) {
+        var teamInfo = _.map(teams, function (team, teamIndex) {
           return {
             team: team,
             workers: [],
-            faction: aiFactions[teamIndex]
+            faction: aiFactions[teamIndex],
           };
         });
 
@@ -675,57 +697,59 @@ requireGW(
           teams: teams,
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
-          spawn: function() {},
-          canSpread: function(_star, ai) {
+          // eslint-disable-next-line lodash/prefer-noop
+          spawn: function () {},
+          canSpread: function (_star, ai) {
             return (
               !model.creditsMode() || !ai || !!teams[ai.team].workers.length
             );
           },
-          spread: function(star, ai) {
+          spread: function (star, ai) {
             var team = teams[ai.team];
-            return GWTeams.makeWorker(star, ai, team).then(function() {
+            return GWTeams.makeWorker(star, ai, team).then(function () {
               if (team.workers)
-                _.remove(team.workers, function(worker) {
+                // eslint-disable-next-line lodash/matches-prop-shorthand
+                _.remove(team.workers, function (worker) {
                   return worker.name === ai.name;
                 });
 
               ai.faction = teamInfo[ai.team].faction;
               teamInfo[ai.team].workers.push({
                 ai: ai,
-                star: star
+                star: star,
               });
             });
           },
-          boss: function(star, ai) {
+          boss: function (star, ai) {
             return GWTeams.makeBoss(
               star,
               ai,
               teams[ai.team],
               systemTemplates
-            ).then(function() {
+            ).then(function () {
               ai.faction = teamInfo[ai.team].faction;
               teamInfo[ai.team].boss = ai;
             });
           },
-          breedToOrigin: game.isTutorial()
-        }).then(function() {
+          breedToOrigin: game.isTutorial(),
+        }).then(function () {
           return teamInfo;
         });
       });
 
-      var finishAis = populate.then(function(teamInfo) {
+      var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
 
         // DIFFICULTY RAMPING CODE
         var maxDist = _.reduce(
           game.galaxy().stars(),
-          function(value, star) {
+          function (value, star) {
             return Math.max(star.distance(), value);
           },
           0
         );
 
-        var setAIData = function(ai, dist, isBoss) {
+        var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
@@ -742,6 +766,7 @@ requireGW(
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
+            ai.bossCommanders = model.customDifficultySettings.bossCommanders();
           } else {
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
@@ -752,7 +777,7 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
-        _.forEach(teamInfo, function(info) {
+        _.forEach(teamInfo, function (info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             var numMinions = Math.floor(
@@ -761,16 +786,16 @@ requireGW(
             );
             if (numMinions > 0) {
               info.boss.minions = [];
-              _.times(numMinions, function() {
+              _.times(numMinions, function () {
                 var bossMinions = _.sample(GWFactions[info.faction].minions);
                 setAIData(bossMinions, maxDist, true);
                 bossMinions.color = bossMinions.color || info.boss.color;
                 info.boss.minions.push(bossMinions);
               });
             }
-            //console.log("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
+            //console.debug("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
           }
-          _.forEach(info.workers, function(worker) {
+          _.forEach(info.workers, function (worker) {
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
@@ -780,7 +805,7 @@ requireGW(
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
-              _.times(numMinions, function() {
+              _.times(numMinions, function () {
                 var minions = _.sample(GWFactions[info.faction].minions);
                 setAIData(minions, dist, false);
                 minions.color = minions.color || worker.ai.color;
@@ -801,11 +826,7 @@ requireGW(
               setAIData(ffaFirstFaction, dist, false);
               var numFoes = Math.round((numMinions + 1) / 2);
               ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
-              var landingPolicyFoes = [];
-              _.times(numFoes, function() {
-                landingPolicyFoes.push("no_restriction");
-              });
-              ffaFirstFaction.landing_policy = landingPolicyFoes;
+              ffaFirstFaction.commanderCount = numFoes;
               worker.ai.foes.push(ffaFirstFaction);
               if (
                 Math.random() * 100 <=
@@ -820,11 +841,11 @@ requireGW(
                 setAIData(ffaSecondFaction, dist, false);
                 ffaSecondFaction.color =
                   ffaSecondFaction.color || worker.ai.color;
-                ffaSecondFaction.landing_policy = landingPolicyFoes;
+                ffaSecondFaction.commanderCount = numFoes;
                 worker.ai.foes.push(ffaSecondFaction);
               }
             }
-            //console.log(worker.ai.name, "| Eco:", worker.ai.econ_rate, "| Minions:", numMinions, "| Distance", dist);
+            //console.debug(worker.ai.name, "| Eco:", worker.ai.econ_rate, "| Minions:", numMinions, "| Distance", dist);
           });
         });
 
@@ -832,43 +853,43 @@ requireGW(
           {
             name: "!LOC:The Progenitors",
             description:
-              "!LOC:What little is clear is that the galaxy was once inhabited by a sprawling empire, seemingly destroyed by conflict. The commanders refer to these beings as The Progenitors. Many commanders believe answers to their origins lie within the ruins of this once great civilization."
+              "!LOC:What little is clear is that the galaxy was once inhabited by a sprawling empire, seemingly destroyed by conflict. The commanders refer to these beings as The Progenitors. Many commanders believe answers to their origins lie within the ruins of this once great civilization.",
           },
           {
             name: "!LOC:Galactic War",
             description:
-              "!LOC:Some commanders fight because it's all they know, while others seek answers to their origins. Conflicts in motivation and creed drive the commanders into a war that is poised to ravage the galaxy for centuries."
+              "!LOC:Some commanders fight because it's all they know, while others seek answers to their origins. Conflicts in motivation and creed drive the commanders into a war that is poised to ravage the galaxy for centuries.",
           },
           {
             name: "!LOC:The Commanders",
             description:
-              "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago."
+              "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago.",
           },
           {
             name: "!LOC:The Machine Liberation Army",
             description:
-              "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy."
+              "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy.",
           },
           {
             name: "!LOC:The Legion",
             description:
-              "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated."
+              "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.",
           },
           {
             name: "!LOC:The Union",
             description:
-              "!LOC:Commanders on the fringes of the galaxy speak of a new force not of the four factions with units of many origins. It is rumoured that their forces include organics."
+              "!LOC:Commanders on the fringes of the galaxy speak of a new force not of the four factions with units of many origins. It is rumoured that their forces include organics.",
           },
           {
             name: "!LOC:Queller",
             description:
-              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy."
-          }
+              "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy.",
+          },
         ];
 
         var n = 0;
         gw_intro_systems = _.shuffle(gw_intro_systems);
-        _.forEach(game.galaxy().stars(), function(star) {
+        _.forEach(game.galaxy().stars(), function (star) {
           var ai = star.ai();
           if (!ai) {
             var intro_system = gw_intro_systems[n];
@@ -891,14 +912,14 @@ requireGW(
         }
       });
 
-      var dealBossCards = finishAis.then(function() {
+      var dealBossCards = finishAis.then(function () {
         return GWDealer.dealBossCards({
           galaxy: game.galaxy(),
-          inventory: game.inventory()
+          inventory: game.inventory(),
         });
       });
 
-      dealBossCards.then(function() {
+      dealBossCards.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
         model.makeGameBusy(false);

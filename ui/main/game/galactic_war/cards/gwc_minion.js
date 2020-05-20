@@ -1,21 +1,17 @@
 // !LOCNS:galactic_war
-define(["shared/gw_factions"], function(GWFactions) {
+define(["shared/gw_factions"], function (GWFactions) {
   function hasUnit(id) {
-    return _.any(
-      model
-        .game()
-        .inventory()
-        .units(),
-      function(unit) {
-        return id === unit;
-      }
-    );
+    return _.any(model.game().inventory().units(), function (unit) {
+      return id === unit;
+    });
   }
+
   return {
-    visible: function() {
+    // eslint-disable-next-line lodash/prefer-constant
+    visible: function () {
       return true;
     },
-    describe: function(params) {
+    describe: function (params) {
       var minion = params.minion;
       var result = [];
       result.push("!LOC:Adds a Sub Commander that will join you in battles.");
@@ -24,23 +20,25 @@ define(["shared/gw_factions"], function(GWFactions) {
       result.push(minion.name);
       if (minion.character) {
         result.push("<br>");
-        result.push("!LOC:Personality: ");
+        result.push("!LOC:Personality:");
         result.push(" " + minion.character);
       }
       return result;
     },
-    summarize: function() {
+    // eslint-disable-next-line lodash/prefer-constant
+    summarize: function () {
       return "!LOC:Sub Commander";
     },
-    icon: function() {
+    // eslint-disable-next-line lodash/prefer-constant
+    icon: function () {
       return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
-    audio: function() {
+    audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_subcommander"
+        found: "/VO/Computer/gw/board_tech_available_subcommander",
       };
     },
-    getContext: function(galaxy, inventory) {
+    getContext: function (galaxy, inventory) {
       var chance = 100;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
@@ -52,20 +50,20 @@ define(["shared/gw_factions"], function(GWFactions) {
       return {
         chance: chance,
         totalSize: galaxy.stars().length,
-        faction: inventory.getTag("global", "playerFaction") || 0
+        faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function(system, context) {
+    deal: function (system, context) {
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
           minion: minion,
-          unique: Math.random()
+          unique: Math.random(),
         },
-        chance: system.distance() > 0 ? context.chance : 0
+        chance: system.distance() > 0 ? context.chance : 0,
       };
     },
-    buff: function(inventory, params) {
+    buff: function (inventory, params) {
       // Note: Storing only the name allows changing the parameters, which
       // is easier for testing.  Every time the cards get re-applied, the
       // minion parameters will be updated.
@@ -73,14 +71,15 @@ define(["shared/gw_factions"], function(GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    dull: function() {},
-    keep: function(_params, context) {
+    // eslint-disable-next-line lodash/prefer-noop
+    dull: function () {},
+    keep: function (params, context) {
       //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
-    discard: function(_params, context) {
+    discard: function (params, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
       //api.debug.log("discard: chance: " + context.chance);
-    }
+    },
   };
 });

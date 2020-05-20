@@ -1,10 +1,10 @@
 // !LOCNS:galactic_war
-define([], function() {
+define([], function () {
   return {
     name: "Foundation",
     color: [
       [145, 87, 199],
-      [192, 192, 192]
+      [192, 192, 192],
     ],
     teams: [
       {
@@ -13,11 +13,6 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -43,9 +38,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 3,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_air",
         systemDescription:
@@ -67,7 +62,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"]
+              Biomes: ["ice_boss"],
             },
             {
               name: "Atlas Beta",
@@ -83,7 +78,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Atlas Gamma",
@@ -99,7 +94,7 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ["gas"]
+              Biomes: ["gas"],
             },
             {
               name: "Atlas Delta",
@@ -115,10 +110,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Patagonia - Foundation",
@@ -126,11 +121,6 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -156,9 +146,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 3,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         bossCard: "gwc_start_allfactory",
         systemDescription:
@@ -180,7 +170,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"]
+              Biomes: ["ice_boss"],
             },
             {
               name: "Patagonia Beta",
@@ -196,7 +186,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Patagonia Gamma",
@@ -212,7 +202,7 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ["gas"]
+              Biomes: ["gas"],
             },
             {
               name: "Patagonia Delta",
@@ -228,10 +218,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Xylcor - Foundation",
@@ -239,11 +229,6 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -269,9 +254,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 3,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
@@ -292,7 +277,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"]
+              Biomes: ["ice_boss"],
             },
             {
               name: "Xylcor Beta",
@@ -308,7 +293,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Xylcor Gamma",
@@ -324,7 +309,7 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ["gas"]
+              Biomes: ["gas"],
             },
             {
               name: "Xylcor Delta",
@@ -340,10 +325,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Blogar's Fist - Foundation",
@@ -351,11 +336,6 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -381,9 +361,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 3,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
@@ -404,7 +384,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"]
+              Biomes: ["ice_boss"],
             },
             {
               name: "Blogar's Fist Beta",
@@ -420,7 +400,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Blogar's Fist Gamma",
@@ -436,7 +416,7 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ["gas"]
+              Biomes: ["gas"],
             },
             {
               name: "Blogar's Fist Delta",
@@ -452,10 +432,10 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ["gas"]
-            }
-          ]
-        }
+              Biomes: ["gas"],
+            },
+          ],
+        },
       },
       {
         name: "Zeta Draconis - Foundation",
@@ -463,11 +443,6 @@ define([], function() {
           name: "Inquisitor Nemicus",
           character: "Boss",
           econ_rate: 1,
-          landing_policy: [
-            "off_player_planet",
-            "on_player_planet",
-            "no_restriction"
-          ],
           personality: {
             percent_open_vehicle: 0.33,
             percent_open_bot: 0.33,
@@ -493,9 +468,9 @@ define([], function() {
             basic_to_advanced_factory_ratio: 0,
             factory_alone_on_planet_mod: 0.5,
             min_basic_fabbers: 3,
-            min_advanced_fabbers: 1
+            min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json"
+          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
           "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
@@ -516,7 +491,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, 0],
               Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"]
+              Biomes: ["ice_boss"],
             },
             {
               name: "Zeta Draconis Beta",
@@ -532,7 +507,7 @@ define([], function() {
               BiomeScale: [100, 100],
               Position: [100000, -10000],
               Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"]
+              Biomes: ["tropical"],
             },
             {
               name: "Zeta Draconis Gamma",
@@ -548,7 +523,7 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [110000, 0],
               Velocity: [0, 228.8246],
-              Biomes: ["gas"]
+              Biomes: ["gas"],
             },
             {
               name: "Zeta Draconis Delta",
@@ -564,11 +539,11 @@ define([], function() {
               BiomeScale: [0, 0],
               Position: [90000, 0],
               Velocity: [0, -87.4032],
-              Biomes: ["gas"]
-            }
-          ]
-        }
-      }
+              Biomes: ["gas"],
+            },
+          ],
+        },
+      },
     ], // teams
     minions: [
       {
@@ -577,7 +552,7 @@ define([], function() {
         character: "Air Force",
         color: [
           [229, 204, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -614,10 +589,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json"
+          "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
       },
       {
         // All Naval
@@ -625,7 +600,7 @@ define([], function() {
         character: "Navy",
         color: [
           [204, 153, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -662,9 +637,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json"
+        commander:
+          "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
       },
       {
         // Uber
@@ -672,7 +648,7 @@ define([], function() {
         character: "Uber",
         color: [
           [178, 102, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -710,10 +686,10 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json"
+          "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
       },
       {
         // Platinum
@@ -721,7 +697,7 @@ define([], function() {
         character: "Platinum",
         color: [
           [153, 51, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -759,10 +735,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json"
+          "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
       },
       {
         // Gold
@@ -770,7 +746,7 @@ define([], function() {
         character: "Gold",
         color: [
           [127, 0, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -807,40 +783,39 @@ define([], function() {
           min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json"
+          "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
       },
       {
-        // Legonis Machina
+        // Structures
         name: "Acolyte Theta",
-        character: "Legate",
+        character: "Defender",
         color: [
           [102, 0, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.47,
-          percent_open_bot: 0.26,
-          percent_open_air: 0.21,
-          percent_open_naval: 0.06,
+          percent_open_vehicle: 0.13,
+          percent_open_bot: 0.13,
+          percent_open_air: 0.48,
+          percent_open_naval: 0.26,
           percent_open_orbital: 0,
-          percent_vehicle: 0.45,
-          percent_bot: 0.25,
-          percent_air: 0.2,
-          percent_naval: 0.05,
+          percent_land: 0.25,
+          percent_air: 0.45,
+          percent_naval: 0.25,
           percent_orbital: 0.05,
-          metal_drain_check: 0.54,
-          energy_drain_check: 0.65,
-          metal_demand_check: 0.71,
-          energy_demand_check: 0.8,
+          metal_drain_check: 0.71,
+          energy_drain_check: 0.8,
+          metal_demand_check: 0.54,
+          energy_demand_check: 0.65,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags: ["GWAlly", "SlowerExpansion"],
-          adv_eco_mod: 1.3,
+          adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -853,12 +828,12 @@ define([], function() {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 2,
+          min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_theta/imperial_theta.json"
+        commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
       },
       {
         // Basic Tech
@@ -866,7 +841,7 @@ define([], function() {
         character: "Luddite",
         color: [
           [76, 0, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -903,10 +878,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json"
+          "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
       },
       {
         // Advanced Tech
@@ -914,7 +889,7 @@ define([], function() {
         character: "Technologist",
         color: [
           [255, 204, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -951,9 +926,9 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_ajax/quad_ajax.json"
+        commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
       },
       {
         // Cautious
@@ -961,7 +936,7 @@ define([], function() {
         character: "Cautious",
         color: [
           [255, 153, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -998,9 +973,9 @@ define([], function() {
           min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json"
+        commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
       },
       {
         // Aggressive
@@ -1008,7 +983,7 @@ define([], function() {
         character: "Aggressive",
         color: [
           [255, 102, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1045,9 +1020,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_calyx/quad_calyx.json"
+        commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
       },
       {
         // Rush
@@ -1055,7 +1030,7 @@ define([], function() {
         character: "Rush",
         color: [
           [255, 0, 255],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1092,9 +1067,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json"
+        commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
       },
       {
         // Turtle
@@ -1102,7 +1077,7 @@ define([], function() {
         character: "Turtle",
         color: [
           [204, 0, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1139,10 +1114,10 @@ define([], function() {
           min_basic_fabbers: 5,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 4,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json"
+          "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
       },
       {
         // Original
@@ -1150,7 +1125,7 @@ define([], function() {
         character: "Original",
         color: [
           [153, 0, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1187,9 +1162,9 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_osiris/quad_osiris.json"
+        commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
       },
       {
         // Absurd
@@ -1197,7 +1172,7 @@ define([], function() {
         character: "Absurd",
         color: [
           [255, 204, 229],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1234,9 +1209,10 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json"
+        commander:
+          "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
       },
       {
         // Relentless
@@ -1244,7 +1220,7 @@ define([], function() {
         character: "Relentless",
         color: [
           [255, 153, 204],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
@@ -1281,34 +1257,34 @@ define([], function() {
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json"
+          "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
       },
       {
-        // Synchronous
+        // Factories
         name: "Acolyte Visionik",
-        character: "Servant",
+        character: "Swarm",
         color: [
           [255, 102, 178],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.37,
-          percent_open_bot: 0.37,
-          percent_open_air: 0.21,
-          percent_open_naval: 0.05,
+          percent_open_vehicle: 0.13,
+          percent_open_bot: 0.13,
+          percent_open_air: 0.48,
+          percent_open_naval: 0.26,
           percent_open_orbital: 0,
-          percent_land: 0.7,
-          percent_air: 0.2,
-          percent_naval: 0.05,
+          percent_land: 0.25,
+          percent_air: 0.45,
+          percent_naval: 0.25,
           percent_orbital: 0.05,
           metal_drain_check: 0.54,
           energy_drain_check: 0.65,
-          metal_demand_check: 0.71,
-          energy_demand_check: 0.8,
+          metal_demand_check: 0.99,
+          energy_demand_check: 0.99,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
@@ -1328,41 +1304,40 @@ define([], function() {
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
           max_basic_fabbers: 10,
-          min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          min_advanced_fabbers: 1,
+          max_advanced_fabbers: 10,
         },
         commander:
-          "/pa/units/commanders/imperial_visionik/imperial_visionik.json"
+          "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
       },
       {
-        // Revenants
+        // High Efficiency
         name: "Acolyte Commandonut",
-        character: "Seeker",
+        character: "Economist",
         color: [
           [255, 51, 153],
-          [192, 192, 192]
+          [192, 192, 192],
         ],
         econ_rate: 1,
         personality: {
-          percent_open_vehicle: 0.45,
-          percent_open_bot: 0.35,
-          percent_open_air: 0.1,
-          percent_open_naval: 0.1,
+          percent_open_vehicle: 0.13,
+          percent_open_bot: 0.13,
+          percent_open_air: 0.48,
+          percent_open_naval: 0.26,
           percent_open_orbital: 0,
-          percent_vehicle: 0.25,
-          percent_bot: 0.2,
-          percent_air: 0.05,
-          percent_naval: 0.05,
-          percent_orbital: 0.45,
-          metal_drain_check: 0.54,
-          energy_drain_check: 0.65,
+          percent_land: 0.25,
+          percent_air: 0.45,
+          percent_naval: 0.25,
+          percent_orbital: 0.05,
+          metal_drain_check: 0.71,
+          energy_drain_check: 0.8,
           metal_demand_check: 0.71,
           energy_demand_check: 0.8,
           micro_type: 0,
           go_for_the_kill: false,
           neural_data_mod: 1,
           personality_tags: ["GWAlly", "SlowerExpansion"],
-          adv_eco_mod: 1.3,
+          adv_eco_mod: 1,
           adv_eco_mod_alone: 0.85,
           priority_scout_metal_spots: false,
           factory_build_delay_min: 0,
@@ -1375,13 +1350,14 @@ define([], function() {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 2,
+          min_basic_fabbers: 4,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10
+          max_advanced_fabbers: 10,
         },
-        commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json"
-      }
-    ] // minions
+        commander:
+          "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
+      },
+    ], // minions
   };
 });
