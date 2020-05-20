@@ -118,143 +118,161 @@ define(["shared/gw_common"], function (GW) {
       "no_restriction",
     ];
 
-    // Setup the player
-    armies.push({
-      slots: [{ name: "Player" }],
-      color: playerColor,
-      econ_rate: 1,
-      spec_tag: ".player",
-      alliance_group: 1,
-    });
-    // Setup the player's Sub Commanders
-    _.forEach(inventory.minions(), function (minion) {
+    var setupPlayerArmy = function () {
+      console.debug("setupPlayerArmy run");
       armies.push({
-        slots: [
-          {
-            ai: true,
-            name: minion.name || "Sub Commander",
-            commander: fixupCommander(minion.commander || playerCommander),
-            landing_policy: _.sample(aiLandingOptions),
-          },
-        ],
-        color: minion.color || [playerColor[1], playerColor[0]],
+        slots: [{ name: "Player" }],
+        color: playerColor,
         econ_rate: 1,
-        personality: minion.personality,
         spec_tag: ".player",
         alliance_group: 1,
       });
-    });
+      // Setup the player's Sub Commanders
+      _.forEach(inventory.minions(), function (minion) {
+        armies.push({
+          slots: [
+            {
+              ai: true,
+              name: minion.name || "Sub Commander",
+              commander: fixupCommander(minion.commander || playerCommander),
+              landing_policy: _.sample(aiLandingOptions),
+            },
+          ],
+          color: minion.color || [playerColor[1], playerColor[0]],
+          econ_rate: 1,
+          personality: minion.personality,
+          spec_tag: ".player",
+          alliance_group: 1,
+        });
+      });
+    };
 
-    // Setup the AI
+    // Ensure the AI doesn't misbehave due to eco boosts
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    if (ai.character === "Boss") {
-      if (ai.bossCommanders) {
-        for (var i = 0; i < ai.bossCommanders; i++) {
-          slotsArray.push({
-            ai: true,
-            name: ai.name,
-            commander: fixupCommander(ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
+
+    var setupAIFactionArmy = function () {
+      console.debug("setupAIFactionArmy run");
+      if (ai.character === "Boss") {
+        if (ai.bossCommanders) {
+          for (var i = 0; i < ai.bossCommanders; i++) {
+            slotsArray.push({
+              ai: true,
+              name: ai.name,
+              commander: fixupCommander(ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
+        } else {
+          // Support v2.0.4 and earlier
+          for (var j = 0; j < ai.landing_policy.length; j++) {
+            slotsArray.push({
+              ai: true,
+              name: ai.name,
+              commander: fixupCommander(ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
         }
       } else {
-        // Support v2.0.4 and earlier
-        for (var j = 0; j < ai.landing_policy.length; j++) {
-          slotsArray.push({
-            ai: true,
-            name: ai.name,
-            commander: fixupCommander(ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        }
-      }
-    } else {
-      slotsArray.push({
-        ai: true,
-        name: ai.name,
-        commander: fixupCommander(ai.commander),
-        landing_policy: _.sample(aiLandingOptions),
-      });
-    }
-    // Add system owner AI
-    armies.push({
-      slots: slotsArray,
-      color: ai.color,
-      econ_rate: ai.econ_rate,
-      personality: ai.personality,
-      spec_tag: ".ai",
-      alliance_group: 2,
-    });
-    _.forEach(ai.minions, function (minion) {
-      minion.personality.adv_eco_mod =
-        minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
-      minion.personality.adv_eco_mod_alone =
-        minion.personality.adv_eco_mod_alone *
-        (minion.econ_rate || ai.econ_rate);
-      armies.push({
-        slots: [
-          {
-            ai: true,
-            name: minion.name || "Minion",
-            commander: fixupCommander(minion.commander || ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          },
-        ],
-        color: minion.color,
-        econ_rate: minion.econ_rate || ai.econ_rate,
-        personality: minion.personality,
-        spec_tag: ".ai",
-        alliance_group: 2,
-      });
-    });
-    // Add Additional Factions for FFA if any
-    var allianceGroup = 3;
-    _.forEach(ai.foes, function (foe) {
-      var slotsArrayFoes = [];
-      foe.personality.adv_eco_mod =
-        foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
-      foe.personality.adv_eco_mod_alone =
-        foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
-      if (foe.commanderCount) {
-        for (var i = 0; i < foe.commanderCount; i++) {
-          slotsArrayFoes.push({
-            ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        }
-      } else if (foe.landing_policy) {
-        // Support v1.2.0 - v2.0.4
-        for (var j = 0; j < foe.landing_policy.length; j++) {
-          slotsArrayFoes.push({
-            ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        }
-      } else {
-        // Support v1.1.0 and earlier
-        slotsArrayFoes.push({
+        slotsArray.push({
           ai: true,
-          name: foe.name || "Foe",
-          commander: fixupCommander(foe.commander || ai.commander),
+          name: ai.name,
+          commander: fixupCommander(ai.commander),
           landing_policy: _.sample(aiLandingOptions),
         });
       }
       armies.push({
-        slots: slotsArrayFoes,
-        color: foe.color,
-        econ_rate: foe.econ_rate || ai.econ_rate,
-        personality: foe.personality,
+        slots: slotsArray,
+        color: ai.color,
+        econ_rate: ai.econ_rate,
+        personality: ai.personality,
         spec_tag: ".ai",
-        alliance_group: allianceGroup,
+        alliance_group: 2,
       });
-      allianceGroup = allianceGroup + 1;
-    });
+      _.forEach(ai.minions, function (minion) {
+        minion.personality.adv_eco_mod =
+          minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod_alone =
+          minion.personality.adv_eco_mod_alone *
+          (minion.econ_rate || ai.econ_rate);
+        armies.push({
+          slots: [
+            {
+              ai: true,
+              name: minion.name || "Minion",
+              commander: fixupCommander(minion.commander || ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            },
+          ],
+          color: minion.color,
+          econ_rate: minion.econ_rate || ai.econ_rate,
+          personality: minion.personality,
+          spec_tag: ".ai",
+          alliance_group: 2,
+        });
+      });
+    };
+
+    var setupAIAdditionalFactionArmies = function () {
+      console.debug("setupAIAdditionalFactionArmies run");
+      var allianceGroup = 3;
+      _.forEach(ai.foes, function (foe) {
+        var slotsArrayFoes = [];
+        foe.personality.adv_eco_mod =
+          foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+        foe.personality.adv_eco_mod_alone =
+          foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
+        if (foe.commanderCount) {
+          for (var i = 0; i < foe.commanderCount; i++) {
+            slotsArrayFoes.push({
+              ai: true,
+              name: foe.name || "Foe",
+              commander: fixupCommander(foe.commander || ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
+        } else if (foe.landing_policy) {
+          // Support v1.2.0 - v2.0.4
+          for (var j = 0; j < foe.landing_policy.length; j++) {
+            slotsArrayFoes.push({
+              ai: true,
+              name: foe.name || "Foe",
+              commander: fixupCommander(foe.commander || ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
+        } else {
+          // Support v1.1.0 and earlier
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name || "Foe",
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+        armies.push({
+          slots: slotsArrayFoes,
+          color: foe.color,
+          econ_rate: foe.econ_rate || ai.econ_rate,
+          personality: foe.personality,
+          spec_tag: ".ai",
+          alliance_group: allianceGroup,
+        });
+        allianceGroup = allianceGroup + 1;
+      });
+    };
+
+    var spawnOrder = [
+      setupPlayerArmy,
+      setupAIFactionArmy,
+      setupAIAdditionalFactionArmies,
+    ];
+    spawnOrder = _.shuffle(spawnOrder);
+    for (var i = 0; i < spawnOrder.length; i++) {
+      spawnOrder[i]();
+    }
 
     var config = {
       files: self.files(),
