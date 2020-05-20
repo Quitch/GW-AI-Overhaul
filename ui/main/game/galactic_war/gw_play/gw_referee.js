@@ -119,6 +119,7 @@ define(["shared/gw_common"], function (GW) {
     ];
 
     var setupPlayerArmy = function () {
+      console.debug("Setup Player");
       armies.push({
         slots: [{ name: "Player" }],
         color: playerColor,
@@ -152,6 +153,7 @@ define(["shared/gw_common"], function (GW) {
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
 
     var setupAIFactionArmy = function () {
+      console.debug("Setup AI Faction");
       if (ai.character === "Boss") {
         if (ai.bossCommanders) {
           for (var i = 0; i < ai.bossCommanders; i++) {
@@ -213,9 +215,11 @@ define(["shared/gw_common"], function (GW) {
       });
     };
 
-    var setupAIAdditionalFactionArmies = function () {
-      var allianceGroup = 3;
-      _.forEach(ai.foes, function (foe) {
+    var setupAIFirstAdditionalFactionArmy = function () {
+      console.debug("Setup Additional Faction 1");
+      setupFoe(ai.foes[0]);
+      function setupFoe(foe) {
+        var allianceGroup = 3;
         var slotsArrayFoes = [];
         foe.personality.adv_eco_mod =
           foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
@@ -257,15 +261,62 @@ define(["shared/gw_common"], function (GW) {
           spec_tag: ".ai",
           alliance_group: allianceGroup,
         });
-        allianceGroup = allianceGroup + 1;
-      });
+      }
     };
 
-    var spawnOrder = [
-      setupPlayerArmy,
-      setupAIFactionArmy,
-      setupAIAdditionalFactionArmies,
-    ];
+    var setupAISeconddditionalFactionArmy = function () {
+      console.debug("Setup Additional Faction 2");
+      setupFoe(ai.foes[1]);
+      function setupFoe(foe) {
+        var allianceGroup = 4;
+        var slotsArrayFoes = [];
+        foe.personality.adv_eco_mod =
+          foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+        foe.personality.adv_eco_mod_alone =
+          foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
+        if (foe.commanderCount) {
+          for (var i = 0; i < foe.commanderCount; i++) {
+            slotsArrayFoes.push({
+              ai: true,
+              name: foe.name || "Foe",
+              commander: fixupCommander(foe.commander || ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
+        } else if (foe.landing_policy) {
+          // Support v1.2.0 - v2.0.4
+          for (var j = 0; j < foe.landing_policy.length; j++) {
+            slotsArrayFoes.push({
+              ai: true,
+              name: foe.name || "Foe",
+              commander: fixupCommander(foe.commander || ai.commander),
+              landing_policy: _.sample(aiLandingOptions),
+            });
+          }
+        } else {
+          // Support v1.1.0 and earlier
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name || "Foe",
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+        armies.push({
+          slots: slotsArrayFoes,
+          color: foe.color,
+          econ_rate: foe.econ_rate || ai.econ_rate,
+          personality: foe.personality,
+          spec_tag: ".ai",
+          alliance_group: allianceGroup,
+        });
+      }
+    };
+
+    var spawnOrder = [setupPlayerArmy, setupAIFactionArmy];
+    if (ai.foes) spawnOrder.push(setupAIFirstAdditionalFactionArmy);
+    if (ai.foes && ai.foes[1])
+      spawnOrder.push(setupAISeconddditionalFactionArmy);
     spawnOrder = _.shuffle(spawnOrder);
     for (var i = 0; i < spawnOrder.length; i++) {
       spawnOrder[i]();
