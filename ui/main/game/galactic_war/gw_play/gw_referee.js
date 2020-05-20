@@ -158,7 +158,7 @@ define(["shared/gw_common"], function (GW) {
             });
           }
         } else {
-          // Support v2.0.4 and earlier
+          // Support GWAIO v2.0.4 and earlier
           for (i = 0; i < ai.landing_policy.length; i++) {
             slotsArray.push({
               ai: true,
