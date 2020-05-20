@@ -146,11 +146,6 @@ define(["shared/gw_common"], function (GW) {
       });
     };
 
-    // Ensure the AI doesn't misbehave due to eco boosts
-    ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
-    ai.personality.adv_eco_mod_alone =
-      ai.personality.adv_eco_mod_alone * ai.econ_rate;
-
     var setupAIFactionArmy = function () {
       if (ai.character === "Boss") {
         if (ai.bossCommanders) {
@@ -190,6 +185,7 @@ define(["shared/gw_common"], function (GW) {
         alliance_group: 2,
       });
       _.forEach(ai.minions, function (minion) {
+        // Ensure the AI doesn't have a weak early game due to eco boosts
         minion.personality.adv_eco_mod =
           minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
         minion.personality.adv_eco_mod_alone =
@@ -215,6 +211,7 @@ define(["shared/gw_common"], function (GW) {
 
     var setupAdditionalFactionArmy = function (foe) {
       var slotsArrayFoes = [];
+      // Ensure the AI doesn't have a weak early game due to eco boosts
       foe.personality.adv_eco_mod =
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
@@ -229,7 +226,7 @@ define(["shared/gw_common"], function (GW) {
           });
         }
       } else if (foe.landing_policy) {
-        // Support v1.2.0 - v2.0.4
+        // Support GWAIO v1.2.0 - v2.0.4
         for (var j = 0; j < foe.landing_policy.length; j++) {
           slotsArrayFoes.push({
             ai: true,
@@ -239,7 +236,7 @@ define(["shared/gw_common"], function (GW) {
           });
         }
       } else {
-        // Support v1.1.0 and earlier
+        // Support GWAIO v1.1.0 and earlier
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
@@ -258,6 +255,11 @@ define(["shared/gw_common"], function (GW) {
       foeArmy = 1;
       allianceGroup += 1;
     };
+
+    // Ensure the AI doesn't have a weak early game due to eco boosts
+    ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
+    ai.personality.adv_eco_mod_alone =
+      ai.personality.adv_eco_mod_alone * ai.econ_rate;
 
     // Spawn the teams (not armies) in a random order
     var foeArmy = 0;
