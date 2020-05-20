@@ -119,7 +119,6 @@ define(["shared/gw_common"], function (GW) {
     ];
 
     var setupPlayerArmy = function () {
-      console.debug("setupPlayerArmy run");
       armies.push({
         slots: [{ name: "Player" }],
         color: playerColor,
@@ -153,7 +152,6 @@ define(["shared/gw_common"], function (GW) {
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
 
     var setupAIFactionArmy = function () {
-      console.debug("setupAIFactionArmy run");
       if (ai.character === "Boss") {
         if (ai.bossCommanders) {
           for (var i = 0; i < ai.bossCommanders; i++) {
@@ -216,7 +214,6 @@ define(["shared/gw_common"], function (GW) {
     };
 
     var setupAIAdditionalFactionArmies = function () {
-      console.debug("setupAIAdditionalFactionArmies run");
       var allianceGroup = 3;
       _.forEach(ai.foes, function (foe) {
         var slotsArrayFoes = [];
