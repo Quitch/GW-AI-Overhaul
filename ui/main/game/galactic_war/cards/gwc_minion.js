@@ -73,11 +73,11 @@ define(["shared/gw_factions"], function (GWFactions) {
     },
     // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
-    keep: function (_params, context) {
+    keep: function (params, context) {
       //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
-    discard: function (_params, context) {
+    discard: function (params, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
       //api.debug.log("discard: chance: " + context.chance);
     },
