@@ -211,9 +211,9 @@ define(["shared/gw_common"], function (GW) {
       });
     });
     // Add Additional Factions for FFA if any
-    var slotsArrayFoes = [];
     var allianceGroup = 3;
     _.forEach(ai.foes, function (foe) {
+      var slotsArrayFoes = [];
       foe.personality.adv_eco_mod =
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
