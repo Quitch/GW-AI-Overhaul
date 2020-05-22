@@ -127,6 +127,7 @@ define(["shared/gw_common"], function (GW) {
       alliance_group: 1,
     });
     // Setup the player's Sub Commanders
+    // eslint-disable-next-line lodash/prefer-map
     _.forEach(inventory.minions(), function (minion) {
       armies.push({
         slots: [
@@ -310,6 +311,7 @@ define(["shared/gw_common"], function (GW) {
     }
 
     var cookedFiles = _.mapValues(allFiles, function (value) {
+      // eslint-disable-next-line lodash/prefer-lodash-typecheck
       if (typeof value !== "string") return JSON.stringify(value);
       else return value;
     });
