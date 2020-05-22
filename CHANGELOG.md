@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Replaced my ridiculously over-engineered randomised spawn solution with something much saner
+- Randomisation is now done by army rather than by team
+
 ## v2.1.0 - 2020-05-20
 
 - Removed personalities: Legate, Acolyte, Servant, Seeker
