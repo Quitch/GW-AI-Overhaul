@@ -161,7 +161,7 @@ define(["shared/gw_common"], function (GW) {
           });
         });
       } else {
-        // Support v2.0.4 and earlier
+        // Support GWAIO v2.0.4 and earlier
         _.times(ai.landing_policy.length, function () {
           slotsArray.push({
             ai: true,
@@ -179,7 +179,6 @@ define(["shared/gw_common"], function (GW) {
         landing_policy: _.sample(aiLandingOptions),
       });
     }
-    // Add system owner AI
     armies.push({
       slots: slotsArray,
       color: ai.color,
@@ -228,7 +227,7 @@ define(["shared/gw_common"], function (GW) {
           });
         });
       } else if (foe.landing_policy) {
-        // Support v1.2.0 - v2.0.4
+        // Support GWAIO v1.2.0 - v2.0.4
         _.times(foe.landing_policy, function () {
           slotsArrayFoes.push({
             ai: true,
@@ -238,7 +237,7 @@ define(["shared/gw_common"], function (GW) {
           });
         });
       } else {
-        // Support v1.1.0 and earlier
+        // Support GWAIO v1.1.0 and earlier
         slotsArrayFoes.push({
           ai: true,
           name: foe.name || "Foe",
