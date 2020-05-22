@@ -162,7 +162,7 @@ define(["shared/gw_common"], function (GW) {
         }
       } else {
         // Support v2.0.4 and earlier
-        for (var j = 0; j < ai.landing_policy.length; j++) {
+        for (i = 0; i < ai.landing_policy.length; i++) {
           slotsArray.push({
             ai: true,
             name: ai.name,
@@ -229,7 +229,7 @@ define(["shared/gw_common"], function (GW) {
         }
       } else if (foe.landing_policy) {
         // Support v1.2.0 - v2.0.4
-        for (var j = 0; j < foe.landing_policy.length; j++) {
+        for (i = 0; i < foe.landing_policy.length; i++) {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
