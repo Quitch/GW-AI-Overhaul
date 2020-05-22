@@ -152,24 +152,24 @@ define(["shared/gw_common"], function (GW) {
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     if (ai.character === "Boss") {
       if (ai.bossCommanders) {
-        for (var i = 0; i < ai.bossCommanders; i++) {
+        _.times(ai.bossCommanders, function () {
           slotsArray.push({
             ai: true,
             name: ai.name,
             commander: fixupCommander(ai.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
-        }
+        });
       } else {
         // Support v2.0.4 and earlier
-        for (i = 0; i < ai.landing_policy.length; i++) {
+        _.times(ai.landing_policy.length, function () {
           slotsArray.push({
             ai: true,
             name: ai.name,
             commander: fixupCommander(ai.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
-        }
+        });
       }
     } else {
       slotsArray.push({
@@ -219,24 +219,24 @@ define(["shared/gw_common"], function (GW) {
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
       if (foe.commanderCount) {
-        for (var i = 0; i < foe.commanderCount; i++) {
+        _.times(foe.commanderCount, function () {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
             commander: fixupCommander(foe.commander || ai.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
-        }
+        });
       } else if (foe.landing_policy) {
         // Support v1.2.0 - v2.0.4
-        for (i = 0; i < foe.landing_policy.length; i++) {
+        _.times(foe.landing_policy, function () {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
             commander: fixupCommander(foe.commander || ai.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
-        }
+        });
       } else {
         // Support v1.1.0 and earlier
         slotsArrayFoes.push({
