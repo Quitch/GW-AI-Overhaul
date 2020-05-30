@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Attempted to make Turtle slightly more viable
+- Turtle has a higher focus on non-factory structures
+
 ## v2.1.1 - 2020-05-22
 
 - Replaced my ridiculously over-engineered randomised spawn solution with something much saner
