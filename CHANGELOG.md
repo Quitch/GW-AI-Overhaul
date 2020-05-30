@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.2.0 - 2020-05-30
 
 - Attempted to make Turtle slightly more viable
 - Turtle has a higher focus on non-factory structures
