@@ -4,6 +4,7 @@
 
 - Attempted to make Turtle slightly more viable
 - Turtle has a higher focus on non-factory structures
+- Turtle is more defensive
 - Swarm starts with more fabbers
 - Ensure that even when alone at least a small amount of T1 is built
 
