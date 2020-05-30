@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.2.0 - 2020-05-30
+
+- Attempted to make Turtle slightly more viable
+- Turtle has a higher focus on non-factory structures
+- Swarm starts with more fabbers
+- Ensure that even when alone at least a small amount of T1 is built
+
 ## v2.1.1 - 2020-05-22
 
 - Replaced my ridiculously over-engineered randomised spawn solution with something much saner
