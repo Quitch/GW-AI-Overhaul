@@ -4,6 +4,7 @@
 
 - Attempted to make Turtle slightly more viable
 - Turtle has a higher focus on non-factory structures
+- Swarm starts with more fabbers
 
 ## v2.1.1 - 2020-05-22
 

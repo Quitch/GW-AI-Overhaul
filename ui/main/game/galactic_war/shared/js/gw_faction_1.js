@@ -1302,7 +1302,7 @@ define([], function () {
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
-          min_basic_fabbers: 2,
+          min_basic_fabbers: 3,
           max_basic_fabbers: 10,
           min_advanced_fabbers: 1,
           max_advanced_fabbers: 10,
