@@ -232,12 +232,15 @@ document
       '<option value="7">GW-UBER</option>' +
       '<option value="8">GW-CUSTOM</option>'
   );
+locUpdateDocument();
+
 document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you want a challenge.<br>SILVER: things get real here.<br>GOLD: skirmish mode is too easy.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
   );
+
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
