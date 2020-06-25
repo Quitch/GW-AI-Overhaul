@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.3.0 - 2020-06-25
 
 - Updated difficulty descriptions
 - Less fabbers used by both enemies and allies
