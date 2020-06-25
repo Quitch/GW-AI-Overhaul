@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Updated difficulty descriptions
+
 ## v2.2.0 - 2020-05-30
 
 - Attempted to make Turtle slightly more viable

@@ -233,7 +233,7 @@ document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have played an RTS before.<br>BRONZE: you have some experience.<br>SILVER: you want a challenge.<br>GOLD: AI skirmish mode is too easy.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: uses the settings of the last selected difficulty as a baseline for you to create your own challenge.\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have played an RTS before.<br>BRONZE: you want a challenge.<br>SILVER: a real challenge.<br>GOLD: AI skirmish mode is too easy.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: uses the settings of the last selected difficulty as a baseline for you to create your own challenge.\'">?</span>'
   );
 document
   .getElementById("game-difficulty")
