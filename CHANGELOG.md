@@ -7,6 +7,7 @@
 - Reduced starting eco of Iron and Bronze
 - Iron scales up its commander numbers slower
 - Set Casual as the default difficulty
+- Ensured mod properly setup to work with translations
 
 ## v2.2.0 - 2020-05-30
 
