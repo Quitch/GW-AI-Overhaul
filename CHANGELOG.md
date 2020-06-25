@@ -3,7 +3,7 @@
 ## DEV
 
 - Updated difficulty descriptions
-- Less fabbers used
+- Less fabbers used by both enemies and allies
 
 ## v2.2.0 - 2020-05-30
 
