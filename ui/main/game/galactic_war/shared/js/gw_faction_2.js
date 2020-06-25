@@ -11,7 +11,7 @@ define([], function () {
         name: "Cupru - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -120,7 +120,7 @@ define([], function () {
         name: "Platina - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -229,7 +229,7 @@ define([], function () {
         name: "Fier - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -338,7 +338,7 @@ define([], function () {
         name: "Safir - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -447,7 +447,7 @@ define([], function () {
         name: "Apa - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -557,7 +557,7 @@ define([], function () {
       {
         // Land heavy
         name: "Servant Potbelly79",
-        character: "Grunt",
+        character: "!LOC:Grunt",
         color: [
           [229, 255, 204],
           [192, 192, 192],
@@ -604,7 +604,7 @@ define([], function () {
       {
         // Air heavy
         name: "Servant Raventhornn",
-        character: "Dragoon",
+        character: "!LOC:Dragoon",
         color: [
           [204, 255, 153],
           [192, 192, 192],
@@ -652,7 +652,7 @@ define([], function () {
       {
         // Uber
         name: "Servant SacrificialLamb",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [178, 255, 102],
           [192, 192, 192],
@@ -701,7 +701,7 @@ define([], function () {
       {
         // Platinum
         name: "Servant Shadowdaemon",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [153, 255, 51],
           [192, 192, 192],
@@ -750,7 +750,7 @@ define([], function () {
       {
         // Gold
         name: "Servant Spartandano",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [128, 255, 0],
           [192, 192, 192],
@@ -798,7 +798,7 @@ define([], function () {
       {
         // Structures
         name: "Servant Xenosentry",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [102, 204, 0],
           [192, 192, 192],
@@ -846,7 +846,7 @@ define([], function () {
       {
         // Basic Tech
         name: "Servant TheFlax",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [76, 153, 0],
           [192, 192, 192],
@@ -893,7 +893,7 @@ define([], function () {
       {
         // Advanced Tech
         name: "Servant Tokamaktech",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [204, 255, 204],
           [192, 192, 192],
@@ -941,7 +941,7 @@ define([], function () {
       {
         // Cautious
         name: "Servant Twoboots",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [153, 255, 153],
           [192, 192, 192],
@@ -988,7 +988,7 @@ define([], function () {
       {
         // Aggressive
         name: "Servant XenosentryPrime",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [102, 255, 102],
           [192, 192, 192],
@@ -1036,7 +1036,7 @@ define([], function () {
       {
         // Rush
         name: "Servant Xinthar",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [0, 255, 0],
           [192, 192, 192],
@@ -1084,7 +1084,7 @@ define([], function () {
       {
         // Turtle
         name: "Servant Beast",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [0, 204, 0],
           [192, 192, 192],
@@ -1132,7 +1132,7 @@ define([], function () {
       {
         // Original
         name: "Servant Beniesk",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [0, 153, 0],
           [192, 192, 192],
@@ -1179,7 +1179,7 @@ define([], function () {
       {
         // Absurd
         name: "Servant Locust",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [0, 102, 0],
           [192, 192, 192],
@@ -1226,7 +1226,7 @@ define([], function () {
       {
         // Relentless
         name: "Servant Zancrowe",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [0, 153, 76],
           [192, 192, 192],
@@ -1273,7 +1273,7 @@ define([], function () {
       {
         // Factories
         name: "Servant Damubbster",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [0, 204, 102],
           [192, 192, 192],
@@ -1321,7 +1321,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Servant Raizell",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [0, 255, 128],
           [192, 192, 192],

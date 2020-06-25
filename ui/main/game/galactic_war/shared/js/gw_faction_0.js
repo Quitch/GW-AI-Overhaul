@@ -11,7 +11,7 @@ define([], function () {
         name: "Kohr - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -104,7 +104,7 @@ define([], function () {
         name: "Entara - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -197,7 +197,7 @@ define([], function () {
         name: "Agoge - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -289,7 +289,7 @@ define([], function () {
         name: "Tau Leporis - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -381,7 +381,7 @@ define([], function () {
         name: "Poseidon's Wrath - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -474,7 +474,7 @@ define([], function () {
       {
         // All Tanks
         name: "Legate Able",
-        character: "Armour",
+        character: "!LOC:Armour",
         color: [
           [204, 255, 255],
           [192, 192, 192],
@@ -522,7 +522,7 @@ define([], function () {
       {
         // All Bots
         name: "Legate AceAI",
-        character: "Roboticist",
+        character: "!LOC:Roboticist",
         color: [
           [153, 255, 255],
           [192, 192, 192],
@@ -569,7 +569,7 @@ define([], function () {
       {
         // Uber
         name: "Legate Alpha",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [102, 255, 255],
           [192, 192, 192],
@@ -617,7 +617,7 @@ define([], function () {
       {
         // Platinum
         name: "Legate Aryst0krat",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [0, 255, 255],
           [192, 192, 192],
@@ -666,7 +666,7 @@ define([], function () {
       {
         // Gold
         name: "Legate Chronoblip",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [0, 204, 204],
           [192, 192, 192],
@@ -714,7 +714,7 @@ define([], function () {
       {
         // Structures
         name: "Legate Mjon",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [0, 153, 153],
           [192, 192, 192],
@@ -762,7 +762,7 @@ define([], function () {
       {
         // Basic Tech
         name: "Legate Delta",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [153, 204, 255],
           [192, 192, 192],
@@ -809,7 +809,7 @@ define([], function () {
       {
         // Advanced Tech
         name: "Legate Enzomatrix",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [102, 178, 255],
           [192, 192, 192],
@@ -857,7 +857,7 @@ define([], function () {
       {
         // Cautious
         name: "Legate Fiveleafclover",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [51, 153, 255],
           [192, 192, 192],
@@ -905,7 +905,7 @@ define([], function () {
       {
         // Aggressive
         name: "Legate Gamma",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [0, 128, 255],
           [192, 192, 192],
@@ -952,7 +952,7 @@ define([], function () {
       {
         // Rush
         name: "Legate Gnugfur",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [0, 102, 204],
           [192, 192, 192],
@@ -1001,7 +1001,7 @@ define([], function () {
       {
         // Turtle
         name: "Legate Nemicus",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [0, 76, 153],
           [192, 192, 192],
@@ -1048,7 +1048,7 @@ define([], function () {
       {
         // Original
         name: "Legate Kapowaz",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [0, 0, 153],
           [192, 192, 192],
@@ -1096,7 +1096,7 @@ define([], function () {
       {
         // Absurd
         name: "Legate JT100010117",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [0, 0, 204],
           [192, 192, 192],
@@ -1145,7 +1145,7 @@ define([], function () {
       {
         // Relentless
         name: "Legate Kevin4001",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [0, 0, 225],
           [192, 192, 192],
@@ -1194,7 +1194,7 @@ define([], function () {
       {
         // Factories
         name: "Legate Mostlikely",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [51, 51, 255],
           [192, 192, 192],
@@ -1243,7 +1243,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Legate Nagasher",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [204, 229, 255],
           [192, 192, 192],

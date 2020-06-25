@@ -11,7 +11,7 @@ define([], function () {
         name: "Alenquer - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -119,7 +119,7 @@ define([], function () {
         name: "Xianyao - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -227,7 +227,7 @@ define([], function () {
         name: "Epiphany - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -335,7 +335,7 @@ define([], function () {
         name: "Varthema - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -443,7 +443,7 @@ define([], function () {
         name: "Chernykh - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -552,7 +552,7 @@ define([], function () {
       {
         // Orbital & Land
         name: "Seeker Betadyne",
-        character: "Space Invader",
+        character: "!LOC:Space Invader",
         color: [
           [255, 204, 204],
           [192, 192, 192],
@@ -599,7 +599,7 @@ define([], function () {
       {
         // Orbital & Air
         name: "Seeker Centurion",
-        character: "Astronaut",
+        character: "!LOC:Astronaut",
         color: [
           [255, 153, 153],
           [192, 192, 192],
@@ -647,7 +647,7 @@ define([], function () {
       {
         // Uber
         name: "Seeker Diremachine",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [255, 102, 102],
           [192, 192, 192],
@@ -696,7 +696,7 @@ define([], function () {
       {
         // Platinum
         name: "Seeker Enderstryke71",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [255, 0, 0],
           [192, 192, 192],
@@ -745,7 +745,7 @@ define([], function () {
       {
         // Gold
         name: "Seeker Iwmiked",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [204, 0, 0],
           [192, 192, 192],
@@ -792,7 +792,7 @@ define([], function () {
       {
         // Structures
         name: "Seeker Majuju",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [153, 0, 0],
           [192, 192, 192],
@@ -840,7 +840,7 @@ define([], function () {
       {
         // Basic Tech
         name: "Seeker Nefelpitou",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [255, 204, 153],
           [192, 192, 192],
@@ -888,7 +888,7 @@ define([], function () {
       {
         // Advanced Tech
         name: "Seeker Invictus",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [255, 178, 102],
           [192, 192, 192],
@@ -936,7 +936,7 @@ define([], function () {
       {
         // Cautious
         name: "Seeker Rallus",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [255, 153, 51],
           [192, 192, 192],
@@ -983,7 +983,7 @@ define([], function () {
       {
         // Aggressive
         name: "Seeker Stickman9000",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [255, 128, 0],
           [192, 192, 192],
@@ -1031,7 +1031,7 @@ define([], function () {
       {
         // Rush
         name: "Seeker Zaazzaa",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [204, 102, 0],
           [192, 192, 192],
@@ -1079,7 +1079,7 @@ define([], function () {
       {
         // Turtle
         name: "Seeker Aeson",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [255, 255, 204],
           [192, 192, 192],
@@ -1126,7 +1126,7 @@ define([], function () {
       {
         // Original
         name: "Seeker Banditks",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [255, 255, 153],
           [192, 192, 192],
@@ -1173,7 +1173,7 @@ define([], function () {
       {
         // Absurd
         name: "Seeker SPZ58624",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [255, 255, 102],
           [192, 192, 192],
@@ -1221,7 +1221,7 @@ define([], function () {
       {
         // Relentless
         name: "Seeker XOV",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [255, 255, 0],
           [192, 192, 192],
@@ -1269,7 +1269,7 @@ define([], function () {
       {
         // Factories
         name: "Seeker Reaver",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [204, 204, 0],
           [192, 192, 192],
@@ -1317,7 +1317,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Seeker Sadiga",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [153, 153, 0],
           [192, 192, 192],

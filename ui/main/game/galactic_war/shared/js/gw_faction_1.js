@@ -11,7 +11,7 @@ define([], function () {
         name: "Atlas - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.33,
@@ -119,7 +119,7 @@ define([], function () {
         name: "Patagonia - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.33,
@@ -227,7 +227,7 @@ define([], function () {
         name: "Xylcor - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.33,
@@ -334,7 +334,7 @@ define([], function () {
         name: "Blogar's Fist - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.33,
@@ -441,7 +441,7 @@ define([], function () {
         name: "Zeta Draconis - Foundation",
         boss: {
           name: "Inquisitor Nemicus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.33,
@@ -549,7 +549,7 @@ define([], function () {
       {
         // All Air
         name: "Acolyte Progenitor",
-        character: "Air Force",
+        character: "!LOC:Air Force",
         color: [
           [229, 204, 255],
           [192, 192, 192],
@@ -597,7 +597,7 @@ define([], function () {
       {
         // All Naval
         name: "Acolyte Sangudo",
-        character: "Navy",
+        character: "!LOC:Navy",
         color: [
           [204, 153, 255],
           [192, 192, 192],
@@ -645,7 +645,7 @@ define([], function () {
       {
         // Uber
         name: "Acolyte Seniorhelix",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [178, 102, 255],
           [192, 192, 192],
@@ -694,7 +694,7 @@ define([], function () {
       {
         // Platinum
         name: "Acolyte Stelarch",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [153, 51, 255],
           [192, 192, 192],
@@ -743,7 +743,7 @@ define([], function () {
       {
         // Gold
         name: "Acolyte TheChessKnight",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [127, 0, 255],
           [192, 192, 192],
@@ -791,7 +791,7 @@ define([], function () {
       {
         // Structures
         name: "Acolyte Theta",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [102, 0, 204],
           [192, 192, 192],
@@ -838,7 +838,7 @@ define([], function () {
       {
         // Basic Tech
         name: "Acolyte ToddFather",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [76, 0, 153],
           [192, 192, 192],
@@ -886,7 +886,7 @@ define([], function () {
       {
         // Advanced Tech
         name: "Acolyte Ajax",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [255, 204, 255],
           [192, 192, 192],
@@ -933,7 +933,7 @@ define([], function () {
       {
         // Cautious
         name: "Acolyte Armalisk",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [255, 153, 255],
           [192, 192, 192],
@@ -980,7 +980,7 @@ define([], function () {
       {
         // Aggressive
         name: "Acolyte Calyx",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [255, 102, 255],
           [192, 192, 192],
@@ -1027,7 +1027,7 @@ define([], function () {
       {
         // Rush
         name: "Acolyte Gambitdfa",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [255, 0, 255],
           [192, 192, 192],
@@ -1074,7 +1074,7 @@ define([], function () {
       {
         // Turtle
         name: "Acolyte Berlinetta",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [204, 0, 204],
           [192, 192, 192],
@@ -1122,7 +1122,7 @@ define([], function () {
       {
         // Original
         name: "Acolyte Osiris",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [153, 0, 153],
           [192, 192, 192],
@@ -1169,7 +1169,7 @@ define([], function () {
       {
         // Absurd
         name: "Acolyte Tykus24",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [255, 204, 229],
           [192, 192, 192],
@@ -1217,7 +1217,7 @@ define([], function () {
       {
         // Relentless
         name: "Acolyte Vidicarus",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [255, 153, 204],
           [192, 192, 192],
@@ -1265,7 +1265,7 @@ define([], function () {
       {
         // Factories
         name: "Acolyte Visionik",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [255, 102, 178],
           [192, 192, 192],
@@ -1313,7 +1313,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Acolyte Commandonut",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [255, 51, 153],
           [192, 192, 192],
