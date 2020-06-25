@@ -6,6 +6,7 @@
 - Less fabbers used by both enemies and allies
 - Reduced starting eco of Iron and Bronze
 - Iron scales up its commander numbers slower
+- Set Casual as the default difficulty
 
 ## v2.2.0 - 2020-05-30
 

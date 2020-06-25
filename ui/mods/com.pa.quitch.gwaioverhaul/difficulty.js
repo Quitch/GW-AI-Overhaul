@@ -30,6 +30,9 @@ ko.extenders.precision = function (target, precision) {
   return result;
 };
 
+// set the lowest difficulty as the default
+model.newGameDifficultyIndex(0);
+
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
   easierStart: ko.observable(false),
