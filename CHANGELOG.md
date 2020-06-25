@@ -3,6 +3,7 @@
 ## DEV
 
 - Updated difficulty descriptions
+- Slightly less advanced fabbers used
 
 ## v2.2.0 - 2020-05-30
 
