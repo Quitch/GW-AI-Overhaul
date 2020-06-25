@@ -40,9 +40,9 @@ Sub Commanders are not impacted by difficulty. At any difficulty level, you can 
 
 ![Casual badge](./images/casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
-![Iron badge](./images/iron.png) **Iron**: for when you've played an RTS before and have an idea of what you're doing.
+![Iron badge](./images/iron.png) **Iron**: for when you've some PA experience under your belt.
 
-![Bronze badge](./images/bronze.png) **Bronze**: for when you've some PA experience under your belt.
+![Bronze badge](./images/bronze.png) **Bronze**: for when you want your first real challenge.
 
 ![Silver badge](./images/silver.png) **Silver**: for when you're ready for the AI to start really pushing back.
 
