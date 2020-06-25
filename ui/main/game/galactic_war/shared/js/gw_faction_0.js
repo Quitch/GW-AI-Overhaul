@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define([], function () {
   return {
     name: "Legonis Machina",
@@ -11,7 +10,7 @@ define([], function () {
         name: "Kohr - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -104,7 +103,7 @@ define([], function () {
         name: "Entara - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -197,7 +196,7 @@ define([], function () {
         name: "Agoge - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -289,7 +288,7 @@ define([], function () {
         name: "Tau Leporis - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -381,7 +380,7 @@ define([], function () {
         name: "Poseidon's Wrath - Legonis Machina",
         boss: {
           name: "Imperator Invictus",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 1,
@@ -474,7 +473,7 @@ define([], function () {
       {
         // All Tanks
         name: "Legate Able",
-        character: "Armour",
+        character: "!LOC:Armour",
         color: [
           [204, 255, 255],
           [192, 192, 192],
@@ -513,16 +512,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_able/imperial_able.json",
       },
       {
         // All Bots
         name: "Legate AceAI",
-        character: "Roboticist",
+        character: "!LOC:Roboticist",
         color: [
           [153, 255, 255],
           [192, 192, 192],
@@ -560,16 +559,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json",
       },
       {
         // Uber
         name: "Legate Alpha",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [102, 255, 255],
           [192, 192, 192],
@@ -608,16 +607,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
       },
       {
         // Platinum
         name: "Legate Aryst0krat",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [0, 255, 255],
           [192, 192, 192],
@@ -656,9 +655,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
@@ -666,7 +665,7 @@ define([], function () {
       {
         // Gold
         name: "Legate Chronoblip",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [0, 204, 204],
           [192, 192, 192],
@@ -704,9 +703,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json",
@@ -714,7 +713,7 @@ define([], function () {
       {
         // Structures
         name: "Legate Mjon",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [0, 153, 153],
           [192, 192, 192],
@@ -753,16 +752,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
       },
       {
         // Basic Tech
         name: "Legate Delta",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [153, 204, 255],
           [192, 192, 192],
@@ -800,16 +799,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_delta/imperial_delta.json",
       },
       {
         // Advanced Tech
         name: "Legate Enzomatrix",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [102, 178, 255],
           [192, 192, 192],
@@ -847,9 +846,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json",
@@ -857,7 +856,7 @@ define([], function () {
       {
         // Cautious
         name: "Legate Fiveleafclover",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [51, 153, 255],
           [192, 192, 192],
@@ -895,9 +894,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json",
@@ -905,7 +904,7 @@ define([], function () {
       {
         // Aggressive
         name: "Legate Gamma",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [0, 128, 255],
           [192, 192, 192],
@@ -943,16 +942,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json",
       },
       {
         // Rush
         name: "Legate Gnugfur",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [0, 102, 204],
           [192, 192, 192],
@@ -991,9 +990,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json",
@@ -1001,7 +1000,7 @@ define([], function () {
       {
         // Turtle
         name: "Legate Nemicus",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [0, 76, 153],
           [192, 192, 192],
@@ -1039,16 +1038,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
       },
       {
         // Original
         name: "Legate Kapowaz",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [0, 0, 153],
           [192, 192, 192],
@@ -1086,9 +1085,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json",
@@ -1096,7 +1095,7 @@ define([], function () {
       {
         // Absurd
         name: "Legate JT100010117",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [0, 0, 204],
           [192, 192, 192],
@@ -1135,9 +1134,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
@@ -1145,7 +1144,7 @@ define([], function () {
       {
         // Relentless
         name: "Legate Kevin4001",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [0, 0, 225],
           [192, 192, 192],
@@ -1184,9 +1183,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",
@@ -1194,7 +1193,7 @@ define([], function () {
       {
         // Factories
         name: "Legate Mostlikely",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [51, 51, 255],
           [192, 192, 192],
@@ -1233,9 +1232,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
@@ -1243,7 +1242,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Legate Nagasher",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [204, 229, 255],
           [192, 192, 192],
@@ -1282,9 +1281,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json",

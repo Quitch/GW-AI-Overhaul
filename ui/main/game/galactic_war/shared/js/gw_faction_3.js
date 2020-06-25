@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define([], function () {
   return {
     name: "Revenants",
@@ -11,7 +10,7 @@ define([], function () {
         name: "Alenquer - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -119,7 +118,7 @@ define([], function () {
         name: "Xianyao - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -227,7 +226,7 @@ define([], function () {
         name: "Epiphany - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -335,7 +334,7 @@ define([], function () {
         name: "Varthema - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -443,7 +442,7 @@ define([], function () {
         name: "Chernykh - Revenants",
         boss: {
           name: "First Seeker Osiris",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -552,7 +551,7 @@ define([], function () {
       {
         // Orbital & Land
         name: "Seeker Betadyne",
-        character: "Space Invader",
+        character: "!LOC:Space Invader",
         color: [
           [255, 204, 204],
           [192, 192, 192],
@@ -590,16 +589,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
       },
       {
         // Orbital & Air
         name: "Seeker Centurion",
-        character: "Astronaut",
+        character: "!LOC:Astronaut",
         color: [
           [255, 153, 153],
           [192, 192, 192],
@@ -637,9 +636,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
@@ -647,7 +646,7 @@ define([], function () {
       {
         // Uber
         name: "Seeker Diremachine",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [255, 102, 102],
           [192, 192, 192],
@@ -686,9 +685,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
@@ -696,7 +695,7 @@ define([], function () {
       {
         // Platinum
         name: "Seeker Enderstryke71",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [255, 0, 0],
           [192, 192, 192],
@@ -735,9 +734,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
@@ -745,7 +744,7 @@ define([], function () {
       {
         // Gold
         name: "Seeker Iwmiked",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [204, 0, 0],
           [192, 192, 192],
@@ -783,16 +782,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
       },
       {
         // Structures
         name: "Seeker Majuju",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [153, 0, 0],
           [192, 192, 192],
@@ -831,16 +830,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
       },
       {
         // Basic Tech
         name: "Seeker Nefelpitou",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [255, 204, 153],
           [192, 192, 192],
@@ -878,9 +877,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
@@ -888,7 +887,7 @@ define([], function () {
       {
         // Advanced Tech
         name: "Seeker Invictus",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [255, 178, 102],
           [192, 192, 192],
@@ -926,9 +925,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
@@ -936,7 +935,7 @@ define([], function () {
       {
         // Cautious
         name: "Seeker Rallus",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [255, 153, 51],
           [192, 192, 192],
@@ -974,16 +973,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
       },
       {
         // Aggressive
         name: "Seeker Stickman9000",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [255, 128, 0],
           [192, 192, 192],
@@ -1021,9 +1020,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
@@ -1031,7 +1030,7 @@ define([], function () {
       {
         // Rush
         name: "Seeker Zaazzaa",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [204, 102, 0],
           [192, 192, 192],
@@ -1070,16 +1069,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
       },
       {
         // Turtle
         name: "Seeker Aeson",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [255, 255, 204],
           [192, 192, 192],
@@ -1117,16 +1116,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
       },
       {
         // Original
         name: "Seeker Banditks",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [255, 255, 153],
           [192, 192, 192],
@@ -1164,16 +1163,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
       },
       {
         // Absurd
         name: "Seeker SPZ58624",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [255, 255, 102],
           [192, 192, 192],
@@ -1212,16 +1211,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
       },
       {
         // Relentless
         name: "Seeker XOV",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [255, 255, 0],
           [192, 192, 192],
@@ -1260,16 +1259,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
       },
       {
         // Factories
         name: "Seeker Reaver",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [204, 204, 0],
           [192, 192, 192],
@@ -1308,16 +1307,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
       },
       {
         // High Efficiency
         name: "Seeker Sadiga",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [153, 153, 0],
           [192, 192, 192],
@@ -1356,9 +1355,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
       },

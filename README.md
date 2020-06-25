@@ -102,10 +102,6 @@ Many changes will only apply to new wars.
 
 Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to very quickly connect multiple planets.
 
-## Translations
-
-Please help [translate Galactic War AI Overhaul](https://poeditor.com/join/project/GMUUxugX7u) to your local language.
-
 ## Known Issues
 
 1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.

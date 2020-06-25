@@ -19,7 +19,8 @@
     "requireGW": "readonly",
     "star_system_templates": "readonly",
     "parse": "readonly",
-    "loadScript": "readonly"
+    "loadScript": "readonly",
+    "locUpdateDocument": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

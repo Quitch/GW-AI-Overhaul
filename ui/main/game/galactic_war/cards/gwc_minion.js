@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define(["shared/gw_factions"], function (GWFactions) {
   function hasUnit(id) {
     return _.any(model.game().inventory().units(), function (unit) {

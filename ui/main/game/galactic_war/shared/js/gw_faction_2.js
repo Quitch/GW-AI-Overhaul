@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define([], function () {
   return {
     name: "Synchronous",
@@ -11,7 +10,7 @@ define([], function () {
         name: "Cupru - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -120,7 +119,7 @@ define([], function () {
         name: "Platina - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -229,7 +228,7 @@ define([], function () {
         name: "Fier - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -338,7 +337,7 @@ define([], function () {
         name: "Safir - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -447,7 +446,7 @@ define([], function () {
         name: "Apa - Synchronous",
         boss: {
           name: "Metrarch the Machinist",
-          character: "Boss",
+          character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0,
@@ -557,7 +556,7 @@ define([], function () {
       {
         // Land heavy
         name: "Servant Potbelly79",
-        character: "Grunt",
+        character: "!LOC:Grunt",
         color: [
           [229, 255, 204],
           [192, 192, 192],
@@ -595,16 +594,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json",
       },
       {
         // Air heavy
         name: "Servant Raventhornn",
-        character: "Dragoon",
+        character: "!LOC:Dragoon",
         color: [
           [204, 255, 153],
           [192, 192, 192],
@@ -642,9 +641,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json",
@@ -652,7 +651,7 @@ define([], function () {
       {
         // Uber
         name: "Servant SacrificialLamb",
-        character: "Uber",
+        character: "!LOC:Uber",
         color: [
           [178, 255, 102],
           [192, 192, 192],
@@ -691,9 +690,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
@@ -701,7 +700,7 @@ define([], function () {
       {
         // Platinum
         name: "Servant Shadowdaemon",
-        character: "Platinum",
+        character: "!LOC:Platinum",
         color: [
           [153, 255, 51],
           [192, 192, 192],
@@ -740,9 +739,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
@@ -750,7 +749,7 @@ define([], function () {
       {
         // Gold
         name: "Servant Spartandano",
-        character: "Gold",
+        character: "!LOC:Gold",
         color: [
           [128, 255, 0],
           [192, 192, 192],
@@ -788,9 +787,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
@@ -798,7 +797,7 @@ define([], function () {
       {
         // Structures
         name: "Servant Xenosentry",
-        character: "Defender",
+        character: "!LOC:Defender",
         color: [
           [102, 204, 0],
           [192, 192, 192],
@@ -836,9 +835,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json",
@@ -846,7 +845,7 @@ define([], function () {
       {
         // Basic Tech
         name: "Servant TheFlax",
-        character: "Luddite",
+        character: "!LOC:Luddite",
         color: [
           [76, 153, 0],
           [192, 192, 192],
@@ -884,16 +883,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_theflax/quad_theflax.json",
       },
       {
         // Advanced Tech
         name: "Servant Tokamaktech",
-        character: "Technologist",
+        character: "!LOC:Technologist",
         color: [
           [204, 255, 204],
           [192, 192, 192],
@@ -931,9 +930,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json",
@@ -941,7 +940,7 @@ define([], function () {
       {
         // Cautious
         name: "Servant Twoboots",
-        character: "Cautious",
+        character: "!LOC:Cautious",
         color: [
           [153, 255, 153],
           [192, 192, 192],
@@ -979,16 +978,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 2,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json",
       },
       {
         // Aggressive
         name: "Servant XenosentryPrime",
-        character: "Aggressive",
+        character: "!LOC:Aggressive",
         color: [
           [102, 255, 102],
           [192, 192, 192],
@@ -1026,9 +1025,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json",
@@ -1036,7 +1035,7 @@ define([], function () {
       {
         // Rush
         name: "Servant Xinthar",
-        character: "Rush",
+        character: "!LOC:Rush",
         color: [
           [0, 255, 0],
           [192, 192, 192],
@@ -1075,16 +1074,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json",
       },
       {
         // Turtle
         name: "Servant Beast",
-        character: "Turtle",
+        character: "!LOC:Turtle",
         color: [
           [0, 204, 0],
           [192, 192, 192],
@@ -1123,16 +1122,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_beast/raptor_beast.json",
       },
       {
         // Original
         name: "Servant Beniesk",
-        character: "Original",
+        character: "!LOC:Original",
         color: [
           [0, 153, 0],
           [192, 192, 192],
@@ -1170,16 +1169,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
       },
       {
         // Absurd
         name: "Servant Locust",
-        character: "Absurd",
+        character: "!LOC:Absurd",
         color: [
           [0, 102, 0],
           [192, 192, 192],
@@ -1217,16 +1216,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_locust/quad_locust.json",
       },
       {
         // Relentless
         name: "Servant Zancrowe",
-        character: "Relentless",
+        character: "!LOC:Relentless",
         color: [
           [0, 153, 76],
           [192, 192, 192],
@@ -1264,16 +1263,16 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 2,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
       },
       {
         // Factories
         name: "Servant Damubbster",
-        character: "Swarm",
+        character: "!LOC:Swarm",
         color: [
           [0, 204, 102],
           [192, 192, 192],
@@ -1311,9 +1310,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 3,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 1,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander:
           "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
@@ -1321,7 +1320,7 @@ define([], function () {
       {
         // High Efficiency
         name: "Servant Raizell",
-        character: "Economist",
+        character: "!LOC:Economist",
         color: [
           [0, 255, 128],
           [192, 192, 192],
@@ -1359,9 +1358,9 @@ define([], function () {
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
           min_basic_fabbers: 4,
-          max_basic_fabbers: 10,
+          max_basic_fabbers: 5,
           min_advanced_fabbers: 3,
-          max_advanced_fabbers: 10,
+          max_advanced_fabbers: 5,
         },
         commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
       },

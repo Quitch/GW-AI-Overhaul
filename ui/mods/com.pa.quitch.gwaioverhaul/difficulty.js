@@ -30,6 +30,9 @@ ko.extenders.precision = function (target, precision) {
   return result;
 };
 
+// set the lowest difficulty as the default
+model.newGameDifficultyIndex(0);
+
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
   easierStart: ko.observable(false),
@@ -229,12 +232,15 @@ document
       '<option value="7">GW-UBER</option>' +
       '<option value="8">GW-CUSTOM</option>'
   );
+locUpdateDocument();
+
 document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have played an RTS before.<br>BRONZE: you have some experience.<br>SILVER: you want a challenge.<br>GOLD: AI skirmish mode is too easy.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: uses the settings of the last selected difficulty as a baseline for you to create your own challenge.\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you want a challenge.<br>SILVER: things get real here.<br>GOLD: skirmish mode is too easy.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
   );
+
 document
   .getElementById("game-difficulty")
   .insertAdjacentHTML(
@@ -344,7 +350,7 @@ requireGW(
         econBase: 0.4,
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
-        max_advanced_fabbers: 10,
+        max_advanced_fabbers: 5,
         ffa_chance: 25,
         bossCommanders: 2,
       },
@@ -354,7 +360,7 @@ requireGW(
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
-        minionMod: 0.3,
+        minionMod: 0.28,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -363,10 +369,10 @@ requireGW(
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
         personality_tags: ["SlowerExpansion"],
-        econBase: 0.55,
+        econBase: 0.5,
         econRatePerDist: 0.075,
-        max_basic_fabbers: 15,
-        max_advanced_fabbers: 15,
+        max_basic_fabbers: 10,
+        max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 2,
       },
@@ -384,10 +390,10 @@ requireGW(
         unable_to_expand_delay: 0,
         enable_commander_danger_responses: true,
         per_expansion_delay: 0,
-        econBase: 0.7,
+        econBase: 0.6,
         econRatePerDist: 0.1,
-        max_basic_fabbers: 20,
-        max_advanced_fabbers: 20,
+        max_basic_fabbers: 15,
+        max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 3,
       },
@@ -407,8 +413,8 @@ requireGW(
         per_expansion_delay: 0,
         econBase: 0.7,
         econRatePerDist: 0.1,
-        max_basic_fabbers: 20,
-        max_advanced_fabbers: 20,
+        max_basic_fabbers: 15,
+        max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 3,
       },
@@ -429,8 +435,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 0.85,
         econRatePerDist: 0.15,
-        max_basic_fabbers: 25,
-        max_advanced_fabbers: 25,
+        max_basic_fabbers: 20,
+        max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 4,
       },
@@ -451,8 +457,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 1,
         econRatePerDist: 0.175,
-        max_basic_fabbers: 25,
-        max_advanced_fabbers: 25,
+        max_basic_fabbers: 20,
+        max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 4,
       },
@@ -473,8 +479,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 1.2,
         econRatePerDist: 0.2,
-        max_basic_fabbers: 30,
-        max_advanced_fabbers: 30,
+        max_basic_fabbers: 25,
+        max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 5,
       },
@@ -495,8 +501,8 @@ requireGW(
         personality_tags: ["PreventsWaste"],
         econBase: 10,
         econRatePerDist: 0,
-        max_basic_fabbers: 35,
-        max_advanced_fabbers: 35,
+        max_basic_fabbers: 25,
+        max_advanced_fabbers: 25,
         ffa_chance: 25,
         bossCommanders: 5,
       },

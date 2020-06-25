@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v2.3.0 - 2020-06-25
+
+- Updated difficulty descriptions
+- Less fabbers used by both enemies and allies
+- Reduced starting eco of Iron and Bronze
+- Iron scales up its commander numbers slower
+- Set Casual as the default difficulty
+- Ensured mod properly setup to work with translations
+
 ## v2.2.0 - 2020-05-30
 
 - Attempted to make Turtle slightly more viable
