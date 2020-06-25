@@ -1,23 +1,23 @@
 <div class="section_of_foreign_intelligence">
   <!-- Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul -->
-  <h3>Planetary Intelligence</h3>
+  <h3><loc>Planetary Intelligence</loc></h3>
   <div class="table">
     <div class="tablebody">
       <div class="tr">
-        <div class="td">Surface Area:</div>
+        <div class="td"><loc>Surface Area:</loc></div>
         <div class="td">
           <span class="inline" data-bind="text: $root.systemSurfaceArea"></span
           >k<sup>2</sup>
         </div>
       </div>
       <div class="tr">
-        <div class="td">Threat Level:</div>
+        <div class="td"><loc>Threat Level:</loc></div>
         <div class="data" data-bind="text: $root.systemThreat"></div>
       </div>
     </div>
   </div>
   <div data-bind="visible: model.selection.system().star.ai()">
-    <h3>System Faction</h3>
+    <h3><loc>System Faction</loc></h3>
   </div>
   <ul data-bind="foreach: $root.systemOwner">
     <li class="commander">
@@ -36,11 +36,11 @@
       <div class="table">
         <div class="tablebody">
           <div class="tr">
-            <div class="td">Threat:</div>
+            <div class="td"><loc>Threat:</loc></div>
             <div class="data" data-bind="text: threat"></div>
           </div>
           <div class="tr">
-            <div class="td">Personality:</div>
+            <div class="td"><loc>Personality:</loc></div>
             <div class="data" data-bind="text: character"></div>
           </div>
         </div>
@@ -50,7 +50,7 @@
   <div
     data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes"
   >
-    <h3>Additional Factions</h3>
+    <h3><loc>Additional Factions</loc></h3>
   </div>
   <ul data-bind="foreach: $root.ffaOpponents">
     <li class="commander">
@@ -69,11 +69,11 @@
       <div class="table">
         <div class="tablebody">
           <div class="tr">
-            <div class="td">Threat:</div>
+            <div class="td"><loc>Threat:</loc></div>
             <div class="data" data-bind="text: threat"></div>
           </div>
           <div class="tr">
-            <div class="td">Personality:</div>
+            <div class="td"><loc>Personality:</loc></div>
             <div class="data" data-bind="text: character"></div>
           </div>
         </div>
