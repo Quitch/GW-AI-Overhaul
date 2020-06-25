@@ -148,6 +148,7 @@
     console.log("Loaded html " + url);
     var $fi = $(html);
     $("#system-detail").append($fi);
+    locUpdateDocument();
     ko.applyBindings(model, $fi[0]);
   });
 })();
