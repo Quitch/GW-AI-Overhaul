@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.3.1 - 2020-06-26
+
+- Add default personality tag to all AIs as a future-proofing measure
+
 ## v2.3.0 - 2020-06-25
 
 - Updated difficulty descriptions
