@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Fix sub commander personalities not being translated
+
 ## v2.3.1 - 2020-06-26
 
 - Add default personality tag to all AIs as a future-proofing measure
