@@ -76,11 +76,13 @@ model.customDifficultySettings = {
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   personalityTags: ko.observableArray([
+    "Default",
     "Tutorial",
     "SlowerExpansion",
     "PreventsWaste",
   ]),
   personalityTagsDescription: ko.observable({
+    Default: "!LOC:Default",
     Tutorial: "!LOC:Lobotomy",
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Waste",
@@ -299,7 +301,7 @@ document
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = future-proof your war.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div>" +
