@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v2.3.3 - 2020-07-04
 
 - Add support for Default personality tag to GW-CUSTOM
 - Improved difficulty tooltips
