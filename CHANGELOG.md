@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.3.3 - 2020-07-04
+
+- Add support for Default personality tag to GW-CUSTOM
+- Improved difficulty tooltips
+
 ## v2.3.2 - 2020-06-26
 
 - Fix sub commander personalities not being translated
