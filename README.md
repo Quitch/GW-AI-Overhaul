@@ -30,9 +30,7 @@ This mod can be installed via the Planetary Annihilation: TITANS in-game Communi
 
 ## In Action
 
-Maréchal Gryzzly takes on GW-Uber difficulty, which is the ultimate Galactic War challenge, not intended to be even remotely fair.
-
-[![Maréchal Gryzzly fights GW-Uber](https://img.youtube.com/vi/ldXdL8GtDOg/0.jpg)](https://www.youtube.com/watch?v=ldXdL8GtDOg)
+[![Table & Chums tries the mod for the first time.](https://i3.ytimg.com/vi/-0csZIM12N0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-0csZIM12N0&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
 
 ## Difficulty
 
