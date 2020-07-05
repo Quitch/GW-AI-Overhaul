@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## DEV
+
+- Implemented support for bounty mode
+- Implemented support for land anywhere
+- Implemented support for sudden death
+- Thanks to PA Inc for updating the server scripts to support these modes in Galactic War
+
 ## v2.3.3 - 2020-07-04
 
 - Add support for Default personality tag to GW-CUSTOM
