@@ -2,9 +2,10 @@
 
 ## DEV
 
-- Implemented support for bounty mode
-- Implemented support for land anywhere
-- Implemented support for sudden death
+- Implemented support for
+  - bounty mode
+  - land anywhere
+  - sudden death
 - Thanks to PA Inc for updating the server scripts to support these modes in Galactic War
 
 ## v2.3.3 - 2020-07-04
