@@ -1018,7 +1018,6 @@ requireGW(
           } else {
             star.system().display_name =
               ai.name; /* display name overrides name even after the ai dies */
-            star.system().description = ai.description;
           }
         });
 
