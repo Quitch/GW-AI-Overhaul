@@ -117,6 +117,22 @@ model.customDifficultySettings = {
     precision: 0,
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
+  landAnywhereChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  suddenDeathChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  bountyModeChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  bountyModeValue: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
   unsavedChanges: ko.observable(false),
 };
 
@@ -195,6 +211,22 @@ model.customDifficultySettings.ffaChance.subscribe(function () {
     model.customDifficultySettings.unsavedChanges(true);
 });
 model.customDifficultySettings.bossCommanders.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.landAnywhereChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.suddenDeathChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.bountyModeChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.bountyModeValue.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
@@ -299,6 +331,18 @@ document
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
       '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.landAnywhereChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Land Anywhere Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of land anywhere being enabled.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.suddenDeathChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Suden Death Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of sudden death mode being enabled.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Bounty Mode Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of bounty mode being enabled.\'">?</span></div>' +
+      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeValue" />' +
+      '<span style="margin-left: 6px;"></span><loc>Bounty Value</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage eco bonus per army kilk.\'">?</span></div>' +
       '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
       '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = leave enabled.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
@@ -355,6 +399,10 @@ requireGW(
         max_advanced_fabbers: 5,
         ffa_chance: 25,
         bossCommanders: 2,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 25,
+        bountyModeValue: 0.5,
       },
       {
         // Iron
@@ -377,6 +425,10 @@ requireGW(
         max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 2,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 20,
+        bountyModeValue: 0.4,
       },
       {
         // Bronze
@@ -399,6 +451,10 @@ requireGW(
         max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 3,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 20,
+        bountyModeValue: 0.3,
       },
       {
         // Silver
@@ -421,6 +477,10 @@ requireGW(
         max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 3,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 15,
+        bountyModeValue: 0.3,
       },
       {
         // Gold
@@ -443,6 +503,10 @@ requireGW(
         max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 4,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 15,
+        bountyModeValue: 0.2,
       },
       {
         // Platinum
@@ -465,6 +529,10 @@ requireGW(
         max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 4,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 10,
+        bountyModeValue: 0.2,
       },
       {
         // Diamond
@@ -487,6 +555,10 @@ requireGW(
         max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 5,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 10,
+        bountyModeValue: 0.1,
       },
       {
         // Uber
@@ -509,6 +581,10 @@ requireGW(
         max_advanced_fabbers: 25,
         ffa_chance: 25,
         bossCommanders: 5,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 10,
+        bountyModeValue: 0.1,
       },
       {
         // Custom
@@ -607,6 +683,18 @@ requireGW(
         );
         model.customDifficultySettings.bossCommanders(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
+        );
+        model.customDifficultySettings.landAnywhereChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].landAnywhereChance
+        );
+        model.customDifficultySettings.suddenDeathChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].suddenDeathChance
+        );
+        model.customDifficultySettings.bountyModeChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeChance
+        );
+        model.customDifficultySettings.bountyModeValue(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
         );
       }
       // Only show the custom difficulty fields if custom difficulty is selected
@@ -806,6 +894,25 @@ requireGW(
             //console.debug("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
           }
           _.forEach(info.workers, function (worker) {
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.landAnywhereChance()
+            ) {
+              worker.ai.landAnywhere = true;
+            }
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.suddenDeathChance()
+            ) {
+              worker.ai.suddenDeath = true;
+            }
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.bountyModeChance()
+            ) {
+              worker.ai.bountyMode = true;
+            }
+            worker.ai.bountyModeValue = model.customDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
