@@ -259,6 +259,10 @@ define(["shared/gw_common"], function (GW) {
     // Randomise slot order to change the spawns available to each army
     armies = _.shuffle(armies);
 
+    var landAnywhere = battleGround.landAnywhere;
+    var bountyMode = battleGround.bountyMode;
+    var bountyValue = battleGround.bountyValue;
+    var suddenDeathMode = battleGround.suddenDeathMode;
     var config = {
       files: self.files(),
       armies: armies,
@@ -266,6 +270,10 @@ define(["shared/gw_common"], function (GW) {
         commander: fixupCommander(playerCommander),
       },
       system: system,
+      land_anywhere: landAnywhere,
+      bounty_mode: bountyMode,
+      bounty_value: bountyValue,
+      sudden_death_mode: suddenDeathMode,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter
