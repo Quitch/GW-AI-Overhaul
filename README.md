@@ -78,10 +78,6 @@ Each system will display the following information:
 
 Not at this time. Queller won't break this mod, it simply won't be used.
 
-**Q. How can I provide feedback?**
-
-Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
-
 **Q. Where did the system descriptions go?**
 
 They were removed to make space for planetary intelligence.
