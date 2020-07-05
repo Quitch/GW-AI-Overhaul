@@ -66,6 +66,36 @@
     return commanders;
   });
 
+  model.bountyMode = ko.computed(function () {
+    var bountyMode = "Disabled";
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().bountyMode
+    )
+      bountyMode = "Enabled";
+    return bountyMode;
+  });
+
+  model.landAnywhere = ko.computed(function () {
+    var landAnywhere = "Zonal";
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().landAnywhere
+    )
+      landAnywhere = "Global";
+    return landAnywhere;
+  });
+
+  model.suddenDeath = ko.computed(function () {
+    var suddenDeath = "Individual";
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().suddenDeath
+    )
+      suddenDeath = "Team";
+    return suddenDeath;
+  });
+
   model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     var commanders = [];
