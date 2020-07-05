@@ -56,11 +56,17 @@ Sub Commanders are not impacted by difficulty. At any difficulty level, you can 
 
 ## Planetary Intelligence
 
-Each system will display four pieces of information:
+Each system will display the following information:
 
 - **System Area**: the total surface size of all planets, excluding gas giants.
 
 - **Threat Level**: based on the total eco score of all enemies.
+
+- **Bounties**: when enabled bounties are awarded for army kills
+
+- **Spawns**: whether spawns are restricted to small zones or are global
+
+- **Deaths**: whether you die as individuals or a single death on a team takes out the entire team
 
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
