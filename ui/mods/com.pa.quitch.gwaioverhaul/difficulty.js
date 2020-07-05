@@ -1018,6 +1018,7 @@ requireGW(
           } else {
             star.system().display_name =
               ai.name; /* display name overrides name even after the ai dies */
+            star.system().description = ai.description;
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
