@@ -1022,7 +1022,7 @@ requireGW(
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (planet) {
             if (planet.starting_planet === true) {
-              planet.shuffleLandingZone = true;
+              planet.shuffleLandingZones = true;
             }
           });
         });
