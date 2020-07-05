@@ -9,7 +9,7 @@
   - sudden death mode
 - Updated to use the native spawn shuffling solution
   - Old wars will no longer shuffle spawns
-- Fix gas giants being included in surface area count
+- Fixed gas giants being included in surface area count
 
 ## v2.3.3 - 2020-07-04
 
