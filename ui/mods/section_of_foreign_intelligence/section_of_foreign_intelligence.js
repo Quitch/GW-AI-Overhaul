@@ -165,7 +165,7 @@
       .system()
       .planets()
       .forEach(function (planet) {
-        if (planet.generator && planet.generator.biom != "gas") {
+        if (planet.generator && planet.generator.biome != "gas") {
           area += 4 * Math.PI * Math.pow(planet.generator.radius, 2);
         }
       });
