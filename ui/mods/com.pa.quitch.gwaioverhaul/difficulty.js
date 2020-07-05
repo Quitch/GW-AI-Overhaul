@@ -1023,9 +1023,9 @@ requireGW(
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
-              if (world.planet) {
-                world.planet.shuffleLandingZones = true;
-              } else world.generator.shuffleLandingZones = true;
+              if (world.generator) {
+                world.generator.shuffleLandingZones = true;
+              } else world.planet.shuffleLandingZones = true;
           });
         });
 
