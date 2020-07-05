@@ -2,11 +2,11 @@
 
 ## DEV
 
+- Thanks to PA Inc for updating the server scripts to support all game modes in Galactic War
 - Implemented support for:
   - bounty mode
   - land anywhere
   - sudden death mode
-- Thanks to PA Inc for updating the server scripts to support these modes in Galactic War
 - Updated to use the native spawn shuffling solution
   - Old wars will no longer shuffle spawns
 - Fix gas giants being included in surface area count
