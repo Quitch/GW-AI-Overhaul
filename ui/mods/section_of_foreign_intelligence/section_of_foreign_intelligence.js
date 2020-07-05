@@ -164,9 +164,11 @@
     model.selection
       .system()
       .planets()
-      .forEach(function (planet) {
-        if (planet.generator && planet.generator.biome != "gas") {
-          area += 4 * Math.PI * Math.pow(planet.generator.radius, 2);
+      .forEach(function (world) {
+        if (world.generator && world.generator.biome != "gas") {
+          area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+        } else if (world.planet && world.planet.biome != "gas") {
+          area += 4 * Math.PI * Math.pow(world.planet.radius, 2);
         }
       });
     return formatedString(area);
