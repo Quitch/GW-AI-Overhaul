@@ -67,32 +67,32 @@
   });
 
   model.bountyMode = ko.computed(function () {
-    var bountyMode = "Disabled";
+    var bountyMode = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().bountyMode
     )
-      bountyMode = "Enabled";
+      bountyMode = loc("!LOC:Enabled");
     return bountyMode;
   });
 
   model.landAnywhere = ko.computed(function () {
-    var landAnywhere = "Zonal";
+    var landAnywhere = loc("!LOC:Zonal");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().landAnywhere
     )
-      landAnywhere = "Global";
+      landAnywhere = loc("!LOC:Global");
     return landAnywhere;
   });
 
   model.suddenDeath = ko.computed(function () {
-    var suddenDeath = "Individual";
+    var suddenDeath = loc("!LOC:Individual");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().suddenDeath
     )
-      suddenDeath = "Team";
+      suddenDeath = loc("!LOC:Team");
     return suddenDeath;
   });
 
@@ -107,7 +107,7 @@
 
   var totalThreat = function (totalRate) {
     if (!totalRate) {
-      return "None";
+      return "!LOC:None";
     } else if (totalRate < 1) {
       return "!LOC:Very Low";
     } else if (totalRate < 2) {
