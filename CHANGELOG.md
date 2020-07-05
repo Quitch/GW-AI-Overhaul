@@ -7,7 +7,8 @@
   - land anywhere
   - sudden death
 - Thanks to PA Inc for updating the server scripts to support these modes in Galactic War
-- Updated to the native spawn shuffling solution
+- Updated to use the native spawn shuffling solution
+  - Old wars will no longer shuffle spawns
 
 ## v2.3.3 - 2020-07-04
 
