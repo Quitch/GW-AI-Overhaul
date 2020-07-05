@@ -256,9 +256,6 @@ define(["shared/gw_common"], function (GW) {
       allianceGroup = allianceGroup + 1;
     });
 
-    // Randomise slot order to change the spawns available to each army
-    armies = _.shuffle(armies);
-
     var landAnywhere = ai.landAnywhere;
     var bountyMode = ai.bountyMode;
     var bountyValue = ai.bountyValue;
