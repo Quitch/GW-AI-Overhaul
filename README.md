@@ -82,10 +82,6 @@ Each system will display the following information:
 
 No. Queller won't break this mod, it simply won't be used.
 
-**Q. Where did the system descriptions go?**
-
-They were removed to make space for planetary intelligence.
-
 **Q. Will Sub Commanders fighting for me have the same personality if I fight against them?**
 
 Yes. Mostly.
