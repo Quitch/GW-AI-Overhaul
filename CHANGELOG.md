@@ -10,6 +10,7 @@
 - Updated to use the native spawn shuffling solution
   - Old wars will no longer shuffle spawns
 - Fixed gas giants being included in surface area count
+- Updated difficulty tooltips
 
 ## v2.3.3 - 2020-07-04
 

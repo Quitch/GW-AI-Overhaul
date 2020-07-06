@@ -272,7 +272,7 @@ document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you beat the skirmish AI.<br>SILVER: you beat the Queller AI.<br>GOLD: prepare for a challenge.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you beat Galactic War.<br>SILVER: you beat the skirmish AI.<br>GOLD: you beat Queller AI.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
   );
 
 document
