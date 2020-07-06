@@ -564,7 +564,7 @@ requireGW(
           var system = self.system();
           if (system) {
             var ai = system.star.ai();
-            return loc((ai && ai[field]) || system[field]() || "");
+            return loc(system[field]() || (ai && ai[field]) || "");
           } else {
             return "";
           }

@@ -11,6 +11,7 @@
   - Old wars will no longer shuffle spawns
 - Fixed gas giants being included in surface area count
 - Updated difficulty tooltips
+- Show a system's name in place of the primary AI's name
 
 ## v2.3.3 - 2020-07-04
 
