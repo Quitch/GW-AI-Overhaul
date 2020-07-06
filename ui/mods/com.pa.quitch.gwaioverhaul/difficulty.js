@@ -1008,17 +1008,17 @@ requireGW(
         gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function (star) {
           var ai = star.ai();
+          var system = star.system();
           if (!ai) {
             var intro_system = gw_intro_systems[n];
             if (intro_system) {
-              star.system().name = intro_system.name;
-              star.system().description = intro_system.description;
+              system.name = intro_system.name;
+              system.description = intro_system.description;
               n = n + 1;
             }
           } else {
-            star.system().display_name =
-              ai.name; /* display name overrides name even after the ai dies */
-            star.system().description = ai.description;
+            system.display_name =
+              system.name; /* display name overrides name even after the ai dies */
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
