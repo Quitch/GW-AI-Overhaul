@@ -427,7 +427,7 @@ requireGW(
         bossCommanders: 2,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
-        bountyModeChance: 20,
+        bountyModeChance: 25,
         bountyModeValue: 0.4,
       },
       {
@@ -479,7 +479,7 @@ requireGW(
         bossCommanders: 3,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
-        bountyModeChance: 15,
+        bountyModeChance: 20,
         bountyModeValue: 0.3,
       },
       {
@@ -531,7 +531,7 @@ requireGW(
         bossCommanders: 4,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
-        bountyModeChance: 10,
+        bountyModeChance: 15,
         bountyModeValue: 0.2,
       },
       {
