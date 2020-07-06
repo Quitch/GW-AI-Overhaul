@@ -77,22 +77,22 @@
   });
 
   model.landAnywhere = ko.computed(function () {
-    var landAnywhere = loc("!LOC:Zonal");
+    var landAnywhere = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().landAnywhere
     )
-      landAnywhere = loc("!LOC:Global");
+      landAnywhere = loc("!LOC:Enabled");
     return landAnywhere;
   });
 
   model.suddenDeath = ko.computed(function () {
-    var suddenDeath = loc("!LOC:Individual");
+    var suddenDeath = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().suddenDeath
     )
-      suddenDeath = loc("!LOC:Team");
+      suddenDeath = loc("!LOC:Enabled");
     return suddenDeath;
   });
 
