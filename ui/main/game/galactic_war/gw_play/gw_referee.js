@@ -256,10 +256,6 @@ define(["shared/gw_common"], function (GW) {
       allianceGroup = allianceGroup + 1;
     });
 
-    var landAnywhere = ai.landAnywhere;
-    var bountyMode = ai.bountyMode;
-    var bountyValue = ai.bountyValue;
-    var suddenDeath = ai.suddenDeath;
     var config = {
       files: self.files(),
       armies: armies,
@@ -267,10 +263,10 @@ define(["shared/gw_common"], function (GW) {
         commander: fixupCommander(playerCommander),
       },
       system: system,
-      land_anywhere: landAnywhere,
-      bounty_mode: bountyMode,
-      bounty_value: bountyValue,
-      sudden_death_mode: suddenDeath,
+      land_anywhere: ai.landAnywhere,
+      bounty_mode: ai.bountyMode,
+      bounty_value: ai.bountyValue,
+      sudden_death_mode: ai.suddenDeath,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter
