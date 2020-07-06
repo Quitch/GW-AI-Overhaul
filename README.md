@@ -30,7 +30,7 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 ## Installation
 
-This mod can be installed via the Planetary Annihilation: TITANS in-game Community Mod manager.
+Install this mod via the Planetary Annihilation: TITANS in-game Community Mod manager.
 
 ## In Action
 
@@ -38,7 +38,7 @@ This mod can be installed via the Planetary Annihilation: TITANS in-game Communi
 
 ## Difficulty
 
-Sub Commanders are not impacted by difficulty. At any difficulty level, you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
 ![Casual badge](./images/casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
@@ -70,7 +70,7 @@ Each system will display the following information:
 
 - **Big Spawns**: you can land anywhere on any starting planet.
 
-- **Team Death**: when enabled a single army on a team being defeated leads to the defeat of the entire team. This includes Sub Commanders.
+- **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
@@ -80,7 +80,7 @@ Each system will display the following information:
 
 **Q. Can I use an AI mod like Queller?**
 
-Not at this time. Queller won't break this mod, it simply won't be used.
+No. Queller won't break this mod, it simply won't be used.
 
 **Q. Where did the system descriptions go?**
 
@@ -104,7 +104,7 @@ Many changes will only apply to new wars.
 
 **Q. Why am I seeing multiple Commanders for a single enemy army?**
 
-Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to very quickly connect multiple planets.
+Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to connect multiple planets very quickly.
 
 ## Known Issues
 
