@@ -62,11 +62,11 @@ Each system will display the following information:
 
 - **Threat Level**: based on the total eco score of all enemies.
 
-- **Bounties**: when enabled bounties are awarded for army kills
+- **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
 
-- **Spawns**: whether spawns are restricted to small zones or are global
+- **Big Spawns**: you can land anywhere on any starting planet.
 
-- **Deaths**: whether you die as individuals or a single death on a team takes out the entire team
+- **Team Death**: when enabled a single army on a team being defeated leads to the defeat of the entire team. This includes Sub Commanders.
 
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
