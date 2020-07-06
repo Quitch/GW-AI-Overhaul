@@ -154,11 +154,6 @@ requireGW([], function () {
     galaxy: model.galaxy,
     hover: false,
   });
-  model.selection.star(model.currentStar());
-
-  model.showSelectionPlanets = ko.computed(function () {
-    return !model.creditsMode() && !model.game().isTutorial();
-  });
 
   model.hoverSystem = new SelectionViewModel({
     galaxy: model.galaxy,
