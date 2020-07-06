@@ -20,7 +20,8 @@
     "star_system_templates": "readonly",
     "parse": "readonly",
     "loadScript": "readonly",
-    "locUpdateDocument": "readonly"
+    "locUpdateDocument": "readonly",
+    "createjs": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
