@@ -332,13 +332,13 @@ document
       '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.landAnywhereChance" />' +
-      '<span style="margin-left: 6px;"></span><loc>Land Anywhere Chance</loc>' +
+      '<span style="margin-left: 6px;"></span><loc>Big Spawns Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of land anywhere being enabled.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.suddenDeathChance" />' +
-      '<span style="margin-left: 6px;"></span><loc>Suden Death Chance</loc>' +
+      '<span style="margin-left: 6px;"></span><loc>Team Death Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of sudden death mode being enabled.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeChance" />' +
-      '<span style="margin-left: 6px;"></span><loc>Bounty Mode Chance</loc>' +
+      '<span style="margin-left: 6px;"></span><loc>Bounties Chance</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of bounty mode being enabled.\'">?</span></div>' +
       '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeValue" />' +
       '<span style="margin-left: 6px;"></span><loc>Bounty Value</loc>' +
