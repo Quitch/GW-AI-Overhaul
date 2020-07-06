@@ -12,6 +12,7 @@
 - Fixed gas giants being included in surface area count
 - Updated difficulty tooltips
 - Show a system's name in place of the primary AI's name
+- Systems installed via Shared Systems for Galactic War will now show their description on the galaxy map
 
 ## v2.3.3 - 2020-07-04
 
