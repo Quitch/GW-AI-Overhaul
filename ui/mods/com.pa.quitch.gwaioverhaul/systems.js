@@ -151,7 +151,7 @@ requireGW([], function () {
   }
 
   model.selection = new SelectionViewModel({
-    galaxy: self.galaxy,
+    galaxy: model.galaxy,
     hover: false,
   });
   model.selection.star(model.currentStar());
