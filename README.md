@@ -44,11 +44,11 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 
 ![Iron badge](./images/iron.png) **Iron**: for when you've some PA experience under your belt.
 
-![Bronze badge](./images/bronze.png) **Bronze**: for when you want your first real challenge.
+![Bronze badge](./images/bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 
-![Silver badge](./images/silver.png) **Silver**: for when you're ready for the AI to start really pushing back.
+![Silver badge](./images/silver.png) **Silver**: you can beat the skirmish AI.
 
-![Gold badge](./images/gold.png) **Gold**: for when AI skirmish at the top difficulty level is too easy.
+![Gold badge](./images/gold.png) **Gold**: you can beat the Queller AI.
 
 ![Platinum badge](./images/platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
