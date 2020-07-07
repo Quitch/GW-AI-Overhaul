@@ -9,7 +9,7 @@
   - sudden death mode (team death)
 - Replaced my shuffle solution with the new native spawn shuffling solution
   - Wars pre-v3 will not shuffle spawns
-- Fixed gas giants being included in planetary intelligence surface area count
+- Fixed gas giants being included in the planetary intelligence surface area count
 - Updated difficulty tooltip recommendations
 - Show the system's name in place of the primary AI's name
 - Systems installed via Shared Systems for Galactic War will now show their description on the galaxy map
