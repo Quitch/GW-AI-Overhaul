@@ -4,12 +4,12 @@
 
 This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
 
-- Restore faction personalities
+- Restore faction personalities:
   - Legonis Machina: land
   - Foundation: air/naval
   - Synchronous: balanced
   - Revenants: orbital
-- Customise each enemy/Sub Commander
+- Customise each enemy/Sub Commander:
   - Unique model
   - Unique personality
   - Unique colour
@@ -21,7 +21,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Bosses are distinctly more difficult than the surrounding systems
 - Added planetary intelligence to allow you to make meaningful decisions on the galactic map
 - Randomised spawn assignments so maps remain fresh on replay
-- Uses all game modes
+- Uses all game modes:
   - Bounty mode
   - Land anywhere
   - Sudden death
