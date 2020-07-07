@@ -4,14 +4,14 @@
 
 - Thanks to PA Inc for updating the server scripts to support all game modes in Galactic War
 - Implemented support for:
-  - bounty mode
-  - land anywhere
-  - sudden death mode
-- Updated to use the native spawn shuffling solution
-  - Old wars will no longer shuffle spawns
-- Fixed gas giants being included in surface area count
-- Updated difficulty tooltips
-- Show a system's name in place of the primary AI's name
+  - bounty mode (bounties)
+  - land anywhere (big spawns)
+  - sudden death mode (team death)
+- Replaced my shuffle solution with the new native spawn shuffling solution
+  - Wars pre-v3 will not shuffle spawns
+- Fixed gas giants being included in planetary intelligence surface area count
+- Updated difficulty tooltip recommendations
+- Show the system's name in place of the primary AI's name
 - Systems installed via Shared Systems for Galactic War will now show their description on the galaxy map
 
 ## v2.3.3 - 2020-07-04
