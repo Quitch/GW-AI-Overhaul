@@ -13,7 +13,7 @@
 - Updated difficulty tooltip recommendations
 - Show the system's name in place of the primary AI's name
 - Systems installed via Shared Systems for Galactic War will now show their description on the galaxy map
-- Added new option "Tougher Commanders" for those who want the enemy to be harder to kill
+- Added new option "Tougher Commanders" for those who want the enemy to be harder to kill (TITANS only)
 
 ## v2.3.3 - 2020-07-04
 
