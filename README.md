@@ -26,7 +26,6 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Land anywhere
   - Sudden death
 - You can give the enemy tougher commander units (TITANS only)
-- You can turn bosses into hardened Atlas titans (TITANS only)
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
