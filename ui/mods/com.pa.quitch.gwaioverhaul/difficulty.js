@@ -982,21 +982,18 @@ requireGW(
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.landAnywhereChance()
-            ) {
+            )
               worker.ai.landAnywhere = true;
-            }
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.suddenDeathChance()
-            ) {
+            )
               worker.ai.suddenDeath = true;
-            }
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.bountyModeChance()
-            ) {
+            )
               worker.ai.bountyMode = true;
-            }
             worker.ai.bountyModeValue = model.customDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
