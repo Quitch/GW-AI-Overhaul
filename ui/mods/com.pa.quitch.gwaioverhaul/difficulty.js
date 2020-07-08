@@ -469,7 +469,7 @@ requireGW(
         enable_commander_danger_responses: false,
         per_expansion_delay: 0,
         personality_tags: ["Default", "SlowerExpansion"],
-        econBase: 0.45,
+        econBase: 0.4,
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 5,

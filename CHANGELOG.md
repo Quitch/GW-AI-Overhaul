@@ -16,7 +16,6 @@
 - Systems installed via Shared Systems for Galactic War will now show their description on the galaxy map
 - Added new option "Tougher Commanders" for those who want the enemy to be harder to kill (TITANS only)
 - Fixed bosses not spawning multiple commanders
-- Tiny increase to Casual's starting eco to reduce the instances where the AI commander would not build a factory
 
 ## v2.3.3 - 2020-07-04
 
