@@ -25,6 +25,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Bounty mode
   - Land anywhere
   - Sudden death
+- You can give the enemy tougher commander units
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
