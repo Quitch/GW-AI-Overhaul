@@ -35,6 +35,7 @@ model.newGameDifficultyIndex(0);
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
+  shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
   titanBosses: ko.observable(false),
@@ -138,6 +139,9 @@ model.customDifficultySettings = {
   unsavedChanges: ko.observable(false),
 };
 
+model.customDifficultySettings.shuffleSpawns.subscribe(function () {
+  model.makeGame();
+});
 model.customDifficultySettings.easierStart.subscribe(function () {
   model.makeGame();
 });
@@ -403,6 +407,11 @@ document
       "</div>" +
       "</div>" +
       '<div class="form-group" id="additional-options">' +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.shuffleSpawns" />' +
+      '<span style="margin-left: 6px;"></span><loc>Shuffle Spawns</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Assign randomised landing zones each battle.\'">?</span>' +
+      "</div>" +
       "<div>" +
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
       '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
@@ -1093,13 +1102,15 @@ requireGW(
               n = n + 1;
             }
           }
-          // eslint-disable-next-line lodash/prefer-filter
-          _.forEach(star.system().planets, function (world) {
-            if (world.starting_planet === true)
-              if (world.generator) {
-                world.generator.shuffleLandingZones = true;
-              } else world.planet.shuffleLandingZones = true;
-          });
+          if (model.customDifficultySettings.shuffleSpawns()) {
+            // eslint-disable-next-line lodash/prefer-filter
+            _.forEach(star.system().planets, function (world) {
+              if (world.starting_planet === true)
+                if (world.generator) {
+                  world.generator.shuffleLandingZones = true;
+                } else world.planet.shuffleLandingZones = true;
+            });
+          }
         });
 
         if (model.creditsMode()) {

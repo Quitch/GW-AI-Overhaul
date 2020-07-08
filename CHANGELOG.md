@@ -9,6 +9,7 @@
   - sudden death mode (team death)
 - Replaced my shuffle solution with the new native spawn shuffling solution
   - Wars pre-v3 will not shuffle spawns
+- Made landing zone shuffling optional
 - Fixed gas giants being included in the planetary intelligence surface area count
 - Updated difficulty tooltip recommendations
 - Show the system's name in place of the primary AI's name
