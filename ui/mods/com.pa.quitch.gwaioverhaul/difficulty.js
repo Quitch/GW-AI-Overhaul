@@ -924,9 +924,7 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
-          if (model.customDifficultySettings.tougherCommanders())
-            ai.commander =
-              "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
+          ai.tougher_commander = model.customDifficultySettings.tougherCommanders();
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
