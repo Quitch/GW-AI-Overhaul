@@ -407,7 +407,7 @@ document.getElementById("game-difficulty").insertAdjacentHTML(
     '<div class="form-group" id="additional-options">' +
     "<div>" +
     '<input type="checkbox", data-bind="checked: model.customDifficultySettings.shuffleSpawns" />' +
-    '<span style="margin-left: 6px;"></span><loc>Shuffle Spawns</loc>' +
+    '<span style="margin-left: 6px;"></span><loc>Shuffle Landing Zones</loc>' +
     '<span class="info_tip" data-bind="tooltip: \'!LOC:Assign randomised landing zones each battle.\'">?</span>' +
     "</div>" +
     "<div>" +
