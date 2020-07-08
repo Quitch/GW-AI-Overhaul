@@ -36,6 +36,7 @@ model.newGameDifficultyIndex(0);
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
   easierStart: ko.observable(false),
+  tougherCommanders: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -137,6 +138,9 @@ model.customDifficultySettings = {
 };
 
 model.customDifficultySettings.easierStart.subscribe(function () {
+  model.makeGame();
+});
+model.customDifficultySettings.tougherCommanders.subscribe(function () {
   model.makeGame();
 });
 
@@ -349,10 +353,15 @@ document
       "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
       '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
       "</div>" +
-      '<div class="form-group" id="easier-start">' +
+      '<div class="form-group" id="additional-options">' +
       '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
       '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span></div>' +
+      '<div data-bind="visible: api.content.usingTitans()">' +
+      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
+      '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health and storage.\'">?</span></div>' +
+      "</div>" +
       "</div>"
   );
 
@@ -848,6 +857,9 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
+          if (model.customDifficultySettings.tougherCommanders())
+            ai.commander =
+              "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
