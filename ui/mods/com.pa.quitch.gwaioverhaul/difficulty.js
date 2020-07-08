@@ -1102,15 +1102,15 @@ requireGW(
               n = n + 1;
             }
           }
-          if (model.customDifficultySettings.shuffleSpawns()) {
-            // eslint-disable-next-line lodash/prefer-filter
-            _.forEach(star.system().planets, function (world) {
-              if (world.starting_planet === true)
-                if (world.generator) {
-                  world.generator.shuffleLandingZones = true;
-                } else world.planet.shuffleLandingZones = true;
-            });
-          }
+          // eslint-disable-next-line lodash/prefer-filter
+          _.forEach(star.system().planets, function (world) {
+            console.debug("Shuffling");
+            if (world.starting_planet === true)
+              if (world.generator) {
+                world.generator.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+              } else
+                world.planet.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+          });
         });
 
         if (model.creditsMode()) {
