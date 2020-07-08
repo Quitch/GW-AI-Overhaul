@@ -427,7 +427,7 @@ document.getElementById("game-difficulty").insertAdjacentHTML(
       '<span style="margin-left: 6px;"></span><loc>Titan Bosses</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Bosses no longer build but stomp around in incredibly hard to kill Atlas chassiss.\'">?</span>' +
       "</div>" +
-      */
+    */
     "</div>" +
     "</div>"
 );
