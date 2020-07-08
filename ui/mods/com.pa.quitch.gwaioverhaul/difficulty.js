@@ -37,6 +37,7 @@ model.newGameDifficultyIndex(0);
 model.customDifficultySettings = {
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
+  titanBosses: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -141,6 +142,9 @@ model.customDifficultySettings.easierStart.subscribe(function () {
   model.makeGame();
 });
 model.customDifficultySettings.tougherCommanders.subscribe(function () {
+  model.makeGame();
+});
+model.customDifficultySettings.titanBosses.subscribe(function () {
   model.makeGame();
 });
 
@@ -409,6 +413,11 @@ document
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
       '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health and storage.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.titanBosses" />' +
+      '<span style="margin-left: 6px;"></span><loc>Titan Bosses</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Bosses no longer build but stomp around in incredibly hard to kill Atlas chassiss.\'">?</span>' +
       "</div>" +
       "</div>" +
       "</div>"
@@ -922,6 +931,12 @@ requireGW(
           ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
+            if (
+              model.customDifficultySettings.titanBosses() &&
+              ai.character === "!LOC:Boss"
+            )
+              ai.commander =
+                "/pa/units/commanders/tutorial_titan_commander/tutorial_titan_commander.json";
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
