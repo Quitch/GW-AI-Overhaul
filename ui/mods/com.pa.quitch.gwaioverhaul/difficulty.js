@@ -1101,7 +1101,6 @@ requireGW(
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
-            console.debug("Shuffling");
             if (world.starting_planet === true)
               if (world.generator) {
                 world.generator.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
