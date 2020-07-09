@@ -125,3 +125,4 @@ Galactic War hides eco modifies from the player list. The bounties are still bei
 ## Thanks to
 
 - wondible, who continues to be amazing with his JavaScript support
+- PA Inc, for including official translations for the mod
