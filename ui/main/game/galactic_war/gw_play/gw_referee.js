@@ -31,6 +31,12 @@ define(["shared/gw_common"], function (GW) {
         aiMapGet,
         aiX1MapGet
       ) {
+        var game = self.game();
+        var galaxy = game.galaxy();
+        var battleGround = galaxy.stars()[game.currentStar()];
+        var ai = battleGround.ai();
+        var aiInventory = ai.aiInventory;
+
         var units = parse(unitsGet[0]).units;
 
         var aiUnitMap = parse(aiMapGet[0]);
@@ -51,6 +57,7 @@ define(["shared/gw_common"], function (GW) {
               )
             : {};
           var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+          GW.specs.modSpecs(aiFiles, aiInventory, ".ai");
           aiFileGen.resolve(aiFiles);
         });
 

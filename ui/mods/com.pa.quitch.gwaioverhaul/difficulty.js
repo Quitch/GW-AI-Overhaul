@@ -1104,6 +1104,16 @@ requireGW(
               n = n + 1;
             }
           }
+          var aiInventory = [
+            {
+              file:
+                "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json",
+              op: "multiply",
+              path: "max_health",
+              value: "0.001",
+            },
+          ];
+          if (ai) ai.aiInventory = aiInventory;
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
