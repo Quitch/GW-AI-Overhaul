@@ -2,7 +2,7 @@
 
 ## DEV
 
-- Reduce health of Tougher Commanders
+- Reduced health of Tougher Commanders
 
 ## v3.1.0 - 2020-07-09
 
