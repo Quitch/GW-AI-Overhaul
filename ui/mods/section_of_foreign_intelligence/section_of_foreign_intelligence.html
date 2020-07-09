@@ -17,6 +17,27 @@
     </div>
   </div>
   <div data-bind="visible: model.selection.system().star.ai()">
+    <h3><loc>Game Options</loc></h3>
+    <div class="table">
+      <div class="tablebody">
+        <div class="tr">
+          <div class="td"><loc>Bounties:</loc></div>
+          <div class="td">
+            <div class="inline" data-bind="text: $root.bountyMode"></div>
+          </div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Big Spawns:</loc></div>
+          <div class="data" data-bind="text: $root.landAnywhere"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Team Death:</loc></div>
+          <div class="data" data-bind="text: $root.suddenDeath"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-bind="visible: model.selection.system().star.ai()">
     <h3><loc>System Faction</loc></h3>
   </div>
   <ul data-bind="foreach: $root.systemOwner">

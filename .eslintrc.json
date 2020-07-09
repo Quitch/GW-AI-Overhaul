@@ -12,7 +12,7 @@
   "extends": ["eslint:recommended", "plugin:lodash/v3", "prettier"],
   "globals": {
     "api": "readonly",
-    "model": "readonly",
+    "model": "writable",
     "_": "readonly",
     "loc": "readonly",
     "ko": "readonly",
@@ -20,7 +20,14 @@
     "star_system_templates": "readonly",
     "parse": "readonly",
     "loadScript": "readonly",
-    "locUpdateDocument": "readonly"
+    "locUpdateDocument": "readonly",
+    "createjs": "readonly",
+    "CommanderUtility": "readonly",
+    "CardViewModel": "readonly",
+    "engine": "readonly",
+    "loadMods": "readonly",
+    "scene_mod_list": "readonly",
+    "app": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

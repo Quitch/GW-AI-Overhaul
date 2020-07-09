@@ -150,7 +150,10 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    if (ai.character === "Boss") {
+    if (ai.tougher_commander === true)
+      ai.commander =
+        "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
+    if (ai.character === "!LOC:Boss") {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
           slotsArray.push({
@@ -188,6 +191,9 @@ define(["shared/gw_common"], function (GW) {
       alliance_group: 2,
     });
     _.forEach(ai.minions, function (minion) {
+      if (ai.tougher_commander === true)
+        minion.commander =
+          "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
       minion.personality.adv_eco_mod =
         minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
       minion.personality.adv_eco_mod_alone =
@@ -212,6 +218,9 @@ define(["shared/gw_common"], function (GW) {
     // Add Additional Factions for FFA if any
     var allianceGroup = 3;
     _.forEach(ai.foes, function (foe) {
+      if (ai.tougher_commander === true)
+        foe.commander =
+          "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
       var slotsArrayFoes = [];
       foe.personality.adv_eco_mod =
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
@@ -256,9 +265,6 @@ define(["shared/gw_common"], function (GW) {
       allianceGroup = allianceGroup + 1;
     });
 
-    // Randomise slot order to change the spawns available to each army
-    armies = _.shuffle(armies);
-
     var config = {
       files: self.files(),
       armies: armies,
@@ -266,6 +272,10 @@ define(["shared/gw_common"], function (GW) {
         commander: fixupCommander(playerCommander),
       },
       system: system,
+      land_anywhere: ai.landAnywhere,
+      bounty_mode: ai.bountyMode,
+      bounty_value: ai.bountyValue,
+      sudden_death_mode: ai.suddenDeath,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter

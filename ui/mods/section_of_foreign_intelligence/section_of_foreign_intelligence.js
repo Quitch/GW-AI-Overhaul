@@ -66,6 +66,36 @@
     return commanders;
   });
 
+  model.bountyMode = ko.computed(function () {
+    var bountyMode = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().bountyMode
+    )
+      bountyMode = loc("!LOC:Enabled");
+    return bountyMode;
+  });
+
+  model.landAnywhere = ko.computed(function () {
+    var landAnywhere = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().landAnywhere
+    )
+      landAnywhere = loc("!LOC:Enabled");
+    return landAnywhere;
+  });
+
+  model.suddenDeath = ko.computed(function () {
+    var suddenDeath = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().suddenDeath
+    )
+      suddenDeath = loc("!LOC:Enabled");
+    return suddenDeath;
+  });
+
   model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     var commanders = [];
@@ -77,7 +107,7 @@
 
   var totalThreat = function (totalRate) {
     if (!totalRate) {
-      return "None";
+      return "!LOC:None";
     } else if (totalRate < 1) {
       return "!LOC:Very Low";
     } else if (totalRate < 2) {
@@ -134,9 +164,11 @@
     model.selection
       .system()
       .planets()
-      .forEach(function (planet) {
-        if (planet.generator && planet.generator.biom != "gas") {
-          area += 4 * Math.PI * Math.pow(planet.generator.radius, 2);
+      .forEach(function (world) {
+        if (world.generator && world.generator.biome != "gas") {
+          area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+        } else if (world.planet && world.planet.biome != "gas") {
+          area += 4 * Math.PI * Math.pow(world.planet.radius, 2);
         }
       });
     return formatedString(area);

@@ -4,12 +4,12 @@
 
 This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
 
-- Restore faction personalities
+- Restore faction personalities:
   - Legonis Machina: land
   - Foundation: air/naval
   - Synchronous: balanced
   - Revenants: orbital
-- Customise each enemy/Sub Commander
+- Customise each enemy/Sub Commander:
   - Unique model
   - Unique personality
   - Unique colour
@@ -21,30 +21,35 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Bosses are distinctly more difficult than the surrounding systems
 - Added planetary intelligence to allow you to make meaningful decisions on the galactic map
 - Randomised spawn assignments so maps remain fresh on replay
+- Uses all game modes:
+  - Bounty mode
+  - Land anywhere
+  - Sudden death
+- You can give the enemy tougher commander units (TITANS only)
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
 ## Installation
 
-This mod can be installed via the Planetary Annihilation: TITANS in-game Community Mod manager.
+Install this mod via the Planetary Annihilation: TITANS in-game Community Mod manager.
 
 ## In Action
 
-[![Table & Chums tries the mod for the first time.](https://i3.ytimg.com/vi/-0csZIM12N0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-0csZIM12N0&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
+[![Table and Chums tries the mod for the first time.](https://i3.ytimg.com/vi/-0csZIM12N0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-0csZIM12N0&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
 
 ## Difficulty
 
-Sub Commanders are not impacted by difficulty. At any difficulty level, you can choose to enable Easier Start which provides you with more neutral planets with free tech.
+Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
 ![Casual badge](./images/casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
 ![Iron badge](./images/iron.png) **Iron**: for when you've some PA experience under your belt.
 
-![Bronze badge](./images/bronze.png) **Bronze**: for when you want your first real challenge.
+![Bronze badge](./images/bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 
-![Silver badge](./images/silver.png) **Silver**: for when you're ready for the AI to start really pushing back.
+![Silver badge](./images/silver.png) **Silver**: you can beat the skirmish AI.
 
-![Gold badge](./images/gold.png) **Gold**: for when AI skirmish at the top difficulty level is too easy.
+![Gold badge](./images/gold.png) **Gold**: you can beat the Queller AI.
 
 ![Platinum badge](./images/platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
@@ -56,11 +61,17 @@ Sub Commanders are not impacted by difficulty. At any difficulty level, you can 
 
 ## Planetary Intelligence
 
-Each system will display four pieces of information:
+Each system will display the following information:
 
 - **System Area**: the total surface size of all planets, excluding gas giants.
 
 - **Threat Level**: based on the total eco score of all enemies.
+
+- **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
+
+- **Big Spawns**: you can land anywhere on any starting planet.
+
+- **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
@@ -70,15 +81,7 @@ Each system will display four pieces of information:
 
 **Q. Can I use an AI mod like Queller?**
 
-Not at this time. Queller won't break this mod, it simply won't be used.
-
-**Q. How can I provide feedback?**
-
-Please use the mod's [forum thread](https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/). I am especially interested in hearing feedback on the difficulty levels.
-
-**Q. Where did the system descriptions go?**
-
-They were removed to make space for planetary intelligence.
+No. Queller won't break this mod, it simply won't be used.
 
 **Q. Will Sub Commanders fighting for me have the same personality if I fight against them?**
 
@@ -98,11 +101,16 @@ Many changes will only apply to new wars.
 
 **Q. Why am I seeing multiple Commanders for a single enemy army?**
 
-Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to very quickly connect multiple planets.
+Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to connect multiple planets very quickly.
+
+**Q. Why aren't awarded bounties aren't showing on the player list?**
+
+Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
 ## Known Issues
 
 1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
+2. Tougher Commanders can cause issues with certain personalities, in certain landing locations, when operating with very low eco rates.
 
 ## Recommended mods
 
@@ -117,3 +125,4 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 ## Thanks to
 
 - wondible, who continues to be amazing with his JavaScript support
+- PA Inc, for including official translations for the mod

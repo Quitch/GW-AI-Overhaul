@@ -35,7 +35,10 @@ model.newGameDifficultyIndex(0);
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.customDifficultySettings = {
+  shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
+  tougherCommanders: ko.observable(false),
+  titanBosses: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -117,10 +120,35 @@ model.customDifficultySettings = {
     precision: 0,
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
+  landAnywhereChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  suddenDeathChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  bountyModeChance: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
+  bountyModeValue: ko.observable(0).extend({
+    precision: 3,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
   unsavedChanges: ko.observable(false),
 };
 
+model.customDifficultySettings.shuffleSpawns.subscribe(function () {
+  model.makeGame();
+});
 model.customDifficultySettings.easierStart.subscribe(function () {
+  model.makeGame();
+});
+model.customDifficultySettings.tougherCommanders.subscribe(function () {
+  model.makeGame();
+});
+model.customDifficultySettings.titanBosses.subscribe(function () {
   model.makeGame();
 });
 
@@ -198,6 +226,22 @@ model.customDifficultySettings.bossCommanders.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
+model.customDifficultySettings.landAnywhereChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.suddenDeathChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.bountyModeChance.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
+model.customDifficultySettings.bountyModeValue.subscribe(function () {
+  if (model.customDifficultySettings.customDifficulty())
+    model.customDifficultySettings.unsavedChanges(true);
+});
 model.customDifficultySettings.customDifficulty.subscribe(function () {
   if (!model.customDifficultySettings.customDifficulty()) {
     model.customDifficultySettings.unsavedChanges(false);
@@ -240,77 +284,153 @@ document
   .getElementById("game-difficulty-label")
   .insertAdjacentHTML(
     "afterend",
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you beat the skirmish AI.<br>SILVER: you beat the Queller AI.<br>GOLD: prepare for a challenge.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you beat vanilla Galactic War.<br>SILVER: you beat the skirmish AI.<br>GOLD: you beat the Queller AI mod.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
   );
 
-document
-  .getElementById("game-difficulty")
-  .insertAdjacentHTML(
-    "afterend",
-    '<div class="form-group" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
-      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
-      '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
-      '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
-      '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span></div>' +
-      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
-      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span></div>' +
-      '<div><select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Micro</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
-      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
-      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
-      '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
-      '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
-      '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
-      '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
-      '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
-      '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
-      '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span></div>' +
-      '<div><input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
-      '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span></div>' +
-      '<div><select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
-      '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = leave enabled.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span></div>' +
-      "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
-      '<div class="btn_label" style="width:175px;"><loc>Save</loc></div></div>' +
-      "</div>" +
-      '<div class="form-group" id="easier-start">' +
-      '<div><input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
-      '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span></div>' +
-      "</div>"
-  );
+document.getElementById("game-difficulty").insertAdjacentHTML(
+  "afterend",
+  '<div class="form-group" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
+    '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
+    '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
+    '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
+    '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
+    '<span style="margin-left: 6px;"></span><loc>Micro</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
+    '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
+    '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
+    '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
+    '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
+    '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
+    '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
+    '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
+    '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
+    '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
+    '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
+    '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
+    '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.landAnywhereChance" />' +
+    '<span style="margin-left: 6px;"></span><loc>Big Spawns Chance</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of land anywhere being enabled.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.suddenDeathChance" />' +
+    '<span style="margin-left: 6px;"></span><loc>Team Death Chance</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of sudden death mode being enabled.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeChance" />' +
+    '<span style="margin-left: 6px;"></span><loc>Bounties Chance</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of bounty mode being enabled.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeValue" />' +
+    '<span style="margin-left: 6px;"></span><loc>Bounty Value</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage eco bonus per army kilk.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
+    '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = leave enabled.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span>' +
+    "</div>" +
+    "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
+    '<div class="btn_label" style="width:175px;"><loc>Save</loc></div>' +
+    "</div>" +
+    "</div>" +
+    '<div class="form-group" id="additional-options">' +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.shuffleSpawns" />' +
+    '<span style="margin-left: 6px;"></span><loc>Shuffle Landing Zones</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Assign randomised landing zones each battle.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
+    '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span>' +
+    "</div>" +
+    '<div data-bind="visible: api.content.usingTitans()">' +
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
+    '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health, storage, and build speed.\'">?</span>' +
+    "</div>" +
+    /*
+    "<div>" +
+    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.titanBosses" />' +
+    '<span style="margin-left: 6px;"></span><loc>Titan Bosses</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Bosses no longer build but stomp around in incredibly hard to kill Atlas chassiss.\'">?</span>' +
+    "</div>" +
+    */
+    "</div>" +
+    "</div>"
+);
 
 requireGW(
   [
@@ -355,6 +475,10 @@ requireGW(
         max_advanced_fabbers: 5,
         ffa_chance: 25,
         bossCommanders: 2,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 25,
+        bountyModeValue: 0.5,
       },
       {
         // Iron
@@ -377,6 +501,10 @@ requireGW(
         max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 2,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 25,
+        bountyModeValue: 0.4,
       },
       {
         // Bronze
@@ -399,6 +527,10 @@ requireGW(
         max_advanced_fabbers: 10,
         ffa_chance: 25,
         bossCommanders: 3,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 20,
+        bountyModeValue: 0.3,
       },
       {
         // Silver
@@ -421,6 +553,10 @@ requireGW(
         max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 3,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 20,
+        bountyModeValue: 0.3,
       },
       {
         // Gold
@@ -443,6 +579,10 @@ requireGW(
         max_advanced_fabbers: 15,
         ffa_chance: 25,
         bossCommanders: 4,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 15,
+        bountyModeValue: 0.2,
       },
       {
         // Platinum
@@ -465,6 +605,10 @@ requireGW(
         max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 4,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 15,
+        bountyModeValue: 0.2,
       },
       {
         // Diamond
@@ -487,6 +631,10 @@ requireGW(
         max_advanced_fabbers: 20,
         ffa_chance: 25,
         bossCommanders: 5,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 10,
+        bountyModeValue: 0.1,
       },
       {
         // Uber
@@ -509,6 +657,10 @@ requireGW(
         max_advanced_fabbers: 25,
         ffa_chance: 25,
         bossCommanders: 5,
+        landAnywhereChance: 10,
+        suddenDeathChance: 10,
+        bountyModeChance: 10,
+        bountyModeValue: 0.1,
       },
       {
         // Custom
@@ -607,6 +759,18 @@ requireGW(
         );
         model.customDifficultySettings.bossCommanders(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
+        );
+        model.customDifficultySettings.landAnywhereChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].landAnywhereChance
+        );
+        model.customDifficultySettings.suddenDeathChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].suddenDeathChance
+        );
+        model.customDifficultySettings.bountyModeChance(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeChance
+        );
+        model.customDifficultySettings.bountyModeValue(
+          difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
         );
       }
       // Only show the custom difficulty fields if custom difficulty is selected
@@ -760,6 +924,7 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
+          ai.tougher_commander = model.customDifficultySettings.tougherCommanders();
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
@@ -773,6 +938,12 @@ requireGW(
           ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
+            if (
+              model.customDifficultySettings.titanBosses() &&
+              ai.character === "!LOC:Boss"
+            )
+              ai.commander =
+                "/pa/units/commanders/tutorial_titan_commander/tutorial_titan_commander.json";
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
@@ -806,6 +977,22 @@ requireGW(
             //console.debug("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
           }
           _.forEach(info.workers, function (worker) {
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.landAnywhereChance()
+            )
+              worker.ai.landAnywhere = true;
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.suddenDeathChance()
+            )
+              worker.ai.suddenDeath = true;
+            if (
+              Math.random() * 100 <=
+              model.customDifficultySettings.bountyModeChance()
+            )
+              worker.ai.bountyMode = true;
+            worker.ai.bountyModeValue = model.customDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             var numMinions = Math.floor(
@@ -901,18 +1088,23 @@ requireGW(
         gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function (star) {
           var ai = star.ai();
+          var system = star.system();
           if (!ai) {
             var intro_system = gw_intro_systems[n];
             if (intro_system) {
-              star.system().name = intro_system.name;
-              star.system().description = intro_system.description;
+              system.name = intro_system.name;
+              system.description = intro_system.description;
               n = n + 1;
             }
-          } else {
-            star.system().display_name =
-              ai.name; /* display name overrides name even after the ai dies */
-            star.system().description = ai.description;
           }
+          // eslint-disable-next-line lodash/prefer-filter
+          _.forEach(star.system().planets, function (world) {
+            if (world.starting_planet === true)
+              if (world.generator) {
+                world.generator.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+              } else
+                world.planet.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+          });
         });
 
         if (model.creditsMode()) {
