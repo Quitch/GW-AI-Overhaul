@@ -1112,6 +1112,27 @@ requireGW(
               path: "max_health",
               value: "0.25",
             },
+            {
+              file:
+                "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
+              op: "multiply",
+              path: "max_range",
+              value: "0.6",
+            },
+            {
+              file:
+                "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
+              op: "multiply",
+              path: "construction_demand.energy",
+              value: "1.75",
+            },
+            {
+              file:
+                "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
+              op: "multiply",
+              path: "multiply",
+              value: "0.75",
+            },
           ];
           if (ai) ai.aiInventory = aiInventory;
           // eslint-disable-next-line lodash/prefer-filter
