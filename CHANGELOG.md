@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.1.1 - 2020-07-10
 
 - Reduced health of Tougher Commanders
 
