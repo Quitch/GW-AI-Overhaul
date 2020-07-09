@@ -2,8 +2,8 @@
 
 ## v3.1.1 - 2020-07-10
 
-- Reduced health of Tougher Commanders
-- Removed build arm buffs for Tougher Commanders
+- Reduced health of Tougher Commanders (new wars only)
+- Removed build arm buffs for Tougher Commanders (new wars only)
 
 ## v3.1.0 - 2020-07-09
 
