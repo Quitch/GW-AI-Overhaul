@@ -103,7 +103,7 @@ Many changes will only apply to new wars.
 
 Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to connect multiple planets very quickly.
 
-**Q. Why aren't awarded bounties aren't showing on the player list?**
+**Q. Why aren't awarded bounties showing on the player list?**
 
 Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
