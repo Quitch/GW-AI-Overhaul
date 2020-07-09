@@ -1110,7 +1110,7 @@ requireGW(
                 "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json",
               op: "multiply",
               path: "max_health",
-              value: "0.001",
+              value: "0.25",
             },
           ];
           if (ai) ai.aiInventory = aiInventory;

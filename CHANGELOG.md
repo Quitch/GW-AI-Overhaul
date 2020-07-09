@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Reduce health of Tougher Commanders
+
 ## v3.1.0 - 2020-07-09
 
 - Added support for the new AI starting location evaluation function
