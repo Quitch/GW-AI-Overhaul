@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.0.0 - 2020-07-09
 
 - Thanks to PA Inc for updating the server scripts to support all game modes in Galactic War
 - Implemented support for:
