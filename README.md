@@ -107,6 +107,10 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 The Tougher Commanders setting can cause issues with specific personalities, in specific landing locations, when operating with very low eco rates.
 
+**Q. Why aren't awarded bounties aren't showing on the player list?**
+
+Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+
 ## Known Issues
 
 1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
