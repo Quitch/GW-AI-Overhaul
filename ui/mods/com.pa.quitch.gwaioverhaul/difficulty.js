@@ -505,6 +505,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.4,
+        starting_location_evaluation_radius: 100,
       },
       {
         // Bronze
@@ -531,6 +532,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        starting_location_evaluation_radius: 150,
       },
       {
         // Silver
@@ -557,6 +559,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        starting_location_evaluation_radius: 200,
       },
       {
         // Gold
@@ -583,6 +586,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        starting_location_evaluation_radius: 250,
       },
       {
         // Platinum
@@ -609,6 +613,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        starting_location_evaluation_radius: 300,
       },
       {
         // Diamond
@@ -635,6 +640,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        starting_location_evaluation_radius: 400,
       },
       {
         // Uber
@@ -661,6 +667,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        starting_location_evaluation_radius: 400,
       },
       {
         // Custom
