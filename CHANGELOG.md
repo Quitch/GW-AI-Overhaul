@@ -2,8 +2,8 @@
 
 ## v3.1.1 - 2020-07-10
 
-- Reduced health of Tougher Commanders from 1,000,000 to 50,000 (new wars only)
-- Removed build and storage bonuses from Tougher Commanders (new wars only)
+- Reduced health of Tougher Commanders from 1,000,000 to 50,000
+- Removed build and storage bonuses from Tougher Commanders
 
 ## v3.1.0 - 2020-07-09
 
