@@ -6,6 +6,7 @@
 - Added starting location evaluation function to GW-Custom
 - Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to wondible for his ever-invaluable aid
 - Removed TITANS ownership requirement from Tougher Commanders
+- Due to a bad merge the changes of v3.1.1 were not actually applied and this has been fixed
 
 ## v3.1.1 - 2020-07-10
 
