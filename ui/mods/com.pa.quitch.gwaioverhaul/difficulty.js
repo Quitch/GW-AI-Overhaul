@@ -431,7 +431,7 @@ document
       "<div>" +
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
       '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health.\'">?</span>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies use Commander Armor Tech on regular worlds and Commander Combat Tech on boss worlds.\'">?</span>' +
       "</div>" +
       "</div>"
   );
@@ -927,13 +927,69 @@ requireGW(
       });
 
       var aiInventory = [];
-      if (model.customDifficultySettings.tougherCommanders())
-        aiInventory.push({
-          file: "/pa/units/commanders/base_commander/base_commander.json",
-          path: "max_health",
-          op: "multiply",
-          value: 4,
-        });
+      var bossInventory = [];
+      if (model.customDifficultySettings.tougherCommanders()) {
+        var units = ["/pa/units/commanders/base_commander/base_commander.json"];
+        var ammos = [
+          "/pa/units/commanders/base_commander/base_commander_ammo.json",
+          "/pa/ammo/cannon_uber/cannon_uber.json",
+        ];
+        var modAIUnit = function (unit) {
+          aiInventory.push({
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 2,
+          });
+        };
+        _.forEach(units, modAIUnit);
+        var modBossUnit = function (unit) {
+          bossInventory.push(
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 3,
+            }
+          );
+        };
+        _.forEach(units, modBossUnit);
+        var modBossAmmo = function (ammo) {
+          bossInventory.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(ammos, modBossAmmo);
+      }
 
       var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
@@ -948,7 +1004,6 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
-          ai.inventory = aiInventory;
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
@@ -968,11 +1023,13 @@ requireGW(
           else delete ai.personality.starting_location_evaluation_radius;
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
+            ai.inventory = aiInventory.concat(bossInventory);
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.customDifficultySettings.bossCommanders();
           } else {
+            ai.inventory = aiInventory;
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               dist * model.customDifficultySettings.econRatePerDist();
