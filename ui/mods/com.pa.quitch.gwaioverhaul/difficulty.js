@@ -930,8 +930,8 @@ requireGW(
       if (model.customDifficultySettings.tougherCommanders())
         aiInventory.push({
           file: "/pa/units/commanders/base_commander/base_commander.json",
-          op: "multiply",
           path: "max_health",
+          op: "multiply",
           value: 4,
         });
 
