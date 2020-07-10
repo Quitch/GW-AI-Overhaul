@@ -419,7 +419,7 @@ document.getElementById("game-difficulty").insertAdjacentHTML(
     "<div>" +
     '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
     '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health and storage.\'">?</span>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have 4x as much health.\'">?</span>' +
     "</div>" +
     /*
     "<div>" +
