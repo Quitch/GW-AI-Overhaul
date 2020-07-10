@@ -4,7 +4,7 @@
 
 - Fixed AI not using starting location evaluation function
 - Added starting location evaluation function to GW-Custom
-- Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to wondible for his ever invaluable aid
+- Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to wondible for his ever-invaluable aid
 
 ## v3.1.1 - 2020-07-10
 
