@@ -932,7 +932,7 @@ requireGW(
           file: "/pa/units/commanders/base_commander/base_commander.json",
           op: "multiply",
           path: "max_health",
-          value: "4",
+          value: 4,
         });
 
       var finishAis = populate.then(function (teamInfo) {
