@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.2.0 - 2020-07-11
 
 Due to a bad merge the changes of v3.1.1 were not actually applied
 
