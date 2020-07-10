@@ -110,7 +110,6 @@ Galactic War hides eco modifies from the player list. The bounties are still bei
 ## Known Issues
 
 1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
-2. Tougher Commanders can cause issues with certain personalities, in certain landing locations, when operating with very low eco rates.
 
 ## Recommended mods
 

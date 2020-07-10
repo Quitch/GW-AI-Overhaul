@@ -35,7 +35,7 @@ define(["shared/gw_common"], function (GW) {
         var galaxy = game.galaxy();
         var battleGround = galaxy.stars()[game.currentStar()];
         var ai = battleGround.ai();
-        var aiInventory = ai.aiInventory;
+        var aiInventory = ai.inventory;
 
         var units = parse(unitsGet[0]).units;
 
