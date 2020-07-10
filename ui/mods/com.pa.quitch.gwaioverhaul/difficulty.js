@@ -962,7 +962,12 @@ requireGW(
           ai.personality.per_expansion_delay = model.customDifficultySettings.perExpansionDelay();
           ai.personality.max_basic_fabbers = model.customDifficultySettings.maxBasicFabbers();
           ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
-          ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
+          if (
+            model.customDifficultySettings.startingLocationEvaluationRadius() >
+            0
+          )
+            ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
+          else delete ai.personality.starting_location_evaluation_radius;
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
             if (
