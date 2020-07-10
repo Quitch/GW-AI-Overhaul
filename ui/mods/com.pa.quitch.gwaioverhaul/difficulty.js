@@ -419,7 +419,7 @@ document.getElementById("game-difficulty").insertAdjacentHTML(
     "<div>" +
     '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
     '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health, storage, and build speed.\'">?</span>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have 4x as much health.\'">?</span>' +
     "</div>" +
     /*
     "<div>" +
@@ -918,6 +918,15 @@ requireGW(
         });
       });
 
+      var aiInventory = [];
+      if (model.customDifficultySettings.tougherCommanders())
+        aiInventory.push({
+          file: "/pa/units/commanders/base_commander/base_commander.json",
+          op: "multiply",
+          path: "max_health",
+          value: "4",
+        });
+
       var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
 
@@ -931,7 +940,7 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
-          ai.tougher_commander = model.customDifficultySettings.tougherCommanders();
+          ai.inventory = aiInventory;
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();

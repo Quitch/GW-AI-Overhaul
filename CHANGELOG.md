@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.1.1 - 2020-07-10
+
+- Reduced health of Tougher Commanders from 1,000,000 to 50,000 (new wars only)
+- Removed build and storage bonuses from Tougher Commanders (new wars only)
+
 ## v3.1.0 - 2020-07-09
 
 - Added support for the new AI starting location evaluation function
