@@ -1,9 +1,21 @@
 # CHANGELOG
 
+## v3.2.0 - 2020-07-11
+
+Due to a bad merge the changes of v3.1.1 were not actually applied
+
+- Fixed AI not using starting location evaluation function
+- Added starting location evaluation function to GW-Custom
+- Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to wondible for his ever-invaluable aid
+- Removed TITANS ownership requirement from Tougher Commanders as it no longer requires use of the TITANS Tutorial Commander
+- Reduced health of Tougher Commanders from 1,000,000 to 25,000 to match Commander Armor tech
+- Removed build and storage bonuses from Tougher Commanders
+- Tougher Commanders now applies Commander Combat Tech to all enemy commanders on a boss world
+
 ## v3.1.1 - 2020-07-10
 
-- Reduced health of Tougher Commanders from 1,000,000 to 50,000 (new wars only)
-- Removed build and storage bonuses from Tougher Commanders (new wars only)
+- Reduced health of Tougher Commanders from 1,000,000 to 50,000
+- Removed build and storage bonuses from Tougher Commanders
 
 ## v3.1.0 - 2020-07-09
 

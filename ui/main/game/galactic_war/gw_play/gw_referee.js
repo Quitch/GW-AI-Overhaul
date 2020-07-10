@@ -157,9 +157,6 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    if (ai.tougher_commander === true)
-      ai.commander =
-        "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
     if (ai.character === "!LOC:Boss") {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
