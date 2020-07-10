@@ -180,3 +180,11 @@ model.canMove = ko.computed(function () {
 model.displayMove = ko.computed(function () {
   return model.canMove();
 });
+
+model.displayFight = ko.computed(function () {
+  return (
+    model.canFight() &&
+    !model.allowLoad() &&
+    model.selection.star() === model.game().currentStar()
+  );
+});
