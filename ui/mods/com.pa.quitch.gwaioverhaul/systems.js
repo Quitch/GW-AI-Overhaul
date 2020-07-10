@@ -1,3 +1,4 @@
+// All of this is in service of line 98 - prioritise system information over ai information
 function createBitmap(params) {
   if (!params.url) throw "No URL specified";
   if (!params.size) throw "No size specified";
