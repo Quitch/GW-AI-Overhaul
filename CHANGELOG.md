@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Fixed AI not using starting location evaluation function
+- Added starting location evaluation function to GW-Custom
+
 ## v3.1.1 - 2020-07-10
 
 - Reduced health of Tougher Commanders from 1,000,000 to 50,000

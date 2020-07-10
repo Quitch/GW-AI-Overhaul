@@ -112,6 +112,10 @@ model.customDifficultySettings = {
     precision: 0,
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
+  startingLocationEvaluationRadius: ko.observable(0).extend({
+    precision: 0,
+    rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
+  }),
   ffaChance: ko.observable(0).extend({
     precision: 0,
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
@@ -218,6 +222,12 @@ model.customDifficultySettings.maxAdvancedFabbers.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
 });
+model.customDifficultySettings.startingLocationEvaluationRadius.subscribe(
+  function () {
+    if (model.customDifficultySettings.customDifficulty())
+      model.customDifficultySettings.unsavedChanges(true);
+  }
+);
 model.customDifficultySettings.ffaChance.subscribe(function () {
   if (model.customDifficultySettings.customDifficulty())
     model.customDifficultySettings.unsavedChanges(true);
@@ -364,6 +374,11 @@ document.getElementById("game-difficulty").insertAdjacentHTML(
     '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
     '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
     '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span>' +
+    "</div>" +
+    "<div>" +
+    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.startingLocationEvaluationRadius" />' +
+    '<span style="margin-left: 6px;"></span><loc>Landing Evaluation</loc>' +
+    '<span class="info_tip" data-bind="tooltip: \'!LOC:Radius considered when evaluating each possible spawn.\'">?</span>' +
     "</div>" +
     "<div>" +
     '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
@@ -767,6 +782,10 @@ requireGW(
         model.customDifficultySettings.bossCommanders(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
         );
+        model.customDifficultySettings.startingLocationEvaluationRadius(
+          difficultyInfo[model.newGameDifficultyIndex() || 0]
+            .starting_location_evaluation_radius
+        );
         model.customDifficultySettings.landAnywhereChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].landAnywhereChance
         );
@@ -943,6 +962,7 @@ requireGW(
           ai.personality.per_expansion_delay = model.customDifficultySettings.perExpansionDelay();
           ai.personality.max_basic_fabbers = model.customDifficultySettings.maxBasicFabbers();
           ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
+          ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
             if (
