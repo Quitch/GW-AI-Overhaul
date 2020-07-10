@@ -38,7 +38,6 @@ model.customDifficultySettings = {
   shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
-  titanBosses: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -150,9 +149,6 @@ model.customDifficultySettings.easierStart.subscribe(function () {
   model.makeGame();
 });
 model.customDifficultySettings.tougherCommanders.subscribe(function () {
-  model.makeGame();
-});
-model.customDifficultySettings.titanBosses.subscribe(function () {
   model.makeGame();
 });
 
@@ -297,155 +293,150 @@ document
     '<span class="info_tip" data-bind="tooltip: \'!LOC:CASUAL: you completed the tutorial.<br>IRON: you have some hours in PA.<br>BRONZE: you beat vanilla Galactic War.<br>SILVER: you beat the skirmish AI.<br>GOLD: you beat the Queller AI mod.<br>PLATINUM: one enemy is no challenge.<br>DIAMOND: your loadouts are OP.<br>UBER: you hate winning.<br>CUSTOM: create your own challenge.\'">?</span>'
   );
 
-document.getElementById("game-difficulty").insertAdjacentHTML(
-  "afterend",
-  '<div class="form-group" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
-    '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
-    '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
-    '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
-    '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
-    '<span style="margin-left: 6px;"></span><loc>Micro</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
-    '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
-    '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
-    '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
-    '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
-    '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
-    '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
-    '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
-    '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
-    '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
-    '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.startingLocationEvaluationRadius" />' +
-    '<span style="margin-left: 6px;"></span><loc>Landing Evaluation</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Radius considered when evaluating each possible spawn.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
-    '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
-    '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.landAnywhereChance" />' +
-    '<span style="margin-left: 6px;"></span><loc>Big Spawns Chance</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of land anywhere being enabled.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.suddenDeathChance" />' +
-    '<span style="margin-left: 6px;"></span><loc>Team Death Chance</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of sudden death mode being enabled.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeChance" />' +
-    '<span style="margin-left: 6px;"></span><loc>Bounties Chance</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of bounty mode being enabled.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeValue" />' +
-    '<span style="margin-left: 6px;"></span><loc>Bounty Value</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage eco bonus per army kilk.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
-    '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = leave enabled.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span>' +
-    "</div>" +
-    "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
-    '<div class="btn_label" style="width:175px;"><loc>Save</loc></div>' +
-    "</div>" +
-    "</div>" +
-    '<div class="form-group" id="additional-options">' +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.shuffleSpawns" />' +
-    '<span style="margin-left: 6px;"></span><loc>Shuffle Landing Zones</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Assign randomised landing zones each battle.\'">?</span>' +
-    "</div>" +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
-    '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span>' +
-    "</div>" +
-    '<div data-bind="visible: api.content.usingTitans()">' +
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
-    '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health.\'">?</span>' +
-    "</div>" +
-    /*
-    "<div>" +
-    '<input type="checkbox", data-bind="checked: model.customDifficultySettings.titanBosses" />' +
-    '<span style="margin-left: 6px;"></span><loc>Titan Bosses</loc>' +
-    '<span class="info_tip" data-bind="tooltip: \'!LOC:Bosses no longer build but stomp around in incredibly hard to kill Atlas chassiss.\'">?</span>' +
-    "</div>" +
-    */
-    "</div>" +
-    "</div>"
-);
+document
+  .getElementById("game-difficulty")
+  .insertAdjacentHTML(
+    "afterend",
+    '<div class="form-group" id="custom-difficulty-settings" data-bind="visible: model.customDifficultySettings.customDifficulty()">' +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.goForKill" />' +
+      '<span style="margin-left: 6px;"></span><loc>Target Weakest</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Focus on weakest enemy.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots" />' +
+      '<span style="margin-left: 6px;"></span><loc>Scout Metal First</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Scout around metal spots rather than at random.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate" />' +
+      '<span style="margin-left: 6px;"></span><loc>Easy Systems</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Greater number of single planet systems. Does not affect bosses.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses" />' +
+      '<span style="margin-left: 6px;"></span><loc>Commander Leaves Planet</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Allow Commanders to travel by orbital transport and teleporter.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<select data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Micro</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:How well the AI handles its armies in combat.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.mandatoryMinions" />' +
+      '<span style="margin-left: 6px;"></span><loc>Mandatory Minions</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of additional Commanders in every system.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.minionMod" />' +
+      '<span style="margin-left: 6px;"></span><loc>Minion Modifier</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Mandatory Minions + Star Distance * Minion Modifier = number of additional enemy Commanders.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (min)</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Minimum number of seconds between units produced from a factory.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unit Production Delay (max)</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Maximum number of seconds between units produced from a factory.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.unableToExpandDelay" />' +
+      '<span style="margin-left: 6px;"></span><loc>Unable To Expand Delay</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Additional amount of time in seconds before recognising that it is contained.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.perExpansionDelay" />' +
+      '<span style="margin-left: 6px;"></span><loc>Per Expansion Delay</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Delay in seconds between the creation of new bases.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econBase" />' +
+      '<span style="margin-left: 6px;"></span><loc>Base Econ Modifier</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage modifier to all sources of income where 1 = 100%.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.econRatePerDist" />' +
+      '<span style="margin-left: 6px;"></span><loc>Distance Econ Modifier</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage points added to the Base Econ Modifier for each hop the enemy is from the starting star.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxBasicFabbers" />' +
+      '<span style="margin-left: 6px;"></span><loc>Max Basic Fabbers</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most basic fabbers each enemy army will build.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers" />' +
+      '<span style="margin-left: 6px;"></span><loc>Max Advanced Fabbers</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:The most advanced fabbers each enemy army will build.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.startingLocationEvaluationRadius" />' +
+      '<span style="margin-left: 6px;"></span><loc>Landing Evaluation</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Radius considered when evaluating each possible spawn.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.ffaChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>FFA Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of a FFA occuring.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bossCommanders" />' +
+      '<span style="margin-left: 6px;"></span><loc>Boss Commanders</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Number of commanders present in each boss army.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.landAnywhereChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Big Spawns Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of land anywhere being enabled.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.suddenDeathChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Team Death Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of sudden death mode being enabled.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeChance" />' +
+      '<span style="margin-left: 6px;"></span><loc>Bounties Chance</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage chance per star of bounty mode being enabled.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="number" style="width: 50px; padding-bottom: 0px;" data-bind="textInput: model.customDifficultySettings.bountyModeValue" />' +
+      '<span style="margin-left: 6px;"></span><loc>Bounty Value</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Percentage eco bonus per army kilk.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<select data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags", multiple="true"></select>' +
+      '<span style="margin-left: 6px;"></span><loc>Additional Settings</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Default = leave enabled.<br><br>Lobotomy = apply the tutorial restrictions on the AI so that it poses almost no threat.<br><br>Slower Expansion = takes longer to grow its economy.<br><br>Prevent Waste = turns excess eco into more factories.<br><br>Use Ctrl to select multiple options and deselect currently selected options.\'">?</span>' +
+      "</div>" +
+      "<div class='btn_hero' data-bind=\"click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }\">" +
+      '<div class="btn_label" style="width:175px;"><loc>Save</loc></div>' +
+      "</div>" +
+      "</div>" +
+      '<div class="form-group" id="additional-options">' +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.shuffleSpawns" />' +
+      '<span style="margin-left: 6px;"></span><loc>Shuffle Landing Zones</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Assign randomised landing zones each battle.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.easierStart" />' +
+      '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span>' +
+      "</div>" +
+      '<div data-bind="visible: api.content.usingTitans()">' +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
+      '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health.\'">?</span>' +
+      "</div>" +
+      "</div>" +
+      "</div>"
+  );
 
 requireGW(
   [
@@ -979,12 +970,6 @@ requireGW(
           else delete ai.personality.starting_location_evaluation_radius;
           ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (isBoss) {
-            if (
-              model.customDifficultySettings.titanBosses() &&
-              ai.character === "!LOC:Boss"
-            )
-              ai.commander =
-                "/pa/units/commanders/tutorial_titan_commander/tutorial_titan_commander.json";
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
