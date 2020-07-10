@@ -918,6 +918,15 @@ requireGW(
         });
       });
 
+      var aiInventory = [];
+      if (model.customDifficultySettings.tougherCommanders())
+        aiInventory.push({
+          file: "/pa/units/commanders/base_commander/base_commander.json",
+          op: "multiply",
+          path: "max_health",
+          value: "4",
+        });
+
       var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
 
@@ -931,7 +940,7 @@ requireGW(
         );
 
         var setAIData = function (ai, dist, isBoss) {
-          ai.tougher_commander = model.customDifficultySettings.tougherCommanders();
+          ai.inventory = aiInventory;
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
           ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
@@ -1103,39 +1112,6 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
-          }
-          if (ai) {
-            var aiInventory = [
-              {
-                file:
-                  "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json",
-                op: "multiply",
-                path: "max_health",
-                value: "0.25",
-              },
-              {
-                file:
-                  "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
-                op: "multiply",
-                path: "max_range",
-                value: "0.6",
-              },
-              {
-                file:
-                  "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
-                op: "multiply",
-                path: "construction_demand.energy",
-                value: "1.75",
-              },
-              {
-                file:
-                  "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander_arm.json",
-                op: "multiply",
-                path: "multiply",
-                value: "0.75",
-              },
-            ];
-            ai.aiInventory = aiInventory;
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
