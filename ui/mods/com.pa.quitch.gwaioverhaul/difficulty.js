@@ -428,12 +428,10 @@ document
       '<span style="margin-left: 6px;"></span><loc>Easier Start</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:More neutral systems with free technology.\'">?</span>' +
       "</div>" +
-      '<div data-bind="visible: api.content.usingTitans()">' +
       "<div>" +
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
       '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemy commanders have much higher health.\'">?</span>' +
-      "</div>" +
       "</div>" +
       "</div>"
   );
