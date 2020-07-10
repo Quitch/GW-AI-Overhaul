@@ -21,13 +21,7 @@
     "parse": "readonly",
     "loadScript": "readonly",
     "locUpdateDocument": "readonly",
-    "createjs": "readonly",
-    "CommanderUtility": "readonly",
-    "CardViewModel": "readonly",
-    "engine": "readonly",
-    "loadMods": "readonly",
-    "scene_mod_list": "readonly",
-    "app": "readonly"
+    "createjs": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
