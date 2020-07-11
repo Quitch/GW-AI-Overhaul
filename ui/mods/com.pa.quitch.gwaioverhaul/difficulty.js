@@ -1535,7 +1535,6 @@ requireGW(
           )
             ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
-          if (factionBuffs) var aiBuffs = _.shuffle(factionBuffs[ai.faction]);
           if (isBoss) {
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
@@ -1543,7 +1542,10 @@ requireGW(
             ai.bossCommanders = model.customDifficultySettings.bossCommanders();
             ai.inventory = aiInventory.concat(bossInventory);
             if (model.customDifficultySettings.factionTech()) {
-              var buffs = _.sample(aiBuffs, Math.floor(maxDist / 2));
+              var buffs = _.sample(
+                factionBuffs[ai.faction],
+                Math.floor(maxDist / 2)
+              );
               _.times(buffs.length, function (n) {
                 ai.inventory = ai.inventory.concat(buffs[n]);
               });
@@ -1554,7 +1556,7 @@ requireGW(
               dist * model.customDifficultySettings.econRatePerDist();
             ai.inventory = aiInventory;
             if (model.customDifficultySettings.factionTech()) {
-              buffs = _.sample(aiBuffs, Math.floor(dist / 2));
+              buffs = _.sample(factionBuffs[ai.faction], Math.floor(dist / 2));
               _.times(buffs.length, function (n) {
                 ai.inventory = ai.inventory.concat(buffs[n]);
               });
