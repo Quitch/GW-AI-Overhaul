@@ -1158,15 +1158,8 @@ requireGW(
           "/pa/units/land/laser_defense_adv/laser_defense_adv_ammo.json",
           "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher_ammo.json",
           "/pa/units/orbital/ion_defense/ion_defense_ammo.json",
-        ];
-        var synchronousAmmoSplash = [
           "/pa/units/land/artillery_short/artillery_short_ammo.json",
           "/pa/units/land/artillery_long/artillery_long_ammo.json",
-        ];
-        var synchronousAmmoCost = [
-          "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
-          "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
-          "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
         ];
         var revenantsUnits = [
           "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
@@ -1176,7 +1169,6 @@ requireGW(
           "/pa/units/orbital/defense_satellite/defense_satellite.json",
           "/pa/units/orbital/orbital_laser/orbital_laser.json",
           "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-          "/pa/units/orbital/orbital_factory/orbital_factory.json",
           "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           "/pa/units/orbital/mining_platform/mining_platform.json",
           "/pa/units/orbital/orbital_probe/orbital_probe.json",
@@ -1192,6 +1184,294 @@ requireGW(
           "/pa/units/orbital/defense_satellite/defense_satellite_ammo_orbital.json",
           "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
         ];
+
+        var legonisCost = [];
+        var modUnitlegonisCost = function (unit) {
+          legonisCost.push({
+            file: unit,
+            path: "build_metal_cost",
+            op: "multiply",
+            value: 0.75,
+          });
+        };
+        _.forEach(legonisUnits, modUnitlegonisCost);
+
+        var legonisDamage = [];
+        var modUnitlegonisDamage = function (ammo) {
+          legonisDamage.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(legonisAmmo, modUnitlegonisDamage);
+
+        var legonisHealth = [];
+        var modUnitlegonisHealth = function (unit) {
+          legonisHealth.push({
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 1.25,
+          });
+        };
+        _.forEach(legonisUnits, modUnitlegonisHealth);
+
+        var legonisSpeed = [];
+        var modUnitlegonisSpeed = function (unit) {
+          legonisSpeed.push(
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(legonisUnits, modUnitlegonisSpeed);
+
+        var foundationCost = [];
+        var modUnitFoundationCost = function (unit) {
+          foundationCost.push({
+            file: unit,
+            path: "build_metal_cost",
+            op: "multiply",
+            value: 0.75,
+          });
+        };
+        _.forEach(foundationUnits, modUnitFoundationCost);
+
+        var foundationDamage = [];
+        var modUnitFoundationDamage = function (ammo) {
+          foundationDamage.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(foundationAmmo, modUnitFoundationDamage);
+
+        var foundationHealth = [];
+        var modUnitFoundationHealth = function (unit) {
+          foundationHealth.push({
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 1.25,
+          });
+        };
+        _.forEach(foundationUnits, modUnitFoundationHealth);
+
+        var foundationSpeed = [];
+        var modUnitFoundationSpeed = function (unit) {
+          foundationSpeed.push(
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(foundationUnits, modUnitFoundationSpeed);
+
+        var synchronousCost = [];
+        var modUnitsynchronousCost = function (unit) {
+          synchronousCost.push({
+            file: unit,
+            path: "build_metal_cost",
+            op: "multiply",
+            value: 0.75,
+          });
+        };
+        _.forEach(synchronousUnits, modUnitsynchronousCost);
+
+        var synchronousDamage = [];
+        var modUnitsynchronousDamage = function (ammo) {
+          synchronousDamage.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(synchronousAmmo, modUnitsynchronousDamage);
+
+        var synchronousHealth = [];
+        var modUnitsynchronousHealth = function (unit) {
+          synchronousHealth.push({
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 1.25,
+          });
+        };
+        _.forEach(synchronousUnits, modUnitsynchronousHealth);
+
+        var synchronousSpeed = [];
+        var modUnitsynchronousSpeed = function (unit) {
+          synchronousSpeed.push(
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(synchronousUnits, modUnitsynchronousSpeed);
+
+        var revenantsCost = [];
+        var modUnitrevenantsCost = function (unit) {
+          revenantsCost.push({
+            file: unit,
+            path: "build_metal_cost",
+            op: "multiply",
+            value: 0.75,
+          });
+        };
+        _.forEach(revenantsUnits, modUnitrevenantsCost);
+
+        var revenantsDamage = [];
+        var modUnitrevenantsDamage = function (ammo) {
+          revenantsDamage.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(revenantsAmmo, modUnitrevenantsDamage);
+
+        var revenantsHealth = [];
+        var modUnitrevenantsHealth = function (unit) {
+          revenantsHealth.push({
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 1.25,
+          });
+        };
+        _.forEach(revenantsUnits, modUnitrevenantsHealth);
+
+        var revenantsSpeed = [];
+        var modUnitrevenantsSpeed = function (unit) {
+          revenantsSpeed.push(
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
+        };
+        _.forEach(revenantsUnits, modUnitrevenantsSpeed);
       }
 
       var finishAis = populate.then(function (teamInfo) {
