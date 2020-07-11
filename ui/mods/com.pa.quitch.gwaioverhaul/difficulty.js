@@ -1209,7 +1209,6 @@ requireGW(
           });
         };
         _.forEach(legonisUnits, modUnitlegonisCost);
-
         var legonisDamage = [];
         var modUnitlegonisDamage = function (ammo) {
           legonisDamage.push(
@@ -1228,7 +1227,6 @@ requireGW(
           );
         };
         _.forEach(legonisAmmo, modUnitlegonisDamage);
-
         var legonisHealth = [];
         var modUnitlegonisHealth = function (unit) {
           legonisHealth.push({
@@ -1239,7 +1237,6 @@ requireGW(
           });
         };
         _.forEach(legonisUnits, modUnitlegonisHealth);
-
         var legonisSpeed = [];
         var modUnitlegonisSpeed = function (unit) {
           legonisSpeed.push(
@@ -1270,7 +1267,6 @@ requireGW(
           );
         };
         _.forEach(legonisUnits, modUnitlegonisSpeed);
-
         var foundationCost = [];
         var modUnitFoundationCost = function (unit) {
           foundationCost.push({
@@ -1281,7 +1277,6 @@ requireGW(
           });
         };
         _.forEach(foundationUnits, modUnitFoundationCost);
-
         var foundationDamage = [];
         var modUnitFoundationDamage = function (ammo) {
           foundationDamage.push(
@@ -1300,7 +1295,6 @@ requireGW(
           );
         };
         _.forEach(foundationAmmo, modUnitFoundationDamage);
-
         var foundationHealth = [];
         var modUnitFoundationHealth = function (unit) {
           foundationHealth.push({
@@ -1311,7 +1305,6 @@ requireGW(
           });
         };
         _.forEach(foundationUnits, modUnitFoundationHealth);
-
         var foundationSpeed = [];
         var modUnitFoundationSpeed = function (unit) {
           foundationSpeed.push(
@@ -1342,7 +1335,6 @@ requireGW(
           );
         };
         _.forEach(foundationUnits, modUnitFoundationSpeed);
-
         var synchronousCost = [];
         var modUnitsynchronousCost = function (unit) {
           synchronousCost.push({
@@ -1353,7 +1345,6 @@ requireGW(
           });
         };
         _.forEach(synchronousUnits, modUnitsynchronousCost);
-
         var synchronousDamage = [];
         var modUnitsynchronousDamage = function (ammo) {
           synchronousDamage.push(
@@ -1372,7 +1363,6 @@ requireGW(
           );
         };
         _.forEach(synchronousAmmo, modUnitsynchronousDamage);
-
         var synchronousHealth = [];
         var modUnitsynchronousHealth = function (unit) {
           synchronousHealth.push({
@@ -1383,7 +1373,6 @@ requireGW(
           });
         };
         _.forEach(synchronousUnits, modUnitsynchronousHealth);
-
         var synchronousSpeed = [];
         var modUnitsynchronousSpeed = function (unit) {
           synchronousSpeed.push(
@@ -1414,7 +1403,6 @@ requireGW(
           );
         };
         _.forEach(synchronousUnits, modUnitsynchronousSpeed);
-
         var revenantsCost = [];
         var modUnitrevenantsCost = function (unit) {
           revenantsCost.push({
@@ -1425,7 +1413,6 @@ requireGW(
           });
         };
         _.forEach(revenantsUnits, modUnitrevenantsCost);
-
         var revenantsDamage = [];
         var modUnitrevenantsDamage = function (ammo) {
           revenantsDamage.push(
@@ -1444,7 +1431,6 @@ requireGW(
           );
         };
         _.forEach(revenantsAmmo, modUnitrevenantsDamage);
-
         var revenantsHealth = [];
         var modUnitrevenantsHealth = function (unit) {
           revenantsHealth.push({
@@ -1455,7 +1441,6 @@ requireGW(
           });
         };
         _.forEach(revenantsUnits, modUnitrevenantsHealth);
-
         var revenantsSpeed = [];
         var modUnitrevenantsSpeed = function (unit) {
           revenantsSpeed.push(
