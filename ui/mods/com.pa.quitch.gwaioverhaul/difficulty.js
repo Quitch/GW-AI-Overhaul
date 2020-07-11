@@ -1002,7 +1002,7 @@ requireGW(
       }
 
       if (model.customDifficultySettings.factionTech()) {
-        var botUnits = [
+        var legonisUnits = [
           "/pa/units/land/fabrication_bot/fabrication_bot.json",
           "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
           "/pa/units/land/assault_bot/assault_bot.json",
