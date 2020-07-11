@@ -38,6 +38,7 @@ model.customDifficultySettings = {
   shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
+  factionTech: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -149,6 +150,9 @@ model.customDifficultySettings.easierStart.subscribe(function () {
   model.makeGame();
 });
 model.customDifficultySettings.tougherCommanders.subscribe(function () {
+  model.makeGame();
+});
+model.customDifficultySettings.factionTech.subscribe(function () {
   model.makeGame();
 });
 
@@ -432,6 +436,11 @@ document
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.tougherCommanders" />' +
       '<span style="margin-left: 6px;"></span><loc>Tougher Commanders</loc>' +
       '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies use Commander Armor Tech on regular worlds and Commander Combat Tech on boss worlds.\'">?</span>' +
+      "</div>" +
+      "<div>" +
+      '<input type="checkbox", data-bind="checked: model.customDifficultySettings.factionTech" />' +
+      '<span style="margin-left: 6px;"></span><loc>Faction Tech</loc>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air buffs.<br>Synchronous: structure buffs.<br>Revenants: orbital unit buffs.\'">?</span>' +
       "</div>" +
       "</div>"
   );
