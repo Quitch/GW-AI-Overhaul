@@ -1148,6 +1148,8 @@ requireGW(
           "/pa/units/land/control_module/control_module.json",
           "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
           "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
+          "/pa/units/orbital/defense_satellite/defense_satellite.json",
+          "/pa/units/orbital/mining_platform/mining_platform.json",
         ];
         var synchronousAmmo = [
           "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
@@ -1166,11 +1168,9 @@ requireGW(
           "/pa/units/orbital/orbital_lander/orbital_lander.json",
           "/pa/units/orbital/radar_satellite/radar_satellite.json",
           "/pa/units/orbital/solar_array/solar_array.json",
-          "/pa/units/orbital/defense_satellite/defense_satellite.json",
           "/pa/units/orbital/orbital_laser/orbital_laser.json",
           "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
           "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-          "/pa/units/orbital/mining_platform/mining_platform.json",
           "/pa/units/orbital/orbital_probe/orbital_probe.json",
           "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
           "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
@@ -1183,6 +1183,7 @@ requireGW(
           "/pa/units/orbital/orbital_railgun/orbital_railgun_ammo.json",
           "/pa/units/orbital/defense_satellite/defense_satellite_ammo_orbital.json",
           "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
+          "/pa/units/orbital/titan_orbital/titan_orbital_ammo.json",
         ];
 
         var legonisCost = [];
