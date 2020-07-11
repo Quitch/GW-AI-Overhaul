@@ -937,6 +937,7 @@ requireGW(
 
       var aiInventory = [];
       var bossInventory = [];
+
       if (model.customDifficultySettings.tougherCommanders()) {
         var units = ["/pa/units/commanders/base_commander/base_commander.json"];
         var ammos = [
