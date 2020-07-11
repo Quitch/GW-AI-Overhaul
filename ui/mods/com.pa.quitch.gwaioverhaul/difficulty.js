@@ -1471,6 +1471,37 @@ requireGW(
           );
         };
         _.forEach(revenantsUnits, modUnitrevenantsSpeed);
+
+        var legonisBuffs = [
+          legonisCost,
+          legonisDamage,
+          legonisHealth,
+          legonisSpeed,
+        ];
+        var foundationBuffs = [
+          foundationCost,
+          foundationDamage,
+          foundationHealth,
+          legonisSpeed,
+        ];
+        var synchronousBuffs = [
+          synchronousCost,
+          synchronousDamage,
+          synchronousHealth,
+          synchronousSpeed,
+        ];
+        var revenantsBuffs = [
+          revenantsCost,
+          revenantsDamage,
+          revenantsHealth,
+          revenantsSpeed,
+        ];
+        var factionBuffs = [
+          legonisBuffs,
+          foundationBuffs,
+          synchronousBuffs,
+          revenantsBuffs,
+        ];
       }
 
       var finishAis = populate.then(function (teamInfo) {
@@ -1497,24 +1528,37 @@ requireGW(
           ai.personality.per_expansion_delay = model.customDifficultySettings.perExpansionDelay();
           ai.personality.max_basic_fabbers = model.customDifficultySettings.maxBasicFabbers();
           ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
+          ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
           if (
             model.customDifficultySettings.startingLocationEvaluationRadius() >
             0
           )
             ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
-          ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
+          if (factionBuffs) var aiBuffs = _.shuffle(factionBuffs[ai.faction]);
           if (isBoss) {
-            ai.inventory = aiInventory.concat(bossInventory);
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.customDifficultySettings.bossCommanders();
+            ai.inventory = aiInventory.concat(bossInventory);
+            if (model.customDifficultySettings.factionTech()) {
+              var buffs = _.sample(aiBuffs, Math.floor(maxDist / 2));
+              _.times(buffs.length, function (n) {
+                ai.inventory = ai.inventory.concat(buffs[n]);
+              });
+            }
           } else {
-            ai.inventory = aiInventory;
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               dist * model.customDifficultySettings.econRatePerDist();
+            ai.inventory = aiInventory;
+            if (model.customDifficultySettings.factionTech()) {
+              buffs = _.sample(aiBuffs, Math.floor(dist / 2));
+              _.times(buffs.length, function (n) {
+                ai.inventory = ai.inventory.concat(buffs[n]);
+              });
+            }
           }
         };
 
