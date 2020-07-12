@@ -1651,49 +1651,44 @@ requireGW(
               Math.random() * 100 <=
               model.customDifficultySettings.ffaChance()
             ) {
-              var hostileFactions = _.sample(
+              var foeFaction = _.sample(
                 _.without(aiFactions, worker.ai.faction)
               );
-              var ffaFirstFaction = _.sample(
-                GWFactions[hostileFactions].minions
-              );
+              var foeCommander = _.sample(GWFactions[foeFaction].minions);
               var numFoes = Math.round((numMinions + 1) / 2);
-              setAIData(ffaFirstFaction, dist, false);
+              setAIData(foeCommander, dist, false);
               if (model.customDifficultySettings.factionTech()) {
-                ffaFirstFaction.inventory = [];
+                foeCommander.inventory = [];
                 _.times(typeOfBuffs.length, function (n) {
-                  ffaFirstFaction.inventory = ffaFirstFaction.inventory.concat(
-                    factionBuffs[hostileFactions][typeOfBuffs[n]]
+                  foeCommander.inventory = foeCommander.inventory.concat(
+                    factionBuffs[foeFaction][typeOfBuffs[n]]
                   );
                 });
               }
-              ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
-              ffaFirstFaction.commanderCount = numFoes;
-              worker.ai.foes.push(ffaFirstFaction);
+              foeCommander.color = foeCommander.color || worker.ai.color;
+              foeCommander.commanderCount = numFoes;
+              worker.ai.foes.push(foeCommander);
 
               if (
                 Math.random() * 100 <=
                 model.customDifficultySettings.ffaChance()
               ) {
-                var hostileFactionsRemaining = _.sample(
-                  _.without(aiFactions, worker.ai.faction, hostileFactions)
+                foeFaction = _.sample(
+                  _.without(aiFactions, worker.ai.faction, foeFaction)
                 );
-                var ffaSecondFaction = _.sample(
-                  GWFactions[hostileFactionsRemaining].minions
-                );
-                setAIData(ffaSecondFaction, dist, false);
+                foeCommander = _.sample(GWFactions[foeFaction].minions);
+                setAIData(foeCommander, dist, false);
                 if (model.customDifficultySettings.factionTech()) {
-                  ffaSecondFaction.inventory = [];
+                  foeCommander.inventory = [];
                   _.times(typeOfBuffs.length, function (n) {
-                    ffaSecondFaction.inventory = ffaSecondFaction.inventory.concat(
-                      factionBuffs[hostileFactionsRemaining][typeOfBuffs[n]]
+                    foeCommander.inventory = foeCommander.inventory.concat(
+                      factionBuffs[foeFaction][typeOfBuffs[n]]
                     );
                   });
                 }
-                ffaSecondFaction.color =
-                  ffaSecondFaction.color || worker.ai.color;
-                ffaSecondFaction.commanderCount = numFoes;
-                worker.ai.foes.push(ffaSecondFaction);
+                foeCommander.color = foeCommander.color || worker.ai.color;
+                foeCommander.commanderCount = numFoes;
+                worker.ai.foes.push(foeCommander);
               }
             }
             //console.debug(worker.ai.name, "| Eco:", worker.ai.econ_rate, "| Minions:", numMinions, "| Distance", dist);
