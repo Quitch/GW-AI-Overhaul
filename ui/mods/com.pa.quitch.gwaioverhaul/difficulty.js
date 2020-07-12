@@ -1646,6 +1646,7 @@ requireGW(
               });
             }
 
+            worker.ai.foes = [];
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.ffaChance()
@@ -1653,12 +1654,19 @@ requireGW(
               var hostileFactions = _.sample(
                 _.without(aiFactions, worker.ai.faction)
               );
-              worker.ai.foes = [];
               var ffaFirstFaction = _.sample(
                 GWFactions[hostileFactions].minions
               );
-              setAIData(ffaFirstFaction, dist, false);
               var numFoes = Math.round((numMinions + 1) / 2);
+              setAIData(ffaFirstFaction, dist, false);
+              if (model.customDifficultySettings.factionTech()) {
+                ffaFirstFaction.inventory = [];
+                _.times(typeOfBuffs.length, function (n) {
+                  ffaFirstFaction.inventory = ffaFirstFaction.inventory.concat(
+                    factionBuffs[hostileFactions][typeOfBuffs[n]]
+                  );
+                });
+              }
               ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
               ffaFirstFaction.commanderCount = numFoes;
               worker.ai.foes.push(ffaFirstFaction);
@@ -1674,6 +1682,14 @@ requireGW(
                   GWFactions[hostileFactionsRemaining].minions
                 );
                 setAIData(ffaSecondFaction, dist, false);
+                if (model.customDifficultySettings.factionTech()) {
+                  ffaSecondFaction.inventory = [];
+                  _.times(typeOfBuffs.length, function (n) {
+                    ffaSecondFaction.inventory = ffaSecondFaction.inventory.concat(
+                      factionBuffs[hostileFactionsRemaining][typeOfBuffs[n]]
+                    );
+                  });
+                }
                 ffaSecondFaction.color =
                   ffaSecondFaction.color || worker.ai.color;
                 ffaSecondFaction.commanderCount = numFoes;
