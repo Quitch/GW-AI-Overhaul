@@ -440,7 +440,7 @@ document
       "<div>" +
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.factionTech" />' +
       '<span style="margin-left: 6px;"></span><loc>Faction Tech</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: structure buffs.<br>Revenants: orbital unit buffs.\'">?</span>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: structure and fabricator buffs.<br>Revenants: orbital buffs.\'">?</span>' +
       "</div>" +
       "</div>"
   );
