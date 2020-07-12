@@ -1647,39 +1647,19 @@ requireGW(
             }
 
             worker.ai.foes = [];
-            if (
-              Math.random() * 100 <=
-              model.customDifficultySettings.ffaChance()
-            ) {
-              var foeFaction = _.sample(
-                _.without(aiFactions, worker.ai.faction)
-              );
-              var foeCommander = _.sample(GWFactions[foeFaction].minions);
-              var numFoes = Math.round((numMinions + 1) / 2);
-              setAIData(foeCommander, dist, false);
-              if (model.customDifficultySettings.factionTech()) {
-                foeCommander.inventory = [];
-                _.times(typeOfBuffs.length, function (n) {
-                  foeCommander.inventory = foeCommander.inventory.concat(
-                    factionBuffs[foeFaction][typeOfBuffs[n]]
-                  );
-                });
-              }
-              foeCommander.color = foeCommander.color || worker.ai.color;
-              foeCommander.commanderCount = numFoes;
-              worker.ai.foes.push(foeCommander);
-
+            var availableFactions = _.without(aiFactions, worker.ai.faction);
+            _.times(availableFactions.length, function () {
               if (
                 Math.random() * 100 <=
                 model.customDifficultySettings.ffaChance()
               ) {
-                foeFaction = _.sample(
-                  _.without(aiFactions, worker.ai.faction, foeFaction)
-                );
-                foeCommander = _.sample(GWFactions[foeFaction].minions);
+                availableFactions = _.shuffle(availableFactions);
+                var foeFaction = availableFactions.splice(0, 1);
+                var foeCommander = _.sample(GWFactions[foeFaction].minions);
+                var numFoes = Math.round((numMinions + 1) / 2);
                 setAIData(foeCommander, dist, false);
+                foeCommander.inventory = [];
                 if (model.customDifficultySettings.factionTech()) {
-                  foeCommander.inventory = [];
                   _.times(typeOfBuffs.length, function (n) {
                     foeCommander.inventory = foeCommander.inventory.concat(
                       factionBuffs[foeFaction][typeOfBuffs[n]]
@@ -1690,7 +1670,7 @@ requireGW(
                 foeCommander.commanderCount = numFoes;
                 worker.ai.foes.push(foeCommander);
               }
-            }
+            });
             //console.debug(worker.ai.name, "| Eco:", worker.ai.econ_rate, "| Minions:", numMinions, "| Distance", dist);
           });
         });
