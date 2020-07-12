@@ -1515,12 +1515,16 @@ requireGW(
           revenantsHealth,
           revenantsSpeed,
         ];
+
         var factionBuffs = [
           legonisBuffs,
           foundationBuffs,
           synchronousBuffs,
           revenantsBuffs,
         ];
+
+        // 0 = cost; 1 = damage; 2 = synchronous; 3 = speed
+        var buffType = [0, 1, 2, 3];
       }
 
       var finishAis = populate.then(function (teamInfo) {
@@ -1559,27 +1563,10 @@ requireGW(
               model.customDifficultySettings.econBase() +
               maxDist * model.customDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.customDifficultySettings.bossCommanders();
-            ai.inventory = aiInventory.concat(bossInventory);
-            if (model.customDifficultySettings.factionTech()) {
-              var buffs = _.sample(
-                factionBuffs[ai.faction],
-                Math.floor(maxDist / 2)
-              );
-              _.times(buffs.length, function (n) {
-                ai.inventory = ai.inventory.concat(buffs[n]);
-              });
-            }
           } else {
             ai.econ_rate =
               model.customDifficultySettings.econBase() +
               dist * model.customDifficultySettings.econRatePerDist();
-            ai.inventory = aiInventory;
-            if (model.customDifficultySettings.factionTech()) {
-              buffs = _.sample(factionBuffs[ai.faction], Math.floor(dist / 2));
-              _.times(buffs.length, function (n) {
-                ai.inventory = ai.inventory.concat(buffs[n]);
-              });
-            }
           }
         };
 
@@ -1589,6 +1576,16 @@ requireGW(
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
+            info.boss.inventory = aiInventory.concat(bossInventory);
+            if (model.customDifficultySettings.factionTech()) {
+              var numBuffs = Math.floor(maxDist / 2);
+              var typeOfBuffs = _.sample(buffType, numBuffs);
+              _.times(typeOfBuffs.length, function (n) {
+                info.boss.inventory = info.boss.inventory.concat(
+                  factionBuffs[info.boss.faction][typeOfBuffs[n]]
+                );
+              });
+            }
             var numMinions = Math.floor(
               model.customDifficultySettings.mandatoryMinions() +
                 maxDist * model.customDifficultySettings.minionMod()
@@ -1604,7 +1601,9 @@ requireGW(
             }
             //console.debug("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
           }
+
           _.forEach(info.workers, function (worker) {
+            worker.ai.inventory = aiInventory;
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.landAnywhereChance()
@@ -1623,6 +1622,15 @@ requireGW(
             worker.ai.bountyModeValue = model.customDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
+            if (model.customDifficultySettings.factionTech()) {
+              var numBuffs = Math.floor(dist / 2);
+              var typeOfBuffs = _.sample(buffType, numBuffs);
+              _.times(typeOfBuffs.length, function (n) {
+                worker.ai.inventory = worker.ai.inventory.concat(
+                  factionBuffs[worker.ai.faction][typeOfBuffs[n]]
+                );
+              });
+            }
             var numMinions = Math.floor(
               model.customDifficultySettings.mandatoryMinions() +
                 worker.star.distance() *
@@ -1637,6 +1645,7 @@ requireGW(
                 worker.ai.minions.push(minions);
               });
             }
+
             if (
               Math.random() * 100 <=
               model.customDifficultySettings.ffaChance()
@@ -1653,6 +1662,7 @@ requireGW(
               ffaFirstFaction.color = ffaFirstFaction.color || worker.ai.color;
               ffaFirstFaction.commanderCount = numFoes;
               worker.ai.foes.push(ffaFirstFaction);
+
               if (
                 Math.random() * 100 <=
                 model.customDifficultySettings.ffaChance()
