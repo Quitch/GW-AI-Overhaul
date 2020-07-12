@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.2.1 - 2020-07-12
 
 - Corrected minions and additional factions being assigned the Tutorial Commander if Tougher Commanders was enabled
 
