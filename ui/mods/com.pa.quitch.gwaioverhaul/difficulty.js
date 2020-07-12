@@ -1580,6 +1580,7 @@ requireGW(
             if (model.customDifficultySettings.factionTech()) {
               var numBuffs = Math.floor(maxDist / 2);
               var typeOfBuffs = _.sample(buffType, numBuffs);
+              info.boss.typeOfBuffs = typeOfBuffs;
               _.times(typeOfBuffs.length, function (n) {
                 info.boss.inventory = info.boss.inventory.concat(
                   factionBuffs[info.boss.faction][typeOfBuffs[n]]
@@ -1625,6 +1626,7 @@ requireGW(
             if (model.customDifficultySettings.factionTech()) {
               var numBuffs = Math.floor(dist / 2);
               var typeOfBuffs = _.sample(buffType, numBuffs);
+              worker.ai.typeOfBuffs = typeOfBuffs;
               _.times(typeOfBuffs.length, function (n) {
                 worker.ai.inventory = worker.ai.inventory.concat(
                   factionBuffs[worker.ai.faction][typeOfBuffs[n]]
@@ -1660,6 +1662,7 @@ requireGW(
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
                 if (model.customDifficultySettings.factionTech()) {
+                  foeCommander.typeOfBuffs = typeOfBuffs;
                   _.times(typeOfBuffs.length, function (n) {
                     foeCommander.inventory = foeCommander.inventory.concat(
                       factionBuffs[foeFaction][typeOfBuffs[n]]
