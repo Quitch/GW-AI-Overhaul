@@ -77,6 +77,8 @@ Each system will display the following information:
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
+If you have enabled "Faction Tech" then you will also see which tech bonuses are being applied to the system.
+
 ## FAQ
 
 **Q. Can I use an AI mod like Queller?**
@@ -106,6 +108,10 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 **Q. Why aren't awarded bounties showing on the player list?**
 
 Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+
+**Q. Why are those turrets moving?**
+
+When the Synchronous have the speed bonus their defences will move to engage you when you get close.
 
 ## Known Issues
 
