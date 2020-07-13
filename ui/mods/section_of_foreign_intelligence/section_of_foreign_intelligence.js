@@ -96,6 +96,50 @@
     return suddenDeath;
   });
 
+  model.techCost = ko.computed(function () {
+    var techCost = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 0)
+    )
+      techCost = loc("!LOC:Enabled");
+    return techCost;
+  });
+
+  model.techDamage = ko.computed(function () {
+    var techDamage = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 1)
+    )
+      techDamage = loc("!LOC:Enabled");
+    return techDamage;
+  });
+
+  model.techHealth = ko.computed(function () {
+    var techHealth = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 2)
+    )
+      techHealth = loc("!LOC:Enabled");
+    return techHealth;
+  });
+
+  model.techSpeed = ko.computed(function () {
+    var techSpeed = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 3)
+    )
+      techSpeed = loc("!LOC:Enabled");
+    return techSpeed;
+  });
+
   model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
     var commanders = [];
