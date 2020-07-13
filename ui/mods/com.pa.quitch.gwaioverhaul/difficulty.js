@@ -1501,7 +1501,7 @@ requireGW(
           foundationCost,
           foundationDamage,
           foundationHealth,
-          legonisSpeed,
+          foundationSpeed,
         ];
         var synchronousBuffs = [
           synchronousCost,
