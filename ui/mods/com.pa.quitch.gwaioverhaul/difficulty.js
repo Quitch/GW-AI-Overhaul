@@ -1252,7 +1252,7 @@ requireGW(
             file: unit,
             path: "max_health",
             op: "multiply",
-            value: 1.25,
+            value: 1.5,
           });
         };
         _.forEach(legonisUnits, modUnitlegonisHealth);
@@ -1263,25 +1263,25 @@ requireGW(
               file: unit,
               path: "navigation.move_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.brake",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.acceleration",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.turn_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             }
           );
         };
@@ -1320,7 +1320,7 @@ requireGW(
             file: unit,
             path: "max_health",
             op: "multiply",
-            value: 1.25,
+            value: 1.5,
           });
         };
         _.forEach(foundationUnits, modUnitFoundationHealth);
@@ -1360,7 +1360,7 @@ requireGW(
             file: unit,
             path: "build_metal_cost",
             op: "multiply",
-            value: 0.75,
+            value: 0.5,
           });
         };
         _.forEach(synchronousUnits, modUnitsynchronousCost);
@@ -1388,7 +1388,7 @@ requireGW(
             file: unit,
             path: "max_health",
             op: "multiply",
-            value: 1.25,
+            value: 1.5,
           });
         };
         _.forEach(synchronousUnits, modUnitsynchronousHealth);
@@ -1399,25 +1399,25 @@ requireGW(
               file: unit,
               path: "navigation.move_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.brake",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.acceleration",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.turn_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             }
           );
         };
@@ -1456,7 +1456,7 @@ requireGW(
             file: unit,
             path: "max_health",
             op: "multiply",
-            value: 1.25,
+            value: 1.5,
           });
         };
         _.forEach(revenantsUnits, modUnitrevenantsHealth);
@@ -1467,25 +1467,25 @@ requireGW(
               file: unit,
               path: "navigation.move_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.brake",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.acceleration",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
               file: unit,
               path: "navigation.turn_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             }
           );
         };
