@@ -19,8 +19,15 @@ define(["shared/gw_common"], function (GW) {
     api.file.unmountAllMemoryFiles().always(function () {
       var titans = api.content.usingTitans();
 
+      var game = self.game();
+      var galaxy = game.galaxy();
+      var battleGround = galaxy.stars()[game.currentStar()];
+      var ai = battleGround.ai();
+
       var aiFileGen = $.Deferred();
       var playerFileGen = $.Deferred();
+      var foeFileGen = $.Deferred();
+      var foe2FileGen = $.Deferred();
       var unitsLoad = $.get("spec://pa/units/unit_list.json");
       var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
       var aiX1MapLoad = titans
@@ -31,12 +38,6 @@ define(["shared/gw_common"], function (GW) {
         aiMapGet,
         aiX1MapGet
       ) {
-        var game = self.game();
-        var galaxy = game.galaxy();
-        var battleGround = galaxy.stars()[game.currentStar()];
-        var ai = battleGround.ai();
-        var aiInventory = ai.inventory;
-
         var units = parse(unitsGet[0]).units;
 
         var aiUnitMap = parse(aiMapGet[0]);
@@ -46,6 +47,7 @@ define(["shared/gw_common"], function (GW) {
         var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, ".ai");
 
         GW.specs.genUnitSpecs(units, ".ai").then(function (aiSpecFiles) {
+          var aiInventory = ai.inventory;
           var aiFilesClassic = _.assign(
             { "/pa/ai/unit_maps/ai_unit_map.json.ai": enemyAIUnitMap },
             aiSpecFiles
@@ -60,6 +62,57 @@ define(["shared/gw_common"], function (GW) {
           GW.specs.modSpecs(aiFiles, aiInventory, ".ai");
           aiFileGen.resolve(aiFiles);
         });
+
+        if (ai.foes) {
+          var enemyFoeUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".foe1");
+          var enemyX1FoeUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, ".foe1");
+
+          GW.specs.genUnitSpecs(units, ".foe1").then(function (aiSpecFiles) {
+            var foeInventory = ai.foes[0].inventory;
+            var aiFilesClassic = _.assign(
+              { "/pa/ai/unit_maps/ai_unit_map.json.foe1": enemyFoeUnitMap },
+              aiSpecFiles
+            );
+            var aiFilesX1 = titans
+              ? _.assign(
+                  {
+                    "/pa/ai/unit_maps/ai_unit_map_x1.json.foe1": enemyX1FoeUnitMap,
+                  },
+                  aiSpecFiles
+                )
+              : {};
+            var foeFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+            GW.specs.modSpecs(foeFiles, foeInventory, ".foe1");
+            foeFileGen.resolve(foeFiles);
+          });
+
+          if (ai.foes[1]) {
+            var enemyFoe2UnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".foe2");
+            var enemyX1Foe2UnitMap = GW.specs.genAIUnitMap(
+              aiX1UnitMap,
+              ".foe2"
+            );
+
+            GW.specs.genUnitSpecs(units, ".foe2").then(function (aiSpecFiles) {
+              var foeInventory = ai.foes[1].inventory;
+              var aiFilesClassic = _.assign(
+                { "/pa/ai/unit_maps/ai_unit_map.json.foe2": enemyFoe2UnitMap },
+                aiSpecFiles
+              );
+              var aiFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai/unit_maps/ai_unit_map_x1.json.foe2": enemyX1Foe2UnitMap,
+                    },
+                    aiSpecFiles
+                  )
+                : {};
+              var foeFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+              GW.specs.modSpecs(foeFiles, foeInventory, ".foe2");
+              foe2FileGen.resolve(foeFiles);
+            });
+          }
+        }
 
         var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".player");
         var playerX1AIUnitMap = titans
@@ -88,9 +141,16 @@ define(["shared/gw_common"], function (GW) {
             playerFileGen.resolve(playerFiles);
           });
       });
-      $.when(aiFileGen, playerFileGen).then(function (aiFiles, playerFiles) {
-        var files = _.assign({}, aiFiles, playerFiles);
-        self.files(files);
+
+      var filesToProcess = [aiFileGen, playerFileGen];
+
+      if (ai.foes) {
+        filesToProcess.push(foeFileGen);
+        if (ai.foes[1]) filesToProcess.push(foe2FileGen);
+      }
+
+      $.when.apply($, filesToProcess).always(function () {
+        self.files(_.assign.apply(_, ({}, arguments)));
         done.resolve();
       });
     });
@@ -218,6 +278,8 @@ define(["shared/gw_common"], function (GW) {
     });
     // Add Additional Factions for FFA if any
     var allianceGroup = 3;
+    var foeTag = [".foe1", ".foe2"];
+    var count = 0;
     _.forEach(ai.foes, function (foe) {
       var slotsArrayFoes = [];
       foe.personality.adv_eco_mod =
@@ -257,10 +319,11 @@ define(["shared/gw_common"], function (GW) {
         color: foe.color,
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,
-        spec_tag: ".ai",
+        spec_tag: foeTag[count],
         alliance_group: allianceGroup,
       });
       allianceGroup = allianceGroup + 1;
+      count += 1;
     });
 
     var config = {
@@ -278,8 +341,12 @@ define(["shared/gw_common"], function (GW) {
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function (slot) {
-        if (slot.ai)
-          slot.commander += army.alliance_group === 1 ? ".player" : ".ai";
+        if (slot.ai) {
+          if (army.alliance_group === 1) slot.commander += ".player";
+          else if (army.alliance_group === 2) slot.commander += ".ai";
+          else if (army.alliance_group === 3) slot.commander += ".foe1";
+          else slot.commander += ".foe2";
+        }
       });
     });
     config.player.commander += ".player";
