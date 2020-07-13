@@ -37,6 +37,31 @@
       </div>
     </div>
   </div>
+  <div
+    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().typeOfBuffs"
+  >
+    <h3><loc>AI Buffs</loc></h3>
+    <div class="table">
+      <div class="tablebody">
+        <div class="tr">
+          <div class="td"><loc>Cost:</loc></div>
+          <div class="inline" data-bind="text: $root.techCost"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Damage:</loc></div>
+          <div class="data" data-bind="text: $root.techDamage"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Health:</loc></div>
+          <div class="data" data-bind="text: $root.techHealth"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Speed:</loc></div>
+          <div class="data" data-bind="text: $root.techSpeed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div data-bind="visible: model.selection.system().star.ai()">
     <h3><loc>System Faction</loc></h3>
   </div>
@@ -69,7 +94,7 @@
     </li>
   </ul>
   <div
-    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes"
+    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes[0]"
   >
     <h3><loc>Additional Factions</loc></h3>
   </div>
