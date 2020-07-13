@@ -1648,13 +1648,13 @@ requireGW(
               });
             }
 
-            worker.ai.foes = [];
             var availableFactions = _.without(aiFactions, worker.ai.faction);
             _.times(availableFactions.length, function () {
               if (
                 Math.random() * 100 <=
                 model.customDifficultySettings.ffaChance()
               ) {
+                if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
                 var foeFaction = availableFactions.splice(0, 1);
                 var foeCommander = _.sample(GWFactions[foeFaction].minions);
