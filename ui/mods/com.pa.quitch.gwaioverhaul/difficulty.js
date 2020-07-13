@@ -440,7 +440,7 @@ document
       "<div>" +
       '<input type="checkbox", data-bind="checked: model.customDifficultySettings.factionTech" />' +
       '<span style="margin-left: 6px;"></span><loc>Faction Tech</loc>' +
-      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: structure and fabricator buffs.<br>Revenants: orbital buffs.\'">?</span>' +
+      '<span class="info_tip" data-bind="tooltip: \'!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: non-factory structure buffs.<br>Revenants: orbital buffs.\'">?</span>' +
       "</div>" +
       "</div>"
   );
@@ -1008,6 +1008,8 @@ requireGW(
           "/pa/units/land/assault_bot/assault_bot.json",
           "/pa/units/land/attack_vehicle/attack_vehicle.json",
           "/pa/units/land/bot_bomb/bot_bomb.json",
+          "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+          "/pa/units/land/bot_factory/bot_factory.json",
           "/pa/units/land/bot_grenadier/bot_grenadier.json",
           "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
           "/pa/units/land/bot_sniper/bot_sniper.json",
@@ -1031,6 +1033,8 @@ requireGW(
           "/pa/units/land/tank_nuke/tank_nuke.json",
           "/pa/units/land/titan_bot/titan_bot.json",
           "/pa/units/land/titan_vehicle/titan_vehicle.json",
+          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+          "/pa/units/land/vehicle_factory/vehicle_factory.json",
         ];
         var legonisAmmo = [
           "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_ammo.json",
@@ -1055,6 +1059,8 @@ requireGW(
           "/pa/units/land/titan_vehicle/titan_vehicle_ammo_stomp.json",
         ];
         var foundationUnits = [
+          "/pa/units/air/air_factory_adv/air_factory_adv.json",
+          "/pa/units/air/air_factory/air_factory.json",
           "/pa/units/air/air_scout/air_scout.json",
           "/pa/units/air/bomber_adv/bomber_adv.json",
           "/pa/units/air/bomber_heavy/bomber_heavy.json",
@@ -1080,6 +1086,8 @@ requireGW(
           "/pa/units/sea/frigate/frigate.json",
           "/pa/units/sea/hover_ship/hover_ship.json",
           "/pa/units/sea/missile_ship/missile_ship.json",
+          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+          "/pa/units/sea/naval_factory/naval_factory.json",
           "/pa/units/sea/nuclear_sub/nuclear_sub.json",
           "/pa/units/sea/sea_scout/sea_scout.json",
         ];
@@ -1087,8 +1095,8 @@ requireGW(
           "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
           "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
           "/pa/units/air/bomber/bomber_ammo.json",
-          "/pa/units/air/fighter/fighter_ammo.json",
           "/pa/units/air/fighter_adv/fighter_adv_ammo.json",
+          "/pa/units/air/fighter/fighter_ammo.json",
           "/pa/units/air/gunship/gunship_ammo.json",
           "/pa/units/air/solar_drone/solar_drone_ammo.json",
           "/pa/units/air/strafer/strafer_ammo.json",
@@ -1111,8 +1119,6 @@ requireGW(
           "/pa/units/sea/sea_scout/sea_scout_ammo.json",
         ];
         var synchronousUnits = [
-          "/pa/units/air/air_factory_adv/air_factory_adv.json",
-          "/pa/units/air/air_factory/air_factory.json",
           "/pa/units/land/air_defense_adv/air_defense_adv.json",
           "/pa/units/land/air_defense/air_defense.json",
           "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json",
@@ -1120,8 +1126,6 @@ requireGW(
           "/pa/units/land/artillery_long/artillery_long.json",
           "/pa/units/land/artillery_short/artillery_short.json",
           "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
-          "/pa/units/land/bot_factory/bot_factory.json",
           "/pa/units/land/control_module/control_module.json",
           "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
           "/pa/units/land/energy_plant/energy_plant.json",
@@ -1141,18 +1145,11 @@ requireGW(
           "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
           "/pa/units/land/teleporter/teleporter.json",
           "/pa/units/land/titan_structure/titan_structure.json",
-          "/pa/units/land/unit_cannon/unit_cannon.json",
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
-          "/pa/units/land/vehicle_factory/vehicle_factory.json",
           "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
           "/pa/units/orbital/defense_satellite/defense_satellite.json",
           "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
           "/pa/units/orbital/ion_defense/ion_defense.json",
           "/pa/units/orbital/mining_platform/mining_platform.json",
-          "/pa/units/orbital/orbital_factory/orbital_factory.json",
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
-          "/pa/units/sea/naval_factory/naval_factory.json",
           "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
           "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
         ];
@@ -1182,9 +1179,11 @@ requireGW(
           "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
           "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           "/pa/units/orbital/orbital_factory/orbital_factory.json",
+          "/pa/units/orbital/orbital_factory/orbital_factory.json",
           "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
           "/pa/units/orbital/orbital_lander/orbital_lander.json",
           "/pa/units/orbital/orbital_laser/orbital_laser.json",
+          "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
           "/pa/units/orbital/orbital_probe/orbital_probe.json",
           "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
