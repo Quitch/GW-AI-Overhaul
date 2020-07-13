@@ -78,7 +78,7 @@ Each system will display the following information:
 
 - **Damage**: AI has Ammunition Tech.
 
-- **Health**: AI has Armor Tech.
+- **Health**: AI has Armour Tech.
 
 - **Speed**: AI has Engine Tech.
 
