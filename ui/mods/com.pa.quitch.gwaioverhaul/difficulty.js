@@ -1523,7 +1523,7 @@ requireGW(
           revenantsBuffs,
         ];
 
-        // 0 = cost; 1 = damage; 2 = synchronous; 3 = speed
+        // 0 = cost; 1 = damage; 2 = health; 3 = speed
         var buffType = [0, 1, 2, 3];
       }
 
