@@ -21,7 +21,9 @@
     "parse": "readonly",
     "loadScript": "readonly",
     "locUpdateDocument": "readonly",
-    "createjs": "readonly"
+    "createjs": "readonly",
+    "loadHtml": "readonly",
+    "locTree": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

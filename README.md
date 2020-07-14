@@ -25,7 +25,8 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Bounty mode
   - Land anywhere
   - Sudden death
-- You can give the enemy tougher commander units (TITANS only)
+- You can give the enemy tougher commander units
+- Enable random tech bonuses for the enemy to use
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -73,11 +74,17 @@ Each system will display the following information:
 
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
+- **Cost**: AI has Fabrication Tech.
+
+- **Damage**: AI has Ammunition Tech.
+
+- **Health**: AI has Armour Tech.
+
+- **Speed**: AI has Engine Tech.
+
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
-
-If you have enabled "Faction Tech" then you will also see which tech bonuses are being applied to the system.
 
 ## FAQ
 

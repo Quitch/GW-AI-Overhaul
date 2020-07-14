@@ -4,9 +4,9 @@
   "display_name": "Galactic War AI Overhaul",
   "description": "Add some much-needed variety and challenge to Galactic War with a wider range of difficulties, FFAs, faction personalities, enemy and sub commander personalities, epic battles, better bosses, support for all game modes, and strategic intelligence. Suitable for all abilities, from those who have just completed the tutorial to those who dominate in multiplayer. Start a new war to enjoy all the new features.",
   "author": "Quitch",
-  "version": "3.3.0",
-  "build": "114750",
-  "date": "2020/07/13",
+  "version": "3.3.1",
+  "build": "114759",
+  "date": "2020/07/14",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/",
   "category": [
@@ -26,12 +26,12 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.css"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.css"
     ],
     "gw_play": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/systems.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ]
