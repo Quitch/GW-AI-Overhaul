@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Correct an error in Planetary Intelligence that could delay the display of the jump button
+
 ## v3.3.0 - 2020-07-13
 
 - Added new option "Faction Tech" which applies random tech card bonuses to the AI
