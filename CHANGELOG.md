@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.3.2 - 2020-07-14
 
 - Fixed the new war UI not loading
 
