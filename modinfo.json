@@ -26,12 +26,12 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty.css"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.css"
     ],
     "gw_play": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/colour.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/systems.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ]
