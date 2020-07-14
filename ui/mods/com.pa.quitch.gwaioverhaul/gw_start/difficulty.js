@@ -274,16 +274,22 @@ model.ready = ko.computed(function () {
 });
 
 $("#game-difficulty-label").after(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty_tooltip.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_tooltip.html"
+  )
 );
 
 $("#game-difficulty").html(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty_levels.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
+  )
 );
 locTree(document.getElementById("game-difficulty"));
 
 $("#game-difficulty").after(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/difficulty_options.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
+  )
 );
 locTree(document.getElementById("custom-difficulty-settings"));
 locTree(document.getElementById("additional-options"));
