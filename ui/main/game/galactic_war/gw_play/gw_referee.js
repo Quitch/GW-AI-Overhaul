@@ -150,7 +150,7 @@ define(["shared/gw_common"], function (GW) {
       }
 
       $.when.apply($, filesToProcess).always(function () {
-        self.files(_.assign.apply(_, ({}, arguments)));
+        self.files(_.assign.apply(_, arguments));
         done.resolve();
       });
     });
