@@ -3,6 +3,7 @@
 ## DEV
 
 - Correct an error in Planetary Intelligence that could delay the display of the jump button
+- Cleaned up code for inserting HTML into gw_start
 
 ## v3.3.0 - 2020-07-13
 
