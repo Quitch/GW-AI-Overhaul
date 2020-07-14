@@ -291,8 +291,8 @@ $("#game-difficulty").after(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
   )
 );
-locTree(document.getElementById("custom-difficulty-settings"));
 locTree(document.getElementById("additional-options"));
+locTree(document.getElementById("custom-difficulty-settings"));
 
 requireGW(
   [
