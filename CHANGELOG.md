@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Fixed the new war UI not loading
+
 ## v3.3.1 - 2020-07-14
 
 - Corrected an error in Planetary Intelligence that could delay the display of the jump button
