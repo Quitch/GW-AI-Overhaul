@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.3.1 - 2020-07-14
 
 - Correct an error in Planetary Intelligence that could delay the display of the jump button
 - Cleaned up code for inserting HTML into gw_start
