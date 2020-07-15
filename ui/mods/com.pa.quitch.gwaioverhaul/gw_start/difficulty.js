@@ -181,7 +181,7 @@ ko.computed(function () {
   }
 });
 
-// Prevent simply switching to GW-CUSTOM causing unsaved changes to become true
+// Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
 model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
   model.gwaioDifficultySettings.unsavedChanges(false);
 });
