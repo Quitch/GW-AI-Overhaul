@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Cleaned up the code underpinning the mod
+
 ## v3.3.2 - 2020-07-14
 
 - Fixed the new war UI not loading
