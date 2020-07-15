@@ -38,7 +38,7 @@ model.gwaioDifficultySettings = {
   shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
-  factionTech: ko.observable(true),
+  factionTech: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
