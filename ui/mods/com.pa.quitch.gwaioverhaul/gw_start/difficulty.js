@@ -181,6 +181,11 @@ ko.computed(function () {
   }
 });
 
+// Prevent simply switching to GW-CUSTOM causing unsaved changes to become true
+model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
+  model.gwaioDifficultySettings.unsavedChanges(false);
+});
+
 model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
   if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
     model.gwaioDifficultySettings.newGalaxyNeeded(false);
@@ -472,13 +477,11 @@ requireGW(
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
         model.gwaioDifficultySettings.customDifficulty(true);
-        model.gwaioDifficultySettings.unsavedChanges(false);
       }
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
         model.gwaioDifficultySettings.customDifficulty(false);
-        model.gwaioDifficultySettings.unsavedChanges(false);
         model.gwaioDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
