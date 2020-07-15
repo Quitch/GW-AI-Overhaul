@@ -4,6 +4,7 @@
 
 - Cleaned up the code underpinning the mod
 - Fixed save button for custom difficulty sometimes requiring to be pressed twice
+- Faction Tech is disabled by default
 
 ## v3.3.2 - 2020-07-14
 
