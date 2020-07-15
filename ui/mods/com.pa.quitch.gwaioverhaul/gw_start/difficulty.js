@@ -153,7 +153,6 @@ ko.computed(function () {
 });
 
 ko.computed(function () {
-  model.gwaioDifficultySettings.unsavedChanges(false);
   if (model.gwaioDifficultySettings.customDifficulty()) {
     model.gwaioDifficultySettings.bossCommanders();
     model.gwaioDifficultySettings.bountyModeChance();
