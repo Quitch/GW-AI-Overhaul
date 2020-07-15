@@ -230,7 +230,7 @@ requireGW(
     "pages/gw_start/gw_teams",
     "main/shared/js/star_system_templates",
     "main/game/galactic_war/shared/js/gw_easy_star_systems",
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tech.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
   ],
   function (
     GW,
