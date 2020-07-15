@@ -1,6 +1,65 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/inventory.js",
 ], function (inventory) {
+  var commanderArmourTech = [];
+  var modAIUnit = function (unit) {
+    commanderArmourTech.push({
+      file: unit,
+      path: "max_health",
+      op: "multiply",
+      value: 2,
+    });
+  };
+  _.forEach(inventory.commanderUnits, modAIUnit);
+
+  var commanderCombatTech = [];
+  var modBossUnit = function (unit) {
+    commanderCombatTech.push(
+      {
+        file: unit,
+        path: "navigation.move_speed",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.brake",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.acceleration",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.turn_speed",
+        op: "multiply",
+        value: 3,
+      }
+    );
+  };
+  _.forEach(inventory.commanderUnits, modBossUnit);
+  var modBossAmmo = function (ammo) {
+    commanderCombatTech.push(
+      {
+        file: ammo,
+        path: "damage",
+        op: "multiply",
+        value: 1.25,
+      },
+      {
+        file: ammo,
+        path: "splash_damage",
+        op: "multiply",
+        value: 1.25,
+      }
+    );
+  };
+  _.forEach(inventory.commanderAmmos, modBossAmmo);
+
   var legonisCost = [];
   var modUnitlegonisCost = function (unit) {
     legonisCost.push({
@@ -296,5 +355,6 @@ define([
 
   return {
     buffs: [legonisBuffs, foundationBuffs, synchronousBuffs, revenantsBuffs],
+    tougherCommander: [commanderArmourTech, commanderCombatTech],
   };
 });

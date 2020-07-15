@@ -714,66 +714,8 @@ requireGW(
       var bossInventory = [];
 
       if (model.gwaioDifficultySettings.tougherCommanders()) {
-        var units = ["/pa/units/commanders/base_commander/base_commander.json"];
-        var ammos = [
-          "/pa/units/commanders/base_commander/base_commander_ammo.json",
-          "/pa/ammo/cannon_uber/cannon_uber.json",
-        ];
-        var modAIUnit = function (unit) {
-          aiInventory.push({
-            file: unit,
-            path: "max_health",
-            op: "multiply",
-            value: 2,
-          });
-        };
-        _.forEach(units, modAIUnit);
-        var modBossUnit = function (unit) {
-          bossInventory.push(
-            {
-              file: unit,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 3,
-            },
-            {
-              file: unit,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 3,
-            },
-            {
-              file: unit,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 3,
-            },
-            {
-              file: unit,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 3,
-            }
-          );
-        };
-        _.forEach(units, modBossUnit);
-        var modBossAmmo = function (ammo) {
-          bossInventory.push(
-            {
-              file: ammo,
-              path: "damage",
-              op: "multiply",
-              value: 1.25,
-            },
-            {
-              file: ammo,
-              path: "splash_damage",
-              op: "multiply",
-              value: 1.25,
-            }
-          );
-        };
-        _.forEach(ammos, modBossAmmo);
+        aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
+        bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
       }
 
       var finishAis = populate.then(function (teamInfo) {
