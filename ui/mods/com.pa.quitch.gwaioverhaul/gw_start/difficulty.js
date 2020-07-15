@@ -34,7 +34,7 @@ ko.extenders.precision = function (target, precision) {
 model.newGameDifficultyIndex(0);
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
-model.customDifficultySettings = {
+model.gwaioDifficultySettings = {
   shuffleSpawns: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
@@ -47,9 +47,9 @@ model.customDifficultySettings = {
     1: "!LOC:Basic",
     2: "!LOC:Advanced",
   }),
-  chosenMicroType: ko.observable(0),
+  microTypeChosen: ko.observable(0),
   getmicroTypeDescription: function (value) {
-    return loc(model.customDifficultySettings.microTypeDescription()[value]);
+    return loc(model.gwaioDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0).extend({
     precision: 3,
@@ -90,10 +90,10 @@ model.customDifficultySettings = {
     SlowerExpansion: "!LOC:Slower Expansion",
     PreventsWaste: "!LOC:Prevent Waste",
   }),
-  chosenPersonalityTags: ko.observableArray([]),
+  personalityTagsChosen: ko.observableArray([]),
   getpersonalityTagsDescription: function (value) {
     return loc(
-      model.customDifficultySettings.personalityTagsDescription()[value]
+      model.gwaioDifficultySettings.personalityTagsDescription()[value]
     );
   },
   econBase: ko.observable(0).extend({
@@ -141,126 +141,62 @@ model.customDifficultySettings = {
     rateLimit: { timeout: 500, method: "notifyWhenChangesStop" },
   }),
   unsavedChanges: ko.observable(false),
+  newGalaxyNeeded: ko.observable(false).extend({ notify: "always" }),
 };
 
-model.customDifficultySettings.shuffleSpawns.subscribe(function () {
-  model.makeGame();
-});
-model.customDifficultySettings.easierStart.subscribe(function () {
-  model.makeGame();
-});
-model.customDifficultySettings.tougherCommanders.subscribe(function () {
-  model.makeGame();
-});
-model.customDifficultySettings.factionTech.subscribe(function () {
-  model.makeGame();
+ko.computed(function () {
+  model.gwaioDifficultySettings.shuffleSpawns();
+  model.gwaioDifficultySettings.easierStart();
+  model.gwaioDifficultySettings.tougherCommanders();
+  model.gwaioDifficultySettings.factionTech();
+  model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
-model.customDifficultySettings.goForKill.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.chosenMicroType.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.priorityScoutMetalSpots.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.useEasierSystemTemplate.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.enableCommanderDangerResponses.subscribe(
-  function () {
-    if (model.customDifficultySettings.customDifficulty())
-      model.customDifficultySettings.unsavedChanges(true);
+ko.computed(function () {
+  model.gwaioDifficultySettings.unsavedChanges(false);
+  if (model.gwaioDifficultySettings.customDifficulty()) {
+    model.gwaioDifficultySettings.bossCommanders();
+    model.gwaioDifficultySettings.bountyModeChance();
+    model.gwaioDifficultySettings.bountyModeValue();
+    model.gwaioDifficultySettings.microTypeChosen();
+    model.gwaioDifficultySettings.personalityTagsChosen();
+    model.gwaioDifficultySettings.econBase();
+    model.gwaioDifficultySettings.econRatePerDist();
+    model.gwaioDifficultySettings.enableCommanderDangerResponses();
+    model.gwaioDifficultySettings.factoryBuildDelayMax();
+    model.gwaioDifficultySettings.factoryBuildDelayMin();
+    model.gwaioDifficultySettings.ffaChance();
+    model.gwaioDifficultySettings.goForKill();
+    model.gwaioDifficultySettings.landAnywhereChance();
+    model.gwaioDifficultySettings.mandatoryMinions();
+    model.gwaioDifficultySettings.maxAdvancedFabbers();
+    model.gwaioDifficultySettings.maxBasicFabbers();
+    model.gwaioDifficultySettings.minionMod();
+    model.gwaioDifficultySettings.perExpansionDelay();
+    model.gwaioDifficultySettings.priorityScoutMetalSpots();
+    model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+    model.gwaioDifficultySettings.suddenDeathChance();
+    model.gwaioDifficultySettings.unableToExpandDelay();
+    model.gwaioDifficultySettings.useEasierSystemTemplate();
+    model.gwaioDifficultySettings.unsavedChanges(true);
   }
-);
-model.customDifficultySettings.chosenPersonalityTags.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
 });
-model.customDifficultySettings.mandatoryMinions.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
+
+// Prevent simply switching to GW-CUSTOM causing unsaved changes to become true
+model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
+  model.gwaioDifficultySettings.unsavedChanges(false);
 });
-model.customDifficultySettings.minionMod.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.factoryBuildDelayMin.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.factoryBuildDelayMax.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.unableToExpandDelay.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.perExpansionDelay.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.econBase.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.econRatePerDist.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.maxBasicFabbers.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.maxAdvancedFabbers.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.startingLocationEvaluationRadius.subscribe(
-  function () {
-    if (model.customDifficultySettings.customDifficulty())
-      model.customDifficultySettings.unsavedChanges(true);
-  }
-);
-model.customDifficultySettings.ffaChance.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.bossCommanders.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.landAnywhereChance.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.suddenDeathChance.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.bountyModeChance.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.bountyModeValue.subscribe(function () {
-  if (model.customDifficultySettings.customDifficulty())
-    model.customDifficultySettings.unsavedChanges(true);
-});
-model.customDifficultySettings.customDifficulty.subscribe(function () {
-  if (!model.customDifficultySettings.customDifficulty()) {
-    model.customDifficultySettings.unsavedChanges(false);
+
+model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
+  if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
+    model.gwaioDifficultySettings.newGalaxyNeeded(false);
+    model.makeGame();
   }
 });
 
 // eslint-disable-next-line no-unused-vars
-function saveCustomDifficultySettings() {
-  model.customDifficultySettings.unsavedChanges(false);
+function gwaioSaveDifficultySettings() {
+  model.gwaioDifficultySettings.unsavedChanges(false);
   model.makeGame();
 }
 
@@ -269,7 +205,7 @@ model.ready = ko.computed(function () {
   return (
     !!model.newGame() &&
     !!model.activeStartCard() &&
-    !model.customDifficultySettings.unsavedChanges()
+    !model.gwaioDifficultySettings.unsavedChanges()
   );
 });
 
@@ -540,8 +476,7 @@ requireGW(
     model.makeGame = function () {
       model.newGame(undefined);
 
-      if (model.customDifficultySettings.easierStart())
-        var baseNeutralStars = 4;
+      if (model.gwaioDifficultySettings.easierStart()) var baseNeutralStars = 4;
       else baseNeutralStars = 2;
 
       var busyToken = {};
@@ -567,82 +502,82 @@ requireGW(
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
-        model.customDifficultySettings.goForKill(
+        model.gwaioDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
-        model.customDifficultySettings.chosenMicroType(
+        model.gwaioDifficultySettings.microTypeChosen(
           difficultyInfo[model.newGameDifficultyIndex() || 0].microType
         );
-        model.customDifficultySettings.mandatoryMinions(
+        model.gwaioDifficultySettings.mandatoryMinions(
           difficultyInfo[model.newGameDifficultyIndex() || 0].mandatoryMinions
         );
-        model.customDifficultySettings.minionMod(
+        model.gwaioDifficultySettings.minionMod(
           difficultyInfo[model.newGameDifficultyIndex() || 0].minionMod
         );
-        model.customDifficultySettings.priorityScoutMetalSpots(
+        model.gwaioDifficultySettings.priorityScoutMetalSpots(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .priority_scout_metal_spots
         );
-        model.customDifficultySettings.useEasierSystemTemplate(
+        model.gwaioDifficultySettings.useEasierSystemTemplate(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .useEasierSystemTemplate
         );
-        model.customDifficultySettings.factoryBuildDelayMin(
+        model.gwaioDifficultySettings.factoryBuildDelayMin(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .factory_build_delay_min
         );
-        model.customDifficultySettings.factoryBuildDelayMax(
+        model.gwaioDifficultySettings.factoryBuildDelayMax(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .factory_build_delay_max
         );
-        model.customDifficultySettings.unableToExpandDelay(
+        model.gwaioDifficultySettings.unableToExpandDelay(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .unable_to_expand_delay
         );
-        model.customDifficultySettings.enableCommanderDangerResponses(
+        model.gwaioDifficultySettings.enableCommanderDangerResponses(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .enable_commander_danger_responses
         );
-        model.customDifficultySettings.perExpansionDelay(
+        model.gwaioDifficultySettings.perExpansionDelay(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .per_expansion_delay
         );
-        model.customDifficultySettings.chosenPersonalityTags(
+        model.gwaioDifficultySettings.personalityTagsChosen(
           difficultyInfo[model.newGameDifficultyIndex() || 0].personality_tags
         );
-        model.customDifficultySettings.econBase(
+        model.gwaioDifficultySettings.econBase(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
         );
-        model.customDifficultySettings.econRatePerDist(
+        model.gwaioDifficultySettings.econRatePerDist(
           difficultyInfo[model.newGameDifficultyIndex() || 0].econRatePerDist
         );
-        model.customDifficultySettings.maxBasicFabbers(
+        model.gwaioDifficultySettings.maxBasicFabbers(
           difficultyInfo[model.newGameDifficultyIndex() || 0].max_basic_fabbers
         );
-        model.customDifficultySettings.maxAdvancedFabbers(
+        model.gwaioDifficultySettings.maxAdvancedFabbers(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .max_advanced_fabbers
         );
-        model.customDifficultySettings.ffaChance(
+        model.gwaioDifficultySettings.ffaChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
         );
-        model.customDifficultySettings.bossCommanders(
+        model.gwaioDifficultySettings.bossCommanders(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bossCommanders
         );
-        model.customDifficultySettings.startingLocationEvaluationRadius(
+        model.gwaioDifficultySettings.startingLocationEvaluationRadius(
           difficultyInfo[model.newGameDifficultyIndex() || 0]
             .starting_location_evaluation_radius
         );
-        model.customDifficultySettings.landAnywhereChance(
+        model.gwaioDifficultySettings.landAnywhereChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].landAnywhereChance
         );
-        model.customDifficultySettings.suddenDeathChance(
+        model.gwaioDifficultySettings.suddenDeathChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].suddenDeathChance
         );
-        model.customDifficultySettings.bountyModeChance(
+        model.gwaioDifficultySettings.bountyModeChance(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeChance
         );
-        model.customDifficultySettings.bountyModeValue(
+        model.gwaioDifficultySettings.bountyModeValue(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
         );
       }
@@ -650,9 +585,9 @@ requireGW(
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
-        model.customDifficultySettings.customDifficulty(true);
+        model.gwaioDifficultySettings.customDifficulty(true);
       } else {
-        model.customDifficultySettings.customDifficulty(false);
+        model.gwaioDifficultySettings.customDifficulty(false);
       }
 
       if (model.creditsMode()) {
@@ -787,7 +722,7 @@ requireGW(
       var aiInventory = [];
       var bossInventory = [];
 
-      if (model.customDifficultySettings.tougherCommanders()) {
+      if (model.gwaioDifficultySettings.tougherCommanders()) {
         var units = ["/pa/units/commanders/base_commander/base_commander.json"];
         var ammos = [
           "/pa/units/commanders/base_commander/base_commander_ammo.json",
@@ -850,7 +785,7 @@ requireGW(
         _.forEach(ammos, modBossAmmo);
       }
 
-      if (model.customDifficultySettings.factionTech()) {
+      if (model.gwaioDifficultySettings.factionTech()) {
         var legonisUnits = [
           "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
           "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
@@ -1372,32 +1307,31 @@ requireGW(
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.personality.micro_type = model.customDifficultySettings.chosenMicroType();
-          ai.personality.go_for_the_kill = model.customDifficultySettings.goForKill();
-          ai.personality.priority_scout_metal_spots = model.customDifficultySettings.priorityScoutMetalSpots();
-          ai.personality.factory_build_delay_min = model.customDifficultySettings.factoryBuildDelayMin();
-          ai.personality.factory_build_delay_max = model.customDifficultySettings.factoryBuildDelayMax();
-          ai.personality.unable_to_expand_delay = model.customDifficultySettings.unableToExpandDelay();
-          ai.personality.enable_commander_danger_responses = model.customDifficultySettings.enableCommanderDangerResponses();
-          ai.personality.per_expansion_delay = model.customDifficultySettings.perExpansionDelay();
-          ai.personality.max_basic_fabbers = model.customDifficultySettings.maxBasicFabbers();
-          ai.personality.max_advanced_fabbers = model.customDifficultySettings.maxAdvancedFabbers();
-          ai.personality.personality_tags = model.customDifficultySettings.chosenPersonalityTags();
+          ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
+          ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
+          ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
+          ai.personality.factory_build_delay_min = model.gwaioDifficultySettings.factoryBuildDelayMin();
+          ai.personality.factory_build_delay_max = model.gwaioDifficultySettings.factoryBuildDelayMax();
+          ai.personality.unable_to_expand_delay = model.gwaioDifficultySettings.unableToExpandDelay();
+          ai.personality.enable_commander_danger_responses = model.gwaioDifficultySettings.enableCommanderDangerResponses();
+          ai.personality.per_expansion_delay = model.gwaioDifficultySettings.perExpansionDelay();
+          ai.personality.max_basic_fabbers = model.gwaioDifficultySettings.maxBasicFabbers();
+          ai.personality.max_advanced_fabbers = model.gwaioDifficultySettings.maxAdvancedFabbers();
+          ai.personality.personality_tags = model.gwaioDifficultySettings.personalityTagsChosen();
           if (
-            model.customDifficultySettings.startingLocationEvaluationRadius() >
-            0
+            model.gwaioDifficultySettings.startingLocationEvaluationRadius() > 0
           )
-            ai.personality.starting_location_evaluation_radius = model.customDifficultySettings.startingLocationEvaluationRadius();
+            ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
           if (isBoss) {
             ai.econ_rate =
-              model.customDifficultySettings.econBase() +
-              maxDist * model.customDifficultySettings.econRatePerDist();
-            ai.bossCommanders = model.customDifficultySettings.bossCommanders();
+              model.gwaioDifficultySettings.econBase() +
+              maxDist * model.gwaioDifficultySettings.econRatePerDist();
+            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
           } else {
             ai.econ_rate =
-              model.customDifficultySettings.econBase() +
-              dist * model.customDifficultySettings.econRatePerDist();
+              model.gwaioDifficultySettings.econBase() +
+              dist * model.gwaioDifficultySettings.econRatePerDist();
           }
         };
 
@@ -1408,7 +1342,7 @@ requireGW(
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             info.boss.inventory = aiInventory.concat(bossInventory);
-            if (model.customDifficultySettings.factionTech()) {
+            if (model.gwaioDifficultySettings.factionTech()) {
               var numBuffs = Math.floor(maxDist / 2);
               var typeOfBuffs = _.sample(buffType, numBuffs);
               info.boss.typeOfBuffs = typeOfBuffs;
@@ -1419,8 +1353,8 @@ requireGW(
               });
             }
             var numMinions = Math.floor(
-              model.customDifficultySettings.mandatoryMinions() +
-                maxDist * model.customDifficultySettings.minionMod()
+              model.gwaioDifficultySettings.mandatoryMinions() +
+                maxDist * model.gwaioDifficultySettings.minionMod()
             );
             if (numMinions > 0) {
               info.boss.minions = [];
@@ -1438,23 +1372,23 @@ requireGW(
             worker.ai.inventory = aiInventory;
             if (
               Math.random() * 100 <=
-              model.customDifficultySettings.landAnywhereChance()
+              model.gwaioDifficultySettings.landAnywhereChance()
             )
               worker.ai.landAnywhere = true;
             if (
               Math.random() * 100 <=
-              model.customDifficultySettings.suddenDeathChance()
+              model.gwaioDifficultySettings.suddenDeathChance()
             )
               worker.ai.suddenDeath = true;
             if (
               Math.random() * 100 <=
-              model.customDifficultySettings.bountyModeChance()
+              model.gwaioDifficultySettings.bountyModeChance()
             )
               worker.ai.bountyMode = true;
-            worker.ai.bountyModeValue = model.customDifficultySettings.bountyModeValue();
+            worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            if (model.customDifficultySettings.factionTech()) {
+            if (model.gwaioDifficultySettings.factionTech()) {
               var numBuffs = Math.floor(dist / 2);
               var typeOfBuffs = _.sample(buffType, numBuffs);
               worker.ai.typeOfBuffs = typeOfBuffs;
@@ -1465,9 +1399,9 @@ requireGW(
               });
             }
             var numMinions = Math.floor(
-              model.customDifficultySettings.mandatoryMinions() +
+              model.gwaioDifficultySettings.mandatoryMinions() +
                 worker.star.distance() *
-                  model.customDifficultySettings.minionMod()
+                  model.gwaioDifficultySettings.minionMod()
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
@@ -1483,7 +1417,7 @@ requireGW(
             _.times(availableFactions.length, function () {
               if (
                 Math.random() * 100 <=
-                model.customDifficultySettings.ffaChance()
+                model.gwaioDifficultySettings.ffaChance()
               ) {
                 if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
@@ -1492,7 +1426,7 @@ requireGW(
                 var numFoes = Math.round((numMinions + 1) / 2);
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
-                if (model.customDifficultySettings.factionTech()) {
+                if (model.gwaioDifficultySettings.factionTech()) {
                   foeCommander.typeOfBuffs = typeOfBuffs;
                   _.times(typeOfBuffs.length, function (n) {
                     foeCommander.inventory = foeCommander.inventory.concat(
@@ -1564,9 +1498,9 @@ requireGW(
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
               if (world.generator) {
-                world.generator.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
               } else
-                world.planet.shuffleLandingZones = model.customDifficultySettings.shuffleSpawns();
+                world.planet.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
           });
         });
 

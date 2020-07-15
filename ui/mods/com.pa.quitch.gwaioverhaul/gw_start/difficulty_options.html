@@ -1,13 +1,13 @@
 <div
   class="form-group"
   id="custom-difficulty-settings"
-  data-bind="visible: model.customDifficultySettings.customDifficulty()"
+  data-bind="visible: model.gwaioDifficultySettings.customDifficulty()"
 >
   <div>
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.goForKill"
+      data-bind="checked: model.gwaioDifficultySettings.goForKill"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Target Weakest</loc>
@@ -19,7 +19,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.priorityScoutMetalSpots"
+      data-bind="checked: model.gwaioDifficultySettings.priorityScoutMetalSpots"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Scout Metal First</loc>
@@ -33,7 +33,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.useEasierSystemTemplate"
+      data-bind="checked: model.gwaioDifficultySettings.useEasierSystemTemplate"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Easy Systems</loc>
@@ -47,7 +47,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.enableCommanderDangerResponses"
+      data-bind="checked: model.gwaioDifficultySettings.enableCommanderDangerResponses"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Commander Leaves Planet</loc>
@@ -59,7 +59,7 @@
   </div>
   <div>
     <select
-      data-bind="options: model.customDifficultySettings.microType, optionsText: model.customDifficultySettings.getmicroTypeDescription, value:model.customDifficultySettings.chosenMicroType"
+      data-bind="options: model.gwaioDifficultySettings.microType, optionsText: model.gwaioDifficultySettings.getmicroTypeDescription, value:model.gwaioDifficultySettings.microTypeChosen"
     ></select>
     <span style="margin-left: 6px;"></span>
     <loc>Micro</loc>
@@ -73,7 +73,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.mandatoryMinions"
+      data-bind="textInput: model.gwaioDifficultySettings.mandatoryMinions"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Mandatory Minions</loc>
@@ -87,7 +87,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.minionMod"
+      data-bind="textInput: model.gwaioDifficultySettings.minionMod"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Minion Modifier</loc>
@@ -101,7 +101,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMin"
+      data-bind="textInput: model.gwaioDifficultySettings.factoryBuildDelayMin"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Unit Production Delay (min)</loc>
@@ -115,7 +115,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.factoryBuildDelayMax"
+      data-bind="textInput: model.gwaioDifficultySettings.factoryBuildDelayMax"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Unit Production Delay (max)</loc>
@@ -129,7 +129,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.unableToExpandDelay"
+      data-bind="textInput: model.gwaioDifficultySettings.unableToExpandDelay"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Unable To Expand Delay</loc>
@@ -143,7 +143,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.perExpansionDelay"
+      data-bind="textInput: model.gwaioDifficultySettings.perExpansionDelay"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Per Expansion Delay</loc>
@@ -157,7 +157,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.econBase"
+      data-bind="textInput: model.gwaioDifficultySettings.econBase"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Base Econ Modifier</loc>
@@ -171,7 +171,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.econRatePerDist"
+      data-bind="textInput: model.gwaioDifficultySettings.econRatePerDist"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Distance Econ Modifier</loc>
@@ -185,7 +185,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.maxBasicFabbers"
+      data-bind="textInput: model.gwaioDifficultySettings.maxBasicFabbers"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Max Basic Fabbers</loc>
@@ -199,7 +199,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.maxAdvancedFabbers"
+      data-bind="textInput: model.gwaioDifficultySettings.maxAdvancedFabbers"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Max Advanced Fabbers</loc>
@@ -213,7 +213,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.startingLocationEvaluationRadius"
+      data-bind="textInput: model.gwaioDifficultySettings.startingLocationEvaluationRadius"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Landing Evaluation</loc>
@@ -227,7 +227,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.ffaChance"
+      data-bind="textInput: model.gwaioDifficultySettings.ffaChance"
     />
     <span style="margin-left: 6px;"></span>
     <loc>FFA Chance</loc>
@@ -241,7 +241,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.bossCommanders"
+      data-bind="textInput: model.gwaioDifficultySettings.bossCommanders"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Boss Commanders</loc>
@@ -255,7 +255,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.landAnywhereChance"
+      data-bind="textInput: model.gwaioDifficultySettings.landAnywhereChance"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Big Spawns Chance</loc>
@@ -269,7 +269,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.suddenDeathChance"
+      data-bind="textInput: model.gwaioDifficultySettings.suddenDeathChance"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Team Death Chance</loc>
@@ -283,7 +283,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.bountyModeChance"
+      data-bind="textInput: model.gwaioDifficultySettings.bountyModeChance"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Bounties Chance</loc>
@@ -297,7 +297,7 @@
     <input
       type="number"
       style="width: 50px; padding-bottom: 0px;"
-      data-bind="textInput: model.customDifficultySettings.bountyModeValue"
+      data-bind="textInput: model.gwaioDifficultySettings.bountyModeValue"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Bounty Value</loc>
@@ -309,7 +309,7 @@
   </div>
   <div>
     <select
-      data-bind="options: model.customDifficultySettings.personalityTags, optionsText: model.customDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.customDifficultySettings.chosenPersonalityTags"
+      data-bind="options: model.gwaioDifficultySettings.personalityTags, optionsText: model.gwaioDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.gwaioDifficultySettings.personalityTagsChosen"
       ,
       multiple="true"
     ></select>
@@ -323,7 +323,7 @@
   </div>
   <div
     class="btn_hero"
-    data-bind="click: saveCustomDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.customDifficultySettings.unsavedChanges() }"
+    data-bind="click: gwaioSaveDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !model.gwaioDifficultySettings.unsavedChanges() }"
   >
     <div class="btn_label" style="width: 175px;">
       <loc>Save</loc>
@@ -335,7 +335,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.shuffleSpawns"
+      data-bind="checked: model.gwaioDifficultySettings.shuffleSpawns"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Shuffle Landing Zones</loc>
@@ -349,7 +349,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.easierStart"
+      data-bind="checked: model.gwaioDifficultySettings.easierStart"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Easier Start</loc>
@@ -363,7 +363,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.tougherCommanders"
+      data-bind="checked: model.gwaioDifficultySettings.tougherCommanders"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Tougher Commanders</loc>
@@ -377,7 +377,7 @@
     <input
       type="checkbox"
       ,
-      data-bind="checked: model.customDifficultySettings.factionTech"
+      data-bind="checked: model.gwaioDifficultySettings.factionTech"
     />
     <span style="margin-left: 6px;"></span>
     <loc>Faction Tech</loc>
