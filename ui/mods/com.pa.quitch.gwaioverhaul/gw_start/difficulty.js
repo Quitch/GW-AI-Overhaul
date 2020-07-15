@@ -152,6 +152,13 @@ ko.computed(function () {
   model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
+model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
+  if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
+    model.gwaioDifficultySettings.newGalaxyNeeded(false);
+    model.makeGame();
+  }
+});
+
 ko.computed(function () {
   if (model.gwaioDifficultySettings.customDifficulty()) {
     model.gwaioDifficultySettings.bossCommanders();
@@ -184,13 +191,6 @@ ko.computed(function () {
 // Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
 model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
   model.gwaioDifficultySettings.unsavedChanges(false);
-});
-
-model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
-  if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
-    model.gwaioDifficultySettings.newGalaxyNeeded(false);
-    model.makeGame();
-  }
 });
 
 // eslint-disable-next-line no-unused-vars
