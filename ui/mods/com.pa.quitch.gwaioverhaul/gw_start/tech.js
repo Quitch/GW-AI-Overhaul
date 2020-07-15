@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/inventory.js",
 ], function (inventory) {
+  // Tougher Commanders
   var commanderArmourTech = [];
   var modAIUnit = function (unit) {
     commanderArmourTech.push({
@@ -60,6 +61,7 @@ define([
   };
   _.forEach(inventory.commanderAmmos, modBossAmmo);
 
+  // Faction Tech
   var legonisCost = [];
   var modUnitlegonisCost = function (unit) {
     legonisCost.push({
