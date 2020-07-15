@@ -38,8 +38,7 @@ ko.extenders.precision = function (target, precision) {
   return result;
 };
 
-// set the lowest difficulty as the default
-model.newGameDifficultyIndex(0);
+model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.gwaioDifficultySettings = {
@@ -179,8 +178,8 @@ ko.computed(function () {
   }
 });
 
-// Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
-// Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war
+/* Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
+   Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
 model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
   model.gwaioDifficultySettings.unsavedChanges(false);
 });
@@ -764,8 +763,7 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
-        // 0 = cost; 1 = damage; 2 = health; 3 = speed
-        var buffType = [0, 1, 2, 3];
+        var buffType = [0, 1, 2, 3]; // 0 = cost; 1 = damage; 2 = health; 3 = speed
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
