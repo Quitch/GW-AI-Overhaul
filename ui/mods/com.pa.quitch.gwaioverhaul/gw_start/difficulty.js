@@ -181,11 +181,6 @@ ko.computed(function () {
   }
 });
 
-// Prevent simply switching to GW-CUSTOM causing unsaved changes to become true
-model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
-  model.gwaioDifficultySettings.unsavedChanges(false);
-});
-
 model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
   if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
     model.gwaioDifficultySettings.newGalaxyNeeded(false);
@@ -472,35 +467,18 @@ requireGW(
       },
     ];
 
-    model.makeGame = function () {
-      model.newGame(undefined);
-
-      if (model.gwaioDifficultySettings.easierStart()) var baseNeutralStars = 4;
-      else baseNeutralStars = 2;
-
-      var busyToken = {};
-      model.makeGameBusy(busyToken);
-
-      var game = new GW.Game();
-
-      game.name(model.newGameName());
-      game.mode(model.mode());
-      game.hardcore(model.newGameHardcore());
-      game.content(api.content.activeContent());
-
-      var useEasySystems =
-        difficultyInfo[model.newGameDifficultyIndex() || 0]
-          .useEasierSystemTemplate;
-      var systemTemplates = useEasySystems
-        ? easy_system_templates
-        : star_system_templates;
-      var sizes = GW.balance.numberOfSystems;
-      var size = sizes[model.newGameSizeIndex()] || 40;
-
-      // Track the selected difficulty values
+    ko.computed(function () {
+      if (
+        difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
+      ) {
+        model.gwaioDifficultySettings.customDifficulty(true);
+        model.gwaioDifficultySettings.unsavedChanges(false);
+      }
       if (
         !difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
       ) {
+        model.gwaioDifficultySettings.customDifficulty(false);
+        model.gwaioDifficultySettings.unsavedChanges(false);
         model.gwaioDifficultySettings.goForKill(
           difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
         );
@@ -580,14 +558,32 @@ requireGW(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
         );
       }
-      // Only show the custom difficulty fields if custom difficulty is selected
-      if (
-        difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
-      ) {
-        model.gwaioDifficultySettings.customDifficulty(true);
-      } else {
-        model.gwaioDifficultySettings.customDifficulty(false);
-      }
+    });
+
+    model.makeGame = function () {
+      model.newGame(undefined);
+
+      if (model.gwaioDifficultySettings.easierStart()) var baseNeutralStars = 4;
+      else baseNeutralStars = 2;
+
+      var busyToken = {};
+      model.makeGameBusy(busyToken);
+
+      var game = new GW.Game();
+
+      game.name(model.newGameName());
+      game.mode(model.mode());
+      game.hardcore(model.newGameHardcore());
+      game.content(api.content.activeContent());
+
+      var useEasySystems =
+        difficultyInfo[model.newGameDifficultyIndex() || 0]
+          .useEasierSystemTemplate;
+      var systemTemplates = useEasySystems
+        ? easy_system_templates
+        : star_system_templates;
+      var sizes = GW.balance.numberOfSystems;
+      var size = sizes[model.newGameSizeIndex()] || 40;
 
       if (model.creditsMode()) {
         size = _.reduce(
