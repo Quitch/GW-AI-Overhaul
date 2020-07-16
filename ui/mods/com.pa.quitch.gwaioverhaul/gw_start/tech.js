@@ -211,6 +211,6 @@ define([
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
-    factionTech: [legonisTech, foundationTech, synchronousTech, revenantsTech],
+    factionTechs: [legonisTech, foundationTech, synchronousTech, revenantsTech],
   };
 });
