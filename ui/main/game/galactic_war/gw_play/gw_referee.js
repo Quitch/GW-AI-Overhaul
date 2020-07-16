@@ -25,9 +25,9 @@ define(["shared/gw_common"], function (GW) {
       var ai = battleGround.ai();
 
       var aiFileGen = $.Deferred();
-      var playerFileGen = $.Deferred();
       var foeFileGen = $.Deferred();
       var foe2FileGen = $.Deferred();
+      var playerFileGen = $.Deferred();
       var unitsLoad = $.get("spec://pa/units/unit_list.json");
       var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
       var aiX1MapLoad = titans
@@ -43,76 +43,50 @@ define(["shared/gw_common"], function (GW) {
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
-        var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".ai");
-        var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, ".ai");
+        var aiFilesGen = [aiFileGen, foeFileGen, foe2FileGen];
+        var aiExtension = [".ai", ".foe1", ".foe2"];
 
-        GW.specs.genUnitSpecs(units, ".ai").then(function (aiSpecFiles) {
-          var aiInventory = ai.inventory;
-          var aiFilesClassic = _.assign(
-            { "/pa/ai/unit_maps/ai_unit_map.json.ai": enemyAIUnitMap },
-            aiSpecFiles
+        var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+        _.times(aiCount, function (n) {
+          var currentCount = n;
+          var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiExtension[n]);
+          var enemyX1AIUnitMap = GW.specs.genAIUnitMap(
+            aiX1UnitMap,
+            aiExtension[n]
           );
-          var aiFilesX1 = titans
-            ? _.assign(
-                { "/pa/ai/unit_maps/ai_unit_map_x1.json.ai": enemyX1AIUnitMap },
-                aiSpecFiles
-              )
-            : {};
-          var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-          GW.specs.modSpecs(aiFiles, aiInventory, ".ai");
-          aiFileGen.resolve(aiFiles);
-        });
 
-        if (ai.foes) {
-          var enemyFoeUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".foe1");
-          var enemyX1FoeUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, ".foe1");
-
-          GW.specs.genUnitSpecs(units, ".foe1").then(function (aiSpecFiles) {
-            var foeInventory = ai.foes[0].inventory;
-            var aiFilesClassic = _.assign(
-              { "/pa/ai/unit_maps/ai_unit_map.json.foe1": enemyFoeUnitMap },
-              aiSpecFiles
-            );
-            var aiFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai/unit_maps/ai_unit_map_x1.json.foe1": enemyX1FoeUnitMap,
-                  },
-                  aiSpecFiles
-                )
-              : {};
-            var foeFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-            GW.specs.modSpecs(foeFiles, foeInventory, ".foe1");
-            foeFileGen.resolve(foeFiles);
-          });
-
-          if (ai.foes[1]) {
-            var enemyFoe2UnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".foe2");
-            var enemyX1Foe2UnitMap = GW.specs.genAIUnitMap(
-              aiX1UnitMap,
-              ".foe2"
-            );
-
-            GW.specs.genUnitSpecs(units, ".foe2").then(function (aiSpecFiles) {
-              var foeInventory = ai.foes[1].inventory;
-              var aiFilesClassic = _.assign(
-                { "/pa/ai/unit_maps/ai_unit_map.json.foe2": enemyFoe2UnitMap },
-                aiSpecFiles
+          GW.specs
+            .genUnitSpecs(units, aiExtension[n])
+            .then(function (aiSpecFiles) {
+              var enemyAIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map.json".concat(
+                aiExtension[n]
               );
+              var enemyAIUnitMapPair = {};
+              enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+              var enemyX1AIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(
+                aiExtension[n]
+              );
+              var enemyX1AIUnitMapPair = {};
+              enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
+              var aiInventory =
+                currentCount === 0
+                  ? ai.inventory
+                  : ai.foes[currentCount - 1].inventory;
+              var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
               var aiFilesX1 = titans
                 ? _.assign(
                     {
-                      "/pa/ai/unit_maps/ai_unit_map_x1.json.foe2": enemyX1Foe2UnitMap,
+                      enemyX1AIUnitMapFile: enemyX1AIUnitMap,
                     },
                     aiSpecFiles
                   )
                 : {};
-              var foeFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-              GW.specs.modSpecs(foeFiles, foeInventory, ".foe2");
-              foe2FileGen.resolve(foeFiles);
+              var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+              if (!aiInventory === undefined)
+                GW.specs.modSpecs(aiFiles, aiInventory, aiExtension[n]);
+              aiFilesGen[currentCount].resolve(aiFiles);
             });
-          }
-        }
+        });
 
         var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".player");
         var playerX1AIUnitMap = titans
