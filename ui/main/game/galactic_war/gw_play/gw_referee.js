@@ -24,10 +24,17 @@ define(["shared/gw_common"], function (GW) {
       var battleGround = galaxy.stars()[game.currentStar()];
       var ai = battleGround.ai();
 
+      var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+
+      // Add to this this for each supported AI alliance group
       var aiFileGen = $.Deferred();
       var foeFileGen = $.Deferred();
       var foe2FileGen = $.Deferred();
+      var aiFactions = [aiFileGen, foeFileGen, foe2FileGen];
+
       var playerFileGen = $.Deferred();
+      var filesToProcess = [playerFileGen];
+
       var unitsLoad = $.get("spec://pa/units/unit_list.json");
       var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
       var aiX1MapLoad = titans
@@ -43,10 +50,9 @@ define(["shared/gw_common"], function (GW) {
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
-        var aiFilesGen = [aiFileGen, foeFileGen, foe2FileGen];
+        // Add to this for each supported AI alliance group
         var aiExtension = [".ai", ".foe1", ".foe2"];
 
-        var aiCount = ai.foes ? 1 + ai.foes.length : 1;
         _.times(aiCount, function (n) {
           var currentCount = n;
           var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiExtension[n]);
@@ -85,7 +91,7 @@ define(["shared/gw_common"], function (GW) {
               var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
               if (!aiInventory === undefined)
                 GW.specs.modSpecs(aiFiles, aiInventory, aiExtension[n]);
-              aiFilesGen[currentCount].resolve(aiFiles);
+              aiFactions[currentCount].resolve(aiFiles);
             });
         });
 
@@ -117,12 +123,9 @@ define(["shared/gw_common"], function (GW) {
           });
       });
 
-      var filesToProcess = [aiFileGen, playerFileGen];
-
-      if (ai.foes) {
-        filesToProcess.push(foeFileGen);
-        if (ai.foes[1]) filesToProcess.push(foe2FileGen);
-      }
+      _.times(aiCount, function (n) {
+        filesToProcess.push(aiFactions[n]);
+      });
 
       $.when.apply($, filesToProcess).always(function () {
         self.files(_.assign.apply(_, arguments));
