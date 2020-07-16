@@ -112,9 +112,9 @@ define([
     });
   });
 
-  var armourTech = [];
+  var healthTech = [];
   factionUnits.forEach(function (faction, i) {
-    armourTech[i] = faction.map(function (unit) {
+    healthTech[i] = faction.map(function (unit) {
       return {
         file: unit,
         path: "max_health",
@@ -187,25 +187,25 @@ define([
   var legonisTech = [
     costTech[0],
     damageTech[0],
-    armourTech[0],
+    healthTech[0],
     factionSpeedTechNoAir[0],
   ];
   var foundationTech = [
     costTech[1],
     damageTech[1],
-    armourTech[1],
+    healthTech[1],
     factionSpeedTechAir,
   ];
   var synchronousTech = [
     costTech[2],
     damageTech[2],
-    armourTech[2],
+    healthTech[2],
     factionSpeedTechNoAir[1],
   ];
   var revenantsTech = [
     costTech[3],
     damageTech[3],
-    armourTech[3],
+    healthTech[3],
     factionSpeedTechNoAir[2],
   ];
 
