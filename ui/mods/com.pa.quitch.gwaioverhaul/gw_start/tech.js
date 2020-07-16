@@ -124,9 +124,9 @@ define([
     });
   });
 
-  var factionSpeedTechNoAir = [];
+  var speedTechNoAir = [];
   factionUnitsNoAir.forEach(function (faction, i) {
-    factionSpeedTechNoAir[i] = faction.map(function (unit) {
+    speedTechNoAir[i] = faction.map(function (unit) {
       return (
         {
           file: unit,
@@ -155,7 +155,7 @@ define([
       );
     });
   });
-  var factionSpeedTechAir = inventory.foundationUnits.map(function (unit) {
+  var speedTechAir = inventory.foundationUnits.map(function (unit) {
     return (
       {
         file: unit,
@@ -188,25 +188,25 @@ define([
     costTech[0],
     damageTech[0],
     healthTech[0],
-    factionSpeedTechNoAir[0],
+    speedTechNoAir[0],
   ];
   var foundationTech = [
     costTech[1],
     damageTech[1],
     healthTech[1],
-    factionSpeedTechAir,
+    speedTechAir,
   ];
   var synchronousTech = [
     costTech[2],
     damageTech[2],
     healthTech[2],
-    factionSpeedTechNoAir[1],
+    speedTechNoAir[1],
   ];
   var revenantsTech = [
     costTech[3],
     damageTech[3],
     healthTech[3],
-    factionSpeedTechNoAir[2],
+    speedTechNoAir[2],
   ];
 
   return {
