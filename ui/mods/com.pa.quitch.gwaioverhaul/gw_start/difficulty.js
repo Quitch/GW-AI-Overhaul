@@ -775,7 +775,7 @@ requireGW(
               info.boss.typeOfBuffs = typeOfBuffs;
               _.times(typeOfBuffs.length, function (n) {
                 info.boss.inventory = info.boss.inventory.concat(
-                  gwaioTech.buffs[info.boss.faction][typeOfBuffs[n]]
+                  gwaioTech.factionTech[info.boss.faction][typeOfBuffs[n]]
                 );
               });
             }
@@ -821,7 +821,7 @@ requireGW(
               worker.ai.typeOfBuffs = typeOfBuffs;
               _.times(typeOfBuffs.length, function (n) {
                 worker.ai.inventory = worker.ai.inventory.concat(
-                  gwaioTech.buffs[worker.ai.faction][typeOfBuffs[n]]
+                  gwaioTech.factionTech[worker.ai.faction][typeOfBuffs[n]]
                 );
               });
             }
@@ -857,7 +857,7 @@ requireGW(
                   foeCommander.typeOfBuffs = typeOfBuffs;
                   _.times(typeOfBuffs.length, function (n) {
                     foeCommander.inventory = foeCommander.inventory.concat(
-                      gwaioTech.buffs[foeFaction][typeOfBuffs[n]]
+                      gwaioTech.factionTech[foeFaction][typeOfBuffs[n]]
                     );
                   });
                 }
