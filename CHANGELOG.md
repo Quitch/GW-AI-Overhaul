@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Correct error with faction tech buffs being incorrectly applied for TITANS units when multiple factions were present in a system
+
 ## v3.3.3 - 2020-07-16
 
 - Cleaned up the code underpinning the mod
