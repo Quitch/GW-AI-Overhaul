@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v3.3.3 - 2020-07-16
+
+- Cleaned up the code underpinning the mod
+- Fixed save button for custom difficulty sometimes needing to be pressed twice
+- Faction Tech now disabled by default
+
 ## v3.3.2 - 2020-07-14
 
 - Fixed the new war UI not loading
