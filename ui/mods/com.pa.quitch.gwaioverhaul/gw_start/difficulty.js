@@ -131,7 +131,9 @@ model.gwaioDifficultySettings = {
     precision: 3,
   }),
   unsavedChanges: ko.observable(false),
-  newGalaxyNeeded: ko.observable(false).extend({ notify: "always" }),
+  newGalaxyNeeded: ko.observable(false).extend({
+    notify: "always",
+  }),
 };
 
 ko.computed(function () {
