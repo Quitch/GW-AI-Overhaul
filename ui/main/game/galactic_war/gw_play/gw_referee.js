@@ -68,10 +68,11 @@ define(["shared/gw_common"], function (GW) {
               );
               var enemyX1AIUnitMapPair = {};
               enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-              var aiInventory =
-                currentCount === 0
-                  ? ai.inventory
-                  : ai.foes[currentCount - 1].inventory;
+              if (ai.inventory)
+                var aiInventory =
+                  currentCount === 0
+                    ? ai.inventory
+                    : ai.foes[currentCount - 1].inventory;
               var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
               var aiFilesX1 = titans
                 ? _.assign(
