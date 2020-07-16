@@ -76,12 +76,7 @@ define(["shared/gw_common"], function (GW) {
                   : ai.foes[currentCount - 1].inventory;
             var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
             var aiFilesX1 = titans
-              ? _.assign(
-                  {
-                    enemyX1AIUnitMapFile: enemyX1AIUnitMap,
-                  },
-                  aiSpecFiles
-                )
+              ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
               : {};
             var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
             if (!aiInventory === undefined)
@@ -190,7 +185,8 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    if (ai.character === "!LOC:Boss") {
+    // Check without !LOC: to support GWAIO v2.2.0 and earlier
+    if (ai.character === "!LOC:Boss" || ai.character === "Boss") {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
           slotsArray.push({

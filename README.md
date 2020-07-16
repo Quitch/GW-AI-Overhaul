@@ -86,6 +86,28 @@ Each system will display the following information:
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
+### Commander Threat Scale
+
+From easiest to hardest:
+
+- Worthless
+- Helpless
+- Weakling
+- Inexperienced
+- Competent
+- Skilled
+- Experienced
+- Veteran
+- Masterful
+- Hardcore
+- Dangerous
+- Deadly
+- Inhuman
+- Genocidal
+- Nightmare
+- Demigod
+- Godlike
+
 ## FAQ
 
 **Q. Can I use an AI mod like Queller?**

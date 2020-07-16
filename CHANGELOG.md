@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.3.4 - 2020-07-16
+
+- Correct error with faction tech buffs being incorrectly applied for TITANS units when multiple factions were present in a system
+- Fixed bosses in wars started between v1.0 and v2.2.0 not spawning multiple commanders
+
 ## v3.3.3 - 2020-07-16
 
 - Cleaned up the code underpinning the mod
