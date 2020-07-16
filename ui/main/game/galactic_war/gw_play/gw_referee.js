@@ -1,6 +1,6 @@
 define(["shared/gw_common"], function (GW) {
   // Add to this this for each supported AI alliance group
-  var aiExtension = [".ai", ".foe1", ".foe2"];
+  var aiTag = [".ai", ".foe1", ".foe2"];
 
   var GWReferee = function (game) {
     var self = this;
@@ -55,44 +55,39 @@ define(["shared/gw_common"], function (GW) {
 
         _.times(aiCount, function (n) {
           var currentCount = n;
-          var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiExtension[n]);
-          var enemyX1AIUnitMap = GW.specs.genAIUnitMap(
-            aiX1UnitMap,
-            aiExtension[n]
-          );
+          var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
+          var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
 
-          GW.specs
-            .genUnitSpecs(units, aiExtension[n])
-            .then(function (aiSpecFiles) {
-              var enemyAIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map.json".concat(
-                aiExtension[n]
-              );
-              var enemyAIUnitMapPair = {};
-              enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-              var enemyX1AIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(
-                aiExtension[n]
-              );
-              var enemyX1AIUnitMapPair = {};
-              enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-              if (ai.inventory)
-                var aiInventory =
-                  currentCount === 0
-                    ? ai.inventory
-                    : ai.foes[currentCount - 1].inventory;
-              var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-              var aiFilesX1 = titans
-                ? _.assign(
-                    {
-                      enemyX1AIUnitMapFile: enemyX1AIUnitMap,
-                    },
-                    aiSpecFiles
-                  )
-                : {};
-              var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-              if (!aiInventory === undefined)
-                GW.specs.modSpecs(aiFiles, aiInventory, aiExtension[n]);
-              aiFactions[currentCount].resolve(aiFiles);
-            });
+          GW.specs.genUnitSpecs(units, aiTag[n]).then(function (aiSpecFiles) {
+            var enemyAIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map.json".concat(
+              aiTag[n]
+            );
+            var enemyAIUnitMapPair = {};
+            enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+            var enemyX1AIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(
+              aiTag[n]
+            );
+            var enemyX1AIUnitMapPair = {};
+            enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
+            if (ai.inventory)
+              var aiInventory =
+                currentCount === 0
+                  ? ai.inventory
+                  : ai.foes[currentCount - 1].inventory;
+            var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
+            var aiFilesX1 = titans
+              ? _.assign(
+                  {
+                    enemyX1AIUnitMapFile: enemyX1AIUnitMap,
+                  },
+                  aiSpecFiles
+                )
+              : {};
+            var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+            if (!aiInventory === undefined)
+              GW.specs.modSpecs(aiFiles, aiInventory, aiTag[n]);
+            aiFactions[currentCount].resolve(aiFiles);
+          });
         });
 
         var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, ".player");
@@ -322,7 +317,7 @@ define(["shared/gw_common"], function (GW) {
       _.forEach(army.slots, function (slot) {
         if (slot.ai) {
           if (army.alliance_group === 1) slot.commander += ".player";
-          else slot.commander += aiExtension[army.alliance_group - 2];
+          else slot.commander += aiTag[army.alliance_group - 2];
         }
       });
     });
