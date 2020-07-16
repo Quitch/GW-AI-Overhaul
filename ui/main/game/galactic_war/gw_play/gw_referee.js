@@ -185,6 +185,7 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
+    // Check without !LOC: to support old wars
     if (ai.character === "!LOC:Boss" || ai.character === "Boss") {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
