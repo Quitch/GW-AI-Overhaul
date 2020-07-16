@@ -253,8 +253,7 @@ define(["shared/gw_common"], function (GW) {
     });
     // Add Additional Factions for FFA if any
     var allianceGroup = 3;
-    var foeTag = [".foe1", ".foe2"];
-    var count = 0;
+    var foeCount = 1;
     _.forEach(ai.foes, function (foe) {
       var slotsArrayFoes = [];
       foe.personality.adv_eco_mod =
@@ -289,16 +288,18 @@ define(["shared/gw_common"], function (GW) {
           landing_policy: _.sample(aiLandingOptions),
         });
       }
+      var foeNum = foeCount.toString();
+      var foeTag = ".foe".concat(foeNum);
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,
-        spec_tag: foeTag[count],
+        spec_tag: foeTag,
         alliance_group: allianceGroup,
       });
       allianceGroup = allianceGroup + 1;
-      count += 1;
+      foeCount += 1;
     });
 
     var config = {
