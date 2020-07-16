@@ -1,9 +1,11 @@
 define({
+  // Tougher Commanders
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
   commanderAmmos: [
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/ammo/cannon_uber/cannon_uber.json",
   ],
+  // Faction Tech
   legonisUnits: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
     "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
