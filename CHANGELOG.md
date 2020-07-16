@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.3.3 - 2020-07-16
 
 - Cleaned up the code underpinning the mod
 - Fixed save button for custom difficulty sometimes needing to be pressed twice
