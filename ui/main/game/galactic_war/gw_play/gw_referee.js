@@ -1,4 +1,7 @@
 define(["shared/gw_common"], function (GW) {
+  // Add to this this for each supported AI alliance group
+  var aiExtension = [".ai", ".foe1", ".foe2"];
+
   var GWReferee = function (game) {
     var self = this;
 
@@ -49,9 +52,6 @@ define(["shared/gw_common"], function (GW) {
 
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
-
-        // Add to this for each supported AI alliance group
-        var aiExtension = [".ai", ".foe1", ".foe2"];
 
         _.times(aiCount, function (n) {
           var currentCount = n;
@@ -322,9 +322,7 @@ define(["shared/gw_common"], function (GW) {
       _.forEach(army.slots, function (slot) {
         if (slot.ai) {
           if (army.alliance_group === 1) slot.commander += ".player";
-          else if (army.alliance_group === 2) slot.commander += ".ai";
-          else if (army.alliance_group === 3) slot.commander += ".foe1";
-          else slot.commander += ".foe2";
+          else slot.commander += aiExtension[army.alliance_group - 2];
         }
       });
     });
