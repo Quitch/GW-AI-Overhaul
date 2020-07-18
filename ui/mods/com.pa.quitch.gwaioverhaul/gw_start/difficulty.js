@@ -765,7 +765,7 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
-        var buffType = [0, 1, 2, 3]; // 0 = cost; 1 = damage; 2 = health; 3 = speed
+        var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {

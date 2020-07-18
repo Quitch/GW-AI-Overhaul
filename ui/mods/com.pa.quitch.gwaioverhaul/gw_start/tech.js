@@ -212,32 +212,32 @@ define([
   });
 
   var legonisTech = [
-    buildTech[0],
     costTech[0],
     damageTech[0],
     healthTech[0],
     speedTechNoAir[0],
+    buildTech[0],
   ];
   var foundationTech = [
-    buildTech[1],
     costTech[1],
     damageTech[1],
     healthTech[1],
     speedTechAir,
+    buildTech[1],
   ];
   var synchronousTech = [
-    buildTech[2],
     costTech[2],
     damageTech[2],
     healthTech[2],
     speedTechNoAir[1],
+    buildTech[2],
   ];
   var revenantsTech = [
-    buildTech[3],
     costTech[3],
     damageTech[3],
     healthTech[3],
     speedTechNoAir[2],
+    buildTech[3],
   ];
 
   return {
