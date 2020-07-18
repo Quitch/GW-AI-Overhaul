@@ -59,7 +59,7 @@ define([
       }
     );
   };
-  _.forEach(inventory.commanderAmmos, modBossAmmo);
+  _.forEach(inventory.commanderAmmo, modBossAmmo);
 
   // Faction Tech
   var factionUnits = [
