@@ -87,6 +87,12 @@ define([
     inventory.synchronousUnits,
     inventory.revenantsUnits,
   ];
+  var factionWeapons = [
+    inventory.legonisWeapons,
+    inventory.foundationWeapons,
+    inventory.synchronousWeapons,
+    inventory.revenantsWeapons,
+  ];
   var factionAmmo = [
     inventory.legonisAmmo,
     inventory.foundationAmmo,
@@ -131,6 +137,37 @@ define([
       })
     );
   });
+
+  factionWeapons.forEach(function (faction, i) {
+    factionsTech[i][1] = factionsTech[i][1].concat(
+      _.flatten(
+        faction.map(function (weapon) {
+          return [
+            {
+              file: weapon,
+              path: "ammo_capacity",
+              op: "multiply",
+              value: 0.1,
+            },
+            {
+              file: weapon,
+              path: "ammo_demand",
+              op: "multiply",
+              value: 0.1,
+            },
+            {
+              file: weapon,
+              path: "ammo_per_shot",
+              op: "multiply",
+              value: 0.1,
+            },
+          ];
+        })
+      )
+    );
+    console.debug(factionsTech[i][1]);
+  });
+  console.debug(factionsTech[1][1]);
 
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][2] = faction.map(function (unit) {
