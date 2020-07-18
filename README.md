@@ -88,6 +88,8 @@ Each system will display the following information:
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
+- **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
+
 ### Commander Threat Scale
 
 From easiest to hardest:
