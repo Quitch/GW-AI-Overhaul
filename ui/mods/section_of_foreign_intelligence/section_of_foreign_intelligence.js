@@ -96,6 +96,17 @@
     return suddenDeath;
   });
 
+  model.techBuild = ko.computed(function () {
+    var techBuild = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
+    )
+      techBuild = loc("!LOC:Enabled");
+    return techBuild;
+  });
+
   model.techCost = ko.computed(function () {
     var techCost = loc("!LOC:Disabled");
     if (
