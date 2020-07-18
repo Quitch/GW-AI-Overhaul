@@ -1,8 +1,10 @@
 # CHANGELOG
 
-## DEV
+## v3.4.0 - 2020-07-18
 
 - Legonis Machina receive buffs to the Unit Cannon with Faction Tech
+- Added the faction tech buff type Build which improves fabber and factory speed and efficiency
+- Fixed an error from v3.3.3 which prevented damage and speed buffs being applied in full - a new war is required for this fix
 
 ## v3.3.4 - 2020-07-16
 

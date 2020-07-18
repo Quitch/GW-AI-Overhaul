@@ -64,6 +64,20 @@ define({
     "/pa/units/land/titan_vehicle/titan_vehicle_ammo_side.json",
     "/pa/units/land/titan_vehicle/titan_vehicle_ammo_stomp.json",
   ],
+  legonisBuildArms: [
+    "/pa/units/land/bot_factory_adv/bot_factory_adv_build_arm.json",
+    "/pa/units/land/bot_factory/bot_factory_build_arm.json",
+    "/pa/units/land/bot_support_commander/bot_support_commander_tool_build_arm.json",
+    "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv_build_arm.json",
+    "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+    "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+    "/pa/units/land/fabrication_bot/fabrication_bot_build_arm.json",
+    "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv_build_arm.json",
+    "/pa/units/land/fabrication_vehicle/fabrication_vehicle_build_arm.json",
+    "/pa/units/land/unit_cannon/unit_cannon_build_arm.json",
+    "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv_build_arm.json",
+    "/pa/units/land/vehicle_factory/vehicle_factory_build_arm.json",
+  ],
   foundationUnits: [
     "/pa/units/air/air_factory_adv/air_factory_adv.json",
     "/pa/units/air/air_factory/air_factory.json",
@@ -124,6 +138,18 @@ define({
     "/pa/units/sea/nuclear_sub/nuclear_sub_ammo.json",
     "/pa/units/sea/sea_scout/sea_scout_ammo.json",
   ],
+  foundationBuildArms: [
+    "/pa/units/air/air_factory_adv/air_factory_adv_build_arm.json",
+    "/pa/units/air/air_factory/air_factory_build_arm.json",
+    "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv_build_arm.json",
+    "/pa/units/air/fabrication_aircraft/fabrication_aircraft_build_arm.json",
+    "/pa/units/air/support_platform/support_platform_build_arm.json",
+    "/pa/units/sea/fabrication_barge/fabrication_barge_build_arm.json",
+    "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv_build_arm.json",
+    "/pa/units/sea/fabrication_ship/fabrication_ship_build_arm.json",
+    "/pa/units/sea/naval_factory_adv/naval_factory_adv_build_arm.json",
+    "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
+  ],
   synchronousUnits: [
     "/pa/units/land/air_defense_adv/air_defense_adv.json",
     "/pa/units/land/air_defense/air_defense.json",
@@ -180,6 +206,10 @@ define({
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_water.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   ],
+  synchronousBuildArms: [
+    "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_build_arm.json",
+    "pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+  ],
   revenantsUnits: [
     "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
@@ -201,5 +231,10 @@ define({
     "/pa/units/orbital/orbital_laser/orbital_laser_ammo.json",
     "/pa/units/orbital/orbital_railgun/orbital_railgun_ammo.json",
     "/pa/units/orbital/titan_orbital/titan_orbital_ammo.json",
+  ],
+  revenantsBuildArms: [
+    "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
+    "/pa/units/orbital/orbital_factory/orbital_factory_build_arm.json",
+    "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   ],
 });
