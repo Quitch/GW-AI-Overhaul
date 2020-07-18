@@ -211,16 +211,16 @@ define([
 
   factionBuildArms.forEach(function (faction, i) {
     factionsTech[i][4] = _.flatten(
-      faction.map(function (unit) {
+      faction.map(function (buildArm) {
         return [
           {
-            file: unit,
+            file: buildArm,
             path: "construction_demand.energy",
             op: "multiply",
             value: 0.5,
           },
           {
-            file: unit,
+            file: buildArm,
             path: "construction_demand.metal",
             op: "multiply",
             value: 1.5,
