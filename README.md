@@ -130,7 +130,7 @@ No, some are objectively stupider than others.
 
 **Q. Is there a "fair" difficulty level?**
 
-No. I felt it was pointless to create a model where each battle is easier than the last.
+No. I felt it was pointless to create a level where each battle is easier than the last.
 
 **Q. Why am I not seeing the latest changes in my war?**
 
@@ -138,7 +138,7 @@ Many changes will only apply to new wars.
 
 **Q. Why am I seeing multiple Commanders for a single enemy army?**
 
-Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. In the case of bosses, it allows them to connect multiple planets very quickly.
+Both bosses and FFA factions will use Shared Armies to allow for multiple Commanders within a single army. This provides them with more additional build power and more lives. It allows them to connect multiple planets very quickly.
 
 **Q. Why aren't awarded bounties showing on the player list?**
 
