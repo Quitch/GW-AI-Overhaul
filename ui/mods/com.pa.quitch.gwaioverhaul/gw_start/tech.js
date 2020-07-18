@@ -67,7 +67,12 @@ define([
   var foundationTech = [];
   var synchronousTech = [];
   var revenantsTech = [];
-  var factions = [legonisTech, foundationTech, synchronousTech, revenantsTech];
+  var factionsTech = [
+    legonisTech,
+    foundationTech,
+    synchronousTech,
+    revenantsTech,
+  ];
   var factionsAir = [foundationTech];
   var factionsNoAir = [legonisTech, synchronousTech, revenantsTech];
   var factionUnits = [
@@ -96,7 +101,7 @@ define([
   ];
 
   factionUnits.forEach(function (faction, i) {
-    factions[i][0] = faction.map(function (unit) {
+    factionsTech[i][0] = faction.map(function (unit) {
       return {
         file: unit,
         path: "build_metal_cost",
@@ -107,7 +112,7 @@ define([
   });
 
   factionAmmo.forEach(function (faction, i) {
-    factions[i][1] = _.flatten(
+    factionsTech[i][1] = _.flatten(
       faction.map(function (ammo) {
         return [
           {
@@ -128,7 +133,7 @@ define([
   });
 
   factionUnits.forEach(function (faction, i) {
-    factions[i][2] = faction.map(function (unit) {
+    factionsTech[i][2] = faction.map(function (unit) {
       return {
         file: unit,
         path: "max_health",
@@ -205,7 +210,7 @@ define([
   });
 
   factionBuildArms.forEach(function (faction, i) {
-    factions[i][4] = _.flatten(
+    factionsTech[i][4] = _.flatten(
       faction.map(function (unit) {
         return [
           {
