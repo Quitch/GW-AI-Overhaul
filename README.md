@@ -74,6 +74,8 @@ Each system will display the following information:
 
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
+- **Build**: AI has Improved Fabricator Build Arms.
+
 - **Cost**: AI has Fabrication Tech.
 
 - **Damage**: AI has Ammunition Tech.
