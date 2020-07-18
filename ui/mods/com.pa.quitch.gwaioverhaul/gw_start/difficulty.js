@@ -926,10 +926,10 @@ requireGW(
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
-              if (world.generator) {
-                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
-              } else
+              if (world.planet) {
                 world.planet.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
+              } else
+                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
           });
         });
 
