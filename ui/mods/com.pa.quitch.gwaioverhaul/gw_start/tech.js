@@ -73,8 +73,8 @@ define([
     synchronousTech,
     revenantsTech,
   ];
-  var factionsAir = [foundationTech];
-  var factionsNoAir = [legonisTech, synchronousTech, revenantsTech];
+  var factionsTechAir = [foundationTech];
+  var factionsTechNoAir = [legonisTech, synchronousTech, revenantsTech];
   var factionUnits = [
     inventory.legonisUnits,
     inventory.foundationUnits,
@@ -144,7 +144,7 @@ define([
   });
 
   factionUnitsAir.forEach(function (faction, i) {
-    factionsAir[i][3] = _.flatten(
+    factionsTechAir[i][3] = _.flatten(
       faction.map(function (unit) {
         return [
           {
@@ -177,7 +177,7 @@ define([
   });
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    factionsNoAir[i][3] = _.flatten(
+    factionsTechNoAir[i][3] = _.flatten(
       faction.map(function (unit) {
         return [
           {
