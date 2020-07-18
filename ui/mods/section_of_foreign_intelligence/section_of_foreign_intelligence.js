@@ -66,6 +66,8 @@
     return commanders;
   });
 
+  // Game Options
+
   model.bountyMode = ko.computed(function () {
     var bountyMode = loc("!LOC:Disabled");
     if (
@@ -95,6 +97,8 @@
       suddenDeath = loc("!LOC:Enabled");
     return suddenDeath;
   });
+
+  // AI Buffs
 
   model.techBuild = ko.computed(function () {
     var techBuild = loc("!LOC:Disabled");
@@ -150,6 +154,8 @@
       techSpeed = loc("!LOC:Enabled");
     return techSpeed;
   });
+
+  // Additional Factions
 
   model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
