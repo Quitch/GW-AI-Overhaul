@@ -63,12 +63,20 @@ define([
 
   // Faction Tech
 
+  var legonisTech = [];
+  var foundationTech = [];
+  var synchronousTech = [];
+  var revenantsTech = [];
+  var factions = [legonisTech, foundationTech, synchronousTech, revenantsTech];
+  var factionsAir = [foundationTech];
+  var factionsNoAir = [legonisTech, synchronousTech, revenantsTech];
   var factionUnits = [
     inventory.legonisUnits,
     inventory.foundationUnits,
     inventory.synchronousUnits,
     inventory.revenantsUnits,
   ];
+  var factionUnitsAir = [inventory.foundationUnits];
   var factionUnitsNoAir = [
     inventory.legonisUnits,
     inventory.synchronousUnits,
@@ -87,29 +95,8 @@ define([
     inventory.revenantsBuildArms,
   ];
 
-  var buildTech = [];
-  factionBuildArms.forEach(function (faction, i) {
-    buildTech[i] = faction.map(function (unit) {
-      return (
-        {
-          file: unit,
-          path: "construction_demand.energy",
-          op: "multiply",
-          value: 0.5,
-        },
-        {
-          file: unit,
-          path: "construction_demand.metal",
-          op: "multiply",
-          value: 1.5,
-        }
-      );
-    });
-  });
-
-  var costTech = [];
   factionUnits.forEach(function (faction, i) {
-    costTech[i] = faction.map(function (unit) {
+    factions[i][0] = faction.map(function (unit) {
       return {
         file: unit,
         path: "build_metal_cost",
@@ -118,10 +105,10 @@ define([
       };
     });
   });
+  console.debug("Cost", factions[0][0]);
 
-  var damageTech = [];
   factionAmmo.forEach(function (faction, i) {
-    damageTech[i] = faction.map(function (ammo) {
+    factions[i][1] = faction.map(function (ammo) {
       return (
         {
           file: ammo,
@@ -138,10 +125,10 @@ define([
       );
     });
   });
+  console.debug("Damage", factions[0][1]);
 
-  var healthTech = [];
   factionUnits.forEach(function (faction, i) {
-    healthTech[i] = faction.map(function (unit) {
+    factions[i][2] = faction.map(function (unit) {
       return {
         file: unit,
         path: "max_health",
@@ -150,10 +137,42 @@ define([
       };
     });
   });
+  console.debug("Health", factions[0][2]);
 
-  var speedTechNoAir = [];
+  factionUnitsAir.forEach(function (faction, i) {
+    factionsAir[i][3] = faction.map(function (unit) {
+      return (
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.25,
+        }
+      );
+    });
+  });
+  console.debug("Speed Air", factionsAir[0][3]);
+
   factionUnitsNoAir.forEach(function (faction, i) {
-    speedTechNoAir[i] = faction.map(function (unit) {
+    factionsNoAir[i][3] = faction.map(function (unit) {
       return (
         {
           file: unit,
@@ -182,63 +201,27 @@ define([
       );
     });
   });
-  var speedTechAir = inventory.foundationUnits.map(function (unit) {
-    return (
-      {
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.25,
-      }
-    );
-  });
+  console.debug("Speed No Air", factionsNoAir[0][3]);
 
-  var legonisTech = [
-    costTech[0],
-    damageTech[0],
-    healthTech[0],
-    speedTechNoAir[0],
-    buildTech[0],
-  ];
-  var foundationTech = [
-    costTech[1],
-    damageTech[1],
-    healthTech[1],
-    speedTechAir,
-    buildTech[1],
-  ];
-  var synchronousTech = [
-    costTech[2],
-    damageTech[2],
-    healthTech[2],
-    speedTechNoAir[1],
-    buildTech[2],
-  ];
-  var revenantsTech = [
-    costTech[3],
-    damageTech[3],
-    healthTech[3],
-    speedTechNoAir[2],
-    buildTech[3],
-  ];
+  factionBuildArms.forEach(function (faction, i) {
+    factions[i][4] = faction.map(function (unit) {
+      return (
+        {
+          file: unit,
+          path: "construction_demand.energy",
+          op: "multiply",
+          value: 0.5,
+        },
+        {
+          file: unit,
+          path: "construction_demand.metal",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
+  });
+  console.debug("Build", factions[0][4]);
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
