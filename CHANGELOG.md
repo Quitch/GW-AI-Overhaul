@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Legonis Machina receive buffs to the Unit Cannon with Faction Tech
+
 ## v3.3.4 - 2020-07-16
 
 - Corrected error with faction tech buffs being incorrectly applied for TITANS units when multiple factions were present in a system
