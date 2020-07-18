@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.5.0 - 2020-07-18
 
 - Ammunition Tech has been expanded to include reduced firing costs (or time in the case of the Ragnarok)
 
