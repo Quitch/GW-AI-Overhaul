@@ -165,9 +165,7 @@ define([
         })
       )
     );
-    console.debug(factionsTech[i][1]);
   });
-  console.debug(factionsTech[1][1]);
 
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][2] = faction.map(function (unit) {
