@@ -82,15 +82,15 @@ Each system will display the following information:
 
 If you have Faction Tech enabled you will also see which buffs are being applied to the AI:
 
-- **Build**: AI has Improved Fabricator Build Arms.
+- **Build**: Improved Fabricator Build Arms.
 
-- **Cost**: AI has Fabrication Tech.
+- **Cost**: Fabrication Tech.
 
-- **Damage**: AI has Ammunition Tech.
+- **Damage**: Ammunition Tech.
 
-- **Health**: AI has Armour Tech.
+- **Health**: Armour Tech.
 
-- **Speed**: AI has Engine Tech.
+- **Speed**: Engine Tech.
 
 ### Commander Threat Scale
 
