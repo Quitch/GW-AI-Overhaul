@@ -62,6 +62,7 @@ define([
   _.forEach(inventory.commanderAmmos, modBossAmmo);
 
   // Faction Tech
+
   var factionUnits = [
     inventory.legonisUnits,
     inventory.foundationUnits,
@@ -79,6 +80,32 @@ define([
     inventory.synchronousAmmo,
     inventory.revenantsAmmo,
   ];
+  var factionBuildArms = [
+    inventory.legonisBuildArms,
+    inventory.foundationBuildArms,
+    inventory.synchronousBuildArms,
+    inventory.revenantsBuildArms,
+  ];
+
+  var buildTech = [];
+  factionBuildArms.forEach(function (faction, i) {
+    costTech[i] = faction.map(function (unit) {
+      return (
+        {
+          file: unit,
+          path: "construction_demand.energy",
+          op: "multiply",
+          value: 0.5,
+        },
+        {
+          file: unit,
+          path: "construction_demand.metal",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
+  });
 
   var costTech = [];
   factionUnits.forEach(function (faction, i) {
@@ -185,24 +212,28 @@ define([
   });
 
   var legonisTech = [
+    buildTech[0],
     costTech[0],
     damageTech[0],
     healthTech[0],
     speedTechNoAir[0],
   ];
   var foundationTech = [
+    buildTech[1],
     costTech[1],
     damageTech[1],
     healthTech[1],
     speedTechAir,
   ];
   var synchronousTech = [
+    buildTech[2],
     costTech[2],
     damageTech[2],
     healthTech[2],
     speedTechNoAir[1],
   ];
   var revenantsTech = [
+    buildTech[3],
     costTech[3],
     damageTech[3],
     healthTech[3],
