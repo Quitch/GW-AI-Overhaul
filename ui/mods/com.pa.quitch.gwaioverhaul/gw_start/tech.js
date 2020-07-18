@@ -89,7 +89,7 @@ define([
 
   var buildTech = [];
   factionBuildArms.forEach(function (faction, i) {
-    costTech[i] = faction.map(function (unit) {
+    buildTech[i] = faction.map(function (unit) {
       return (
         {
           file: unit,
