@@ -765,7 +765,7 @@ requireGW(
         var aiFactions = _.range(GWFactions.length);
         aiFactions.splice(model.playerFactionIndex(), 1);
 
-        var buffType = [0, 1, 2, 3]; // 0 = cost; 1 = damage; 2 = health; 3 = speed
+        var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
@@ -926,10 +926,10 @@ requireGW(
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
-              if (world.generator) {
-                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
-              } else
+              if (world.planet) {
                 world.planet.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
+              } else
+                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
           });
         });
 

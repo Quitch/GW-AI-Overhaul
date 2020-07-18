@@ -69,18 +69,18 @@ define(["shared/gw_common"], function (GW) {
             );
             var enemyX1AIUnitMapPair = {};
             enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-            if (ai.inventory)
-              var aiInventory =
-                currentCount === 0
-                  ? ai.inventory
-                  : ai.foes[currentCount - 1].inventory;
             var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
             var aiFilesX1 = titans
               ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
               : {};
             var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-            if (!aiInventory === undefined)
+            if (ai.inventory) {
+              var aiInventory =
+                currentCount === 0
+                  ? ai.inventory
+                  : ai.foes[currentCount - 1].inventory;
               GW.specs.modSpecs(aiFiles, aiInventory, aiTag[n]);
+            }
             aiFactions[currentCount].resolve(aiFiles);
           });
         });

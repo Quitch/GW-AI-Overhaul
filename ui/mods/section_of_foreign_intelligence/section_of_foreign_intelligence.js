@@ -66,6 +66,8 @@
     return commanders;
   });
 
+  // Game Options
+
   model.bountyMode = ko.computed(function () {
     var bountyMode = loc("!LOC:Disabled");
     if (
@@ -94,6 +96,19 @@
     )
       suddenDeath = loc("!LOC:Enabled");
     return suddenDeath;
+  });
+
+  // AI Buffs
+
+  model.techBuild = ko.computed(function () {
+    var techBuild = loc("!LOC:Disabled");
+    if (
+      model.selection.system().star.ai() &&
+      model.selection.system().star.ai().typeOfBuffs &&
+      _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
+    )
+      techBuild = loc("!LOC:Enabled");
+    return techBuild;
   });
 
   model.techCost = ko.computed(function () {
@@ -139,6 +154,8 @@
       techSpeed = loc("!LOC:Enabled");
     return techSpeed;
   });
+
+  // Additional Factions
 
   model.ffaOpponents = ko.computed(function () {
     var primary = model.selection.system().star.ai();
