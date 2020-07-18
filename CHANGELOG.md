@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v3.5.0 - 2020-07-18
+
+- Ammunition Tech has been expanded to include reduced firing costs (or time in the case of the Ragnarok)
+
 ## v3.4.0 - 2020-07-18
 
 - Legonis Machina receive buffs to the Unit Cannon with Faction Tech

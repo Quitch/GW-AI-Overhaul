@@ -42,6 +42,10 @@ define({
     "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
     "/pa/units/land/vehicle_factory/vehicle_factory.json",
   ],
+  legonisWeapons: [
+    "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+    "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
+  ],
   legonisAmmo: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_ammo.json",
     "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
@@ -110,6 +114,14 @@ define({
     "/pa/units/sea/naval_factory/naval_factory.json",
     "/pa/units/sea/nuclear_sub/nuclear_sub.json",
     "/pa/units/sea/sea_scout/sea_scout.json",
+  ],
+  foundationWeapons: [
+    "/pa/units/air/bomber_adv/bomber_adv_tool_weapon.json",
+    "/pa/units/air/bomber_heavy/bomber_heavy_tool_weapon.json",
+    "/pa/units/air/bomber/bomber_tool_weapon.json",
+    "/pa/units/air/solar_drone/solar_drone_tool_weapon.json",
+    "/pa/units/air/titan_air/titan_air_tool_weapon.json",
+    "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
   ],
   foundationAmmo: [
     "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
@@ -184,6 +196,11 @@ define({
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   ],
+  synchronousWeapons: [
+    "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+    "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
+    "/pa/units/land/titan_structure/titan_structure_tool_weapon.json",
+  ],
   synchronousAmmo: [
     "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
     "/pa/units/land/air_defense_adv/air_defense_adv_ammo.json",
@@ -224,6 +241,11 @@ define({
     "/pa/units/orbital/radar_satellite/radar_satellite.json",
     "/pa/units/orbital/solar_array/solar_array.json",
     "/pa/units/orbital/titan_orbital/titan_orbital.json",
+  ],
+  revenantsWeapons: [
+    "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
+    "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
+    "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
   ],
   revenantsAmmo: [
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",

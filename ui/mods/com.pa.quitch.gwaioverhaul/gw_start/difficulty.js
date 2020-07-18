@@ -794,7 +794,6 @@ requireGW(
                 info.boss.minions.push(bossMinions);
               });
             }
-            //console.debug("BOSS:", info.team.name, "| Eco:", info.boss.econ_rate, "| Minions:", numMinions, "| Max Distance", maxDist, "| Card", info.team.bossCard);
           }
 
           _.forEach(info.workers, function (worker) {
@@ -868,7 +867,6 @@ requireGW(
                 worker.ai.foes.push(foeCommander);
               }
             });
-            //console.debug(worker.ai.name, "| Eco:", worker.ai.econ_rate, "| Minions:", numMinions, "| Distance", dist);
           });
         });
 
