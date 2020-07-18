@@ -105,27 +105,27 @@ define([
       };
     });
   });
-  console.debug("Cost", factions[0][0]);
 
   factionAmmo.forEach(function (faction, i) {
-    factions[i][1] = faction.map(function (ammo) {
-      return (
-        {
-          file: ammo,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: ammo,
-          path: "splash_damage",
-          op: "multiply",
-          value: 1.25,
-        }
-      );
-    });
+    factions[i][1] = _.flatten(
+      faction.map(function (ammo) {
+        return [
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          },
+        ];
+      })
+    );
   });
-  console.debug("Damage", factions[0][1]);
 
   factionUnits.forEach(function (faction, i) {
     factions[i][2] = faction.map(function (unit) {
@@ -137,91 +137,93 @@ define([
       };
     });
   });
-  console.debug("Health", factions[0][2]);
 
   factionUnitsAir.forEach(function (faction, i) {
-    factionsAir[i][3] = faction.map(function (unit) {
-      return (
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.25,
-        }
-      );
-    });
+    factionsAir[i][3] = _.flatten(
+      faction.map(function (unit) {
+        return [
+          {
+            file: unit,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: unit,
+            path: "navigation.brake",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: unit,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: unit,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: 1.25,
+          },
+        ];
+      })
+    );
   });
-  console.debug("Speed Air", factionsAir[0][3]);
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    factionsNoAir[i][3] = faction.map(function (unit) {
-      return (
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.5,
-        }
-      );
-    });
+    factionsNoAir[i][3] = _.flatten(
+      faction.map(function (unit) {
+        return [
+          {
+            file: unit,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.brake",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: 1.5,
+          },
+        ];
+      })
+    );
   });
-  console.debug("Speed No Air", factionsNoAir[0][3]);
 
   factionBuildArms.forEach(function (faction, i) {
-    factions[i][4] = faction.map(function (unit) {
-      return (
-        {
-          file: unit,
-          path: "construction_demand.energy",
-          op: "multiply",
-          value: 0.5,
-        },
-        {
-          file: unit,
-          path: "construction_demand.metal",
-          op: "multiply",
-          value: 1.5,
-        }
-      );
-    });
+    factions[i][4] = _.flatten(
+      faction.map(function (unit) {
+        return [
+          {
+            file: unit,
+            path: "construction_demand.energy",
+            op: "multiply",
+            value: 0.5,
+          },
+          {
+            file: unit,
+            path: "construction_demand.metal",
+            op: "multiply",
+            value: 1.5,
+          },
+        ];
+      })
+    );
   });
-  console.debug("Build", factions[0][4]);
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
