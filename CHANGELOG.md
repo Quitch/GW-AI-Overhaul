@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.5.1 - 2020-07-19
+
+- Fixed Sub Commanders not being dealt if you didn't meet their requirements at the start of the war
+- Fixed a typo in the Bounty Value tooltip
+
 ## v3.5.0 - 2020-07-18
 
 - Ammunition Tech has been expanded to include reduced firing costs (or time in the case of the Ragnarok)

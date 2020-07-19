@@ -1,10 +1,4 @@
 define(["shared/gw_factions"], function (GWFactions) {
-  function hasUnit(id) {
-    return _.any(model.game().inventory().units(), function (unit) {
-      return id === unit;
-    });
-  }
-
   return {
     // eslint-disable-next-line lodash/prefer-constant
     visible: function () {
@@ -38,6 +32,17 @@ define(["shared/gw_factions"], function (GWFactions) {
       };
     },
     getContext: function (galaxy, inventory) {
+      return {
+        totalSize: galaxy.stars().length,
+        faction: inventory.getTag("global", "playerFaction") || 0,
+      };
+    },
+    deal: function (system, context) {
+      function hasUnit(id) {
+        return _.any(model.game().inventory().units(), function (unit) {
+          return id === unit;
+        });
+      }
       var chance = 100;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
@@ -46,20 +51,13 @@ define(["shared/gw_factions"], function (GWFactions) {
       ) {
         chance = 0;
       }
-      return {
-        chance: chance,
-        totalSize: galaxy.stars().length,
-        faction: inventory.getTag("global", "playerFaction") || 0,
-      };
-    },
-    deal: function (system, context) {
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
           minion: minion,
           unique: Math.random(),
         },
-        chance: system.distance() > 0 ? context.chance : 0,
+        chance: system.distance() > 0 ? chance : 0,
       };
     },
     buff: function (inventory, params) {
@@ -72,11 +70,11 @@ define(["shared/gw_factions"], function (GWFactions) {
     },
     // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
-    keep: function (params, context) {
+    keep: function (_, context) {
       //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
-    discard: function (params, context) {
+    discard: function (_, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
       //api.debug.log("discard: chance: " + context.chance);
     },
