@@ -33,6 +33,7 @@ define(["shared/gw_factions"], function (GWFactions) {
     },
     getContext: function (galaxy, inventory) {
       return {
+        chance: 100,
         totalSize: galaxy.stars().length,
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
@@ -43,7 +44,7 @@ define(["shared/gw_factions"], function (GWFactions) {
           return id === unit;
         });
       }
-      var chance = 100;
+      var chance = context.chance;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
         !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
