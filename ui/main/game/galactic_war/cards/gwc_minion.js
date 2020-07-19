@@ -1,10 +1,4 @@
 define(["shared/gw_factions"], function (GWFactions) {
-  function hasUnit(id) {
-    return _.any(model.game().inventory().units(), function (unit) {
-      return id === unit;
-    });
-  }
-
   return {
     // eslint-disable-next-line lodash/prefer-constant
     visible: function () {
@@ -44,7 +38,12 @@ define(["shared/gw_factions"], function (GWFactions) {
       };
     },
     deal: function (system, context) {
-      var chance = 100;
+      function hasUnit(id) {
+        return _.any(model.game().inventory().units(), function (unit) {
+          return id === unit;
+        });
+      }
+      var chance = 999999;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
         !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
