@@ -1,9 +1,5 @@
 # CHANGELOG
 
-## v3.5.2 - 2020-07-19
-
-- Fixed the fix for the Sub Commander card
-
 ## v3.5.1 - 2020-07-19
 
 - Fixed Sub Commanders not being dealt if you didn't meet their requirements at the start of the war
