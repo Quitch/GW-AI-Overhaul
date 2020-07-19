@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.5.1 - 2020-07-19
 
 - Fixed Sub Commanders not being dealt if you didn't meet their requirements at the start of the war
 - Fixed a typo in the Bounty Value tooltip
