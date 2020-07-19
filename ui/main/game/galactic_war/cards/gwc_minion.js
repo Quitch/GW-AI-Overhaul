@@ -43,7 +43,7 @@ define(["shared/gw_factions"], function (GWFactions) {
           return id === unit;
         });
       }
-      var chance = 999999;
+      var chance = 100;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
         !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
