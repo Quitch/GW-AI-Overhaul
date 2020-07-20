@@ -75,10 +75,13 @@ define(["shared/gw_common"], function (GW) {
               : {};
             var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
             if (ai.inventory) {
-              var aiInventory =
+              var aiInventory = [];
+              aiInventory =
                 currentCount === 0
                   ? ai.inventory
                   : ai.foes[currentCount - 1].inventory;
+              if (ai.mirrorMode === true)
+                aiInventory = aiInventory.concat(inventory.mods());
               GW.specs.modSpecs(aiFiles, aiInventory, aiTag[n]);
             }
             aiFactions[currentCount].resolve(aiFiles);

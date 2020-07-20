@@ -47,6 +47,7 @@ model.gwaioDifficultySettings = {
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
   factionTech: ko.observable(false),
+  mirrorMode: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -143,6 +144,7 @@ ko.computed(function () {
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
   model.gwaioDifficultySettings.factionTech();
+  model.gwaioDifficultySettings.mirrorMode();
   model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
@@ -924,6 +926,11 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
+          }
+          if (ai && model.gwaioDifficultySettings.mirrorMode()) {
+            ai.mirrorMode = true;
+          } else if (ai) {
+            ai.mirrorMode = false;
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {
