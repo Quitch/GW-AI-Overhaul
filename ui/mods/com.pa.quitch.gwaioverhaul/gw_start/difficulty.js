@@ -43,6 +43,7 @@ model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.gwaioDifficultySettings = {
   shuffleSpawns: ko.observable(true),
+  factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
   factionTech: ko.observable(false),
@@ -138,6 +139,7 @@ model.gwaioDifficultySettings = {
 
 ko.computed(function () {
   model.gwaioDifficultySettings.shuffleSpawns();
+  model.gwaioDifficultySettings.factionScaling();
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
   model.gwaioDifficultySettings.factionTech();
@@ -585,8 +587,10 @@ requireGW(
 
       var aiFactions = _.range(GWFactions.length);
       aiFactions.splice(model.playerFactionIndex(), 1);
-      var numFactions = model.newGameSizeIndex() + 1;
-      aiFactions = _.sample(aiFactions, numFactions);
+      if (model.gwaioDifficultySettings.factionScaling()) {
+        var numFactions = model.newGameSizeIndex() + 1;
+        aiFactions = _.sample(aiFactions, numFactions);
+      }
 
       if (model.creditsMode()) {
         size = _.reduce(

@@ -342,6 +342,19 @@
   <div>
     <input
       type="checkbox"
+      data-bind="checked: model.gwaioDifficultySettings.factionScaling"
+    />
+    <span style="margin-left: 6px;"></span>
+    <loc>Faction Scaling</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:The number of enemy factions is adjusted for the galaxy\'s size.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
       data-bind="checked: model.gwaioDifficultySettings.easierStart"
     />
     <span style="margin-left: 6px;"></span>

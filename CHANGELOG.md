@@ -2,7 +2,7 @@
 
 ## DEV
 
-- The number of enemy factions present in the war now scales with galaxy size
+- Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
 
 ## v3.5.2 - 2020-07-19
 
