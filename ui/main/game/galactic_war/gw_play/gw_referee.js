@@ -29,11 +29,10 @@ define(["shared/gw_common"], function (GW) {
 
       var aiCount = ai.foes ? 1 + ai.foes.length : 1;
 
-      // Add to this this for each supported AI alliance group
-      var aiFileGen = $.Deferred();
-      var foeFileGen = $.Deferred();
-      var foe2FileGen = $.Deferred();
-      var aiFactions = [aiFileGen, foeFileGen, foe2FileGen];
+      var aiFactions = [];
+      _.times(aiCount, function () {
+        aiFactions.push($.Deferred());
+      });
 
       var playerFileGen = $.Deferred();
       var filesToProcess = [playerFileGen];
