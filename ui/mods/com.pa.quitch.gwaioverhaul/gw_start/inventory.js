@@ -220,7 +220,7 @@ define({
   ],
   synchronousBuildArms: [
     "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_build_arm.json",
-    "pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+    "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
   ],
   revenantsUnits: [
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
