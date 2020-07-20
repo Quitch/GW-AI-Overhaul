@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- The number of enemy factions present in the war now scales with galaxy size
+
 ## v3.5.2 - 2020-07-19
 
 - Fixed the fix for the Sub Commander card

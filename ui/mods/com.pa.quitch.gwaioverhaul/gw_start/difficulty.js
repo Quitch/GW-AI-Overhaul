@@ -583,6 +583,12 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
+      var aiFactions = _.range(GWFactions.length);
+      aiFactions.splice(model.playerFactionIndex(), 1);
+      var numFactions =
+        model.newGameSizeIndex() < 2 ? 2 : model.newGameSizeIndex() + 1;
+      aiFactions = _.sample(aiFactions, numFactions);
+
       if (model.creditsMode()) {
         size = _.reduce(
           GWFactions,
@@ -644,8 +650,6 @@ requireGW(
         if (model.makeGameBusy() !== busyToken) return;
 
         // Scatter some AIs
-        var aiFactions = _.range(GWFactions.length);
-        aiFactions.splice(model.playerFactionIndex(), 1);
         if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
         var teams = _.map(aiFactions, GWTeams.getTeam);
         if (model.creditsMode()) {
@@ -761,9 +765,6 @@ requireGW(
               dist * model.gwaioDifficultySettings.econRatePerDist();
           }
         };
-
-        var aiFactions = _.range(GWFactions.length);
-        aiFactions.splice(model.playerFactionIndex(), 1);
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
 
