@@ -1,7 +1,4 @@
 define(["shared/gw_common"], function (GW) {
-  // Add to this this for each supported AI alliance group
-  var aiTag = [".ai", ".foe1", ".foe2"];
-
   var GWReferee = function (game) {
     var self = this;
 
@@ -28,9 +25,13 @@ define(["shared/gw_common"], function (GW) {
       var ai = battleGround.ai();
 
       var aiCount = ai.foes ? 1 + ai.foes.length : 1;
-
+      var aiTag = [];
       var aiFactions = [];
-      _.times(aiCount, function () {
+
+      _.times(aiCount, function (n) {
+        var aiNewTag = ".ai";
+        n = n.toString();
+        (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
         aiFactions.push($.Deferred());
       });
 
@@ -181,6 +182,14 @@ define(["shared/gw_common"], function (GW) {
     });
 
     // Setup the AI
+    var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+    var aiTag = [];
+    _.times(aiCount, function (n) {
+      var aiNewTag = ".ai";
+      n = n.toString();
+      (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+    });
+
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
@@ -219,7 +228,7 @@ define(["shared/gw_common"], function (GW) {
       color: ai.color,
       econ_rate: ai.econ_rate,
       personality: ai.personality,
-      spec_tag: ".ai",
+      spec_tag: aiTag[0],
       alliance_group: 2,
     });
     _.forEach(ai.minions, function (minion) {
@@ -240,7 +249,7 @@ define(["shared/gw_common"], function (GW) {
         color: minion.color,
         econ_rate: minion.econ_rate || ai.econ_rate,
         personality: minion.personality,
-        spec_tag: ".ai",
+        spec_tag: aiTag[0],
         alliance_group: 2,
       });
     });
@@ -281,14 +290,12 @@ define(["shared/gw_common"], function (GW) {
           landing_policy: _.sample(aiLandingOptions),
         });
       }
-      var foeNum = foeCount.toString();
-      var foeTag = ".foe".concat(foeNum);
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,
-        spec_tag: foeTag,
+        spec_tag: aiTag[foeCount],
         alliance_group: allianceGroup,
       });
       allianceGroup = allianceGroup + 1;
