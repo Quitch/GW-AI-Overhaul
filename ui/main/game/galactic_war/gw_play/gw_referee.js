@@ -301,7 +301,7 @@ define(["shared/gw_common"], function (GW) {
         spec_tag: aiTag[foeCount],
         alliance_group: allianceGroup,
       });
-      allianceGroup = allianceGroup + 1;
+      allianceGroup += 1;
       foeCount += 1;
     });
 
