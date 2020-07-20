@@ -585,8 +585,7 @@ requireGW(
 
       var aiFactions = _.range(GWFactions.length);
       aiFactions.splice(model.playerFactionIndex(), 1);
-      var numFactions =
-        model.newGameSizeIndex() < 2 ? 2 : model.newGameSizeIndex() + 1;
+      var numFactions = model.newGameSizeIndex() + 1;
       aiFactions = _.sample(aiFactions, numFactions);
 
       if (model.creditsMode()) {
