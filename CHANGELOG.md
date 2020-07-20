@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v3.6.0 - 2020-07-20
 
 - Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
 - Expanded what is considered an orbital unit for the purposes of Revenants buffs when Faction Tech is active
