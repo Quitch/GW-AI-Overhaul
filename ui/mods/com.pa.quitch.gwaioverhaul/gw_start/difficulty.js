@@ -43,9 +43,11 @@ model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.gwaioDifficultySettings = {
   shuffleSpawns: ko.observable(true),
+  factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
   factionTech: ko.observable(false),
+  mirrorMode: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -138,9 +140,11 @@ model.gwaioDifficultySettings = {
 
 ko.computed(function () {
   model.gwaioDifficultySettings.shuffleSpawns();
+  model.gwaioDifficultySettings.factionScaling();
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
   model.gwaioDifficultySettings.factionTech();
+  model.gwaioDifficultySettings.mirrorMode();
   model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
@@ -583,6 +587,13 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
+      var aiFactions = _.range(GWFactions.length);
+      aiFactions.splice(model.playerFactionIndex(), 1);
+      if (model.gwaioDifficultySettings.factionScaling()) {
+        var numFactions = model.newGameSizeIndex() + 1;
+        aiFactions = _.sample(aiFactions, numFactions);
+      }
+
       if (model.creditsMode()) {
         size = _.reduce(
           GWFactions,
@@ -644,8 +655,6 @@ requireGW(
         if (model.makeGameBusy() !== busyToken) return;
 
         // Scatter some AIs
-        var aiFactions = _.range(GWFactions.length);
-        aiFactions.splice(model.playerFactionIndex(), 1);
         if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
         var teams = _.map(aiFactions, GWTeams.getTeam);
         if (model.creditsMode()) {
@@ -761,9 +770,6 @@ requireGW(
               dist * model.gwaioDifficultySettings.econRatePerDist();
           }
         };
-
-        var aiFactions = _.range(GWFactions.length);
-        aiFactions.splice(model.playerFactionIndex(), 1);
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
 
@@ -920,6 +926,11 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
+          }
+          if (ai && model.gwaioDifficultySettings.mirrorMode()) {
+            ai.mirrorMode = true;
+          } else if (ai) {
+            ai.mirrorMode = false;
           }
           // eslint-disable-next-line lodash/prefer-filter
           _.forEach(star.system().planets, function (world) {

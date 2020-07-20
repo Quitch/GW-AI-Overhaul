@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v3.6.0 - 2020-07-20
+
+- Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
+- Expanded what is considered an orbital unit for the purposes of Revenants buffs when Faction Tech is active
+- Corrected the Omega not having its anti-orbital weapon buffed for the Revenants
+- Fixed Synchronous not receiving its nuke damage bonus with Faction Tech
+- Added optional mode Mirror Mode which grants the AI the same tech buffs as the player
+
+## v3.5.2 - 2020-07-19
+
+- Fixed the fix for the Sub Commander card
+
 ## v3.5.1 - 2020-07-19
 
 - Fixed Sub Commanders not being dealt if you didn't meet their requirements at the start of the war

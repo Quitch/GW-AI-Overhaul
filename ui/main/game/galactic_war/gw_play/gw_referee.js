@@ -1,7 +1,4 @@
 define(["shared/gw_common"], function (GW) {
-  // Add to this this for each supported AI alliance group
-  var aiTag = [".ai", ".foe1", ".foe2"];
-
   var GWReferee = function (game) {
     var self = this;
 
@@ -28,12 +25,15 @@ define(["shared/gw_common"], function (GW) {
       var ai = battleGround.ai();
 
       var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+      var aiTag = [];
+      var aiFactions = [];
 
-      // Add to this this for each supported AI alliance group
-      var aiFileGen = $.Deferred();
-      var foeFileGen = $.Deferred();
-      var foe2FileGen = $.Deferred();
-      var aiFactions = [aiFileGen, foeFileGen, foe2FileGen];
+      _.times(aiCount, function (n) {
+        var aiNewTag = ".ai";
+        n = n.toString();
+        (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+        aiFactions.push($.Deferred());
+      });
 
       var playerFileGen = $.Deferred();
       var filesToProcess = [playerFileGen];
@@ -75,10 +75,13 @@ define(["shared/gw_common"], function (GW) {
               : {};
             var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
             if (ai.inventory) {
-              var aiInventory =
+              var aiInventory = [];
+              aiInventory =
                 currentCount === 0
                   ? ai.inventory
                   : ai.foes[currentCount - 1].inventory;
+              if (ai.mirrorMode === true)
+                aiInventory = aiInventory.concat(inventory.mods());
               GW.specs.modSpecs(aiFiles, aiInventory, aiTag[n]);
             }
             aiFactions[currentCount].resolve(aiFiles);
@@ -182,6 +185,14 @@ define(["shared/gw_common"], function (GW) {
     });
 
     // Setup the AI
+    var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+    var aiTag = [];
+    _.times(aiCount, function (n) {
+      var aiNewTag = ".ai";
+      n = n.toString();
+      (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+    });
+
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
@@ -220,7 +231,7 @@ define(["shared/gw_common"], function (GW) {
       color: ai.color,
       econ_rate: ai.econ_rate,
       personality: ai.personality,
-      spec_tag: ".ai",
+      spec_tag: aiTag[0],
       alliance_group: 2,
     });
     _.forEach(ai.minions, function (minion) {
@@ -241,7 +252,7 @@ define(["shared/gw_common"], function (GW) {
         color: minion.color,
         econ_rate: minion.econ_rate || ai.econ_rate,
         personality: minion.personality,
-        spec_tag: ".ai",
+        spec_tag: aiTag[0],
         alliance_group: 2,
       });
     });
@@ -282,17 +293,15 @@ define(["shared/gw_common"], function (GW) {
           landing_policy: _.sample(aiLandingOptions),
         });
       }
-      var foeNum = foeCount.toString();
-      var foeTag = ".foe".concat(foeNum);
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
         econ_rate: foe.econ_rate || ai.econ_rate,
         personality: foe.personality,
-        spec_tag: foeTag,
+        spec_tag: aiTag[foeCount],
         alliance_group: allianceGroup,
       });
-      allianceGroup = allianceGroup + 1;
+      allianceGroup += 1;
       foeCount += 1;
     });
 

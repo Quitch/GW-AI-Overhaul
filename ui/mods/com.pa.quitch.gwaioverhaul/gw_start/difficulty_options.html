@@ -342,6 +342,19 @@
   <div>
     <input
       type="checkbox"
+      data-bind="checked: model.gwaioDifficultySettings.factionScaling"
+    />
+    <span style="margin-left: 6px;"></span>
+    <loc>Faction Scaling</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:The number of enemy factions is adjusted for the galaxy\'s size.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
       data-bind="checked: model.gwaioDifficultySettings.easierStart"
     />
     <span style="margin-left: 6px;"></span>
@@ -375,6 +388,19 @@
     <span
       class="info_tip"
       data-bind="tooltip: '!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: non-factory structure buffs.<br>Revenants: orbital buffs.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
+      data-bind="checked: model.gwaioDifficultySettings.mirrorMode"
+    />
+    <span style="margin-left: 6px;"></span>
+    <loc>Mirror Mode</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:The AI receives the player\'s tech buffs.'"
       >?</span
     >
   </div>
