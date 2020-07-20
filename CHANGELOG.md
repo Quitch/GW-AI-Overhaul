@@ -3,6 +3,8 @@
 ## DEV
 
 - Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
+- Expanded what is considered an orbital unit for the purposes of Revenants buffs when Faction Tech is active
+- Corrected the Omega not having its anti-orbital weapon buffed for the Revenants
 
 ## v3.5.2 - 2020-07-19
 
