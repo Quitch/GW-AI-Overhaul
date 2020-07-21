@@ -191,7 +191,8 @@ define(["shared/gw_common"], function (GW) {
     _.times(aiCount, function (n) {
       var aiNewTag = ".ai";
       n = n.toString();
-      (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+      aiNewTag = aiNewTag.concat(n);
+      aiTag.push(aiNewTag);
     });
 
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
