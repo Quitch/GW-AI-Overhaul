@@ -31,7 +31,8 @@ define(["shared/gw_common"], function (GW) {
       _.times(aiCount, function (n) {
         var aiNewTag = ".ai";
         n = n.toString();
-        (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+        aiNewTag = aiNewTag.concat(n);
+        aiTag.push(aiNewTag);
         aiFactions.push($.Deferred());
       });
 
