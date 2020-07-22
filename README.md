@@ -60,6 +60,20 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 
 ![Custom badge](./images/custom.png) **Custom**: for when you want to create your own challenge.
 
+### Difficulty Options
+
+- **Shuffle Spawns**: everyone is assigned randomised landing zones each battle.
+
+- **Faction Scaling**: the number of factions put into the galaxy depends on its size.
+
+- **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
+
+- **Tougher Commanders**: enemies have Commander Armour Tech and bosses have Commander Combat Tech.
+
+- **Faction Tech**: tech bonuses are given to the enemy, with more bonuses the greater the distance. Legonis Machina gets bot and vehicles buffs, Foundation gets air and sea buffs, Synchronous gets non-factory structures buffs, and Revenants orbital buffs.
+
+- **Mirror Mode**: enemies receive all the tech bonuses you have in your inventory.
+
 ## Planetary Intelligence
 
 Each system will display the following information:
