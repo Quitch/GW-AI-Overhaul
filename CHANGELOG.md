@@ -3,6 +3,7 @@
 ## DEV
 
 - Faction Tech is no longer optional and is now integrated into the difficulty curve
+- Shuffle Landing Zones is no longer optional
 
 ## v3.6.0 - 2020-07-20
 

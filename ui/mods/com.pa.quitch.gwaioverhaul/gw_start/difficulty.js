@@ -42,7 +42,6 @@ model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.gwaioDifficultySettings = {
-  shuffleSpawns: ko.observable(true),
   factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
@@ -141,7 +140,6 @@ model.gwaioDifficultySettings = {
 };
 
 ko.computed(function () {
-  model.gwaioDifficultySettings.shuffleSpawns();
   model.gwaioDifficultySettings.factionScaling();
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
@@ -944,9 +942,8 @@ requireGW(
           _.forEach(star.system().planets, function (world) {
             if (world.starting_planet === true)
               if (world.planet) {
-                world.planet.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
-              } else
-                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
+                world.planet.shuffleLandingZones = true;
+              } else world.generator.shuffleLandingZones = true;
           });
         });
 
