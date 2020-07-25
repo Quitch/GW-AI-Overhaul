@@ -304,6 +304,20 @@
     >
   </div>
   <div>
+    <input
+      type="number"
+      style="width: 50px; padding-bottom: 0px;"
+      data-bind="textInput: model.gwaioDifficultySettings.factionTechHandicap"
+    />
+    <span style="margin-left: 6px;"></span>
+    <loc>Buff Handicap</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:Additional system depth before the AI receives tech buffs.'"
+      >?</span
+    >
+  </div>
+  <div>
     <select
       data-bind="options: model.gwaioDifficultySettings.personalityTags, optionsText: model.gwaioDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.gwaioDifficultySettings.personalityTagsChosen"
       multiple="true"

@@ -131,6 +131,9 @@ model.gwaioDifficultySettings = {
   bountyModeValue: ko.observable(0).extend({
     precision: 3,
   }),
+  factionTechHandicap: ko.observable(0).extend({
+    precision: 0,
+  }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
     notify: "always",
@@ -158,11 +161,10 @@ ko.computed(function () {
     model.gwaioDifficultySettings.bossCommanders();
     model.gwaioDifficultySettings.bountyModeChance();
     model.gwaioDifficultySettings.bountyModeValue();
-    model.gwaioDifficultySettings.microTypeChosen();
-    model.gwaioDifficultySettings.personalityTagsChosen();
     model.gwaioDifficultySettings.econBase();
     model.gwaioDifficultySettings.econRatePerDist();
     model.gwaioDifficultySettings.enableCommanderDangerResponses();
+    model.gwaioDifficultySettings.factionTechHandicap();
     model.gwaioDifficultySettings.factoryBuildDelayMax();
     model.gwaioDifficultySettings.factoryBuildDelayMin();
     model.gwaioDifficultySettings.ffaChance();
@@ -171,8 +173,10 @@ ko.computed(function () {
     model.gwaioDifficultySettings.mandatoryMinions();
     model.gwaioDifficultySettings.maxAdvancedFabbers();
     model.gwaioDifficultySettings.maxBasicFabbers();
+    model.gwaioDifficultySettings.microTypeChosen();
     model.gwaioDifficultySettings.minionMod();
     model.gwaioDifficultySettings.perExpansionDelay();
+    model.gwaioDifficultySettings.personalityTagsChosen();
     model.gwaioDifficultySettings.priorityScoutMetalSpots();
     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
     model.gwaioDifficultySettings.suddenDeathChance();
@@ -273,6 +277,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.5,
+        factionTechHandicap: 3,
       },
       {
         // Iron
@@ -299,6 +304,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.4,
+        factionTechHandicap: 3,
         starting_location_evaluation_radius: 100,
       },
       {
@@ -326,6 +332,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        factionTechHandicap: 2,
         starting_location_evaluation_radius: 150,
       },
       {
@@ -353,6 +360,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        factionTechHandicap: 2,
         starting_location_evaluation_radius: 200,
       },
       {
@@ -380,6 +388,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        factionTechHandicap: 1,
         starting_location_evaluation_radius: 250,
       },
       {
@@ -407,6 +416,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        factionTechHandicap: 1,
         starting_location_evaluation_radius: 300,
       },
       {
@@ -434,6 +444,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
       {
@@ -461,6 +472,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
       {
@@ -556,6 +568,10 @@ requireGW(
         );
         model.gwaioDifficultySettings.bountyModeValue(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
+        );
+        model.gwaioDifficultySettings.factionTechHandicap(
+          difficultyInfo[model.newGameDifficultyIndex() || 0]
+            .factionTechHandicap
         );
       }
     });
