@@ -753,7 +753,24 @@ requireGW(
           0
         );
 
-        var treasurePlanetSetup = false;
+        var treasurePlanetSetup = true;
+        var startCards = [
+          { id: "gwc_start_air" },
+          { id: "gwc_start_orbital" },
+          { id: "gwc_start_bot" },
+          { id: "gwc_start_artillery" },
+          { id: "gwc_start_subcdr" },
+          { id: "gwc_start_combatcdr" },
+          { id: "gwc_start_allfactory" },
+        ];
+        var lockedStartCards = _.filter(startCards, function (card) {
+          return !GW.bank.hasStartCard(card);
+        });
+        var treasurePlanetCard = _.sample(lockedStartCards);
+        if (treasurePlanetCard && treasurePlanetCard.id) {
+          treasurePlanetCard = treasurePlanetCard.id;
+          treasurePlanetSetup = false;
+        }
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
@@ -962,6 +979,10 @@ requireGW(
                   world.planet.shuffleLandingZones = true;
                 } else world.generator.shuffleLandingZones = true;
             });
+            if (ai.treasurePlanet) {
+              star.cardList().push(treasurePlanetCard);
+              console.log(star.cardList());
+            }
           }
         });
 
