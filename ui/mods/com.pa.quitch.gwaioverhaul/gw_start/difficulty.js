@@ -792,7 +792,7 @@ requireGW(
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             info.boss.inventory = aiInventory.concat(bossInventory);
-            var numBuffs = Math.floor(maxDist / 2 + buffDelay);
+            var numBuffs = Math.floor(maxDist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             info.boss.typeOfBuffs = typeOfBuffs;
             _.times(typeOfBuffs.length, function (n) {
@@ -835,7 +835,7 @@ requireGW(
             worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            var numBuffs = Math.floor(dist / 2 + buffDelay);
+            var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs;
             _.times(typeOfBuffs.length, function (n) {
