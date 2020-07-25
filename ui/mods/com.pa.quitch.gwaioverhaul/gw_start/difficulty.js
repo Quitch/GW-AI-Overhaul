@@ -932,19 +932,18 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
+          } else {
+            if (model.gwaioDifficultySettings.mirrorMode())
+              ai.mirrorMode = true;
+            else ai.mirrorMode = false;
+            // eslint-disable-next-line lodash/prefer-filter
+            _.forEach(star.system().planets, function (world) {
+              if (world.starting_planet === true)
+                if (world.planet) {
+                  world.planet.shuffleLandingZones = true;
+                } else world.generator.shuffleLandingZones = true;
+            });
           }
-          if (ai && model.gwaioDifficultySettings.mirrorMode()) {
-            ai.mirrorMode = true;
-          } else if (ai) {
-            ai.mirrorMode = false;
-          }
-          // eslint-disable-next-line lodash/prefer-filter
-          _.forEach(star.system().planets, function (world) {
-            if (ai && world.starting_planet === true)
-              if (world.planet) {
-                world.planet.shuffleLandingZones = true;
-              } else world.generator.shuffleLandingZones = true;
-          });
         });
 
         if (model.creditsMode()) {
