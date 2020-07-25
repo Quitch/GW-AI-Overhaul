@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Faction Tech is no longer optional and is now integrated into the difficulty curve
+
 ## v3.6.0 - 2020-07-20
 
 - Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
