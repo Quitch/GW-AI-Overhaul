@@ -871,7 +871,6 @@ requireGW(
                 var numFoes = Math.round((numMinions + 1) / 2);
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
-                foeCommander.typeOfBuffs = typeOfBuffs;
                 _.times(typeOfBuffs.length, function (n) {
                   foeCommander.inventory = foeCommander.inventory.concat(
                     gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
