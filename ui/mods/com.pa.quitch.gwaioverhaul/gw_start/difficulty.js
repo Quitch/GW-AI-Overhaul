@@ -695,7 +695,7 @@ requireGW(
           orderedSpawn: model.creditsMode(),
           // eslint-disable-next-line lodash/prefer-noop
           spawn: function () {},
-          canSpread: function (_star, ai) {
+          canSpread: function (_, ai) {
             return (
               !model.creditsMode() || !ai || !!teams[ai.team].workers.length
             );
