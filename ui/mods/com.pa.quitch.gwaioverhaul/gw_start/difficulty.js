@@ -786,12 +786,13 @@ requireGW(
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
+        var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             info.boss.inventory = aiInventory.concat(bossInventory);
-            var numBuffs = Math.floor(maxDist / 2);
+            var numBuffs = Math.floor(maxDist / 2 + buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             info.boss.typeOfBuffs = typeOfBuffs;
             _.times(typeOfBuffs.length, function (n) {
@@ -834,7 +835,7 @@ requireGW(
             worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            var numBuffs = Math.floor(dist / 2);
+            var numBuffs = Math.floor(dist / 2 + buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs;
             _.times(typeOfBuffs.length, function (n) {
