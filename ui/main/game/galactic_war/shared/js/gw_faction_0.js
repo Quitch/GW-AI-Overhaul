@@ -42,7 +42,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_artillery",
         systemDescription:
           "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
         systemTemplate: {
@@ -135,7 +134,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_combatcdr",
         systemDescription:
           "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",
         systemTemplate: {

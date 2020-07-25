@@ -42,7 +42,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_bot",
         systemDescription:
           "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
         systemTemplate: {
@@ -151,7 +150,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
         systemTemplate: {
@@ -260,7 +258,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
         systemTemplate: {
@@ -369,7 +366,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
         systemTemplate: {
@@ -478,7 +474,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
         systemTemplate: {
