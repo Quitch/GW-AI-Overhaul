@@ -753,6 +753,8 @@ requireGW(
           0
         );
 
+        var treasurePlanetSetup = false;
+
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
@@ -776,6 +778,22 @@ requireGW(
               model.gwaioDifficultySettings.econBase() +
               maxDist * model.gwaioDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+          } else if (treasurePlanetSetup === false) {
+            treasurePlanetSetup = true;
+            ai.treasurePlanet = true;
+            ai.econ_rate =
+              model.gwaioDifficultySettings.econBase() +
+              maxDist * model.gwaioDifficultySettings.econRatePerDist();
+            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+            ai.name = loc("!LOC:The Guardian");
+            ai.character = loc("!LOC:Boss");
+            ai.color = [
+              [255, 255, 255],
+              [255, 192, 203],
+            ];
+            ai.commander =
+              "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+            ai.faction = 99;
           } else {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
@@ -841,11 +859,13 @@ requireGW(
                 gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
               );
             });
-            var numMinions = Math.floor(
-              model.gwaioDifficultySettings.mandatoryMinions() +
-                worker.star.distance() *
-                  model.gwaioDifficultySettings.minionMod()
-            );
+            if (!worker.ai.treasurePlanet) {
+              var numMinions = Math.floor(
+                model.gwaioDifficultySettings.mandatoryMinions() +
+                  worker.star.distance() *
+                    model.gwaioDifficultySettings.minionMod()
+              );
+            }
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function () {
