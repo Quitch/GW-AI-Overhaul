@@ -773,6 +773,8 @@ requireGW(
           )
             ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
+          if (model.gwaioDifficultySettings.mirrorMode()) ai.mirrorMode = true;
+          else ai.mirrorMode = false;
           if (isBoss) {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
@@ -953,9 +955,6 @@ requireGW(
               n = n + 1;
             }
           } else {
-            if (model.gwaioDifficultySettings.mirrorMode())
-              ai.mirrorMode = true;
-            else ai.mirrorMode = false;
             // eslint-disable-next-line lodash/prefer-filter
             _.forEach(star.system().planets, function (world) {
               if (world.starting_planet === true)
