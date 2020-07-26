@@ -1,10 +1,10 @@
 {
   "context": "client",
-  "identifier": "com.pa.quitch.gwaioverhaul-dev",
-  "display_name": "Galactic War AI Overhaul DEV",
+  "identifier": "com.pa.quitch.gwaioverhaul",
+  "display_name": "Galactic War AI Overhaul",
   "description": "Add some much-needed variety and challenge to Galactic War with a wider range of difficulties, FFAs, faction personalities, enemy and sub commander personalities, epic battles, better bosses, support for all game modes, and strategic intelligence. Suitable for all abilities, from those who have just completed the tutorial to those who dominate in multiplayer. Start a new war to enjoy all the new features and check out the new war tooltips for more information and difficulty recommendations.",
   "author": "Quitch",
-  "version": "dev",
+  "version": "3.7.0",
   "build": "114780",
   "date": "2020/07/26",
   "signature": " ",
