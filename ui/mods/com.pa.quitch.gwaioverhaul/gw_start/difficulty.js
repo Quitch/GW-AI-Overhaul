@@ -955,7 +955,7 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
-          } else if (treasurePlanetSetup === false) {
+          } else if (!ai.bossCommanders && treasurePlanetSetup === false) {
             treasurePlanetSetup = true;
             delete ai.minions;
             delete ai.foes;
