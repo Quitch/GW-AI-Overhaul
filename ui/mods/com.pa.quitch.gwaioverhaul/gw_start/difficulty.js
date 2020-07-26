@@ -753,8 +753,6 @@ requireGW(
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.treasurePlanet = false;
-          ai.mirrorMode = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -782,6 +780,8 @@ requireGW(
               dist * model.gwaioDifficultySettings.econRatePerDist();
             delete ai.bossCommanders;
           }
+          ai.treasurePlanet = false;
+          ai.mirrorMode = false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
