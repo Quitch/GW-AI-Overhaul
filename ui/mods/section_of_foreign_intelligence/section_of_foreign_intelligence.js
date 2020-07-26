@@ -238,7 +238,6 @@
   var url =
     "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
   $.get(url, function (html) {
-    console.log("Loaded html " + url);
     var $fi = $(html);
     $("#system-detail").append($fi);
     locUpdateDocument();
