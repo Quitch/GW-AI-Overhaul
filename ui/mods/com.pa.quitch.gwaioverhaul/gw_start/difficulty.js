@@ -755,7 +755,6 @@ requireGW(
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.mirrorMode = false;
           ai.treasurePlanet = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
@@ -784,6 +783,7 @@ requireGW(
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
               dist * model.gwaioDifficultySettings.econRatePerDist();
+            delete ai.bossCommanders;
           }
         };
 
