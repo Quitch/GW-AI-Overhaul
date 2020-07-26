@@ -979,7 +979,7 @@ requireGW(
               ai.commander =
                 "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
               system.description =
-                "!LOC:This is a treasure planet, on which can be found a loadout you have yet to unlocked. But beware the guardians, for they are armed with whatever technology bonuses you bring with you to this planet and will stop at nothing to defend its secrets.";
+                "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
               star.cardList().push(treasurePlanetCard);
             }
           }
