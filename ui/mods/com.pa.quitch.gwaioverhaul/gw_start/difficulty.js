@@ -753,27 +753,10 @@ requireGW(
           0
         );
 
-        var treasurePlanetSetup = true;
-        var startCards = [
-          { id: "gwc_start_air" },
-          { id: "gwc_start_orbital" },
-          { id: "gwc_start_bot" },
-          { id: "gwc_start_artillery" },
-          { id: "gwc_start_subcdr" },
-          { id: "gwc_start_combatcdr" },
-          { id: "gwc_start_allfactory" },
-        ];
-        var lockedStartCards = _.filter(startCards, function (card) {
-          return !GW.bank.hasStartCard(card);
-        });
-        var treasurePlanetCard = _.sample(lockedStartCards);
-        if (treasurePlanetCard && treasurePlanetCard.id) {
-          treasurePlanetCard = treasurePlanetCard.id;
-          treasurePlanetSetup = false;
-        }
-
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
+          ai.mirrorMode = false;
+          ai.treasurePlanet = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -797,21 +780,6 @@ requireGW(
               model.gwaioDifficultySettings.econBase() +
               maxDist * model.gwaioDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-          } else if (treasurePlanetSetup === false) {
-            treasurePlanetSetup = true;
-            ai.treasurePlanet = true;
-            ai.econ_rate =
-              model.gwaioDifficultySettings.econBase() +
-              maxDist * model.gwaioDifficultySettings.econRatePerDist();
-            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-            ai.name = loc("!LOC:The Guardian");
-            ai.character = loc("!LOC:Unknown");
-            ai.color = [
-              [255, 255, 255],
-              [255, 192, 203],
-            ];
-            ai.commander =
-              "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
           } else {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
@@ -877,13 +845,11 @@ requireGW(
                 gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
               );
             });
-            if (!worker.ai.treasurePlanet) {
-              var numMinions = Math.floor(
-                model.gwaioDifficultySettings.mandatoryMinions() +
-                  worker.star.distance() *
-                    model.gwaioDifficultySettings.minionMod()
-              );
-            }
+            var numMinions = Math.floor(
+              model.gwaioDifficultySettings.mandatoryMinions() +
+                worker.star.distance() *
+                  model.gwaioDifficultySettings.minionMod()
+            );
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function () {
@@ -958,6 +924,25 @@ requireGW(
           },
         ];
 
+        var treasurePlanetSetup = true;
+        var startCards = [
+          { id: "gwc_start_air" },
+          { id: "gwc_start_orbital" },
+          { id: "gwc_start_bot" },
+          { id: "gwc_start_artillery" },
+          { id: "gwc_start_subcdr" },
+          { id: "gwc_start_combatcdr" },
+          { id: "gwc_start_allfactory" },
+        ];
+        var lockedStartCards = _.filter(startCards, function (card) {
+          return !GW.bank.hasStartCard(card);
+        });
+        var treasurePlanetCard = _.sample(lockedStartCards);
+        if (treasurePlanetCard && treasurePlanetCard.id) {
+          treasurePlanetCard = treasurePlanetCard.id;
+          treasurePlanetSetup = false;
+        }
+
         var n = 0;
         gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function (star) {
@@ -970,6 +955,29 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
+          } else if (treasurePlanetSetup === false) {
+            treasurePlanetSetup = true;
+            delete ai.minions;
+            delete ai.foes;
+            ai.mirrorMode = true;
+            ai.treasurePlanet = true;
+            ai.econ_rate =
+              model.gwaioDifficultySettings.econBase() +
+              maxDist * model.gwaioDifficultySettings.econRatePerDist();
+            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+            ai.name = loc("!LOC:The Guardian");
+            ai.character = loc("!LOC:Unknown");
+            ai.color = [
+              [255, 255, 255],
+              [255, 192, 203],
+            ];
+            ai.commander =
+              "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+            system.description = loc(
+              "!LOC:This is a treasure planet, on which can be found a loadout you have yet to unlocked. But beware the guardians, for they are armed with whatever technology bonuses you bring with you to this planet and will stop at nothing to defend its secrets."
+            );
+            star.cardList().push(treasurePlanetCard);
+            console.log(star.cardList());
           } else {
             // eslint-disable-next-line lodash/prefer-filter
             _.forEach(star.system().planets, function (world) {
@@ -978,10 +986,6 @@ requireGW(
                   world.planet.shuffleLandingZones = true;
                 } else world.generator.shuffleLandingZones = true;
             });
-            if (ai.treasurePlanet) {
-              star.cardList().push(treasurePlanetCard);
-              console.log(star.cardList());
-            }
           }
         });
 
