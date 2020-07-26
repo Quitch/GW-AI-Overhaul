@@ -7,6 +7,7 @@
 - Bosses no longer unlock loadouts
 - Every war now features a treasure planet, with guardians who defend a loadout you are guaranteed not to have
 - Removed Mirror Mode as an option - this is now used by treasure planets
+- Fixed v1.2.0 - v2.0.4 wars losing connection to the server when starting a FFA battle
 
 ## v3.6.0 - 2020-07-20
 

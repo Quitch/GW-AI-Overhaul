@@ -282,7 +282,7 @@ define(["shared/gw_common"], function (GW) {
         });
       } else if (foe.landing_policy) {
         // Support GWAIO v1.2.0 - v2.0.4
-        _.times(foe.landing_policy, function () {
+        _.times(foe.landing_policy.length, function () {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",
