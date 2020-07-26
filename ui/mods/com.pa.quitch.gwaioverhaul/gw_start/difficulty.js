@@ -952,27 +952,6 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
-          } else if (!ai.bossCommanders && treasurePlanetSetup === false) {
-            treasurePlanetSetup = true;
-            delete ai.minions;
-            delete ai.foes;
-            ai.mirrorMode = true;
-            ai.treasurePlanet = true;
-            ai.econ_rate =
-              model.gwaioDifficultySettings.econBase() +
-              maxDist * model.gwaioDifficultySettings.econRatePerDist();
-            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-            ai.name = "The Guardian";
-            ai.character = "!LOC:Unknown";
-            ai.color = [
-              [255, 255, 255],
-              [255, 192, 203],
-            ];
-            ai.commander =
-              "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-            system.description =
-              "!LOC:This is a treasure planet, on which can be found a loadout you have yet to unlocked. But beware the guardians, for they are armed with whatever technology bonuses you bring with you to this planet and will stop at nothing to defend its secrets.";
-            star.cardList().push(treasurePlanetCard);
           } else {
             // eslint-disable-next-line lodash/prefer-filter
             _.forEach(star.system().planets, function (world) {
@@ -981,6 +960,28 @@ requireGW(
                   world.planet.shuffleLandingZones = true;
                 } else world.generator.shuffleLandingZones = true;
             });
+            if (!ai.bossCommanders && treasurePlanetSetup === false) {
+              treasurePlanetSetup = true;
+              delete ai.minions;
+              delete ai.foes;
+              ai.mirrorMode = true;
+              ai.treasurePlanet = true;
+              ai.econ_rate =
+                model.gwaioDifficultySettings.econBase() +
+                maxDist * model.gwaioDifficultySettings.econRatePerDist();
+              ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+              ai.name = "The Guardian";
+              ai.character = "!LOC:Unknown";
+              ai.color = [
+                [255, 255, 255],
+                [255, 192, 203],
+              ];
+              ai.commander =
+                "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+              system.description =
+                "!LOC:This is a treasure planet, on which can be found a loadout you have yet to unlocked. But beware the guardians, for they are armed with whatever technology bonuses you bring with you to this planet and will stop at nothing to defend its secrets.";
+              star.cardList().push(treasurePlanetCard);
+            }
           }
         });
 
