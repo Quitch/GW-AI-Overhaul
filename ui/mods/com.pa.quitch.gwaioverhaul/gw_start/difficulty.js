@@ -960,6 +960,7 @@ requireGW(
                   world.planet.shuffleLandingZones = true;
                 } else world.generator.shuffleLandingZones = true;
             });
+            // We setup the treasure planet here and not AI setup to avoid the cardList existing in more than one location at a time
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
               delete ai.minions;
