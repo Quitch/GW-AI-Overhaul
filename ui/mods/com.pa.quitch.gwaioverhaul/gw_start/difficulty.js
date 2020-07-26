@@ -42,12 +42,9 @@ model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
 // gw_start uses ko.applyBindings(model) so we put ourselves within that variable
 model.gwaioDifficultySettings = {
-  shuffleSpawns: ko.observable(true),
   factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
-  factionTech: ko.observable(false),
-  mirrorMode: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -132,6 +129,9 @@ model.gwaioDifficultySettings = {
   bountyModeValue: ko.observable(0).extend({
     precision: 3,
   }),
+  factionTechHandicap: ko.observable(0).extend({
+    precision: 0,
+  }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
     notify: "always",
@@ -139,12 +139,9 @@ model.gwaioDifficultySettings = {
 };
 
 ko.computed(function () {
-  model.gwaioDifficultySettings.shuffleSpawns();
   model.gwaioDifficultySettings.factionScaling();
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
-  model.gwaioDifficultySettings.factionTech();
-  model.gwaioDifficultySettings.mirrorMode();
   model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
@@ -160,11 +157,10 @@ ko.computed(function () {
     model.gwaioDifficultySettings.bossCommanders();
     model.gwaioDifficultySettings.bountyModeChance();
     model.gwaioDifficultySettings.bountyModeValue();
-    model.gwaioDifficultySettings.microTypeChosen();
-    model.gwaioDifficultySettings.personalityTagsChosen();
     model.gwaioDifficultySettings.econBase();
     model.gwaioDifficultySettings.econRatePerDist();
     model.gwaioDifficultySettings.enableCommanderDangerResponses();
+    model.gwaioDifficultySettings.factionTechHandicap();
     model.gwaioDifficultySettings.factoryBuildDelayMax();
     model.gwaioDifficultySettings.factoryBuildDelayMin();
     model.gwaioDifficultySettings.ffaChance();
@@ -173,8 +169,10 @@ ko.computed(function () {
     model.gwaioDifficultySettings.mandatoryMinions();
     model.gwaioDifficultySettings.maxAdvancedFabbers();
     model.gwaioDifficultySettings.maxBasicFabbers();
+    model.gwaioDifficultySettings.microTypeChosen();
     model.gwaioDifficultySettings.minionMod();
     model.gwaioDifficultySettings.perExpansionDelay();
+    model.gwaioDifficultySettings.personalityTagsChosen();
     model.gwaioDifficultySettings.priorityScoutMetalSpots();
     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
     model.gwaioDifficultySettings.suddenDeathChance();
@@ -275,6 +273,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.5,
+        factionTechHandicap: 3,
       },
       {
         // Iron
@@ -301,6 +300,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.4,
+        factionTechHandicap: 3,
         starting_location_evaluation_radius: 100,
       },
       {
@@ -328,6 +328,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        factionTechHandicap: 2,
         starting_location_evaluation_radius: 150,
       },
       {
@@ -355,6 +356,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.3,
+        factionTechHandicap: 2,
         starting_location_evaluation_radius: 200,
       },
       {
@@ -382,6 +384,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        factionTechHandicap: 1,
         starting_location_evaluation_radius: 250,
       },
       {
@@ -409,6 +412,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.2,
+        factionTechHandicap: 1,
         starting_location_evaluation_radius: 300,
       },
       {
@@ -436,6 +440,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
       {
@@ -463,6 +468,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 10,
         bountyModeValue: 0.1,
+        factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
       {
@@ -558,6 +564,10 @@ requireGW(
         );
         model.gwaioDifficultySettings.bountyModeValue(
           difficultyInfo[model.newGameDifficultyIndex() || 0].bountyModeValue
+        );
+        model.gwaioDifficultySettings.factionTechHandicap(
+          difficultyInfo[model.newGameDifficultyIndex() || 0]
+            .factionTechHandicap
         );
       }
     });
@@ -683,7 +693,7 @@ requireGW(
           orderedSpawn: model.creditsMode(),
           // eslint-disable-next-line lodash/prefer-noop
           spawn: function () {},
-          canSpread: function (_star, ai) {
+          canSpread: function (_, ai) {
             return (
               !model.creditsMode() || !ai || !!teams[ai.team].workers.length
             );
@@ -743,6 +753,8 @@ requireGW(
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
+          ai.treasurePlanet = false;
+          ai.mirrorMode = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -768,25 +780,25 @@ requireGW(
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
               dist * model.gwaioDifficultySettings.econRatePerDist();
+            delete ai.bossCommanders;
           }
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
+        var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             info.boss.inventory = aiInventory.concat(bossInventory);
-            if (model.gwaioDifficultySettings.factionTech()) {
-              var numBuffs = Math.floor(maxDist / 2);
-              var typeOfBuffs = _.sample(buffType, numBuffs);
-              info.boss.typeOfBuffs = typeOfBuffs;
-              _.times(typeOfBuffs.length, function (n) {
-                info.boss.inventory = info.boss.inventory.concat(
-                  gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
-                );
-              });
-            }
+            var numBuffs = Math.floor(maxDist / 2 - buffDelay);
+            var typeOfBuffs = _.sample(buffType, numBuffs);
+            info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
+            _.times(typeOfBuffs.length, function (n) {
+              info.boss.inventory = info.boss.inventory.concat(
+                gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
+              );
+            });
             var numMinions = Math.floor(
               model.gwaioDifficultySettings.mandatoryMinions() +
                 maxDist * model.gwaioDifficultySettings.minionMod()
@@ -822,16 +834,14 @@ requireGW(
             worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
-            if (model.gwaioDifficultySettings.factionTech()) {
-              var numBuffs = Math.floor(dist / 2);
-              var typeOfBuffs = _.sample(buffType, numBuffs);
-              worker.ai.typeOfBuffs = typeOfBuffs;
-              _.times(typeOfBuffs.length, function (n) {
-                worker.ai.inventory = worker.ai.inventory.concat(
-                  gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
-                );
-              });
-            }
+            var numBuffs = Math.floor(dist / 2 - buffDelay);
+            var typeOfBuffs = _.sample(buffType, numBuffs);
+            worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
+            _.times(typeOfBuffs.length, function (n) {
+              worker.ai.inventory = worker.ai.inventory.concat(
+                gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
+              );
+            });
             var numMinions = Math.floor(
               model.gwaioDifficultySettings.mandatoryMinions() +
                 worker.star.distance() *
@@ -860,14 +870,11 @@ requireGW(
                 var numFoes = Math.round((numMinions + 1) / 2);
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
-                if (model.gwaioDifficultySettings.factionTech()) {
-                  foeCommander.typeOfBuffs = typeOfBuffs;
-                  _.times(typeOfBuffs.length, function (n) {
-                    foeCommander.inventory = foeCommander.inventory.concat(
-                      gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
-                    );
-                  });
-                }
+                _.times(typeOfBuffs.length, function (n) {
+                  foeCommander.inventory = foeCommander.inventory.concat(
+                    gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
+                  );
+                });
                 foeCommander.color = foeCommander.color || worker.ai.color;
                 foeCommander.commanderCount = numFoes;
                 worker.ai.foes.push(foeCommander);
@@ -914,6 +921,25 @@ requireGW(
           },
         ];
 
+        var treasurePlanetSetup = true;
+        var startCards = [
+          { id: "gwc_start_air" },
+          { id: "gwc_start_orbital" },
+          { id: "gwc_start_bot" },
+          { id: "gwc_start_artillery" },
+          { id: "gwc_start_subcdr" },
+          { id: "gwc_start_combatcdr" },
+          { id: "gwc_start_allfactory" },
+        ];
+        var lockedStartCards = _.filter(startCards, function (card) {
+          return !GW.bank.hasStartCard(card);
+        });
+        var treasurePlanetCard = _.sample(lockedStartCards);
+        if (treasurePlanetCard) {
+          treasurePlanetCard = treasurePlanetCard.id;
+          treasurePlanetSetup = false;
+        }
+
         var n = 0;
         gw_intro_systems = _.shuffle(gw_intro_systems);
         _.forEach(game.galaxy().stars(), function (star) {
@@ -926,20 +952,37 @@ requireGW(
               system.description = intro_system.description;
               n = n + 1;
             }
+          } else {
+            // eslint-disable-next-line lodash/prefer-filter
+            _.forEach(star.system().planets, function (world) {
+              if (world.starting_planet === true)
+                if (world.planet) {
+                  world.planet.shuffleLandingZones = true;
+                } else world.generator.shuffleLandingZones = true;
+            });
+            if (!ai.bossCommanders && treasurePlanetSetup === false) {
+              treasurePlanetSetup = true;
+              delete ai.minions;
+              delete ai.foes;
+              ai.mirrorMode = true;
+              ai.treasurePlanet = true;
+              ai.econ_rate =
+                model.gwaioDifficultySettings.econBase() +
+                maxDist * model.gwaioDifficultySettings.econRatePerDist();
+              ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+              ai.name = "The Guardians";
+              ai.character = "!LOC:Unknown";
+              ai.color = [
+                [255, 255, 255],
+                [255, 192, 203],
+              ];
+              ai.commander =
+                "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+              system.description =
+                "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
+              star.cardList().push(treasurePlanetCard);
+            }
           }
-          if (ai && model.gwaioDifficultySettings.mirrorMode()) {
-            ai.mirrorMode = true;
-          } else if (ai) {
-            ai.mirrorMode = false;
-          }
-          // eslint-disable-next-line lodash/prefer-filter
-          _.forEach(star.system().planets, function (world) {
-            if (world.starting_planet === true)
-              if (world.planet) {
-                world.planet.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
-              } else
-                world.generator.shuffleLandingZones = model.gwaioDifficultySettings.shuffleSpawns();
-          });
         });
 
         if (model.creditsMode()) {

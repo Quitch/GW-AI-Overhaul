@@ -62,7 +62,6 @@ define([
   _.forEach(inventory.commanderAmmo, modBossAmmo);
 
   // Faction Tech
-
   var legonisTech = [];
   var foundationTech = [];
   var synchronousTech = [];

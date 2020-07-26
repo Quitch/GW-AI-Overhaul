@@ -41,7 +41,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_air",
         systemDescription:
           "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
         systemTemplate: {
@@ -149,7 +148,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_allfactory",
         systemDescription:
           "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
         systemTemplate: {

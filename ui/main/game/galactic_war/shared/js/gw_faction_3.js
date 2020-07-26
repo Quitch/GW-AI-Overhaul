@@ -41,7 +41,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_orbital",
         systemDescription:
           "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
         systemTemplate: {
@@ -149,7 +148,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        bossCard: "gwc_start_subcdr",
         systemDescription:
           "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
         systemTemplate: {
@@ -257,7 +255,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:The Revenants are unique in that their motivations are individual rather than collective. Each Seeker follows in the example of their legendary Osiris--they seek battle to become stronger through their fallen enemies, and to create more Revenants.",
         systemTemplate: {
@@ -365,7 +362,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:Osiris holds no interest in ruling, and instead serves more as an exemplar, whether he cares to or not. Therefore, it falls to a small council of older Seekers to direct the affairs of The Revenants at large--primarily making sure that they're fighting the other factions instead of amongst themselves.",
         systemTemplate: {
@@ -473,7 +469,6 @@ define([], function () {
           },
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
-        //bossCard: 'gwc_start_orbital',
         systemDescription:
           "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
         systemTemplate: {

@@ -31,7 +31,8 @@ define(["shared/gw_common"], function (GW) {
       _.times(aiCount, function (n) {
         var aiNewTag = ".ai";
         n = n.toString();
-        (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+        aiNewTag = aiNewTag.concat(n);
+        aiTag.push(aiNewTag);
         aiFactions.push($.Deferred());
       });
 
@@ -190,14 +191,19 @@ define(["shared/gw_common"], function (GW) {
     _.times(aiCount, function (n) {
       var aiNewTag = ".ai";
       n = n.toString();
-      (aiNewTag = aiNewTag.concat(n)), aiTag.push(aiNewTag);
+      aiNewTag = aiNewTag.concat(n);
+      aiTag.push(aiNewTag);
     });
 
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     // Check without !LOC: to support GWAIO v2.2.0 and earlier
-    if (ai.character === "!LOC:Boss" || ai.character === "Boss") {
+    if (
+      ai.character === "!LOC:Boss" ||
+      ai.character === "!LOC:Unknown" ||
+      ai.character === "Boss"
+    ) {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
           slotsArray.push({
@@ -276,7 +282,7 @@ define(["shared/gw_common"], function (GW) {
         });
       } else if (foe.landing_policy) {
         // Support GWAIO v1.2.0 - v2.0.4
-        _.times(foe.landing_policy, function () {
+        _.times(foe.landing_policy.length, function () {
           slotsArrayFoes.push({
             ai: true,
             name: foe.name || "Foe",

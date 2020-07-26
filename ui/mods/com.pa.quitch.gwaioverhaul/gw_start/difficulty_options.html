@@ -304,6 +304,20 @@
     >
   </div>
   <div>
+    <input
+      type="number"
+      style="width: 50px; padding-bottom: 0px;"
+      data-bind="textInput: model.gwaioDifficultySettings.factionTechHandicap"
+    />
+    <span style="margin-left: 6px;"></span>
+    <loc>Buff Handicap</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:Additional system depth before the AI receives tech buffs.'"
+      >?</span
+    >
+  </div>
+  <div>
     <select
       data-bind="options: model.gwaioDifficultySettings.personalityTags, optionsText: model.gwaioDifficultySettings.getpersonalityTagsDescription, selectedOptions: model.gwaioDifficultySettings.personalityTagsChosen"
       multiple="true"
@@ -326,19 +340,6 @@
   </div>
 </div>
 <div class="form-group" id="additional-options">
-  <div>
-    <input
-      type="checkbox"
-      data-bind="checked: model.gwaioDifficultySettings.shuffleSpawns"
-    />
-    <span style="margin-left: 6px;"></span>
-    <loc>Shuffle Landing Zones</loc>
-    <span
-      class="info_tip"
-      data-bind="tooltip: '!LOC:Assign randomised landing zones each battle.'"
-      >?</span
-    >
-  </div>
   <div>
     <input
       type="checkbox"
@@ -375,32 +376,6 @@
     <span
       class="info_tip"
       data-bind="tooltip: '!LOC:Enemies use Commander Armor Tech on regular worlds and Commander Combat Tech on boss worlds.'"
-      >?</span
-    >
-  </div>
-  <div>
-    <input
-      type="checkbox"
-      data-bind="checked: model.gwaioDifficultySettings.factionTech"
-    />
-    <span style="margin-left: 6px;"></span>
-    <loc>Faction Tech</loc>
-    <span
-      class="info_tip"
-      data-bind="tooltip: '!LOC:Enemies buff themselves with tech cards according to faction, with more cards used the greater the distance.<br><br>Legonis Machina: bot and vehicle buffs.<br>Foundation: air and sea buffs.<br>Synchronous: non-factory structure buffs.<br>Revenants: orbital buffs.'"
-      >?</span
-    >
-  </div>
-  <div>
-    <input
-      type="checkbox"
-      data-bind="checked: model.gwaioDifficultySettings.mirrorMode"
-    />
-    <span style="margin-left: 6px;"></span>
-    <loc>Mirror Mode</loc>
-    <span
-      class="info_tip"
-      data-bind="tooltip: '!LOC:The AI receives the player\'s tech buffs.'"
       >?</span
     >
   </div>

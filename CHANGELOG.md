@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v3.7.0 - 2020-07-26
+
+- Faction Tech is no longer optional and is now integrated into the difficulty curve
+- Shuffle Landing Zones is no longer optional
+- Bosses no longer unlock loadouts
+- Every war now features a treasure planet, with guardians who defend a loadout you are guaranteed not to have
+- Removed Mirror Mode as an option - this is now used by treasure planets
+- Fixed v1.2.0 - v2.0.4 wars losing connection to the server when starting a FFA battle
+
 ## v3.6.0 - 2020-07-20
 
 - Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
