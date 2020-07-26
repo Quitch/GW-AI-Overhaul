@@ -935,7 +935,7 @@ requireGW(
           return !GW.bank.hasStartCard(card);
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
-        if (treasurePlanetCard && treasurePlanetCard.id) {
+        if (treasurePlanetCard) {
           treasurePlanetCard = treasurePlanetCard.id;
           treasurePlanetSetup = false;
         }
