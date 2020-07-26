@@ -782,6 +782,9 @@ requireGW(
           }
           ai.treasurePlanet = false;
           ai.mirrorMode = false;
+          ai.landAnywhere = false;
+          ai.suddenDeath = false;
+          ai.bountyMode = false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -816,6 +819,8 @@ requireGW(
 
           _.forEach(info.workers, function (worker) {
             worker.ai.inventory = aiInventory;
+            var dist = worker.star.distance();
+            setAIData(worker.ai, dist, false);
             if (
               Math.random() * 100 <=
               model.gwaioDifficultySettings.landAnywhereChance()
@@ -832,8 +837,6 @@ requireGW(
             )
               worker.ai.bountyMode = true;
             worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
-            var dist = worker.star.distance();
-            setAIData(worker.ai, dist, false);
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
