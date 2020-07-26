@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Fix Bounties, Team Death, and Big Spawns sometimes being enabled even if you disabled them
+
 ## v3.7.0 - 2020-07-26
 
 - Faction Tech is no longer optional and is now integrated into the difficulty curve
