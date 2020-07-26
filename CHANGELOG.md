@@ -4,6 +4,8 @@
 
 - Faction Tech is no longer optional and is now integrated into the difficulty curve
 - Shuffle Landing Zones is no longer optional
+- Bosses no longer unlock loadouts
+- Every war now features a treasure planet, with guardians who defend a loadout you are guranteeed not to have
 
 ## v3.6.0 - 2020-07-20
 
