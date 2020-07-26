@@ -3,7 +3,7 @@ requireGW(["shared/gw_factions"], function (GWFactions) {
     ko.computed(function () {
       var ai = system.star.ai();
       if (!ai) return;
-      if (ai.faction != 99) {
+      if (!ai.treasurePlanet) {
         var factionIndex = ai.faction;
         var faction = GWFactions[factionIndex];
         // Ensures we assign faction colour, not minion colour, to each system

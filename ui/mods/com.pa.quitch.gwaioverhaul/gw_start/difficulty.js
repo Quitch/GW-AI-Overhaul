@@ -812,7 +812,6 @@ requireGW(
             ];
             ai.commander =
               "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-            ai.faction = 99;
           } else {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
