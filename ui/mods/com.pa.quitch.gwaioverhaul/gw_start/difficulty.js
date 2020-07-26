@@ -45,7 +45,6 @@ model.gwaioDifficultySettings = {
   factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
   tougherCommanders: ko.observable(false),
-  mirrorMode: ko.observable(false),
   customDifficulty: ko.observable(false),
   goForKill: ko.observable(false),
   microType: ko.observableArray([0, 1, 2]),
@@ -143,7 +142,6 @@ ko.computed(function () {
   model.gwaioDifficultySettings.factionScaling();
   model.gwaioDifficultySettings.easierStart();
   model.gwaioDifficultySettings.tougherCommanders();
-  model.gwaioDifficultySettings.mirrorMode();
   model.gwaioDifficultySettings.newGalaxyNeeded(true);
 });
 
@@ -756,6 +754,7 @@ requireGW(
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
           ai.treasurePlanet = false;
+          ai.mirrorMode = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -772,8 +771,6 @@ requireGW(
           )
             ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
-          if (model.gwaioDifficultySettings.mirrorMode()) ai.mirrorMode = true;
-          else ai.mirrorMode = false;
           if (isBoss) {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +

@@ -6,6 +6,7 @@
 - Shuffle Landing Zones is no longer optional
 - Bosses no longer unlock loadouts
 - Every war now features a treasure planet, with guardians who defend a loadout you are guranteeed not to have
+- Removed Mirror Mode as an option - this is now used by treasure planets
 
 ## v3.6.0 - 2020-07-20
 
