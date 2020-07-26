@@ -26,7 +26,9 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
   - Land anywhere
   - Sudden death
 - You can give the enemy tougher commander units
-- Enable random tech bonuses for the enemy to use
+- Option to give yourself more starting neutral systems
+- The AI uses tech card buffs
+- Guaranteed loadout to unlock every war
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -62,17 +64,11 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 
 ### Difficulty Options
 
-- **Shuffle Spawns**: everyone is assigned randomised landing zones each battle.
-
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
 
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
 
 - **Tougher Commanders**: enemies have Commander Armour Tech and bosses have Commander Combat Tech.
-
-- **Faction Tech**: tech bonuses are given to the enemy, with more bonuses the greater the distance. Legonis Machina gets bot and vehicles buffs, Foundation gets air and sea buffs, Synchronous gets non-factory structures buffs, and Revenants orbital buffs.
-
-- **Mirror Mode**: enemies receive all the tech bonuses you have in your inventory.
 
 ## Planetary Intelligence
 
@@ -88,23 +84,21 @@ Each system will display the following information:
 
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
+- **Build**: AI has Improved Fabricator Build Arms.
+
+- **Cost**: AI has Fabrication Tech.
+
+- **Damage**: AI has Ammunition Tech.
+
+- **Health**: AI has Armour Tech.
+
+- **Speed**: AI has Engine Tech.
+
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
-
-If you have Faction Tech enabled you will also see which buffs are being applied to the AI:
-
-- **Build**: Improved Fabricator Build Arms.
-
-- **Cost**: Fabrication Tech.
-
-- **Damage**: Ammunition Tech.
-
-- **Health**: Armour Tech.
-
-- **Speed**: Engine Tech.
 
 ### Commander Threat Scale
 
