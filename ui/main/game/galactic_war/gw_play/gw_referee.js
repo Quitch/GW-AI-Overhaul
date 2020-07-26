@@ -199,7 +199,11 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     // Check without !LOC: to support GWAIO v2.2.0 and earlier
-    if (ai.character === "!LOC:Boss" || ai.character === "Boss") {
+    if (
+      ai.character === "!LOC:Boss" ||
+      ai.character === "!LOC:Unknown" ||
+      ai.character === "Boss"
+    ) {
       if (ai.bossCommanders) {
         _.times(ai.bossCommanders, function () {
           slotsArray.push({

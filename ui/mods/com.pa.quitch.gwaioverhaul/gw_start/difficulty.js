@@ -805,7 +805,7 @@ requireGW(
               maxDist * model.gwaioDifficultySettings.econRatePerDist();
             ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
             ai.name = loc("!LOC:The Guardian");
-            ai.character = loc("!LOC:Boss");
+            ai.character = loc("!LOC:Unknown");
             ai.color = [
               [255, 255, 255],
               [255, 192, 203],
