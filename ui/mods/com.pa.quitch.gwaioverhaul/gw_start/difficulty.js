@@ -578,7 +578,6 @@ requireGW(
     _.forEach(gwaioStartCards, function (cardData) {
       if (!GW.bank.hasStartCard(cardData))
         gwaioLockedStartCards.push(model.makeUnknown(cardData));
-      else model.makeKnown(cardData);
     });
     model.startCards().push(gwaioLockedStartCards);
     model.startCards(_.flatten(model.startCards()));
