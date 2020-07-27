@@ -347,9 +347,8 @@
     />
     <span style="margin-left: 6px;"></span>
     <loc>Faction Scaling</loc>
-    <span
-      class="info_tip"
-      data-bind="tooltip: '!LOC:The number of enemy factions is adjusted for the galaxy\'s size.'"
+    <!-- Use a variable for the tooltip because PA Inc wants to avoid escaping characters in HTML -->
+    <span class="info_tip" data-bind="tooltip: gwaioFactionScalingTooltip"
       >?</span
     >
   </div>

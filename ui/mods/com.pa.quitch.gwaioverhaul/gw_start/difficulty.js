@@ -223,6 +223,9 @@ $("#game-difficulty").after(
 );
 locTree($("#additional-settings"));
 locTree($("#custom-difficulty-settings"));
+// Because PA Inc wants to avoid escaping characters in HTML
+model.gwaioFactionScalingTooltip =
+  "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
 requireGW(
   [
