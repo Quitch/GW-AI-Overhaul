@@ -575,7 +575,7 @@ requireGW(
       }
     });
 
-    var gwaioStartCards = [{ id: "gwc_start_storage" }];
+    var gwaioStartCards = [{ id: "gwaio_start_storage" }];
     var gwaioLockedStartCards = [];
 
     _.forEach(gwaioStartCards, function (cardData) {
@@ -947,7 +947,7 @@ requireGW(
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
             { id: "gwc_start_allfactory" },
-            { id: "gwc_start_storage" }
+            { id: "gwaio_start_storage" }
           );
         else
           model.gwaioTreasureCards = [
@@ -958,7 +958,7 @@ requireGW(
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
             { id: "gwc_start_allfactory" },
-            { id: "gwc_start_storage" },
+            { id: "gwaio_start_storage" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
