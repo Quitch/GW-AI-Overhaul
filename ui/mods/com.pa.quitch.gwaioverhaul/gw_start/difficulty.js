@@ -572,6 +572,17 @@ requireGW(
       }
     });
 
+    var gwaioStartCards = [{ id: "gwc_start_storage" }];
+    var gwaioLockedStartCards = [];
+
+    _.forEach(gwaioStartCards, function (cardData) {
+      if (!GW.bank.hasStartCard(cardData))
+        gwaioLockedStartCards.push(model.makeUnknown(cardData));
+      else model.makeKnown(cardData);
+    });
+    model.startCards().push(gwaioLockedStartCards);
+    model.startCards(_.flatten(model.startCards()));
+
     model.makeGame = function () {
       model.newGame(undefined);
 
