@@ -957,7 +957,6 @@ requireGW(
             { id: "gwc_start_allfactory" },
             { id: "gwc_start_storage" },
           ];
-
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
           card
