@@ -229,6 +229,7 @@ model.gwaioFactionScalingTooltip =
 
 requireGW(
   [
+    "require",
     "shared/gw_common",
     "shared/gw_credits",
     "shared/gw_factions",
@@ -240,11 +241,12 @@ requireGW(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
   ],
   function (
+    require,
     GW,
     GWCredits,
     GWFactions,
     GWBreeder,
-    GWDealer,
+    GWDealer, // still required
     GWTeams,
     normal_system_templates /* this actually won't load -- window.star_system_templates is set instead */,
     easy_system_templates,
@@ -575,15 +577,67 @@ requireGW(
       }
     });
 
-    var gwaioStartCards = [{ id: "gwaio_start_storage" }];
-    var gwaioLockedStartCards = [];
+    /* Start of GWAIO implementation of GWDealer */
+    if (model.gwaioNewStartCards)
+      model.gwaioNewStartCards.push({ id: "gwaio_start_storage" });
+    else model.gwaioNewStartCards = [{ id: "gwaio_start_storage" }];
+    var lockedStartCards = [];
 
-    _.forEach(gwaioStartCards, function (cardData) {
+    _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!GW.bank.hasStartCard(cardData))
-        gwaioLockedStartCards.push(model.makeUnknown(cardData));
+        lockedStartCards.push(model.makeUnknown(cardData));
     });
-    model.startCards().push(gwaioLockedStartCards);
+    model.startCards().push(lockedStartCards);
     model.startCards(_.flatten(model.startCards()));
+
+    if (model.gwaioAllStartCards)
+      model.gwaioAllStartCards.push("gwaio_start_storage");
+    else
+      model.gwaioAllStartCards = [
+        "gwc_start_vehicle",
+        "gwc_start_air",
+        "gwc_start_bot",
+        "gwc_start_orbital",
+        "gwc_start_artillery",
+        "gwc_start_subcdr",
+        "gwc_start_combatcdr",
+        "gwc_start_allfactory",
+        "gwaio_start_storage",
+      ];
+    var processedStartCards = {};
+    var loadCount = model.gwaioAllStartCards.length;
+    var loaded = $.Deferred();
+
+    _.forEach(model.gwaioAllStartCards, function (cardId) {
+      require(["cards/" + cardId], function (card) {
+        card.id = cardId;
+        processedStartCards[cardId] = card;
+        if (--loadCount === 0) loaded.resolve();
+      });
+    });
+
+    // GWDealer.dealCard
+    var gwaioDealStartCard = function (params) {
+      var result = $.Deferred();
+      loaded.then(function () {
+        var card = _.find(processedStartCards, { id: params.id });
+
+        // Simulate a deal
+        var context =
+          card.getContext && card.getContext(params.galaxy, params.inventory);
+
+        var deal = card.deal && card.deal(params.star, context);
+        var product = { id: params.id };
+        var cardParams = deal && deal.params;
+        if (cardParams && _.isObject(cardParams)) _.extend(product, cardParams);
+        card.keep && card.keep(deal, context);
+        card.releaseContext && card.releaseContext(context);
+
+        result.resolve(product, deal);
+      });
+      return result;
+    };
+    /* end of GWAIO implementation of GWDealer */
 
     model.makeGame = function () {
       model.newGame(undefined);
@@ -652,7 +706,7 @@ requireGW(
       });
       var dealStartCard = buildGalaxy.then(function (galaxy) {
         if (model.makeGameBusy() !== busyToken) return;
-        return GWDealer.dealCard({
+        return gwaioDealStartCard({
           id: model.activeStartCard().id(),
           inventory: game.inventory(),
           galaxy: galaxy,
@@ -936,19 +990,9 @@ requireGW(
           },
         ];
 
-        // If you want GWAIO to use your mod's locked loadout then your mod needs to load before
-        // GWAIO then IF and ELSE to model.gwaioTreasureCards as below but with your card IDs
+        // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
-          model.gwaioTreasureCards.push(
-            { id: "gwc_start_air" },
-            { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" },
-            { id: "gwc_start_artillery" },
-            { id: "gwc_start_subcdr" },
-            { id: "gwc_start_combatcdr" },
-            { id: "gwc_start_allfactory" },
-            { id: "gwaio_start_storage" }
-          );
+          model.gwaioTreasureCards.push({ id: "gwaio_start_storage" });
         else
           model.gwaioTreasureCards = [
             { id: "gwc_start_air" },
