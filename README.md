@@ -150,7 +150,7 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 **Q. Why aren't awarded bounties showing on the player list?**
 
-Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
 **Q. Why are those turrets moving?**
 
