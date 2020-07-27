@@ -933,17 +933,35 @@ requireGW(
           },
         ];
 
+        // If you want GWAIO to use your mod's locked loadout then your mod needs to load before
+        // GWAIO then IF and ELSE to model.gwaioTreasureCards as below but with your card IDs
+        if (model.gwaioTreasureCards)
+          model.gwaioTreasureCards.push(
+            { id: "gwc_start_air" },
+            { id: "gwc_start_orbital" },
+            { id: "gwc_start_bot" },
+            { id: "gwc_start_artillery" },
+            { id: "gwc_start_subcdr" },
+            { id: "gwc_start_combatcdr" },
+            { id: "gwc_start_allfactory" },
+            { id: "gwc_start_storage" }
+          );
+        else
+          model.gwaioTreasureCards = [
+            { id: "gwc_start_air" },
+            { id: "gwc_start_orbital" },
+            { id: "gwc_start_bot" },
+            { id: "gwc_start_artillery" },
+            { id: "gwc_start_subcdr" },
+            { id: "gwc_start_combatcdr" },
+            { id: "gwc_start_allfactory" },
+            { id: "gwc_start_storage" },
+          ];
+
         var treasurePlanetSetup = true;
-        var startCards = [
-          { id: "gwc_start_air" },
-          { id: "gwc_start_orbital" },
-          { id: "gwc_start_bot" },
-          { id: "gwc_start_artillery" },
-          { id: "gwc_start_subcdr" },
-          { id: "gwc_start_combatcdr" },
-          { id: "gwc_start_allfactory" },
-        ];
-        var lockedStartCards = _.filter(startCards, function (card) {
+        var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
+          card
+        ) {
           return !GW.bank.hasStartCard(card);
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
@@ -1005,14 +1023,7 @@ requireGW(
         }
       });
 
-      var dealBossCards = finishAis.then(function () {
-        return GWDealer.dealBossCards({
-          galaxy: game.galaxy(),
-          inventory: game.inventory(),
-        });
-      });
-
-      dealBossCards.then(function () {
+      finishAis.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
         model.makeGameBusy(false);
