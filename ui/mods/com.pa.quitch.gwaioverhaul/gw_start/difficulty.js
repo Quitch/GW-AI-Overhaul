@@ -579,8 +579,15 @@ requireGW(
 
     /* Start of GWAIO implementation of GWDealer */
     if (model.gwaioNewStartCards)
-      model.gwaioNewStartCards.push({ id: "gwaio_start_storage" });
-    else model.gwaioNewStartCards = [{ id: "gwaio_start_storage" }];
+      model.gwaioNewStartCards.push(
+        { id: "gwaio_start_storage" },
+        { id: "gwaio_start_paratrooper" }
+      );
+    else
+      model.gwaioNewStartCards = [
+        { id: "gwaio_start_storage" },
+        { id: "gwaio_start_paratrooper" },
+      ];
     var lockedStartCards = [];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
@@ -591,7 +598,10 @@ requireGW(
     model.startCards(_.flatten(model.startCards()));
 
     if (model.gwaioAllStartCards)
-      model.gwaioAllStartCards.push("gwaio_start_storage");
+      model.gwaioAllStartCards.push(
+        "gwaio_start_storage",
+        "gwaio_start_paratrooper"
+      );
     else
       model.gwaioAllStartCards = [
         "gwc_start_vehicle",
@@ -603,6 +613,7 @@ requireGW(
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
         "gwaio_start_storage",
+        "gwaio_start_paratrooper",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -1003,6 +1014,7 @@ requireGW(
             { id: "gwc_start_combatcdr" },
             { id: "gwc_start_allfactory" },
             { id: "gwaio_start_storage" },
+            { id: "gwaio_start_paratrooper" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
