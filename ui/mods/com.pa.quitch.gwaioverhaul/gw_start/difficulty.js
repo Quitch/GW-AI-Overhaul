@@ -731,14 +731,6 @@ requireGW(
         });
       });
 
-      var aiInventory = [];
-      var bossInventory = [];
-
-      if (model.gwaioDifficultySettings.tougherCommanders()) {
-        aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
-        bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
-      }
-
       var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
 
@@ -789,6 +781,13 @@ requireGW(
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
         var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
+        var aiInventory = [];
+        var bossInventory = [];
+
+        if (model.gwaioDifficultySettings.tougherCommanders()) {
+          aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
+          bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
+        }
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
