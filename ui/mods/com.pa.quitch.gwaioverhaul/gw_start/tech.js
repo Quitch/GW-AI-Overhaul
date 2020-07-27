@@ -61,7 +61,7 @@ define([
   };
   _.forEach(inventory.commanderAmmo, modBossAmmo);
 
-  // Faction Tech
+  // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
   var synchronousTech = [];
