@@ -599,6 +599,14 @@ requireGW(
 
     if (model.gwaioAllStartCards)
       model.gwaioAllStartCards.push(
+        "gwc_start_vehicle",
+        "gwc_start_air",
+        "gwc_start_bot",
+        "gwc_start_orbital",
+        "gwc_start_artillery",
+        "gwc_start_subcdr",
+        "gwc_start_combatcdr",
+        "gwc_start_allfactory",
         "gwaio_start_storage",
         "gwaio_start_paratrooper"
       );
