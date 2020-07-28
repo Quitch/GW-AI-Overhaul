@@ -1,9 +1,6 @@
 define(["shared/gw_factions"], function (GWFactions) {
   return {
-    // eslint-disable-next-line lodash/prefer-constant
-    visible: function () {
-      return true;
-    },
+    visible: _.constant(true),
     describe: function (params) {
       var minion = params.minion;
       var result = [];
@@ -18,14 +15,10 @@ define(["shared/gw_factions"], function (GWFactions) {
       }
       return result;
     },
-    // eslint-disable-next-line lodash/prefer-constant
-    summarize: function () {
-      return "!LOC:Sub Commander";
-    },
-    // eslint-disable-next-line lodash/prefer-constant
-    icon: function () {
-      return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
-    },
+    summarize: _.constant("!LOC:Sub Commander"),
+    icon: _.constant(
+      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
+    ),
     audio: function () {
       return {
         found: "/VO/Computer/gw/board_tech_available_subcommander",
@@ -72,12 +65,10 @@ define(["shared/gw_factions"], function (GWFactions) {
     // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
     keep: function (_, context) {
-      //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
     discard: function (_, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
-      //api.debug.log("discard: chance: " + context.chance);
     },
   };
 });
