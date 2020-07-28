@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define([
   "module",
   "cards/gwc_start",
