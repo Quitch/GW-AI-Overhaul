@@ -600,14 +600,9 @@ requireGW(
     var unlockedStartCards = [];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
-      console.log(cardData);
-      console.log(!gwaioBank.hasStartCard(cardData));
-      console.log("Make known", model.makeKnown(cardData));
       if (!gwaioBank.hasStartCard(cardData))
         lockedStartCards.push(model.makeUnknown(cardData));
       else unlockedStartCards.push(model.makeKnown(cardData));
-      console.log(lockedStartCards);
-      console.log(unlockedStartCards);
     });
     model.startCards().push(lockedStartCards, unlockedStartCards);
     model.startCards(_.flatten(model.startCards()));
