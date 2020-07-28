@@ -28,7 +28,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    // system is needed else the deal hangs
+    // the system parameter is needed else it becomes impossible to go to war
     deal: function (system, context) {
       var minions = _.shuffle(GWFactions[context.faction].minions.slice(0));
       return {
