@@ -7,7 +7,7 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Defense Tech Commander"),
+    summarize: _.constant("!LOC:Defence Tech Commander"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
@@ -18,7 +18,7 @@ define([
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Defense Tech Commander",
+        description: "!LOC:Defence Tech Commander",
       };
     },
     deal: function () {

@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defense."
+      "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence."
     ),
     hint: function () {
       return {
