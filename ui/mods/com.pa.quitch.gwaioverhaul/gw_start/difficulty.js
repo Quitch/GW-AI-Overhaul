@@ -23,7 +23,7 @@ ko.extenders.precision = function (target, precision) {
           target(valueToWrite);
         } else {
           /* if the rounded value is the same, but a different value was
-          written, force a notification for the current field */
+             written, force a notification for the current field */
           if (newValue !== current) {
             target.notifySubscribers(valueToWrite);
           }
@@ -183,7 +183,7 @@ ko.computed(function () {
 });
 
 /* Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
-Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
+   Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
 model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
   model.gwaioDifficultySettings.unsavedChanges(false);
 });
@@ -1063,7 +1063,7 @@ requireGW(
                 } else world.generator.shuffleLandingZones = true;
             });
             /* We setup the treasure planet here and not AI setup to avoid the 
-            cardList existing in more than one location at a time */
+               cardList existing in more than one location at a time */
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
               delete ai.minions;
