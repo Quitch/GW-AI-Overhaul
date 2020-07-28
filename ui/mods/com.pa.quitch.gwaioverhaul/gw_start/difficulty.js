@@ -581,12 +581,20 @@ requireGW(
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
         { id: "gwaio_start_storage" },
-        { id: "gwaio_start_paratrooper" }
+        { id: "gwaio_start_paratrooper" },
+        { id: "nem_start_deepspace" },
+        { id: "nem_start_nuke" },
+        { id: "nem_start_planetary" },
+        { id: "nem_start_tower_rush" }
       );
     else
       model.gwaioNewStartCards = [
         { id: "gwaio_start_storage" },
         { id: "gwaio_start_paratrooper" },
+        { id: "nem_start_deepspace" },
+        { id: "nem_start_nuke" },
+        { id: "nem_start_planetary" },
+        { id: "nem_start_tower_rush" },
       ];
     var lockedStartCards = [];
     var unlockedStartCards = [];
@@ -615,7 +623,11 @@ requireGW(
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
         "gwaio_start_storage",
-        "gwaio_start_paratrooper"
+        "gwaio_start_paratrooper",
+        "nem_start_deepspace",
+        "nem_start_nuke",
+        "nem_start_planetary",
+        "nem_start_tower_rush"
       );
     else
       model.gwaioAllStartCards = [
@@ -629,6 +641,10 @@ requireGW(
         "gwc_start_allfactory",
         "gwaio_start_storage",
         "gwaio_start_paratrooper",
+        "nem_start_deepspace",
+        "nem_start_nuke",
+        "nem_start_planetary",
+        "nem_start_tower_rush",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -1016,7 +1032,11 @@ requireGW(
         if (model.gwaioTreasureCards)
           model.gwaioTreasureCards.push(
             { id: "gwaio_start_storage" },
-            { id: "gwaio_start_paratrooper" }
+            { id: "gwaio_start_paratrooper" },
+            { id: "nem_start_deepspace" },
+            { id: "nem_start_nuke" },
+            { id: "nem_start_planetary" },
+            { id: "nem_start_tower_rush" }
           );
         else
           model.gwaioTreasureCards = [
@@ -1029,6 +1049,10 @@ requireGW(
             { id: "gwc_start_allfactory" },
             { id: "gwaio_start_storage" },
             { id: "gwaio_start_paratrooper" },
+            { id: "nem_start_deepspace" },
+            { id: "nem_start_nuke" },
+            { id: "nem_start_planetary" },
+            { id: "nem_start_tower_rush" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
