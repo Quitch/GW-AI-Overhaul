@@ -600,12 +600,9 @@ requireGW(
       ];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
-      var unprocessedStartCard = [];
       if (!gwaioBank.hasStartCard(cardData))
-        unprocessedStartCard.push(model.makeUnknown(cardData));
-      else unprocessedStartCard.push(model.makeKnown(cardData));
-      // push immediately to retain the loadout order
-      model.startCards().push(unprocessedStartCard);
+        model.startCards().push(model.makeUnknown(cardData));
+      else model.startCards().push(model.makeKnown(cardData));
     });
     model.startCards(_.flatten(model.startCards()));
 
