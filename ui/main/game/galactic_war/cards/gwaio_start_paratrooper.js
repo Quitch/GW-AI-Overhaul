@@ -13,13 +13,13 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Contains no basic factories but has Lobs and Unit Cannons. Strike from the skies, brothers!"
+      "!LOC:Contains no basic factories, but Lobs and Unit Cannons can be built by the commander. Strike from the skies, brothers!"
     ),
     hint: function () {
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Paratrooper Commander.",
+        description: "!LOC:Paratrooper Commander",
       };
     },
     deal: function () {

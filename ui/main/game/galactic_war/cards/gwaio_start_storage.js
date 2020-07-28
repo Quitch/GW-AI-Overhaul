@@ -13,12 +13,12 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
-    describe: _.constant("!LOC:Trades flame tanks for storage"),
+    describe: _.constant("!LOC:Trades flame tanks for storage."),
     hint: function () {
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Storage Commander.",
+        description: "!LOC:Storage Commander",
       };
     },
     deal: function () {
