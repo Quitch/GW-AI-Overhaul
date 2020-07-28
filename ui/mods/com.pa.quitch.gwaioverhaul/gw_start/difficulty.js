@@ -482,6 +482,7 @@ requireGW(
       },
     ];
 
+    // ensures custom difficulty shows the previously selected difficulty's values
     ko.computed(function () {
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
@@ -580,16 +581,7 @@ requireGW(
     /* Start of GWAIO implementation of GWDealer */
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
-        { id: "gwaio_start_ceo" },
-        { id: "gwaio_start_paratrooper" },
-        { id: "nem_start_deepspace" },
-        { id: "nem_start_nuke" },
-        { id: "nem_start_planetary" },
-        { id: "nem_start_tower_rush" },
-        { id: "gwaio_start_tourist" }
-      );
-    else
-      model.gwaioNewStartCards = [
+        { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -597,6 +589,19 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
+        { id: "gwaio_start_mobile" }
+      );
+    else
+      model.gwaioNewStartCards = [
+        { id: "gwaio_start_test" },
+        { id: "gwaio_start_ceo" },
+        { id: "gwaio_start_paratrooper" },
+        { id: "nem_start_deepspace" },
+        { id: "nem_start_nuke" },
+        { id: "nem_start_planetary" },
+        { id: "nem_start_tower_rush" },
+        { id: "gwaio_start_tourist" },
+        { id: "gwaio_start_mobile" },
       ];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
@@ -616,13 +621,15 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
         "nem_start_nuke",
         "nem_start_planetary",
         "nem_start_tower_rush",
-        "gwaio_start_tourist"
+        "gwaio_start_tourist",
+        "gwaio_start_mobile"
       );
     else
       model.gwaioAllStartCards = [
@@ -634,6 +641,7 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -641,6 +649,7 @@ requireGW(
         "nem_start_planetary",
         "nem_start_tower_rush",
         "gwaio_start_tourist",
+        "gwaio_start_mobile",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -1027,13 +1036,15 @@ requireGW(
         // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
           model.gwaioTreasureCards.push(
+            { id: "gwaio_start_test" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
             { id: "nem_start_nuke" },
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
-            { id: "gwaio_start_tourist" }
+            { id: "gwaio_start_tourist" },
+            { id: "gwaio_start_mobile" }
           );
         else
           model.gwaioTreasureCards = [
@@ -1044,6 +1055,7 @@ requireGW(
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
             { id: "gwc_start_allfactory" },
+            { id: "gwaio_start_test" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -1051,6 +1063,7 @@ requireGW(
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
+            { id: "gwaio_start_mobile" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
