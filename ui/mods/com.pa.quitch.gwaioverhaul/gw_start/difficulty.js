@@ -22,7 +22,8 @@ ko.extenders.precision = function (target, precision) {
         if (valueToWrite !== current) {
           target(valueToWrite);
         } else {
-          //if the rounded value is the same, but a different value was written, force a notification for the current field
+          //if the rounded value is the same, but a different value was written,
+          //force a notification for the current field
           if (newValue !== current) {
             target.notifySubscribers(valueToWrite);
           }
@@ -40,7 +41,7 @@ ko.extenders.precision = function (target, precision) {
 
 model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
-// gw_start uses ko.applyBindings(model) so we put ourselves within that variable
+// gw_start uses ko.applyBindings(model)
 model.gwaioDifficultySettings = {
   factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
@@ -234,11 +235,11 @@ requireGW(
     "shared/gw_credits",
     "shared/gw_factions",
     "pages/gw_start/gw_breeder",
-    "pages/gw_start/gw_dealer",
     "pages/gw_start/gw_teams",
     "main/shared/js/star_system_templates",
     "main/game/galactic_war/shared/js/gw_easy_star_systems",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/bank.js",
   ],
   function (
     require,
@@ -246,11 +247,11 @@ requireGW(
     GWCredits,
     GWFactions,
     GWBreeder,
-    GWDealer, // still required
     GWTeams,
-    normal_system_templates /* this actually won't load -- window.star_system_templates is set instead */,
+    normal_system_templates, // window.star_system_templates is set instead
     easy_system_templates,
-    gwaioTech
+    gwaioTech,
+    gwaioBank
   ) {
     var difficultyInfo = [
       {
@@ -589,12 +590,19 @@ requireGW(
         { id: "gwaio_start_paratrooper" },
       ];
     var lockedStartCards = [];
+    var unlockedStartCards = [];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
-      if (!GW.bank.hasStartCard(cardData))
+      console.log(cardData);
+      console.log(!gwaioBank.hasStartCard(cardData));
+      console.log("Make known", model.makeKnown(cardData));
+      if (!gwaioBank.hasStartCard(cardData))
         lockedStartCards.push(model.makeUnknown(cardData));
+      else unlockedStartCards.push(model.makeKnown(cardData));
+      console.log(lockedStartCards);
+      console.log(unlockedStartCards);
     });
-    model.startCards().push(lockedStartCards);
+    model.startCards().push(lockedStartCards, unlockedStartCards);
     model.startCards(_.flatten(model.startCards()));
 
     if (model.gwaioAllStartCards)
@@ -1011,7 +1019,10 @@ requireGW(
 
         // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
-          model.gwaioTreasureCards.push({ id: "gwaio_start_storage" });
+          model.gwaioTreasureCards.push(
+            { id: "gwaio_start_storage" },
+            { id: "gwaio_start_paratrooper" }
+          );
         else
           model.gwaioTreasureCards = [
             { id: "gwc_start_air" },
@@ -1028,7 +1039,7 @@ requireGW(
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
           card
         ) {
-          return !GW.bank.hasStartCard(card);
+          return !gwaioBank.hasStartCard(card);
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {

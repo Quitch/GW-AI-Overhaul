@@ -1,9 +1,9 @@
 // !LOCNS:galactic_war
-define(["module", "shared/gw_common", "cards/gwc_start"], function (
-  module,
-  GW,
-  GWCStart
-) {
+define([
+  "module",
+  "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/bank.js",
+], function (module, GWCStart, gwaioBank) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -80,7 +80,7 @@ define(["module", "shared/gw_common", "cards/gwc_start"], function (
       } else {
         // Don't clog up a slot.
         inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
+        gwaioBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
