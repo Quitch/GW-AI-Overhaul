@@ -19,9 +19,11 @@ define(["shared/gw_factions"], function (GWFactions) {
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_subcommander",
-    }),
+    audio: function () {
+      return {
+        found: "/VO/Computer/gw/board_tech_available_subcommander",
+      };
+    },
     getContext: function (galaxy, inventory) {
       return {
         chance: 100,
