@@ -3,7 +3,7 @@ define([
   "module",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/bank.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/js/bank.js",
 ], function (module, GWCStart, GWCStorage, gwaioBank) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
