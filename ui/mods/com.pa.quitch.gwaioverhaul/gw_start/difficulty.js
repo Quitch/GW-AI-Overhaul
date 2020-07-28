@@ -596,15 +596,15 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
       ];
-    var lockedStartCards = [];
-    var unlockedStartCards = [];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
+      var unprocessedStartCard = [];
       if (!gwaioBank.hasStartCard(cardData))
-        lockedStartCards.push(model.makeUnknown(cardData));
-      else unlockedStartCards.push(model.makeKnown(cardData));
+        unprocessedStartCard.push(model.makeUnknown(cardData));
+      else unprocessedStartCard.push(model.makeKnown(cardData));
+      // push immediately to retain the loadout order
+      model.startCards().push(unprocessedStartCard);
     });
-    model.startCards().push(lockedStartCards, unlockedStartCards);
     model.startCards(_.flatten(model.startCards()));
 
     if (model.gwaioAllStartCards)
