@@ -648,18 +648,14 @@ requireGW(
       var result = $.Deferred();
       loaded.then(function () {
         var card = _.find(processedStartCards, { id: params.id });
-
-        // Simulate a deal
         var context =
           card.getContext && card.getContext(params.galaxy, params.inventory);
-
         var deal = card.deal && card.deal(params.star, context);
         var product = { id: params.id };
         var cardParams = deal && deal.params;
         if (cardParams && _.isObject(cardParams)) _.extend(product, cardParams);
         card.keep && card.keep(deal, context);
         card.releaseContext && card.releaseContext(context);
-
         result.resolve(product, deal);
       });
       return result;
