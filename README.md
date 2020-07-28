@@ -169,6 +169,7 @@ When the Synchronous have the speed bonus their defences will move to engage you
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
 - Section of Foreign Intelligence for galactic war
+- Galactic War Unique Loadouts
 
 ## Thanks to
 
