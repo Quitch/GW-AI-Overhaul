@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Contains no basic factories, but Lobs and Unit Cannons can be built by the commander. Strike from the skies, brothers!"
+      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
     ),
     hint: function () {
       return {

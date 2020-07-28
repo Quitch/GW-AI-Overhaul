@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Modifies Metal Extractors, allowing them to be built everywhere at a cost to efficiency. Starts with basic vehicles."
+      "!LOC:Modifies Metal Extractors to allowing building them anywhere, at a cost to efficiency. Starts with basic vehicles."
     ),
     hint: function () {
       return {

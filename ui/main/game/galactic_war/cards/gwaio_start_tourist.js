@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Massive amounts of metal storage, but no Metal Extractors"
+      "!LOC:Massive amounts of metal storage, but no Metal Extractors."
     ),
     hint: function () {
       return {

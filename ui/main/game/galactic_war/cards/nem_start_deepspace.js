@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Modifies Jigs to allow them to be built everywhere, at the expense of not being able to build other resource structures. This commander starts with some orbital units."
+      "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. This commander starts with some orbital units."
     ),
     hint: function () {
       return {
