@@ -66,6 +66,7 @@ define([
   var foundationTech = [];
   var synchronousTech = [];
   var revenantsTech = [];
+  var hiveTech = [];
   var factionsTech = [
     legonisTech,
     foundationTech,
@@ -266,6 +267,12 @@ define([
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
-    factionTechs: [legonisTech, foundationTech, synchronousTech, revenantsTech],
+    factionTechs: [
+      legonisTech,
+      foundationTech,
+      synchronousTech,
+      revenantsTech,
+      hiveTech,
+    ],
   };
 });
