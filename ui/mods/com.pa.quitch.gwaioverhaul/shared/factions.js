@@ -1,5 +1,5 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/hive.js"], function (
-  hive
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.js",
+], function (hive) {
   return [hive];
 });
