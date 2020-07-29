@@ -67,6 +67,7 @@ define([
   var synchronousTech = [];
   var revenantsTech = [];
   var hiveTech = [];
+
   var factionsTech = [
     legonisTech,
     foundationTech,
@@ -75,6 +76,7 @@ define([
   ];
   var factionsTechAir = [foundationTech];
   var factionsTechNoAir = [legonisTech, synchronousTech, revenantsTech];
+
   var factionUnits = [
     inventory.legonisUnits,
     inventory.foundationUnits,
