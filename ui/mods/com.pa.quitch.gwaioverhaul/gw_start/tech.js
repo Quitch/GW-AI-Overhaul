@@ -325,7 +325,7 @@ define([
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
       path: "production.energy",
       op: "replace",
-      value: 2187,
+      value: 2857,
     },
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
