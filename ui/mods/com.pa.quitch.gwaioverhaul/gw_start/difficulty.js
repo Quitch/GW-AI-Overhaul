@@ -239,6 +239,7 @@ requireGW(
     "main/game/galactic_war/shared/js/gw_easy_star_systems",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/factions.js",
   ],
   function (
     require,
@@ -250,7 +251,8 @@ requireGW(
     normal_system_templates, // window.star_system_templates is set instead
     easy_system_templates,
     gwaioTech,
-    gwaioBank
+    gwaioBank,
+    gwaioFactions
   ) {
     var difficultyInfo = [
       {
@@ -707,16 +709,19 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
-      var aiFactions = _.range(GWFactions.length);
+      var factionRange = GWFactions.length + gwaioFactions.length;
+      var aiFactions = _.range(factionRange);
       aiFactions.splice(model.playerFactionIndex(), 1);
       if (model.gwaioDifficultySettings.factionScaling()) {
         var numFactions = model.newGameSizeIndex() + 1;
         aiFactions = _.sample(aiFactions, numFactions);
       }
 
+      var allFactions = GWFactions.concat(gwaioFactions);
+
       if (model.creditsMode()) {
         size = _.reduce(
-          GWFactions,
+          allFactions,
           function (factionSum, faction) {
             return _.reduce(
               faction.teams,
@@ -774,9 +779,20 @@ requireGW(
       var populate = moveIn.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
+        // Replaces GWTeams.getTeam to ensure we include GWAIO factions
+        var getTeam = function (index) {
+          var faction = allFactions[index],
+            team = _.sample(faction.teams);
+          return _.extend({}, team, {
+            color: faction.color,
+            faction: faction,
+            remainingMinions: _.clone(faction.minions),
+          });
+        };
+
         // Scatter some AIs
         if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
-        var teams = _.map(aiFactions, GWTeams.getTeam);
+        var teams = _.map(aiFactions, getTeam);
         if (model.creditsMode()) {
           // Duplicate the workers so we can keep them unique
           _.forEach(teams, function (team) {
@@ -918,7 +934,7 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function () {
-                var bossMinions = _.sample(GWFactions[info.faction].minions);
+                var bossMinions = _.sample(allFactions[info.faction].minions);
                 setAIData(bossMinions, maxDist, true);
                 bossMinions.color = bossMinions.color || info.boss.color;
                 info.boss.minions.push(bossMinions);
@@ -962,7 +978,7 @@ requireGW(
             if (numMinions > 0) {
               worker.ai.minions = [];
               _.times(numMinions, function () {
-                var minions = _.sample(GWFactions[info.faction].minions);
+                var minions = _.sample(allFactions[info.faction].minions);
                 setAIData(minions, dist, false);
                 minions.color = minions.color || worker.ai.color;
                 worker.ai.minions.push(minions);
@@ -978,7 +994,7 @@ requireGW(
                 if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
                 var foeFaction = availableFactions.splice(0, 1);
-                var foeCommander = _.sample(GWFactions[foeFaction].minions);
+                var foeCommander = _.sample(allFactions[foeFaction].minions);
                 var numFoes = Math.round((numMinions + 1) / 2);
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
