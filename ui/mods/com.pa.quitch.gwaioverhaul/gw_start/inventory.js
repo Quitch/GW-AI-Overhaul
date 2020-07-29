@@ -260,4 +260,8 @@ define({
     "/pa/units/orbital/orbital_factory/orbital_factory_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   ],
+  hiveCommanders: [
+    "/pa/units/air/support_platform/support_platform.json",
+    "/pa/units/land/bot_support_commander/bot_support_commander.json",
+  ],
 });
