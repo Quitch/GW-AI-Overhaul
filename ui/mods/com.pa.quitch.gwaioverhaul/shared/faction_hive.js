@@ -165,8 +165,7 @@ define([], function () {
           min_advanced_fabbers: 3,
           max_advanced_fabbers: 5,
         },
-        commander:
-          "/pa/units/land/bot_support_commander/bot_support_commander.json",
+        commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
         // Absurd
