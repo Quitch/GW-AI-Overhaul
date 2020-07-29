@@ -325,13 +325,13 @@ define([
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
       path: "production.energy",
       op: "replace",
-      value: 2187.5,
+      value: 2187,
     },
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
       path: "production.metal",
       op: "replace",
-      value: 53.33,
+      value: 53,
     },
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
