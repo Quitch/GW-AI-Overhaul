@@ -64,7 +64,6 @@ function sortContainer(container) {
   });
 }
 
-// eslint-disable-next-line no-unused-vars
 function SelectionViewModel(config) {
   var self = this;
 
