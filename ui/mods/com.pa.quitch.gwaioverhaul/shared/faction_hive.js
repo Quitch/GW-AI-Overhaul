@@ -11,6 +11,7 @@ define([], function () {
         boss: {
           name: "Queen",
           icon: "//ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.png",
+          iconColor: [139, 69, 19],
           character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
