@@ -66,7 +66,6 @@ define([
   var foundationTech = [];
   var synchronousTech = [];
   var revenantsTech = [];
-  var hiveTech = [];
 
   var factionsTech = [
     legonisTech,
@@ -106,6 +105,50 @@ define([
     inventory.foundationBuildArms,
     inventory.synchronousBuildArms,
     inventory.revenantsBuildArms,
+  ];
+
+  var hiveCommanders = [
+    {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "production.energy",
+      op: "replace",
+      value: 2187.5,
+    },
+    {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "production.metal",
+      op: "replace",
+      value: 53.33,
+    },
+    {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "storage.energy",
+      op: "replace",
+      value: 45000,
+    },
+    {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "storage.metal",
+      op: "replace",
+      value: 1500,
+    },
+    {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "unit_types",
+      op: "replace",
+      value: [
+        "UNITTYPE_Bot",
+        "UNITTYPE_Fabber",
+        "UNITTYPE_Construction",
+        "UNITTYPE_SupportCommander",
+        "UNITTYPE_Mobile",
+        "UNITTYPE_Land",
+        "UNITTYPE_Advanced",
+        "UNITTYPE_FactoryBuild",
+        "UNITTYPE_NoBuild",
+        "UNITTYPE_Commander",
+      ],
+    },
   ];
 
   factionUnits.forEach(function (faction, i) {
@@ -269,12 +312,7 @@ define([
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
-    factionTechs: [
-      legonisTech,
-      foundationTech,
-      synchronousTech,
-      revenantsTech,
-      hiveTech,
-    ],
+    factionTechs: [legonisTech, foundationTech, synchronousTech, revenantsTech],
+    hiveCommanders: hiveCommanders,
   };
 });
