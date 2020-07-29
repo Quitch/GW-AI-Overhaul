@@ -2,7 +2,7 @@ define([], function () {
   return {
     name: "Hive",
     color: [
-      [165, 42, 42],
+      [139, 69, 19],
       [192, 192, 192],
     ],
     teams: [
