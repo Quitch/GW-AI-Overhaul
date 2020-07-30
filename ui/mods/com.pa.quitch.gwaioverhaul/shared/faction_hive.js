@@ -10,7 +10,7 @@ define([], function () {
         name: "Alenquer - Hive",
         boss: {
           name: "Mainframe",
-          hive: true,
+          hiveFaction: true,
           icon: "//ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.png",
           iconColor: [139, 69, 19],
           character: "!LOC:Boss",
@@ -122,7 +122,7 @@ define([], function () {
         // Absurd
         name: "Worker",
         character: "!LOC:Absurd",
-        hive: true,
+        hiveFaction: true,
         color: [
           [165, 42, 42],
           [192, 192, 192],
@@ -171,7 +171,7 @@ define([], function () {
         // Absurd
         name: "Soldier",
         character: "!LOC:Absurd",
-        hive: true,
+        hiveFaction: true,
         color: [
           [128, 128, 128],
           [192, 192, 192],
