@@ -275,22 +275,6 @@ define([
       value: "/pa/tools/commander_build_arm/commander_build_arm.json",
     },
     {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
-      path: "unit_types",
-      op: "replace",
-      value: [
-        "UNITTYPE_Bot",
-        "UNITTYPE_Fabber",
-        "UNITTYPE_Construction",
-        "UNITTYPE_SupportCommander",
-        "UNITTYPE_Mobile",
-        "UNITTYPE_Land",
-        "UNITTYPE_Advanced",
-        "UNITTYPE_NoBuild",
-        "UNITTYPE_Commander",
-      ],
-    },
-    {
       file: "/pa/units/air/support_platform/support_platform.json",
       path: "buildable_types",
       op: "replace",
@@ -333,19 +317,6 @@ define([
       path: "transportable.size",
       op: "replace",
       value: 1,
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "unit_types",
-      op: "replace",
-      value: [
-        "UNITTYPE_Commander",
-        "UNITTYPE_Construction",
-        "UNITTYPE_Mobile",
-        "UNITTYPE_Offense",
-        "UNITTYPE_Land", // if you use Air then the AI won't work right
-        "UNITTYPE_NoBuild",
-      ],
     },
   ];
   inventory.hiveCommanders.forEach(function (unit) {
@@ -415,6 +386,19 @@ define([
             radius: 1,
             shape: "sphere",
           },
+        ],
+      },
+      {
+        file: unit,
+        path: "unit_types",
+        op: "replace",
+        value: [
+          "UNITTYPE_Commander",
+          "UNITTYPE_Construction",
+          "UNITTYPE_Mobile",
+          "UNITTYPE_Offense",
+          "UNITTYPE_Land", // if you use Air then the AI won't work right
+          "UNITTYPE_NoBuild",
         ],
       }
     );
