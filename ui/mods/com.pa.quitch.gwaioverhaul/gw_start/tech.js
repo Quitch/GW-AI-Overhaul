@@ -303,7 +303,7 @@ define([
     },
     {
       file: "/pa/units/air/support_platform/support_platform.json",
-      path: "tools.2",
+      path: "tools.1",
       op: "replace",
       value: {
         spec_id: "/pa/tools/commander_build_arm/commander_build_arm.json",
