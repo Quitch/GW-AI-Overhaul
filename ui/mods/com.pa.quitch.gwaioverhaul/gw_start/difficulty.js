@@ -917,6 +917,7 @@ requireGW(
         }
 
         _.forEach(teamInfo, function (info) {
+          // Setup boss system
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
             info.boss.inventory = aiInventory.concat(bossInventory);
@@ -947,6 +948,7 @@ requireGW(
             }
           }
 
+          // Setup non-boss AI system
           _.forEach(info.workers, function (worker) {
             worker.ai.inventory = aiInventory;
             var dist = worker.star.distance();
@@ -986,14 +988,38 @@ requireGW(
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
-              _.times(numMinions, function () {
-                var minions = _.sample(allFactions[info.faction].minions);
-                setAIData(minions, dist, false);
-                minions.color = minions.color || worker.ai.color;
-                worker.ai.minions.push(minions);
-              });
+              if (worker.ai.name === "Soldier") {
+                var minion = _.sample(
+                  _.filter(allFactions[info.faction].minions, {
+                    name: "Worker",
+                  })
+                );
+                setAIData(minion, dist, false);
+                minion.commanderCount =
+                  numMinions +
+                  Math.floor(
+                    model.gwaioDifficultySettings.bossCommanders() / 2
+                  );
+                minion.color = minion.color || worker.ai.color;
+                worker.ai.minions.push(minion);
+              } else if (worker.ai.name === "Worker")
+                worker.ai.commanderCount =
+                  numMinions +
+                  Math.floor(
+                    model.gwaioDifficultySettings.bossCommanders() / 2
+                  );
+              else {
+                worker.ai.minions = [];
+                _.times(numMinions, function () {
+                  minion = _.sample(allFactions[info.faction].minions);
+                  setAIData(minion, dist, false);
+                  minion.color = minion.color || worker.ai.color;
+                  worker.ai.minions.push(minion);
+                });
+              }
             }
 
+            // Setup additional factions for FFA
             var availableFactions = _.without(aiFactions, worker.ai.faction);
             _.times(availableFactions.length, function () {
               if (
@@ -1005,6 +1031,11 @@ requireGW(
                 var foeFaction = availableFactions.splice(0, 1);
                 var foeCommander = _.sample(allFactions[foeFaction].minions);
                 var numFoes = Math.round((numMinions + 1) / 2);
+                if (_.startsWith(foeCommander.name, "Worker")) {
+                  numFoes += Math.floor(
+                    model.gwaioDifficultySettings.bossCommanders() / 2
+                  );
+                }
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
                 if (foeCommander.hiveFaction === true)

@@ -224,6 +224,16 @@ define(["shared/gw_common"], function (GW) {
           });
         });
       }
+    } else if (ai.commanderCount) {
+      // Support Hive Workers
+      _.times(ai.commanderCount, function () {
+        slotsArray.push({
+          ai: true,
+          name: ai.name,
+          commander: fixupCommander(ai.commander || ai.commander),
+          landing_policy: _.sample(aiLandingOptions),
+        });
+      });
     } else {
       slotsArray.push({
         ai: true,

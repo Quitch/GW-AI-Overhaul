@@ -299,7 +299,7 @@ define([
       file: "/pa/units/air/support_platform/support_platform.json",
       path: "max_health",
       op: "multiply",
-      value: 10,
+      value: 5,
     },
     {
       file: "/pa/units/air/support_platform/support_platform.json",
