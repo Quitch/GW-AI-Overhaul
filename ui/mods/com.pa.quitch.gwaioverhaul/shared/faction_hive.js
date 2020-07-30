@@ -9,7 +9,7 @@ define([], function () {
       {
         name: "Alenquer - Hive",
         boss: {
-          name: "!LOC:Mainframe",
+          name: "Mainframe",
           hive: true,
           icon: "//ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.png",
           iconColor: [139, 69, 19],
