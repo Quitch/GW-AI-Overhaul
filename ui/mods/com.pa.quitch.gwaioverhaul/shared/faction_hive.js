@@ -12,7 +12,7 @@ define([], function () {
           name: "Mainframe",
           hiveFaction: true,
           icon: "//ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.png",
-          iconColor: [139, 69, 19],
+          iconColor: [128, 128, 128],
           character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
@@ -124,7 +124,7 @@ define([], function () {
         character: "!LOC:Absurd",
         hiveFaction: true,
         color: [
-          [165, 42, 42],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -173,7 +173,7 @@ define([], function () {
         character: "!LOC:Absurd",
         hiveFaction: true,
         color: [
-          [128, 128, 128],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
