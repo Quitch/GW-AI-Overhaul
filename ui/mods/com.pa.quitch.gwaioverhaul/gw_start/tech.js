@@ -303,14 +303,9 @@ define([
     },
     {
       file: "/pa/units/air/support_platform/support_platform.json",
-      path: "tools.1",
+      path: "tools.1.spec_id",
       op: "replace",
-      value: {
-        spec_id: "/pa/tools/commander_build_arm/commander_build_arm.json",
-        record_index: 2,
-        muzzle_bone: "socket_muzzle02",
-        aim_bone: "bone_root",
-      },
+      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
     },
     {
       file: "/pa/units/air/support_platform/support_platform.json",
