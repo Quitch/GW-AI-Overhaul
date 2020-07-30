@@ -4,6 +4,7 @@ requireGW(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/factions.js",
   ],
   function (GWFactions, gwaioFactions) {
+    var factions = GWFactions.concat(gwaioFactions);
     _.forEach(model.galaxy.systems(), function (system) {
       ko.computed(function () {
         var ai = system.star.ai();
@@ -11,7 +12,6 @@ requireGW(
         else if (ai.treasurePlanet === true) normalizedColor = [255, 255, 255];
         else {
           var factionIndex = ai.faction;
-          var factions = GWFactions.concat(gwaioFactions);
           var faction = factions[factionIndex];
           // Ensures we assign faction colour, not minion colour, to each system
           var normalizedColor = _.map(faction.color[0], function (c) {
