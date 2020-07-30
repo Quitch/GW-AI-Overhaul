@@ -903,7 +903,7 @@ requireGW(
           ai.landAnywhere = false;
           ai.suddenDeath = false;
           ai.bountyMode = false;
-          ai.hiveFaction = ai.hive || false;
+          ai.hiveFaction = ai.hiveFaction || false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
