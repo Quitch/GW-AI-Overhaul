@@ -266,72 +266,13 @@ define([
     );
   });
 
-  // Faction specific
-  var hiveCommanders = [
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "buildable_types",
-      op: "replace",
-      value: "CmdBuild",
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "max_health",
-      op: "multiply",
-      value: 10,
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "production.energy",
-      op: "replace",
-      value: 457,
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "production.metal",
-      op: "replace",
-      value: 80,
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform.json",
-      path: "unit_types",
-      op: "replace",
-      value: [
-        "UNITTYPE_Commander",
-        "UNITTYPE_Construction",
-        "UNITTYPE_Mobile",
-        "UNITTYPE_Offense",
-        "UNITTYPE_Air",
-        "UNITTYPE_NoBuild",
-      ],
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform_build_arm.json",
-      path: "assist_layers",
-      op: "replace",
-      value: [
-        "WL_AnyHorizontalGroundOrWaterSurface",
-        "WL_Air",
-        "WL_Underwater",
-      ],
-    },
-    {
-      file: "/pa/units/air/support_platform/support_platform_build_arm.json",
-      path: "can_only_assist_with_buildable_items",
-      op: "replace",
-      value: false,
-    },
+  // Faction setup
+  var hiveTech = [
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
-      path: "production.energy",
+      path: "tools.0.spec_id",
       op: "replace",
-      value: 2857,
-    },
-    {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
-      path: "production.metal",
-      op: "replace",
-      value: 53,
+      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
     },
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
@@ -345,28 +286,144 @@ define([
         "UNITTYPE_Mobile",
         "UNITTYPE_Land",
         "UNITTYPE_Advanced",
-        "UNITTYPE_FactoryBuild",
         "UNITTYPE_NoBuild",
         "UNITTYPE_Commander",
       ],
     },
     {
-      file: inventory.hiveCommanders,
-      path: "storage.energy",
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "buildable_types",
       op: "replace",
-      value: 45000,
+      value: "CmdBuild",
     },
     {
-      file: inventory.hiveCommanders,
-      path: "storage.metal",
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "command_caps",
       op: "replace",
-      value: 1500,
+      value: [
+        "ORDER_Move",
+        "ORDER_Patrol",
+        "ORDER_Build",
+        "ORDER_Attack",
+        "ORDER_Reclaim",
+        "ORDER_Repair",
+        "ORDER_Assist",
+        "ORDER_Use",
+      ],
+    },
+    {
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "max_health",
+      op: "multiply",
+      value: 10,
+    },
+    {
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "tools.2",
+      op: "replace",
+      value: {
+        spec_id: "/pa/tools/commander_build_arm/commander_build_arm.json",
+        record_index: 2,
+        muzzle_bone: "socket_muzzle02",
+        aim_bone: "bone_root",
+      },
+    },
+    {
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "transportable.size",
+      op: "replace",
+      value: 1,
+    },
+    {
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "unit_types",
+      op: "replace",
+      value: [
+        "UNITTYPE_Commander",
+        "UNITTYPE_Construction",
+        "UNITTYPE_Mobile",
+        "UNITTYPE_Offense",
+        "UNITTYPE_Land", // if you use Air then the AI won't work right
+        "UNITTYPE_NoBuild",
+      ],
     },
   ];
+  inventory.hiveCommanders.forEach(function (unit) {
+    hiveTech.push(
+      {
+        file: unit,
+        path: "build_metal_cost",
+        op: "replace",
+        value: 25000,
+      },
+      {
+        file: unit,
+        path: "si_name",
+        op: "replace",
+        value: "commander",
+      },
+      {
+        file: unit,
+        path: "storage.energy",
+        op: "replace",
+        value: 45000,
+      },
+      {
+        file: unit,
+        path: "storage.metal",
+        op: "replace",
+        value: 1500,
+      },
+      {
+        file: unit,
+        path: "strategic_icon_priority",
+        op: "replace",
+        value: 0,
+      },
+      {
+        file: unit,
+        path: "production.energy",
+        op: "replace",
+        value: 2000,
+      },
+      {
+        file: unit,
+        path: "production.metal",
+        op: "replace",
+        value: 20,
+      },
+      {
+        file: unit,
+        path: "recon.observer.items",
+        op: "replace",
+        value: [
+          {
+            channel: "sight",
+            layer: "surface_and_air",
+            radius: 150,
+            shape: "capsule",
+          },
+          {
+            channel: "sight",
+            layer: "underwater",
+            radius: 150,
+            shape: "capsule",
+          },
+          {
+            channel: "sight",
+            layer: "celestial",
+            radius: 1,
+            shape: "sphere",
+          },
+        ],
+      }
+    );
+  });
+  hiveTech = _.flatten(hiveTech);
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
     factionTechs: [legonisTech, foundationTech, synchronousTech, revenantsTech],
-    hiveCommanders: hiveCommanders,
+    hiveCommanders: hiveTech,
   };
 });
