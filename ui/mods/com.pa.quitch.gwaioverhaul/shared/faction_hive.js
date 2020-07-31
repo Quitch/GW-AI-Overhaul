@@ -11,8 +11,6 @@ define([], function () {
         boss: {
           name: "Mainframe",
           hiveFaction: true,
-          icon: "//ui/mods/com.pa.quitch.gwaioverhaul/shared/faction_hive.png",
-          iconColor: [128, 128, 128],
           character: "!LOC:Boss",
           econ_rate: 1,
           personality: {

@@ -239,7 +239,6 @@ requireGW(
     "main/game/galactic_war/shared/js/gw_easy_star_systems",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/factions.js",
   ],
   function (
     require,
@@ -251,8 +250,7 @@ requireGW(
     normal_system_templates, // window.star_system_templates is set instead
     easy_system_templates,
     gwaioTech,
-    gwaioBank,
-    gwaioFactions
+    gwaioBank
   ) {
     var difficultyInfo = [
       {
@@ -684,19 +682,6 @@ requireGW(
     };
     /* end of GWAIO implementation of GWDealer */
 
-    // override bits of gw_start GameViewModel to make GWAIO factions player selectable
-    var allFactions = GWFactions.concat(gwaioFactions);
-    model.playerFaction = ko.computed(function () {
-      var index = model.playerFactionIndex() % allFactions.length;
-      return allFactions[index];
-    });
-    model.nextFaction = function () {
-      if (!model.creditsMode())
-        model.playerFactionIndex(
-          (model.playerFactionIndex() + 1) % allFactions.length
-        );
-    };
-
     model.makeGame = function () {
       model.newGame(undefined);
 
@@ -722,8 +707,7 @@ requireGW(
       var sizes = GW.balance.numberOfSystems;
       var size = sizes[model.newGameSizeIndex()] || 40;
 
-      var factionRange = GWFactions.length + gwaioFactions.length;
-      var aiFactions = _.range(factionRange);
+      var aiFactions = _.range(GWFactions.length);
       aiFactions.splice(model.playerFactionIndex(), 1);
       if (model.gwaioDifficultySettings.factionScaling()) {
         var numFactions = model.newGameSizeIndex() + 1;
@@ -732,7 +716,7 @@ requireGW(
 
       if (model.creditsMode()) {
         size = _.reduce(
-          allFactions,
+          GWFactions,
           function (factionSum, faction) {
             return _.reduce(
               faction.teams,
@@ -792,7 +776,7 @@ requireGW(
 
         // Replaces GWTeams.getTeam to ensure we include GWAIO factions
         var getTeam = function (index) {
-          var faction = allFactions[index],
+          var faction = GWFactions[index],
             team = _.sample(faction.teams);
           return _.extend({}, team, {
             color: faction.color,
@@ -951,7 +935,7 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function () {
-                var bossMinions = _.sample(allFactions[info.faction].minions);
+                var bossMinions = _.sample(GWFactions[info.faction].minions);
                 setAIData(bossMinions, maxDist, true);
                 bossMinions.color = bossMinions.color || info.boss.color;
                 info.boss.minions.push(bossMinions);
@@ -1001,7 +985,7 @@ requireGW(
               worker.ai.minions = [];
               if (worker.ai.name === "Soldier") {
                 var minion = _.sample(
-                  _.filter(allFactions[info.faction].minions, {
+                  _.filter(GWFactions[info.faction].minions, {
                     name: "Worker",
                   })
                 );
@@ -1022,7 +1006,7 @@ requireGW(
               else {
                 worker.ai.minions = [];
                 _.times(numMinions, function () {
-                  minion = _.sample(allFactions[info.faction].minions);
+                  minion = _.sample(GWFactions[info.faction].minions);
                   setAIData(minion, dist, false);
                   minion.color = minion.color || worker.ai.color;
                   worker.ai.minions.push(minion);
@@ -1040,7 +1024,7 @@ requireGW(
                 if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
                 var foeFaction = availableFactions.splice(0, 1);
-                var foeCommander = _.sample(allFactions[foeFaction].minions);
+                var foeCommander = _.sample(GWFactions[foeFaction].minions);
                 var numFoes = Math.round((numMinions + 1) / 2);
                 if (_.startsWith(foeCommander.name, "Worker")) {
                   numFoes += Math.floor(
