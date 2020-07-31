@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "shared/gw_factions",
   "cards/gwc_start",
-], function (module, GW, GWFactions, GWCStart) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/factions.js",
+], function (module, GW, GWFactions, GWCStart, gwaioFactions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -29,7 +30,8 @@ define([
     },
     // the system parameter is needed else it becomes impossible to go to war
     deal: function (system, context) {
-      var minions = _.shuffle(GWFactions[context.faction].minions.slice(0));
+      var allFactions = GWFactions.concat(gwaioFactions);
+      var minions = _.shuffle(allFactions[context.faction].minions.slice(0));
       return {
         params: {
           minions: minions.slice(0, 2),

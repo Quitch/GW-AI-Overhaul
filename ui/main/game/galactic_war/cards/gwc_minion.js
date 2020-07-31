@@ -1,4 +1,7 @@
-define(["shared/gw_factions"], function (GWFactions) {
+define([
+  "shared/gw_factions",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/factions.js",
+], function (GWFactions, gwaioFactions) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -45,7 +48,8 @@ define(["shared/gw_factions"], function (GWFactions) {
       ) {
         chance = 0;
       }
-      var minion = _.sample(GWFactions[context.faction].minions);
+      var allFactions = GWFactions.concat(gwaioFactions);
+      var minion = _.sample(allFactions[context.faction].minions);
       return {
         params: {
           minion: minion,
