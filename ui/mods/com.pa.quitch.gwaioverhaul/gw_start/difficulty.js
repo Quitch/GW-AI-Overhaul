@@ -263,7 +263,7 @@ requireGW(
         mandatoryMinions: 0,
         minionMod: 0.24,
         priority_scout_metal_spots: false,
-        useEasierSystemTemplate: false,
+        useEasierSystemTemplate: true,
         factory_build_delay_min: 0,
         factory_build_delay_max: 12,
         unable_to_expand_delay: 0,
