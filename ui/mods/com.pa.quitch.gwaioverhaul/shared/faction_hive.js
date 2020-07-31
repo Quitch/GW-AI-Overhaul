@@ -45,7 +45,7 @@ define([], function () {
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
-          "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
+          "!LOC:Divided they fall. United they fall. But their matter can be absorbed, and arise anew, given purpose within the swarm. We save them from their purposeless existence and make them great. They scream, they cry, they resist, and in the end, all join. We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with one mind, one purpose. What cruelty the Progenitors wrought to reduce us to this.",
         systemTemplate: {
           name: "Alenquer - Hive",
           Planets: [
