@@ -684,6 +684,19 @@ requireGW(
     };
     /* end of GWAIO implementation of GWDealer */
 
+    // override bits of gw_start GameViewModel to make GWAIO factions player selectable
+    var allFactions = GWFactions.concat(gwaioFactions);
+    model.playerFaction = ko.computed(function () {
+      var index = model.playerFactionIndex() % allFactions.length;
+      return allFactions[index];
+    });
+    model.nextFaction = function () {
+      if (!model.creditsMode())
+        model.playerFactionIndex(
+          (model.playerFactionIndex() + 1) % allFactions.length
+        );
+    };
+
     model.makeGame = function () {
       model.newGame(undefined);
 
@@ -716,8 +729,6 @@ requireGW(
         var numFactions = model.newGameSizeIndex() + 1;
         aiFactions = _.sample(aiFactions, numFactions);
       }
-
-      var allFactions = GWFactions.concat(gwaioFactions);
 
       if (model.creditsMode()) {
         size = _.reduce(
