@@ -589,7 +589,7 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_mobile" }
+        { id: "gwaio_start_rapid" }
       );
     else
       model.gwaioNewStartCards = [
@@ -601,7 +601,7 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_mobile" },
+        { id: "gwaio_start_rapid" },
       ];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
@@ -629,7 +629,7 @@ requireGW(
         "nem_start_planetary",
         "nem_start_tower_rush",
         "gwaio_start_tourist",
-        "gwaio_start_mobile"
+        "gwaio_start_rapid"
       );
     else
       model.gwaioAllStartCards = [
@@ -649,7 +649,7 @@ requireGW(
         "nem_start_planetary",
         "nem_start_tower_rush",
         "gwaio_start_tourist",
-        "gwaio_start_mobile",
+        "gwaio_start_rapid",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -812,7 +812,6 @@ requireGW(
           teams: teams,
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
-          // eslint-disable-next-line lodash/prefer-noop
           spawn: function () {},
           canSpread: function (_, ai) {
             return (
@@ -822,11 +821,7 @@ requireGW(
           spread: function (star, ai) {
             var team = teams[ai.team];
             return GWTeams.makeWorker(star, ai, team).then(function () {
-              if (team.workers)
-                // eslint-disable-next-line lodash/matches-prop-shorthand
-                _.remove(team.workers, function (worker) {
-                  return worker.name === ai.name;
-                });
+              if (team.workers) _.remove(team.workers, { name: ai.name });
 
               ai.faction = teamInfo[ai.team].faction;
               teamInfo[ai.team].workers.push({
@@ -1098,7 +1093,7 @@ requireGW(
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
-            { id: "gwaio_start_mobile" }
+            { id: "gwaio_start_rapid" }
           );
         else
           model.gwaioTreasureCards = [
@@ -1116,7 +1111,7 @@ requireGW(
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
-            { id: "gwaio_start_mobile" },
+            { id: "gwaio_start_rapid" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
@@ -1146,9 +1141,8 @@ requireGW(
             // eslint-disable-next-line lodash/prefer-filter
             _.forEach(star.system().planets, function (world) {
               if (world.starting_planet === true)
-                if (world.planet) {
-                  world.planet.shuffleLandingZones = true;
-                } else world.generator.shuffleLandingZones = true;
+                if (world.planet) world.planet.shuffleLandingZones = true;
+                else world.generator.shuffleLandingZones = true;
             });
             /* We setup the treasure planet here and not AI setup to avoid the 
                cardList existing in more than one location at a time */

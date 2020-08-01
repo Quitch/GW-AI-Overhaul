@@ -7,18 +7,18 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Mobile Commander"),
+    summarize: _.constant("!LOC:Rapid Deployment Commander"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Factories build fabricators and fabricators build units."
+      "!LOC:Factories build fabricators and fabricators build units. Disgusted by this break from tradition, Sub Commanders will not join you in your fight."
     ),
     hint: function () {
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Mobile Commander",
+        description: "!LOC:Rapid Deployment Commander",
       };
     },
     deal: function () {

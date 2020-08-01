@@ -94,7 +94,7 @@ function SelectionViewModel(config) {
       var system = self.system();
       if (system) {
         var ai = system.star.ai();
-        return loc(system[field]() || (ai && ai[field]) || "");
+        return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - prioritise system information
       } else {
         return "";
       }

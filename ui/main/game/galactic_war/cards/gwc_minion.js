@@ -31,7 +31,7 @@ define(["shared/gw_factions"], function (GWFactions) {
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       function hasUnit(id) {
         return _.any(model.game().inventory().units(), function (unit) {
           return id === unit;
@@ -40,11 +40,11 @@ define(["shared/gw_factions"], function (GWFactions) {
       var chance = context.chance;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
-        !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
-        !hasUnit("/pa/units/air/air_factory/air_factory.json")
-      ) {
+          !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
+          !hasUnit("/pa/units/air/air_factory/air_factory.json") ||
+        inventory.hasCard("gwaio_start_rapid")
+      )
         chance = 0;
-      }
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
@@ -62,7 +62,6 @@ define(["shared/gw_factions"], function (GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
     keep: function (_, context) {
       context.chance = 50;
