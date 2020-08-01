@@ -17,7 +17,7 @@ define([
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description:
-          "!LOC:If you can see this, Quitch forgot the Test Commander from the release version.",
+          "!LOC:If you can see this, Quitch forgot to remove the Test Commander from the release version.",
       };
     },
     deal: function () {
