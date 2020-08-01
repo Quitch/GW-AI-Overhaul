@@ -29,6 +29,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
+- New loadouts
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -100,6 +101,15 @@ Each system will display the following information:
 
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
+### AI Buffs
+
+These buffs are applied on a per-faction basis:
+
+- **Legonis Machina**: land units and factory structures
+- **Foundation**: air and naval units and factory structures
+- **Synchronous**: non-factory structures
+- **Revenants**: orbital units and structures
+
 ### Commander Threat Scale
 
 From easiest to hardest:
@@ -126,7 +136,7 @@ From easiest to hardest:
 
 If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
 
-1. Add the following to the gw_start scene
+1. Add the following to the gw_start scene:
 
    ```javascript
    if (model.gwaioNewStartCards)
@@ -140,7 +150,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
    else model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
    ```
 
-2. Ensure your loadout cards are in coui://ui/main/game/galactic_war/cards/
+2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
 
 3. Add com.pa.quitch.gwaioverhaul as a dependency if you're not rolling your own card dealing solution
 
