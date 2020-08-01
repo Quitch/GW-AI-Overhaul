@@ -1,3 +1,4 @@
+// We want StarSystemTemplates.generate to have players equal to distance so planets scale up with galaxy depth
 define([
   "shared/GalaxyBuilder",
   "shared/gw_star",
@@ -245,9 +246,8 @@ define([
 
       // Generate the planets, increasing the size based on the distance from the start.
       var starGenerators = _.map(self.stars(), function (star) {
-        // GWAIO - we want players to equal distance so planets scale up with galaxy depth
         return StarSystemTemplates.generate({
-          players: star.distance(),
+          players: star.distance(), // GWAIO - don't scale according to maxDist
           seed: rng() * rng(),
         }).then(function (system) {
           star.system(system);
