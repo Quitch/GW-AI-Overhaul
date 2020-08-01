@@ -589,7 +589,8 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" }
+        { id: "gwaio_start_rapid" },
+        { id: "gwc_start_storage" }
       );
     else
       model.gwaioNewStartCards = [
@@ -602,6 +603,7 @@ requireGW(
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
         { id: "gwaio_start_rapid" },
+        { id: "gwc_start_storage" },
       ];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
@@ -629,7 +631,8 @@ requireGW(
         "nem_start_planetary",
         "nem_start_tower_rush",
         "gwaio_start_tourist",
-        "gwaio_start_rapid"
+        "gwaio_start_rapid",
+        "gwc_start_storage"
       );
     else
       model.gwaioAllStartCards = [
@@ -650,6 +653,7 @@ requireGW(
         "nem_start_tower_rush",
         "gwaio_start_tourist",
         "gwaio_start_rapid",
+        "gwc_start_storage",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -1038,7 +1042,8 @@ requireGW(
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
-            { id: "gwaio_start_rapid" }
+            { id: "gwaio_start_rapid" },
+            { id: "gwc_start_storage" }
           );
         else
           model.gwaioTreasureCards = [
@@ -1057,6 +1062,7 @@ requireGW(
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
             { id: "gwaio_start_rapid" },
+            { id: "gwc_start_storage" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
