@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.1 - 2020-08-1
+
+- Removed the test commander loadout. That one is not for you :)
+
 ## v4.0.0 - 2020-08-01
 
 - Fixed Bounties, Team Death, and Big Spawns sometimes being enabled even if you disabled them
