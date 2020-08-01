@@ -29,6 +29,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
+- New loadouts
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -100,6 +101,15 @@ Each system will display the following information:
 
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
+### AI Buffs
+
+These buffs are applied on a per-faction basis:
+
+- **Legonis Machina**: land units and factory structures
+- **Foundation**: air and naval units and factory structures
+- **Synchronous**: non-factory structures
+- **Revenants**: orbital units and structures
+
 ### Commander Threat Scale
 
 From easiest to hardest:
@@ -121,6 +131,28 @@ From easiest to hardest:
 - Nightmare
 - Demigod
 - Godlike
+
+## Compatible Loadouts
+
+If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
+
+1. Add the following to the gw_start scene:
+
+   ```javascript
+   if (model.gwaioNewStartCards)
+     model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
+   else model.gwaioNewStartCards = [{ id: "YOUR_LOADOUT_ID" }];
+   if (model.gwaioAllStartCards)
+     model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
+   else model.gwaioAllStartCards = ["YOUR_LOADOUT_ID"];
+   if (model.gwaioTreasureCards)
+     model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
+   else model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
+   ```
+
+2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
+
+3. Add com.pa.quitch.gwaioverhaul as a dependency if you're not rolling your own card dealing solution
 
 ## FAQ
 
@@ -150,7 +182,7 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 **Q. Why aren't awarded bounties showing on the player list?**
 
-Galactic War hides eco modifies from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
 **Q. Why are those turrets moving?**
 
@@ -169,8 +201,10 @@ When the Synchronous have the speed bonus their defences will move to engage you
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
 - Section of Foreign Intelligence for galactic war
+- Galactic War Unique Loadouts
 
 ## Thanks to
 
 - wondible, who continues to be amazing with his JavaScript support
 - PA Inc, for including official translations for the mod
+- nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod

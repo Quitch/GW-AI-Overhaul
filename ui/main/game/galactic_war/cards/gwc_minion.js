@@ -1,9 +1,6 @@
 define(["shared/gw_factions"], function (GWFactions) {
   return {
-    // eslint-disable-next-line lodash/prefer-constant
-    visible: function () {
-      return true;
-    },
+    visible: _.constant(true),
     describe: function (params) {
       var minion = params.minion;
       var result = [];
@@ -18,14 +15,10 @@ define(["shared/gw_factions"], function (GWFactions) {
       }
       return result;
     },
-    // eslint-disable-next-line lodash/prefer-constant
-    summarize: function () {
-      return "!LOC:Sub Commander";
-    },
-    // eslint-disable-next-line lodash/prefer-constant
-    icon: function () {
-      return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
-    },
+    summarize: _.constant("!LOC:Sub Commander"),
+    icon: _.constant(
+      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
+    ),
     audio: function () {
       return {
         found: "/VO/Computer/gw/board_tech_available_subcommander",
@@ -38,7 +31,7 @@ define(["shared/gw_factions"], function (GWFactions) {
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       function hasUnit(id) {
         return _.any(model.game().inventory().units(), function (unit) {
           return id === unit;
@@ -47,11 +40,11 @@ define(["shared/gw_factions"], function (GWFactions) {
       var chance = context.chance;
       if (
         !hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &
-        !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
-        !hasUnit("/pa/units/air/air_factory/air_factory.json")
-      ) {
+          !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &
+          !hasUnit("/pa/units/air/air_factory/air_factory.json") ||
+        inventory.hasCard("gwaio_start_rapid")
+      )
         chance = 0;
-      }
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
@@ -69,15 +62,12 @@ define(["shared/gw_factions"], function (GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
     keep: function (_, context) {
-      //api.debug.log("Sub CDR: KEEP");
       context.chance = 50;
     },
     discard: function (_, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
-      //api.debug.log("discard: chance: " + context.chance);
     },
   };
 });

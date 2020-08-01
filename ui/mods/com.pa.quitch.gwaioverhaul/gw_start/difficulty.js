@@ -1,8 +1,8 @@
 ko.extenders.precision = function (target, precision) {
-  //create a writable computed observable to intercept writes to our observable
+  // create a writable computed observable to intercept writes to our observable
   var result = ko
     .pureComputed({
-      read: target, //always return the original observables value
+      read: target, // always return the original observables value
       write: function (newValue) {
         if (_.isString(newValue)) {
           newValue = newValue.replace(",", ".");
@@ -18,11 +18,12 @@ ko.extenders.precision = function (target, precision) {
           valueToWrite =
             Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
 
-        //only write if it changed
+        // only write if it changed
         if (valueToWrite !== current) {
           target(valueToWrite);
         } else {
-          //if the rounded value is the same, but a different value was written, force a notification for the current field
+          /* if the rounded value is the same, but a different value was
+             written, force a notification for the current field */
           if (newValue !== current) {
             target.notifySubscribers(valueToWrite);
           }
@@ -31,16 +32,15 @@ ko.extenders.precision = function (target, precision) {
     })
     .extend({ notify: "always" });
 
-  //initialize with current value to make sure it is rounded appropriately
+  // initialize with current value to make sure it is rounded appropriately
   result(target());
 
-  //return the new computed observable
-  return result;
+  return result; // return the new computed observable
 };
 
 model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
-// gw_start uses ko.applyBindings(model) so we put ourselves within that variable
+// gw_start uses ko.applyBindings(model)
 model.gwaioDifficultySettings = {
   factionScaling: ko.observable(true),
   easierStart: ko.observable(false),
@@ -214,38 +214,43 @@ $("#game-difficulty").html(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
   )
 );
-locTree(document.getElementById("game-difficulty"));
+locTree($("#game-difficulty"));
 
 $("#game-difficulty").after(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
   )
 );
-locTree(document.getElementById("additional-settings"));
-locTree(document.getElementById("custom-difficulty-settings"));
+locTree($("#additional-settings"));
+locTree($("#custom-difficulty-settings"));
+// Because PA Inc wants to avoid escaping characters in HTML
+model.gwaioFactionScalingTooltip =
+  "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
 requireGW(
   [
+    "require",
     "shared/gw_common",
     "shared/gw_credits",
     "shared/gw_factions",
     "pages/gw_start/gw_breeder",
-    "pages/gw_start/gw_dealer",
     "pages/gw_start/gw_teams",
     "main/shared/js/star_system_templates",
     "main/game/galactic_war/shared/js/gw_easy_star_systems",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   ],
   function (
+    require,
     GW,
     GWCredits,
     GWFactions,
     GWBreeder,
-    GWDealer,
     GWTeams,
-    normal_system_templates /* this actually won't load -- window.star_system_templates is set instead */,
+    normal_system_templates, // window.star_system_templates is set instead
     easy_system_templates,
-    gwaioTech
+    gwaioTech,
+    gwaioBank
   ) {
     var difficultyInfo = [
       {
@@ -256,7 +261,7 @@ requireGW(
         mandatoryMinions: 0,
         minionMod: 0.24,
         priority_scout_metal_spots: false,
-        useEasierSystemTemplate: false,
+        useEasierSystemTemplate: true,
         factory_build_delay_min: 0,
         factory_build_delay_max: 12,
         unable_to_expand_delay: 0,
@@ -477,6 +482,7 @@ requireGW(
       },
     ];
 
+    // ensures custom difficulty shows the previously selected difficulty's values
     ko.computed(function () {
       if (
         difficultyInfo[model.newGameDifficultyIndex() || 0].customDifficulty
@@ -572,6 +578,110 @@ requireGW(
       }
     });
 
+    /* Start of GWAIO implementation of GWDealer */
+    if (model.gwaioNewStartCards)
+      model.gwaioNewStartCards.push(
+        { id: "gwaio_start_test" },
+        { id: "gwaio_start_ceo" },
+        { id: "gwaio_start_paratrooper" },
+        { id: "nem_start_deepspace" },
+        { id: "nem_start_nuke" },
+        { id: "nem_start_planetary" },
+        { id: "nem_start_tower_rush" },
+        { id: "gwaio_start_tourist" },
+        { id: "gwaio_start_rapid" }
+      );
+    else
+      model.gwaioNewStartCards = [
+        { id: "gwaio_start_test" },
+        { id: "gwaio_start_ceo" },
+        { id: "gwaio_start_paratrooper" },
+        { id: "nem_start_deepspace" },
+        { id: "nem_start_nuke" },
+        { id: "nem_start_planetary" },
+        { id: "nem_start_tower_rush" },
+        { id: "gwaio_start_tourist" },
+        { id: "gwaio_start_rapid" },
+      ];
+
+    _.forEach(model.gwaioNewStartCards, function (cardData) {
+      if (!gwaioBank.hasStartCard(cardData))
+        model.startCards().push(model.makeUnknown(cardData));
+      else model.startCards().push(model.makeKnown(cardData));
+    });
+    model.startCards(_.flatten(model.startCards()));
+
+    if (model.gwaioAllStartCards)
+      model.gwaioAllStartCards.push(
+        "gwc_start_vehicle",
+        "gwc_start_air",
+        "gwc_start_bot",
+        "gwc_start_orbital",
+        "gwc_start_artillery",
+        "gwc_start_subcdr",
+        "gwc_start_combatcdr",
+        "gwc_start_allfactory",
+        "gwaio_start_test",
+        "gwaio_start_ceo",
+        "gwaio_start_paratrooper",
+        "nem_start_deepspace",
+        "nem_start_nuke",
+        "nem_start_planetary",
+        "nem_start_tower_rush",
+        "gwaio_start_tourist",
+        "gwaio_start_rapid"
+      );
+    else
+      model.gwaioAllStartCards = [
+        "gwc_start_vehicle",
+        "gwc_start_air",
+        "gwc_start_bot",
+        "gwc_start_orbital",
+        "gwc_start_artillery",
+        "gwc_start_subcdr",
+        "gwc_start_combatcdr",
+        "gwc_start_allfactory",
+        "gwaio_start_test",
+        "gwaio_start_ceo",
+        "gwaio_start_paratrooper",
+        "nem_start_deepspace",
+        "nem_start_nuke",
+        "nem_start_planetary",
+        "nem_start_tower_rush",
+        "gwaio_start_tourist",
+        "gwaio_start_rapid",
+      ];
+    var processedStartCards = {};
+    var loadCount = model.gwaioAllStartCards.length;
+    var loaded = $.Deferred();
+
+    _.forEach(model.gwaioAllStartCards, function (cardId) {
+      require(["cards/" + cardId], function (card) {
+        card.id = cardId;
+        processedStartCards[cardId] = card;
+        if (--loadCount === 0) loaded.resolve();
+      });
+    });
+
+    // GWDealer.dealCard
+    var gwaioDealStartCard = function (params) {
+      var result = $.Deferred();
+      loaded.then(function () {
+        var card = _.find(processedStartCards, { id: params.id });
+        var context =
+          card.getContext && card.getContext(params.galaxy, params.inventory);
+        var deal = card.deal && card.deal(params.star, context);
+        var product = { id: params.id };
+        var cardParams = deal && deal.params;
+        if (cardParams && _.isObject(cardParams)) _.extend(product, cardParams);
+        card.keep && card.keep(deal, context);
+        card.releaseContext && card.releaseContext(context);
+        result.resolve(product, deal);
+      });
+      return result;
+    };
+    /* end of GWAIO implementation of GWDealer */
+
     model.makeGame = function () {
       model.newGame(undefined);
 
@@ -639,7 +749,7 @@ requireGW(
       });
       var dealStartCard = buildGalaxy.then(function (galaxy) {
         if (model.makeGameBusy() !== busyToken) return;
-        return GWDealer.dealCard({
+        return gwaioDealStartCard({
           id: model.activeStartCard().id(),
           inventory: game.inventory(),
           galaxy: galaxy,
@@ -691,7 +801,6 @@ requireGW(
           teams: teams,
           neutralStars: neutralStars,
           orderedSpawn: model.creditsMode(),
-          // eslint-disable-next-line lodash/prefer-noop
           spawn: function () {},
           canSpread: function (_, ai) {
             return (
@@ -701,11 +810,7 @@ requireGW(
           spread: function (star, ai) {
             var team = teams[ai.team];
             return GWTeams.makeWorker(star, ai, team).then(function () {
-              if (team.workers)
-                // eslint-disable-next-line lodash/matches-prop-shorthand
-                _.remove(team.workers, function (worker) {
-                  return worker.name === ai.name;
-                });
+              if (team.workers) _.remove(team.workers, { name: ai.name });
 
               ai.faction = teamInfo[ai.team].faction;
               teamInfo[ai.team].workers.push({
@@ -731,14 +836,6 @@ requireGW(
         });
       });
 
-      var aiInventory = [];
-      var bossInventory = [];
-
-      if (model.gwaioDifficultySettings.tougherCommanders()) {
-        aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
-        bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
-      }
-
       var finishAis = populate.then(function (teamInfo) {
         if (model.makeGameBusy() !== busyToken) return;
 
@@ -753,8 +850,6 @@ requireGW(
 
         var setAIData = function (ai, dist, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
-          ai.treasurePlanet = false;
-          ai.mirrorMode = false;
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -782,10 +877,22 @@ requireGW(
               dist * model.gwaioDifficultySettings.econRatePerDist();
             delete ai.bossCommanders;
           }
+          ai.treasurePlanet = false;
+          ai.mirrorMode = false;
+          ai.landAnywhere = false;
+          ai.suddenDeath = false;
+          ai.bountyMode = false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
         var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
+        var aiInventory = [];
+        var bossInventory = [];
+
+        if (model.gwaioDifficultySettings.tougherCommanders()) {
+          aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
+          bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
+        }
 
         _.forEach(teamInfo, function (info) {
           if (info.boss) {
@@ -816,6 +923,8 @@ requireGW(
 
           _.forEach(info.workers, function (worker) {
             worker.ai.inventory = aiInventory;
+            var dist = worker.star.distance();
+            setAIData(worker.ai, dist, false);
             if (
               Math.random() * 100 <=
               model.gwaioDifficultySettings.landAnywhereChance()
@@ -832,8 +941,6 @@ requireGW(
             )
               worker.ai.bountyMode = true;
             worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
-            var dist = worker.star.distance();
-            setAIData(worker.ai, dist, false);
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -921,18 +1028,43 @@ requireGW(
           },
         ];
 
+        // Replacement for GWDealer.dealBossCards
+        if (model.gwaioTreasureCards)
+          model.gwaioTreasureCards.push(
+            { id: "gwaio_start_test" },
+            { id: "gwaio_start_ceo" },
+            { id: "gwaio_start_paratrooper" },
+            { id: "nem_start_deepspace" },
+            { id: "nem_start_nuke" },
+            { id: "nem_start_planetary" },
+            { id: "nem_start_tower_rush" },
+            { id: "gwaio_start_tourist" },
+            { id: "gwaio_start_rapid" }
+          );
+        else
+          model.gwaioTreasureCards = [
+            { id: "gwc_start_air" },
+            { id: "gwc_start_orbital" },
+            { id: "gwc_start_bot" },
+            { id: "gwc_start_artillery" },
+            { id: "gwc_start_subcdr" },
+            { id: "gwc_start_combatcdr" },
+            { id: "gwc_start_allfactory" },
+            { id: "gwaio_start_test" },
+            { id: "gwaio_start_ceo" },
+            { id: "gwaio_start_paratrooper" },
+            { id: "nem_start_deepspace" },
+            { id: "nem_start_nuke" },
+            { id: "nem_start_planetary" },
+            { id: "nem_start_tower_rush" },
+            { id: "gwaio_start_tourist" },
+            { id: "gwaio_start_rapid" },
+          ];
         var treasurePlanetSetup = true;
-        var startCards = [
-          { id: "gwc_start_air" },
-          { id: "gwc_start_orbital" },
-          { id: "gwc_start_bot" },
-          { id: "gwc_start_artillery" },
-          { id: "gwc_start_subcdr" },
-          { id: "gwc_start_combatcdr" },
-          { id: "gwc_start_allfactory" },
-        ];
-        var lockedStartCards = _.filter(startCards, function (card) {
-          return !GW.bank.hasStartCard(card);
+        var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
+          card
+        ) {
+          return !gwaioBank.hasStartCard(card);
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
@@ -956,10 +1088,11 @@ requireGW(
             // eslint-disable-next-line lodash/prefer-filter
             _.forEach(star.system().planets, function (world) {
               if (world.starting_planet === true)
-                if (world.planet) {
-                  world.planet.shuffleLandingZones = true;
-                } else world.generator.shuffleLandingZones = true;
+                if (world.planet) world.planet.shuffleLandingZones = true;
+                else world.generator.shuffleLandingZones = true;
             });
+            /* We setup the treasure planet here and not AI setup to avoid the 
+               cardList existing in more than one location at a time */
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
               delete ai.minions;
@@ -992,14 +1125,7 @@ requireGW(
         }
       });
 
-      var dealBossCards = finishAis.then(function () {
-        return GWDealer.dealBossCards({
-          galaxy: game.galaxy(),
-          inventory: game.inventory(),
-        });
-      });
-
-      dealBossCards.then(function () {
+      finishAis.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
         model.makeGameBusy(false);

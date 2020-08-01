@@ -3,7 +3,7 @@ requireGW(["shared/gw_factions"], function (GWFactions) {
     ko.computed(function () {
       var ai = system.star.ai();
       if (!ai) return;
-      if (ai.treasurePlanet === true) normalizedColor = [255, 255, 255];
+      else if (ai.treasurePlanet === true) normalizedColor = [255, 255, 255];
       else {
         var factionIndex = ai.faction;
         var faction = GWFactions[factionIndex];
