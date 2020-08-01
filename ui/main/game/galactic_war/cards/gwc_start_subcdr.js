@@ -27,8 +27,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    // the system parameter is needed else it becomes impossible to go to war
-    deal: function (system, context) {
+    deal: function (__, context) {
       var minions = _.shuffle(GWFactions[context.faction].minions.slice(0));
       return {
         params: {
