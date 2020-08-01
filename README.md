@@ -126,7 +126,7 @@ From easiest to hardest:
 
 If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
 
-1. Add the following to the gw_start scene
+1. Add the following to the gw_start scene:
 
    ```javascript
    if (model.gwaioNewStartCards)
