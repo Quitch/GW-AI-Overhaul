@@ -30,6 +30,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
 - New loadouts
+- Unlocks Galactic War's biggest planetary systems
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
