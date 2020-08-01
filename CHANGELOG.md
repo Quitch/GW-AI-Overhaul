@@ -6,6 +6,7 @@
 - Added support for new loadouts and instructions for modders on how to make loadout mods compatabile
 - Added new loadouts for you to unlock in your wars
 - Galactic War Unique Loadouts is not compatabile with GWAIO in its current form and should be disabled. Its loadouts have been ported into this mod in accordance with its license requirements. Thanks to Nemuneko for their work.
+- Changed mod priority to allow other mods to add loadouts through GWAIO
 - Changed locked loadout hints
 - As you go deeper into the galaxy you will now uncover larger systems
 - Casual difficulty uses simpler systems

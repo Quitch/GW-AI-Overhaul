@@ -140,7 +140,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
    else model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
    ```
 
-2. Ensure your loadout cards are in coui://ui/main/game/galactic_war/cards/
+2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
 
 3. Add com.pa.quitch.gwaioverhaul as a dependency if you're not rolling your own card dealing solution
 
