@@ -40,14 +40,6 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
-          inventory.removeUnits([
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-          ]);
           var costUnits = [
             "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
             "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
@@ -151,7 +143,14 @@ define([
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
-          // Perform dulls here
+          inventory.removeUnits([
+            "/pa/units/land/laser_defense/laser_defense.json",
+            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
+            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+            "/pa/units/land/air_defense_adv/air_defense_adv.json",
+            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+            "/pa/units/orbital/defense_satellite/defense_satellite.json",
+          ]);
           inventory.setTag("", "buffCount", undefined);
         }
       }

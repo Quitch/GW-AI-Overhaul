@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs
+
 ## v4.0.2 - 2020-08-1
 
 - Prevent Rapid Deployment Commander breaking the treasure planet guardians

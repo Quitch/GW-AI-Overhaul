@@ -45,13 +45,6 @@ define([
             "/pa/units/orbital/mining_platform/mining_platform.json",
             "/pa/units/orbital/orbital_laser/orbital_laser.json",
           ]);
-          inventory.removeUnits([
-            "/pa/units/land/metal_extractor/metal_extractor.json",
-            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
-            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-            "/pa/units/land/energy_plant/energy_plant.json",
-            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
-          ]);
           var costUnits = [
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
@@ -149,7 +142,13 @@ define([
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
-          // Perform dulls here
+          inventory.removeUnits([
+            "/pa/units/land/metal_extractor/metal_extractor.json",
+            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
+            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+            "/pa/units/land/energy_plant/energy_plant.json",
+            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
+          ]);
           inventory.setTag("", "buffCount", undefined);
         }
       }
