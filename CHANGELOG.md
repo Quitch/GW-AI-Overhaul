@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.0.0 - 2020-08-01
 
 - Fixed Bounties, Team Death, and Big Spawns sometimes being enabled even if you disabled them
 - Added support for new loadouts and instructions for modders on how to make loadout mods compatabile
