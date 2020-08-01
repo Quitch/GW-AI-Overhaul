@@ -12,7 +12,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:Enjoy an immediate buff to your basic economy structures, but short-term thinking means you can never access the advanced economy."
+      "!LOC:Enjoy an immediate buff to your basic economy structures, but short-term thinking means you can never access the advanced economy. Win the war while the quarterly returns still look hot."
     ),
     hint: function () {
       return {
