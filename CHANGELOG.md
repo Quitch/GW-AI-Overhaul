@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.0.2 - 2020-08-1
 
 - Prevent Rapid Deployment Commander breaking the treasure planet guardians
 
