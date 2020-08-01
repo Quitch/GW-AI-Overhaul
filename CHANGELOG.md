@@ -3,9 +3,9 @@
 ## v4.0.0 - 2020-08-01
 
 - Fixed Bounties, Team Death, and Big Spawns sometimes being enabled even if you disabled them
-- Added support for new loadouts and instructions for modders on how to make loadout mods compatabile
+- Added support for new loadouts and instructions for modders on how to make loadout mods compatible
 - Added new loadouts for you to unlock in your wars
-- Galactic War Unique Loadouts is not compatabile with GWAIO in its current form and should be disabled. Its loadouts have been ported into this mod in accordance with its license requirements. Thanks to Nemuneko for their work.
+- Galactic War Unique Loadouts is not compatible with GWAIO in its current form and should be disabled. Its loadouts have been ported into this mod in accordance with its license requirements. Thanks to Nemuneko for their work.
 - Changed mod priority to allow other mods to add loadouts through GWAIO
 - Changed locked loadout hints
 - As you go deeper into the galaxy you will now uncover larger systems
