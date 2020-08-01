@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Prevent Rapid Deployment Commander breaking the treasure planet guardians
+
 ## v4.0.1 - 2020-08-1
 
 - Removed the test commander loadout. That one is not for you :)
