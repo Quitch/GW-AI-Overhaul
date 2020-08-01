@@ -778,20 +778,9 @@ requireGW(
       var populate = moveIn.then(function () {
         if (model.makeGameBusy() !== busyToken) return;
 
-        // Replaces GWTeams.getTeam to ensure we include GWAIO factions
-        var getTeam = function (index) {
-          var faction = GWFactions[index],
-            team = _.sample(faction.teams);
-          return _.extend({}, team, {
-            color: faction.color,
-            faction: faction,
-            remainingMinions: _.clone(faction.minions),
-          });
-        };
-
         // Scatter some AIs
         if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
-        var teams = _.map(aiFactions, getTeam);
+        var teams = _.map(aiFactions, GWTeams.getTeam);
         if (model.creditsMode()) {
           // Duplicate the workers so we can keep them unique
           _.forEach(teams, function (team) {
