@@ -581,6 +581,7 @@ requireGW(
     /* Start of GWAIO implementation of GWDealer */
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
+        { id: "gwc_start_storage" },
         { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
@@ -589,11 +590,11 @@ requireGW(
         { id: "nem_start_planetary" },
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" },
-        { id: "gwc_start_storage" }
+        { id: "gwaio_start_rapid" }
       );
     else
       model.gwaioNewStartCards = [
+        { id: "gwc_start_storage" },
         { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
@@ -603,7 +604,6 @@ requireGW(
         { id: "nem_start_tower_rush" },
         { id: "gwaio_start_tourist" },
         { id: "gwaio_start_rapid" },
-        { id: "gwc_start_storage" },
       ];
 
     _.forEach(model.gwaioNewStartCards, function (cardData) {
@@ -623,6 +623,7 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwc_start_storage",
         "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
@@ -631,8 +632,7 @@ requireGW(
         "nem_start_planetary",
         "nem_start_tower_rush",
         "gwaio_start_tourist",
-        "gwaio_start_rapid",
-        "gwc_start_storage"
+        "gwaio_start_rapid"
       );
     else
       model.gwaioAllStartCards = [
@@ -644,6 +644,7 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwc_start_storage",
         "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
@@ -653,7 +654,6 @@ requireGW(
         "nem_start_tower_rush",
         "gwaio_start_tourist",
         "gwaio_start_rapid",
-        "gwc_start_storage",
       ];
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
@@ -1035,6 +1035,7 @@ requireGW(
         // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
           model.gwaioTreasureCards.push(
+            { id: "gwc_start_storage" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -1042,11 +1043,11 @@ requireGW(
             { id: "nem_start_planetary" },
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
-            { id: "gwaio_start_rapid" },
-            { id: "gwc_start_storage" }
+            { id: "gwaio_start_rapid" }
           );
         else
           model.gwaioTreasureCards = [
+            { id: "gwc_start_storage" },
             { id: "gwc_start_air" },
             { id: "gwc_start_orbital" },
             { id: "gwc_start_bot" },
@@ -1062,7 +1063,6 @@ requireGW(
             { id: "nem_start_tower_rush" },
             { id: "gwaio_start_tourist" },
             { id: "gwaio_start_rapid" },
-            { id: "gwc_start_storage" },
           ];
         var treasurePlanetSetup = true;
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
