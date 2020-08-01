@@ -62,7 +62,6 @@ define(["shared/gw_factions"], function (GWFactions) {
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    // eslint-disable-next-line lodash/prefer-noop
     dull: function () {},
     keep: function (_, context) {
       context.chance = 50;
