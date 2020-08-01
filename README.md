@@ -30,6 +30,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
 - New loadouts
+- Unlocks Galactic War's biggest planetary systems
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -139,15 +140,15 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 1. Add the following to the gw_start scene:
 
    ```javascript
-   if (model.gwaioNewStartCards)
+   if (model.gwaioNewStartCards) {
      model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
-   else model.gwaioNewStartCards = [{ id: "YOUR_LOADOUT_ID" }];
-   if (model.gwaioAllStartCards)
      model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
-   else model.gwaioAllStartCards = ["YOUR_LOADOUT_ID"];
-   if (model.gwaioTreasureCards)
      model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
-   else model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
+   } else {
+     model.gwaioNewStartCards = [{ id: "YOUR_LOADOUT_ID" }];
+     model.gwaioAllStartCards = ["YOUR_LOADOUT_ID"];
+     model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
+   }
    ```
 
 2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`

@@ -81,8 +81,13 @@ define(["shared/gw_common"], function (GW) {
                 currentCount === 0
                   ? ai.inventory
                   : ai.foes[currentCount - 1].inventory;
-              if (ai.mirrorMode === true)
-                aiInventory = aiInventory.concat(inventory.mods());
+              if (ai.mirrorMode === true) {
+                // Don't load mods that break the AI
+                var usablePlayerInventory = _.reject(inventory.mods(), {
+                  path: "buildable_types",
+                });
+                aiInventory = aiInventory.concat(usablePlayerInventory);
+              }
               GW.specs.modSpecs(aiFiles, aiInventory, aiTag[n]);
             }
             aiFactions[currentCount].resolve(aiFiles);
