@@ -581,7 +581,6 @@ requireGW(
     /* Start of GWAIO implementation of GWDealer */
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
-        { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -593,7 +592,6 @@ requireGW(
       );
     else
       model.gwaioNewStartCards = [
-        { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -621,7 +619,6 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
-        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -641,7 +638,6 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
-        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -1031,7 +1027,6 @@ requireGW(
         // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
           model.gwaioTreasureCards.push(
-            { id: "gwaio_start_test" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -1050,7 +1045,6 @@ requireGW(
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
             { id: "gwc_start_allfactory" },
-            { id: "gwaio_start_test" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
