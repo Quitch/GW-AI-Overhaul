@@ -100,6 +100,15 @@ Each system will display the following information:
 
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
+### AI Buffs
+
+These buffs are applied on a per-faction basis:
+
+- **Legonis Machina**: land units and factory structures
+- **Foundation**: air and naval units and factory structures
+- **Synchronous**: non-factory structures
+- **Revenants**: orbital units and structures
+
 ### Commander Threat Scale
 
 From easiest to hardest:
