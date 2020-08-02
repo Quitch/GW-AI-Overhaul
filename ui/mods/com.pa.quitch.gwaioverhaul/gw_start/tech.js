@@ -66,45 +66,57 @@ define([
   var foundationTech = [];
   var synchronousTech = [];
   var revenantsTech = [];
+  var hiveTech = [];
 
   var factionsTech = [
     legonisTech,
     foundationTech,
     synchronousTech,
     revenantsTech,
+    hiveTech,
   ];
-  var factionsTechAir = [foundationTech];
-  var factionsTechNoAir = [legonisTech, synchronousTech, revenantsTech];
+  var factionsTechAir = [foundationTech, hiveTech];
+  var factionsTechNoAir = [
+    legonisTech,
+    synchronousTech,
+    revenantsTech,
+    hiveTech,
+  ];
 
   var factionUnits = [
     inventory.legonisUnits,
     inventory.foundationUnits,
     inventory.synchronousUnits,
     inventory.revenantsUnits,
+    inventory.hiveUnits,
   ];
-  var factionUnitsAir = [inventory.foundationUnits];
+  var factionUnitsAir = [inventory.foundationUnits, inventory.hiveUnitsAir];
   var factionUnitsNoAir = [
     inventory.legonisUnits,
     inventory.synchronousUnits,
     inventory.revenantsUnits,
+    inventory.hiveUnitsNoAir,
   ];
   var factionWeapons = [
     inventory.legonisWeapons,
     inventory.foundationWeapons,
     inventory.synchronousWeapons,
     inventory.revenantsWeapons,
+    inventory.hivesWeapons,
   ];
   var factionAmmo = [
     inventory.legonisAmmo,
     inventory.foundationAmmo,
     inventory.synchronousAmmo,
     inventory.revenantsAmmo,
+    inventory.hiveAmmo,
   ];
   var factionBuildArms = [
     inventory.legonisBuildArms,
     inventory.foundationBuildArms,
     inventory.synchronousBuildArms,
     inventory.revenantsBuildArms,
+    inventory.hiveBuildArms,
   ];
 
   factionUnits.forEach(function (faction, i) {
@@ -267,7 +279,7 @@ define([
   });
 
   // Faction setup
-  var hiveTech = [
+  var hiveCommanderTech = [
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
       path: "tools.0.spec_id",
@@ -315,7 +327,7 @@ define([
     },
   ];
   inventory.hiveCommanders.forEach(function (unit) {
-    hiveTech.push(
+    hiveCommanderTech.push(
       {
         file: unit,
         path: "build_metal_cost",
@@ -398,11 +410,17 @@ define([
       }
     );
   });
-  hiveTech = _.flatten(hiveTech);
+  hiveCommanderTech = _.flatten(hiveCommanderTech);
 
   return {
     tougherCommander: [commanderArmourTech, commanderCombatTech],
-    factionTechs: [legonisTech, foundationTech, synchronousTech, revenantsTech],
-    hiveCommanders: hiveTech,
+    factionTechs: [
+      legonisTech,
+      foundationTech,
+      synchronousTech,
+      revenantsTech,
+      hiveTech,
+    ],
+    hiveCommanders: hiveCommanderTech,
   };
 });

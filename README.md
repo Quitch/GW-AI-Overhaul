@@ -110,6 +110,7 @@ These buffs are applied on a per-faction basis:
 - **Foundation**: air and naval units and factory structures
 - **Synchronous**: non-factory structures
 - **Revenants**: orbital units and structures
+- **Hive**: basic units
 
 ### Commander Threat Scale
 
