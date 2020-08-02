@@ -582,7 +582,6 @@ requireGW(
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
         { id: "gwc_start_storage" },
-        { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -595,7 +594,6 @@ requireGW(
     else
       model.gwaioNewStartCards = [
         { id: "gwc_start_storage" },
-        { id: "gwaio_start_test" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -624,7 +622,6 @@ requireGW(
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
         "gwc_start_storage",
-        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -645,7 +642,6 @@ requireGW(
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
         "gwc_start_storage",
-        "gwaio_start_test",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
