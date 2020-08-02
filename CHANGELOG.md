@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.1.0 - 2020-08-02
 
 - Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs
 - Added the unused base game Storage Commander loadout
