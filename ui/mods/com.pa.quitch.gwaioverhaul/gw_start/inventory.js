@@ -408,4 +408,18 @@ define({
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_water.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   ],
+  hiveBuildArms: [
+    "/pa/units/land/bot_factory/bot_factory_build_arm.json",
+    "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+    "/pa/units/land/fabrication_bot/fabrication_bot_build_arm.json",
+    "/pa/units/land/fabrication_vehicle/fabrication_vehicle_build_arm.json",
+    "/pa/units/land/vehicle_factory/vehicle_factory_build_arm.json",
+    "/pa/units/air/air_factory/air_factory_build_arm.json",
+    "/pa/units/air/fabrication_aircraft/fabrication_aircraft_build_arm.json",
+    "/pa/units/sea/fabrication_barge/fabrication_barge_build_arm.json",
+    "/pa/units/sea/fabrication_ship/fabrication_ship_build_arm.json",
+    "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
+    "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
+    "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
+  ],
 });

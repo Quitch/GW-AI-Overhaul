@@ -159,7 +159,7 @@ define([
     inventory.foundationWeapons,
     inventory.synchronousWeapons,
     inventory.revenantsWeapons,
-    inventory.hivesWeapons,
+    inventory.hiveWeapons,
   ];
   var factionAmmo = [
     inventory.legonisAmmo,
@@ -467,7 +467,6 @@ define([
       }
     );
   });
-  hiveCommanderTech = _.flatten(hiveCommanderTech);
 
   return {
     tougherCommander: [
