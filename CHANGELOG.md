@@ -6,7 +6,7 @@
 - Added the unused base game Storage Commander loadout
 - Casual through Gold scale up their commander numbers slower than before
 - Fixed the General Commander failing to add cards to their inventory and being unable to start fights in new wars - thanks to EVmaker for the report
-- Fixed loadouts from the base game being dealt as treasure in new wars even after being unlocked - thanks to EVmaker for the report
+- Fixed the dealing of unlocked loadouts from the base game as treasure - thanks to EVmaker for the report
 
 ## v4.0.2 - 2020-08-1
 
