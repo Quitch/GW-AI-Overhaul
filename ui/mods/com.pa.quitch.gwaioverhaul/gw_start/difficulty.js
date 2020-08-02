@@ -1071,13 +1071,11 @@ requireGW(
           if (!GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card))
             return card;
         });
-        console.log("Locked", lockedStartCards);
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
           treasurePlanetCard = treasurePlanetCard.id;
           treasurePlanetSetup = false;
         }
-        console.log("Treasure", treasurePlanetCard);
 
         var n = 0;
         gw_intro_systems = _.shuffle(gw_intro_systems);
