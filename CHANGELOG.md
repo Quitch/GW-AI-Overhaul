@@ -5,6 +5,7 @@
 - Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs
 - Added the unused base game Storage Commander loadout
 - Casual through Gold scale up their commander numbers slower than before
+- Fixed the General Commander failing to add cards to their inventory and being unable to start fights in new wars. Thanks to EVmaker for the report.
 
 ## v4.0.2 - 2020-08-1
 
