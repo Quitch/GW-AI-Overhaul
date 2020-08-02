@@ -945,7 +945,7 @@ requireGW(
           _.forEach(info.workers, function (worker) {
             if (worker.ai.faction === 4)
               worker.ai.inventory = aiInventory.concat(
-                hiveCommanders,
+                gwaioTech.hiveCommanders,
                 hiveCommanderInventory
               );
             else worker.ai.inventory = aiInventory;
