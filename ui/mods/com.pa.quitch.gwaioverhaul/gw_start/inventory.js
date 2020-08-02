@@ -264,6 +264,9 @@ define({
     "/pa/units/air/support_platform/support_platform.json",
     "/pa/units/land/bot_support_commander/bot_support_commander.json",
   ],
+  hiveCommanderAmmo: [
+    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
+  ],
   hiveUnits: [
     "/pa/units/air/air_factory/air_factory.json",
     "/pa/units/air/air_scout/air_scout.json",

@@ -12,6 +12,16 @@ define([
     });
   };
   _.forEach(inventory.commanderUnits, modAIUnit);
+  var hiveCommanderArmourTech = [];
+  var modHiveCommander = function (unit) {
+    hiveCommanderArmourTech.push({
+      file: unit,
+      path: "max_health",
+      op: "multiply",
+      value: 2,
+    });
+  };
+  _.forEach(inventory.hiveCommanders, modHiveCommander);
 
   var commanderCombatTech = [];
   var modBossUnit = function (unit) {
@@ -60,6 +70,53 @@ define([
     );
   };
   _.forEach(inventory.commanderAmmo, modBossAmmo);
+  var hiveCommanderCombatTech = [];
+  var modHiveBossUnit = function (unit) {
+    hiveCommanderCombatTech.push(
+      {
+        file: unit,
+        path: "navigation.move_speed",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.brake",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.acceleration",
+        op: "multiply",
+        value: 3,
+      },
+      {
+        file: unit,
+        path: "navigation.turn_speed",
+        op: "multiply",
+        value: 3,
+      }
+    );
+  };
+  _.forEach(inventory.hiveCommanders, modHiveBossUnit);
+  var modHiveBossAmmo = function (ammo) {
+    hiveCommanderCombatTech.push(
+      {
+        file: ammo,
+        path: "damage",
+        op: "multiply",
+        value: 1.25,
+      },
+      {
+        file: ammo,
+        path: "splash_damage",
+        op: "multiply",
+        value: 1.25,
+      }
+    );
+  };
+  _.forEach(inventory.hiveCommanderAmmo, modHiveBossAmmo);
 
   // AI Buffs
   var legonisTech = [];
@@ -413,7 +470,12 @@ define([
   hiveCommanderTech = _.flatten(hiveCommanderTech);
 
   return {
-    tougherCommander: [commanderArmourTech, commanderCombatTech],
+    tougherCommander: [
+      commanderArmourTech,
+      commanderCombatTech,
+      hiveCommanderArmourTech,
+      hiveCommanderCombatTech,
+    ],
     factionTechs: [
       legonisTech,
       foundationTech,

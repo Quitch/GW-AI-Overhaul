@@ -893,17 +893,31 @@ requireGW(
         var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
         var aiInventory = [];
         var bossInventory = [];
+        var hiveCommanderInventory = [];
+        var hiveBossInventory = [];
 
         if (model.gwaioDifficultySettings.tougherCommanders()) {
           aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
           bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
+          hiveCommanderInventory = hiveCommanderInventory.concat(
+            gwaioTech.tougherCommanders[2]
+          );
+          hiveBossInventory = hiveBossInventory.concat(
+            gwaioTech.toughrCommander[3]
+          );
         }
 
         _.forEach(teamInfo, function (info) {
           // Setup boss system
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
-            info.boss.inventory = aiInventory.concat(bossInventory);
+            if (info.boss.faction === 4)
+              info.boss.inventory = aiInventory.concat(
+                bossInventory,
+                hiveCommanderInventory,
+                hiveBossInventory
+              );
+            else info.boss.inventory = aiInventory.concat(bossInventory);
             var numBuffs = Math.floor(maxDist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -933,7 +947,9 @@ requireGW(
 
           // Setup non-boss AI system
           _.forEach(info.workers, function (worker) {
-            worker.ai.inventory = aiInventory;
+            if (worker.ai.faction === 4)
+              worker.ai.inventory = aiInventory.concat(hiveCommanderInventory);
+            else worker.ai.inventory = aiInventory;
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
             if (
