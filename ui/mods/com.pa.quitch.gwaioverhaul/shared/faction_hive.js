@@ -10,7 +10,6 @@ define([], function () {
         name: "Alenquer - Hive",
         boss: {
           name: "Mainframe",
-          hiveFaction: true,
           character: "!LOC:Boss",
           econ_rate: 1,
           personality: {
@@ -72,7 +71,6 @@ define([], function () {
         // Absurd
         name: "Worker",
         character: "!LOC:Absurd",
-        hiveFaction: true,
         color: [
           [142, 107, 68],
           [192, 192, 192],
@@ -121,7 +119,6 @@ define([], function () {
         // Absurd
         name: "Soldier",
         character: "!LOC:Absurd",
-        hiveFaction: true,
         color: [
           [70, 70, 70],
           [192, 192, 192],

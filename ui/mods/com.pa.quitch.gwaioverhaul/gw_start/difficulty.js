@@ -886,7 +886,6 @@ requireGW(
           ai.landAnywhere = false;
           ai.suddenDeath = false;
           ai.bountyMode = false;
-          ai.hiveFaction = ai.hiveFaction || false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -913,6 +912,7 @@ requireGW(
             setAIData(info.boss, maxDist, true);
             if (info.boss.faction === 4)
               info.boss.inventory = aiInventory.concat(
+                gwaioTech.hiveCommanders,
                 bossInventory,
                 hiveCommanderInventory,
                 hiveBossInventory
@@ -921,15 +921,11 @@ requireGW(
             var numBuffs = Math.floor(maxDist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
-            if (info.boss.hiveFaction === true)
-              info.boss.inventory = gwaioTech.hiveCommanders;
-            else {
-              _.times(typeOfBuffs.length, function (n) {
-                info.boss.inventory = info.boss.inventory.concat(
-                  gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
-                );
-              });
-            }
+            _.times(typeOfBuffs.length, function (n) {
+              info.boss.inventory = info.boss.inventory.concat(
+                gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
+              );
+            });
             var numMinions = Math.floor(
               model.gwaioDifficultySettings.mandatoryMinions() +
                 maxDist * model.gwaioDifficultySettings.minionMod()
@@ -948,7 +944,10 @@ requireGW(
           // Setup non-boss AI system
           _.forEach(info.workers, function (worker) {
             if (worker.ai.faction === 4)
-              worker.ai.inventory = aiInventory.concat(hiveCommanderInventory);
+              worker.ai.inventory = aiInventory.concat(
+                hiveCommanders,
+                hiveCommanderInventory
+              );
             else worker.ai.inventory = aiInventory;
             var dist = worker.star.distance();
             setAIData(worker.ai, dist, false);
@@ -971,15 +970,12 @@ requireGW(
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
-            if (worker.ai.hiveFaction === true)
-              worker.ai.inventory = gwaioTech.hiveCommanders;
-            else {
-              _.times(typeOfBuffs.length, function (n) {
-                worker.ai.inventory = worker.ai.inventory.concat(
-                  gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
-                );
-              });
-            }
+
+            _.times(typeOfBuffs.length, function (n) {
+              worker.ai.inventory = worker.ai.inventory.concat(
+                gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
+              );
+            });
             var numMinions = Math.floor(
               model.gwaioDifficultySettings.mandatoryMinions() +
                 worker.star.distance() *
@@ -1037,15 +1033,13 @@ requireGW(
                 }
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
-                if (foeCommander.hiveFaction === true)
+                if (foeCommander.faction === 4)
                   foeCommander.inventory = gwaioTech.hiveCommanders;
-                else {
-                  _.times(typeOfBuffs.length, function (n) {
-                    foeCommander.inventory = foeCommander.inventory.concat(
-                      gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
-                    );
-                  });
-                }
+                _.times(typeOfBuffs.length, function (n) {
+                  foeCommander.inventory = foeCommander.inventory.concat(
+                    gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
+                  );
+                });
                 foeCommander.color = foeCommander.color || worker.ai.color;
                 foeCommander.commanderCount = numFoes;
                 worker.ai.foes.push(foeCommander);
