@@ -48,7 +48,10 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
-          inventory.minions = _.map(context.minions);
+          // eslint-disable-next-line lodash/prefer-map
+          _.forEach(context.minions, function (minion) {
+            inventory.minions.push(minion);
+          });
           var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
           inventory.addUnits(minionSpecs);
         }

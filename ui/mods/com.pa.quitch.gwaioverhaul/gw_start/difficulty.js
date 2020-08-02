@@ -259,7 +259,7 @@ requireGW(
         goForKill: false,
         microType: 0,
         mandatoryMinions: 0,
-        minionMod: 0.24,
+        minionMod: 0.19,
         priority_scout_metal_spots: false,
         useEasierSystemTemplate: true,
         factory_build_delay_min: 0,
@@ -286,7 +286,7 @@ requireGW(
         goForKill: false,
         microType: 1,
         mandatoryMinions: 0,
-        minionMod: 0.28,
+        minionMod: 0.24,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -314,7 +314,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 0.33,
+        minionMod: 0.28,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -342,7 +342,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 0.4,
+        minionMod: 0.34,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -370,7 +370,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: 0,
-        minionMod: 0.49,
+        minionMod: 0.44,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -581,6 +581,7 @@ requireGW(
     /* Start of GWAIO implementation of GWDealer */
     if (model.gwaioNewStartCards)
       model.gwaioNewStartCards.push(
+        { id: "gwc_start_storage" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -592,6 +593,7 @@ requireGW(
       );
     else
       model.gwaioNewStartCards = [
+        { id: "gwc_start_storage" },
         { id: "gwaio_start_ceo" },
         { id: "gwaio_start_paratrooper" },
         { id: "nem_start_deepspace" },
@@ -619,6 +621,7 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwc_start_storage",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -638,6 +641,7 @@ requireGW(
         "gwc_start_subcdr",
         "gwc_start_combatcdr",
         "gwc_start_allfactory",
+        "gwc_start_storage",
         "gwaio_start_ceo",
         "gwaio_start_paratrooper",
         "nem_start_deepspace",
@@ -1027,6 +1031,7 @@ requireGW(
         // Replacement for GWDealer.dealBossCards
         if (model.gwaioTreasureCards)
           model.gwaioTreasureCards.push(
+            { id: "gwc_start_storage" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -1038,6 +1043,7 @@ requireGW(
           );
         else
           model.gwaioTreasureCards = [
+            { id: "gwc_start_storage" },
             { id: "gwc_start_air" },
             { id: "gwc_start_orbital" },
             { id: "gwc_start_bot" },
@@ -1058,13 +1064,16 @@ requireGW(
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
           card
         ) {
-          return !gwaioBank.hasStartCard(card);
+          if (!GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card))
+            return card;
         });
+        console.log("Locked", lockedStartCards);
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
           treasurePlanetCard = treasurePlanetCard.id;
           treasurePlanetSetup = false;
         }
+        console.log("Treasure", treasurePlanetCard);
 
         var n = 0;
         gw_intro_systems = _.shuffle(gw_intro_systems);

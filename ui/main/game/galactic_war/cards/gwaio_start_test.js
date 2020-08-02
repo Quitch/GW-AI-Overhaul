@@ -11,12 +11,13 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
-    describe: _.constant("!LOC:Trying out new ideas."),
+    describe: _.constant("!LOC:Testing loadouts."),
     hint: function () {
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Test Commander",
+        description:
+          "!LOC:If you can see this, Quitch forgot to remove the Test Commander from the release version.",
       };
     },
     deal: function () {
@@ -29,7 +30,6 @@ define([
     },
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
@@ -159,13 +159,11 @@ define([
           });
           inventory.addMods(mods);
         } else {
-          // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        // Don't clog up a slot.
         inventory.maxCards(inventory.maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }

@@ -31,7 +31,6 @@ define([
     },
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
@@ -149,13 +148,11 @@ define([
           _.forEach(units_with_splash, modUnitSplash);
           inventory.addMods(mods);
         } else {
-          // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        // Don't clog up a slot.
         inventory.maxCards(inventory.maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }
@@ -164,7 +161,6 @@ define([
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
-          // Perform dulls here
           inventory.setTag("", "buffCount", undefined);
         }
       }
