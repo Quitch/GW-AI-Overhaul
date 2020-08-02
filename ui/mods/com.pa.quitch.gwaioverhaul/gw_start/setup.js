@@ -687,6 +687,7 @@ requireGW(
     };
     /* end of GWAIO implementation of GWDealer */
 
+    // gw_start.js
     model.makeGame = function () {
       model.newGame(undefined);
 
