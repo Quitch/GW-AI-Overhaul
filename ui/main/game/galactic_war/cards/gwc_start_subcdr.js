@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "shared/gw_factions",
   "cards/gwc_start",
-], function (module, GW, GWFactions, GWCStart) {
+  "cards/gwaio_faction_hive",
+], function (module, GW, GWFactions, GWCStart, gwaioFactionHive) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -43,6 +44,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          if (localStorage.getItem("gwaio_player_faction") === "4")
+            gwaioFactionHive.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 1);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",

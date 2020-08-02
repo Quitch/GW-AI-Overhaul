@@ -8,20 +8,13 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Air Commander"),
+    summarize: _.constant("!LOC:Vehicle Commander"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:The Air Commander loadout contains basic air factories."
+      "!LOC:The Vehicle Commander loadout contains basic vehicle factories."
     ),
-    hint: function () {
-      return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Air Commander",
-      };
-    },
     deal: function () {
       return {
         params: {
@@ -39,12 +32,12 @@ define([
           if (localStorage.getItem("gwaio_player_faction") === "4")
             gwaioFactionHive.buff(inventory);
           inventory.addUnits([
-            "/pa/units/air/air_factory/air_factory.json",
-            "/pa/units/air/air_scout/air_scout.json",
-            "/pa/units/air/bomber/bomber.json",
-            "/pa/units/air/fighter/fighter.json",
-            "/pa/units/air/transport/transport.json",
-            "/pa/units/air/solar_drone/solar_drone.json",
+            "/pa/units/land/vehicle_factory/vehicle_factory.json",
+            "/pa/units/land/tank_light_laser/tank_light_laser.json",
+            "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+            "/pa/units/land/tank_armor/tank_armor.json",
+            "/pa/units/land/tank_hover/tank_hover.json",
+            "/pa/units/land/attack_vehicle/attack_vehicle.json",
           ]);
         } else {
           // Don't clog up a slot.

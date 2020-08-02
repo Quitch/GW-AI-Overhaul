@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-], function (module, GW, GWCStart, GWCStorage) {
+  "cards/gwaio_faction_hive",
+], function (module, GW, GWCStart, GWCStorage, gwaioFactionHive) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,6 +35,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          if (localStorage.getItem("gwaio_player_faction") === "4")
+            gwaioFactionHive.buff(inventory);
           GWCStorage.buff(inventory);
         } else {
           // Don't clog up a slot.

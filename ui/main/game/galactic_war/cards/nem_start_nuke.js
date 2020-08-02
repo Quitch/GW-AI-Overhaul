@@ -2,7 +2,8 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-], function (module, GWCStart, gwaioBank) {
+  "cards/gwaio_faction_hive",
+], function (module, GWCStart, gwaioBank, gwaioFactionHive) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,6 +35,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          if (localStorage.getItem("gwaio_player_faction") === "4")
+            gwaioFactionHive.buff(inventory);
           inventory.addUnits([
             "/pa/units/land/nuke_launcher/nuke_launcher.json",
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
