@@ -1002,7 +1002,6 @@ requireGW(
                   Math.floor(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
-                minion.color = minion.color || worker.ai.color;
                 worker.ai.minions.push(minion);
               } else if (worker.ai.name === "Worker")
                 worker.ai.commanderCount =
@@ -1015,7 +1014,6 @@ requireGW(
                 _.times(numMinions, function () {
                   minion = _.sample(GWFactions[info.faction].minions);
                   setAIData(minion, dist, false);
-                  minion.color = minion.color || worker.ai.color;
                   worker.ai.minions.push(minion);
                 });
               }
@@ -1047,7 +1045,6 @@ requireGW(
                     gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
                   );
                 });
-                foeCommander.color = foeCommander.color || worker.ai.color;
                 foeCommander.commanderCount = numFoes;
                 worker.ai.foes.push(foeCommander);
               }
