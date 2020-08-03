@@ -72,7 +72,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Uber",
         color: [
-          [102, 255, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -119,7 +119,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Platinum",
         color: [
-          [0, 255, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -166,7 +166,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Gold",
         color: [
-          [0, 204, 204],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -212,7 +212,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Defender",
         color: [
-          [0, 153, 153],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -259,7 +259,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Luddite",
         color: [
-          [153, 204, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -306,7 +306,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Technologist",
         color: [
-          [102, 178, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -353,7 +353,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Cautious",
         color: [
-          [51, 153, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -400,7 +400,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Aggressive",
         color: [
-          [0, 128, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -447,7 +447,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Rush",
         color: [
-          [0, 102, 204],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -494,7 +494,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Turtle",
         color: [
-          [0, 76, 153],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -540,7 +540,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Original",
         color: [
-          [0, 0, 153],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -586,7 +586,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Absurd",
         color: [
-          [0, 0, 204],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -633,7 +633,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Relentless",
         color: [
-          [0, 0, 225],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -680,7 +680,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Swarm",
         color: [
-          [51, 51, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -727,7 +727,7 @@ define([], function () {
         name: "!LOC:Worker",
         character: "!LOC:Economist",
         color: [
-          [204, 229, 255],
+          [142, 107, 68],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -774,7 +774,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Uber",
         color: [
-          [102, 255, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -822,7 +822,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Platinum",
         color: [
-          [0, 255, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -870,7 +870,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Gold",
         color: [
-          [0, 204, 204],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -917,7 +917,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Defender",
         color: [
-          [0, 153, 153],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -965,7 +965,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Luddite",
         color: [
-          [153, 204, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1013,7 +1013,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Technologist",
         color: [
-          [102, 178, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1061,7 +1061,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Cautious",
         color: [
-          [51, 153, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1109,7 +1109,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Aggressive",
         color: [
-          [0, 128, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1157,7 +1157,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Rush",
         color: [
-          [0, 102, 204],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1205,7 +1205,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Turtle",
         color: [
-          [0, 76, 153],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1252,7 +1252,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Original",
         color: [
-          [0, 0, 153],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1299,7 +1299,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Absurd",
         color: [
-          [0, 0, 204],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1347,7 +1347,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Relentless",
         color: [
-          [0, 0, 225],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1395,7 +1395,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Swarm",
         color: [
-          [51, 51, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
@@ -1443,7 +1443,7 @@ define([], function () {
         name: "!LOC:Security",
         character: "!LOC:Economist",
         color: [
-          [204, 229, 255],
+          [70, 70, 70],
           [192, 192, 192],
         ],
         econ_rate: 1,
