@@ -75,6 +75,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -122,6 +123,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -169,6 +171,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.34,
@@ -215,6 +218,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.26,
@@ -262,6 +266,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.25,
@@ -309,6 +314,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.25,
@@ -356,6 +362,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.25,
@@ -403,6 +410,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.25,
@@ -450,6 +458,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -497,6 +506,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.9,
@@ -543,6 +553,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.27,
@@ -589,6 +600,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -636,6 +648,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -683,6 +696,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.26,
@@ -730,6 +744,7 @@ define([], function () {
           [142, 107, 68],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.26,
@@ -777,6 +792,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -825,6 +841,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.05,
@@ -873,6 +890,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.34,
@@ -920,6 +938,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -968,6 +987,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.75,
@@ -1016,6 +1036,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.75,
@@ -1064,6 +1085,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.75,
@@ -1112,6 +1134,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.75,
@@ -1160,6 +1183,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0,
@@ -1208,6 +1232,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.9,
@@ -1255,6 +1280,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.27,
@@ -1302,6 +1328,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -1350,6 +1377,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -1398,6 +1426,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
@@ -1446,6 +1475,7 @@ define([], function () {
           [70, 70, 70],
           [192, 192, 192],
         ],
+        isCluster: true,
         econ_rate: 1,
         personality: {
           percent_open_vehicle: 0.47,
