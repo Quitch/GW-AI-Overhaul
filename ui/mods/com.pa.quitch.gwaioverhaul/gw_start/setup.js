@@ -940,11 +940,7 @@ requireGW(
                     name: "Soldier",
                   })
                 );
-                bossMinion.commanderCount =
-                  numMinions +
-                  Math.floor(
-                    model.gwaioDifficultySettings.bossCommanders() / 2
-                  );
+                bossMinion.commanderCount = numMinions;
                 setAIData(bossMinion, maxDist, true);
                 info.boss.minions.push(bossMinion);
               } else
