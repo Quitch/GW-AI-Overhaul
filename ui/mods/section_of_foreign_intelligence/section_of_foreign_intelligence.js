@@ -1,5 +1,4 @@
 // Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
-
 (function () {
   var url =
     "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
