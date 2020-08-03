@@ -854,7 +854,7 @@ requireGW(
           0
         );
 
-        var setAIData = function (ai, dist, isBoss) {
+        var setAIData = function (ai, dist, isBossSystem, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
@@ -872,11 +872,13 @@ requireGW(
           )
             ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
           else delete ai.personality.starting_location_evaluation_radius;
-          if (isBoss) {
+          if (isBossSystem) {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
               maxDist * model.gwaioDifficultySettings.econRatePerDist();
-            ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+            if (isBoss) {
+              ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+            }
           } else {
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
@@ -911,7 +913,7 @@ requireGW(
         _.forEach(teamInfo, function (info) {
           // Setup boss system
           if (info.boss) {
-            setAIData(info.boss, maxDist, true);
+            setAIData(info.boss, maxDist, true, true);
             if (info.boss.isHive === true)
               info.boss.inventory = aiInventory.concat(
                 gwaioTech.hiveCommanders,
@@ -941,12 +943,12 @@ requireGW(
                   })
                 );
                 bossMinion.commanderCount = numMinions;
-                setAIData(bossMinion, maxDist, true);
+                setAIData(bossMinion, maxDist, true, false);
                 info.boss.minions.push(bossMinion);
               } else
                 _.times(numMinions, function () {
                   bossMinion = _.sample(GWFactions[info.faction].minions);
-                  setAIData(bossMinion, maxDist, true);
+                  setAIData(bossMinion, maxDist, true, false);
                   info.boss.minions.push(bossMinion);
                 });
             }
