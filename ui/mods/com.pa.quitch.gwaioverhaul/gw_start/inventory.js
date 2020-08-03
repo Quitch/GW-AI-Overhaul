@@ -261,14 +261,14 @@ define({
     "/pa/units/orbital/orbital_factory/orbital_factory_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   ],
-  hiveCommanders: [
+  clusterCommanders: [
     "/pa/units/air/support_platform/support_platform.json",
     "/pa/units/land/bot_support_commander/bot_support_commander.json",
   ],
-  hiveCommanderAmmo: [
+  clusterCommanderAmmo: [
     "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
   ],
-  hiveUnits: [
+  clusterUnits: [
     "/pa/units/air/air_factory/air_factory.json",
     "/pa/units/air/air_scout/air_scout.json",
     "/pa/units/air/bomber/bomber.json",
@@ -319,7 +319,7 @@ define({
     "/pa/units/sea/sea_scout/sea_scout.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   ],
-  hiveUnitsAir: [
+  clusterUnitsAir: [
     "/pa/units/air/air_factory/air_factory.json",
     "/pa/units/air/air_scout/air_scout.json",
     "/pa/units/air/bomber/bomber.json",
@@ -328,7 +328,7 @@ define({
     "/pa/units/air/solar_drone/solar_drone.json",
     "/pa/units/air/transport/transport.json",
   ],
-  hiveUnitsNoAir: [
+  clusterUnitsNoAir: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
     "/pa/units/land/air_defense/air_defense.json",
     "/pa/units/land/artillery_short/artillery_short.json",
@@ -373,13 +373,13 @@ define({
     "/pa/units/sea/sea_scout/sea_scout.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   ],
-  hiveWeapons: [
+  clusterWeapons: [
     "/pa/units/air/bomber/bomber_tool_weapon.json",
     "/pa/units/air/solar_drone/solar_drone_tool_weapon.json",
     "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
     "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
   ],
-  hiveAmmo: [
+  clusterAmmo: [
     "/pa/units/air/bomber/bomber_ammo.json",
     "/pa/units/air/fighter/fighter_ammo.json",
     "/pa/units/air/solar_drone/solar_drone_ammo.json",
@@ -408,7 +408,7 @@ define({
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_water.json",
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   ],
-  hiveBuildArms: [
+  clusterBuildArms: [
     "/pa/units/land/bot_factory/bot_factory_build_arm.json",
     "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
     "/pa/units/land/fabrication_bot/fabrication_bot_build_arm.json",
