@@ -912,7 +912,7 @@ requireGW(
           // Setup boss system
           if (info.boss) {
             setAIData(info.boss, maxDist, true);
-            if (info.boss.faction === 4)
+            if (info.boss.isHive === true)
               info.boss.inventory = aiInventory.concat(
                 gwaioTech.hiveCommanders,
                 bossInventory,
@@ -935,7 +935,7 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function () {
-                if (info.boss.faction === 4)
+                if (info.boss.isHive === true)
                   var bossMinion = _.sample(
                     _.filter(GWFactions[info.faction].minions, {
                       name: "Soldier",
@@ -950,7 +950,7 @@ requireGW(
 
           // Setup non-boss AI system
           _.forEach(info.workers, function (worker) {
-            if (worker.ai.faction === 4)
+            if (worker.ai.isHive === true)
               worker.ai.inventory = aiInventory.concat(
                 gwaioTech.hiveCommanders,
                 hiveCommanderInventory
@@ -1037,7 +1037,7 @@ requireGW(
                 }
                 setAIData(foeCommander, dist, false);
                 foeCommander.inventory = [];
-                if (foeCommander.faction === 4)
+                if (foeCommander.isHive === true)
                   foeCommander.inventory = gwaioTech.hiveCommanders;
                 _.times(typeOfBuffs.length, function (n) {
                   foeCommander.inventory = foeCommander.inventory.concat(

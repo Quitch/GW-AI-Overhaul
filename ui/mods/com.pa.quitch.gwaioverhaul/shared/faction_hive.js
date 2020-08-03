@@ -11,6 +11,7 @@ define([], function () {
         boss: {
           name: "Mainframe",
           character: "!LOC:Boss",
+          isHive: true,
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -71,6 +72,7 @@ define([], function () {
         // Absurd
         name: "Worker",
         character: "!LOC:Absurd",
+        isHive: true,
         color: [
           [142, 107, 68],
           [192, 192, 192],
@@ -119,6 +121,7 @@ define([], function () {
         // Absurd
         name: "Soldier",
         character: "!LOC:Absurd",
+        isHive: true,
         color: [
           [70, 70, 70],
           [192, 192, 192],
