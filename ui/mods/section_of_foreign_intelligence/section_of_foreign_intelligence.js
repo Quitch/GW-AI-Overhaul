@@ -65,7 +65,7 @@
       eco = eco * ((commanders + 1) / 2);
     }
     return {
-      name: loc(name),
+      name: name,
       threat: loc(threat(eco)), // + commander.econ_rate.toPrecision(2),
       color: rgb((commander.color && commander.color[0]) || [255, 255, 255]),
       character: loc(commander.character),

@@ -945,7 +945,7 @@ requireGW(
               if (info.boss.isCluster === true) {
                 var bossMinion = _.sample(
                   _.filter(GWFactions[info.faction].minions, {
-                    name: "!LOC:Security",
+                    name: "Security",
                   })
                 );
                 setAIData(bossMinion, maxDist, true, false);
@@ -1010,10 +1010,10 @@ requireGW(
             );
             if (numMinions > 0) {
               worker.ai.minions = [];
-              if (worker.ai.name === "!LOC:Security") {
+              if (worker.ai.name === "Security") {
                 var minion = _.sample(
                   _.filter(GWFactions[info.faction].minions, {
-                    name: "!LOC:Worker",
+                    name: "Worker",
                   })
                 );
                 setAIData(minion, dist, false, false);
@@ -1023,7 +1023,7 @@ requireGW(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
                 worker.ai.minions.push(minion);
-              } else if (worker.ai.name === "!LOC:Worker")
+              } else if (worker.ai.name === "Worker")
                 worker.ai.commanderCount =
                   numMinions +
                   Math.floor(
@@ -1050,7 +1050,7 @@ requireGW(
                 var foeFaction = availableFactions.splice(0, 1);
                 var foeCommander = _.sample(GWFactions[foeFaction].minions);
                 var numFoes = Math.round((numMinions + 1) / 2);
-                if (foeCommander.name === "!LOC:Worker") {
+                if (foeCommander.name === "Worker") {
                   numFoes += Math.floor(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
