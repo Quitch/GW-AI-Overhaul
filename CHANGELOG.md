@@ -5,6 +5,7 @@
 - Planetary Intelligence now shows the number of commanders in a shared army configuration
 - The system's Threat Level now factors in shared armies
 - Ensured armies always have the correct number of commanders
+- Added a small variance to each enemy's eco
 
 ## v4.1.0 - 2020-08-02
 

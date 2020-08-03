@@ -854,6 +854,10 @@ requireGW(
           0
         );
 
+        function getRandomArbitrary(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
         var setAIData = function (ai, dist, isBossSystem, isBoss) {
           if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
@@ -874,15 +878,17 @@ requireGW(
           else delete ai.personality.starting_location_evaluation_radius;
           if (isBossSystem) {
             ai.econ_rate =
-              model.gwaioDifficultySettings.econBase() +
-              maxDist * model.gwaioDifficultySettings.econRatePerDist();
+              (model.gwaioDifficultySettings.econBase() +
+                maxDist * model.gwaioDifficultySettings.econRatePerDist()) *
+              getRandomArbitrary(0.9, 1.1);
             if (isBoss) {
               ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
             }
           } else {
             ai.econ_rate =
-              model.gwaioDifficultySettings.econBase() +
-              dist * model.gwaioDifficultySettings.econRatePerDist();
+              (model.gwaioDifficultySettings.econBase() +
+                dist * model.gwaioDifficultySettings.econRatePerDist()) *
+              getRandomArbitrary(0.9, 1.1);
           }
           if (!isBoss) ai.commanderCount = 1;
           ai.treasurePlanet = false;
