@@ -1062,7 +1062,7 @@ requireGW(
               }
             });
             // prettier-ignore
-            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(2), "| Count:", worker.ai.bossCommanders, "| Dist:", dist)
+            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(2), "| Count:", worker.ai.commanderCount, "| Dist:", dist)
             if (worker.ai.minions) {
               _.times(worker.ai.minions.length, function (n) {
                 // prettier-ignore
