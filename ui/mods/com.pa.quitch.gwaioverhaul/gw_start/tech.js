@@ -344,6 +344,19 @@ define([
       value: "/pa/tools/commander_build_arm/commander_build_arm.json",
     },
     {
+      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      path: "unit_types",
+      op: "replace",
+      value: [
+        "UNITTYPE_Commander",
+        "UNITTYPE_Construction",
+        "UNITTYPE_Mobile",
+        "UNITTYPE_Offense",
+        "UNITTYPE_Land",
+        "UNITTYPE_NoBuild",
+      ],
+    },
+    {
       file: "/pa/units/air/support_platform/support_platform.json",
       path: "buildable_types",
       op: "replace",
@@ -381,6 +394,19 @@ define([
       path: "transportable.size",
       op: "replace",
       value: 1,
+    },
+    {
+      file: "/pa/units/air/support_platform/support_platform.json",
+      path: "unit_types",
+      op: "replace",
+      value: [
+        "UNITTYPE_Commander",
+        "UNITTYPE_Construction",
+        "UNITTYPE_Mobile",
+        "UNITTYPE_Land", // if you don't have Land then the AI won't work right
+        "UNITTYPE_Air",
+        "UNITTYPE_NoBuild",
+      ],
     },
   ];
   inventory.clusterCommanders.forEach(function (unit) {
@@ -450,19 +476,6 @@ define([
             radius: 1,
             shape: "sphere",
           },
-        ],
-      },
-      {
-        file: unit,
-        path: "unit_types",
-        op: "replace",
-        value: [
-          "UNITTYPE_Commander",
-          "UNITTYPE_Construction",
-          "UNITTYPE_Mobile",
-          "UNITTYPE_Offense",
-          "UNITTYPE_Land", // if you use Air then the AI won't work right
-          "UNITTYPE_NoBuild",
         ],
       }
     );
