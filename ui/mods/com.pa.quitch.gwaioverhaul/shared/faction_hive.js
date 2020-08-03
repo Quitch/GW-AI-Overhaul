@@ -9,7 +9,7 @@ define([], function () {
       {
         name: "Alenquer - Cluster",
         boss: {
-          name: "Mainframe",
+          name: "LOC:Node",
           character: "!LOC:Boss",
           isCluster: true,
           econ_rate: 1,
@@ -69,7 +69,7 @@ define([], function () {
     ], // teams
     minions: [
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Uber",
         color: [
           [102, 255, 255],
@@ -116,7 +116,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Platinum",
         color: [
           [0, 255, 255],
@@ -163,7 +163,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Gold",
         color: [
           [0, 204, 204],
@@ -209,7 +209,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Defender",
         color: [
           [0, 153, 153],
@@ -256,7 +256,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Luddite",
         color: [
           [153, 204, 255],
@@ -302,7 +302,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Technologist",
         color: [
           [102, 178, 255],
@@ -348,7 +348,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Cautious",
         color: [
           [51, 153, 255],
@@ -394,7 +394,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Aggressive",
         color: [
           [0, 128, 255],
@@ -440,7 +440,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Rush",
         color: [
           [0, 102, 204],
@@ -487,7 +487,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Turtle",
         color: [
           [0, 76, 153],
@@ -533,7 +533,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Original",
         color: [
           [0, 0, 153],
@@ -579,7 +579,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Absurd",
         color: [
           [0, 0, 204],
@@ -626,7 +626,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Relentless",
         color: [
           [0, 0, 225],
@@ -673,7 +673,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Swarm",
         color: [
           [51, 51, 255],
@@ -720,7 +720,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Worker",
+        name: "LOC:Worker",
         character: "!LOC:Economist",
         color: [
           [204, 229, 255],
@@ -767,7 +767,7 @@ define([], function () {
         commander: "/pa/units/air/support_platform/support_platform.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Uber",
         color: [
           [102, 255, 255],
@@ -815,7 +815,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Platinum",
         color: [
           [0, 255, 255],
@@ -863,7 +863,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Gold",
         color: [
           [0, 204, 204],
@@ -910,7 +910,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Defender",
         color: [
           [0, 153, 153],
@@ -958,7 +958,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Luddite",
         color: [
           [153, 204, 255],
@@ -1005,7 +1005,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Technologist",
         color: [
           [102, 178, 255],
@@ -1052,7 +1052,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Cautious",
         color: [
           [51, 153, 255],
@@ -1099,7 +1099,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Aggressive",
         color: [
           [0, 128, 255],
@@ -1146,7 +1146,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Rush",
         color: [
           [0, 102, 204],
@@ -1194,7 +1194,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Turtle",
         color: [
           [0, 76, 153],
@@ -1241,7 +1241,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Original",
         color: [
           [0, 0, 153],
@@ -1288,7 +1288,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Absurd",
         color: [
           [0, 0, 204],
@@ -1336,7 +1336,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Relentless",
         color: [
           [0, 0, 225],
@@ -1384,7 +1384,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Swarm",
         color: [
           [51, 51, 255],
@@ -1432,7 +1432,7 @@ define([], function () {
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
       {
-        name: "Soldier",
+        name: "LOC:Security",
         character: "!LOC:Economist",
         color: [
           [204, 229, 255],
