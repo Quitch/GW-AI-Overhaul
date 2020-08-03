@@ -1010,7 +1010,6 @@ requireGW(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
               else {
-                worker.ai.minions = [];
                 _.times(numMinions, function () {
                   minion = _.sample(GWFactions[info.faction].minions);
                   setAIData(minion, dist, false);
