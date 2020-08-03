@@ -884,6 +884,7 @@ requireGW(
               model.gwaioDifficultySettings.econBase() +
               dist * model.gwaioDifficultySettings.econRatePerDist();
           }
+          if (!isBoss) ai.commanderCount = 1;
           ai.treasurePlanet = false;
           ai.mirrorMode = false;
           ai.landAnywhere = false;
@@ -970,7 +971,7 @@ requireGW(
               );
             else worker.ai.inventory = aiInventory;
             var dist = worker.star.distance();
-            setAIData(worker.ai, dist, false);
+            setAIData(worker.ai, dist, false, false);
             if (
               Math.random() * 100 <=
               model.gwaioDifficultySettings.landAnywhereChance()
@@ -1009,7 +1010,7 @@ requireGW(
                     name: "Worker",
                   })
                 );
-                setAIData(minion, dist, false);
+                setAIData(minion, dist, false, false);
                 minion.commanderCount =
                   numMinions +
                   Math.floor(
@@ -1025,7 +1026,7 @@ requireGW(
               else {
                 _.times(numMinions, function () {
                   minion = _.sample(GWFactions[info.faction].minions);
-                  setAIData(minion, dist, false);
+                  setAIData(minion, dist, false, false);
                   worker.ai.minions.push(minion);
                 });
               }
@@ -1048,7 +1049,7 @@ requireGW(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
                 }
-                setAIData(foeCommander, dist, false);
+                setAIData(foeCommander, dist, false, false);
                 foeCommander.inventory = [];
                 if (foeCommander.isHive === true)
                   foeCommander.inventory = gwaioTech.hiveCommanders;
