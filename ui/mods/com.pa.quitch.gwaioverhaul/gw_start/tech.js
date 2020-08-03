@@ -335,7 +335,7 @@ define([
     );
   });
 
-  // Faction setup
+  // Faction specific setup
   var clusterCommanderTech = [
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",

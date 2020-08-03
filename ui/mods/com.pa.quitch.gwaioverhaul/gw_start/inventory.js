@@ -261,13 +261,6 @@ define({
     "/pa/units/orbital/orbital_factory/orbital_factory_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   ],
-  clusterCommanders: [
-    "/pa/units/air/support_platform/support_platform.json",
-    "/pa/units/land/bot_support_commander/bot_support_commander.json",
-  ],
-  clusterCommanderAmmo: [
-    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
-  ],
   clusterUnits: [
     "/pa/units/air/air_factory/air_factory.json",
     "/pa/units/air/air_scout/air_scout.json",
@@ -421,5 +414,13 @@ define({
     "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
+  ],
+  // Faction specific setup
+  clusterCommanders: [
+    "/pa/units/air/support_platform/support_platform.json",
+    "/pa/units/land/bot_support_commander/bot_support_commander.json",
+  ],
+  clusterCommanderAmmo: [
+    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
   ],
 });
