@@ -883,7 +883,6 @@ requireGW(
             ai.econ_rate =
               model.gwaioDifficultySettings.econBase() +
               dist * model.gwaioDifficultySettings.econRatePerDist();
-            delete ai.bossCommanders;
           }
           ai.treasurePlanet = false;
           ai.mirrorMode = false;
@@ -942,8 +941,8 @@ requireGW(
                     name: "Soldier",
                   })
                 );
-                bossMinion.commanderCount = numMinions;
                 setAIData(bossMinion, maxDist, true, false);
+                bossMinion.commanderCount = numMinions;
                 info.boss.minions.push(bossMinion);
               } else
                 _.times(numMinions, function () {
