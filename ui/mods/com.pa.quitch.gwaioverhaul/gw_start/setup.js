@@ -934,16 +934,27 @@ requireGW(
             );
             if (numMinions > 0) {
               info.boss.minions = [];
-              _.times(numMinions, function () {
-                if (info.boss.isHive === true)
-                  var bossMinion = _.sample(
-                    _.filter(GWFactions[info.faction].minions, {
-                      name: "Soldier",
-                    })
-                  );
-                else bossMinion = _.sample(GWFactions[info.faction].minions);
+              if (info.boss.isHive === true) {
+                var bossMinion = _.sample(
+                  _.filter(GWFactions[info.faction].minions, {
+                    name: "Soldier",
+                  })
+                );
                 setAIData(bossMinion, maxDist, true);
                 info.boss.minions.push(bossMinion);
+              } else
+                _.times(numMinions, function () {
+                  bossMinion = _.sample(GWFactions[info.faction].minions);
+                  setAIData(bossMinion, maxDist, true);
+                  info.boss.minions.push(bossMinion);
+                });
+            }
+            // prettier-ignore
+            console.log("BOSS", info.boss.name, "Faction", info.boss.faction, "Eco", info.boss.econ_rate, "Count", info.boss.bossCommanders, "Dist", maxDist)
+            if (info.boss.minions) {
+              _.times(info.boss.minions.length, function (n) {
+                // prettier-ignore
+                console.log("Minion", info.boss.minions[n].name, "Eco", info.boss.minions[n].econ_rate, "Count", info.boss.minions[n].commanderCount)
               });
             }
           }
@@ -1048,6 +1059,20 @@ requireGW(
                 worker.ai.foes.push(foeCommander);
               }
             });
+            // prettier-ignore
+            console.log("WORKER", worker.ai.name, "Faction", worker.ai.faction, "Eco", worker.ai.econ_rate, "Count", worker.ai.bossCommanders, "Dist", dist)
+            if (worker.ai.minions) {
+              _.times(worker.ai.minions.length, function (n) {
+                // prettier-ignore
+                console.log("Minion", worker.ai.minions[n].name, "Eco", worker.ai.minions[n].econ_rate, "Count", worker.ai.minions[n].commanderCount)
+              });
+            }
+            if (worker.ai.foes) {
+              _.times(worker.ai.foes.length, function (n) {
+                // prettier-ignore
+                console.log("Minion", worker.ai.foes[n].name, "Eco", worker.ai.foes[n].econ_rate, "Count", worker.ai.foes[n].commanderCount)
+              });
+            }
           });
         });
 
