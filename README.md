@@ -155,7 +155,16 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
 
-3. Add com.pa.quitch.gwaioverhaul as a dependency if you're not rolling your own card dealing solution
+3. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define functon
+
+4. Within the `if (!buffCount)` block add:
+
+   ```javascript
+   if (localStorage.getItem("gwaio_player_faction") === "4")
+     gwaioFactionCluster.buff(inventory);
+   ```
+
+5. Add com.pa.quitch.gwaioverhaul as a dependency
 
 ## FAQ
 
