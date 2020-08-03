@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Planetary Intelligence now shows the number of commanders in a shared army configuration
+
 ## v4.1.0 - 2020-08-02
 
 - Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs

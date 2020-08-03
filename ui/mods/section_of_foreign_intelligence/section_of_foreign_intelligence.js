@@ -46,8 +46,13 @@
   };
 
   var intelligence = function (commander) {
+    var name = commander.name;
+    if (commander.commanderCount > 1 || commander.bossCommanders)
+      name = commander.commanderCount
+        ? name.concat(" x", commander.commanderCount)
+        : name.concat(" x", commander.bossCommanders);
     return {
-      name: commander.name,
+      name: name,
       threat: loc(threat(commander.econ_rate)), // + commander.econ_rate.toPrecision(2),
       color: rgb((commander.color && commander.color[0]) || [255, 255, 255]),
       character: loc(commander.character),
