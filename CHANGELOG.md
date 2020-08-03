@@ -6,6 +6,7 @@
 - The system's Threat Level now factors in shared armies
 - Ensured armies always have the correct number of commanders
 - Added a small variance to each enemy's eco
+- Added a new faction called Cluster which you can fight as or against
 
 ## v4.1.0 - 2020-08-02
 

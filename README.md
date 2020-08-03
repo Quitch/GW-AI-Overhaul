@@ -31,6 +31,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Guaranteed loadout to unlock every war
 - New loadouts
 - Unlocks Galactic War's biggest planetary systems
+- Adds a new faction
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -110,7 +111,7 @@ These buffs are applied on a per-faction basis:
 - **Foundation**: air and naval units and factory structures
 - **Synchronous**: non-factory structures
 - **Revenants**: orbital units and structures
-- **Hive**: basic units
+- **Cluster**: basic units
 
 ### Commander Threat Scale
 
@@ -210,4 +211,4 @@ When the Synchronous have the speed bonus their defences will move to engage you
 - wondible, who continues to be amazing with his JavaScript support
 - PA Inc, for including official translations for the mod
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
-- wpmarshall, for the Hive faction logo
+- wpmarshall, for the Cluster faction logo
