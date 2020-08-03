@@ -1030,7 +1030,7 @@ requireGW(
                 var foeFaction = availableFactions.splice(0, 1);
                 var foeCommander = _.sample(GWFactions[foeFaction].minions);
                 var numFoes = Math.round((numMinions + 1) / 2);
-                if (_.startsWith(foeCommander.name, "Worker")) {
+                if (foeCommander.name === "Worker") {
                   numFoes += Math.floor(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
