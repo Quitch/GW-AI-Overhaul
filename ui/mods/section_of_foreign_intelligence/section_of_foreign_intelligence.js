@@ -47,13 +47,18 @@
 
   var intelligence = function (commander) {
     var name = commander.name;
-    if (commander.commanderCount > 1 || commander.bossCommanders)
-      name = commander.commanderCount
-        ? name.concat(" x", commander.commanderCount)
-        : name.concat(" x", commander.bossCommanders);
+    var eco = commander.econ_rate;
+    if (commander.commanderCount > 1 || commander.bossCommanders > 1)
+      var commanders = commander.commanderCount
+        ? commander.commanderCount
+        : commander.bossCommanders;
+    if (commanders) {
+      name = name.concat(" x", commanders);
+      eco = eco * ((commanders + 1) / 2);
+    }
     return {
       name: name,
-      threat: loc(threat(commander.econ_rate)), // + commander.econ_rate.toPrecision(2),
+      threat: loc(threat(eco)), // + commander.econ_rate.toPrecision(2),
       color: rgb((commander.color && commander.color[0]) || [255, 255, 255]),
       character: loc(commander.character),
     };
