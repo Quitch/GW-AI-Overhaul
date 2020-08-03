@@ -12,16 +12,16 @@ define([
     });
   };
   _.forEach(inventory.commanderUnits, modAIUnit);
-  var hiveCommanderArmourTech = [];
-  var modHiveCommander = function (unit) {
-    hiveCommanderArmourTech.push({
+  var clusterCommanderArmourTech = [];
+  var modClusterCommander = function (unit) {
+    clusterCommanderArmourTech.push({
       file: unit,
       path: "max_health",
       op: "multiply",
       value: 2,
     });
   };
-  _.forEach(inventory.hiveCommanders, modHiveCommander);
+  _.forEach(inventory.clusterCommanders, modClusterCommander);
 
   var commanderCombatTech = [];
   var modBossUnit = function (unit) {
@@ -70,9 +70,9 @@ define([
     );
   };
   _.forEach(inventory.commanderAmmo, modBossAmmo);
-  var hiveCommanderCombatTech = [];
-  var modHiveBossUnit = function (unit) {
-    hiveCommanderCombatTech.push(
+  var clusterCommanderCombatTech = [];
+  var modClusterBossUnit = function (unit) {
+    clusterCommanderCombatTech.push(
       {
         file: unit,
         path: "navigation.move_speed",
@@ -99,9 +99,9 @@ define([
       }
     );
   };
-  _.forEach(inventory.hiveCommanders, modHiveBossUnit);
-  var modHiveBossAmmo = function (ammo) {
-    hiveCommanderCombatTech.push(
+  _.forEach(inventory.clusterCommanders, modClusterBossUnit);
+  var modClusterBossAmmo = function (ammo) {
+    clusterCommanderCombatTech.push(
       {
         file: ammo,
         path: "damage",
@@ -116,28 +116,28 @@ define([
       }
     );
   };
-  _.forEach(inventory.hiveCommanderAmmo, modHiveBossAmmo);
+  _.forEach(inventory.clusterCommanderAmmo, modClusterBossAmmo);
 
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
   var synchronousTech = [];
   var revenantsTech = [];
-  var hiveTech = [];
+  var clusterTech = [];
 
   var factionsTech = [
     legonisTech,
     foundationTech,
     synchronousTech,
     revenantsTech,
-    hiveTech,
+    clusterTech,
   ];
-  var factionsTechAir = [foundationTech, hiveTech];
+  var factionsTechAir = [foundationTech, clusterTech];
   var factionsTechNoAir = [
     legonisTech,
     synchronousTech,
     revenantsTech,
-    hiveTech,
+    clusterTech,
   ];
 
   var factionUnits = [
@@ -145,35 +145,35 @@ define([
     inventory.foundationUnits,
     inventory.synchronousUnits,
     inventory.revenantsUnits,
-    inventory.hiveUnits,
+    inventory.clusterUnits,
   ];
-  var factionUnitsAir = [inventory.foundationUnits, inventory.hiveUnitsAir];
+  var factionUnitsAir = [inventory.foundationUnits, inventory.clusterUnitsAir];
   var factionUnitsNoAir = [
     inventory.legonisUnits,
     inventory.synchronousUnits,
     inventory.revenantsUnits,
-    inventory.hiveUnitsNoAir,
+    inventory.clusterUnitsNoAir,
   ];
   var factionWeapons = [
     inventory.legonisWeapons,
     inventory.foundationWeapons,
     inventory.synchronousWeapons,
     inventory.revenantsWeapons,
-    inventory.hiveWeapons,
+    inventory.clusterWeapons,
   ];
   var factionAmmo = [
     inventory.legonisAmmo,
     inventory.foundationAmmo,
     inventory.synchronousAmmo,
     inventory.revenantsAmmo,
-    inventory.hiveAmmo,
+    inventory.clusterAmmo,
   ];
   var factionBuildArms = [
     inventory.legonisBuildArms,
     inventory.foundationBuildArms,
     inventory.synchronousBuildArms,
     inventory.revenantsBuildArms,
-    inventory.hiveBuildArms,
+    inventory.clusterBuildArms,
   ];
 
   factionUnits.forEach(function (faction, i) {
@@ -336,7 +336,7 @@ define([
   });
 
   // Faction setup
-  var hiveCommanderTech = [
+  var clusterCommanderTech = [
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
       path: "tools.0.spec_id",
@@ -383,8 +383,8 @@ define([
       value: 1,
     },
   ];
-  inventory.hiveCommanders.forEach(function (unit) {
-    hiveCommanderTech.push(
+  inventory.clusterCommanders.forEach(function (unit) {
+    clusterCommanderTech.push(
       {
         file: unit,
         path: "build_metal_cost",
@@ -472,16 +472,16 @@ define([
     tougherCommander: [
       commanderArmourTech,
       commanderCombatTech,
-      hiveCommanderArmourTech,
-      hiveCommanderCombatTech,
+      clusterCommanderArmourTech,
+      clusterCommanderCombatTech,
     ],
     factionTechs: [
       legonisTech,
       foundationTech,
       synchronousTech,
       revenantsTech,
-      hiveTech,
+      clusterTech,
     ],
-    hiveCommanders: hiveCommanderTech,
+    clusterCommanders: clusterCommanderTech,
   };
 });

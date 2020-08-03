@@ -2,8 +2,8 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "cards/gwaio_faction_hive",
-], function (module, GWCStart, gwaioBank, gwaioFactionHive) {
+  "cards/gwaio_faction_cluster",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -36,7 +36,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (localStorage.getItem("gwaio_player_faction") === "4")
-            gwaioFactionHive.buff(inventory);
+            gwaioFactionCluster.buff(inventory);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",

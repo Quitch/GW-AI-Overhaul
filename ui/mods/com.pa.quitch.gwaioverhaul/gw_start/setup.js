@@ -902,16 +902,16 @@ requireGW(
         var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
         var aiInventory = [];
         var bossInventory = [];
-        var hiveCommanderInventory = [];
-        var hiveBossInventory = [];
+        var clusterCommanderInventory = [];
+        var clusterBossInventory = [];
 
         if (model.gwaioDifficultySettings.tougherCommanders()) {
           aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
           bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
-          hiveCommanderInventory = hiveCommanderInventory.concat(
+          clusterCommanderInventory = clusterCommanderInventory.concat(
             gwaioTech.tougherCommanders[2]
           );
-          hiveBossInventory = hiveBossInventory.concat(
+          clusterBossInventory = clusterBossInventory.concat(
             gwaioTech.toughrCommander[3]
           );
         }
@@ -922,10 +922,10 @@ requireGW(
             setAIData(info.boss, maxDist, true, true);
             if (info.boss.isCluster === true)
               info.boss.inventory = aiInventory.concat(
-                gwaioTech.hiveCommanders,
+                gwaioTech.clusterCommanders,
                 bossInventory,
-                hiveCommanderInventory,
-                hiveBossInventory
+                clusterCommanderInventory,
+                clusterBossInventory
               );
             else info.boss.inventory = aiInventory.concat(bossInventory);
             var numBuffs = Math.floor(maxDist / 2 - buffDelay);
@@ -972,8 +972,8 @@ requireGW(
           _.forEach(info.workers, function (worker) {
             if (worker.ai.isCluster === true)
               worker.ai.inventory = aiInventory.concat(
-                gwaioTech.hiveCommanders,
-                hiveCommanderInventory
+                gwaioTech.clusterCommanders,
+                clusterCommanderInventory
               );
             else worker.ai.inventory = aiInventory;
             var dist = worker.star.distance();
@@ -1058,7 +1058,7 @@ requireGW(
                 setAIData(foeCommander, dist, false, false);
                 foeCommander.inventory = [];
                 if (foeCommander.isCluster === true)
-                  foeCommander.inventory = gwaioTech.hiveCommanders;
+                  foeCommander.inventory = gwaioTech.clusterCommanders;
                 _.times(typeOfBuffs.length, function (n) {
                   foeCommander.inventory = foeCommander.inventory.concat(
                     gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
