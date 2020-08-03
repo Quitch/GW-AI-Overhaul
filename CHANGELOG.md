@@ -4,7 +4,7 @@
 
 - Planetary Intelligence now shows the number of commanders in a shared army configuration
 - The system's Threat Level now factors in shared armies
-- Ensured armies always have the correct number of commanders
+- Tried to ensure armies always have the correct number of commanders even after multiple galaxy generations
 - Added a small variance to each enemy's eco
 - Added a new faction called Cluster which you can fight as or against
 
