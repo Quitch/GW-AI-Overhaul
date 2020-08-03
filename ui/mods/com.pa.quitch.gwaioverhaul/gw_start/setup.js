@@ -935,10 +935,15 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               _.times(numMinions, function () {
-                var bossMinions = _.sample(GWFactions[info.faction].minions);
-                setAIData(bossMinions, maxDist, true);
-                bossMinions.color = bossMinions.color || info.boss.color;
-                info.boss.minions.push(bossMinions);
+                if (info.boss.faction === 4)
+                  var bossMinion = _.sample(
+                    _.filter(GWFactions[info.faction].minions, {
+                      name: "Soldier",
+                    })
+                  );
+                else bossMinion = _.sample(GWFactions[info.faction].minions);
+                setAIData(bossMinion, maxDist, true);
+                info.boss.minions.push(bossMinion);
               });
             }
           }
