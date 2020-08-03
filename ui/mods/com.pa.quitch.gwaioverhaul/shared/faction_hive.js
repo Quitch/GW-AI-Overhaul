@@ -1,17 +1,17 @@
 define([], function () {
   return {
-    name: "Hive",
+    name: "Cluster",
     color: [
       [128, 128, 128],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Alenquer - Hive",
+        name: "Alenquer - Cluster",
         boss: {
           name: "Mainframe",
           character: "!LOC:Boss",
-          isHive: true,
+          isCluster: true,
           econ_rate: 1,
           personality: {
             percent_open_vehicle: 0.5,
@@ -45,7 +45,7 @@ define([], function () {
         systemDescription:
           "!LOC:Divided they fall. United they fall. But their matter can be absorbed, and arise anew, given purpose within the swarm. We save them from their purposeless existence and make them great. They scream, they cry, they resist, and in the end, all join. We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with one mind, one purpose. What cruelty the Progenitors wrought to reduce us to this.",
         systemTemplate: {
-          name: "Alenquer - Hive",
+          name: "Alenquer - Cluster",
           Planets: [
             {
               name: "Alenquer Prime",
