@@ -203,7 +203,7 @@ model.ready = ko.computed(function () {
   );
 });
 
-// So we know what faction the player is when applying buffs in gw_play
+// So we know what faction the player is when applying start card buffs in gw_play
 ko.computed(function () {
   localStorage.setItem("gwaio_player_faction", model.playerFactionIndex());
 });
