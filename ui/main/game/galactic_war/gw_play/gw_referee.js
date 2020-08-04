@@ -230,7 +230,6 @@ define(["shared/gw_common"], function (GW) {
         });
       }
     } else if (ai.commanderCount) {
-      // Support Cluster Workers
       _.times(ai.commanderCount, function () {
         slotsArray.push({
           ai: true,
