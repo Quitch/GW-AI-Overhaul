@@ -1159,8 +1159,7 @@ requireGW(
         var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
           card
         ) {
-          if (!GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card))
-            return card;
+          return !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card);
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
