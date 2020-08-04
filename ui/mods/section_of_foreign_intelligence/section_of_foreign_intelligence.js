@@ -9,8 +9,6 @@
     ko.applyBindings(model, $fi[0]);
   });
 
-  // Faction Intelligence
-
   var threat = function (rate) {
     if (!rate) {
       return "!LOC:Unknown";
