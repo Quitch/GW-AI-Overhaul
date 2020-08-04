@@ -203,11 +203,6 @@ model.ready = ko.computed(function () {
   );
 });
 
-// So we know what faction the player is when applying start card buffs in gw_play
-ko.computed(function () {
-  localStorage.setItem("gwaio_player_faction", model.playerFactionIndex());
-});
-
 $("#game-difficulty-label").after(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_tooltip.html"

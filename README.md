@@ -160,7 +160,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 4. Within the `if (!buffCount)` block add:
 
    ```javascript
-   if (localStorage.getItem("gwaio_player_faction") === "4")
+   if (inventory.getTag("global", "playerFaction") === 4)
      gwaioFactionCluster.buff(inventory);
    ```
 

@@ -35,7 +35,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (localStorage.getItem("gwaio_player_faction") === "4")
+          if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
