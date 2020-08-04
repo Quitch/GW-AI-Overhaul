@@ -953,6 +953,7 @@ requireGW(
                   info.boss.minions.push(bossMinion);
                 });
             }
+            /*
             // prettier-ignore
             console.log("BOSS:", info.boss.name, "| Faction:", info.boss.faction, "| Eco:", info.boss.econ_rate.toPrecision(2), "| Count:", info.boss.bossCommanders, "| Dist:", maxDist)
             if (info.boss.minions) {
@@ -961,6 +962,7 @@ requireGW(
                 console.log("\tMinion:", info.boss.minions[n].name, "| Eco:", info.boss.minions[n].econ_rate.toPrecision(2), "| Count:", info.boss.minions[n].commanderCount)
               });
             }
+            */
           }
 
           // Setup non-boss AI system
@@ -1063,6 +1065,7 @@ requireGW(
                 worker.ai.foes.push(foeCommander);
               }
             });
+            /*
             // prettier-ignore
             console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(2), "| Count:", worker.ai.commanderCount, "| Dist:", dist)
             if (worker.ai.minions) {
@@ -1077,6 +1080,7 @@ requireGW(
                 console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(2), "| Count:", worker.ai.foes[n].commanderCount)
               });
             }
+            */
           });
         });
 
