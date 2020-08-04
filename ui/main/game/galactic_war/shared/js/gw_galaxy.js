@@ -247,7 +247,7 @@ define([
       // Generate the planets, increasing the size based on the distance from the start.
       var starGenerators = _.map(self.stars(), function (star) {
         return StarSystemTemplates.generate({
-          players: star.distance(), // GWAIO - don't scale according to maxDist
+          players: star.distance(), // GWAIO - don't adjust by maxDist
           seed: rng() * rng(),
         }).then(function (system) {
           star.system(system);
