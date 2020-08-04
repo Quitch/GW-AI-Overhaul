@@ -7,6 +7,7 @@
 - Tried to ensure armies always have the correct number of commanders even after multiple galaxy generations
 - Added a small variance to each enemy's eco
 - Added a new faction called Cluster which you can fight as or against
+- Fixed new loadouts being dealt as treasure more often than base game loadouts
 
 ## v4.1.0 - 2020-08-02
 
