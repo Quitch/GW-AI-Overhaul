@@ -1191,6 +1191,7 @@ requireGW(
                cardList existing in more than one location at a time */
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
+              delete ai.commanderCount;
               delete ai.minions;
               delete ai.foes;
               ai.mirrorMode = true;
