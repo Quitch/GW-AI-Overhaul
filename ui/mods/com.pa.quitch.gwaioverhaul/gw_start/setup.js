@@ -1164,7 +1164,7 @@ requireGW(
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
-          treasurePlanetCard = treasurePlanetCard.id;
+          _.extend(treasurePlanetCard, { allowOverflow: true });
           treasurePlanetSetup = false;
         }
 
@@ -1210,7 +1210,7 @@ requireGW(
                 "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
               system.description =
                 "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-              star.cardList().push(treasurePlanetCard);
+              star.cardList()[0] = treasurePlanetCard;
             }
           }
         });

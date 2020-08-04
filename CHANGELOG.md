@@ -8,6 +8,7 @@
 - Added a small variance to each enemy's eco
 - Added a new faction called Cluster which you can fight as or against
 - Fixed new loadouts being dealt as treasure more often than base game loadouts
+- Fixed discovered loadouts requiring you to have an open slot in your inventory before they'd unlock
 
 ## v4.1.0 - 2020-08-02
 
