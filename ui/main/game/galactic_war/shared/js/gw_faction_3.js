@@ -544,7 +544,6 @@ define([], function () {
     ], // teams
     minions: [
       {
-        // Orbital & Land
         name: "Seeker Betadyne",
         character: "!LOC:Space Invader",
         color: [
@@ -591,7 +590,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
       },
       {
-        // Orbital & Air
         name: "Seeker Centurion",
         character: "!LOC:Astronaut",
         color: [
@@ -639,7 +637,6 @@ define([], function () {
           "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
       },
       {
-        // Uber
         name: "Seeker Diremachine",
         character: "!LOC:Uber",
         color: [
@@ -688,7 +685,6 @@ define([], function () {
           "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
       },
       {
-        // Platinum
         name: "Seeker Enderstryke71",
         character: "!LOC:Platinum",
         color: [
@@ -737,7 +733,6 @@ define([], function () {
           "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
       },
       {
-        // Gold
         name: "Seeker Iwmiked",
         character: "!LOC:Gold",
         color: [
@@ -784,7 +779,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
       },
       {
-        // Structures
         name: "Seeker Majuju",
         character: "!LOC:Defender",
         color: [
@@ -832,7 +826,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
       },
       {
-        // Basic Tech
         name: "Seeker Nefelpitou",
         character: "!LOC:Luddite",
         color: [
@@ -880,7 +873,6 @@ define([], function () {
           "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
       },
       {
-        // Advanced Tech
         name: "Seeker Invictus",
         character: "!LOC:Technologist",
         color: [
@@ -928,7 +920,6 @@ define([], function () {
           "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
       },
       {
-        // Cautious
         name: "Seeker Rallus",
         character: "!LOC:Cautious",
         color: [
@@ -975,7 +966,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
       },
       {
-        // Aggressive
         name: "Seeker Stickman9000",
         character: "!LOC:Aggressive",
         color: [
@@ -1023,7 +1013,6 @@ define([], function () {
           "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
       },
       {
-        // Rush
         name: "Seeker Zaazzaa",
         character: "!LOC:Rush",
         color: [
@@ -1071,7 +1060,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
       },
       {
-        // Turtle
         name: "Seeker Aeson",
         character: "!LOC:Turtle",
         color: [
@@ -1118,7 +1106,6 @@ define([], function () {
         commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
       },
       {
-        // Original
         name: "Seeker Banditks",
         character: "!LOC:Original",
         color: [
@@ -1165,7 +1152,6 @@ define([], function () {
         commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
       },
       {
-        // Absurd
         name: "Seeker SPZ58624",
         character: "!LOC:Absurd",
         color: [
@@ -1213,7 +1199,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
       },
       {
-        // Relentless
         name: "Seeker XOV",
         character: "!LOC:Relentless",
         color: [
@@ -1261,7 +1246,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
       },
       {
-        // Factories
         name: "Seeker Reaver",
         character: "!LOC:Swarm",
         color: [
@@ -1309,7 +1293,6 @@ define([], function () {
         commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
       },
       {
-        // High Efficiency
         name: "Seeker Sadiga",
         character: "!LOC:Economist",
         color: [

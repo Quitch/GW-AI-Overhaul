@@ -549,7 +549,6 @@ define([], function () {
     ], // teams
     minions: [
       {
-        // Land heavy
         name: "Servant Potbelly79",
         character: "!LOC:Grunt",
         color: [
@@ -596,7 +595,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json",
       },
       {
-        // Air heavy
         name: "Servant Raventhornn",
         character: "!LOC:Dragoon",
         color: [
@@ -644,7 +642,6 @@ define([], function () {
           "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json",
       },
       {
-        // Uber
         name: "Servant SacrificialLamb",
         character: "!LOC:Uber",
         color: [
@@ -693,7 +690,6 @@ define([], function () {
           "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
       },
       {
-        // Platinum
         name: "Servant Shadowdaemon",
         character: "!LOC:Platinum",
         color: [
@@ -742,7 +738,6 @@ define([], function () {
           "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
       },
       {
-        // Gold
         name: "Servant Spartandano",
         character: "!LOC:Gold",
         color: [
@@ -790,7 +785,6 @@ define([], function () {
           "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
       },
       {
-        // Structures
         name: "Servant Xenosentry",
         character: "!LOC:Defender",
         color: [
@@ -838,7 +832,6 @@ define([], function () {
           "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json",
       },
       {
-        // Basic Tech
         name: "Servant TheFlax",
         character: "!LOC:Luddite",
         color: [
@@ -885,7 +878,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_theflax/quad_theflax.json",
       },
       {
-        // Advanced Tech
         name: "Servant Tokamaktech",
         character: "!LOC:Technologist",
         color: [
@@ -933,7 +925,6 @@ define([], function () {
           "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json",
       },
       {
-        // Cautious
         name: "Servant Twoboots",
         character: "!LOC:Cautious",
         color: [
@@ -980,7 +971,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json",
       },
       {
-        // Aggressive
         name: "Servant XenosentryPrime",
         character: "!LOC:Aggressive",
         color: [
@@ -1028,7 +1018,6 @@ define([], function () {
           "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json",
       },
       {
-        // Rush
         name: "Servant Xinthar",
         character: "!LOC:Rush",
         color: [
@@ -1076,7 +1065,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json",
       },
       {
-        // Turtle
         name: "Servant Beast",
         character: "!LOC:Turtle",
         color: [
@@ -1124,7 +1112,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_beast/raptor_beast.json",
       },
       {
-        // Original
         name: "Servant Beniesk",
         character: "!LOC:Original",
         color: [
@@ -1171,7 +1158,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
       },
       {
-        // Absurd
         name: "Servant Locust",
         character: "!LOC:Absurd",
         color: [
@@ -1218,7 +1204,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_locust/quad_locust.json",
       },
       {
-        // Relentless
         name: "Servant Zancrowe",
         character: "!LOC:Relentless",
         color: [
@@ -1265,7 +1250,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
       },
       {
-        // Factories
         name: "Servant Damubbster",
         character: "!LOC:Swarm",
         color: [
@@ -1313,7 +1297,6 @@ define([], function () {
           "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
       },
       {
-        // High Efficiency
         name: "Servant Raizell",
         character: "!LOC:Economist",
         color: [

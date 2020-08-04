@@ -544,7 +544,6 @@ define([], function () {
     ], // teams
     minions: [
       {
-        // All Air
         name: "Acolyte Progenitor",
         character: "!LOC:Air Force",
         color: [
@@ -592,7 +591,6 @@ define([], function () {
           "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
       },
       {
-        // All Naval
         name: "Acolyte Sangudo",
         character: "!LOC:Navy",
         color: [
@@ -640,7 +638,6 @@ define([], function () {
           "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
       },
       {
-        // Uber
         name: "Acolyte Seniorhelix",
         character: "!LOC:Uber",
         color: [
@@ -689,7 +686,6 @@ define([], function () {
           "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
       },
       {
-        // Platinum
         name: "Acolyte Stelarch",
         character: "!LOC:Platinum",
         color: [
@@ -738,7 +734,6 @@ define([], function () {
           "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
       },
       {
-        // Gold
         name: "Acolyte TheChessKnight",
         character: "!LOC:Gold",
         color: [
@@ -786,7 +781,6 @@ define([], function () {
           "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
       },
       {
-        // Structures
         name: "Acolyte Theta",
         character: "!LOC:Defender",
         color: [
@@ -833,7 +827,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
       },
       {
-        // Basic Tech
         name: "Acolyte ToddFather",
         character: "!LOC:Luddite",
         color: [
@@ -881,7 +874,6 @@ define([], function () {
           "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
       },
       {
-        // Advanced Tech
         name: "Acolyte Ajax",
         character: "!LOC:Technologist",
         color: [
@@ -928,7 +920,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
       },
       {
-        // Cautious
         name: "Acolyte Armalisk",
         character: "!LOC:Cautious",
         color: [
@@ -975,7 +966,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
       },
       {
-        // Aggressive
         name: "Acolyte Calyx",
         character: "!LOC:Aggressive",
         color: [
@@ -1022,7 +1012,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
       },
       {
-        // Rush
         name: "Acolyte Gambitdfa",
         character: "!LOC:Rush",
         color: [
@@ -1069,7 +1058,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
       },
       {
-        // Turtle
         name: "Acolyte Berlinetta",
         character: "!LOC:Turtle",
         color: [
@@ -1117,7 +1105,6 @@ define([], function () {
           "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
       },
       {
-        // Original
         name: "Acolyte Osiris",
         character: "!LOC:Original",
         color: [
@@ -1164,7 +1151,6 @@ define([], function () {
         commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
       },
       {
-        // Absurd
         name: "Acolyte Tykus24",
         character: "!LOC:Absurd",
         color: [
@@ -1212,7 +1198,6 @@ define([], function () {
           "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
       },
       {
-        // Relentless
         name: "Acolyte Vidicarus",
         character: "!LOC:Relentless",
         color: [
@@ -1260,7 +1245,6 @@ define([], function () {
           "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
       },
       {
-        // Factories
         name: "Acolyte Visionik",
         character: "!LOC:Swarm",
         color: [
@@ -1308,7 +1292,6 @@ define([], function () {
           "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
       },
       {
-        // High Efficiency
         name: "Acolyte Commandonut",
         character: "!LOC:Economist",
         color: [
