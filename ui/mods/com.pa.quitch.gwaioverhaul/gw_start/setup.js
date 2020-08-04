@@ -635,7 +635,6 @@ requireGW(
         { id: "gwaio_start_tourist" },
         { id: "gwaio_start_rapid" },
       ];
-
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
         model.startCards().push(model.makeUnknown(cardData));
@@ -686,7 +685,6 @@ requireGW(
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
     var loaded = $.Deferred();
-
     _.forEach(model.gwaioAllStartCards, function (cardId) {
       require(["cards/" + cardId], function (card) {
         card.id = cardId;
