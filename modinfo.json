@@ -31,6 +31,7 @@
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/inventory.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"

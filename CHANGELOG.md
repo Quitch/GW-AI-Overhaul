@@ -9,6 +9,7 @@
 - Added a new faction called Cluster which you can fight as or against
 - Fixed new loadouts being dealt as treasure more often than base game loadouts
 - Fixed newly discovered loadouts requiring you to have an open slot in your inventory before they'd unlock
+- Prevented inventory overlapping the intelligence panel
 
 ## v4.1.0 - 2020-08-02
 
