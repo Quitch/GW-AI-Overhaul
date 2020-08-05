@@ -2,7 +2,8 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-], function (module, GWCStart, gwaioBank) {
+  "cards/gwaio_faction_cluster",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,26 +35,22 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          var units = [
-            "/pa/units/land/energy_plant/energy_plant.json",
-            "/pa/units/land/metal_extractor/metal_extractor.json",
-          ];
-          var mods = [];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
+          if (inventory.getTag("global", "playerFaction") === 4)
+            gwaioFactionCluster.buff(inventory);
+          var mods = [
+            {
+              file: "/pa/units/land/energy_plant/energy_plant.json",
               path: "production.energy",
               op: "multiply",
               value: 1.25,
-            });
-            mods.push({
-              file: unit,
+            },
+            {
+              file: "/pa/units/land/metal_extractor/metal_extractor.json",
               path: "production.metal",
               op: "multiply",
               value: 1.25,
-            });
-          };
-          _.forEach(units, modUnit);
+            },
+          ];
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

@@ -2,7 +2,8 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-], function (module, GWCStart, gwaioBank) {
+  "cards/gwaio_faction_cluster",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,19 +35,16 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          var units = [
-            "/pa/units/commanders/base_commander/base_commander.json",
-          ];
-          var mods = [];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
+          if (inventory.getTag("global", "playerFaction") === 4)
+            gwaioFactionCluster.buff(inventory);
+          var mods = [
+            {
+              file: "/pa/units/commanders/base_commander/base_commander.json",
               path: "storage.metal",
               op: "multiply",
               value: 200,
-            });
-          };
-          _.forEach(units, modUnit);
+            },
+          ];
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

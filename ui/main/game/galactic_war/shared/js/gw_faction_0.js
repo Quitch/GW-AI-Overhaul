@@ -45,7 +45,7 @@ define([], function () {
         systemDescription:
           "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
         systemTemplate: {
-          name: "Kohr",
+          name: "Kohr - Legonis Machina",
           Planets: [
             {
               name: "Kohr Prime",
@@ -469,7 +469,6 @@ define([], function () {
     ], // teams
     minions: [
       {
-        // All Tanks
         name: "Legate Able",
         character: "!LOC:Armour",
         color: [
@@ -517,7 +516,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_able/imperial_able.json",
       },
       {
-        // All Bots
         name: "Legate AceAI",
         character: "!LOC:Roboticist",
         color: [
@@ -564,7 +562,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json",
       },
       {
-        // Uber
         name: "Legate Alpha",
         character: "!LOC:Uber",
         color: [
@@ -612,7 +609,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
       },
       {
-        // Platinum
         name: "Legate Aryst0krat",
         character: "!LOC:Platinum",
         color: [
@@ -661,7 +657,6 @@ define([], function () {
           "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
       },
       {
-        // Gold
         name: "Legate Chronoblip",
         character: "!LOC:Gold",
         color: [
@@ -709,7 +704,6 @@ define([], function () {
           "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json",
       },
       {
-        // Structures
         name: "Legate Mjon",
         character: "!LOC:Defender",
         color: [
@@ -757,7 +751,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
       },
       {
-        // Basic Tech
         name: "Legate Delta",
         character: "!LOC:Luddite",
         color: [
@@ -804,7 +797,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_delta/imperial_delta.json",
       },
       {
-        // Advanced Tech
         name: "Legate Enzomatrix",
         character: "!LOC:Technologist",
         color: [
@@ -852,7 +844,6 @@ define([], function () {
           "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json",
       },
       {
-        // Cautious
         name: "Legate Fiveleafclover",
         character: "!LOC:Cautious",
         color: [
@@ -900,7 +891,6 @@ define([], function () {
           "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json",
       },
       {
-        // Aggressive
         name: "Legate Gamma",
         character: "!LOC:Aggressive",
         color: [
@@ -947,7 +937,6 @@ define([], function () {
         commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json",
       },
       {
-        // Rush
         name: "Legate Gnugfur",
         character: "!LOC:Rush",
         color: [
@@ -996,7 +985,6 @@ define([], function () {
           "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json",
       },
       {
-        // Turtle
         name: "Legate Nemicus",
         character: "!LOC:Turtle",
         color: [
@@ -1043,7 +1031,6 @@ define([], function () {
         commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
       },
       {
-        // Original
         name: "Legate Kapowaz",
         character: "!LOC:Original",
         color: [
@@ -1091,7 +1078,6 @@ define([], function () {
           "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json",
       },
       {
-        // Absurd
         name: "Legate JT100010117",
         character: "!LOC:Absurd",
         color: [
@@ -1140,7 +1126,6 @@ define([], function () {
           "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
       },
       {
-        // Relentless
         name: "Legate Kevin4001",
         character: "!LOC:Relentless",
         color: [
@@ -1189,7 +1174,6 @@ define([], function () {
           "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",
       },
       {
-        // Factories
         name: "Legate Mostlikely",
         character: "!LOC:Swarm",
         color: [
@@ -1238,7 +1222,6 @@ define([], function () {
           "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
       },
       {
-        // High Efficiency
         name: "Legate Nagasher",
         character: "!LOC:Economist",
         color: [

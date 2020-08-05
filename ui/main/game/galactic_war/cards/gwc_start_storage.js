@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-], function (module, GW, GWCStart, GWCStorage) {
+  "cards/gwaio_faction_cluster",
+], function (module, GW, GWCStart, GWCStorage, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,6 +35,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          if (inventory.getTag("global", "playerFaction") === 4)
+            gwaioFactionCluster.buff(inventory);
           GWCStorage.buff(inventory);
         } else {
           // Don't clog up a slot.

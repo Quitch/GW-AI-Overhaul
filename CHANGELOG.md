@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v4.2.0 - 2020-08-05
+
+- Planetary Intelligence now shows the number of commanders in a shared army configuration
+- Threat levels now factor in the size of armies with multiple commanders
+- Tried to ensure armies always have the correct number of commanders even after multiple galaxy generations
+- Added a small variance to each enemy's eco
+- Added a new faction called Cluster which you can fight as or against
+- Added Bang Battle 3T V1 as temporary Cluster boss system with thanks to =VoW=BlackAngelLOL
+- Fixed new loadouts being dealt as treasure more often than base game loadouts
+- Fixed newly discovered loadouts requiring you to have an open slot in your inventory before they'd unlock
+- Prevented inventory overlapping the intelligence panel
+- Fixed Tougher Commanders not buffing boss commander weapons
+- Corrected Kohr system name
+
 ## v4.1.0 - 2020-08-02
 
 - Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs

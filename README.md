@@ -31,6 +31,7 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Guaranteed loadout to unlock every war
 - New loadouts
 - Unlocks Galactic War's biggest planetary systems
+- Adds a new faction
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -110,6 +111,7 @@ These buffs are applied on a per-faction basis:
 - **Foundation**: air and naval units and factory structures
 - **Synchronous**: non-factory structures
 - **Revenants**: orbital units and structures
+- **Cluster**: basic units
 
 ### Commander Threat Scale
 
@@ -153,7 +155,16 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
 
-3. Add com.pa.quitch.gwaioverhaul as a dependency if you're not rolling your own card dealing solution
+3. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define function
+
+4. Within the `if (!buffCount)` block of your loadout add:
+
+   ```javascript
+   if (inventory.getTag("global", "playerFaction") === 4)
+     gwaioFactionCluster.buff(inventory);
+   ```
+
+5. Add com.pa.quitch.gwaioverhaul as a dependency
 
 ## FAQ
 
@@ -209,3 +220,5 @@ When the Synchronous have the speed bonus their defences will move to engage you
 - wondible, who continues to be amazing with his JavaScript support
 - PA Inc, for including official translations for the mod
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
+- wpmarshall, for the Cluster faction logo
+- =VoW=BlackAngelLOL, for the Bang Battle 3T V1 system

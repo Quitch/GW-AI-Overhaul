@@ -5,8 +5,7 @@ requireGW(["shared/gw_factions"], function (GWFactions) {
       if (!ai) return;
       else if (ai.treasurePlanet === true) normalizedColor = [255, 255, 255];
       else {
-        var factionIndex = ai.faction;
-        var faction = GWFactions[factionIndex];
+        var faction = GWFactions[ai.faction];
         // Ensures we assign faction colour, not minion colour, to each system
         var normalizedColor = _.map(faction.color[0], function (c) {
           return c / 255;

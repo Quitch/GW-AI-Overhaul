@@ -1,8 +1,9 @@
-define(["module", "shared/gw_common", "cards/gwc_start"], function (
-  module,
-  GW,
-  GWCStart
-) {
+define([
+  "module",
+  "shared/gw_common",
+  "cards/gwc_start",
+  "cards/gwaio_faction_cluster",
+], function (module, GW, GWCStart, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -35,6 +36,8 @@ define(["module", "shared/gw_common", "cards/gwc_start"], function (
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          if (inventory.getTag("global", "playerFaction") === 4)
+            gwaioFactionCluster.buff(inventory);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",

@@ -2,7 +2,8 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-], function (module, GWCStart, gwaioBank) {
+  "cards/gwaio_faction_cluster",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -34,41 +35,42 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          var lob = [
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+          if (inventory.getTag("global", "playerFaction") === 4)
+            gwaioFactionCluster.buff(inventory);
+          var lob =
+            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json";
+          var unitCannon = "/pa/units/land/unit_cannon/unit_cannon.json";
+          var mods = [
+            {
+              file: lob,
+              path: "unit_types",
+              op: "replace",
+              value: [
+                "UNITTYPE_Structure",
+                "UNITTYPE_Artillery",
+                "UNITTYPE_Defense",
+                "UNITTYPE_FabBuild",
+                "UNITTYPE_Basic",
+                "UNITTYPE_CmdBuild",
+              ],
+            },
+            {
+              file: unitCannon,
+              path: "unit_types",
+              op: "replace",
+              value: [
+                "UNITTYPE_Structure",
+                "UNITTYPE_Factory",
+                "UNITTYPE_Advanced",
+                "UNITTYPE_Artillery",
+                "UNITTYPE_FabAdvBuild",
+                "UNITTYPE_Important",
+                "UNITTYPE_CmdBuild",
+              ],
+            },
           ];
-          var unitCannon = ["/pa/units/land/unit_cannon/unit_cannon.json"];
-          var units = lob.concat(unitCannon);
-          inventory.addUnits(units);
-          var mods = [];
-          mods.push({
-            file: lob,
-            path: "unit_types",
-            op: "replace",
-            value: [
-              "UNITTYPE_Structure",
-              "UNITTYPE_Artillery",
-              "UNITTYPE_Defense",
-              "UNITTYPE_FabBuild",
-              "UNITTYPE_Basic",
-              "UNITTYPE_CmdBuild",
-            ],
-          });
-          mods.push({
-            file: unitCannon,
-            path: "unit_types",
-            op: "replace",
-            value: [
-              "UNITTYPE_Structure",
-              "UNITTYPE_Factory",
-              "UNITTYPE_Advanced",
-              "UNITTYPE_Artillery",
-              "UNITTYPE_FabAdvBuild",
-              "UNITTYPE_Important",
-              "UNITTYPE_CmdBuild",
-            ],
-          });
           inventory.addMods(mods);
+          inventory.addUnits([lob, unitCannon]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
