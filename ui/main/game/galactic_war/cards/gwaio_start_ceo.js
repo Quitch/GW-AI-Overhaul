@@ -37,26 +37,20 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
-          var units = [
-            "/pa/units/land/energy_plant/energy_plant.json",
-            "/pa/units/land/metal_extractor/metal_extractor.json",
+          var mods = [
+            {
+              file: "/pa/units/land/energy_plant/energy_plant.json",
+              path: "production.energy",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: "/pa/units/land/metal_extractor/metal_extractor.json",
+              path: "production.metal",
+              op: "multiply",
+              value: 1.25,
+            },
           ];
-          var mods = _.map(units, function (unit) {
-            return (
-              {
-                file: unit,
-                path: "production.energy",
-                op: "multiply",
-                value: 1.25,
-              },
-              {
-                file: unit,
-                path: "production.metal",
-                op: "multiply",
-                value: 1.25,
-              }
-            );
-          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
