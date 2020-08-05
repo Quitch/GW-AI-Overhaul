@@ -31,7 +31,7 @@ define([], function () {
             micro_type: 2,
             go_for_the_kill: true,
             neural_data_mod: 1,
-            adv_eco_mod: 1,
+            adv_eco_mod: 2,
             adv_eco_mod_alone: 0.85,
             fabber_to_factory_ratio_basic: 1.5,
             fabber_to_factory_ratio_advanced: 1,
