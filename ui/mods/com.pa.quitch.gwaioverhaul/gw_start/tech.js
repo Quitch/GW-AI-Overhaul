@@ -3,28 +3,26 @@ define([
 ], function (inventory) {
   // Tougher Commanders
   var commanderArmourTech = [];
-  var modAIUnit = function (unit) {
+  inventory.commanderUnits.forEach(function (unit) {
     commanderArmourTech.push({
       file: unit,
       path: "max_health",
       op: "multiply",
       value: 2,
     });
-  };
-  _.forEach(inventory.commanderUnits, modAIUnit);
+  });
   var clusterCommanderArmourTech = [];
-  var modClusterCommander = function (unit) {
+  inventory.clusterCommanders.forEach(function (unit) {
     clusterCommanderArmourTech.push({
       file: unit,
       path: "max_health",
       op: "multiply",
       value: 2,
     });
-  };
-  _.forEach(inventory.clusterCommanders, modClusterCommander);
+  });
 
   var commanderCombatTech = [];
-  var modBossUnit = function (unit) {
+  inventory.commanderUnits.forEach(function (unit) {
     commanderCombatTech.push(
       {
         file: unit,
@@ -51,9 +49,8 @@ define([
         value: 3,
       }
     );
-  };
-  _.forEach(inventory.commanderUnits, modBossUnit);
-  var modBossAmmo = function (ammo) {
+  });
+  inventory.commanderAmmo.forEach(function (ammo) {
     commanderCombatTech.push(
       {
         file: ammo,
@@ -68,10 +65,9 @@ define([
         value: 1.25,
       }
     );
-  };
-  _.forEach(inventory.commanderAmmo, modBossAmmo);
+  });
   var clusterCommanderCombatTech = [];
-  var modClusterBossUnit = function (unit) {
+  inventory.clusterCommanders.forEach(function (unit) {
     clusterCommanderCombatTech.push(
       {
         file: unit,
@@ -98,9 +94,8 @@ define([
         value: 3,
       }
     );
-  };
-  _.forEach(inventory.clusterCommanders, modClusterBossUnit);
-  var modClusterBossAmmo = function (ammo) {
+  });
+  inventory.clusterCommanderAmmo.forEach(function (ammo) {
     clusterCommanderCombatTech.push(
       {
         file: ammo,
@@ -115,8 +110,7 @@ define([
         value: 1.25,
       }
     );
-  };
-  _.forEach(inventory.clusterCommanderAmmo, modClusterBossAmmo);
+  });
 
   // AI Buffs
   var legonisTech = [];
