@@ -694,7 +694,7 @@ define([], function () {
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
-          "!LOC:What is it to be alone? A terrifying silence? Enforced solitary, without the comfort of the Node? Better to die than to live in such purposelessness.",
+          "!LOC:What is it to be alone? It would seem a most terrifying thing. Perhaps each of our tools understood before the end. What did they see? What did they feel? We fear that we shall soon learn soon enough, and the learning will die with us.",
         systemTemplate: {
           name: "Bang Battle - Cluster",
           Planets: [
@@ -1019,7 +1019,7 @@ define([], function () {
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
-          "!LOC:Through centralised structures we can put each to their best use. No need for inefficient “commanders”, instead we identify the need and tailor the tool. It was our way that was the future. Our way that the Progenitors would have embraced. Such hubris to revolt against the minds that saw so clearly.",
+          "!LOC:Through centralised structures we can put each to their best use. No need for inefficient field commanders, instead we identify the need and tailor the tool. It was our way that was the future. Our way that the Progenitors would have embraced. Such hubris to revolt against the minds that saw so clearly.",
         systemTemplate: {
           name: "Bang Battle - Cluster",
           Planets: [
