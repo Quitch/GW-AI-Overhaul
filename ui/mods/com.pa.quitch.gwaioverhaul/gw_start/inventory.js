@@ -1,7 +1,7 @@
 define({
   // Tougher Commanders
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
-  commanderAmmos: [
+  commanderAmmo: [
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/ammo/cannon_uber/cannon_uber.json",
   ],
