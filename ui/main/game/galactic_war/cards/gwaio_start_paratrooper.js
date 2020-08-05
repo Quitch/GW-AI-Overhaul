@@ -37,12 +37,9 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
-          var lob = [
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
-          ];
-          var unitCannon = ["/pa/units/land/unit_cannon/unit_cannon.json"];
-          var units = lob.concat(unitCannon);
-          inventory.addUnits(units);
+          var lob =
+            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json";
+          var unitCannon = "/pa/units/land/unit_cannon/unit_cannon.json";
           var mods = [
             {
               file: lob,
@@ -73,6 +70,8 @@ define([
             },
           ];
           inventory.addMods(mods);
+          var units = [lob, unitCannon];
+          inventory.addUnits(units);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
