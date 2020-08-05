@@ -70,8 +70,7 @@ define([
             },
           ];
           inventory.addMods(mods);
-          var units = [lob, unitCannon];
-          inventory.addUnits(units);
+          inventory.addUnits([lob, unitCannon]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
