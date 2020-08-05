@@ -43,34 +43,35 @@ define([
           var unitCannon = ["/pa/units/land/unit_cannon/unit_cannon.json"];
           var units = lob.concat(unitCannon);
           inventory.addUnits(units);
-          var mods = [];
-          mods.push({
-            file: lob,
-            path: "unit_types",
-            op: "replace",
-            value: [
-              "UNITTYPE_Structure",
-              "UNITTYPE_Artillery",
-              "UNITTYPE_Defense",
-              "UNITTYPE_FabBuild",
-              "UNITTYPE_Basic",
-              "UNITTYPE_CmdBuild",
-            ],
-          });
-          mods.push({
-            file: unitCannon,
-            path: "unit_types",
-            op: "replace",
-            value: [
-              "UNITTYPE_Structure",
-              "UNITTYPE_Factory",
-              "UNITTYPE_Advanced",
-              "UNITTYPE_Artillery",
-              "UNITTYPE_FabAdvBuild",
-              "UNITTYPE_Important",
-              "UNITTYPE_CmdBuild",
-            ],
-          });
+          var mods = [
+            {
+              file: lob,
+              path: "unit_types",
+              op: "replace",
+              value: [
+                "UNITTYPE_Structure",
+                "UNITTYPE_Artillery",
+                "UNITTYPE_Defense",
+                "UNITTYPE_FabBuild",
+                "UNITTYPE_Basic",
+                "UNITTYPE_CmdBuild",
+              ],
+            },
+            {
+              file: unitCannon,
+              path: "unit_types",
+              op: "replace",
+              value: [
+                "UNITTYPE_Structure",
+                "UNITTYPE_Factory",
+                "UNITTYPE_Advanced",
+                "UNITTYPE_Artillery",
+                "UNITTYPE_FabAdvBuild",
+                "UNITTYPE_Important",
+                "UNITTYPE_CmdBuild",
+              ],
+            },
+          ];
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

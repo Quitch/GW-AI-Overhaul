@@ -41,22 +41,22 @@ define([
             "/pa/units/land/energy_plant/energy_plant.json",
             "/pa/units/land/metal_extractor/metal_extractor.json",
           ];
-          var mods = [];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "production.energy",
-              op: "multiply",
-              value: 1.25,
-            });
-            mods.push({
-              file: unit,
-              path: "production.metal",
-              op: "multiply",
-              value: 1.25,
-            });
-          };
-          _.forEach(units, modUnit);
+          var mods = _.map(units, function (unit) {
+            return (
+              {
+                file: unit,
+                path: "production.energy",
+                op: "multiply",
+                value: 1.25,
+              },
+              {
+                file: unit,
+                path: "production.metal",
+                op: "multiply",
+                value: 1.25,
+              }
+            );
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

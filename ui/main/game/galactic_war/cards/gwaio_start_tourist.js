@@ -40,16 +40,14 @@ define([
           var units = [
             "/pa/units/commanders/base_commander/base_commander.json",
           ];
-          var mods = [];
-          var modUnit = function (unit) {
-            mods.push({
+          var mods = _.map(units, function (unit) {
+            return {
               file: unit,
               path: "storage.metal",
               op: "multiply",
               value: 200,
-            });
-          };
-          _.forEach(units, modUnit);
+            };
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
