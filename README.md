@@ -221,3 +221,4 @@ When the Synchronous have the speed bonus their defences will move to engage you
 - PA Inc, for including official translations for the mod
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - wpmarshall, for the Cluster faction logo
+- =VoW=BlackAngelLOL, for the Bang Battle 3T V1 system
