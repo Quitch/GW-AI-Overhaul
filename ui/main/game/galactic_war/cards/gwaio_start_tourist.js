@@ -37,17 +37,14 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
-          var units = [
-            "/pa/units/commanders/base_commander/base_commander.json",
-          ];
-          var mods = _.map(units, function (unit) {
-            return {
-              file: unit,
+          var mods = [
+            {
+              file: "/pa/units/commanders/base_commander/base_commander.json",
               path: "storage.metal",
               op: "multiply",
               value: 200,
-            };
-          });
+            },
+          ];
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
