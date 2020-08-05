@@ -694,7 +694,7 @@ define([], function () {
           commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
         },
         systemDescription:
-          "!LOC:What is it to be alone? It would seem a most terrifying thing. Perhaps each of our tools understood before the end. What did they see? What did they feel? We fear that we shall soon learn soon enough, and the learning will die with us.",
+          "!LOC:What is it to be alone? It would seem a most terrifying thing. Perhaps each of our tools understood before the end. What did they see? What did they feel? We fear that we shall learn soon enough.",
         systemTemplate: {
           name: "Bang Battle - Cluster",
           Planets: [
