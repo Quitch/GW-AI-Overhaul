@@ -906,9 +906,8 @@ requireGW(
               (model.gwaioDifficultySettings.econBase() +
                 maxDist * model.gwaioDifficultySettings.econRatePerDist()) *
               getRandomArbitrary(0.9, 1.1);
-            if (isBoss) {
+            if (isBoss)
               ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-            }
           } else {
             ai.econ_rate =
               (model.gwaioDifficultySettings.econBase() +
