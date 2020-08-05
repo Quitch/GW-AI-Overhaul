@@ -157,7 +157,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 3. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define functon
 
-4. Within the `if (!buffCount)` block add:
+4. Within the `if (!buffCount)` block of your loadout add:
 
    ```javascript
    if (inventory.getTag("global", "playerFaction") === 4)
