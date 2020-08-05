@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.2.0 - 2020-08-05
 
 - Planetary Intelligence now shows the number of commanders in a shared army configuration
 - Threat levels now factor in the size of armies with multiple commanders
@@ -12,7 +12,7 @@
 - Fixed newly discovered loadouts requiring you to have an open slot in your inventory before they'd unlock
 - Prevented inventory overlapping the intelligence panel
 - Fixed Tougher Commanders not buffing boss commander weapons
-- Correct Kohr system name
+- Corrected Kohr system name
 
 ## v4.1.0 - 2020-08-02
 
