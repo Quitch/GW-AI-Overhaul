@@ -11,6 +11,7 @@
 - Fixed newly discovered loadouts requiring you to have an open slot in your inventory before they'd unlock
 - Prevented inventory overlapping the intelligence panel
 - Fixed Tougher Commanders not buffing boss commander weapons
+- Correct Kohr system name
 
 ## v4.1.0 - 2020-08-02
 
