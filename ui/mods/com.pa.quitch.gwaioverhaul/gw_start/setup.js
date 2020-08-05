@@ -933,10 +933,10 @@ requireGW(
           aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
           bossInventory = bossInventory.concat(gwaioTech.tougherCommander[1]);
           clusterCommanderInventory = clusterCommanderInventory.concat(
-            gwaioTech.tougherCommanders[2]
+            gwaioTech.tougherCommander[2]
           );
           clusterBossInventory = clusterBossInventory.concat(
-            gwaioTech.toughrCommander[3]
+            gwaioTech.tougherCommander[3]
           );
         }
 
