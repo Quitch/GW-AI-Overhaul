@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Fix Cluster Worker not generating the right AI threat
+
 ## v4.2.1 - 2020-08-06
 
 - Tidied up some Cluster boss descriptions
