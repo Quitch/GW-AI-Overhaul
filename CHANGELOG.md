@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.2.1 - 2020-08-06
 
 - Tidied up some Cluster boss descriptions
 
