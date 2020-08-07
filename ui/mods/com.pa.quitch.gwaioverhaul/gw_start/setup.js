@@ -1190,6 +1190,7 @@ requireGW(
               delete ai.commanderCount;
               delete ai.minions;
               delete ai.foes;
+              delete ai.team;
               ai.mirrorMode = true;
               ai.treasurePlanet = true;
               ai.econ_rate =

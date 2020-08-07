@@ -3,6 +3,7 @@
 ## DEV
 
 - Fix Cluster Worker not generating the right AI threat
+- Defeating a boss in a new war will no longer sometimes defeat the treasure planet
 
 ## v4.2.1 - 2020-08-06
 
