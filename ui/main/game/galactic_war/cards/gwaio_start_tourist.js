@@ -13,7 +13,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no metal extractors and no basic land or air factories."
+      "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories."
     ),
     hint: function () {
       return {
