@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- General Commander now has only two starting data banks just like the loadout says it does
+
 ## v4.2.2 - 2020-08-07
 
 - Fixed Cluster Worker not generating the right AI threat

@@ -46,7 +46,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
-          inventory.maxCards(inventory.maxCards() - 1);
+          inventory.maxCards(inventory.maxCards() - 2);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
