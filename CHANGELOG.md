@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.2.2 - 2020-08-07
 
 - Fixed Cluster Worker not generating the right AI threat
 - Defeating a boss in a new war will no longer sometimes defeat the treasure planet
