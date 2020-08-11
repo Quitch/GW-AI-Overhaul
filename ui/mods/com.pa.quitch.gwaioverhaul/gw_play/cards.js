@@ -1,4 +1,7 @@
-requireGW(["shared/gw_factions"], function (GWFactions) {
+requireGW(["shared/gw_common", "shared/gw_factions"], function (
+  GW,
+  GWFactions
+) {
   if (
     model.game().inventory().cards().length === 1 &&
     model.game().inventory().cards()[0].id === "gwc_start_subcdr"
@@ -16,5 +19,6 @@ requireGW(["shared/gw_factions"], function (GWFactions) {
         .push({ id: "gwc_minion", minion: minion, unique: Math.random() });
     });
     model.game().inventory().applyCards();
+    GW.manifest.saveGame(model.game());
   }
 });
