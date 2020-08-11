@@ -2,7 +2,7 @@
 
 ## DEV
 
-- General Commander now has only two starting data banks just like the loadout says it does
+- General Commander's minions are now dealt as cards to your inventory
 
 ## v4.2.2 - 2020-08-07
 
