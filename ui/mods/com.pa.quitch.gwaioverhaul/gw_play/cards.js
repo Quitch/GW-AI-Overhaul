@@ -1,6 +1,4 @@
-require([
-  "coui://ui/main/game/galactic_war/shared/js/gw_factions.js",
-], function (GWFactions) {
+requireGW(["shared/gw_factions"], function (GWFactions) {
   if (
     model.game().inventory().cards().length === 1 &&
     model.game().inventory().cards()[0].id === "gwc_start_subcdr"
