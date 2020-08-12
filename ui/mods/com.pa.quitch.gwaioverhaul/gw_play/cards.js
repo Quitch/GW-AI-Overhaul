@@ -5,10 +5,11 @@ requireGW(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   ],
   function (GW, GWFactions, gwaioBank) {
-    // Deal the General Commander's minions as cards to the inventory
+    // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+ wars
     if (
       model.game().inventory().cards().length === 1 &&
-      model.game().inventory().cards()[0].id === "gwc_start_subcdr"
+      model.game().inventory().cards()[0].id === "gwc_start_subcdr" &&
+      !model.game().inventory().cards()[0].minions
     ) {
       var playerFaction = model
         .game()

@@ -36,7 +36,7 @@ define([
         chance: 0,
       };
     },
-    buff: function (inventory) {
+    buff: function (inventory, context) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -48,6 +48,16 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
+        }
+        // Support for GWAIO v4.2.2 and earlier
+        if (inventory.cards()[0].minions) {
+          inventory.maxCards(inventory.maxCards() - 1);
+          // eslint-disable-next-line lodash/prefer-map
+          _.forEach(context.minions, function (minion) {
+            inventory.minions.push(minion);
+          });
+          var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
+          inventory.addUnits(minionSpecs);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
