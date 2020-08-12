@@ -199,7 +199,6 @@ define(["shared/gw_common"], function (GW) {
       aiNewTag = aiNewTag.concat(n);
       aiTag.push(aiNewTag);
     });
-
     // Setup System Faction
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
