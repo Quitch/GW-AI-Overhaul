@@ -36,7 +36,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
-    ]
+    ],
+    "icon_atlas": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/units/icon.js"],
+    "shared_build": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/units/build.js"]
   },
   "priority": 200
 }
