@@ -2,7 +2,7 @@ define(["shared/gw_common"], function (GW) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bot Anti-Air tech enables building of Stinger bots. They are built via your basic Bot Factory."
+      "!LOC:Bot Anti-Air Tech enables the building of Stinger bots. They are built via your basic Bot Factory."
     ),
     summarize: _.constant("!LOC:Bot Anti-Air Tech"),
     icon: _.constant(
