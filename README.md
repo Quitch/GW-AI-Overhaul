@@ -142,7 +142,11 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
 1. Add the following to the gw_start scene:
 
    ```javascript
-   if (model.gwaioNewStartCards) {
+   if (
+     model.gwaioNewStartCards &&
+     model.gwaioAllStartCards &&
+     model.gwaioTreasureCards
+   ) {
      model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
      model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
      model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
