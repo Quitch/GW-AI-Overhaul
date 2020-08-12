@@ -2,7 +2,7 @@
 
 ## v4.3.0 - 2020-08-12
 
-- General Commander's minions are now dealt as cards to your inventory
+- Deal General Commander's minions as cards to your inventory
 - Added Bot Anti-Air Tech card
 - Fixed armies not always landing with multiple commanders even though intelligence said they have them
 - Re-enabled the following tech cards:
