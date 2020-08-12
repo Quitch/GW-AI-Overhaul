@@ -19,6 +19,9 @@ requireGW(["shared/gw_common", "shared/gw_factions"], function (
         .push({ id: "gwc_minion", minion: minion, unique: Math.random() });
     });
     model.game().inventory().applyCards();
-    GW.manifest.saveGame(model.game());
+    model.driveAccessInProgress(true);
+    GW.manifest.saveGame(model.game()).then(function () {
+      model.driveAccessInProgress(false);
+    });
   }
 });
