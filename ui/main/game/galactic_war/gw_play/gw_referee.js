@@ -230,14 +230,17 @@ define(["shared/gw_common"], function (GW) {
       minion.personality.adv_eco_mod_alone =
         minion.personality.adv_eco_mod_alone *
         (minion.econ_rate || ai.econ_rate);
-      _.times(minion.commanderCount || 1, function () {
-        slotsArrayMinions.push({
-          ai: true,
-          name: minion.name,
-          commander: fixupCommander(minion.commander || minion.commander),
-          landing_policy: _.sample(aiLandingOptions),
-        });
-      });
+      _.times(
+        minion.commanderCount || minion.landing_policy.length || 1,
+        function () {
+          slotsArrayMinions.push({
+            ai: true,
+            name: minion.name,
+            commander: fixupCommander(minion.commander || minion.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+      );
       armies.push({
         slots: slotsArrayMinions,
         color: minion.color,
