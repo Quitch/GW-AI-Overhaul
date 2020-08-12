@@ -5,6 +5,10 @@
 - General Commander's minions are now dealt as cards to your inventory
 - Added Bot Anti-Air Tech card
 - Fixed armies not always landing with multiple commanders even though intelligence said they have them
+- Re-enabled the following tech cards:
+  - Intelligence Fabrication Tech
+  - Improved Intelligence Tech
+  - Improved Energy Weapons
 
 ## v4.2.2 - 2020-08-07
 

@@ -48,6 +48,7 @@ requireGW(
         "gwc_cost_bots",
         "gwc_cost_defenses",
         "gwc_cost_economy",
+        "gwc_cost_intel",
         "gwc_cost_orbital",
         "gwc_cost_sea",
         "gwc_cost_super_weapons",
@@ -73,6 +74,8 @@ requireGW(
         "gwc_enable_titans",
         "gwc_enable_vehicles_all",
         "gwc_enable_vehicles_t1",
+        "gwc_energy_efficiency_intel",
+        "gwc_energy_efficiency_weapons",
         "gwc_health_air",
         "gwc_health_bots",
         "gwc_health_commander",
@@ -89,16 +92,6 @@ requireGW(
         "gwc_speed_vehicles",
         "gwc_storage_1",
         "gwc_storage_and_buff",
-        //'gwc_cost_intel',
-        //'gwc_enable_air_t2',
-        //'gwc_enable_bots_t2',
-        //'gwc_enable_orbital_t1',
-        //'gwc_enable_orbital_t2',
-        //'gwc_enable_sea_t1',
-        //'gwc_enable_sea_t2',
-        //'gwc_enable_vehicles_t2',
-        //'gwc_energy_efficiency_intel',
-        //'gwc_energy_efficiency_weapons',
       ];
     var cards = [];
     var cardContexts = {};
