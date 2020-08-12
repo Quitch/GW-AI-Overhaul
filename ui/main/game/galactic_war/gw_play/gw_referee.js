@@ -172,19 +172,19 @@ define(["shared/gw_common"], function (GW) {
     });
     // Setup the player's Sub Commanders
     // eslint-disable-next-line lodash/prefer-map
-    _.forEach(inventory.minions(), function (minion) {
+    _.forEach(inventory.minions(), function (subcommander) {
       armies.push({
         slots: [
           {
             ai: true,
-            name: minion.name,
-            commander: fixupCommander(minion.commander),
+            name: subcommander.name,
+            commander: fixupCommander(subcommander.commander),
             landing_policy: _.sample(aiLandingOptions),
           },
         ],
-        color: minion.color,
+        color: subcommander.color,
         econ_rate: 1,
-        personality: minion.personality,
+        personality: subcommander.personality,
         spec_tag: ".player",
         alliance_group: 1,
       });
