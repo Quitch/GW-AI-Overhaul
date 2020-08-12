@@ -177,12 +177,12 @@ define(["shared/gw_common"], function (GW) {
         slots: [
           {
             ai: true,
-            name: minion.name || "Sub Commander",
-            commander: fixupCommander(minion.commander || playerCommander),
+            name: minion.name,
+            commander: fixupCommander(minion.commander),
             landing_policy: _.sample(aiLandingOptions),
           },
         ],
-        color: minion.color || [playerColor[1], playerColor[0]],
+        color: minion.color,
         econ_rate: 1,
         personality: minion.personality,
         spec_tag: ".player",
@@ -226,17 +226,16 @@ define(["shared/gw_common"], function (GW) {
     _.forEach(ai.minions, function (minion) {
       var slotsArrayMinions = [];
       minion.personality.adv_eco_mod =
-        minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod * minion.econ_rate;
       minion.personality.adv_eco_mod_alone =
-        minion.personality.adv_eco_mod_alone *
-        (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod_alone * minion.econ_rate;
       _.times(
         minion.commanderCount || minion.landing_policy.length || 1,
         function () {
           slotsArrayMinions.push({
             ai: true,
             name: minion.name,
-            commander: fixupCommander(minion.commander || minion.commander),
+            commander: fixupCommander(minion.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
         }
@@ -244,7 +243,7 @@ define(["shared/gw_common"], function (GW) {
       armies.push({
         slots: slotsArrayMinions,
         color: minion.color,
-        econ_rate: minion.econ_rate || ai.econ_rate,
+        econ_rate: minion.econ_rate,
         personality: minion.personality,
         spec_tag: aiTag[0],
         alliance_group: 2,
@@ -255,17 +254,16 @@ define(["shared/gw_common"], function (GW) {
     var foeCount = 1;
     _.forEach(ai.foes, function (foe) {
       var slotsArrayFoes = [];
-      foe.personality.adv_eco_mod =
-        foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+      foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
       foe.personality.adv_eco_mod_alone =
-        foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
+        foe.personality.adv_eco_mod_alone * foe.econ_rate;
       _.times(
         foe.commanderCount || foe.landing_policy.length || 1,
         function () {
           slotsArrayFoes.push({
             ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
+            name: foe.name,
+            commander: fixupCommander(foe.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
         }
@@ -273,7 +271,7 @@ define(["shared/gw_common"], function (GW) {
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
-        econ_rate: foe.econ_rate || ai.econ_rate,
+        econ_rate: foe.econ_rate,
         personality: foe.personality,
         spec_tag: aiTag[foeCount],
         alliance_group: allianceGroup,
