@@ -204,14 +204,17 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    _.times(ai.bossCommanders || ai.commanderCount || 1, function () {
-      slotsArray.push({
-        ai: true,
-        name: ai.name,
-        commander: fixupCommander(ai.commander),
-        landing_policy: _.sample(aiLandingOptions),
-      });
-    });
+    _.times(
+      ai.bossCommanders || ai.commanderCount || ai.landing_policy.length || 1,
+      function () {
+        slotsArray.push({
+          ai: true,
+          name: ai.name,
+          commander: fixupCommander(ai.commander),
+          landing_policy: _.sample(aiLandingOptions),
+        });
+      }
+    );
     armies.push({
       slots: slotsArray,
       color: ai.color,
@@ -254,14 +257,17 @@ define(["shared/gw_common"], function (GW) {
         foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
-      _.times(foe.commanderCount || foe.landing_policy || 1, function () {
-        slotsArrayFoes.push({
-          ai: true,
-          name: foe.name || "Foe",
-          commander: fixupCommander(foe.commander || ai.commander),
-          landing_policy: _.sample(aiLandingOptions),
-        });
-      });
+      _.times(
+        foe.commanderCount || foe.landing_policy.length || 1,
+        function () {
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name || "Foe",
+            commander: fixupCommander(foe.commander || ai.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
+        }
+      );
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
