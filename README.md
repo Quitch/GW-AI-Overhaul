@@ -139,7 +139,7 @@ From easiest to hardest:
 
 If you are adding new loadouts and tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
 
-1. Add the following to the gw_start scene:
+1. Add the following to the gw_start scene if you're adding a loadout:
 
    ```javascript
    if (
@@ -157,7 +157,7 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
    }
    ```
 
-2. Add the following to the gw_play scene:
+2. Add the following to the gw_play scene if you're adding tech cards:
 
    ```javascript
    if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
@@ -166,7 +166,7 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
 
 3. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-4. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define function
+4. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your loadout's `define()` function
 
 5. Within the `if (!buffCount)` block of your loadout add:
 
