@@ -13,6 +13,7 @@ requireGW(
         .game()
         .inventory()
         .getTag("global", "playerFaction");
+      // Deal the General Commander's minions as cards to the inventory
       _.times(2, function () {
         var minion = _.sample(GWFactions[playerFaction].minions);
         model
@@ -28,71 +29,71 @@ requireGW(
       });
     }
 
-    // GWDealer - add our cards to the deck
-    if (model.gwaioDeck) model.gwaioDeck.push("gwaio_enable_bot_aa");
-    else
-      model.gwaioDeck = [
-        "gwaio_enable_bot_aa",
-        "gwc_add_card_slot",
-        "gwc_bld_efficiency_cdr",
-        "gwc_bld_efficiency_fabs",
-        "gwc_combat_air",
-        "gwc_combat_bots",
-        "gwc_combat_commander",
-        "gwc_combat_orbital",
-        "gwc_combat_sea",
-        "gwc_combat_structures",
-        "gwc_combat_vehicles",
-        "gwc_cost_air",
-        "gwc_cost_artillery",
-        "gwc_cost_bots",
-        "gwc_cost_defenses",
-        "gwc_cost_economy",
-        "gwc_cost_intel",
-        "gwc_cost_orbital",
-        "gwc_cost_sea",
-        "gwc_cost_super_weapons",
-        "gwc_cost_titans",
-        "gwc_cost_vehicles",
-        "gwc_damage_air",
-        "gwc_damage_artillery",
-        "gwc_damage_bots",
-        "gwc_damage_commander",
-        "gwc_damage_defenses",
-        "gwc_damage_orbital",
-        "gwc_damage_sea",
-        "gwc_damage_vehicles",
-        "gwc_enable_air_all",
-        "gwc_enable_air_t1",
-        "gwc_enable_artillery",
-        "gwc_enable_bots_all",
-        "gwc_enable_bots_t1",
-        "gwc_enable_defenses_t2",
-        "gwc_enable_orbital_all",
-        "gwc_enable_sea_all",
-        "gwc_enable_super_weapons",
-        "gwc_enable_titans",
-        "gwc_enable_vehicles_all",
-        "gwc_enable_vehicles_t1",
-        "gwc_energy_efficiency_intel",
-        "gwc_energy_efficiency_weapons",
-        "gwc_health_air",
-        "gwc_health_bots",
-        "gwc_health_commander",
-        "gwc_health_orbital",
-        "gwc_health_sea",
-        "gwc_health_structures",
-        "gwc_health_vehicles",
-        "gwc_minion",
-        "gwc_speed_air",
-        "gwc_speed_bots",
-        "gwc_speed_commander",
-        "gwc_speed_orbital",
-        "gwc_speed_sea",
-        "gwc_speed_vehicles",
-        "gwc_storage_1",
-        "gwc_storage_and_buff",
-      ];
+    /* Start of GWAIO implementation of GWDealer */
+    if (!model.gwaioDeck) model.gwaioDeck = [];
+    model.gwaioDeck.push(
+      "gwaio_enable_bot_aa",
+      "gwc_add_card_slot",
+      "gwc_bld_efficiency_cdr",
+      "gwc_bld_efficiency_fabs",
+      "gwc_combat_air",
+      "gwc_combat_bots",
+      "gwc_combat_commander",
+      "gwc_combat_orbital",
+      "gwc_combat_sea",
+      "gwc_combat_structures",
+      "gwc_combat_vehicles",
+      "gwc_cost_air",
+      "gwc_cost_artillery",
+      "gwc_cost_bots",
+      "gwc_cost_defenses",
+      "gwc_cost_economy",
+      "gwc_cost_intel",
+      "gwc_cost_orbital",
+      "gwc_cost_sea",
+      "gwc_cost_super_weapons",
+      "gwc_cost_titans",
+      "gwc_cost_vehicles",
+      "gwc_damage_air",
+      "gwc_damage_artillery",
+      "gwc_damage_bots",
+      "gwc_damage_commander",
+      "gwc_damage_defenses",
+      "gwc_damage_orbital",
+      "gwc_damage_sea",
+      "gwc_damage_vehicles",
+      "gwc_enable_air_all",
+      "gwc_enable_air_t1",
+      "gwc_enable_artillery",
+      "gwc_enable_bots_all",
+      "gwc_enable_bots_t1",
+      "gwc_enable_defenses_t2",
+      "gwc_enable_orbital_all",
+      "gwc_enable_sea_all",
+      "gwc_enable_super_weapons",
+      "gwc_enable_titans",
+      "gwc_enable_vehicles_all",
+      "gwc_enable_vehicles_t1",
+      "gwc_energy_efficiency_intel",
+      "gwc_energy_efficiency_weapons",
+      "gwc_health_air",
+      "gwc_health_bots",
+      "gwc_health_commander",
+      "gwc_health_orbital",
+      "gwc_health_sea",
+      "gwc_health_structures",
+      "gwc_health_vehicles",
+      "gwc_minion",
+      "gwc_speed_air",
+      "gwc_speed_bots",
+      "gwc_speed_commander",
+      "gwc_speed_orbital",
+      "gwc_speed_sea",
+      "gwc_speed_vehicles",
+      "gwc_storage_1",
+      "gwc_storage_and_buff"
+    );
+
     var cards = [];
     var cardContexts = {};
 
@@ -194,6 +195,7 @@ requireGW(
       });
       return result;
     };
+    /* end of GWAIO implementation of GWDealer */
 
     // gw_play self.explore - we need to call our chooseCards function
     model.explore = function () {
