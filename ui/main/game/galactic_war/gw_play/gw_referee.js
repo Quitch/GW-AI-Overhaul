@@ -24,11 +24,11 @@ define(["shared/gw_common"], function (GW) {
       var battleGround = galaxy.stars()[game.currentStar()];
       var ai = battleGround.ai();
 
-      var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+      var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
       var aiTag = [];
       var aiFactions = [];
 
-      _.times(aiCount, function (n) {
+      _.times(aiFactionCount, function (n) {
         var aiNewTag = ".ai";
         n = n.toString();
         aiNewTag = aiNewTag.concat(n);
@@ -54,7 +54,7 @@ define(["shared/gw_common"], function (GW) {
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
-        _.times(aiCount, function (n) {
+        _.times(aiFactionCount, function (n) {
           var currentCount = n;
           var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
           var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
@@ -122,7 +122,7 @@ define(["shared/gw_common"], function (GW) {
           });
       });
 
-      _.times(aiCount, function (n) {
+      _.times(aiFactionCount, function (n) {
         filesToProcess.push(aiFactions[n]);
       });
 
@@ -191,9 +191,9 @@ define(["shared/gw_common"], function (GW) {
     });
 
     // Setup the AI
-    var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
     var aiTag = [];
-    _.times(aiCount, function (n) {
+    _.times(aiFactionCount, function (n) {
       var aiNewTag = ".ai";
       n = n.toString();
       aiNewTag = aiNewTag.concat(n);
