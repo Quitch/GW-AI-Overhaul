@@ -170,7 +170,6 @@ define(["shared/gw_common"], function (GW) {
       spec_tag: ".player",
       alliance_group: 1,
     });
-    // Setup the player's Sub Commanders
     // eslint-disable-next-line lodash/prefer-map
     _.forEach(inventory.minions(), function (subcommander) {
       armies.push({
@@ -222,7 +221,6 @@ define(["shared/gw_common"], function (GW) {
       spec_tag: aiTag[0],
       alliance_group: 2,
     });
-    // Setup System Faction minions
     _.forEach(ai.minions, function (minion) {
       var slotsArrayMinions = [];
       minion.personality.adv_eco_mod =
