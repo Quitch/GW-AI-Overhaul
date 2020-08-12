@@ -255,20 +255,31 @@ define(["shared/gw_common"], function (GW) {
       alliance_group: 2,
     });
     _.forEach(ai.minions, function (minion) {
+      var slotsArrayMinions = [];
       minion.personality.adv_eco_mod =
         minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
       minion.personality.adv_eco_mod_alone =
         minion.personality.adv_eco_mod_alone *
         (minion.econ_rate || ai.econ_rate);
-      armies.push({
-        slots: [
-          {
+      if (minion.commanderCount) {
+        _.times(minion.commanderCount, function () {
+          slotsArrayMinions.push({
             ai: true,
-            name: minion.name || "Minion",
-            commander: fixupCommander(minion.commander || ai.commander),
+            name: minion.name,
+            commander: fixupCommander(minion.commander || minion.commander),
             landing_policy: _.sample(aiLandingOptions),
-          },
-        ],
+          });
+        });
+      } else {
+        slotsArrayMinions.push({
+          ai: true,
+          name: minion.name,
+          commander: fixupCommander(minion.commander),
+          landing_policy: _.sample(aiLandingOptions),
+        });
+      }
+      armies.push({
+        slots: slotsArrayMinions,
         color: minion.color,
         econ_rate: minion.econ_rate || ai.econ_rate,
         personality: minion.personality,

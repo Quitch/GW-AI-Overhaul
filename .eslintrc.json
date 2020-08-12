@@ -23,7 +23,8 @@
     "locUpdateDocument": "readonly",
     "createjs": "readonly",
     "loadHtml": "readonly",
-    "locTree": "readonly"
+    "locTree": "readonly",
+    "Build": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
