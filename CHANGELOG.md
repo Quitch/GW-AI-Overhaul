@@ -3,6 +3,7 @@
 ## v4.3.0 - 2020-08-12
 
 - General Commander's minions are now dealt as cards to your inventory
+- Added Bot Anti-Air Tech card
 
 ## v4.2.2 - 2020-08-07
 
