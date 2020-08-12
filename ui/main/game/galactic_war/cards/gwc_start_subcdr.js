@@ -1,10 +1,9 @@
 define([
   "module",
   "shared/gw_common",
-  "shared/gw_factions",
   "cards/gwc_start",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWFactions, GWCStart, gwaioFactionCluster) {
+], function (module, GW, GWCStart, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
