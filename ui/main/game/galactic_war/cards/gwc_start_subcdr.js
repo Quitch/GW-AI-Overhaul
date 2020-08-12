@@ -49,7 +49,10 @@ define([
           ]);
         }
         // Support for GWAIO v4.2.2 and earlier
-        if (inventory.cards()[0].minions) {
+        if (
+          inventory.cards()[0].id === "gwc_start_subcdr" &&
+          inventory.cards()[0].minions
+        ) {
           inventory.maxCards(inventory.maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
           _.forEach(context.minions, function (minion) {
