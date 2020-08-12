@@ -135,9 +135,9 @@ From easiest to hardest:
 - Demigod
 - Godlike
 
-## Compatible Loadouts
+## Compatible Loadouts and Tech Cards
 
-If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
+If you are adding new loadouts and tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
 
 1. Add the following to the gw_start scene:
 
@@ -153,18 +153,25 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
    }
    ```
 
-2. Ensure your loadout cards are in `coui://ui/main/game/galactic_war/cards/`
+2. Add the following to the gw_play scene:
 
-3. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define function
+   ```javascript
+   if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
+   else model.gwaioDeck = ["YOUR_TECH_ID"];
+   ```
 
-4. Within the `if (!buffCount)` block of your loadout add:
+3. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
+
+4. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your define function
+
+5. Within the `if (!buffCount)` block of your loadout add:
 
    ```javascript
    if (inventory.getTag("global", "playerFaction") === 4)
      gwaioFactionCluster.buff(inventory);
    ```
 
-5. Add com.pa.quitch.gwaioverhaul as a dependency
+6. Add com.pa.quitch.gwaioverhaul as a dependency
 
 ## FAQ
 

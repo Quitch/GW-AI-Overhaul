@@ -579,62 +579,38 @@ requireGW(
     });
 
     /* Start of GWAIO implementation of GWDealer */
-    if (model.gwaioTreasureCards)
-      model.gwaioTreasureCards.push(
-        { id: "gwc_start_storage" },
-        { id: "gwaio_start_ceo" },
-        { id: "gwaio_start_paratrooper" },
-        { id: "nem_start_deepspace" },
-        { id: "nem_start_nuke" },
-        { id: "nem_start_planetary" },
-        { id: "nem_start_tower_rush" },
-        { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" }
-      );
-    else
-      model.gwaioTreasureCards = [
-        { id: "gwc_start_storage" },
-        { id: "gwc_start_air" },
-        { id: "gwc_start_orbital" },
-        { id: "gwc_start_bot" },
-        { id: "gwc_start_artillery" },
-        { id: "gwc_start_subcdr" },
-        { id: "gwc_start_combatcdr" },
-        { id: "gwc_start_allfactory" },
-        { id: "gwaio_start_ceo" },
-        { id: "gwaio_start_paratrooper" },
-        { id: "nem_start_deepspace" },
-        { id: "nem_start_nuke" },
-        { id: "nem_start_planetary" },
-        { id: "nem_start_tower_rush" },
-        { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" },
-      ];
+    if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
+    model.gwaioTreasureCards.push(
+      { id: "gwc_start_storage" },
+      { id: "gwc_start_air" },
+      { id: "gwc_start_orbital" },
+      { id: "gwc_start_bot" },
+      { id: "gwc_start_artillery" },
+      { id: "gwc_start_subcdr" },
+      { id: "gwc_start_combatcdr" },
+      { id: "gwc_start_allfactory" },
+      { id: "gwaio_start_ceo" },
+      { id: "gwaio_start_paratrooper" },
+      { id: "nem_start_deepspace" },
+      { id: "nem_start_nuke" },
+      { id: "nem_start_planetary" },
+      { id: "nem_start_tower_rush" },
+      { id: "gwaio_start_tourist" },
+      { id: "gwaio_start_rapid" }
+    );
 
-    if (model.gwaioNewStartCards)
-      model.gwaioNewStartCards.push(
-        { id: "gwc_start_storage" },
-        { id: "gwaio_start_ceo" },
-        { id: "gwaio_start_paratrooper" },
-        { id: "nem_start_deepspace" },
-        { id: "nem_start_nuke" },
-        { id: "nem_start_planetary" },
-        { id: "nem_start_tower_rush" },
-        { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" }
-      );
-    else
-      model.gwaioNewStartCards = [
-        { id: "gwc_start_storage" },
-        { id: "gwaio_start_ceo" },
-        { id: "gwaio_start_paratrooper" },
-        { id: "nem_start_deepspace" },
-        { id: "nem_start_nuke" },
-        { id: "nem_start_planetary" },
-        { id: "nem_start_tower_rush" },
-        { id: "gwaio_start_tourist" },
-        { id: "gwaio_start_rapid" },
-      ];
+    if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
+    model.gwaioNewStartCards.push(
+      { id: "gwc_start_storage" },
+      { id: "gwaio_start_ceo" },
+      { id: "gwaio_start_paratrooper" },
+      { id: "nem_start_deepspace" },
+      { id: "nem_start_nuke" },
+      { id: "nem_start_planetary" },
+      { id: "nem_start_tower_rush" },
+      { id: "gwaio_start_tourist" },
+      { id: "gwaio_start_rapid" }
+    );
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
         model.startCards().push(model.makeUnknown(cardData));
@@ -642,46 +618,26 @@ requireGW(
     });
     model.startCards(_.flatten(model.startCards()));
 
-    if (model.gwaioAllStartCards)
-      model.gwaioAllStartCards.push(
-        "gwc_start_vehicle",
-        "gwc_start_air",
-        "gwc_start_bot",
-        "gwc_start_orbital",
-        "gwc_start_artillery",
-        "gwc_start_subcdr",
-        "gwc_start_combatcdr",
-        "gwc_start_allfactory",
-        "gwc_start_storage",
-        "gwaio_start_ceo",
-        "gwaio_start_paratrooper",
-        "nem_start_deepspace",
-        "nem_start_nuke",
-        "nem_start_planetary",
-        "nem_start_tower_rush",
-        "gwaio_start_tourist",
-        "gwaio_start_rapid"
-      );
-    else
-      model.gwaioAllStartCards = [
-        "gwc_start_vehicle",
-        "gwc_start_air",
-        "gwc_start_bot",
-        "gwc_start_orbital",
-        "gwc_start_artillery",
-        "gwc_start_subcdr",
-        "gwc_start_combatcdr",
-        "gwc_start_allfactory",
-        "gwc_start_storage",
-        "gwaio_start_ceo",
-        "gwaio_start_paratrooper",
-        "nem_start_deepspace",
-        "nem_start_nuke",
-        "nem_start_planetary",
-        "nem_start_tower_rush",
-        "gwaio_start_tourist",
-        "gwaio_start_rapid",
-      ];
+    if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
+    model.gwaioAllStartCards.push(
+      "gwc_start_vehicle",
+      "gwc_start_air",
+      "gwc_start_bot",
+      "gwc_start_orbital",
+      "gwc_start_artillery",
+      "gwc_start_subcdr",
+      "gwc_start_combatcdr",
+      "gwc_start_allfactory",
+      "gwc_start_storage",
+      "gwaio_start_ceo",
+      "gwaio_start_paratrooper",
+      "nem_start_deepspace",
+      "nem_start_nuke",
+      "nem_start_planetary",
+      "nem_start_tower_rush",
+      "gwaio_start_tourist",
+      "gwaio_start_rapid"
+    );
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
     var loaded = $.Deferred();

@@ -28,11 +28,9 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function (__, context) {
-      var minions = _.shuffle(GWFactions[context.faction].minions.slice(0));
+    deal: function () {
       return {
         params: {
-          minions: minions.slice(0, 2),
           allowOverflow: true,
         },
         chance: 0,
@@ -46,11 +44,14 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             gwaioFactionCluster.buff(inventory);
-          inventory.maxCards(inventory.maxCards() - 1);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
+        }
+        // Support for GWAIO v4.2.2 and earlier
+        if (inventory.cards()[0].minions) {
+          inventory.maxCards(inventory.maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
           _.forEach(context.minions, function (minion) {
             inventory.minions.push(minion);

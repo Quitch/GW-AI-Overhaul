@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v4.3.0 - 2020-08-12
+
+- Deal General Commander's minions as cards to your inventory
+- Added Bot Anti-Air Tech card
+- Fixed armies not always landing with multiple commanders even though intelligence said they have them
+- Enabled the following tech cards:
+  - Intelligence Fabrication Tech
+  - Improved Intelligence Tech
+  - Improved Energy Weapons
+
 ## v4.2.2 - 2020-08-07
 
 - Fixed Cluster Worker not generating the right AI threat
