@@ -1,10 +1,9 @@
 define([
   "module",
   "shared/gw_common",
-  "shared/gw_factions",
   "cards/gwc_start",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWFactions, GWCStart, gwaioFactionCluster) {
+], function (module, GW, GWCStart, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -50,7 +49,10 @@ define([
           ]);
         }
         // Support for GWAIO v4.2.2 and earlier
-        if (inventory.cards()[0].minions) {
+        if (
+          inventory.cards()[0].id === "gwc_start_subcdr" &&
+          inventory.cards()[0].minions
+        ) {
           inventory.maxCards(inventory.maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
           _.forEach(context.minions, function (minion) {

@@ -24,11 +24,11 @@ define(["shared/gw_common"], function (GW) {
       var battleGround = galaxy.stars()[game.currentStar()];
       var ai = battleGround.ai();
 
-      var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+      var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
       var aiTag = [];
       var aiFactions = [];
 
-      _.times(aiCount, function (n) {
+      _.times(aiFactionCount, function (n) {
         var aiNewTag = ".ai";
         n = n.toString();
         aiNewTag = aiNewTag.concat(n);
@@ -54,7 +54,7 @@ define(["shared/gw_common"], function (GW) {
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
-        _.times(aiCount, function (n) {
+        _.times(aiFactionCount, function (n) {
           var currentCount = n;
           var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
           var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
@@ -122,7 +122,7 @@ define(["shared/gw_common"], function (GW) {
           });
       });
 
-      _.times(aiCount, function (n) {
+      _.times(aiFactionCount, function (n) {
         filesToProcess.push(aiFactions[n]);
       });
 
@@ -170,82 +170,56 @@ define(["shared/gw_common"], function (GW) {
       spec_tag: ".player",
       alliance_group: 1,
     });
-    // Setup the player's Sub Commanders
     // eslint-disable-next-line lodash/prefer-map
-    _.forEach(inventory.minions(), function (minion) {
+    _.forEach(inventory.minions(), function (subcommander) {
       armies.push({
         slots: [
           {
             ai: true,
-            name: minion.name || "Sub Commander",
-            commander: fixupCommander(minion.commander || playerCommander),
+            name: subcommander.name,
+            commander: fixupCommander(subcommander.commander),
             landing_policy: _.sample(aiLandingOptions),
           },
         ],
-        color: minion.color || [playerColor[1], playerColor[0]],
+        color: subcommander.color,
         econ_rate: 1,
-        personality: minion.personality,
+        personality: subcommander.personality,
         spec_tag: ".player",
         alliance_group: 1,
       });
     });
 
     // Setup the AI
-    var aiCount = ai.foes ? 1 + ai.foes.length : 1;
+    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
     var aiTag = [];
-    _.times(aiCount, function (n) {
+    _.times(aiFactionCount, function (n) {
       var aiNewTag = ".ai";
       n = n.toString();
       aiNewTag = aiNewTag.concat(n);
       aiTag.push(aiNewTag);
     });
-
+    // Setup System Faction
     ai.personality.adv_eco_mod = ai.personality.adv_eco_mod * ai.econ_rate;
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
-    // Check without !LOC: to support GWAIO v2.2.0 and earlier
-    if (
-      ai.character === "!LOC:Boss" ||
-      ai.character === "!LOC:Unknown" ||
-      ai.character === "Boss"
-    ) {
-      if (ai.bossCommanders) {
-        _.times(ai.bossCommanders, function () {
-          slotsArray.push({
-            ai: true,
-            name: ai.name,
-            commander: fixupCommander(ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        });
-      } else {
-        // Support GWAIO v2.0.4 and earlier
-        _.times(ai.landing_policy.length, function () {
-          slotsArray.push({
-            ai: true,
-            name: ai.name,
-            commander: fixupCommander(ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        });
-      }
-    } else if (ai.commanderCount) {
-      _.times(ai.commanderCount, function () {
+    if (ai.landing_policy)
+      _.times(ai.landing_policy.length, function () {
         slotsArray.push({
           ai: true,
           name: ai.name,
-          commander: fixupCommander(ai.commander || ai.commander),
+          commander: fixupCommander(ai.commander),
           landing_policy: _.sample(aiLandingOptions),
         });
       });
-    } else {
-      slotsArray.push({
-        ai: true,
-        name: ai.name,
-        commander: fixupCommander(ai.commander),
-        landing_policy: _.sample(aiLandingOptions),
+    else
+      _.times(ai.bossCommanders || ai.commanderCount || 1, function () {
+        slotsArray.push({
+          ai: true,
+          name: ai.name,
+          commander: fixupCommander(ai.commander),
+          landing_policy: _.sample(aiLandingOptions),
+        });
       });
-    }
     armies.push({
       slots: slotsArray,
       color: ai.color,
@@ -257,77 +231,66 @@ define(["shared/gw_common"], function (GW) {
     _.forEach(ai.minions, function (minion) {
       var slotsArrayMinions = [];
       minion.personality.adv_eco_mod =
-        minion.personality.adv_eco_mod * (minion.econ_rate || ai.econ_rate);
+        minion.personality.adv_eco_mod * minion.econ_rate;
       minion.personality.adv_eco_mod_alone =
-        minion.personality.adv_eco_mod_alone *
-        (minion.econ_rate || ai.econ_rate);
-      if (minion.commanderCount) {
-        _.times(minion.commanderCount, function () {
+        minion.personality.adv_eco_mod_alone * minion.econ_rate;
+      if (minion.landing_policy)
+        _.times(minion.landing_policy.length, function () {
           slotsArrayMinions.push({
             ai: true,
             name: minion.name,
-            commander: fixupCommander(minion.commander || minion.commander),
+            commander: fixupCommander(minion.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
         });
-      } else {
-        slotsArrayMinions.push({
-          ai: true,
-          name: minion.name,
-          commander: fixupCommander(minion.commander),
-          landing_policy: _.sample(aiLandingOptions),
+      else
+        _.times(minion.commanderCount || 1, function () {
+          slotsArrayMinions.push({
+            ai: true,
+            name: minion.name,
+            commander: fixupCommander(minion.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
         });
-      }
       armies.push({
         slots: slotsArrayMinions,
         color: minion.color,
-        econ_rate: minion.econ_rate || ai.econ_rate,
+        econ_rate: minion.econ_rate,
         personality: minion.personality,
         spec_tag: aiTag[0],
         alliance_group: 2,
       });
     });
-    // Add Additional Factions for FFA if any
+    // // Setup Additional Factions
     var allianceGroup = 3;
     var foeCount = 1;
     _.forEach(ai.foes, function (foe) {
       var slotsArrayFoes = [];
-      foe.personality.adv_eco_mod =
-        foe.personality.adv_eco_mod * (foe.econ_rate || ai.econ_rate);
+      foe.personality.adv_eco_mod = foe.personality.adv_eco_mod * foe.econ_rate;
       foe.personality.adv_eco_mod_alone =
-        foe.personality.adv_eco_mod_alone * (foe.econ_rate || ai.econ_rate);
-      if (foe.commanderCount) {
-        _.times(foe.commanderCount, function () {
-          slotsArrayFoes.push({
-            ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
-            landing_policy: _.sample(aiLandingOptions),
-          });
-        });
-      } else if (foe.landing_policy) {
-        // Support GWAIO v1.2.0 - v2.0.4
+        foe.personality.adv_eco_mod_alone * foe.econ_rate;
+      if (foe.landing_policy)
         _.times(foe.landing_policy.length, function () {
           slotsArrayFoes.push({
             ai: true,
-            name: foe.name || "Foe",
-            commander: fixupCommander(foe.commander || ai.commander),
+            name: foe.name,
+            commander: fixupCommander(foe.commander),
             landing_policy: _.sample(aiLandingOptions),
           });
         });
-      } else {
-        // Support GWAIO v1.1.0 and earlier
-        slotsArrayFoes.push({
-          ai: true,
-          name: foe.name || "Foe",
-          commander: fixupCommander(foe.commander || ai.commander),
-          landing_policy: _.sample(aiLandingOptions),
+      else
+        _.times(foe.commanderCount || 1, function () {
+          slotsArrayFoes.push({
+            ai: true,
+            name: foe.name,
+            commander: fixupCommander(foe.commander),
+            landing_policy: _.sample(aiLandingOptions),
+          });
         });
-      }
       armies.push({
         slots: slotsArrayFoes,
         color: foe.color,
-        econ_rate: foe.econ_rate || ai.econ_rate,
+        econ_rate: foe.econ_rate,
         personality: foe.personality,
         spec_tag: aiTag[foeCount],
         alliance_group: allianceGroup,
