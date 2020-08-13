@@ -209,7 +209,7 @@ $("#game-difficulty-label").after(
   )
 );
 
-$("#game-difficulty").html(
+$("#game-difficulty").replaceWith(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
   )
