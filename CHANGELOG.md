@@ -3,6 +3,7 @@
 ## DEV
 
 - Allow the player to delete tech from their inventory at any time
+- Code clean-up
 
 ## v4.3.0 - 2020-08-12
 
