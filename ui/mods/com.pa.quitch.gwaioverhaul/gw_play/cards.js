@@ -1,3 +1,8 @@
+$("#hover-card").replaceWith(
+  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
+);
+locTree($("#hover-card"));
+
 requireGW(
   [
     "shared/gw_common",

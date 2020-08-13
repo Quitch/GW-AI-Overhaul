@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV
+
+- Allow the player to delete tech from their inventory at any time
+
 ## v4.3.0 - 2020-08-12
 
 - Deal General Commander's minions as cards to your inventory

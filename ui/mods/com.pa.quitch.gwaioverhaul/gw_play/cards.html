@@ -1,0 +1,23 @@
+<div
+  id="hover-card"
+  data-bind="visible: !!model.hoverCard() && !hidingUI()"
+  style="display: none;"
+>
+  <div class="card" data-bind="with: hoverCard">
+    <div
+      class="close"
+      data-bind="click: function () { model.setHoverCard(undefined); }, click_sound: 'default', rollover_sound: 'default'"
+    ></div>
+    <!-- ko template: 'cardTemplate' -->
+    <!-- /ko -->
+    <!-- ko if: !isEmpty() -->
+    <div class="card_action">
+      <div class="btn_neg discard" data-bind="click: model.discardHoverCard">
+        <div class="btn_label" style="font-size: 16px;">
+          <loc>Delete Tech</loc>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
+  </div>
+</div>
