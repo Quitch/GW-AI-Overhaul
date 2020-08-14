@@ -4,6 +4,7 @@
 
 - Turtle commanders use more basic fabbers
 - Turtle sub commanders can use more fabbers than other sub commanders
+- Uber has less early commanders
 
 ## v4.4.1 - 2020-08-14
 

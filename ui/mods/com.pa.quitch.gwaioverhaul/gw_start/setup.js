@@ -453,7 +453,7 @@ requireGW(
         customDifficulty: false,
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 1,
+        mandatoryMinions: 0,
         minionMod: 0.49,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
