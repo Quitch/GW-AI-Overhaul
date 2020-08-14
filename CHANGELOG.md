@@ -2,7 +2,7 @@
 
 ## DEV
 
-- Corrected commander count for older wars sometimes being wrong
+- Corrected commander count for older wars sometimes being wrong on intelligence reports
 
 ## v4.4.0 - 2020-08-13
 
