@@ -54,12 +54,13 @@
   var intelligence = function (commander) {
     var name = commander.name;
     var eco = commander.econ_rate;
-    if (commander.bossCommanders > 1) var commanders = commander.bossCommanders;
+    if (commander.bossCommanders > 1)
+      var numCommanders = commander.bossCommanders;
     else if (commander.commanderCount > 1)
-      commanders = commander.commanderCount;
-    if (commanders) {
-      name = name.concat(" x", commanders);
-      eco = eco * ((commanders + 1) / 2);
+      numCommanders = commander.commanderCount;
+    if (numCommanders) {
+      name = name.concat(" x", numCommanders);
+      eco = eco * ((numCommanders + 1) / 2);
     }
     return {
       name: name,
