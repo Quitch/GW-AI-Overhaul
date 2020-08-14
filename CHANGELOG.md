@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.4.1 - 2020-08-14
+
+- Corrected commander count for older wars sometimes being wrong on intelligence reports
+
 ## v4.4.0 - 2020-08-13
 
 - Allow the player to delete tech from their inventory at any time
