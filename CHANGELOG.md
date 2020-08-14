@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## DEV
+
+- Turtle commanders use more basic fabbers
+- Turtle sub commanders can use more fabbers than other sub commanders
+
 ## v4.4.1 - 2020-08-14
 
 - Corrected commander count for older wars sometimes being wrong on intelligence reports
