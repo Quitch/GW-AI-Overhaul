@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.4.1 - 2020-08-14
 
 - Corrected commander count for older wars sometimes being wrong on intelligence reports
 
