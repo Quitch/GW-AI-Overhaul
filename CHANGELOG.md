@@ -10,6 +10,7 @@
 - Fix bounty mode always using the default reward value
 - Increased the size of bounty awarded above casual difficulty
 - Smoother curve across difficulties as to when they being to receive tech buffs
+- Added tooltip to galaxy size selection
 
 ## v4.4.1 - 2020-08-14
 
