@@ -846,7 +846,6 @@ requireGW(
         }
 
         var setAIData = function (ai, dist, isBossSystem, isBoss) {
-          if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -862,7 +861,6 @@ requireGW(
             model.gwaioDifficultySettings.startingLocationEvaluationRadius() > 0
           )
             ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
-          else delete ai.personality.starting_location_evaluation_radius;
           if (isBossSystem) {
             ai.econ_rate =
               (model.gwaioDifficultySettings.econBase() +
@@ -876,12 +874,6 @@ requireGW(
                 dist * model.gwaioDifficultySettings.econRatePerDist()) *
               getRandomArbitrary(0.9, 1.1);
           }
-          if (!isBoss) ai.commanderCount = 1;
-          ai.treasurePlanet = false;
-          ai.mirrorMode = false;
-          ai.landAnywhere = false;
-          ai.suddenDeath = false;
-          ai.bountyMode = false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -929,17 +921,21 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               if (info.boss.isCluster === true) {
-                var bossMinion = _.sample(
-                  _.filter(GWFactions[info.faction].minions, {
-                    name: "Security",
-                  })
+                var bossMinion = _.clone(
+                  _.sample(
+                    _.filter(GWFactions[info.faction].minions, {
+                      name: "Security",
+                    })
+                  )
                 );
                 setAIData(bossMinion, maxDist, true, false);
                 bossMinion.commanderCount = numMinions;
                 info.boss.minions.push(bossMinion);
               } else
                 _.times(numMinions, function () {
-                  bossMinion = _.sample(GWFactions[info.faction].minions);
+                  bossMinion = _.clone(
+                    _.sample(GWFactions[info.faction].minions)
+                  );
                   setAIData(bossMinion, maxDist, true, false);
                   info.boss.minions.push(bossMinion);
                 });
@@ -999,10 +995,12 @@ requireGW(
             if (numMinions > 0) {
               worker.ai.minions = [];
               if (worker.ai.name === "Security") {
-                var minion = _.sample(
-                  _.filter(GWFactions[info.faction].minions, {
-                    name: "Worker",
-                  })
+                var minion = _.clone(
+                  _.sample(
+                    _.filter(GWFactions[info.faction].minions, {
+                      name: "Worker",
+                    })
+                  )
                 );
                 setAIData(minion, dist, false, false);
                 minion.commanderCount =
@@ -1020,7 +1018,7 @@ requireGW(
                   );
               else {
                 _.times(numMinions, function () {
-                  minion = _.sample(GWFactions[info.faction].minions);
+                  minion = _.clone(_.sample(GWFactions[info.faction].minions));
                   setAIData(minion, dist, false, false);
                   worker.ai.minions.push(minion);
                 });
@@ -1037,7 +1035,9 @@ requireGW(
                 if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
                 var foeFaction = availableFactions.splice(0, 1);
-                var foeCommander = _.sample(GWFactions[foeFaction].minions);
+                var foeCommander = _.clone(
+                  _.sample(GWFactions[foeFaction].minions)
+                );
                 var numFoes = Math.round((numMinions + 1) / 2);
                 if (foeCommander.name === "Worker") {
                   numFoes += Math.floor(
@@ -1146,8 +1146,6 @@ requireGW(
                 if (world.planet) world.planet.shuffleLandingZones = true;
                 else world.generator.shuffleLandingZones = true;
             });
-            /* We setup the treasure planet here and not AI setup to avoid the 
-               cardList existing in more than one location at a time */
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
               delete ai.commanderCount;
