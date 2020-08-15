@@ -58,10 +58,10 @@ model.gwaioDifficultySettings = {
     return loc(model.gwaioDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   minionMod: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
@@ -97,10 +97,10 @@ model.gwaioDifficultySettings = {
     );
   },
   econBase: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   econRatePerDist: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   maxBasicFabbers: ko.observable(0).extend({
     precision: 0,
@@ -127,10 +127,10 @@ model.gwaioDifficultySettings = {
     precision: 0,
   }),
   bountyModeValue: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   factionTechHandicap: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
