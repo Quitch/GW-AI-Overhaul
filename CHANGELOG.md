@@ -6,7 +6,7 @@
 - Turtle sub commanders can use more fabbers than other sub commanders
 - Uber has less commanders early on but more commanders later on
 - Added buttons for changing custom difficulty field values
-- Implemented minimum, maximimum, and step values for custom difficulty fields
+- Implemented minimum, maximum, and step values for custom difficulty fields
 - Fixed bounty mode always using the default reward value
 - Increased the size of bounty awarded above casual difficulty
 - Smoothed curve across difficulties as to when they begin to receive tech buffs
