@@ -2,7 +2,7 @@
 
 ## DEV
 
-- Turtle commanders use more basic fabbers
+- Turtle commanders use more fabbers
 - Turtle sub commanders can use more fabbers than other sub commanders
 - Uber has less commanders early on but more commanders later on
 - Added spin buttons for changing custom difficulty fields
