@@ -1,6 +1,6 @@
-# Galactic War AI Overhaul Readme
+# [Galactic War AI Overhaul Readme]
 
-## Description
+## [Description]
 
 This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
 
@@ -35,15 +35,15 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
-## Installation
+## [Installation]
 
 Install this mod via the Planetary Annihilation: TITANS in-game Community Mod manager.
 
-## In Action
+## [In Action]
 
 [![Table and Chums tries the mod for the first time.](https://i3.ytimg.com/vi/-0csZIM12N0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-0csZIM12N0&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
 
-## Difficulty
+## [Difficulty]
 
 Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
@@ -65,7 +65,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 
 ![Custom badge](./images/custom.png) **Custom**: for when you want to create your own challenge.
 
-### Difficulty Options
+### [Difficulty Options]
 
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
 
@@ -103,7 +103,7 @@ Each system will display the following information:
 
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
-### AI Buffs
+### [AI Buffs]
 
 These buffs are applied on a per-faction basis:
 
@@ -113,7 +113,7 @@ These buffs are applied on a per-faction basis:
 - **Revenants**: orbital units and structures
 - **Cluster**: basic units
 
-### Commander Threat Scale
+### [Commander Threat Scale]
 
 From easiest to hardest:
 
@@ -135,7 +135,7 @@ From easiest to hardest:
 - Demigod
 - Godlike
 
-## Compatible Loadouts and Tech Cards
+## [Compatible Loadouts and Tech Cards]
 
 If you are adding new loadouts and tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
 
@@ -177,7 +177,7 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
 
 6. Add com.pa.quitch.gwaioverhaul as a dependency
 
-## FAQ
+## [FAQ]
 
 **Q. Can I use an AI mod like Queller?**
 
@@ -211,25 +211,25 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 When the Synchronous have the speed bonus their defences will move to engage you when you get close.
 
-## Known Issues
+## [Known Issues]
 
 1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
 
-## Recommended mods
+## [Recommended mods]
 
 - Shared Systems for galactic war
 
-## Incompatible mods
+## [Incompatible mods]
 
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
 - Section of Foreign Intelligence for galactic war
 - Galactic War Unique Loadouts
 
-## Thanks to
+## [Thanks to]
 
-- wondible, who continues to be amazing with his JavaScript support
-- PA Inc, for including official translations for the mod
+- [wondible](https://github.com/JustinLove), who continues to be amazing with his JavaScript support
+- [PA Inc](http://planetaryannihilation.com/), for including official translations for the mod
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - wpmarshall, for the Cluster faction logo
 - =VoW=BlackAngelLOL, for the Bang Battle 3T V1 system
