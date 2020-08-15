@@ -130,7 +130,7 @@ model.gwaioDifficultySettings = {
     precision: 3,
   }),
   factionTechHandicap: ko.observable(0).extend({
-    precision: 0,
+    precision: 3,
   }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
