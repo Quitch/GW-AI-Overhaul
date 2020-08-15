@@ -7,9 +7,9 @@
 - Uber has less commanders early on but more commanders later on
 - Added buttons for changing custom difficulty field values
 - Implemented minimum, maximimum, and step values for custom difficulty fields
-- Fix bounty mode always using the default reward value
+- Fixed bounty mode always using the default reward value
 - Increased the size of bounty awarded above casual difficulty
-- Smoother curve across difficulties as to when they being to receive tech buffs
+- Smoothed curve across difficulties as to when they begin to receive tech buffs
 - Added tooltip to galaxy size selection
 - Corrected Worker being one commander short if they were the system owner
 - Fixed a base game issue where multiple galaxy generations would cause an increasing number of AIs to be assigned incorrect values
