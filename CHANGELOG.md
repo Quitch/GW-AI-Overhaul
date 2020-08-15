@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Corrected the accuracy of the custom difficulty FFA tooltip
+
 ## [4.5.0] - 2020-08-15
 
 - Turtle commanders use more fabbers
