@@ -981,7 +981,6 @@ requireGW(
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
-
             _.times(typeOfBuffs.length, function (n) {
               worker.ai.inventory = worker.ai.inventory.concat(
                 gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
