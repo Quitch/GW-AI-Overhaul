@@ -305,7 +305,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 25,
         bountyModeValue: 0.45,
-        factionTechHandicap: 3,
+        factionTechHandicap: 2.5,
         starting_location_evaluation_radius: 100,
       },
       {
@@ -361,7 +361,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 20,
         bountyModeValue: 0.35,
-        factionTechHandicap: 2,
+        factionTechHandicap: 1.5,
         starting_location_evaluation_radius: 200,
       },
       {
@@ -417,7 +417,7 @@ requireGW(
         suddenDeathChance: 10,
         bountyModeChance: 15,
         bountyModeValue: 0.25,
-        factionTechHandicap: 1,
+        factionTechHandicap: 0.5,
         starting_location_evaluation_radius: 300,
       },
       {
