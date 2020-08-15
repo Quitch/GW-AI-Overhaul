@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v4.5.0 - 2020-08-15
+
+- Turtle commanders use more fabbers
+- Turtle sub commanders can use more fabbers than other sub commanders
+- Uber has less commanders early on but more commanders later on
+- Added buttons for changing custom difficulty field values
+- Implemented minimum, maximimum, and step values for custom difficulty fields
+- Fixed bounty mode always using the default reward value
+- Increased the size of bounty awarded above casual difficulty
+- Smoothed curve across difficulties as to when they begin to receive tech buffs
+- Added tooltip to galaxy size selection
+- Corrected Worker being one commander short if they were the system owner
+- Fixed a base game issue where multiple galaxy generations would cause an increasing number of AIs to be assigned incorrect values
+
 ## v4.4.1 - 2020-08-14
 
 - Corrected commander count for older wars sometimes being wrong on intelligence reports

@@ -58,10 +58,10 @@ model.gwaioDifficultySettings = {
     return loc(model.gwaioDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   minionMod: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
@@ -97,10 +97,10 @@ model.gwaioDifficultySettings = {
     );
   },
   econBase: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   econRatePerDist: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   maxBasicFabbers: ko.observable(0).extend({
     precision: 0,
@@ -127,10 +127,10 @@ model.gwaioDifficultySettings = {
     precision: 0,
   }),
   bountyModeValue: ko.observable(0).extend({
-    precision: 3,
+    precision: 2,
   }),
   factionTechHandicap: ko.observable(0).extend({
-    precision: 0,
+    precision: 2,
   }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
@@ -203,9 +203,15 @@ model.ready = ko.computed(function () {
   );
 });
 
+$("#game-size").before(
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/size_tooltip.html"
+  )
+);
+
 $("#game-difficulty-label").after(
   loadHtml(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_tooltip.html"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
   )
 );
 
@@ -304,8 +310,8 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 25,
-        bountyModeValue: 0.4,
-        factionTechHandicap: 3,
+        bountyModeValue: 0.45,
+        factionTechHandicap: 2.5,
         starting_location_evaluation_radius: 100,
       },
       {
@@ -332,7 +338,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 20,
-        bountyModeValue: 0.3,
+        bountyModeValue: 0.4,
         factionTechHandicap: 2,
         starting_location_evaluation_radius: 150,
       },
@@ -360,8 +366,8 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 20,
-        bountyModeValue: 0.3,
-        factionTechHandicap: 2,
+        bountyModeValue: 0.35,
+        factionTechHandicap: 1.5,
         starting_location_evaluation_radius: 200,
       },
       {
@@ -388,7 +394,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 15,
-        bountyModeValue: 0.2,
+        bountyModeValue: 0.3,
         factionTechHandicap: 1,
         starting_location_evaluation_radius: 250,
       },
@@ -416,8 +422,8 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 15,
-        bountyModeValue: 0.2,
-        factionTechHandicap: 1,
+        bountyModeValue: 0.25,
+        factionTechHandicap: 0.5,
         starting_location_evaluation_radius: 300,
       },
       {
@@ -444,7 +450,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 10,
-        bountyModeValue: 0.1,
+        bountyModeValue: 0.2,
         factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
@@ -453,8 +459,8 @@ requireGW(
         customDifficulty: false,
         goForKill: true,
         microType: 2,
-        mandatoryMinions: 1,
-        minionMod: 0.49,
+        mandatoryMinions: -1,
+        minionMod: 0.74,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
@@ -472,7 +478,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 10,
-        bountyModeValue: 0.1,
+        bountyModeValue: 0.2,
         factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
@@ -840,7 +846,6 @@ requireGW(
         }
 
         var setAIData = function (ai, dist, isBossSystem, isBoss) {
-          if (ai.personality === undefined) ai.personality = {};
           ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
           ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
           ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -856,7 +861,6 @@ requireGW(
             model.gwaioDifficultySettings.startingLocationEvaluationRadius() > 0
           )
             ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
-          else delete ai.personality.starting_location_evaluation_radius;
           if (isBossSystem) {
             ai.econ_rate =
               (model.gwaioDifficultySettings.econBase() +
@@ -870,12 +874,6 @@ requireGW(
                 dist * model.gwaioDifficultySettings.econRatePerDist()) *
               getRandomArbitrary(0.9, 1.1);
           }
-          if (!isBoss) ai.commanderCount = 1;
-          ai.treasurePlanet = false;
-          ai.mirrorMode = false;
-          ai.landAnywhere = false;
-          ai.suddenDeath = false;
-          ai.bountyMode = false;
         };
 
         var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -923,28 +921,32 @@ requireGW(
             if (numMinions > 0) {
               info.boss.minions = [];
               if (info.boss.isCluster === true) {
-                var bossMinion = _.sample(
-                  _.filter(GWFactions[info.faction].minions, {
-                    name: "Security",
-                  })
+                var bossMinion = _.clone(
+                  _.sample(
+                    _.filter(GWFactions[info.faction].minions, {
+                      name: "Security",
+                    })
+                  )
                 );
                 setAIData(bossMinion, maxDist, true, false);
                 bossMinion.commanderCount = numMinions;
                 info.boss.minions.push(bossMinion);
               } else
                 _.times(numMinions, function () {
-                  bossMinion = _.sample(GWFactions[info.faction].minions);
+                  bossMinion = _.clone(
+                    _.sample(GWFactions[info.faction].minions)
+                  );
                   setAIData(bossMinion, maxDist, true, false);
                   info.boss.minions.push(bossMinion);
                 });
             }
             /*
             // prettier-ignore
-            console.log("BOSS:", info.boss.name, "| Faction:", info.boss.faction, "| Eco:", info.boss.econ_rate.toPrecision(2), "| Count:", info.boss.bossCommanders, "| Dist:", maxDist)
+            console.log("BOSS:", info.boss.name, "| Faction:", info.boss.faction, "| Eco:", info.boss.econ_rate.toPrecision(3), "| Count:", info.boss.bossCommanders, "| Dist:", maxDist)
             if (info.boss.minions) {
               _.times(info.boss.minions.length, function (n) {
                 // prettier-ignore
-                console.log("\tMinion:", info.boss.minions[n].name, "| Eco:", info.boss.minions[n].econ_rate.toPrecision(2), "| Count:", info.boss.minions[n].commanderCount)
+                console.log("\tMinion:", info.boss.minions[n].name, "| Eco:", info.boss.minions[n].econ_rate.toPrecision(3), "| Count:", info.boss.minions[n].commanderCount)
               });
             }
             */
@@ -993,10 +995,12 @@ requireGW(
             if (numMinions > 0) {
               worker.ai.minions = [];
               if (worker.ai.name === "Security") {
-                var minion = _.sample(
-                  _.filter(GWFactions[info.faction].minions, {
-                    name: "Worker",
-                  })
+                var minion = _.clone(
+                  _.sample(
+                    _.filter(GWFactions[info.faction].minions, {
+                      name: "Worker",
+                    })
+                  )
                 );
                 setAIData(minion, dist, false, false);
                 minion.commanderCount =
@@ -1007,13 +1011,14 @@ requireGW(
                 worker.ai.minions.push(minion);
               } else if (worker.ai.name === "Worker")
                 worker.ai.commanderCount =
+                  1 +
                   numMinions +
                   Math.floor(
                     model.gwaioDifficultySettings.bossCommanders() / 2
                   );
               else {
                 _.times(numMinions, function () {
-                  minion = _.sample(GWFactions[info.faction].minions);
+                  minion = _.clone(_.sample(GWFactions[info.faction].minions));
                   setAIData(minion, dist, false, false);
                   worker.ai.minions.push(minion);
                 });
@@ -1030,7 +1035,9 @@ requireGW(
                 if (worker.ai.foes === undefined) worker.ai.foes = [];
                 availableFactions = _.shuffle(availableFactions);
                 var foeFaction = availableFactions.splice(0, 1);
-                var foeCommander = _.sample(GWFactions[foeFaction].minions);
+                var foeCommander = _.clone(
+                  _.sample(GWFactions[foeFaction].minions)
+                );
                 var numFoes = Math.round((numMinions + 1) / 2);
                 if (foeCommander.name === "Worker") {
                   numFoes += Math.floor(
@@ -1052,17 +1059,17 @@ requireGW(
             });
             /*
             // prettier-ignore
-            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(2), "| Count:", worker.ai.commanderCount, "| Dist:", dist)
+            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(3), "| Count:", worker.ai.commanderCount, "| Dist:", dist)
             if (worker.ai.minions) {
               _.times(worker.ai.minions.length, function (n) {
                 // prettier-ignore
-                console.log("\tMinion:", worker.ai.minions[n].name, "| Eco:", worker.ai.minions[n].econ_rate.toPrecision(2), "| Count:", worker.ai.minions[n].commanderCount)
+                console.log("\tMinion:", worker.ai.minions[n].name, "| Eco:", worker.ai.minions[n].econ_rate.toPrecision(3), "| Count:", worker.ai.minions[n].commanderCount)
               });
             }
             if (worker.ai.foes) {
               _.times(worker.ai.foes.length, function (n) {
                 // prettier-ignore
-                console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(2), "| Count:", worker.ai.foes[n].commanderCount)
+                console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(3), "| Count:", worker.ai.foes[n].commanderCount)
               });
             }
             */
@@ -1139,8 +1146,6 @@ requireGW(
                 if (world.planet) world.planet.shuffleLandingZones = true;
                 else world.generator.shuffleLandingZones = true;
             });
-            /* We setup the treasure planet here and not AI setup to avoid the 
-               cardList existing in more than one location at a time */
             if (!ai.bossCommanders && treasurePlanetSetup === false) {
               treasurePlanetSetup = true;
               delete ai.commanderCount;
