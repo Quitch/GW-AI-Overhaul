@@ -975,7 +975,7 @@ requireGW(
               model.gwaioDifficultySettings.bountyModeChance()
             )
               worker.ai.bountyMode = true;
-            worker.ai.bountyValue = model.gwaioDifficultySettings.bountyModeValue();
+            worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports

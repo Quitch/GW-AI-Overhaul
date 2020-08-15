@@ -308,7 +308,7 @@ define(["shared/gw_common"], function (GW) {
       system: system,
       land_anywhere: ai.landAnywhere,
       bounty_mode: ai.bountyMode,
-      bounty_value: ai.bountyValue,
+      bounty_value: ai.bountyModeValue,
       sudden_death_mode: ai.suddenDeath,
     };
     _.forEach(config.armies, function (army) {
