@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## DEV
+## v4.5.0 - 2020-08-15
 
 - Turtle commanders use more fabbers
 - Turtle sub commanders can use more fabbers than other sub commanders
