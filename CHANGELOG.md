@@ -7,6 +7,8 @@
 - Uber has less early commanders
 - Added spin buttons for changing custom difficulty fields
 - Implemented minimum, maximimum, and step values for custom difficulty fields
+- Fix bounty mode always using the default reward value
+- Increased the size of bounty awarded above casual difficulty
 
 ## v4.4.1 - 2020-08-14
 

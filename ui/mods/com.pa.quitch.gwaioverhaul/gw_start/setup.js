@@ -304,7 +304,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 25,
-        bountyModeValue: 0.4,
+        bountyModeValue: 0.45,
         factionTechHandicap: 3,
         starting_location_evaluation_radius: 100,
       },
@@ -332,7 +332,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 20,
-        bountyModeValue: 0.3,
+        bountyModeValue: 0.4,
         factionTechHandicap: 2,
         starting_location_evaluation_radius: 150,
       },
@@ -360,7 +360,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 20,
-        bountyModeValue: 0.3,
+        bountyModeValue: 0.35,
         factionTechHandicap: 2,
         starting_location_evaluation_radius: 200,
       },
@@ -388,7 +388,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 15,
-        bountyModeValue: 0.2,
+        bountyModeValue: 0.3,
         factionTechHandicap: 1,
         starting_location_evaluation_radius: 250,
       },
@@ -416,7 +416,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 15,
-        bountyModeValue: 0.2,
+        bountyModeValue: 0.25,
         factionTechHandicap: 1,
         starting_location_evaluation_radius: 300,
       },
@@ -444,7 +444,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 10,
-        bountyModeValue: 0.1,
+        bountyModeValue: 0.2,
         factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
@@ -472,7 +472,7 @@ requireGW(
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 10,
-        bountyModeValue: 0.1,
+        bountyModeValue: 0.2,
         factionTechHandicap: 0,
         starting_location_evaluation_radius: 400,
       },
@@ -975,7 +975,7 @@ requireGW(
               model.gwaioDifficultySettings.bountyModeChance()
             )
               worker.ai.bountyMode = true;
-            worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
+            worker.ai.bountyValue = model.gwaioDifficultySettings.bountyModeValue();
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
