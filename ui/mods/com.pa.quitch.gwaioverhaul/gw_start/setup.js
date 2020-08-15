@@ -454,7 +454,7 @@ requireGW(
         goForKill: true,
         microType: 2,
         mandatoryMinions: -1,
-        minionMod: 0.7,
+        minionMod: 0.74,
         priority_scout_metal_spots: true,
         useEasierSystemTemplate: false,
         factory_build_delay_min: 0,
