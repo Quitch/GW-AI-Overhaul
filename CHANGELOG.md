@@ -7,7 +7,7 @@
 - Accuracy of the custom difficulty FFA tooltip
 - Security Turtle advanced fabber ratio
 
-## 4.5.0 - 2020-08-15
+## v4.5.0 - 2020-08-15
 
 - Turtle commanders use more fabbers
 - Turtle sub commanders can use more fabbers than other sub commanders
