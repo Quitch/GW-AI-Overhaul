@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Added faction tooltip explaining the style used by the enemy and Sub Commanders
+
 ## v4.5.1 - 2020-08-16
 
 - Fixed Security Turtle advanced fabber ratio

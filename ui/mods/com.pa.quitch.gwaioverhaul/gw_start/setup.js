@@ -203,6 +203,12 @@ model.ready = ko.computed(function () {
   );
 });
 
+$("#faction-select").before(
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tooltip.html"
+  )
+);
+
 $("#game-size").before(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/size_tooltip.html"
