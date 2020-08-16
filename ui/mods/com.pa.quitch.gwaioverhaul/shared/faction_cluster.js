@@ -2826,7 +2826,7 @@ define([], function () {
           enable_commander_danger_responses: false,
           per_expansion_delay: 0,
           fabber_to_factory_ratio_basic: 3,
-          fabber_to_factory_ratio_advanced: 2,
+          fabber_to_factory_ratio_advanced: 3,
           fabber_alone_on_planet_mod: 2,
           basic_to_advanced_factory_ratio: 0,
           factory_alone_on_planet_mod: 0.5,
