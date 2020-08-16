@@ -1,12 +1,12 @@
 # CHANGELOG
 
-## [Unreleased]
+## Unreleased
 
 ### Changed
 
 - Corrected the accuracy of the custom difficulty FFA tooltip
 
-## [4.5.0] - 2020-08-15
+## 4.5.0 - 2020-08-15
 
 - Turtle commanders use more fabbers
 - Turtle sub commanders can use more fabbers than other sub commanders
@@ -20,15 +20,15 @@
 - Corrected Worker being one commander short if they were the system owner
 - Fixed a base game issue where multiple galaxy generations would cause an increasing number of AIs to be assigned incorrect values
 
-## [4.4.1] - 2020-08-14
+## v4.4.1 - 2020-08-14
 
 - Corrected commander count for older wars sometimes being wrong on intelligence reports
 
-## [4.4.0] - 2020-08-13
+## v4.4.0 - 2020-08-13
 
 - Allow the player to delete tech from their inventory at any time
 
-## [4.3.0] - 2020-08-12
+## v4.3.0 - 2020-08-12
 
 - Deal General Commander's minions as cards to your inventory
 - Added Bot Anti-Air Tech card
@@ -38,16 +38,16 @@
   - Improved Intelligence Tech
   - Improved Energy Weapons
 
-## [4.2.2] - 2020-08-07
+## v4.2.2 - 2020-08-07
 
 - Fixed Cluster Worker not generating the right AI threat
 - Defeating a boss in a new war will no longer sometimes defeat the treasure planet
 
-## [4.2.1] - 2020-08-06
+## v4.2.1 - 2020-08-06
 
 - Tidied up some Cluster boss descriptions
 
-## [4.2.0] - 2020-08-05
+## v4.2.0 - 2020-08-05
 
 - Planetary Intelligence now shows the number of commanders in a shared army configuration
 - Threat levels now factor in the size of armies with multiple commanders
@@ -61,7 +61,7 @@
 - Fixed Tougher Commanders not buffing boss commander weapons
 - Corrected Kohr system name
 
-## [4.1.0] - 2020-08-02
+## v4.1.0 - 2020-08-02
 
 - Space Excavation Commander and Tactical Nuke Commander correctly file unit removal under dulls not buffs
 - Added the unused base game Storage Commander loadout
@@ -69,15 +69,15 @@
 - Fixed the General Commander failing to add cards to their inventory and being unable to start fights in new wars - thanks to EVmaker for the report
 - Fixed the dealing of unlocked loadouts from the base game as treasure - thanks to EVmaker for the report
 
-## [4.0.2] - 2020-08-1
+## v4.0.2 - 2020-08-1
 
 - Prevent Rapid Deployment Commander breaking the treasure planet guardians
 
-## [4.0.1] - 2020-08-1
+## v4.0.1 - 2020-08-1
 
 - Removed the test commander loadout. That one is not for you :)
 
-## [4.0.0] - 2020-08-01
+## v4.0.0 - 2020-08-01
 
 - Fixed Bounties, Team Death, and Big Spawns sometimes being enabled even if you disabled them
 - Added support for new loadouts and instructions for modders on how to make loadout mods compatible
@@ -88,7 +88,7 @@
 - As you go deeper into the galaxy you will now uncover larger systems
 - Casual difficulty uses simpler systems
 
-## [3.7.0] - 2020-07-26
+## v3.7.0 - 2020-07-26
 
 - Faction Tech is no longer optional and is now integrated into the difficulty curve
 - Shuffle Landing Zones is no longer optional
@@ -97,7 +97,7 @@
 - Removed Mirror Mode as an option - this is now used by treasure planets
 - Fixed v1.2.0 - v2.0.4 wars losing connection to the server when starting a FFA battle
 
-## [3.6.0] - 2020-07-20
+## v3.6.0 - 2020-07-20
 
 - Added Faction Scaling (defaults to true) which adjusts the number of enemy factions in accordance with the galaxy size
 - Expanded what is considered an orbital unit for the purposes of Revenants buffs when Faction Tech is active
@@ -105,77 +105,77 @@
 - Fixed Synchronous not receiving its nuke damage bonus with Faction Tech
 - Added optional mode Mirror Mode which grants the AI the same tech buffs as the player
 
-## [3.5.2] - 2020-07-19
+## v3.5.2 - 2020-07-19
 
 - Fixed the fix for the Sub Commander card
 
-## [3.5.1] - 2020-07-19
+## v3.5.1 - 2020-07-19
 
 - Fixed Sub Commanders not being dealt if you didn't meet their requirements at the start of the war
 - Fixed a typo in the Bounty Value tooltip
 
-## [3.5.0] - 2020-07-18
+## v3.5.0 - 2020-07-18
 
 - Ammunition Tech has been expanded to include reduced firing costs (or time in the case of the Ragnarok)
 
-## [3.4.0] - 2020-07-18
+## v3.4.0 - 2020-07-18
 
 - Legonis Machina receive buffs to the Unit Cannon with Faction Tech
 - Added the faction tech buff type Build which improves fabber and factory speed and efficiency
 - Fixed an error from v3.3.3 which prevented damage and speed buffs being applied in full - a new war is required for this fix
 
-## [3.3.4] - 2020-07-16
+## v3.3.4 - 2020-07-16
 
 - Corrected error with faction tech buffs being incorrectly applied for TITANS units when multiple factions were present in a system
 - Fixed bosses in wars started between v1.0 and v2.2.0 not spawning multiple commanders
 
-## [3.3.3] - 2020-07-16
+## v3.3.3 - 2020-07-16
 
 - Cleaned up the code underpinning the mod
 - Fixed save button for custom difficulty sometimes needing to be pressed twice
 - Faction Tech now disabled by default
 
-## [3.3.2] - 2020-07-14
+## v3.3.2 - 2020-07-14
 
 - Fixed the new war UI not loading
 
-## [3.3.1] - 2020-07-14
+## v3.3.1 - 2020-07-14
 
 - Corrected an error in Planetary Intelligence that could delay the display of the jump button
 - Cleaned up code for inserting HTML into gw_start
 
-## [3.3.0] - 2020-07-13
+## v3.3.0 - 2020-07-13
 
 - Added new option "Faction Tech" which applies random tech card bonuses to the AI
 
-## [3.2.1] - 2020-07-12
+## v3.2.1 - 2020-07-12
 
 - Corrected minions and additional factions being assigned the Tutorial Commander if Tougher Commanders was enabled
 
-## [3.2.0] - 2020-07-11
+## v3.2.0 - 2020-07-11
 
 Due to a bad merge the changes of v3.1.1 were not actually applied.
 
 - Fixed AI not using starting location evaluation function
 - Added starting location evaluation function to GW-Custom
-- Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to [wondible](https://github.com/JustinLove) for his ever-invaluable aid
+- Replaced shadowing of gw_play.js with injection of code into the gw_play scene - thanks to wondible for his ever-invaluable aid
 - Removed TITANS ownership requirement from Tougher Commanders as it no longer requires use of the TITANS Tutorial Commander
 - Reduced health of Tougher Commanders from 1,000,000 to 25,000 to match Commander Armor Tech
 - Removed build and storage bonuses from Tougher Commanders
 - Tougher Commanders now applies Commander Combat Tech to all enemy commanders on a boss world
 
-## [3.1.1] - 2020-07-10
+## v3.1.1 - 2020-07-10
 
 - Reduced health of Tougher Commanders from 1,000,000 to 50,000
 - Removed build and storage bonuses from Tougher Commanders
 
-## [3.1.0] - 2020-07-09
+## v3.1.0 - 2020-07-09
 
 - Added support for the new AI starting location evaluation function
 
-## [3.0.0] - 2020-07-09
+## v3.0.0 - 2020-07-09
 
-- Thanks to [PA Inc](https://planetaryannihilation.com/) for updating the server scripts to support all game modes in Galactic War
+- Thanks to PA Inc for updating the server scripts to support all game modes in Galactic War
 - Implemented support for:
   - bounty mode (bounties)
   - land anywhere (big spawns)
@@ -190,20 +190,20 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Added new option "Tougher Commanders" for those who want the enemy to be harder to kill (TITANS only)
 - Fixed bosses not spawning multiple commanders
 
-## [2.3.3] - 2020-07-04
+## v2.3.3 - 2020-07-04
 
 - Add support for Default personality tag to GW-CUSTOM
 - Improved difficulty tooltips
 
-## [2.3.2] - 2020-06-26
+## v2.3.2 - 2020-06-26
 
 - Fix sub commander personalities not being translated
 
-## [2.3.1] - 2020-06-26
+## v2.3.1 - 2020-06-26
 
 - Add default personality tag to all AIs as a future-proofing measure
 
-## [2.3.0] - 2020-06-25
+## v2.3.0 - 2020-06-25
 
 - Updated difficulty descriptions
 - Less fabbers used by both enemies and allies
@@ -212,19 +212,19 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Set Casual as the default difficulty
 - Ensured mod properly setup to work with translations
 
-## [2.2.0] - 2020-05-30
+## v2.2.0 - 2020-05-30
 
 - Attempted to make Turtle slightly more viable
 - Turtle has a higher focus on non-factory structures
 - Swarm starts with more fabbers
 - Ensure that even when alone at least a small amount of T1 is built
 
-## [2.1.1] - 2020-05-22
+## v2.1.1 - 2020-05-22
 
 - Replaced my ridiculously over-engineered randomised spawn solution with something much saner
 - Randomisation is now done by army rather than by team
 
-## [2.1.0] - 2020-05-20
+## v2.1.0 - 2020-05-20
 
 - Removed personalities: Legate, Acolyte, Servant, Seeker
 - Added personalities: Defender, Swarm, and Economist
@@ -235,25 +235,25 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Team spawn assignments are randomised each time you start a battle
 - Custom difficulty responds to setting changes slightly faster
 
-## [2.0.4] - 2020-02-13
+## v2.0.4 - 2020-02-13
 
 - Improved the granularity with which system threat is displayed at the upper bounds
 
-## [2.0.3] - 2020-02-06
+## v2.0.3 - 2020-02-06
 
 - Corrected grammatical errors
 
-## [2.0.2] - 2020-01-25
+## v2.0.2 - 2020-01-25
 
 - Update the mod's description
 - Avoid multiple Invictus commanders within the Legonis Machina
 
-## [2.0.1] - 2019-11-04
+## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
 - You will no longer be offered a Sub Commander if you don't have a factory they can open with (air/bot/vehicle)
 
-## [2.0] - 2019-11-03
+## v2.0 - 2019-11-03
 
 - Clarified difficulty tooltip for custom difficulty
 - Switched to a more recognisable ranking system for difficulty levels and smoothed the difficulty curve:
@@ -266,26 +266,26 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Re-enabled custom difficulty as I have fixed the underlying bug
 - Wait for player input to complete in a custom field before applying corrections
 
-## [1.5.2] - 2019-11-01
+## v1.5.2 - 2019-11-01
 
 - Disabled custom difficulty until I can resolve the underlying bug
 
-## [1.5.1] - 2019-11-01
+## v1.5.1 - 2019-11-01
 
 - Fixed enemies having no eco if the difficulty level wasn't changed
   - This has the side-effect of disabling enforcement of proper input into custom fields until I can fix the root cause
 
-## [1.5.0] - 2019-10-31
+## v1.5.0 - 2019-10-31
 
 - Added Copper difficulty as a stepping stone between Bronze and Silver
 - Added Easier Start option which adds more neutral systems with free tech
 
-## [1.4.1] - 2019-10-24
+## v1.4.1 - 2019-10-24
 
 - Added support for the tutorial personality tag in custom difficulty mode
 - Fixed some spelling errors
 
-## [1.4.0] - 2019-10-21
+## v1.4.0 - 2019-10-21
 
 - Added a custom difficulty to allow you to configure all the difficulty settings
 - Updated some personality names to prevent word wrapping with new fonts
@@ -293,7 +293,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Fixed the enemy system owner sometimes spawning with multiple Commanders
 - Fixed a bug in the base game causing the General Commander's Sub Commanders to sometimes have an eco modifier applied
 
-## [1.3.0] - 2019-10-11
+## v1.3.0 - 2019-10-11
 
 - Tried to improve the clarity of the difficulty tooltip for players for whom English is a second language
 - The additional faction in an FFA has fewer Commanders
@@ -302,11 +302,11 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - FFAs will sometimes be 4-way instead of 3-way
 - Decreased the starting eco of Casual and Bronze
 
-## [1.2.1] - 2019-10-07
+## v1.2.1 - 2019-10-07
 
 - Fixed battles failing to launch if you were playing a war started with v1.1.0 or earlier and the battle was an FFA
 
-## [1.2.0] - 2019-10-06
+## v1.2.0 - 2019-10-06
 
 - Removed Bronze, Silver and Hard personalities
 - Each faction has three Commanders which have adopted the playstyle of one of the other factions
@@ -317,7 +317,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - An invading FFA enemy may bring multiple Commanders within its single army
 - Chance of FFA lower at lower difficulties and higher at Uber
 
-## [1.1.0] - 2019-10-05
+## v1.1.0 - 2019-10-05
 
 - Rush spends less time at T1
 - Rush is more aggressive
@@ -328,15 +328,15 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Reduced maximum number of fabbers per army at all levels above Casual
 - Adjusted Technologist fabber builds to compensate for their factory builds
 
-## [1.0.2] - 2019-09-24
+## v1.0.2 - 2019-09-24
 
 - Further correction of personality word wrapping
 
-## [1.0.1] - 2019-09-23
+## v1.0.1 - 2019-09-23
 
 - Update personality names to avoid wrapping and make them more interesting
 
-## [1.0] - 2019-09-23
+## v1.0 - 2019-09-23
 
 - Bronze increases its eco slightly faster over distance
 - Sub Commanders will once again spawn wherever they want
@@ -355,17 +355,17 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Bronze expands slower
 - Added tooltip to explain the difficulty options
 
-## [0.14.2] - 2019-09-12
+## v0.14.2 - 2019-09-12
 
 - Fixed some personality names causing wrapping on the intel panel
 - Renamed some personalities
 
-## [0.14.1] - 2019-09-11
+## v0.14.1 - 2019-09-11
 
 - Aggressive AIs are more aggressive
 - Fixed surface area not always updating when system selection was changed
 
-## [0.14] - 2019-09-09
+## v0.14 - 2019-09-09
 
 - Turtle personality makes more initial fabbers at each tech level
 - Integrated wondible's Section of Foreign Intelligence for galactic war
@@ -376,22 +376,22 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Each enemy shows their personality on the galaxy map
 - Adjusted the number of fabbers each boss builds initially
 
-## [0.13.1] - 2019-08-30
+## v0.13.1 - 2019-08-30
 
 - Fixed enemies not always teching at the correct time
 
-## [0.13] - 2019-08-27
+## v0.13 - 2019-08-27
 
 - Sub Commanders display their personality when you find their card
 - Prefixed difficulties to further differentiate them from skirmish difficulty and galaxy size
 - Reduced the number of Commanders in the initial Platinum systems
 - Platinum starts with a slightly higher eco
 
-## [0.12.1] - 2019-08-17
+## v0.12.1 - 2019-08-17
 
 - Fix for fights failing to start in some circumstances
 
-## [0.12] - 2019-08-17
+## v0.12 - 2019-08-17
 
 - Enemies account for their eco modifier when teching to T2
 - Bosses and their minions now enjoy an eco-boost over surrounding systems
@@ -407,23 +407,23 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Imperator Invictus is now truly legion, spawning multiple copies of itself across multiple worlds to form a single shared army
 - First Seeker Osiris has a greater focus on orbital
 
-## [0.11] - 2019-04-15
+## v0.11 - 2019-04-15
 
 - Replaced vanilla Commander number scaling formula so that larger galaxies grow to use larger Commander counts
 - Casual grows Commander count slightly slower
 
-## [0.10.1] - 2019-04-05
+## v0.10.1 - 2019-04-05
 
 - Fixed Platinum having one too many minions in each system
 
-## [0.10] - 2019-04-03
+## v0.10 - 2019-04-03
 
 - You will sometimes find another faction is contesting a system leading to a FFA occurring
 - Added Section of Foreign Intelligence for galactic war as a dependency mod
 - Improved distinctiveness of boss minion colours
 - Bosses given smarter personalities
 
-## [0.9] - 2019-04-01
+## v0.9 - 2019-04-01
 
 - Fix minor error in a Synchronous personality
 - Assigned each Commander a unique colour
@@ -431,13 +431,13 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Identify which enemy Commander is the biggest threat
 - Synchronous is now green to ensure enough distinct shades for all Commanders
 - Ensure systems display faction colour and not Commander colour
-- Many thanks to [wondible](https://github.com/JustinLove) for all his work on the JavaScript for this release
+- Many thanks to wondible for all his work on the JavaScript for this release
 - Tweaked newest profiles to better match core intent and make them more distinctive across factions
 
-## [0.8] - 2019-03-29
+## v0.8 - 2019-03-29
 
 - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
-- Reduced file shadowing with thanks to [wondible](https://github.com/JustinLove)
+- Reduced file shadowing with thanks to wondible
 - Enemy Commanders now utilise individual styles
 - Updated difficulty guidance based on more personality controls being assigned to individual Commanders
 - Updates to Commander personalities
@@ -452,13 +452,13 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Corrected Synchronous only ever building three T1 factories until teching
 - Foundation slightly more likely to use some ground units
 
-## [0.7] - 2019-03-15
+## v0.7 - 2019-03-15
 
 - Mod now removes the vanilla difficulty levels to ensure it is taking full effect
 - Uber updated for the increased eco modifier ceiling
 - Updated shadowed files
 
-## [0.6] - 2019-01-14
+## v0.6 - 2019-01-14
 
 - A huge overhaul of difficulty levels
   - All difficulties now use minions as a difficulty ramp tool
@@ -471,22 +471,22 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
   - Platinum handles its economy better
   - Uber is now set up as an ultimate challenge difficulty without any attempt to be fair
 
-## [0.5] - 2019-01-13
+## v0.5 - 2019-01-13
 
 - Fixed issue with turtling Sub Commander personalities only building a single factory
 - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
 - Updated Queller Sub Commander personalities with latest Queller personality settings
 - Updated difficulty levels to use the latest Queller economic personality settings
 
-## [0.4] - 2018-04-17
+## v0.4 - 2018-04-17
 
 - Remove Q prefix from difficulties in a vain attempt to clarify that this is **not** using the Queller AI brain
 
-## [0.3.1] - 2018-03-03
+## v0.3.1 - 2018-03-03
 
 - Corrected what appears to be an error in the base game where one of the Foundation bosses was using Legonis Machina personality settings
 
-## [0.3] - 2017-05-17
+## v0.3 - 2017-05-17
 
 - Reduced the base level of eco that Gold through Uber start with
 - Increased the base level of eco that Bronze and Silver start with
@@ -495,13 +495,13 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Casual builds faster from its factories
 - Bronze builds a little slower from its factories
 
-## [0.2] - 2017-03-24
+## v0.2 - 2017-03-24
 
 - Legate Kapowaz, Acolyte Osiris, Servant Beniesk and Seeker Banditks have undergone a personality change as the previous personality did not perform as intended
 - Properly tagged mod to show support for PA classic and Titans
 - Forum link goes to the right thread
 
-## [0.1] - 2017-03-16
+## v0.1 - 2017-03-16
 
 - Assign a general personality to each faction
 - Reduce the number of minions per faction to 13
