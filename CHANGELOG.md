@@ -2,10 +2,7 @@
 
 ## v4.5.1 - 2020-08-16
 
-### Fixed
-
-- Accuracy of the custom difficulty FFA tooltip
-- Security Turtle advanced fabber ratio
+- Fixed Security Turtle advanced fabber ratio
 
 ## v4.5.0 - 2020-08-15
 
