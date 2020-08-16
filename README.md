@@ -164,7 +164,7 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
 
 3. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-4. Add `"cards/gwaio_faction_cluster"` and `gwaioFactionCluster` to your loadout's `define()` function
+4. Add `cards/gwaio_faction_cluster` and `gwaioFactionCluster` to your loadout's `define()` function
 
 5. Within the `if (!buffCount)` block of your loadout add:
 
