@@ -617,6 +617,7 @@ requireGW(
       { id: "gwaio_start_tourist" },
       { id: "gwaio_start_rapid" }
     );
+    // Pushing then flattening renders noticably faster than concating
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
         model.startCards().push(model.makeUnknown(cardData));
