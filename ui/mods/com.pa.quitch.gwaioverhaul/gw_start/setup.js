@@ -1,4 +1,4 @@
-ko.extenders.precision = function (target, precision) {
+ko.extenders.decimals = function (target, decimals) {
   // create a writable computed observable to intercept writes to our observable
   var result = ko
     .pureComputed({
@@ -13,7 +13,7 @@ ko.extenders.precision = function (target, precision) {
           }
         }
         var current = target(),
-          roundingMultiplier = Math.pow(10, precision),
+          roundingMultiplier = Math.pow(10, decimals),
           newValueAsNum = isNaN(newValue) ? 0 : +newValue,
           valueToWrite =
             Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
@@ -58,25 +58,25 @@ model.gwaioDifficultySettings = {
     return loc(model.gwaioDifficultySettings.microTypeDescription()[value]);
   },
   mandatoryMinions: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   minionMod: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   priorityScoutMetalSpots: ko.observable(false),
   useEasierSystemTemplate: ko.observable(false),
   factoryBuildDelayMin: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   factoryBuildDelayMax: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   unableToExpandDelay: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   enableCommanderDangerResponses: ko.observable(false),
   perExpansionDelay: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   personalityTags: ko.observableArray([
     "Default",
@@ -97,40 +97,40 @@ model.gwaioDifficultySettings = {
     );
   },
   econBase: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   econRatePerDist: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   maxBasicFabbers: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   maxAdvancedFabbers: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   startingLocationEvaluationRadius: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   ffaChance: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   bossCommanders: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   landAnywhereChance: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   suddenDeathChance: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   bountyModeChance: ko.observable(0).extend({
-    precision: 0,
+    decimals: 0,
   }),
   bountyModeValue: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   factionTechHandicap: ko.observable(0).extend({
-    precision: 2,
+    decimals: 2,
   }),
   unsavedChanges: ko.observable(false),
   newGalaxyNeeded: ko.observable(false).extend({
@@ -617,6 +617,7 @@ requireGW(
       { id: "gwaio_start_tourist" },
       { id: "gwaio_start_rapid" }
     );
+    // Pushing then flattening renders noticably faster than concating
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
         model.startCards().push(model.makeUnknown(cardData));
@@ -981,7 +982,6 @@ requireGW(
             var numBuffs = Math.floor(dist / 2 - buffDelay);
             var typeOfBuffs = _.sample(buffType, numBuffs);
             worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
-
             _.times(typeOfBuffs.length, function (n) {
               worker.ai.inventory = worker.ai.inventory.concat(
                 gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]

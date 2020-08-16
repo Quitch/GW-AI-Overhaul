@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.5.1 - 2020-08-16
+
+- Fixed Security Turtle advanced fabber ratio
+
 ## v4.5.0 - 2020-08-15
 
 - Turtle commanders use more fabbers
