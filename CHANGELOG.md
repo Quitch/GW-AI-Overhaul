@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
-- Fixed all known issues with the base game tech cards:
+- Fixed all known issues and inconsistencies with the base game tech cards:
   - Intelligence Fabrication Tech
     - Added Firefly
     - Added Hermes
