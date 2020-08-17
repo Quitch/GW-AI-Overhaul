@@ -39,8 +39,11 @@
       - Anchor
   - Structure Combat Tech
     - Added
+      - Advanced Torpedo Launcher ammo
       - Anchor
+      - Anchor ammo
       - Halley
+      - Torpedo Launcher ammo
       - Unit Cannon
 
 ## v4.5.1 - 2020-08-16
