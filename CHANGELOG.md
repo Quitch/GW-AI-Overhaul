@@ -27,26 +27,29 @@
       - Umbrella
   - Orbital Combat Tech
     - Removed
-      - Anchor
-      - Jig
       - Orbital Factory
+      - Jig
+      - Anchor
   - Orbital Fabrication Tech
     - Removed
-      - Anchor
       - Jig
+      - Anchor
   - Defense Fabrication Tech
     - Added
       - Anchor
   - Structure Combat Tech
     - Added
+      - Advanced Torpedo Launcher ammo
       - Anchor
+      - Anchor ammo
       - Halley
+      - Torpedo Launcher ammo
       - Unit Cannon
   - Defense Ammunition Tech
     - Added
-      - Advanced Torpedo Launcher
-      - Anchor
-      - Torpedo Launcher
+      - Advanced Torpedo Launcher ammo
+      - Anchor ammo
+      - Torpedo Launcher ammo
   - Complete Energy Tech
     - Added
       - Artemis
