@@ -13,11 +13,6 @@
       - Stingray
       - Vanguard
   - Improved Energy Weapons
-    - Removed
-      - Catapult
-      - Hornet
-      - Stingray
-      - Umbrella
     - Added
       - Artemis
       - Helios
@@ -25,6 +20,11 @@
       - Spark
       - Wyrm
       - Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Umbrella
 
 ## v4.5.1 - 2020-08-16
 
