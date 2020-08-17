@@ -37,6 +37,11 @@
   - Defense Fabrication Tech
     - Added
       - Anchor
+  - Structure Combat Tech
+    - Added
+      - Anchor
+      - Halley
+      - Unit Cannon
 
 ## v4.5.1 - 2020-08-16
 
