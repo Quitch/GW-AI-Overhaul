@@ -30,6 +30,10 @@
       - Orbital Factory
       - Jig
       - Anchor
+  - Orbital Fabrication Tech
+    - Removed
+      - Jig
+      - Anchor
 
 ## v4.5.1 - 2020-08-16
 
