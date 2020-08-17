@@ -11,6 +11,17 @@
     - Added Skitter
     - Added Stingray
     - Added Vanguard
+  - Improved Energy Weapons
+    - Removed Catapult
+    - Removed Hornet
+    - Removed Stingray
+    - Removed Umbrella
+    - Added Artemis
+    - Added Helios
+    - Added Icarus
+    - Added Spark
+    - Added Wyrm
+    - Added Zeus
 
 ## v4.5.1 - 2020-08-16
 
