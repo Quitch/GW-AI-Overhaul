@@ -6,7 +6,7 @@
 - Fixed all known issues and inconsistencies with the base game tech cards:
   - Air Ammunition Tech
     - Added
-      - Strafer ammo
+      - Strafer
   - Air Combat Tech
     - Added
       - Strafer ammo
@@ -26,9 +26,9 @@
       - Umbrella
   - Defense Ammunition Tech
     - Added
-      - Advanced Torpedo Launcher ammo
-      - Anchor ammo
-      - Torpedo Launcher ammo
+      - Advanced Torpedo Launcher
+      - Anchor
+      - Torpedo Launcher
   - Defense Fabrication Tech
     - Added
       - Anchor
@@ -61,12 +61,12 @@
       - Vanguard
   - Naval Ammunition Tech
     - Added
-      - Narwhal torpedo ammo (classic only)
-      - Squall torpedo ammo
+      - Narwhal torpedo (classic only)
+      - Squall torpedo
   - Naval Combat Tech
     - Added
-      - Narwhal torpedo ammo (classic only)
-      - Squall torpedo ammo
+      - Narwhal torpedo (classic only)
+      - Squall torpedo
   - Orbital Combat Tech
     - Removed
       - Anchor
