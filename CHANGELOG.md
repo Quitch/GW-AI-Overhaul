@@ -50,6 +50,20 @@
       - Advanced Torpedo Launcher ammo
       - Anchor ammo
       - Torpedo Launcher ammo
+  - Complete Energy Tech
+    - Added
+      - Artemis
+      - Helios
+      - Icarus
+      - Spark
+      - Wyrm
+      - Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Teleporter
+      - Umbrella
 
 ## v4.5.1 - 2020-08-16
 
