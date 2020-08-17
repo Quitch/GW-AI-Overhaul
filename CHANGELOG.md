@@ -67,6 +67,9 @@
   - Air Combat Tech
     - Added
       - Strafer ammo
+  - Air Ammunition Tech
+    - Added
+      - Strafer ammo
 
 ## v4.5.1 - 2020-08-16
 
