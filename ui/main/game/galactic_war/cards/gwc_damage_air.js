@@ -30,7 +30,7 @@ define([], function () {
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
+      var ammos = [
         "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
         "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
         "/pa/units/air/bomber/bomber_ammo.json",
@@ -42,15 +42,15 @@ define([], function () {
         "/pa/units/air/strafer/strafer_ammo.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
+      var modUnit = function (ammo) {
         mods.push({
-          file: unit,
+          file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
         });
       };
-      _.forEach(units, modUnit);
+      _.forEach(ammos, modUnit);
       inventory.addMods(mods);
     },
     dull: function () {},

@@ -41,7 +41,7 @@ define(["shared/gw_common"], function (GW) {
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
+      var ammos = [
         "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
         "/pa/units/land/air_defense_adv/air_defense_adv_ammo.json",
         "/pa/units/land/air_defense/air_defense_ammo.json",
@@ -60,15 +60,15 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
+      var modUnit = function (ammo) {
         mods.push({
-          file: unit,
+          file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
         });
       };
-      _.forEach(units, modUnit);
+      _.forEach(ammos, modUnit);
       inventory.addMods(mods);
     },
     dull: function () {},

@@ -25,7 +25,7 @@ define([], function () {
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
+      var ammos = [
         "/pa/units/sea/attack_sub/attack_sub_ammo.json",
         "/pa/units/sea/battleship/battleship_ammo.json",
         "/pa/units/sea/battleship/battleship_ammo.json",
@@ -45,15 +45,15 @@ define([], function () {
         "/pa/units/sea/sea_scout/sea_scout_ammo.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
+      var modUnit = function (ammo) {
         mods.push({
-          file: unit,
+          file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
         });
       };
-      _.forEach(units, modUnit);
+      _.forEach(ammos, modUnit);
       inventory.addMods(mods);
     },
     dull: function () {},
