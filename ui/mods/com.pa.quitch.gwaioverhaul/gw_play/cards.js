@@ -4,6 +4,31 @@ $("#hover-card").replaceWith(
 );
 locTree($("#hover-card"));
 
+var hoverCount = 0;
+model.setHoverCard = function (card, hoverEvent) {
+  if (card === model.hoverCard()) card = undefined;
+
+  ++hoverCount;
+  if (!card) {
+    // Delay clears for a bit to avoid flashing
+    var oldCount = hoverCount;
+    _.delay(function () {
+      if (oldCount !== hoverCount) return;
+      model.hoverCard(undefined);
+    }, 300);
+    return;
+  } else
+    requireGW(["cards/" + card.id()], function (fullCard) {
+      model.gwaioAffectedUnitsHoverCard = fullCard.units;
+    });
+
+  var $block = $(hoverEvent.target);
+  if (!$block.is(".one-card")) $block = $block.parent(".one-card");
+  var left = $block.offset().left + $block.width() / 2;
+  model.hoverOffset(left.toString() + "px");
+  model.hoverCard(card);
+};
+
 requireGW(
   [
     "shared/gw_common",
