@@ -82,6 +82,12 @@
     - Added
       - Anchor
       - Unit Cannon
+  - Improved Fabricator Build Arms
+    - Added
+      - Unit Cannon
+      - Colonel
+    - Fixed
+      - Angel
 
 ## v4.5.1 - 2020-08-16
 
