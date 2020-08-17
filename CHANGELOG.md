@@ -25,6 +25,11 @@
       - Hornet
       - Stingray
       - Umbrella
+  - Orbital Combat Tech
+    - Removed
+      - Orbital Factory
+      - Jig
+      - Anchor
 
 ## v4.5.1 - 2020-08-16
 
