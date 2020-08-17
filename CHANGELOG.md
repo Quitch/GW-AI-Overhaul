@@ -78,6 +78,10 @@
     - Added
       - Narwhal torpedo ammo (classic only)
       - Squall torpedo ammo
+  - Structure Armor Tech
+    - Added
+      - Anchor
+      - Unit Cannon
 
 ## v4.5.1 - 2020-08-16
 
