@@ -70,6 +70,14 @@
   - Air Ammunition Tech
     - Added
       - Strafer ammo
+  - Naval Combat Tech
+    - Added
+      - Narwhal torpedo ammo (classic only)
+      - Squall torpedo ammo
+  - Naval Ammunition Tech
+    - Added
+      - Narwhal torpedo ammo (classic only)
+      - Squall torpedo ammo
 
 ## v4.5.1 - 2020-08-16
 
