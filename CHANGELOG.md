@@ -5,23 +5,26 @@
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
 - Fixed all known issues and inconsistencies with the base game tech cards:
   - Intelligence Fabrication Tech
-    - Added Firefly
-    - Added Hermes
-    - Added Piranha
-    - Added Skitter
-    - Added Stingray
-    - Added Vanguard
+    - Added
+      - Firefly
+      - Hermes
+      - Piranha
+      - Skitter
+      - Stingray
+      - Vanguard
   - Improved Energy Weapons
-    - Removed Catapult
-    - Removed Hornet
-    - Removed Stingray
-    - Removed Umbrella
-    - Added Artemis
-    - Added Helios
-    - Added Icarus
-    - Added Spark
-    - Added Wyrm
-    - Added Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Umbrella
+    - Added
+      - Artemis
+      - Helios
+      - Icarus
+      - Spark
+      - Wyrm
+      - Zeus
 
 ## v4.5.1 - 2020-08-16
 
