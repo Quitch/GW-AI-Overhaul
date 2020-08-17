@@ -34,6 +34,9 @@
     - Removed
       - Jig
       - Anchor
+  - Defense Fabrication Tech
+    - Added
+      - Anchor
 
 ## v4.5.1 - 2020-08-16
 
