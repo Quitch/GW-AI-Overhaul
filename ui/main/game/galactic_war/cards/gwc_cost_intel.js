@@ -50,6 +50,7 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/radar_adv/radar_adv.json",
         "/pa/units/land/radar/radar.json",
         "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+        "/pa/units/land/teleporter/teleporter.json",
         "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
         "/pa/units/orbital/orbital_probe/orbital_probe.json",
         "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",

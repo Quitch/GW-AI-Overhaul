@@ -5,7 +5,6 @@
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
 - Fixed all known issues with the base game tech cards:
   - Intelligence Fabrication Tech
-    - Removed Teleporter
     - Added Firefly
     - Added Hermes
     - Added Piranha
