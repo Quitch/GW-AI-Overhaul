@@ -4,52 +4,12 @@
 
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
 - Fixed all known issues and inconsistencies with the base game tech cards:
-  - Intelligence Fabrication Tech
+  - Air Ammunition Tech
     - Added
-      - Firefly
-      - Hermes
-      - Piranha
-      - Skitter
-      - Stingray
-      - Vanguard
-  - Improved Energy Weapons
+      - Strafer ammo
+  - Air Combat Tech
     - Added
-      - Artemis
-      - Helios
-      - Icarus
-      - Spark
-      - Wyrm
-      - Zeus
-    - Removed
-      - Catapult
-      - Hornet
-      - Stingray
-      - Umbrella
-  - Orbital Combat Tech
-    - Removed
-      - Anchor
-      - Jig
-      - Orbital Factory
-  - Orbital Fabrication Tech
-    - Removed
-      - Anchor
-      - Jig
-  - Defense Fabrication Tech
-    - Added
-      - Anchor
-  - Structure Combat Tech
-    - Added
-      - Advanced Torpedo Launcher ammo
-      - Anchor
-      - Anchor ammo
-      - Halley
-      - Torpedo Launcher ammo
-      - Unit Cannon
-  - Defense Ammunition Tech
-    - Added
-      - Advanced Torpedo Launcher ammo
-      - Anchor ammo
-      - Torpedo Launcher ammo
+      - Strafer ammo
   - Complete Energy Tech
     - Added
       - Artemis
@@ -64,30 +24,70 @@
       - Stingray
       - Teleporter
       - Umbrella
-  - Air Combat Tech
+  - Defense Ammunition Tech
     - Added
-      - Strafer ammo
-  - Air Ammunition Tech
-    - Added
-      - Strafer ammo
-  - Naval Combat Tech
-    - Added
-      - Narwhal torpedo ammo (classic only)
-      - Squall torpedo ammo
-  - Naval Ammunition Tech
-    - Added
-      - Narwhal torpedo ammo (classic only)
-      - Squall torpedo ammo
-  - Structure Armor Tech
+      - Advanced Torpedo Launcher ammo
+      - Anchor ammo
+      - Torpedo Launcher ammo
+  - Defense Fabrication Tech
     - Added
       - Anchor
-      - Unit Cannon
+  - Improved Energy Weapons
+    - Added
+      - Artemis
+      - Helios
+      - Icarus
+      - Spark
+      - Wyrm
+      - Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Umbrella
   - Improved Fabricator Build Arms
     - Added
       - Unit Cannon
       - Colonel
     - Fixed
       - Angel
+  - Intelligence Fabrication Tech
+    - Added
+      - Firefly
+      - Hermes
+      - Piranha
+      - Skitter
+      - Stingray
+      - Vanguard
+  - Naval Ammunition Tech
+    - Added
+      - Narwhal torpedo ammo (classic only)
+      - Squall torpedo ammo
+  - Naval Combat Tech
+    - Added
+      - Narwhal torpedo ammo (classic only)
+      - Squall torpedo ammo
+  - Orbital Combat Tech
+    - Removed
+      - Anchor
+      - Jig
+      - Orbital Factory
+  - Orbital Fabrication Tech
+    - Removed
+      - Anchor
+      - Jig
+  - Structure Armor Tech
+    - Added
+      - Anchor
+      - Unit Cannon
+  - Structure Combat Tech
+    - Added
+      - Advanced Torpedo Launcher ammo
+      - Anchor
+      - Anchor ammo
+      - Halley
+      - Torpedo Launcher ammo
+      - Unit Cannon
 
 ## v4.5.1 - 2020-08-16
 
