@@ -45,6 +45,11 @@
       - Halley
       - Torpedo Launcher ammo
       - Unit Cannon
+  - Defense Ammunition Tech
+    - Added
+      - Advanced Torpedo Launcher ammo
+      - Anchor ammo
+      - Torpedo Launcher ammo
 
 ## v4.5.1 - 2020-08-16
 
