@@ -27,13 +27,13 @@
       - Umbrella
   - Orbital Combat Tech
     - Removed
-      - Orbital Factory
-      - Jig
       - Anchor
+      - Jig
+      - Orbital Factory
   - Orbital Fabrication Tech
     - Removed
-      - Jig
       - Anchor
+      - Jig
   - Defense Fabrication Tech
     - Added
       - Anchor
