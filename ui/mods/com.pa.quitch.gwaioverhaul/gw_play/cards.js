@@ -287,14 +287,13 @@ requireGW(
       }
     };
 
-    // Ensure tooltips shown if UI refreshed
-    if (model.showSystemCard())
-      model.currentSystemCardList().forEach(displayCardTooltip);
-
     model.showSystemCard.subscribe(function () {
       if (model.showSystemCard())
         model.currentSystemCardList().forEach(displayCardTooltip);
     });
+    // Ensure the tooltip is shown even if UI refreshed
+    if (model.showSystemCard())
+      model.currentSystemCardList().forEach(displayCardTooltip);
 
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
