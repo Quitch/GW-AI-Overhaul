@@ -269,15 +269,12 @@ requireGW(
         return;
       } else {
         var cardId = card.id();
-        console.log("cardId", cardId);
         var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-        console.log("index", index);
         if (index === -1)
           //prettier-ignore
           console.error("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
         else {
           var units = model.gwaioCardsToUnits[index].units;
-          console.log("units", units);
           if (units) {
             var gwaioAffectedUnits = [];
             _.forEach(units, function (unit) {
