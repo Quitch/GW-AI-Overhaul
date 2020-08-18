@@ -276,7 +276,7 @@ requireGW(
         else {
           var units = model.gwaioCardsToUnits[index].units;
           if (units) {
-            var gwaioAffectedUnits = [];
+            var affectedUnits = [];
             _.forEach(units, function (unit) {
               index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
               if (index === -1)
@@ -284,13 +284,11 @@ requireGW(
                 console.error("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
               else {
                 var name = loc(gwaioUnitsToNames.units[index].name);
-                gwaioAffectedUnits = gwaioAffectedUnits.concat(name);
+                affectedUnits = affectedUnits.concat(name);
               }
             });
-            gwaioAffectedUnits = gwaioAffectedUnits.sort();
-            model.gwaioAffectedUnits = _.map(gwaioAffectedUnits, function (
-              unit
-            ) {
+            affectedUnits = affectedUnits.sort();
+            model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
               return (unit = unit.concat("<br>"));
             });
           }
