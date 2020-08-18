@@ -274,7 +274,7 @@ requireGW(
         console.log("index", index);
         if (index === -1)
           //prettier-ignore
-          console.error("Card ID", cardId, "is invalid or missing from GWAIO card_units.js");
+          console.error("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
         else {
           var units = model.gwaioCardsToUnits[index].units;
           console.log("units", units);
