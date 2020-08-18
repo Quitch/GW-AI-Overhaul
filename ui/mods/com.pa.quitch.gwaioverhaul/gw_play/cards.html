@@ -13,7 +13,7 @@
     <!-- ko if: !isEmpty() -->
     <span
       class="info_tip"
-      data-bind="tooltip: model.gwaioAffectedUnitsHoverCard"
+      data-bind="visible: model.gwaioAffectedUnits, tooltip: model.gwaioAffectedUnits"
       ><loc>Affected Units</loc></span
     >
     <div class="card_action">
