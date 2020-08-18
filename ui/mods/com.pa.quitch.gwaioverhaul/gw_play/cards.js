@@ -287,6 +287,10 @@ requireGW(
       }
     };
 
+    // Ensure tooltips shown if UI refreshed
+    if (model.showSystemCard())
+      model.currentSystemCardList().forEach(displayCardTooltip);
+
     model.showSystemCard.subscribe(function () {
       if (model.showSystemCard())
         model.currentSystemCardList().forEach(displayCardTooltip);
