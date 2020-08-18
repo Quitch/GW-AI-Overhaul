@@ -11,9 +11,7 @@
     <!-- ko template: 'cardTemplate' -->
     <!-- /ko -->
     <!-- ko if: !isEmpty() -->
-    <span
-      class="info_tip"
-      data-bind="visible: model.gwaioAffectedUnits, tooltip: model.gwaioAffectedUnits"
+    <span class="info_tip" data-bind="tooltip: model.gwaioAffectedUnits"
       ><loc>Which Units?</loc></span
     >
     <div class="card_action">

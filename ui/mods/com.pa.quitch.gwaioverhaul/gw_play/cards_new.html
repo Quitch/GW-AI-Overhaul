@@ -1,0 +1,56 @@
+<div
+  id="system-card"
+  class="attendmouse card"
+  data-bind="visible: $root.showSystemCard"
+  style="display: none;"
+>
+  <!-- ko with: $data -->
+  <!-- ko template: 'cardTemplate' -->
+  <!-- /ko -->
+  <!-- /ko -->
+  <span class="info_tip" data-bind="tooltip: model.gwaioAffectedUnits"
+    ><loc>Which Units?</loc></span
+  >
+  <div
+    class="exploring card_action"
+    data-bind="visible: $root.exploring"
+    style="display: none;"
+  >
+    <!-- ko if: $root.currentSystemCardListConditions()[$index()] && $root.currentSystemCardListConditions()[$index()].ok -->
+    <div
+      class="btn_hero"
+      data-bind="click: function () { $root.win($index()); }, click_sound: '/SE/UI/UI_GW_Download_Tech', rollover_sound: 'default'"
+    >
+      <!-- ko with: $data -->
+      <div class="btn_label">
+        <!-- ko if: !isLoadout() -->
+        <loc>Acquire</loc>
+        <!-- /ko -->
+        <!-- ko if: isLoadout() -->
+        <loc>Unlock Commander</loc>
+        <!-- /ko -->
+      </div>
+      <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: $root.currentSystemCardListConditions()[$index()] -->
+    <div
+      class="warning"
+      data-bind="visible: !$root.currentSystemCardListConditions()[$index()].ok"
+      style="display: none;"
+    >
+      <!-- ko if: $root.currentSystemCardListConditions()[$index()].duplicate -->
+      <loc>Duplicate Tech</loc>
+      <!-- /ko -->
+      <!-- ko if: !$root.currentSystemCardListConditions()[$index()].duplicate && !$root.currentSystemCardListConditions()[$index()].can_fit -->
+      <div class="btn_std disabled">
+        <div class="btn_label">
+          <loc>Acquire</loc>
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+    <!-- /ko -->
+  </div>
+</div>

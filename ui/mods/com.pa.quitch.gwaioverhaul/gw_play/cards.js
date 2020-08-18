@@ -3,6 +3,10 @@ $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
 locTree($("#hover-card"));
+$("#system-card").replaceWith(
+  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_new.html")
+);
+locTree($("#system-card"));
 
 requireGW(
   [
@@ -253,8 +257,9 @@ requireGW(
         gwaioCardsToUnits.cards
       );
 
+    model.gwaioShowTooltip = ko.observable(false);
+
     var displayCardTooltip = function (card) {
-      console.log(card);
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
       if (index === -1)
@@ -282,11 +287,15 @@ requireGW(
       }
     };
 
+    model.showSystemCard.subscribe(function () {
+      if (model.showSystemCard())
+        model.currentSystemCardList().forEach(displayCardTooltip);
+    });
+
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
       if (card === model.hoverCard()) card = undefined;
       ++hoverCount;
-      delete model.gwaioAffectedUnits;
 
       if (!card) {
         // Delay clears for a bit to avoid flashing
