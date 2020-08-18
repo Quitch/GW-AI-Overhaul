@@ -10,9 +10,9 @@ requireGW(
     "shared/gw_factions",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/units.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
   ],
-  function (GW, GWFactions, gwaioBank, gwaioCardsToUnits, gwaioUnitToName) {
+  function (GW, GWFactions, gwaioBank, gwaioCardsToUnits, gwaioUnitsToNames) {
     // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
     if (
       model.game().inventory().cards().length === 1 &&
@@ -281,12 +281,12 @@ requireGW(
           if (units) {
             var gwaioAffectedUnits = [];
             _.forEach(units, function (unit) {
-              index = _.findIndex(gwaioUnitToName.units, { path: unit });
+              index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
               if (index === -1)
                 //prettier-ignore
                 console.error("Unit path", unit, "is invalid or missing from GWAIO units.js");
               else {
-                var name = loc(gwaioUnitToName.units[index].name);
+                var name = loc(gwaioUnitsToNames.units[index].name);
                 gwaioAffectedUnits = gwaioAffectedUnits.concat(name);
               }
             });
