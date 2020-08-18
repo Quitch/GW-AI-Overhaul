@@ -133,7 +133,7 @@ From easiest to hardest:
 - Demigod
 - Godlike
 
-## Compatible Loadouts and Tech Cards
+## Compatible Loadouts
 
 If you are adding new loadouts and tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
 
@@ -155,25 +155,38 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
    }
    ```
 
-2. Add the following to the gw_play scene if you're adding tech cards:
+2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-   ```javascript
-   if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
-   else model.gwaioDeck = ["YOUR_TECH_ID"];
-   ```
+3. Add `cards/gwaio_faction_cluster` and `gwaioFactionCluster` to your loadout's `define()` function
 
-3. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
-
-4. Add `cards/gwaio_faction_cluster` and `gwaioFactionCluster` to your loadout's `define()` function
-
-5. Within the `if (!buffCount)` block of your loadout add:
+4. Within the `if (!buffCount)` block of your loadout add:
 
    ```javascript
    if (inventory.getTag("global", "playerFaction") === 4)
      gwaioFactionCluster.buff(inventory);
    ```
 
-6. Add com.pa.quitch.gwaioverhaul as a dependency
+## Compatible Tech Cards
+
+If you are adding new loadouts and tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
+
+1. Add the following to the gw_play scene:
+
+   ```javascript
+   if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
+   else model.gwaioDeck = ["YOUR_TECH_ID"];
+   if (model.gwaioCardsToUnits === undefined)
+     model.gwaioCardsToUnits = [
+       // Use the base_commander for commander and always the use unit, not the ammo, etc.
+       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
+     ];
+   else
+     model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat([
+       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
+     ]);
+   ```
+
+2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
 ## FAQ
 
