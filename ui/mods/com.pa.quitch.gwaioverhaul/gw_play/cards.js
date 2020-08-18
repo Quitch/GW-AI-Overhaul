@@ -1,4 +1,4 @@
-// Allow player to delete tech cards whenever they want
+// Allow player to delete tech cards whenever they want and display units affected by the card
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
@@ -246,13 +246,42 @@ requireGW(
       });
     };
 
-    // gw_play self.setHoverCard - used to display "Which Units?"" tooltip
     if (model.gwaioCardsToUnits === undefined)
       model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
     else
       model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
         gwaioCardsToUnits.cards
       );
+
+    var displayCardTooltip = function (card) {
+      console.log(card);
+      var cardId = card.id();
+      var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
+      if (index === -1)
+        //prettier-ignore
+        console.warn("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
+      else {
+        var units = model.gwaioCardsToUnits[index].units;
+        if (units) {
+          var affectedUnits = [];
+          _.forEach(units, function (unit) {
+            index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
+            if (index === -1)
+              //prettier-ignore
+              console.warn("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
+            else {
+              var name = loc(gwaioUnitsToNames.units[index].name);
+              affectedUnits = affectedUnits.concat(name);
+            }
+          });
+          affectedUnits = affectedUnits.sort();
+          model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
+            return (unit = unit.concat("<br>"));
+          });
+        }
+      }
+    };
+
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
       if (card === model.hoverCard()) card = undefined;
@@ -268,31 +297,7 @@ requireGW(
         }, 300);
         return;
       } else {
-        var cardId = card.id();
-        var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-        if (index === -1)
-          //prettier-ignore
-          console.error("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
-        else {
-          var units = model.gwaioCardsToUnits[index].units;
-          if (units) {
-            var affectedUnits = [];
-            _.forEach(units, function (unit) {
-              index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
-              if (index === -1)
-                //prettier-ignore
-                console.error("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
-              else {
-                var name = loc(gwaioUnitsToNames.units[index].name);
-                affectedUnits = affectedUnits.concat(name);
-              }
-            });
-            affectedUnits = affectedUnits.sort();
-            model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
-              return (unit = unit.concat("<br>"));
-            });
-          }
-        }
+        displayCardTooltip(card);
       }
 
       var $block = $(hoverEvent.target);
