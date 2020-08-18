@@ -426,6 +426,27 @@ define({
         "/pa/units/land/tank_light_laser/tank_light_laser.json",
       ],
     },
+    /* Enable cards work counterintuitively so we don't want to display their information
+       but we also don't want to generate an error about a missing card */
+    { id: "gwc_enable_air_all" },
+    { id: "gwc_enable_air_t1" },
+    { id: "gwc_enable_air_t2" },
+    { id: "gwc_enable_artillery" },
+    { id: "gwc_enable_bots_all" },
+    { id: "gwc_enable_bots_t1" },
+    { id: "gwc_enable_bots_t2" },
+    { id: "gwc_enable_defenses_t2" },
+    { id: "gwc_enable_orbital_all" },
+    { id: "gwc_enable_orbital_t1" },
+    { id: "gwc_enable_orbital_t2" },
+    { id: "gwc_enable_sea_all" },
+    { id: "gwc_enable_sea_t1" },
+    { id: "gwc_enable_sea_t2" },
+    { id: "gwc_enable_super_weapons" },
+    { id: "gwc_enable_titans" },
+    { id: "gwc_enable_vehicles_all" },
+    { id: "gwc_enable_vehicles_t1" },
+    { id: "gwc_enable_vehicles_t2" },
     {
       id: "gwc_energy_efficiency_all",
       units: [
