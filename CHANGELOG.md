@@ -6,6 +6,7 @@
 
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
 - Enabled Complete Energy Tech
+- Tooltips on cards listing which units they affect
 
 ### Fixed
 
