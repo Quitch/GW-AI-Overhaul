@@ -67,6 +67,11 @@
     - Added
       - Narwhal torpedo (classic only)
       - Squall torpedo
+  - Orbital Armor Tech
+    - Removed
+      - Anchor
+      - Jig
+      - Orbital Factory
   - Orbital Combat Tech
     - Removed
       - Anchor
