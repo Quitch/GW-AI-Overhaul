@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+### Added
+
 - Added faction tooltip explaining the style used by the enemy and Sub Commanders
+- Enabled Complete Energy Tech
+
+### Fixed
+
 - Fixed all known issues and inconsistencies with the base game tech cards:
   - Air Ammunition Tech
     - Added

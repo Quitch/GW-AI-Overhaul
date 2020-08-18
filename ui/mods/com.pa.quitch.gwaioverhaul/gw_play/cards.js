@@ -83,6 +83,7 @@ requireGW(
       "gwc_enable_titans",
       "gwc_enable_vehicles_all",
       "gwc_enable_vehicles_t1",
+      "gwc_energy_efficiency_all",
       "gwc_energy_efficiency_intel",
       "gwc_energy_efficiency_weapons",
       "gwc_health_air",
