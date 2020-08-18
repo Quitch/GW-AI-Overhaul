@@ -284,7 +284,7 @@ requireGW(
               index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
               if (index === -1)
                 //prettier-ignore
-                console.error("Unit path", unit, "is invalid or missing from GWAIO units.js");
+                console.error("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
               else {
                 var name = loc(gwaioUnitsToNames.units[index].name);
                 gwaioAffectedUnits = gwaioAffectedUnits.concat(name);
