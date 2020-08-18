@@ -4,38 +4,15 @@ $("#hover-card").replaceWith(
 );
 locTree($("#hover-card"));
 
-var hoverCount = 0;
-model.setHoverCard = function (card, hoverEvent) {
-  if (card === model.hoverCard()) card = undefined;
-
-  ++hoverCount;
-  if (!card) {
-    // Delay clears for a bit to avoid flashing
-    var oldCount = hoverCount;
-    _.delay(function () {
-      if (oldCount !== hoverCount) return;
-      model.hoverCard(undefined);
-    }, 300);
-    return;
-  } else
-    requireGW(["cards/" + card.id()], function (fullCard) {
-      model.gwaioAffectedUnitsHoverCard = fullCard.units;
-    });
-
-  var $block = $(hoverEvent.target);
-  if (!$block.is(".one-card")) $block = $block.parent(".one-card");
-  var left = $block.offset().left + $block.width() / 2;
-  model.hoverOffset(left.toString() + "px");
-  model.hoverCard(card);
-};
-
 requireGW(
   [
     "shared/gw_common",
     "shared/gw_factions",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/units.js",
   ],
-  function (GW, GWFactions, gwaioBank) {
+  function (GW, GWFactions, gwaioBank, gwaioCardsToUnits, gwaioUnitToName) {
     // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
     if (
       model.game().inventory().cards().length === 1 &&
@@ -266,6 +243,67 @@ requireGW(
           model.scanning(false);
         }, 2000);
       });
+    };
+
+    // gw_play self.setHoverCard - used to display Affected Units tooltip
+    if (model.gwaioCardsToUnits === undefined)
+      model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+    else
+      model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
+        gwaioCardsToUnits.cards
+      );
+    var hoverCount = 0;
+    model.setHoverCard = function (card, hoverEvent) {
+      if (card === model.hoverCard()) card = undefined;
+      ++hoverCount;
+      delete model.gwaioAffectedUnits;
+
+      if (!card) {
+        // Delay clears for a bit to avoid flashing
+        var oldCount = hoverCount;
+        _.delay(function () {
+          if (oldCount !== hoverCount) return;
+          model.hoverCard(undefined);
+        }, 300);
+        return;
+      } else {
+        var cardId = card.id();
+        console.log("cardId", cardId);
+        var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
+        console.log("index", index);
+        if (index === -1)
+          //prettier-ignore
+          console.error("Card ID", cardId, "is invalid or missing from GWAIO card_units.js");
+        else {
+          var units = model.gwaioCardsToUnits[index].units;
+          console.log("units", units);
+          if (units) {
+            var gwaioAffectedUnits = [];
+            _.forEach(units, function (unit) {
+              index = _.findIndex(gwaioUnitToName.units, { path: unit });
+              if (index === -1)
+                //prettier-ignore
+                console.error("Unit path", unit, "is invalid or missing from GWAIO units.js");
+              else {
+                var name = loc(gwaioUnitToName.units[index].name);
+                gwaioAffectedUnits = gwaioAffectedUnits.concat(name);
+              }
+            });
+            gwaioAffectedUnits = gwaioAffectedUnits.sort();
+            model.gwaioAffectedUnits = _.map(gwaioAffectedUnits, function (
+              unit
+            ) {
+              return (unit = unit.concat("<br>"));
+            });
+          }
+        }
+      }
+
+      var $block = $(hoverEvent.target);
+      if (!$block.is(".one-card")) $block = $block.parent(".one-card");
+      var left = $block.offset().left + $block.width() / 2;
+      model.hoverOffset(left.toString() + "px");
+      model.hoverCard(card);
     };
   }
 );
