@@ -246,7 +246,7 @@ requireGW(
       });
     };
 
-    // gw_play self.setHoverCard - used to display Affected Units tooltip
+    // gw_play self.setHoverCard - used to display "Which Units?"" tooltip
     if (model.gwaioCardsToUnits === undefined)
       model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
     else
