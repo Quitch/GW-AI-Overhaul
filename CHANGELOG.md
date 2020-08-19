@@ -17,6 +17,13 @@
     - Anchor
     - Halley
     - Unit Cannon
+- Additional issues in the base game cards
+  - Air Ammunition Tech
+    - Fixed
+      - Hummingbird ammo
+  - Air Combat Tech
+    - Fixed
+      - Hummingbird ammo
 
 ## v4.6.0 - 2020-08-19
 
