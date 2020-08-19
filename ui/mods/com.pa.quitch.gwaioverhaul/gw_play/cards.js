@@ -281,7 +281,7 @@ requireGW(
           model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
             return (unit = unit.concat("<br>"));
           });
-        } else console.warn("No unit path found in model.gwaioCardsToUnits at index", index); //prettier-ignore
+        } else console.warn("No unit paths found in model.gwaioCardsToUnits at index", index); //prettier-ignore
       }
     };
 
