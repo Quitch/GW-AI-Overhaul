@@ -1,8 +1,37 @@
+model.gwaioWhichUnitsTooltip = ko.observableArray([]);
+model.gwaioCardShowTooltip = ko.observableArray([]);
+
+// Hide Which Unit? tooltips for cards which don't modify units
+model.currentSystemCardList.subscribe(function () {
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minion"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
+});
+// Ensure the tooltip is shown even if the UI is refreshed
+if (model.currentSystemCardList()[0] !== undefined)
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minion"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
+
 // Allow player to delete tech cards whenever they want and display units affected by the card
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
 locTree($("#hover-card"));
+$("#system-card").replaceWith(
+  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_new.html")
+);
+locTree($("#system-card"));
 
 requireGW(
   [
@@ -253,13 +282,19 @@ requireGW(
         gwaioCardsToUnits.cards
       );
 
-    var displayCardTooltip = function (card) {
-      console.log(card);
+    var displayCardTooltip = function (card, i) {
+      if (card.isLoadout()) return;
+      if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
       if (index === -1)
-        //prettier-ignore
-        console.warn("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
+        if (cardId === undefined) return;
+        else
+          console.warn(
+            "Card ID",
+            cardId,
+            "is invalid or missing from model.gwaioCardsToUnits"
+          );
       else {
         var units = model.gwaioCardsToUnits[index].units;
         if (units) {
@@ -267,26 +302,38 @@ requireGW(
           _.forEach(units, function (unit) {
             index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
             if (index === -1)
-              //prettier-ignore
-              console.warn("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
+              console.warn(
+                "Unit path",
+                unit,
+                "is invalid or missing from GWAIO unit_names.js"
+              );
             else {
               var name = loc(gwaioUnitsToNames.units[index].name);
               affectedUnits = affectedUnits.concat(name);
             }
           });
           affectedUnits = affectedUnits.sort();
-          model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
+          model.gwaioWhichUnitsTooltip()[i] = _.map(affectedUnits, function (
+            unit
+          ) {
             return (unit = unit.concat("<br>"));
           });
         }
       }
     };
 
+    model.showSystemCard.subscribe(function () {
+      if (model.showSystemCard())
+        model.currentSystemCardList().forEach(displayCardTooltip);
+    });
+    // Ensure the tooltip is shown even if the UI is refreshed
+    if (model.showSystemCard())
+      model.currentSystemCardList().forEach(displayCardTooltip);
+
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
       if (card === model.hoverCard()) card = undefined;
       ++hoverCount;
-      delete model.gwaioAffectedUnits;
 
       if (!card) {
         // Delay clears for a bit to avoid flashing
