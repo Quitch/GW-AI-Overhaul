@@ -21,6 +21,11 @@
   - Air Combat Tech
     - Added
       - Strafer ammo
+  - Bot Engine Tech
+    - Added
+      - Colonel
+      - Locusts
+      - Spark
   - Complete Energy Tech
     - Added
       - Artemis
