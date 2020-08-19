@@ -291,7 +291,7 @@ requireGW(
       if (model.showSystemCard())
         model.currentSystemCardList().forEach(displayCardTooltip);
     });
-    // Ensure the tooltip is shown even if UI refreshed
+    // Ensure the tooltip is shown even if the UI is refreshed
     if (model.showSystemCard())
       model.currentSystemCardList().forEach(displayCardTooltip);
 
