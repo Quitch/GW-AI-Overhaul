@@ -289,7 +289,6 @@ requireGW(
         if (cardId === undefined) return;
         else
           console.warn(
-            "Card ID",
             cardId,
             "is invalid or missing from model.gwaioCardsToUnits"
           );
@@ -301,7 +300,6 @@ requireGW(
             index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
             if (index === -1)
               console.warn(
-                "Unit path",
                 unit,
                 "is invalid or missing from GWAIO unit_names.js"
               );
