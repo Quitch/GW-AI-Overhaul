@@ -426,6 +426,8 @@ define({
         "/pa/units/land/tank_light_laser/tank_light_laser.json",
       ],
     },
+    /* We take some liberties with the active gwc_enable_ cards, due to them working counterintuitively.
+       They will list units that start unlocked in gwc_start.js, but the player doesn't know this. */
     {
       id: "gwc_enable_air_all",
       units: [
