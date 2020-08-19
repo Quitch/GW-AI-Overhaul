@@ -315,7 +315,7 @@ requireGW(
             unit,
             i
           ) {
-            if (affectedUnits.length < 14) return (unit = unit.concat("<br>"));
+            if (affectedUnits.length < 13) return (unit = unit.concat("<br>"));
             else if (i < affectedUnits.length - 1)
               return (unit = unit.concat("; "));
             else return unit;
