@@ -257,9 +257,10 @@ requireGW(
         gwaioCardsToUnits.cards
       );
 
-    model.gwaioShowTooltip = ko.observable(false);
+    model.gwaioWhichUnitsTooltip = ko.observableArray([]);
 
-    var displayCardTooltip = function (card) {
+    var displayCardTooltip = function (card, i) {
+      if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
       if (index === -1)
@@ -286,7 +287,9 @@ requireGW(
             }
           });
           affectedUnits = affectedUnits.sort();
-          model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
+          model.gwaioWhichUnitsTooltip()[i] = _.map(affectedUnits, function (
+            unit
+          ) {
             return (unit = unit.concat("<br>"));
           });
         } else

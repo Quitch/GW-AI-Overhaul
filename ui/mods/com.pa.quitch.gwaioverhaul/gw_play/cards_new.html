@@ -8,7 +8,9 @@
   <!-- ko template: 'cardTemplate' -->
   <!-- /ko -->
   <!-- /ko -->
-  <span class="info_tip" data-bind="tooltip: model.gwaioAffectedUnits"
+  <span
+    class="info_tip"
+    data-bind="tooltip: model.gwaioWhichUnitsTooltip()[$index()]"
     ><loc>Which Units?</loc></span
   >
   <div
