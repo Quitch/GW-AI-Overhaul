@@ -7,23 +7,25 @@
 - Large tooltips for tech cards format themselves to try and fit within the available space
 - Structure Armor Tech tooltip not listing all units
 - Structure Combat Tech tooltip not listing all units
-- Structure Armor Tech
-  - Added
-    - Halley
-  - Fixed
-    - Anchor
-- Structure Combat Tech
-  - Fixed
-    - Anchor
-    - Halley
-    - Unit Cannon
-- Additional issues in the base game cards
+- Fixed errors I introduced into cards:
+  - Structure Armor Tech
+    - Fixed
+      - Anchor
+  - Structure Combat Tech
+    - Fixed
+      - Anchor
+      - Halley
+      - Unit Cannon
+- Additional issues in the base game cards:
   - Air Ammunition Tech
     - Fixed
       - Hummingbird ammo
   - Air Combat Tech
     - Fixed
       - Hummingbird ammo
+  - Structure Armor Tech
+    - Added
+      - Halley
 
 ## v4.6.0 - 2020-08-19
 
