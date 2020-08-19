@@ -317,11 +317,7 @@ requireGW(
           ) {
             return (unit = unit.concat("<br>"));
           });
-        } else
-          console.warn(
-            "No unit path found in model.gwaioCardsToUnits at index",
-            index
-          );
+        }
       }
     };
 
