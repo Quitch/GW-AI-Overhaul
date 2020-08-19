@@ -275,12 +275,11 @@ requireGW(
       });
     };
 
-    if (model.gwaioCardsToUnits === undefined)
-      model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
-    else
+    if (model.gwaioCardsToUnits)
       model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
         gwaioCardsToUnits.cards
       );
+    else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
 
     var displayCardTooltip = function (card, i) {
       if (card.isLoadout()) return;
