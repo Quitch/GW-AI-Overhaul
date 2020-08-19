@@ -1,3 +1,5 @@
+model.gwaioWhichUnitsTooltip = ko.observableArray([]);
+
 // Allow player to delete tech cards whenever they want and display units affected by the card
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
@@ -256,8 +258,6 @@ requireGW(
       model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
         gwaioCardsToUnits.cards
       );
-
-    model.gwaioWhichUnitsTooltip = ko.observableArray([]);
 
     var displayCardTooltip = function (card, i) {
       if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
