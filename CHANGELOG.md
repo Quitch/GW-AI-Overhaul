@@ -11,7 +11,7 @@
 ### Changed
 
 - Made the FFA Chance tooltip more accurate
-- Added Stinger to the following cards:
+- Added the Stinger (Bot AA) to the following cards:
   - Bot Ammunition Tech
   - Bot Armor Tech
   - Bot Combat Tech
