@@ -10,7 +10,7 @@
   <!-- /ko -->
   <span
     class="info_tip"
-    data-bind="tooltip: model.gwaioWhichUnitsTooltip()[$index()]"
+    data-bind="visible: model.gwaioCardShowTooltip()[$index()], tooltip: model.gwaioWhichUnitsTooltip()[$index()]"
     ><loc>Which Units?</loc></span
   >
   <div

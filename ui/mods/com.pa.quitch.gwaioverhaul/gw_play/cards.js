@@ -1,4 +1,27 @@
 model.gwaioWhichUnitsTooltip = ko.observableArray([]);
+model.gwaioCardShowTooltip = ko.observableArray([]);
+
+// Hide Which Unit? tooltips for cards which don't modify units
+model.currentSystemCardList.subscribe(function () {
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minon"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
+});
+// Ensure the tooltip is shown even if the UI is refreshed
+if (model.currentSystemCardList()[0] !== undefined)
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minon"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
 
 // Allow player to delete tech cards whenever they want and display units affected by the card
 $("#hover-card").replaceWith(
