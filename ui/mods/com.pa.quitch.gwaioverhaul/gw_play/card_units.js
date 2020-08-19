@@ -4,6 +4,7 @@ define({
       id: "gwaio_enable_bot_aa",
       units: ["/pa/units/land/bot_aa/bot_aa.json"],
     },
+    { id: "gwc_add_card_slot", units: [] },
     {
       id: "gwc_bld_efficiency_cdr",
       units: ["/pa/units/commanders/base_commander/base_commander.json"],
@@ -825,6 +826,7 @@ define({
         "/pa/units/land/tank_nuke/tank_nuke.json",
       ],
     },
+    { id: "gwc_minon", units: [] },
     {
       id: "gwc_speed_air",
       units: [
