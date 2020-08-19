@@ -126,7 +126,6 @@ define({
         "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
         "/pa/units/land/bot_factory/bot_factory.json",
         "/pa/units/land/control_module/control_module.json",
-        "/pa/units/land/delta_v_engine/delta_v_engine.json",
         "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
         "/pa/units/land/energy_plant/energy_plant.json",
         "/pa/units/land/energy_storage/energy_storage.json",
@@ -148,6 +147,7 @@ define({
         "/pa/units/land/vehicle_factory/vehicle_factory.json",
         "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
         "/pa/units/orbital/defense_satellite/defense_satellite.json",
+        "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
         "/pa/units/orbital/ion_defense/ion_defense.json",
         "/pa/units/orbital/mining_platform/mining_platform.json",
         "/pa/units/orbital/orbital_factory/orbital_factory.json",
@@ -575,11 +575,11 @@ define({
       units: ["/pa/units/sea/naval_factory_adv/naval_factory_adv.json"],
     },
     {
-      id: "gwc_enable_super_weapons",
+      id: "gwc_enable_super_weapons", // not used
       units: [
+        "/pa/units/land/control_module/control_module.json",
         "/pa/units/land/nuke_launcher/nuke_launcher.json",
         "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
-        "/pa/units/land/control_module/control_module.json",
       ],
     },
     {
@@ -797,11 +797,11 @@ define({
         "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
         "/pa/units/land/vehicle_factory/vehicle_factory.json",
         "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+        "/pa/units/orbital/defense_satellite/defense_satellite.json",
         "/pa/units/orbital/ion_defense/ion_defense.json",
         "/pa/units/orbital/mining_platform/mining_platform.json",
         "/pa/units/orbital/orbital_factory/orbital_factory.json",
         "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
-        "/pa/units/orbital/defense_satellite/defense_satellite.json",
         "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
         "/pa/units/sea/naval_factory/naval_factory.json",
         "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
