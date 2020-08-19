@@ -5,6 +5,8 @@
 ### Fixed
 
 - Large tooltips for tech cards format themselves to try and fit within the available space
+- Structure Armor Tech not listing all units
+- Structure Combat Tech not listing all units
 
 ## v4.6.0 - 2020-08-19
 
