@@ -8,11 +8,13 @@
   <!-- ko template: 'cardTemplate' -->
   <!-- /ko -->
   <!-- /ko -->
+  <!-- ko if: !isLoadout() -->
   <span
     class="info_tip"
     data-bind="visible: model.gwaioCardShowTooltip()[$index()], tooltip: model.gwaioWhichUnitsTooltip()[$index()]"
     ><loc>Which Units?</loc></span
   >
+  <!-- /ko -->
   <div
     class="exploring card_action"
     data-bind="visible: $root.exploring"
