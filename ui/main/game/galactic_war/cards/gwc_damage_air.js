@@ -34,7 +34,7 @@ define([], function () {
         "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
         "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
         "/pa/units/air/bomber/bomber_ammo.json",
-        "/pa/units/air/figher/fighter_ammo.json",
+        "/pa/units/air/fighter/fighter_ammo.json",
         "/pa/units/air/fighter_adv/fighter_adv_ammo.json",
         "/pa/units/air/gunship/gunship_ammo.json",
         "/pa/units/air/solar_drone/solar_drone_ammo.json",

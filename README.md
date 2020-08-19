@@ -175,15 +175,15 @@ If you are adding new loadouts and tech cards to the game and want to be GWAIO c
    ```javascript
    if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
    else model.gwaioDeck = ["YOUR_TECH_ID"];
-   if (model.gwaioCardsToUnits === undefined)
+   if (model.gwaioCardsToUnits)
+     model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat([
+       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
+     ]);
+   else
      model.gwaioCardsToUnits = [
        // Use the base_commander for commander and always the use unit, not the ammo, etc.
        { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
      ];
-   else
-     model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat([
-       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
-     ]);
    ```
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`

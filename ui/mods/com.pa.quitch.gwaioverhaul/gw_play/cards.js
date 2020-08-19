@@ -1,5 +1,5 @@
-model.gwaioWhichUnitsTooltip = ko.observableArray([]);
-model.gwaioCardShowTooltip = ko.observableArray([]);
+model.gwaioTechCardTooltip = ko.observableArray([]);
+model.gwaioShowTechCardTooltip = ko.observableArray([]);
 
 // Hide Which Unit? tooltips for cards which don't modify units
 model.currentSystemCardList.subscribe(function () {
@@ -8,8 +8,8 @@ model.currentSystemCardList.subscribe(function () {
       model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
       model.currentSystemCardList()[i].id() === "gwc_minion"
     )
-      model.gwaioCardShowTooltip()[i] = false;
-    else model.gwaioCardShowTooltip()[i] = true;
+      model.gwaioShowTechCardTooltip()[i] = false;
+    else model.gwaioShowTechCardTooltip()[i] = true;
   });
 });
 // Ensure the tooltip is shown even if the UI is refreshed
@@ -19,11 +19,11 @@ if (model.currentSystemCardList()[0] !== undefined)
       model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
       model.currentSystemCardList()[i].id() === "gwc_minion"
     )
-      model.gwaioCardShowTooltip()[i] = false;
-    else model.gwaioCardShowTooltip()[i] = true;
+      model.gwaioShowTechCardTooltip()[i] = false;
+    else model.gwaioShowTechCardTooltip()[i] = true;
   });
 
-// Allow player to delete tech cards whenever they want and display units affected by the card
+// Allow player to delete tech cards whenever they want, and display units affected by tech cards
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
@@ -108,7 +108,6 @@ requireGW(
       "gwc_enable_defenses_t2",
       "gwc_enable_orbital_all",
       "gwc_enable_sea_all",
-      "gwc_enable_super_weapons",
       "gwc_enable_titans",
       "gwc_enable_vehicles_all",
       "gwc_enable_vehicles_t1",
@@ -275,12 +274,11 @@ requireGW(
       });
     };
 
-    if (model.gwaioCardsToUnits === undefined)
-      model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
-    else
+    if (model.gwaioCardsToUnits)
       model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
         gwaioCardsToUnits.cards
       );
+    else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
 
     var displayCardTooltip = function (card, i) {
       if (card.isLoadout()) return;
@@ -313,10 +311,14 @@ requireGW(
             }
           });
           affectedUnits = affectedUnits.sort();
-          model.gwaioWhichUnitsTooltip()[i] = _.map(affectedUnits, function (
-            unit
+          model.gwaioTechCardTooltip()[i] = _.map(affectedUnits, function (
+            unit,
+            i
           ) {
-            return (unit = unit.concat("<br>"));
+            if (affectedUnits.length < 13) return (unit = unit.concat("<br>"));
+            else if (i < affectedUnits.length - 1)
+              return (unit = unit.concat("; "));
+            else return unit;
           });
         }
       }
