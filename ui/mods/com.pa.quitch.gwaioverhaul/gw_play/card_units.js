@@ -429,19 +429,41 @@ define({
     {
       id: "gwc_enable_air_all",
       units: [
-        "/pa/units/air/air_factory/air_factory.json",
         "/pa/units/air/air_factory_adv/air_factory_adv.json",
+        "/pa/units/air/air_factory/air_factory.json",
+        "/pa/units/air/air_scout/air_scout.json",
+        "/pa/units/air/bomber_adv/bomber_adv.json",
+        "/pa/units/air/bomber_heavy/bomber_heavy.json",
+        "/pa/units/air/bomber/bomber.json",
+        "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+        "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+        "/pa/units/air/fighter_adv/fighter_adv.json",
+        "/pa/units/air/fighter/fighter.json",
+        "/pa/units/air/gunship/gunship.json",
+        "/pa/units/air/solar_drone/solar_drone.json",
+        "/pa/units/air/strafer/strafer.json",
+        "/pa/units/air/support_platform/support_platform.json",
+        "/pa/units/air/transport/transport.json",
       ],
     },
     {
       id: "gwc_enable_air_t1",
-      units: ["/pa/units/air/air_factory/air_factory.json"],
+      units: [
+        "/pa/units/air/air_factory/air_factory.json",
+        "/pa/units/air/air_scout/air_scout.json",
+        "/pa/units/air/bomber/bomber.json",
+        "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+        "/pa/units/air/fighter/fighter.json",
+        "/pa/units/air/solar_drone/solar_drone.json",
+        "/pa/units/air/transport/transport.json",
+      ],
     },
     {
       id: "gwc_enable_air_t2", // not used
       units: [
         "/pa/units/air/air_factory_adv/air_factory_adv.json",
         "/pa/units/air/air_factory/air_factory.json",
+        "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
       ],
     },
     {
@@ -455,19 +477,40 @@ define({
     {
       id: "gwc_enable_bots_all",
       units: [
+        "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
+        "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
         "/pa/units/land/bot_factory/bot_factory.json",
+        "/pa/units/land/bot_grenadier/bot_grenadier.json",
+        "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
+        "/pa/units/land/bot_support_commander/bot_support_commander.json",
+        "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
+        "/pa/units/land/bot_tesla/bot_tesla.json",
+        "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json",
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+        "/pa/units/land/fabrication_bot/fabrication_bot.json",
       ],
     },
     {
       id: "gwc_enable_bots_t1",
-      units: ["/pa/units/land/bot_factory/bot_factory.json"],
+      units: [
+        "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_bomb/bot_bomb.json",
+        "/pa/units/land/bot_factory/bot_factory.json",
+        "/pa/units/land/bot_grenadier/bot_grenadier.json",
+        "/pa/units/land/bot_tesla/bot_tesla.json",
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+        "/pa/units/land/fabrication_bot/fabrication_bot.json",
+      ],
     },
     {
       id: "gwc_enable_bots_t2", // not used
       units: [
         "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
         "/pa/units/land/bot_factory/bot_factory.json",
+        "/pa/units/land/fabrication_bot/fabrication_bot.json",
       ],
     },
     {
@@ -509,8 +552,14 @@ define({
     {
       id: "gwc_enable_sea_all",
       units: [
-        "/pa/units/sea/naval_factory/naval_factory.json",
+        "/pa/units/sea/battleship/battleship.json",
+        "/pa/units/sea/drone_carrier/carrier/carrier.json",
+        "/pa/units/sea/drone_carrier/drone/drone.json",
+        "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json",
+        "/pa/units/sea/hover_ship/hover_ship.json",
+        "/pa/units/sea/missile_ship/missile_ship.json",
         "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+        "/pa/units/sea/nuclear_sub/nuclear_sub.json",
       ],
     },
     {
@@ -548,11 +597,31 @@ define({
     },
     {
       id: "gwc_enable_vehicles_t1",
-      units: ["/pa/units/land/vehicle_factory/vehicle_factory.json"],
+      units: [
+        "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+        "/pa/units/land/attack_vehicle/attack_vehicle.json",
+        "/pa/units/land/tank_armor/tank_armor.json",
+        "/pa/units/land/tank_hover/tank_hover.json",
+        "/pa/units/land/tank_light_laser/tank_light_laser.json",
+        "/pa/units/land/vehicle_factory/vehicle_factory.json",
+      ],
     },
     {
       id: "gwc_enable_vehicles_t2", // not used
       units: [
+        "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+        "/pa/units/land/attack_vehicle/attack_vehicle.json",
+        "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+        "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
+        "/pa/units/land/land_scout/land_scout.json",
+        "/pa/units/land/tank_armor/tank_armor.json",
+        "/pa/units/land/tank_flak/tank_flak.json",
+        "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+        "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
+        "/pa/units/land/tank_hover/tank_hover.json",
+        "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
+        "/pa/units/land/tank_light_laser/tank_light_laser.json",
+        "/pa/units/land/tank_nuke/tank_nuke.json",
         "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
         "/pa/units/land/vehicle_factory/vehicle_factory.json",
       ],
