@@ -23,7 +23,7 @@ if (model.currentSystemCardList()[0] !== undefined)
     else model.gwaioShowTechCardTooltip()[i] = true;
   });
 
-// Allow player to delete tech cards whenever they want and display units affected by the card
+// Allow player to delete tech cards whenever they want, and display units affected by tech cards
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
