@@ -7,6 +7,16 @@
 - Large tooltips for tech cards format themselves to try and fit within the available space
 - Structure Armor Tech tooltip not listing all units
 - Structure Combat Tech tooltip not listing all units
+- Structure Armor Tech
+  - Added
+    - Halley
+  - Fixed
+    - Anchor
+- Structure Combat Tech
+  - Fixed
+    - Anchor
+    - Halley
+    - Unit Cannon
 
 ## v4.6.0 - 2020-08-19
 

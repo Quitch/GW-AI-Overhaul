@@ -71,20 +71,20 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/radar/radar.json",
         "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
         "/pa/units/land/teleporter/teleporter.json",
+        "/pa/units/land/unit_cannon/unit_cannon.json",
         "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
         "/pa/units/land/vehicle_factory/vehicle_factory.json",
         "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+        "/pa/units/orbital/defense_satellite/defense_satellite.json",
+        "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
         "/pa/units/orbital/ion_defense/ion_defense.json",
         "/pa/units/orbital/mining_platform/mining_platform.json",
         "/pa/units/orbital/orbital_factory/orbital_factory.json",
         "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
-        "/pa/units/sea/defense_satellite/defense_satellite.json",
-        "/pa/units/sea/delta_v_engine/delta_v_engine.json",
         "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
         "/pa/units/sea/naval_factory/naval_factory.json",
         "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
         "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
-        "/pa/units/sea/unit_cannon/unit_cannon.json",
       ];
       var mods = [];
       var modUnit = function (unit) {
