@@ -4,8 +4,8 @@
 
 ### Added
 
-- Added faction tooltip explaining the style used by the enemy and Sub Commanders
-- Enabled Complete Energy Tech
+- Faction tooltip explaining the style used by the enemy and Sub Commanders
+- Complete Energy Tech card
 - Tooltips on cards listing which units they affect
 
 ### Changed
@@ -20,7 +20,7 @@
 
 ### Fixed
 
-- Fixed all known issues and inconsistencies with the base game tech cards:
+- All known issues and inconsistencies with the base game tech cards:
   - Air Ammunition Tech
     - Added
       - Strafer
