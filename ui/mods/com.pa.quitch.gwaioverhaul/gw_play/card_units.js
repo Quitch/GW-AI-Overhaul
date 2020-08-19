@@ -426,27 +426,137 @@ define({
         "/pa/units/land/tank_light_laser/tank_light_laser.json",
       ],
     },
-    /* Enable cards work counterintuitively so we don't want to display their information
-       but we also don't want to generate an error about a missing card */
-    { id: "gwc_enable_air_all" },
-    { id: "gwc_enable_air_t1" },
-    { id: "gwc_enable_air_t2" },
-    { id: "gwc_enable_artillery" },
-    { id: "gwc_enable_bots_all" },
-    { id: "gwc_enable_bots_t1" },
-    { id: "gwc_enable_bots_t2" },
-    { id: "gwc_enable_defenses_t2" },
-    { id: "gwc_enable_orbital_all" },
-    { id: "gwc_enable_orbital_t1" },
-    { id: "gwc_enable_orbital_t2" },
-    { id: "gwc_enable_sea_all" },
-    { id: "gwc_enable_sea_t1" },
-    { id: "gwc_enable_sea_t2" },
-    { id: "gwc_enable_super_weapons" },
-    { id: "gwc_enable_titans" },
-    { id: "gwc_enable_vehicles_all" },
-    { id: "gwc_enable_vehicles_t1" },
-    { id: "gwc_enable_vehicles_t2" },
+    {
+      id: "gwc_enable_air_all",
+      units: [
+        "/pa/units/air/air_factory/air_factory.json",
+        "/pa/units/air/air_factory_adv/air_factory_adv.json",
+      ],
+    },
+    {
+      id: "gwc_enable_air_t1",
+      units: ["/pa/units/air/air_factory/air_factory.json"],
+    },
+    {
+      id: "gwc_enable_air_t2", // not used
+      units: [
+        "/pa/units/air/air_factory_adv/air_factory_adv.json",
+        "/pa/units/air/air_factory/air_factory.json",
+      ],
+    },
+    {
+      id: "gwc_enable_artillery",
+      units: [
+        "/pa/units/land/artillery_long/artillery_long.json",
+        "/pa/units/land/artillery_short/artillery_short.json",
+        "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+      ],
+    },
+    {
+      id: "gwc_enable_bots_all",
+      units: [
+        "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+        "/pa/units/land/bot_factory/bot_factory.json",
+      ],
+    },
+    {
+      id: "gwc_enable_bots_t1",
+      units: ["/pa/units/land/bot_factory/bot_factory.json"],
+    },
+    {
+      id: "gwc_enable_bots_t2", // not used
+      units: [
+        "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+        "/pa/units/land/bot_factory/bot_factory.json",
+      ],
+    },
+    {
+      id: "gwc_enable_defenses_t2",
+      units: [
+        "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
+        "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+        "/pa/units/land/air_defense_adv/air_defense_adv.json",
+      ],
+    },
+    {
+      id: "gwc_enable_orbital_all",
+      units: [
+        "/pa/units/orbital/mining_platform/mining_platform.json",
+        "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+        "/pa/units/orbital/orbital_factory/orbital_factory.json",
+        "/pa/units/orbital/orbital_laser/orbital_laser.json",
+        "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
+        "/pa/units/orbital/solar_array/solar_array.json",
+      ],
+    },
+    {
+      id: "gwc_enable_orbital_t1", // not used
+      units: [
+        "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
+        "/pa/units/orbital/radar_satellite/radar_satellite.json",
+        "/pa/units/orbital/solar_array/solar_array.json",
+        "/pa/units/orbital/orbital_probe/orbital_probe.json",
+      ],
+    },
+    {
+      id: "gwc_enable_orbital_t2", // not used
+      units: [
+        "/pa/units/orbital/orbital_factory/orbital_factory.json",
+        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+        "/pa/units/orbital/mining_platform/mining_platform.json",
+      ],
+    },
+    {
+      id: "gwc_enable_sea_all",
+      units: [
+        "/pa/units/sea/naval_factory/naval_factory.json",
+        "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+      ],
+    },
+    {
+      id: "gwc_enable_sea_t1", // not used
+      units: ["/pa/units/sea/naval_factory/naval_factory.json"],
+    },
+    {
+      id: "gwc_enable_sea_t2", // not used
+      units: ["/pa/units/sea/naval_factory_adv/naval_factory_adv.json"],
+    },
+    {
+      id: "gwc_enable_super_weapons",
+      units: [
+        "/pa/units/land/nuke_launcher/nuke_launcher.json",
+        "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
+        "/pa/units/land/control_module/control_module.json",
+      ],
+    },
+    {
+      id: "gwc_enable_titans",
+      units: [
+        "/pa/units/land/titan_bot/titan_bot.json",
+        "/pa/units/land/titan_vehicle/titan_vehicle.json",
+        "/pa/units/orbital/titan_orbital/titan_orbital.json",
+        "/pa/units/land/titan_structure/titan_structure.json",
+        "/pa/units/air/titan_air/titan_air.json",
+      ],
+    },
+    {
+      id: "gwc_enable_vehicles_all",
+      units: [
+        "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+        "/pa/units/land/vehicle_factory/vehicle_factory.json",
+      ],
+    },
+    {
+      id: "gwc_enable_vehicles_t1",
+      units: ["/pa/units/land/vehicle_factory/vehicle_factory.json"],
+    },
+    {
+      id: "gwc_enable_vehicles_t2", // not used
+      units: [
+        "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+        "/pa/units/land/vehicle_factory/vehicle_factory.json",
+      ],
+    },
     {
       id: "gwc_energy_efficiency_all",
       units: [
