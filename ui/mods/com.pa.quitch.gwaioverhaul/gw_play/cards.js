@@ -287,11 +287,13 @@ requireGW(
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
       if (index === -1)
-        console.warn(
-          "Card ID",
-          cardId,
-          "is invalid or missing from model.gwaioCardsToUnits"
-        );
+        if (cardId === undefined) return;
+        else
+          console.warn(
+            "Card ID",
+            cardId,
+            "is invalid or missing from model.gwaioCardsToUnits"
+          );
       else {
         var units = model.gwaioCardsToUnits[index].units;
         if (units) {
