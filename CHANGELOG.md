@@ -8,7 +8,7 @@
 - Air Ammunition Tech tooltip not listing all units
 - Structure Armor Tech tooltip not listing all units
 - Structure Combat Tech tooltip not listing all units
-- Fixed errors I introduced into cards:
+- Fixed some of my fixes:
   - Structure Armor Tech
     - Fixed
       - Anchor
