@@ -1063,19 +1063,17 @@ requireGW(
                 worker.ai.foes.push(foeCommander);
               }
             });
-            /*
-            // prettier-ignore
-            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(3), "| Count:", worker.ai.commanderCount, "| Dist:", dist)
+            /*            
+            console.log("WORKER:", worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(3), "| Count:", worker.ai.commanderCount, "| Dist:", dist) // prettier-ignore
             if (worker.ai.minions) {
-              _.times(worker.ai.minions.length, function (n) {
-                // prettier-ignore
-                console.log("\tMinion:", worker.ai.minions[n].name, "| Eco:", worker.ai.minions[n].econ_rate.toPrecision(3), "| Count:", worker.ai.minions[n].commanderCount)
+              _.times(worker.ai.minions.length, function (n) {                
+                console.log("\tMinion:", worker.ai.minions[n].name, "| Eco:", worker.ai.minions[n].econ_rate.toPrecision(3), "| Count:", worker.ai.minions[n].commanderCount) // prettier-ignore
               });
             }
             if (worker.ai.foes) {
               _.times(worker.ai.foes.length, function (n) {
-                // prettier-ignore
-                console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(3), "| Count:", worker.ai.foes[n].commanderCount)
+                
+                console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(3), "| Count:", worker.ai.foes[n].commanderCount) // prettier-ignore
               });
             }
             */

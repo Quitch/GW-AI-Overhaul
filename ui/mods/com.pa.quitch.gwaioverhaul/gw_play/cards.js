@@ -262,9 +262,8 @@ requireGW(
     var displayCardTooltip = function (card) {
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-      if (index === -1)
-        //prettier-ignore
-        console.warn("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits");
+      if (index === -1)        
+        console.warn("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits"); //prettier-ignore
       else {
         var units = model.gwaioCardsToUnits[index].units;
         if (units) {
@@ -272,8 +271,7 @@ requireGW(
           _.forEach(units, function (unit) {
             index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
             if (index === -1)
-              //prettier-ignore
-              console.warn("Unit path", unit, "is invalid or missing from GWAIO unit_names.js");
+              console.warn("Unit path", unit, "is invalid or missing from GWAIO unit_names.js"); //prettier-ignore
             else {
               var name = loc(gwaioUnitsToNames.units[index].name);
               affectedUnits = affectedUnits.concat(name);
