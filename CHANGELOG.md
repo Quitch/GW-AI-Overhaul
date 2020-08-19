@@ -1,5 +1,121 @@
 # CHANGELOG
 
+## v4.6.0 - 2020-08-19
+
+### Added
+
+- Faction tooltip explaining the style used by the enemy and Sub Commanders
+- Complete Energy Tech card
+- Tooltips on cards listing which units they affect
+
+### Changed
+
+- Made the FFA Chance tooltip more accurate
+- Added Stinger to the following cards:
+  - Bot Ammunition Tech
+  - Bot Armor Tech
+  - Bot Combat Tech
+  - Bot Engine Tech
+  - Bot Fabrication Tech
+
+### Fixed
+
+- All known issues and inconsistencies with the base game tech cards:
+  - Air Ammunition Tech
+    - Added
+      - Strafer
+  - Air Combat Tech
+    - Added
+      - Strafer ammo
+  - Bot Engine Tech
+    - Added
+      - Colonel
+      - Locusts
+      - Spark
+  - Complete Energy Tech
+    - Added
+      - Artemis
+      - Helios
+      - Icarus
+      - Spark
+      - Wyrm
+      - Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Teleporter
+      - Umbrella
+  - Defense Ammunition Tech
+    - Added
+      - Advanced Torpedo Launcher
+      - Anchor
+      - Torpedo Launcher
+  - Defense Fabrication Tech
+    - Added
+      - Anchor
+  - Improved Energy Weapons
+    - Added
+      - Artemis
+      - Helios
+      - Icarus
+      - Spark
+      - Wyrm
+      - Zeus
+    - Removed
+      - Catapult
+      - Hornet
+      - Stingray
+      - Umbrella
+  - Improved Fabricator Build Arms
+    - Added
+      - Unit Cannon
+      - Colonel
+    - Fixed
+      - Angel
+  - Intelligence Fabrication Tech
+    - Added
+      - Firefly
+      - Hermes
+      - Piranha
+      - Skitter
+      - Stingray
+      - Vanguard
+  - Naval Ammunition Tech
+    - Added
+      - Narwhal torpedo (classic only)
+      - Squall torpedo
+  - Naval Combat Tech
+    - Added
+      - Narwhal torpedo (classic only)
+      - Squall torpedo
+  - Orbital Armor Tech
+    - Removed
+      - Anchor
+      - Jig
+      - Orbital Factory
+  - Orbital Combat Tech
+    - Removed
+      - Anchor
+      - Jig
+      - Orbital Factory
+  - Orbital Fabrication Tech
+    - Removed
+      - Anchor
+      - Jig
+  - Structure Armor Tech
+    - Added
+      - Anchor
+      - Unit Cannon
+  - Structure Combat Tech
+    - Added
+      - Advanced Torpedo Launcher ammo
+      - Anchor
+      - Anchor ammo
+      - Halley
+      - Torpedo Launcher ammo
+      - Unit Cannon
+
 ## v4.5.1 - 2020-08-16
 
 - Fixed Security Turtle advanced fabber ratio

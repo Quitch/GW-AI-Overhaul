@@ -1,16 +1,47 @@
-// Allow player to delete tech cards whenever they want
+model.gwaioWhichUnitsTooltip = ko.observableArray([]);
+model.gwaioCardShowTooltip = ko.observableArray([]);
+
+// Hide Which Unit? tooltips for cards which don't modify units
+model.currentSystemCardList.subscribe(function () {
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minion"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
+});
+// Ensure the tooltip is shown even if the UI is refreshed
+if (model.currentSystemCardList()[0] !== undefined)
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minion"
+    )
+      model.gwaioCardShowTooltip()[i] = false;
+    else model.gwaioCardShowTooltip()[i] = true;
+  });
+
+// Allow player to delete tech cards whenever they want and display units affected by the card
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
 locTree($("#hover-card"));
+$("#system-card").replaceWith(
+  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_new.html")
+);
+locTree($("#system-card"));
 
 requireGW(
   [
     "shared/gw_common",
     "shared/gw_factions",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
   ],
-  function (GW, GWFactions, gwaioBank) {
+  function (GW, GWFactions, gwaioBank, gwaioCardsToUnits, gwaioUnitsToNames) {
     // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
     if (
       model.game().inventory().cards().length === 1 &&
@@ -81,6 +112,7 @@ requireGW(
       "gwc_enable_titans",
       "gwc_enable_vehicles_all",
       "gwc_enable_vehicles_t1",
+      "gwc_energy_efficiency_all",
       "gwc_energy_efficiency_intel",
       "gwc_energy_efficiency_weapons",
       "gwc_health_air",
@@ -241,6 +273,85 @@ requireGW(
           model.scanning(false);
         }, 2000);
       });
+    };
+
+    if (model.gwaioCardsToUnits === undefined)
+      model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+    else
+      model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
+        gwaioCardsToUnits.cards
+      );
+
+    var displayCardTooltip = function (card, i) {
+      if (card.isLoadout()) return;
+      if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
+      var cardId = card.id();
+      var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
+      if (index === -1)
+        if (cardId === undefined) return;
+        else
+          console.warn(
+            "Card ID",
+            cardId,
+            "is invalid or missing from model.gwaioCardsToUnits"
+          );
+      else {
+        var units = model.gwaioCardsToUnits[index].units;
+        if (units) {
+          var affectedUnits = [];
+          _.forEach(units, function (unit) {
+            index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
+            if (index === -1)
+              console.warn(
+                "Unit path",
+                unit,
+                "is invalid or missing from GWAIO unit_names.js"
+              );
+            else {
+              var name = loc(gwaioUnitsToNames.units[index].name);
+              affectedUnits = affectedUnits.concat(name);
+            }
+          });
+          affectedUnits = affectedUnits.sort();
+          model.gwaioWhichUnitsTooltip()[i] = _.map(affectedUnits, function (
+            unit
+          ) {
+            return (unit = unit.concat("<br>"));
+          });
+        }
+      }
+    };
+
+    model.showSystemCard.subscribe(function () {
+      if (model.showSystemCard())
+        model.currentSystemCardList().forEach(displayCardTooltip);
+    });
+    // Ensure the tooltip is shown even if the UI is refreshed
+    if (model.showSystemCard())
+      model.currentSystemCardList().forEach(displayCardTooltip);
+
+    var hoverCount = 0;
+    model.setHoverCard = function (card, hoverEvent) {
+      if (card === model.hoverCard()) card = undefined;
+      ++hoverCount;
+
+      if (!card) {
+        // Delay clears for a bit to avoid flashing
+        var oldCount = hoverCount;
+        _.delay(function () {
+          if (oldCount !== hoverCount) return;
+          model.hoverCard(undefined);
+        }, 300);
+        return;
+      } else {
+        displayCardTooltip(card);
+      }
+
+      var $block = $(hoverEvent.target);
+      if (!$block.is(".one-card")) $block = $block.parent(".one-card");
+      var left = $block.offset().left + $block.width() / 2;
+      model.hoverOffset(left.toString() + "px");
+      model.hoverCard(card);
     };
   }
 );
