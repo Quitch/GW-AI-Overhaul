@@ -826,7 +826,7 @@ define({
         "/pa/units/land/tank_nuke/tank_nuke.json",
       ],
     },
-    { id: "gwc_minon" },
+    { id: "gwc_minion" },
     {
       id: "gwc_speed_air",
       units: [
