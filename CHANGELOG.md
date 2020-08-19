@@ -69,8 +69,8 @@
       - Umbrella
   - Improved Fabricator Build Arms
     - Added
-      - Unit Cannon
       - Colonel
+      - Unit Cannon
     - Fixed
       - Angel
   - Intelligence Fabrication Tech
