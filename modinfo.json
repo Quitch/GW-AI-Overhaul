@@ -28,7 +28,7 @@
     "gw_start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/inventory.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",

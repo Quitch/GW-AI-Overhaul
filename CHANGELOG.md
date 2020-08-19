@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Large tooltips for tech cards format themselves to try and fit within the available space
+
 ## v4.6.0 - 2020-08-19
 
 ### Added
