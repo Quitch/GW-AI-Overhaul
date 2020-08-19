@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Reduced the number of commanders in the boss army at Casual difficulty
+
 ## v4.6.1 - 2020-08-19
 
 ### Fixed

@@ -285,7 +285,7 @@ requireGW(
         max_basic_fabbers: 10,
         max_advanced_fabbers: 5,
         ffa_chance: 25,
-        bossCommanders: 2,
+        bossCommanders: 1,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 25,
