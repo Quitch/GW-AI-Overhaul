@@ -28,7 +28,7 @@
     - Added
       - Strafer ammo
   - Bot Engine Tech
-    - Added
+    - Fixed
       - Colonel
       - Locusts
       - Spark
