@@ -108,7 +108,6 @@ requireGW(
       "gwc_enable_defenses_t2",
       "gwc_enable_orbital_all",
       "gwc_enable_sea_all",
-      "gwc_enable_super_weapons",
       "gwc_enable_titans",
       "gwc_enable_vehicles_all",
       "gwc_enable_vehicles_t1",
