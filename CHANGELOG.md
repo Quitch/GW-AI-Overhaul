@@ -8,6 +8,10 @@
 - Enabled Complete Energy Tech
 - Tooltips on cards listing which units they affect
 
+### Changed
+
+- Made the FFA Chance tooltip more accurate
+
 ### Fixed
 
 - Fixed all known issues and inconsistencies with the base game tech cards:
