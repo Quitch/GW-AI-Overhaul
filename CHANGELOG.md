@@ -5,6 +5,7 @@
 ### Fixed
 
 - Large tooltips for tech cards format themselves to try and fit within the available space
+- Air Ammunition Tech tooltip not listing all units
 - Structure Armor Tech tooltip not listing all units
 - Structure Combat Tech tooltip not listing all units
 - Fixed errors I introduced into cards:

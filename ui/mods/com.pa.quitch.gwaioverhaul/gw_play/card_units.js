@@ -342,7 +342,7 @@ define({
         "/pa/units/air/bomber_adv/bomber_adv.json",
         "/pa/units/air/bomber_heavy/bomber_heavy.json",
         "/pa/units/air/bomber/bomber.json",
-        "/pa/units/air/figher/fighter.json",
+        "/pa/units/air/fighter/fighter.json",
         "/pa/units/air/fighter_adv/fighter_adv.json",
         "/pa/units/air/gunship/gunship.json",
         "/pa/units/air/solar_drone/solar_drone.json",
