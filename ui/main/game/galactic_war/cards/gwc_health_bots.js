@@ -2,15 +2,15 @@ define([], function () {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bot Engine Tech increases speed of all bots by 50%"
+      "!LOC:Bot Armor Tech increases health of all bots by 50%"
     ),
-    summarize: _.constant("!LOC:Bot Engine Tech"),
+    summarize: _.constant("!LOC:Bot Armor Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_speed",
+        found: "/VO/Computer/gw/board_tech_available_armor",
       };
     },
     getContext: function (galaxy) {
@@ -49,25 +49,7 @@ define([], function () {
       var modUnit = function (unit) {
         mods.push({
           file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.turn_speed",
+          path: "max_health",
           op: "multiply",
           value: 1.5,
         });

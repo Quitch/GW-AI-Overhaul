@@ -2,15 +2,15 @@ define([], function () {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bot Engine Tech increases speed of all bots by 50%"
+      "!LOC:Bot Fabrication Tech reduces metal build costs of all bots by 25%"
     ),
-    summarize: _.constant("!LOC:Bot Engine Tech"),
+    summarize: _.constant("!LOC:Bot Fabrication Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_speed",
+        found: "/VO/Computer/gw/board_tech_available_cost_reduction",
       };
     },
     getContext: function (galaxy) {
@@ -25,7 +25,8 @@ define([], function () {
         inventory.hasCard("gwc_enable_bots_all") ||
         inventory.hasCard("gwc_start_bots")
       )
-        chance = 70;
+        chance = 80;
+
       return { chance: chance };
     },
     buff: function (inventory) {
@@ -49,27 +50,9 @@ define([], function () {
       var modUnit = function (unit) {
         mods.push({
           file: unit,
-          path: "navigation.move_speed",
+          path: "build_metal_cost",
           op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.5,
+          value: 0.75,
         });
       };
       _.forEach(units, modUnit);
