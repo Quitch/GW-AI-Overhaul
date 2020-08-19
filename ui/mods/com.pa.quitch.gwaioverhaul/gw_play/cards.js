@@ -262,8 +262,12 @@ requireGW(
     var displayCardTooltip = function (card) {
       var cardId = card.id();
       var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-      if (index === -1)        
-        console.warn("Card ID", cardId, "is invalid or missing from model.gwaioCardsToUnits"); //prettier-ignore
+      if (index === -1)
+        console.warn(
+          "Card ID",
+          cardId,
+          "is invalid or missing from model.gwaioCardsToUnits"
+        );
       else {
         var units = model.gwaioCardsToUnits[index].units;
         if (units) {
@@ -271,7 +275,11 @@ requireGW(
           _.forEach(units, function (unit) {
             index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
             if (index === -1)
-              console.warn("Unit path", unit, "is invalid or missing from GWAIO unit_names.js"); //prettier-ignore
+              console.warn(
+                "Unit path",
+                unit,
+                "is invalid or missing from GWAIO unit_names.js"
+              );
             else {
               var name = loc(gwaioUnitsToNames.units[index].name);
               affectedUnits = affectedUnits.concat(name);
@@ -281,7 +289,11 @@ requireGW(
           model.gwaioAffectedUnits = _.map(affectedUnits, function (unit) {
             return (unit = unit.concat("<br>"));
           });
-        } else console.warn("No unit paths found in model.gwaioCardsToUnits at index", index); //prettier-ignore
+        } else
+          console.warn(
+            "No unit path found in model.gwaioCardsToUnits at index",
+            index
+          );
       }
     };
 
