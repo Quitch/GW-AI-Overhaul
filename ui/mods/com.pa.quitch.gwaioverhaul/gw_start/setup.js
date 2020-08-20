@@ -629,7 +629,6 @@ requireGW(
         model.startCards().push(model.makeUnknown(cardData));
       else model.startCards().push(model.makeKnown(cardData));
     });
-    model.startCards(_.flatten(model.startCards()));
 
     if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
     model.gwaioAllStartCards.push(
