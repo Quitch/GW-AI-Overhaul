@@ -729,6 +729,7 @@ requireGW(
         );
       }
 
+      model.updateCommander();
       game
         .inventory()
         .setTag("global", "playerFaction", model.playerFactionIndex());
@@ -1189,6 +1190,7 @@ requireGW(
 
         model.makeGameBusy(false);
         model.newGame(game);
+        model.updateCommander();
         return game;
       });
     };
