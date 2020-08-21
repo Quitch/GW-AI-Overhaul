@@ -284,8 +284,8 @@ requireGW(
         econRatePerDist: 0.05,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 5,
-        ffa_chance: 25,
-        bossCommanders: 2,
+        ffa_chance: 21,
+        bossCommanders: 1,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
         bountyModeChance: 25,
@@ -311,7 +311,7 @@ requireGW(
         econRatePerDist: 0.075,
         max_basic_fabbers: 10,
         max_advanced_fabbers: 10,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 2,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -339,7 +339,7 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 10,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 3,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -367,7 +367,7 @@ requireGW(
         econRatePerDist: 0.1,
         max_basic_fabbers: 15,
         max_advanced_fabbers: 15,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 3,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -395,7 +395,7 @@ requireGW(
         econRatePerDist: 0.15,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 15,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 4,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -423,7 +423,7 @@ requireGW(
         econRatePerDist: 0.175,
         max_basic_fabbers: 20,
         max_advanced_fabbers: 20,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 4,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -451,7 +451,7 @@ requireGW(
         econRatePerDist: 0.2,
         max_basic_fabbers: 25,
         max_advanced_fabbers: 20,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 5,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -479,7 +479,7 @@ requireGW(
         econRatePerDist: 0,
         max_basic_fabbers: 25,
         max_advanced_fabbers: 25,
-        ffa_chance: 25,
+        ffa_chance: 21,
         bossCommanders: 5,
         landAnywhereChance: 10,
         suddenDeathChance: 10,
@@ -629,7 +629,6 @@ requireGW(
         model.startCards().push(model.makeUnknown(cardData));
       else model.startCards().push(model.makeKnown(cardData));
     });
-    model.startCards(_.flatten(model.startCards()));
 
     if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
     model.gwaioAllStartCards.push(

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v4.7.0 - 2020-08-21
+
+### Changed
+
+- Reduced the number of commanders in the boss, guardian, and worker armies at Casual difficulty
+- Reduced the chance of a FFA occurring at all difficulty levels
+
 ## v4.6.1 - 2020-08-19
 
 ### Fixed

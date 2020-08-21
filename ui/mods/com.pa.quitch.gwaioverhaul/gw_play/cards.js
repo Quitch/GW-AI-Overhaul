@@ -23,7 +23,7 @@ if (model.currentSystemCardList()[0] !== undefined)
     else model.gwaioShowTechCardTooltip()[i] = true;
   });
 
-// Allow player to delete tech cards whenever they want, and display units affected by tech cards
+// Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
 $("#hover-card").replaceWith(
   loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
 );
@@ -289,7 +289,6 @@ requireGW(
         if (cardId === undefined) return;
         else
           console.warn(
-            "Card ID",
             cardId,
             "is invalid or missing from model.gwaioCardsToUnits"
           );
@@ -301,7 +300,6 @@ requireGW(
             index = _.findIndex(gwaioUnitsToNames.units, { path: unit });
             if (index === -1)
               console.warn(
-                "Unit path",
                 unit,
                 "is invalid or missing from GWAIO unit_names.js"
               );

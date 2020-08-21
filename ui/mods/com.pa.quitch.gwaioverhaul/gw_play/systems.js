@@ -1,4 +1,4 @@
-// All of this is in service changing the extractor function to prioritise system information
+// All of this is in service of changing the extractor function to prioritise system information
 function createBitmap(params) {
   if (!params.url) throw "No URL specified";
   if (!params.size) throw "No size specified";
