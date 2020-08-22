@@ -176,9 +176,10 @@ If you are adding new tech cards to the game and want to be GWAIO compatible, th
    if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
    else model.gwaioDeck = ["YOUR_TECH_ID"];
    if (model.gwaioCardsToUnits)
-     model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat([
-       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
-     ]);
+     model.gwaioCardsToUnits.push({
+       id: "YOUR_TECH_ID",
+       units: ["AFFECTED_UNIT_PATH"],
+     });
    else
      model.gwaioCardsToUnits = [
        // Use the base_commander for commander and always the use unit, not the ammo, etc.
