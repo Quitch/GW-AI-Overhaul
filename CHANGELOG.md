@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v4.7.1 - 2020-08-24
 
 ### Fixed
 
