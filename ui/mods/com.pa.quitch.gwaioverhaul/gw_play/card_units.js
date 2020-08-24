@@ -63,6 +63,7 @@ define({
       units: [
         "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
         "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_grenadier/bot_grenadier.json",
         "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
@@ -207,6 +208,7 @@ define({
       units: [
         "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
         "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_grenadier/bot_grenadier.json",
         "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
@@ -362,6 +364,7 @@ define({
       units: [
         "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
         "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
         "/pa/units/land/bot_sniper/bot_sniper.json",
@@ -713,6 +716,7 @@ define({
       units: [
         "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
         "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_grenadier/bot_grenadier.json",
         "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
@@ -850,6 +854,7 @@ define({
       units: [
         "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
         "/pa/units/land/assault_bot/assault_bot.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_grenadier/bot_grenadier.json",
         "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",

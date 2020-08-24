@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.7.1 - 2020-08-24
+
+### Fixed
+
+- Stinger missing from bot card tooltips
+
 ## v4.7.0 - 2020-08-21
 
 ### Changed
