@@ -1,1 +1,1 @@
-model.strategicIcons(model.strategicIcons().concat(["bot_aa"]));
+model.strategicIcons.push("bot_aa");
