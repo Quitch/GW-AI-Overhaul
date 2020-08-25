@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unrealted
+## Unreleased
 
 ### Fixed
 
