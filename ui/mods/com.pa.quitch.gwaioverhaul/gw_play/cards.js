@@ -25,11 +25,15 @@ if (model.currentSystemCardList()[0] !== undefined)
 
 // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
 $("#hover-card").replaceWith(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
+  )
 );
 locTree($("#hover-card"));
 $("#system-card").replaceWith(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_new.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
+  )
 );
 locTree($("#system-card"));
 
@@ -280,7 +284,7 @@ requireGW(
       );
     else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
 
-    var displayCardTooltip = function (card, i) {
+    var makeCardTooltip = function (card, i) {
       if (card.isLoadout()) return;
       if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
       var cardId = card.id();
@@ -324,11 +328,11 @@ requireGW(
 
     model.showSystemCard.subscribe(function () {
       if (model.showSystemCard())
-        model.currentSystemCardList().forEach(displayCardTooltip);
+        model.currentSystemCardList().forEach(makeCardTooltip);
     });
     // Ensure the tooltip is shown even if the UI is refreshed
     if (model.showSystemCard())
-      model.currentSystemCardList().forEach(displayCardTooltip);
+      model.currentSystemCardList().forEach(makeCardTooltip);
 
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
@@ -343,8 +347,11 @@ requireGW(
           model.hoverCard(undefined);
         }, 300);
         return;
-      } else {
-        displayCardTooltip(card);
+      } else if (card.id() === "gwc_minion")
+        model.gwaioShowTechCardTooltip()[3] = false;
+      else {
+        model.gwaioShowTechCardTooltip()[3] = true;
+        makeCardTooltip(card);
       }
 
       var $block = $(hoverEvent.target);

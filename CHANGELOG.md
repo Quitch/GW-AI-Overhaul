@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.7.2 - 2020-08-25
+
+### Fixed
+
+- Hide tooltip from Sub Commander cards in your inventory
+
 ## v4.7.1 - 2020-08-24
 
 ### Fixed
