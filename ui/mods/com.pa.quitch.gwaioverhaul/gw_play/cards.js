@@ -25,11 +25,15 @@ if (model.currentSystemCardList()[0] !== undefined)
 
 // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
 $("#hover-card").replaceWith(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
+  )
 );
 locTree($("#hover-card"));
 $("#system-card").replaceWith(
-  loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_new.html")
+  loadHtml(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
+  )
 );
 locTree($("#system-card"));
 
