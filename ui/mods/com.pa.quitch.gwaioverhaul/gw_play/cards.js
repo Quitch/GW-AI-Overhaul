@@ -280,7 +280,7 @@ requireGW(
       );
     else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
 
-    var displayCardTooltip = function (card, i) {
+    var makeCardTooltip = function (card, i) {
       if (card.isLoadout()) return;
       if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
       var cardId = card.id();
@@ -324,11 +324,11 @@ requireGW(
 
     model.showSystemCard.subscribe(function () {
       if (model.showSystemCard())
-        model.currentSystemCardList().forEach(displayCardTooltip);
+        model.currentSystemCardList().forEach(makeCardTooltip);
     });
     // Ensure the tooltip is shown even if the UI is refreshed
     if (model.showSystemCard())
-      model.currentSystemCardList().forEach(displayCardTooltip);
+      model.currentSystemCardList().forEach(makeCardTooltip);
 
     var hoverCount = 0;
     model.setHoverCard = function (card, hoverEvent) {
@@ -344,7 +344,7 @@ requireGW(
         }, 300);
         return;
       } else {
-        displayCardTooltip(card);
+        makeCardTooltip(card);
       }
 
       var $block = $(hoverEvent.target);
