@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.7.3 - 2020-09-02
+
+### Fixed
+
+- Some loadouts not showing on the new war screen
+
 ## v4.7.2 - 2020-08-25
 
 ### Fixed
