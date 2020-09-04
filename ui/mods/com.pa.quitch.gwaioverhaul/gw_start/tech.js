@@ -442,14 +442,12 @@ define([
         file: unit,
         path: "recon.observer.items",
         op: "push",
-        value: [
-          {
-            channel: "sight",
-            layer: "celestial",
-            radius: 1,
-            shape: "sphere",
-          },
-        ],
+        value: {
+          channel: "sight",
+          layer: "celestial",
+          radius: 1,
+          shape: "sphere",
+        },
       }
     );
   });
