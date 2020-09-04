@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- New home system for Cluster
+
 ### Changed
 
 - Workers can now see further
