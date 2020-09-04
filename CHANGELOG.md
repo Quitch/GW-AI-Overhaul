@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Workers can now see further
+
 ## v4.7.3 - 2020-09-02
 
 ### Fixed
