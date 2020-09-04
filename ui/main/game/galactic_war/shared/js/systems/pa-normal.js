@@ -1,4 +1,4 @@
-define([], function () {
+define(function () {
   return [
     {
       Players: [0, 3],
