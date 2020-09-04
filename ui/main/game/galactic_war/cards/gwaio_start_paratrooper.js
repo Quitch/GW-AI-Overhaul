@@ -44,29 +44,14 @@ define([
             {
               file: lob,
               path: "unit_types",
-              op: "replace",
-              value: [
-                "UNITTYPE_Structure",
-                "UNITTYPE_Artillery",
-                "UNITTYPE_Defense",
-                "UNITTYPE_FabBuild",
-                "UNITTYPE_Basic",
-                "UNITTYPE_CmdBuild",
-              ],
+              op: "push",
+              value: "UNITTYPE_CmdBuild",
             },
             {
               file: unitCannon,
               path: "unit_types",
-              op: "replace",
-              value: [
-                "UNITTYPE_Structure",
-                "UNITTYPE_Factory",
-                "UNITTYPE_Advanced",
-                "UNITTYPE_Artillery",
-                "UNITTYPE_FabAdvBuild",
-                "UNITTYPE_Important",
-                "UNITTYPE_CmdBuild",
-              ],
+              op: "push",
+              value: "UNITTYPE_CmdBuild",
             },
           ];
           inventory.addMods(mods);

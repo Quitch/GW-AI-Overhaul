@@ -36,17 +36,8 @@ define([], function () {
         {
           file: "/pa/units/air/support_platform/support_platform.json",
           path: "command_caps",
-          op: "replace",
-          value: [
-            "ORDER_Move",
-            "ORDER_Patrol",
-            "ORDER_Build",
-            "ORDER_Attack",
-            "ORDER_Reclaim",
-            "ORDER_Repair",
-            "ORDER_Assist",
-            "ORDER_Use",
-          ],
+          op: "push",
+          value: "ORDER_Use",
         },
         {
           file: "/pa/units/air/support_platform/support_platform.json",
@@ -127,27 +118,13 @@ define([], function () {
           {
             file: unit,
             path: "recon.observer.items",
-            op: "replace",
-            value: [
-              {
-                channel: "sight",
-                layer: "surface_and_air",
-                radius: 150,
-                shape: "capsule",
-              },
-              {
-                channel: "sight",
-                layer: "underwater",
-                radius: 150,
-                shape: "capsule",
-              },
-              {
-                channel: "sight",
-                layer: "celestial",
-                radius: 1,
-                shape: "sphere",
-              },
-            ],
+            op: "push",
+            value: {
+              channel: "sight",
+              layer: "celestial",
+              radius: 1,
+              shape: "sphere",
+            },
           }
         );
       });
