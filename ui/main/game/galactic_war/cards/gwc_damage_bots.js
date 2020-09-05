@@ -41,15 +41,14 @@ define({
       "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
+    units.forEach(function (unit) {
       mods.push({
         file: unit,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(units, modUnit);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

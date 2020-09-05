@@ -44,15 +44,14 @@ define({
       "/pa/units/sea/sea_scout/sea_scout_ammo.json",
     ];
     var mods = [];
-    var modUnit = function (ammo) {
+    ammos.forEach(function (ammo) {
       mods.push({
         file: ammo,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(ammos, modUnit);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

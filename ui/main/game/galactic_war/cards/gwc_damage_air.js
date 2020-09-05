@@ -40,15 +40,14 @@ define({
       "/pa/units/air/strafer/strafer_ammo.json",
     ];
     var mods = [];
-    var modUnit = function (ammo) {
+    ammos.forEach(function (ammo) {
       mods.push({
         file: ammo,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(ammos, modUnit);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

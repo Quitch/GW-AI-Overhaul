@@ -43,70 +43,72 @@ define([
             "/pa/units/commanders/base_commander/base_commander.json",
           ];
           var mods = [];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 5.0,
-            });
-            mods.push({
-              file: unit,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 5.0,
-            });
-            mods.push({
-              file: unit,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 5.0,
-            });
-            mods.push({
-              file: unit,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 5.0,
-            });
-            mods.push({
-              file: unit,
-              path: "max_health",
-              op: "multiply",
-              value: 3.0,
-            });
-          };
-          _.forEach(units, modUnit);
+          units.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "navigation.move_speed",
+                op: "multiply",
+                value: 5.0,
+              },
+              {
+                file: unit,
+                path: "navigation.brake",
+                op: "multiply",
+                value: 5.0,
+              },
+              {
+                file: unit,
+                path: "navigation.acceleration",
+                op: "multiply",
+                value: 5.0,
+              },
+              {
+                file: unit,
+                path: "navigation.turn_speed",
+                op: "multiply",
+                value: 5.0,
+              },
+              {
+                file: unit,
+                path: "max_health",
+                op: "multiply",
+                value: 3.0,
+              }
+            );
+          });
           var weaps = [
             "/pa/tools/uber_cannon/uber_cannon.json",
             "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
           ];
-          var modWeap = function (weap) {
-            mods.push({
-              file: weap,
-              path: "ammo_capacity",
-              op: "multiply",
-              value: 0.25,
-            });
-            mods.push({
-              file: weap,
-              path: "ammo_demand",
-              op: "multiply",
-              value: 0.25,
-            });
-            mods.push({
-              file: weap,
-              path: "ammo_per_shot",
-              op: "multiply",
-              value: 0.25,
-            });
-            mods.push({
-              file: weap,
-              path: "rate_of_fire",
-              op: "multiply",
-              value: 2.0,
-            });
-          };
-          _.forEach(weaps, modWeap);
+          weaps.forEach(function (weap) {
+            mods.push(
+              {
+                file: weap,
+                path: "ammo_capacity",
+                op: "multiply",
+                value: 0.25,
+              },
+              {
+                file: weap,
+                path: "ammo_demand",
+                op: "multiply",
+                value: 0.25,
+              },
+              {
+                file: weap,
+                path: "ammo_per_shot",
+                op: "multiply",
+                value: 0.25,
+              },
+              {
+                file: weap,
+                path: "rate_of_fire",
+                op: "multiply",
+                value: 2.0,
+              }
+            );
+          });
           inventory.addMods(mods);
         } else {
           // Don't clog up a slot.

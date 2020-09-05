@@ -52,29 +52,27 @@ define([
             "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
           ];
           var mods = [];
-          var modUnit = function (unit) {
+          units.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
             });
-          };
-          _.forEach(units, modUnit);
+          });
           var costUnits = [
             "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_long/artillery_long.json",
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
           ];
-          var modCostUnit = function (unit) {
+          costUnits.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "build_metal_cost",
               op: "multiply",
               value: 0.25,
             });
-          };
-          _.forEach(costUnits, modCostUnit);
+          });
           inventory.addMods(mods);
         } else {
           // Don't clog up a slot.

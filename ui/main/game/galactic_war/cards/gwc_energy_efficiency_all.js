@@ -55,15 +55,14 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/radar_adv/radar_adv.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
+      units.forEach(function (unit) {
         mods.push({
           file: unit,
           path: "consumption.energy",
           op: "multiply",
           value: 0.25,
         });
-      };
-      _.forEach(units, modUnit);
+      });
       var weaps = [
         "/pa/tools/uber_cannon/uber_cannon.json",
         "/pa/units/air/bomber_heavy/bomber_heavy_tool_weapon.json",
@@ -77,27 +76,28 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
         "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
       ];
-      var modWeap = function (weap) {
-        mods.push({
-          file: weap,
-          path: "ammo_capacity",
-          op: "multiply",
-          value: 0.25,
-        });
-        mods.push({
-          file: weap,
-          path: "ammo_demand",
-          op: "multiply",
-          value: 0.25,
-        });
-        mods.push({
-          file: weap,
-          path: "ammo_per_shot",
-          op: "multiply",
-          value: 0.25,
-        });
-      };
-      _.forEach(weaps, modWeap);
+      weaps.forEach(function (weap) {
+        mods.push(
+          {
+            file: weap,
+            path: "ammo_capacity",
+            op: "multiply",
+            value: 0.25,
+          },
+          {
+            file: weap,
+            path: "ammo_demand",
+            op: "multiply",
+            value: 0.25,
+          },
+          {
+            file: weap,
+            path: "ammo_per_shot",
+            op: "multiply",
+            value: 0.25,
+          }
+        );
+      });
       inventory.addMods(mods);
     },
     dull: function () {},

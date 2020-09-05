@@ -40,39 +40,40 @@ define({
       "/pa/units/sea/sea_scout/sea_scout.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
-      mods.push({
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "max_health",
-        op: "multiply",
-        value: 1.5,
-      });
-    };
-    _.forEach(units, modUnit);
+    units.forEach(function (unit) {
+      mods.push(
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
     var ammos = [
       "/pa/units/sea/battleship/battleship_ammo.json",
       "/pa/units/sea/destroyer/destroyer_ammo.json",
@@ -90,15 +91,14 @@ define({
       "/pa/units/sea/nuclear_sub/nuclear_sub_ammo.json",
       "/pa/units/sea/sea_scout/sea_scout_ammo.json",
     ];
-    var modAmmo = function (ammo) {
+    ammos.forEach(function (ammo) {
       mods.push({
         file: ammo,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(ammos, modAmmo);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

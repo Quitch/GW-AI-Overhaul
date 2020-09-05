@@ -47,87 +47,90 @@ define([
             "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
           ];
           var mods = [];
-          var modCostUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "replace",
-              value: 300,
-            });
-            mods.push({
-              file: unit,
-              path: "damage",
-              op: "replace",
-              value: 750,
-            });
-            mods.push({
-              file: unit,
-              path: "splash_damage",
-              op: "replace",
-              value: 750,
-            });
-            mods.push({
-              file: unit,
-              path: "full_damage_splash_radius",
-              op: "replace",
-              value: 50,
-            });
-            mods.push({
-              file: unit,
-              path: "splash_radius",
-              op: "replace",
-              value: 45,
-            });
-            mods.push({
-              file: unit,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
-            });
-          };
-          _.forEach(costUnits, modCostUnit);
+          costUnits.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "replace",
+                value: 300,
+              },
+              {
+                file: unit,
+                path: "damage",
+                op: "replace",
+                value: 750,
+              },
+              {
+                file: unit,
+                path: "splash_damage",
+                op: "replace",
+                value: 750,
+              },
+              {
+                file: unit,
+                path: "full_damage_splash_radius",
+                op: "replace",
+                value: 50,
+              },
+              {
+                file: unit,
+                path: "splash_radius",
+                op: "replace",
+                value: 45,
+              },
+              {
+                file: unit,
+                path: "description",
+                op: "replace",
+                value:
+                  "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
+              }
+            );
+          });
           var ammos = ["/pa/units/land/nuke_launcher/nuke_launcher.json"];
-          var modAmmo = function (ammo) {
-            mods.push({
-              file: ammo,
-              path: "build_metal_cost",
-              op: "replace",
-              value: 2500,
-            });
-            mods.push({
-              file: ammo,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_FabBuild",
-            });
-            mods.push({
-              file: ammo,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
-            });
-          };
-          _.forEach(ammos, modAmmo);
+          ammos.forEach(function (ammo) {
+            mods.push(
+              {
+                file: ammo,
+                path: "build_metal_cost",
+                op: "replace",
+                value: 2500,
+              },
+              {
+                file: ammo,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_FabBuild",
+              },
+              {
+                file: ammo,
+                path: "description",
+                op: "replace",
+                value:
+                  "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
+              }
+            );
+          });
           var units = [
             "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
           ];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "construction_demand.metal",
-              op: "replace",
-              value: 15,
-            });
-            mods.push({
-              file: unit,
-              path: "construction_demand.energy",
-              op: "replace",
-              value: 2250,
-            });
-          };
-          _.forEach(units, modUnit);
+          units.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "construction_demand.metal",
+                op: "replace",
+                value: 15,
+              },
+              {
+                file: unit,
+                path: "construction_demand.energy",
+                op: "replace",
+                value: 2250,
+              }
+            );
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

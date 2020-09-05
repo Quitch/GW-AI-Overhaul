@@ -44,39 +44,40 @@ define({
       "/pa/units/air/transport/transport.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
-      mods.push({
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.25,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.25,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.25,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.25,
-      });
-      mods.push({
-        file: unit,
-        path: "max_health",
-        op: "multiply",
-        value: 1.5,
-      });
-    };
-    _.forEach(units, modUnit);
+    units.forEach(function (unit) {
+      mods.push(
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.25,
+        },
+        {
+          file: unit,
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
     var ammos = [
       "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
       "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
@@ -87,15 +88,14 @@ define({
       "/pa/units/air/solar_drone/solar_drone_ammo.json",
       "/pa/units/air/strafer/strafer_ammo.json",
     ];
-    var ammoMod = function (ammo) {
+    ammos.forEach(function (ammo) {
       mods.push({
         file: ammo,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(ammos, ammoMod);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

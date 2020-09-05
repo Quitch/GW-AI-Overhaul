@@ -37,28 +37,28 @@ define({
       "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
     ];
     var mods = [];
-    var modWeap = function (weap) {
-      mods.push({
-        file: weap,
-        path: "ammo_capacity",
-        op: "multiply",
-        value: 0.25,
-      });
-      mods.push({
-        file: weap,
-        path: "ammo_demand",
-        op: "multiply",
-        value: 0.25,
-      });
-      mods.push({
-        file: weap,
-        path: "ammo_per_shot",
-        op: "multiply",
-        value: 0.25,
-      });
-    };
-    _.forEach(weaps, modWeap);
-
+    weaps.forEach(function (weap) {
+      mods.push(
+        {
+          file: weap,
+          path: "ammo_capacity",
+          op: "multiply",
+          value: 0.25,
+        },
+        {
+          file: weap,
+          path: "ammo_demand",
+          op: "multiply",
+          value: 0.25,
+        },
+        {
+          file: weap,
+          path: "ammo_per_shot",
+          op: "multiply",
+          value: 0.25,
+        }
+      );
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

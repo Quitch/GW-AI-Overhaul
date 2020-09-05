@@ -45,39 +45,40 @@ define({
       "/pa/units/land/fabrication_bot/fabrication_bot.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
-      mods.push({
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "max_health",
-        op: "multiply",
-        value: 1.5,
-      });
-    };
-    _.forEach(units, modUnit);
+    units.forEach(function (unit) {
+      mods.push(
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
     var ammos = [
       "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
       "/pa/units/land/assault_bot/assault_bot_ammo.json",
@@ -89,15 +90,14 @@ define({
       "/pa/units/land/bot_tactical_missile/bot_tactical_missile_ammo.json",
       "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
     ];
-    var ammoMod = function (ammo) {
+    ammos.forEach(function (ammo) {
       mods.push({
         file: ammo,
         path: "damage",
         op: "multiply",
         value: 1.25,
       });
-    };
-    _.forEach(ammos, ammoMod);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

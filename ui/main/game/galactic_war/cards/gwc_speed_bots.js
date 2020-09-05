@@ -45,33 +45,34 @@ define({
       "/pa/units/land/fabrication_bot/fabrication_bot.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
-      mods.push({
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-    };
-    _.forEach(units, modUnit);
+    units.forEach(function (unit) {
+      mods.push(
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
     inventory.addMods(mods);
   },
   dull: function () {},

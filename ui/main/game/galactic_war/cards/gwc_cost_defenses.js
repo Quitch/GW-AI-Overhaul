@@ -40,15 +40,14 @@ define({
       "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
+    units.forEach(function (unit) {
       mods.push({
         file: unit,
         path: "build_metal_cost",
         op: "multiply",
         value: 0.5,
       });
-    };
-    _.forEach(units, modUnit);
+    });
     inventory.addMods(mods);
   },
   dull: function () {},
