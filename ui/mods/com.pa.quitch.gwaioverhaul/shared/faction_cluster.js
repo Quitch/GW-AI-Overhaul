@@ -50,10 +50,10 @@ define([
         systemTemplate: {
           name: "The Hive - Cluster",
           Planets: [
-            { fromRandomList: planets.theHive },
-            { fromRandomList: planets.outpost },
-            { fromRandomList: planets.hiveSentry },
-            { fromRandomList: planets.miynde },
+            { fromRandomList: planets.planet1 },
+            { fromRandomList: planets.planet2 },
+            { fromRandomList: planets.planet3 },
+            { fromRandomList: planets.planet4 },
             { fromRandomList: planets.asteroid1 },
             { fromRandomList: planets.asteroid2 },
           ],
@@ -101,10 +101,10 @@ define([
         systemTemplate: {
           name: "The Hive - Cluster",
           Planets: [
-            { fromRandomList: planets.theHive },
-            { fromRandomList: planets.outpost },
-            { fromRandomList: planets.hiveSentry },
-            { fromRandomList: planets.miynde },
+            { fromRandomList: planets.planet1 },
+            { fromRandomList: planets.planet2 },
+            { fromRandomList: planets.planet3 },
+            { fromRandomList: planets.planet4 },
             { fromRandomList: planets.asteroid1 },
             { fromRandomList: planets.asteroid2 },
           ],
@@ -152,10 +152,10 @@ define([
         systemTemplate: {
           name: "The Hive - Cluster",
           Planets: [
-            { fromRandomList: planets.theHive },
-            { fromRandomList: planets.outpost },
-            { fromRandomList: planets.hiveSentry },
-            { fromRandomList: planets.miynde },
+            { fromRandomList: planets.planet1 },
+            { fromRandomList: planets.planet2 },
+            { fromRandomList: planets.planet3 },
+            { fromRandomList: planets.planet4 },
             { fromRandomList: planets.asteroid1 },
             { fromRandomList: planets.asteroid2 },
           ],
@@ -203,10 +203,10 @@ define([
         systemTemplate: {
           name: "The Hive - Cluster",
           Planets: [
-            { fromRandomList: planets.theHive },
-            { fromRandomList: planets.outpost },
-            { fromRandomList: planets.hiveSentry },
-            { fromRandomList: planets.miynde },
+            { fromRandomList: planets.planet1 },
+            { fromRandomList: planets.planet2 },
+            { fromRandomList: planets.planet3 },
+            { fromRandomList: planets.planet4 },
             { fromRandomList: planets.asteroid1 },
             { fromRandomList: planets.asteroid2 },
           ],
@@ -254,10 +254,10 @@ define([
         systemTemplate: {
           name: "The Hive - Cluster",
           Planets: [
-            { fromRandomList: planets.theHive },
-            { fromRandomList: planets.outpost },
-            { fromRandomList: planets.hiveSentry },
-            { fromRandomList: planets.miynde },
+            { fromRandomList: planets.planet1 },
+            { fromRandomList: planets.planet2 },
+            { fromRandomList: planets.planet3 },
+            { fromRandomList: planets.planet4 },
             { fromRandomList: planets.asteroid1 },
             { fromRandomList: planets.asteroid2 },
           ],

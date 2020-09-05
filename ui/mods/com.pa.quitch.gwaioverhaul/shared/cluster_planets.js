@@ -1,5 +1,5 @@
 define({
-  theHive: {
+  planet1: {
     planets: [
       {
         isExplicit: true,
@@ -3762,7 +3762,7 @@ define({
       },
     ],
   },
-  outpost: {
+  planet2: {
     planets: [
       {
         isExplicit: true,
@@ -6089,7 +6089,7 @@ define({
       },
     ],
   },
-  hiveSentry: {
+  planet3: {
     planets: [
       {
         isExplicit: true,
@@ -8342,7 +8342,7 @@ define({
       },
     ],
   },
-  miynde: {
+  planet4: {
     planets: [
       {
         isExplicit: true,
