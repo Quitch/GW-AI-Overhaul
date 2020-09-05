@@ -59,16 +59,8 @@ define(["shared/gw_common"], function (GW) {
         {
           file: "/pa/units/land/bot_aa/bot_aa.json",
           path: "unit_types",
-          op: "replace",
-          value: [
-            "UNITTYPE_Bot",
-            "UNITTYPE_Mobile",
-            "UNITTYPE_Offense",
-            "UNITTYPE_AirDefense",
-            "UNITTYPE_Land",
-            "UNITTYPE_Basic",
-            "UNITTYPE_FactoryBuild",
-          ],
+          op: "push",
+          value: "UNITTYPE_FactoryBuild",
         },
         {
           file: "/pa/units/land/bot_aa/bot_aa.json",
