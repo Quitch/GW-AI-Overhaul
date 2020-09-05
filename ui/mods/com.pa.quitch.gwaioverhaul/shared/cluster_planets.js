@@ -1,5 +1,5 @@
 define({
-  // TODO: variations for each planet within each planet object
+  // TODO: variations for each planet within each planets array
   planet1: {
     planets: [
       {
