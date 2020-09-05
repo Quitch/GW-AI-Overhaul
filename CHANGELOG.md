@@ -10,6 +10,10 @@
 
 - Workers can now see further
 
+### Fixed
+
+- Added additional safeguard to protect against loadouts showing a Which Units? tooltip
+
 ## v4.7.3 - 2020-09-02
 
 ### Fixed

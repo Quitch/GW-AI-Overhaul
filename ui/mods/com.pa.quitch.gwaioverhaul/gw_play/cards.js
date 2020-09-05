@@ -6,7 +6,8 @@ model.currentSystemCardList.subscribe(function () {
   _.forEach(model.currentSystemCardList(), function (_, i) {
     if (
       model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
-      model.currentSystemCardList()[i].id() === "gwc_minion"
+      model.currentSystemCardList()[i].id() === "gwc_minion" ||
+      model.currentSystemCardList()[i].isLoadout() === true
     )
       model.gwaioShowTechCardTooltip()[i] = false;
     else model.gwaioShowTechCardTooltip()[i] = true;
@@ -17,7 +18,8 @@ if (model.currentSystemCardList()[0] !== undefined)
   _.forEach(model.currentSystemCardList(), function (_, i) {
     if (
       model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
-      model.currentSystemCardList()[i].id() === "gwc_minion"
+      model.currentSystemCardList()[i].id() === "gwc_minion" ||
+      model.currentSystemCardList()[i].isLoadout() === true
     )
       model.gwaioShowTechCardTooltip()[i] = false;
     else model.gwaioShowTechCardTooltip()[i] = true;
