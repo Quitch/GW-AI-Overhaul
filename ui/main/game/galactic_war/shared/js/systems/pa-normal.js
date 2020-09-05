@@ -1,3 +1,4 @@
+// We changed the Players arrays
 define(function () {
   return [
     {
