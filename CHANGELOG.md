@@ -4,11 +4,11 @@
 
 ### Added
 
-- New home system for Cluster
+- New home system for Cluster courtesy of WPMarshall
 
 ### Changed
 
-- Workers can now see further
+- Workers can now see as far as an Angel
 
 ### Fixed
 
