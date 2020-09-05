@@ -32,36 +32,6 @@ define([
       if (_.has(neighbors, a)) return _.includes(neighbors[a], b);
     };
 
-    // Naive BFS search because we have tiny graphs.
-    // self.pathBetween = function(from, to) {
-    //     var worklist = [[from]];
-    //     while (worklist.length > 0) {
-    //         var path = worklist.shift();
-    //         var node = path[path.length - 1];
-    //         var nodeNeighbors = self.neighborsMap()[node];
-    //         for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
-    //             var other = nodeNeighbors[neighbor];
-    //             // Don't allow loops.
-    //             if (_.contains(path, other))
-    //                 continue;
-
-    //             if (other === to) {
-    //                 path.push(other);
-    //                 return path;
-    //             }
-
-    //             var visited = self.stars()[other].history().length > 0;
-    //             if (visited) {
-    //                 var newPath = _.cloneDeep(path);
-    //                 newPath.push(other);
-    //                 worklist.push(newPath);
-    //             }
-    //         }
-    //     }
-
-    //     return null;
-    // };
-
     self.pathBetween = function (from, to, noFog) {
       var toExplored = self.stars()[to].explored();
 
