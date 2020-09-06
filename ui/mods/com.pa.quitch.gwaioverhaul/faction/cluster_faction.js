@@ -66,7 +66,7 @@ define([
           ],
         },
       },
-    ], // teams
+    ],
     minions: [
       {
         name: "Worker",
@@ -1517,6 +1517,6 @@ define([
         commander:
           "/pa/units/land/bot_support_commander/bot_support_commander.json",
       },
-    ], // minions
+    ],
   };
 });
