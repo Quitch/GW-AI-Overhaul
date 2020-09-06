@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster_planets.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
 ], function (planets) {
   var clusterDescriptions = [
     "!LOC:We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with singular mind and purpose. What cruelty the Progenitors wrought to reduce us to this.",
