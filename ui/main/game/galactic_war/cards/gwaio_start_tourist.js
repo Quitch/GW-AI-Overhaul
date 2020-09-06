@@ -2,7 +2,7 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "cards/gwaio_cluster_faction",
+  "cards/gwaio_faction_cluster",
 ], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
