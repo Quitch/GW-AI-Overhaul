@@ -157,7 +157,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-3. Add `cards/gwaio_faction_cluster` and `gwaioFactionCluster` to your loadout's `define()` function
+3. Add `cards/gwaio_cluster_faction` and `gwaioFactionCluster` to your loadout's `define()` function
 
 4. Within the `if (!buffCount)` block of your loadout add:
 
