@@ -55,7 +55,7 @@ define(function () {
           name: "Legonis Machina",
           Planets: [
             {
-              name: "Prime",
+              name: "Kohr",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -71,7 +71,7 @@ define(function () {
               Biomes: ["earth"],
             },
             {
-              name: "Beta",
+              name: "Entara",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -87,7 +87,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Gamma",
+              name: "Agoge",
               starting_planet: false,
               mass: 50000,
               Thrust: [0, 0],

@@ -55,7 +55,7 @@ define(function () {
           name: "Synchronous",
           Planets: [
             {
-              name: "Prime",
+              name: "Cupru",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -71,7 +71,7 @@ define(function () {
               Biomes: ["earth"],
             },
             {
-              name: "Beta",
+              name: "Platina",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -87,7 +87,7 @@ define(function () {
               Biomes: ["metal_boss"],
             },
             {
-              name: "Halley",
+              name: "Fier",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -103,7 +103,7 @@ define(function () {
               Biomes: ["metal_boss"],
             },
             {
-              name: "Catalyst",
+              name: "Safir",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],

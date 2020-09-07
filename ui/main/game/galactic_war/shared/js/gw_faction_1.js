@@ -54,7 +54,7 @@ define(function () {
           name: "Foundation",
           Planets: [
             {
-              name: "Prime",
+              name: "Atlas",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -70,7 +70,7 @@ define(function () {
               Biomes: ["ice_boss"],
             },
             {
-              name: "Beta",
+              name: "Xylcor",
               starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
@@ -86,7 +86,7 @@ define(function () {
               Biomes: ["tropical"],
             },
             {
-              name: "Gamma",
+              name: "Blogar's Fist",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -102,7 +102,7 @@ define(function () {
               Biomes: ["gas"],
             },
             {
-              name: "Delta",
+              name: "Zeta Draconis",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],

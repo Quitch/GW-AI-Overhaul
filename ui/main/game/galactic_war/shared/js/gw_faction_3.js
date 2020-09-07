@@ -54,7 +54,7 @@ define(function () {
           name: "Revenants",
           Planets: [
             {
-              name: "Prime",
+              name: "Alenquer",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -70,7 +70,7 @@ define(function () {
               Biomes: ["metal"],
             },
             {
-              name: "Beta",
+              name: "Xianyao",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -86,7 +86,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Gamma",
+              name: "Epiphany",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -102,7 +102,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Delta",
+              name: "Varthema",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
