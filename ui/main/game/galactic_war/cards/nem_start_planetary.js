@@ -48,65 +48,67 @@ define([
             "/pa/units/land/metal_extractor/metal_extractor.json",
           ];
           var mods = [];
-          var modCostUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "replace",
-              value: 250,
-            });
-            mods.push({
-              file: unit,
-              path: "production.metal",
-              op: "replace",
-              value: 4,
-            });
-            mods.push({
-              file: unit,
-              path: "feature_requirements",
-              op: "replace",
-              value: "none",
-            });
-            mods.push({
-              file: unit,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
-            });
-          };
-          _.forEach(costUnits, modCostUnit);
+          costUnits.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "replace",
+                value: 250,
+              },
+              {
+                file: unit,
+                path: "production.metal",
+                op: "replace",
+                value: 4,
+              },
+              {
+                file: unit,
+                path: "feature_requirements",
+                op: "replace",
+                value: "none",
+              },
+              {
+                file: unit,
+                path: "description",
+                op: "replace",
+                value:
+                  "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
+              }
+            );
+          });
           var units = [
             "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
           ];
-          var modUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "replace",
-              value: 2000,
-            });
-            mods.push({
-              file: unit,
-              path: "production.metal",
-              op: "replace",
-              value: 15,
-            });
-            mods.push({
-              file: unit,
-              path: "feature_requirements",
-              op: "replace",
-              value: "none",
-            });
-            mods.push({
-              file: unit,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
-            });
-          };
-          _.forEach(units, modUnit);
+          units.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "replace",
+                value: 2000,
+              },
+              {
+                file: unit,
+                path: "production.metal",
+                op: "replace",
+                value: 15,
+              },
+              {
+                file: unit,
+                path: "feature_requirements",
+                op: "replace",
+                value: "none",
+              },
+              {
+                file: unit,
+                path: "description",
+                op: "replace",
+                value:
+                  "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
+              }
+            );
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

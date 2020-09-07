@@ -1,6 +1,6 @@
 /* We want to write our start cards to a different localStorage key so that if
    the mod is uninstalled the gw_start loadout list isn't messed up by 404s */
-define([], function () {
+define(function () {
   var LS_KEY = "gwaio_bank";
 
   var self;

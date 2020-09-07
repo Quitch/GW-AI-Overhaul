@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v4.8.0 - 2020-09-07
+
+### Added
+
+- New home system for Cluster courtesy of WPMarshall
+
+### Changed
+
+- Workers can now see as far as an Angel
+- Boss systems now named for their faction only
+- Boss planets use the old system names
+
+### Fixed
+
+- Safeguard to protect against loadouts showing a Which Units? tooltip
+
 ## v4.7.3 - 2020-09-02
 
 ### Fixed

@@ -56,39 +56,40 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/solar_array/solar_array.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.5,
-        });
-        mods.push({
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        });
-      };
-      _.forEach(units, modUnit);
+      units.forEach(function (unit) {
+        mods.push(
+          {
+            file: unit,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.brake",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: 1.5,
+          },
+          {
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 1.5,
+          }
+        );
+      });
       var ammos = [
         "/pa/units/orbital/orbital_fighter/orbital_fighter_ammo.json",
         "/pa/units/orbital/defense_satellite/defense_satellite_ammo_ground.json",
@@ -97,15 +98,14 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/defense_satellite/defense_satellite_ammo_orbital.json",
         "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
       ];
-      var modAmmo = function (ammo) {
+      ammos.forEach(function (ammo) {
         mods.push({
           file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
         });
-      };
-      _.forEach(ammos, modAmmo);
+      });
       inventory.addMods(mods);
     },
     dull: function () {},

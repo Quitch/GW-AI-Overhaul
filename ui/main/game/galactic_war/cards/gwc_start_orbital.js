@@ -58,28 +58,26 @@ define([
             "/pa/units/orbital/ion_defense/ion_defense.json",
           ];
           var mods = [];
-          var modUnit = function (unit) {
+          units.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
             });
-          };
-          _.forEach(units, modUnit);
+          });
           inventory.addMods(mods);
           var buildUnits = [
             "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           ];
-          var modBuildUnits = function (unit) {
+          buildUnits.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
             });
-          };
-          _.forEach(buildUnits, modBuildUnits);
+          });
           inventory.addMods(mods);
         } else {
           // Don't clog up a slot.

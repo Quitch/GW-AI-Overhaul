@@ -2,23 +2,21 @@
   id="system-card"
   class="attendmouse card"
   data-bind="visible: $root.showSystemCard"
-  style="display: none;"
+  style="display: none"
 >
   <!-- ko with: $data -->
   <!-- ko template: 'cardTemplate' -->
   <!-- /ko -->
   <!-- /ko -->
-  <!-- ko if: !isLoadout() -->
   <span
     class="info_tip"
     data-bind="visible: model.gwaioShowTechCardTooltip()[$index()], tooltip: model.gwaioTechCardTooltip()[$index()]"
     ><loc>Which Units?</loc></span
   >
-  <!-- /ko -->
   <div
     class="exploring card_action"
     data-bind="visible: $root.exploring"
-    style="display: none;"
+    style="display: none"
   >
     <!-- ko if: $root.currentSystemCardListConditions()[$index()] && $root.currentSystemCardListConditions()[$index()].ok -->
     <div
@@ -42,7 +40,7 @@
     <div
       class="warning"
       data-bind="visible: !$root.currentSystemCardListConditions()[$index()].ok"
-      style="display: none;"
+      style="display: none"
     >
       <!-- ko if: $root.currentSystemCardListConditions()[$index()].duplicate -->
       <loc>Duplicate Tech</loc>

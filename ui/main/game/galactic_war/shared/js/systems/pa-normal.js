@@ -1,4 +1,5 @@
-define([], function () {
+// We changed the Players arrays
+define(function () {
   return [
     {
       Players: [0, 3],

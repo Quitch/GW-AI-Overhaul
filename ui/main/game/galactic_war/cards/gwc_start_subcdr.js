@@ -55,7 +55,7 @@ define([
         ) {
           inventory.maxCards(inventory.maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
-          _.forEach(context.minions, function (minion) {
+          context.minions.forEach(function (minion) {
             inventory.minions.push(minion);
           });
           var minionSpecs = _.compact(_.pluck(context.minions, "commander"));

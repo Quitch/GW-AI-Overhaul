@@ -53,15 +53,14 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
+      units.forEach(function (unit) {
         mods.push({
           file: unit,
           path: "max_health",
           op: "multiply",
           value: 1.5,
         });
-      };
-      _.forEach(units, modUnit);
+      });
       inventory.addMods(mods);
     },
     dull: function () {},

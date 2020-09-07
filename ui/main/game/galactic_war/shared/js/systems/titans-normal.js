@@ -1,3 +1,4 @@
+// We changed the Players arrays
 define(["main/game/galactic_war/shared/js/systems/planets"], function (
   examplePlanetList
 ) {

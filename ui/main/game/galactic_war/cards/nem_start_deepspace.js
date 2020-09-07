@@ -51,82 +51,80 @@ define([
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
           var mods = [];
-          var modCostUnit = function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.25,
-            });
-            mods.push({
-              file: unit,
-              path: "area_build_separation",
-              op: "replace",
-              value: 12,
-            });
-            mods.push({
-              file: unit,
-              path: "production.energy",
-              op: "replace",
-              value: 6250,
-            });
-            mods.push({
-              file: unit,
-              path: "production.metal",
-              op: "replace",
-              value: 30,
-            });
-            mods.push({
-              file: unit,
-              path: "build_restrictions",
-              op: "replace",
-              value: "none",
-            });
-            mods.push({
-              file: unit,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
-            });
-          };
-          _.forEach(costUnits, modCostUnit);
+          costUnits.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 0.25,
+              },
+              {
+                file: unit,
+                path: "area_build_separation",
+                op: "replace",
+                value: 12,
+              },
+              {
+                file: unit,
+                path: "production.energy",
+                op: "replace",
+                value: 6250,
+              },
+              {
+                file: unit,
+                path: "production.metal",
+                op: "replace",
+                value: 30,
+              },
+              {
+                file: unit,
+                path: "build_restrictions",
+                op: "replace",
+                value: "none",
+              },
+              {
+                file: unit,
+                path: "description",
+                op: "replace",
+                value:
+                  "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
+              }
+            );
+          });
           var units = [
             "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
           ];
-          var modUnit = function (unit) {
+          units.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
             });
-          };
-          _.forEach(units, modUnit);
+          });
           var ammos = [
             "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
           ];
-          var modAmmo = function (ammo) {
+          ammos.forEach(function (ammo) {
             mods.push({
               file: ammo,
               path: "damage",
               op: "multiply",
               value: 0.1,
             });
-          };
-          _.forEach(ammos, modAmmo);
+          });
           var buildUnits = [
             "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           ];
-          var modBuildUnits = function (unit) {
+          buildUnits.forEach(function (unit) {
             mods.push({
               file: unit,
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
             });
-          };
-          _.forEach(buildUnits, modBuildUnits);
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

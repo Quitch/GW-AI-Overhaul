@@ -76,21 +76,22 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
       ];
       var mods = [];
-      var modUnit = function (arm) {
-        mods.push({
-          file: arm,
-          path: "construction_demand.energy",
-          op: "multiply",
-          value: 0.5,
-        });
-        mods.push({
-          file: arm,
-          path: "construction_demand.metal",
-          op: "multiply",
-          value: 1.5,
-        });
-      };
-      _.forEach(arms, modUnit);
+      arms.forEach(function (arm) {
+        mods.push(
+          {
+            file: arm,
+            path: "construction_demand.energy",
+            op: "multiply",
+            value: 0.5,
+          },
+          {
+            file: arm,
+            path: "construction_demand.metal",
+            op: "multiply",
+            value: 1.5,
+          }
+        );
+      });
       inventory.addMods(mods);
     },
     dull: function () {},
