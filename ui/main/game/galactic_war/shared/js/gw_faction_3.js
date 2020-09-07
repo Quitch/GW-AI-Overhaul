@@ -15,7 +15,7 @@ define(function () {
     ],
     teams: [
       {
-        name: "Alenquer - Revenants",
+        name: "Revenants",
         boss: {
           name: "First Seeker Osiris",
           character: "!LOC:Boss",
@@ -51,10 +51,10 @@ define(function () {
         },
         systemDescription: chosenDescription,
         systemTemplate: {
-          name: "Alenquer - Revenants",
+          name: "Revenants",
           Planets: [
             {
-              name: "Alenquer Prime",
+              name: "Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -70,7 +70,7 @@ define(function () {
               Biomes: ["metal"],
             },
             {
-              name: "Alenquer Beta",
+              name: "Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -86,7 +86,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Alenquer Gamma",
+              name: "Gamma",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -102,7 +102,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Alenquer Delta",
+              name: "Delta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],

@@ -15,7 +15,7 @@ define(function () {
     ],
     teams: [
       {
-        name: "Khor - Legonis Machina",
+        name: "Legonis Machina",
         boss: {
           name: "Imperator Invictus",
           character: "!LOC:Boss",
@@ -52,10 +52,10 @@ define(function () {
         },
         systemDescription: chosenDescription,
         systemTemplate: {
-          name: "Khor - Legonis Machina",
+          name: "Legonis Machina",
           Planets: [
             {
-              name: "Khor Prime",
+              name: "Prime",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -71,7 +71,7 @@ define(function () {
               Biomes: ["earth"],
             },
             {
-              name: "Khor Beta",
+              name: "Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -87,7 +87,7 @@ define(function () {
               Biomes: ["moon"],
             },
             {
-              name: "Khor Gamma",
+              name: "Gamma",
               starting_planet: false,
               mass: 50000,
               Thrust: [0, 0],

@@ -15,7 +15,7 @@ define(function () {
     ],
     teams: [
       {
-        name: "Cupru - Synchronous",
+        name: "Synchronous",
         boss: {
           name: "Metrarch the Machinist",
           character: "!LOC:Boss",
@@ -52,10 +52,10 @@ define(function () {
         },
         systemDescription: chosenDescription,
         systemTemplate: {
-          name: "Cupru - Synchronous",
+          name: "Synchronous",
           Planets: [
             {
-              name: "Cupru Prime",
+              name: "Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -71,7 +71,7 @@ define(function () {
               Biomes: ["earth"],
             },
             {
-              name: "Cupru Beta",
+              name: "Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [0, 0],
@@ -87,7 +87,7 @@ define(function () {
               Biomes: ["metal_boss"],
             },
             {
-              name: "Cupru Halley",
+              name: "Halley",
               starting_planet: false,
               mass: 35000,
               Thrust: [3, 3],
@@ -103,7 +103,7 @@ define(function () {
               Biomes: ["metal_boss"],
             },
             {
-              name: "Cupru Catalyst",
+              name: "Catalyst",
               starting_planet: false,
               mass: 35000,
               Thrust: [0, 0],

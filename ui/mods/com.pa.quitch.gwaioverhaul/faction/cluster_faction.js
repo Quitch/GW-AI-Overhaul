@@ -17,7 +17,7 @@ define([
     ],
     teams: [
       {
-        name: "The Hive - Cluster",
+        name: "Cluster",
         boss: {
           name: "Node",
           character: "!LOC:Boss",
@@ -55,7 +55,7 @@ define([
         },
         systemDescription: chosenDescription,
         systemTemplate: {
-          name: "The Hive - Cluster",
+          name: "Cluster",
           Planets: [
             { fromRandomList: planets.planet1 },
             { fromRandomList: planets.planet2 },

@@ -15,7 +15,7 @@ define(function () {
     ],
     teams: [
       {
-        name: "Atlas - Foundation",
+        name: "Foundation",
         boss: {
           name: "Inquisitor Nemicus",
           character: "!LOC:Boss",
@@ -51,10 +51,10 @@ define(function () {
         },
         systemDescription: chosenDescription,
         systemTemplate: {
-          name: "Atlas - Foundation",
+          name: "Foundation",
           Planets: [
             {
-              name: "Atlas Prime",
+              name: "Prime",
               starting_planet: true,
               mass: 50000,
               Thrust: [0, 0],
@@ -70,7 +70,7 @@ define(function () {
               Biomes: ["ice_boss"],
             },
             {
-              name: "Atlas Beta",
+              name: "Beta",
               starting_planet: true,
               mass: 5000,
               Thrust: [1, 3],
@@ -86,7 +86,7 @@ define(function () {
               Biomes: ["tropical"],
             },
             {
-              name: "Atlas Gamma",
+              name: "Gamma",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],
@@ -102,7 +102,7 @@ define(function () {
               Biomes: ["gas"],
             },
             {
-              name: "Atlas Delta",
+              name: "Delta",
               starting_planet: false,
               mass: 5000,
               Thrust: [0, 0],

@@ -9,6 +9,7 @@
 ### Changed
 
 - Workers can now see as far as an Angel
+- Boss systems now named for their faction only
 
 ### Fixed
 
