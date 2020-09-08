@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Titans now uses the classic systems in addition to its own, making for an additional nine systems
+
 ## v4.8.0 - 2020-09-07
 
 ### Added
