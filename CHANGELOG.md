@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Removed
+
+- Support for Classic due to Cluster's dependency on TITANS units
+
 ### Fixed
 
 - Workers not building

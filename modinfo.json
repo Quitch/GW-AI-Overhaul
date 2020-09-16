@@ -10,7 +10,6 @@
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/",
   "category": [
-    "classic",
     "titans",
     "ai",
     "ki",
@@ -37,5 +36,6 @@
     "icon_atlas": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/units/icon.js"],
     "shared_build": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/units/build.js"]
   },
-  "priority": 200
+  "priority": 200,
+  "titansOnly": true
 }
