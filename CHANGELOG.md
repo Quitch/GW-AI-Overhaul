@@ -9,6 +9,7 @@
 ### Fixed
 
 - Workers not building
+  - This bug will remain in wars started with v4.8.0 and v4.9.0
 
 ## v4.9.0 - 2020-09-08
 
