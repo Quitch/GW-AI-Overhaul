@@ -359,8 +359,16 @@ define([
     {
       file: "/pa/units/air/support_platform/support_platform.json",
       path: "command_caps",
-      op: "push",
-      value: "ORDER_Use",
+      op: "replace",
+      value: [
+        "ORDER_Move",
+        "ORDER_Patrol",
+        "ORDER_Build",
+        "ORDER_Reclaim",
+        "ORDER_Repair",
+        "ORDER_Assist",
+        "ORDER_Use",
+      ],
     },
     {
       file: "/pa/units/air/support_platform/support_platform.json",
