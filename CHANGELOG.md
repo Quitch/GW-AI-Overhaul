@@ -4,7 +4,7 @@
 
 ### Removed
 
-- Support for Classic due to Cluster's dependency on TITANS units
+- Support for Classic due to Cluster's dependency on TITANS' units
 
 ### Fixed
 
