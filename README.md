@@ -29,7 +29,9 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Guaranteed loadout to unlock every war
 - New loadouts
 - Unlocks Galactic War's biggest planetary systems
+- Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
+- Fixes all the errors in the tech cards
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
