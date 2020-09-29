@@ -85,16 +85,6 @@ Each system will display the following information:
 
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
 
-- **Build**: AI has Improved Fabricator Build Arms.
-
-- **Cost**: AI has Fabrication Tech.
-
-- **Damage**: AI has Ammunition Tech.
-
-- **Health**: AI has Armour Tech.
-
-- **Speed**: AI has Engine Tech.
-
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
@@ -102,6 +92,12 @@ Each system will display the following information:
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
 ### AI Buffs
+
+- **Build**: AI has Improved Fabricator Build Arms.
+- **Cost**: AI has Fabrication Tech.
+- **Damage**: AI has Ammunition Tech.
+- **Health**: AI has Armour Tech.
+- **Speed**: AI has Engine Tech.
 
 These buffs are applied on a per-faction basis:
 
