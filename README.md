@@ -66,9 +66,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 ### Difficulty Options
 
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
-
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
-
 - **Tougher Commanders**: enemies have Commander Armour Tech and bosses have Commander Combat Tech.
 
 ## Planetary Intelligence
@@ -76,19 +74,12 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 Each system will display the following information:
 
 - **System Area**: the total surface size of all planets, excluding gas giants.
-
 - **Threat Level**: based on the total eco score of all enemies.
-
 - **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
-
 - **Big Spawns**: you can land anywhere on any starting planet.
-
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
-
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
-
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
-
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
 ### AI Buffs
