@@ -1,6 +1,6 @@
 # Galactic War AI Overhaul Readme
 
-This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
+This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
   - Legonis Machina: land
