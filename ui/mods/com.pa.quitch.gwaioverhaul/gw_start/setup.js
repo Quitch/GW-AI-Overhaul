@@ -684,9 +684,6 @@ requireGW(
     model.makeGame = function () {
       model.newGame(undefined);
 
-      if (model.gwaioDifficultySettings.easierStart()) var baseNeutralStars = 4;
-      else baseNeutralStars = 2;
-
       var busyToken = {};
       model.makeGameBusy(busyToken);
 
@@ -791,9 +788,10 @@ requireGW(
           };
         });
 
-        var neutralStars = baseNeutralStars;
-        // Over-spread to take up all the neutral stars
         if (model.creditsMode()) neutralStars = 0;
+        else if (model.gwaioDifficultySettings.easierStart())
+          var neutralStars = 4;
+        else neutralStars = 2;
 
         return GWBreeder.populate({
           galaxy: game.galaxy(),
