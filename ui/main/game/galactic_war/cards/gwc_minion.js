@@ -33,7 +33,7 @@ define(["shared/gw_factions"], function (GWFactions) {
     },
     deal: function (system, context, inventory) {
       function hasUnit(id) {
-        return _.any(model.game().inventory().units(), function (unit) {
+        return _.some(model.game().inventory().units(), function (unit) {
           return id === unit;
         });
       }

@@ -53,7 +53,7 @@ define(function () {
       return true;
     },
     hasStartCard: function (card) {
-      return _.any(self.startCards(), function (element) {
+      return _.some(self.startCards(), function (element) {
         return card === element || (_.isObject(card) && card.id === element.id);
       });
     },

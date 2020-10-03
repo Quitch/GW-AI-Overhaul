@@ -174,7 +174,7 @@ requireGW(
             var context = cardContexts[card.id];
 
             var match =
-              inventory.hasCard(card.id) || _.any(list, { id: card.id });
+              inventory.hasCard(card.id) || _.some(list, { id: card.id });
 
             var result = card.deal && card.deal(star, context, inventory);
             if (match) result.chance = 0;
@@ -223,7 +223,7 @@ requireGW(
                 id: cardId,
               };
 
-              if (params && _.isObject(params)) _.extend(systemCard, params);
+              if (params && _.isObject(params)) _.assign(systemCard, params);
 
               list.push(systemCard);
             }

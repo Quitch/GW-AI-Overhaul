@@ -3,5 +3,5 @@ var gwaioBuild = {
 };
 
 if (_.has(Build, "HotkeyModel.SpecIdToGridMap")) {
-  _.extend(Build.HotkeyModel.SpecIdToGridMap, gwaioBuild);
+  _.assign(Build.HotkeyModel.SpecIdToGridMap, gwaioBuild);
 }

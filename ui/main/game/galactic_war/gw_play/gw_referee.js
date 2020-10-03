@@ -352,7 +352,7 @@ define(["shared/gw_common"], function (GW) {
     }
 
     if (self.localFiles()) {
-      _.extend(allFiles, self.localFiles());
+      _.assign(allFiles, self.localFiles());
     }
 
     var cookedFiles = _.mapValues(allFiles, function (value) {
