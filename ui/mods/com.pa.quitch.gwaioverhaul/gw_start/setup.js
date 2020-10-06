@@ -215,7 +215,7 @@ $("#game-size").before(
   )
 );
 
-$("#game-difficulty-label").after(
+$("#game-difficulty-label").append(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
   )
