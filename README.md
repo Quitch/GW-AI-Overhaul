@@ -41,7 +41,7 @@ Install this mod via the Planetary Annihilation: TITANS in-game Community Mod ma
 
 ## In Action
 
-[![Dreadnought fights Uber difficulty](http://i3.ytimg.com/vi/0S9D-8toEo4/maxresdefault.jpg)](https://www.youtube.com/watch?v=0S9D-8toEo4&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
+[![Dreadnought fights Uber difficulty](https://i3.ytimg.com/vi/0S9D-8toEo4/hqdefault.jpg)](https://www.youtube.com/watch?v=0S9D-8toEo4&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
 
 ## Difficulty
 
