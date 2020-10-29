@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Removed use of lodash aliases to futureproof for move to v4
+
 ## v4.9.1 - 2020-09-16
 
 ### Removed
