@@ -6,7 +6,7 @@
 
 - Removed use of lodash aliases to futureproof for move to v4
 
-## Fixed
+### Fixed
 
 - Cluster Worker Sub Commanders will build again
 
