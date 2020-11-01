@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v4.9.2 - 2020-11-01
 
 ### Changed
 
