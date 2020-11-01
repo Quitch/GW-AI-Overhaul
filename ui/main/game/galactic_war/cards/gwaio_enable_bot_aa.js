@@ -22,7 +22,7 @@ define(["shared/gw_common"], function (GW) {
       var chance = 0;
       var dist = system.distance();
       function hasUnit(id) {
-        return _.any(model.game().inventory().units(), function (unit) {
+        return _.some(model.game().inventory().units(), function (unit) {
           return id === unit;
         });
       }

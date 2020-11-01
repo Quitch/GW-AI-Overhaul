@@ -1,29 +1,24 @@
 model.gwaioTechCardTooltip = ko.observableArray([]);
 model.gwaioShowTechCardTooltip = ko.observableArray([]);
 
+var showCardTooltip = function () {
+  _.forEach(model.currentSystemCardList(), function (_, i) {
+    if (
+      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
+      model.currentSystemCardList()[i].id() === "gwc_minion" ||
+      model.currentSystemCardList()[i].isLoadout() === true
+    )
+      model.gwaioShowTechCardTooltip()[i] = false;
+    else model.gwaioShowTechCardTooltip()[i] = true;
+  });
+};
+
 // Hide Which Unit? tooltips for cards which don't modify units
 model.currentSystemCardList.subscribe(function () {
-  _.forEach(model.currentSystemCardList(), function (_, i) {
-    if (
-      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
-      model.currentSystemCardList()[i].id() === "gwc_minion" ||
-      model.currentSystemCardList()[i].isLoadout() === true
-    )
-      model.gwaioShowTechCardTooltip()[i] = false;
-    else model.gwaioShowTechCardTooltip()[i] = true;
-  });
+  showCardTooltip();
 });
 // Ensure the tooltip is shown even if the UI is refreshed
-if (model.currentSystemCardList()[0] !== undefined)
-  _.forEach(model.currentSystemCardList(), function (_, i) {
-    if (
-      model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
-      model.currentSystemCardList()[i].id() === "gwc_minion" ||
-      model.currentSystemCardList()[i].isLoadout() === true
-    )
-      model.gwaioShowTechCardTooltip()[i] = false;
-    else model.gwaioShowTechCardTooltip()[i] = true;
-  });
+if (model.currentSystemCardList()[0] !== undefined) showCardTooltip();
 
 // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
 $("#hover-card").replaceWith(
@@ -179,7 +174,7 @@ requireGW(
             var context = cardContexts[card.id];
 
             var match =
-              inventory.hasCard(card.id) || _.any(list, { id: card.id });
+              inventory.hasCard(card.id) || _.some(list, { id: card.id });
 
             var result = card.deal && card.deal(star, context, inventory);
             if (match) result.chance = 0;
@@ -228,7 +223,7 @@ requireGW(
                 id: cardId,
               };
 
-              if (params && _.isObject(params)) _.extend(systemCard, params);
+              if (params && _.isObject(params)) _.assign(systemCard, params);
 
               list.push(systemCard);
             }

@@ -215,7 +215,7 @@ $("#game-size").before(
   )
 );
 
-$("#game-difficulty-label").after(
+$("#game-difficulty-label").append(
   loadHtml(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
   )
@@ -671,7 +671,7 @@ requireGW(
         var deal = card.deal && card.deal(params.star, context);
         var product = { id: params.id };
         var cardParams = deal && deal.params;
-        if (cardParams && _.isObject(cardParams)) _.extend(product, cardParams);
+        if (cardParams && _.isObject(cardParams)) _.assign(product, cardParams);
         card.keep && card.keep(deal, context);
         card.releaseContext && card.releaseContext(context);
         result.resolve(product, deal);
@@ -683,9 +683,6 @@ requireGW(
     // gw_start.js
     model.makeGame = function () {
       model.newGame(undefined);
-
-      if (model.gwaioDifficultySettings.easierStart()) var baseNeutralStars = 4;
-      else baseNeutralStars = 2;
 
       var busyToken = {};
       model.makeGameBusy(busyToken);
@@ -791,9 +788,10 @@ requireGW(
           };
         });
 
-        var neutralStars = baseNeutralStars;
-        // Over-spread to take up all the neutral stars
         if (model.creditsMode()) neutralStars = 0;
+        else if (model.gwaioDifficultySettings.easierStart())
+          var neutralStars = 4;
+        else neutralStars = 2;
 
         return GWBreeder.populate({
           galaxy: game.galaxy(),
@@ -1102,7 +1100,7 @@ requireGW(
         });
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
-          _.extend(treasurePlanetCard, { allowOverflow: true });
+          _.assign(treasurePlanetCard, { allowOverflow: true });
           treasurePlanetSetup = false;
         }
 

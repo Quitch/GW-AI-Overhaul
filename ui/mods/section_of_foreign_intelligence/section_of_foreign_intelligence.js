@@ -144,90 +144,90 @@
   // Game Options
 
   model.bountyMode = ko.computed(function () {
-    var bountyMode = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().bountyMode
     )
-      bountyMode = loc("!LOC:Enabled");
-    return bountyMode;
+      var bountyMode = "!LOC:Enabled";
+    else bountyMode = "!LOC:Disabled";
+    return loc(bountyMode);
   });
 
   model.landAnywhere = ko.computed(function () {
-    var landAnywhere = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().landAnywhere
     )
-      landAnywhere = loc("!LOC:Enabled");
-    return landAnywhere;
+      var landAnywhere = "!LOC:Enabled";
+    else landAnywhere = "!LOC:Disabled";
+    return loc(landAnywhere);
   });
 
   model.suddenDeath = ko.computed(function () {
-    var suddenDeath = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().suddenDeath
     )
-      suddenDeath = loc("!LOC:Enabled");
-    return suddenDeath;
+      var suddenDeath = "!LOC:Enabled";
+    else suddenDeath = "!LOC:Disabled";
+    return loc(suddenDeath);
   });
 
   // AI Buffs
 
   model.techBuild = ko.computed(function () {
-    var techBuild = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().typeOfBuffs &&
       _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
     )
-      techBuild = loc("!LOC:Enabled");
-    return techBuild;
+      var techBuild = "!LOC:Enabled";
+    else techBuild = "!LOC:Disabled";
+    return loc(techBuild);
   });
 
   model.techCost = ko.computed(function () {
-    var techCost = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().typeOfBuffs &&
       _.includes(model.selection.system().star.ai().typeOfBuffs, 0)
     )
-      techCost = loc("!LOC:Enabled");
-    return techCost;
+      var techCost = "!LOC:Enabled";
+    else techCost = "!LOC:Disabled";
+    return loc(techCost);
   });
 
   model.techDamage = ko.computed(function () {
-    var techDamage = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().typeOfBuffs &&
       _.includes(model.selection.system().star.ai().typeOfBuffs, 1)
     )
-      techDamage = loc("!LOC:Enabled");
-    return techDamage;
+      var techDamage = "!LOC:Enabled";
+    else techDamage = "!LOC:Disabled";
+    return loc(techDamage);
   });
 
   model.techHealth = ko.computed(function () {
-    var techHealth = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().typeOfBuffs &&
       _.includes(model.selection.system().star.ai().typeOfBuffs, 2)
     )
-      techHealth = loc("!LOC:Enabled");
-    return techHealth;
+      var techHealth = "!LOC:Enabled";
+    else techHealth = "!LOC:Disabled";
+    return loc(techHealth);
   });
 
   model.techSpeed = ko.computed(function () {
-    var techSpeed = loc("!LOC:Disabled");
     if (
       model.selection.system().star.ai() &&
       model.selection.system().star.ai().typeOfBuffs &&
       _.includes(model.selection.system().star.ai().typeOfBuffs, 3)
     )
-      techSpeed = loc("!LOC:Enabled");
-    return techSpeed;
+      var techSpeed = "!LOC:Enabled";
+    else techSpeed = "!LOC:Disabled";
+    return loc(techSpeed);
   });
 
   // System Faction

@@ -1,6 +1,6 @@
 # Galactic War AI Overhaul Readme
 
-This mod works with both Planetary Annihilation and Planetary Annihilation: TITANS. It changes the following elements of Galactic War:
+This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
   - Legonis Machina: land
@@ -29,7 +29,9 @@ This mod works with both Planetary Annihilation and Planetary Annihilation: TITA
 - Guaranteed loadout to unlock every war
 - New loadouts
 - Unlocks Galactic War's biggest planetary systems
+- Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
+- Fixes all the errors in the tech cards
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -39,7 +41,7 @@ Install this mod via the Planetary Annihilation: TITANS in-game Community Mod ma
 
 ## In Action
 
-[![Table and Chums tries the mod for the first time.](https://i3.ytimg.com/vi/-0csZIM12N0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-0csZIM12N0&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
+[![Dreadnought fights Uber difficulty](https://i3.ytimg.com/vi/0S9D-8toEo4/hqdefault.jpg)](https://www.youtube.com/watch?v=0S9D-8toEo4&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
 
 ## Difficulty
 
@@ -66,9 +68,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 ### Difficulty Options
 
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
-
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
-
 - **Tougher Commanders**: enemies have Commander Armour Tech and bosses have Commander Combat Tech.
 
 ## Planetary Intelligence
@@ -76,32 +76,21 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 Each system will display the following information:
 
 - **System Area**: the total surface size of all planets, excluding gas giants.
-
 - **Threat Level**: based on the total eco score of all enemies.
-
 - **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
-
 - **Big Spawns**: you can land anywhere on any starting planet.
-
 - **Team Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
-
-- **Build**: AI has Improved Fabricator Build Arms.
-
-- **Cost**: AI has Fabrication Tech.
-
-- **Damage**: AI has Ammunition Tech.
-
-- **Health**: AI has Armour Tech.
-
-- **Speed**: AI has Engine Tech.
-
 - **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
-
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
-
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
 ### AI Buffs
+
+- **Build**: AI has Improved Fabricator Build Arms.
+- **Cost**: AI has Fabrication Tech.
+- **Damage**: AI has Ammunition Tech.
+- **Health**: AI has Armour Tech.
+- **Speed**: AI has Engine Tech.
 
 These buffs are applied on a per-faction basis:
 
@@ -240,7 +229,7 @@ When the Synchronous have the speed bonus their defences will move to engage you
 
 ## Thanks to
 
-- wondible, who continues to be amazing with his JavaScript support
+- wondible, who continues to be amazing with his JavaScript support and for his mod Section of Foreign Intelligence for Galactic War, a modified version of which is included within this mod
 - PA Inc, for including official translations for the mod
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - WPMarshall, for the Cluster faction logo and home system

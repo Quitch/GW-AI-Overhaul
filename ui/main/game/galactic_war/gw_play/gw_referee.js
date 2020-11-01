@@ -261,7 +261,7 @@ define(["shared/gw_common"], function (GW) {
         alliance_group: 2,
       });
     });
-    // // Setup Additional Factions
+    // Setup Additional Factions
     var allianceGroup = 3;
     var foeCount = 1;
     _.forEach(ai.foes, function (foe) {
@@ -352,7 +352,7 @@ define(["shared/gw_common"], function (GW) {
     }
 
     if (self.localFiles()) {
-      _.extend(allFiles, self.localFiles());
+      _.assign(allFiles, self.localFiles());
     }
 
     var cookedFiles = _.mapValues(allFiles, function (value) {
