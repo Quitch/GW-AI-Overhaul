@@ -12,7 +12,9 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
-    describe: _.constant("Structures are mobile."),
+    describe: _.constant(
+      "Structures are mobile. They can't be transported or use teleporters."
+    ),
     hint: function () {
       return {
         icon:
