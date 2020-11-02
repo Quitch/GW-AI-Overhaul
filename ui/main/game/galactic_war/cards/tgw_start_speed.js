@@ -13,7 +13,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "This Commander likes to raid and has modifed its blueprints to that end. Units are faster and cheaper, but have lower damage output."
+      "This Commander likes to raid and has modifed its blueprints to that end. Units are faster and cheaper but have lower damage output."
     ),
     hint: function () {
       return {
