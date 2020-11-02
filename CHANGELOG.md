@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v4.10.0 - 2020-11-02
 
 ## Added
 
