@@ -13,7 +13,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters. Medium size structures can use teleporters."
+      "Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters."
     ),
     hint: function () {
       return {
