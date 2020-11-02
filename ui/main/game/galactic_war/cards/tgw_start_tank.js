@@ -13,7 +13,7 @@ define([
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
     describe: _.constant(
-      "This Commander prefers quality over quantity and has modifed its units to that end. More health, higher damage, and more splash, but slower, and with higher build costs."
+      "This Commander prefers quality over quantity and has modifed its units to that end. More health, higher damage and more splash, but slower, and with higher build costs."
     ),
     hint: function () {
       return {
