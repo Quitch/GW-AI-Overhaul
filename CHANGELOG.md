@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## v4.10.0 - 2020-11-02
+
+## Added
+
+- Nomad Commander loadout
+- Updated loadouts from trialq's discontinued Galactic War Loadouts mod
+  - Lean Commander loadout
+  - Buff Commander loadout
+
+## Changed
+
+- Some Synchronous personalities now use more basic fabbers
+
+## Fixed
+
+- Custom loadouts showing a Which Units? tooltip
+
 ## v4.9.2 - 2020-11-01
 
 ### Changed

@@ -608,7 +608,10 @@ requireGW(
       { id: "nem_start_planetary" },
       { id: "nem_start_tower_rush" },
       { id: "gwaio_start_tourist" },
-      { id: "gwaio_start_rapid" }
+      { id: "gwaio_start_rapid" },
+      { id: "tgw_start_speed" },
+      { id: "tgw_start_tank" },
+      { id: "gwaio_start_nomad" }
     );
 
     if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
@@ -621,7 +624,10 @@ requireGW(
       { id: "nem_start_planetary" },
       { id: "nem_start_tower_rush" },
       { id: "gwaio_start_tourist" },
-      { id: "gwaio_start_rapid" }
+      { id: "gwaio_start_rapid" },
+      { id: "tgw_start_speed" },
+      { id: "tgw_start_tank" },
+      { id: "gwaio_start_nomad" }
     );
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
@@ -648,7 +654,10 @@ requireGW(
       "nem_start_planetary",
       "nem_start_tower_rush",
       "gwaio_start_tourist",
-      "gwaio_start_rapid"
+      "gwaio_start_rapid",
+      "tgw_start_speed",
+      "tgw_start_tank",
+      "gwaio_start_nomad"
     );
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
