@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+## Added
+
+- Lean Commander loadout
+- Buff Commander loadout
+- Thanks to trialq and his discontinued Galactic War Loadouts mod for these
+
 ## v4.9.2 - 2020-11-01
 
 ### Changed
