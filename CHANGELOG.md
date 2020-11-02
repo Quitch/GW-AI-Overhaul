@@ -9,6 +9,10 @@
   - Lean Commander loadout
   - Buff Commander loadout
 
+## Changed
+
+- Some Synchronous personalities now use more basic fabbers
+
 ## Fixed
 
 - Custom loadouts showing a Which Units? tooltip
