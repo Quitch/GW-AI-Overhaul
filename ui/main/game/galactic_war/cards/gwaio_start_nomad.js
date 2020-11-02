@@ -96,7 +96,7 @@ define([
                 file: unit,
                 path: "command_caps",
                 op: "push",
-                value: ["ORDER_Move", "ORDER_Patrol"],
+                value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
               }
             );
           });
