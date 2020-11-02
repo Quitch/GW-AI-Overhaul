@@ -7,6 +7,7 @@
 - Lean Commander loadout
 - Buff Commander loadout
 - Thanks to trialq and his discontinued Galactic War Loadouts mod for these
+- Nomad Commander loadout
 
 ## Fixed
 

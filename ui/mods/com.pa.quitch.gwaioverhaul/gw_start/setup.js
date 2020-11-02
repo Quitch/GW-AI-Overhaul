@@ -610,7 +610,8 @@ requireGW(
       { id: "gwaio_start_tourist" },
       { id: "gwaio_start_rapid" },
       { id: "tgw_start_speed" },
-      { id: "tgw_start_tank" }
+      { id: "tgw_start_tank" },
+      { id: "gwaio_start_nomad" }
     );
 
     if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
@@ -625,7 +626,8 @@ requireGW(
       { id: "gwaio_start_tourist" },
       { id: "gwaio_start_rapid" },
       { id: "tgw_start_speed" },
-      { id: "tgw_start_tank" }
+      { id: "tgw_start_tank" },
+      { id: "gwaio_start_nomad" }
     );
     _.forEach(model.gwaioNewStartCards, function (cardData) {
       if (!gwaioBank.hasStartCard(cardData))
@@ -654,7 +656,8 @@ requireGW(
       "gwaio_start_tourist",
       "gwaio_start_rapid",
       "tgw_start_speed",
-      "tgw_start_tank"
+      "tgw_start_tank",
+      "gwaio_start_nomad"
     );
     var processedStartCards = {};
     var loadCount = model.gwaioAllStartCards.length;
