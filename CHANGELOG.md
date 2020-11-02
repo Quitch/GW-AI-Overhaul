@@ -5,7 +5,7 @@
 ## Added
 
 - Nomad Commander loadout
-- Imported and updated loadouts from trialq's discontinued Galactic War Loadouts mod
+- Updated loadouts from trialq's discontinued Galactic War Loadouts mod
   - Lean Commander loadout
   - Buff Commander loadout
 
