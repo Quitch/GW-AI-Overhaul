@@ -57,7 +57,6 @@ define([
             "/pa/units/land/radar_adv/radar_adv.json",
             "/pa/units/land/radar/radar.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/land/teleporter/teleporter.json",
             "/pa/units/land/titan_structure/titan_structure.json",
             "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
