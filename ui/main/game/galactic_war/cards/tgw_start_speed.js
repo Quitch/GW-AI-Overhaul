@@ -8,7 +8,7 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Lean Commander"),
+    summarize: _.constant("!LOC:Swarm Commander"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
@@ -19,7 +19,7 @@ define([
       return {
         icon:
           "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Lean Commander",
+        description: "!LOC:Swarm Commander",
       };
     },
     deal: function () {
