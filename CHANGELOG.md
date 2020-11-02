@@ -6,7 +6,7 @@
 
 - Nomad Commander loadout
 - Updated loadouts from trialq's discontinued Galactic War Loadouts mod
-  - Lean Commander loadout
+  - Swarm Commander loadout
   - Buff Commander loadout
 
 ## Changed
