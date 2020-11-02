@@ -24,7 +24,8 @@
     "createjs": "readonly",
     "loadHtml": "readonly",
     "locTree": "readonly",
-    "Build": "readonly"
+    "Build": "readonly",
+    "globals": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

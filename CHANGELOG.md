@@ -8,6 +8,10 @@
 - Buff Commander loadout
 - Thanks to trialq and his discontinued Galactic War Loadouts mod for these
 
+## Fixed
+
+- Custom loadouts showing a Which Units? tooltip
+
 ## v4.9.2 - 2020-11-01
 
 ### Changed
