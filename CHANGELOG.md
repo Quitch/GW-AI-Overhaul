@@ -1,12 +1,18 @@
 # CHANGELOG
 
+## 4.10.1 - 2020-11-06
+
+### Fixed
+
+- Spelling
+
 ## v4.10.0 - 2020-11-02
 
 ## Added
 
 - Nomad Commander loadout
 - Updated loadouts from trialq's discontinued Galactic War Loadouts mod
-  - Lean Commander loadout
+  - Swarm Commander loadout
   - Buff Commander loadout
 
 ## Changed
