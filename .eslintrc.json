@@ -30,6 +30,7 @@
   "plugins": ["lodash"],
   "rules": {
     "lodash/prefer-lodash-method": 0,
-    "lodash/prefer-noop": 0
+    "lodash/prefer-noop": 0,
+    "no-inner-declarations": 0
   }
 }
