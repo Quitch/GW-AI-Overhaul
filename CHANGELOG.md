@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Tourist Commander description clarifies the behaviour of Sub Commanders
+
 ### Fixed
 
 - Storage Commander appearing as locked and unlocked after being unlocked
