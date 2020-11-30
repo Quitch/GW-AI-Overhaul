@@ -630,16 +630,13 @@ requireGW(
       { id: "gwaio_start_nomad" }
     );
     _.forEach(model.gwaioNewStartCards, function (cardData) {
-      console.log(cardData);
       if (
         (cardData.id != "gwc_start_storage" &&
           !gwaioBank.hasStartCard(cardData)) ||
         (cardData.id === "gwc_start_storage" && !GW.bank.hasStartCard(cardData))
       ) {
-        console.log("Make unknown");
         model.startCards().push(model.makeUnknown(cardData));
       } else if (cardData.id != "gwc_start_storage") {
-        console.log("Make known");
         model.startCards().push(model.makeKnown(cardData));
       }
     });
