@@ -630,9 +630,15 @@ requireGW(
       { id: "gwaio_start_nomad" }
     );
     _.forEach(model.gwaioNewStartCards, function (cardData) {
-      if (!gwaioBank.hasStartCard(cardData))
+      if (
+        (cardData.id != "gwc_start_storage" &&
+          !gwaioBank.hasStartCard(cardData)) ||
+        (cardData.id === "gwc_start_storage" && !GW.bank.hasStartCard(cardData))
+      ) {
         model.startCards().push(model.makeUnknown(cardData));
-      else model.startCards().push(model.makeKnown(cardData));
+      } else if (cardData.id != "gwc_start_storage") {
+        model.startCards().push(model.makeKnown(cardData));
+      }
     });
     model.startCards.valueHasMutated();
 
@@ -1102,11 +1108,12 @@ requireGW(
 
         // Replacement for GWDealer.dealBossCards
         var treasurePlanetSetup = true;
-        var lockedStartCards = _.filter(model.gwaioTreasureCards, function (
-          card
-        ) {
-          return !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card);
-        });
+        var lockedStartCards = _.filter(
+          model.gwaioTreasureCards,
+          function (card) {
+            return !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card);
+          }
+        );
         var treasurePlanetCard = _.sample(lockedStartCards);
         if (treasurePlanetCard) {
           _.assign(treasurePlanetCard, { allowOverflow: true });

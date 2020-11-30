@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v4.10.3 - 2020-11-30
+
+### Changed
+
+- Tourist Commander description clarifies the behaviour of Sub Commanders
+
+### Fixed
+
+- Storage Commander appearing as locked and unlocked after being unlocked
+
 ## v4.10.2 - 2020-11-20
 
 ### Fixed
