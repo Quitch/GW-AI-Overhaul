@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Storage Commander appearing as locked and unlocked after being unlocked
+
 ## v4.10.2 - 2020-11-20
 
 ### Fixed
