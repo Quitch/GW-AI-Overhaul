@@ -37,5 +37,6 @@
     "shared_build": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/units/build.js"]
   },
   "priority": 200,
-  "titansOnly": true
+  "titansOnly": true,
+  "github": "https://github.com/Quitch/Bigger-Galactic-War/"
 }
