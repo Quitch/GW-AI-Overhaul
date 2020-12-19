@@ -978,5 +978,9 @@ define({
       id: "gwaio_upgrade_kaiju",
       units: ["/pa/units/sea/hover_ship/hover_ship.json"],
     },
+    {
+      id: "gwaio_upgrade_skitter",
+      units: ["/pa/units/land/land_scout/land_scout.json"],
+    },
   ],
 });
