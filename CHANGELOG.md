@@ -17,6 +17,8 @@
     - Card has the same chance of appearing in a medium size galaxy as any other size
   - Orbital Combat Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Economy Fabrication Tech
+    - Inconsistent change of appearing across different galaxy sizes
 
 ## v4.10.3 - 2020-11-30
 
