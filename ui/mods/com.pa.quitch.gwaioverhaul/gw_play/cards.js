@@ -390,16 +390,16 @@ if (!model.game().isTutorial()) {
               }
             });
             affectedUnits = affectedUnits.sort();
-            model.gwaioTechCardTooltip()[i] = _.map(affectedUnits, function (
-              unit,
-              i
-            ) {
-              if (affectedUnits.length < 13)
-                return (unit = unit.concat("<br>"));
-              else if (i < affectedUnits.length - 1)
-                return (unit = unit.concat("; "));
-              else return unit;
-            });
+            model.gwaioTechCardTooltip()[i] = _.map(
+              affectedUnits,
+              function (unit, i) {
+                if (affectedUnits.length < 13)
+                  return (unit = unit.concat("<br>"));
+                else if (i < affectedUnits.length - 1)
+                  return (unit = unit.concat("; "));
+                else return unit;
+              }
+            );
           }
         }
       };
