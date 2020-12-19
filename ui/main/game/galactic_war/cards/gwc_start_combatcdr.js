@@ -49,31 +49,31 @@ define([
                 file: unit,
                 path: "navigation.move_speed",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.brake",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.acceleration",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.turn_speed",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "max_health",
                 op: "multiply",
-                value: 3.0,
+                value: 3,
               }
             );
           });

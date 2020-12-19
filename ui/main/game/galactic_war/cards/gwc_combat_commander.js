@@ -45,58 +45,60 @@ define(["shared/gw_common"], function (GW) {
     buff: function (inventory) {
       var units = ["/pa/units/commanders/base_commander/base_commander.json"];
       var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 3,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 3,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 3,
-        });
-        mods.push({
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 3,
-        });
-        mods.push({
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 2.0,
-        });
-      };
-      _.forEach(units, modUnit);
+      units.forEach(function (unit) {
+        mods.push(
+          {
+            file: unit,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: unit,
+            path: "navigation.brake",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: unit,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: unit,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: unit,
+            path: "max_health",
+            op: "multiply",
+            value: 2.0,
+          }
+        );
+      });
       var ammos = [
         "/pa/units/commanders/base_commander/base_commander_ammo.json",
         "/pa/ammo/cannon_uber/cannon_uber.json",
       ];
-      var ammoMod = function (ammo) {
-        mods.push({
-          file: ammo,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        });
-        mods.push({
-          file: ammo,
-          path: "splash_damage",
-          op: "multiply",
-          value: 1.25,
-        });
-      };
-      _.forEach(ammos, ammoMod);
+      ammos.forEach(function (ammo) {
+        mods.push(
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          }
+        );
+      });
       inventory.addMods(mods);
     },
     dull: function () {},

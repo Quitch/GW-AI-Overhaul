@@ -53,21 +53,22 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/mining_platform/mining_platform.json",
       ];
       var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
-          file: unit,
-          path: "storage.energy",
-          op: "multiply",
-          value: 4.0,
-        });
-        mods.push({
-          file: unit,
-          path: "storage.metal",
-          op: "multiply",
-          value: 4.0,
-        });
-      };
-      _.forEach(units, modUnit);
+      units.forEach(function (unit) {
+        mods.push(
+          {
+            file: unit,
+            path: "storage.energy",
+            op: "multiply",
+            value: 4,
+          },
+          {
+            file: unit,
+            path: "storage.metal",
+            op: "multiply",
+            value: 4,
+          }
+        );
+      });
       inventory.addMods(mods);
     },
     dull: function () {},
