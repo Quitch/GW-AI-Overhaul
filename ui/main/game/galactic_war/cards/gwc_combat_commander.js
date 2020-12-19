@@ -1,7 +1,7 @@
 // !LOCNS:galactic_war
 define(["shared/gw_common"], function (GW) {
   return {
-    visible: _.constat(true),
+    visible: _.constant(true),
     describe: _.constant(
       "!LOC:Commander Combat Tech increases the speed of your commanders by 200%, doubles commander health, and increases damage by 25%."
     ),
