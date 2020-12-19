@@ -30,7 +30,7 @@ define([
           "/pa/units/orbital/orbital_battleship/orbital_battleship.json"
         )
       )
-        chance = 80;
+        chance = 70;
 
       return { chance: chance };
     },

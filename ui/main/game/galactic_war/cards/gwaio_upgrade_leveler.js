@@ -29,7 +29,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json")
       )
-        chance = 80;
+        chance = 70;
 
       return { chance: chance };
     },

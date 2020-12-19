@@ -25,7 +25,7 @@ define([
           "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
         )
       )
-        chance = 80;
+        chance = 70;
 
       return { chance: chance };
     },
