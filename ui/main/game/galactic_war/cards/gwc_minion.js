@@ -1,4 +1,7 @@
-define(["shared/gw_factions"], function (GWFactions) {
+define([
+  "shared/gw_factions",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (GWFactions, gwaioFunctions) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -32,16 +35,17 @@ define(["shared/gw_factions"], function (GWFactions) {
       };
     },
     deal: function (system, context, inventory) {
-      function hasUnit(id) {
-        return _.some(model.game().inventory().units(), function (unit) {
-          return id === unit;
-        });
-      }
       var chance = context.chance;
       if (
-        (!hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &&
-          !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
-          !hasUnit("/pa/units/air/air_factory/air_factory.json")) ||
+        (!gwaioFunctions.hasUnit(
+          "/pa/units/land/vehicle_factory/vehicle_factory.json"
+        ) &&
+          !gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory/bot_factory.json"
+          ) &&
+          !gwaioFunctions.hasUnit(
+            "/pa/units/air/air_factory/air_factory.json"
+          )) ||
         inventory.hasCard("gwaio_start_rapid")
       )
         chance = 0;
