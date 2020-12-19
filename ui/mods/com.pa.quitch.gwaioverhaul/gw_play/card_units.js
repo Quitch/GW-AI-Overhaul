@@ -986,5 +986,9 @@ define({
       id: "gwaio_upgrade_leveler",
       units: ["/pa/units/land/tank_laser_adv/tank_laser_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_nukes",
+      units: ["/pa/units/land/nuke_launcher/nuke_launcher.json"],
+    },
   ],
 });
