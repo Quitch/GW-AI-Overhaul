@@ -6,6 +6,10 @@
 
 - New tech cards to discover in your wars
 
+### Changed
+
+- Mod now named Galactic War Overhaul
+
 ## v4.10.3 - 2020-11-30
 
 ### Changed
