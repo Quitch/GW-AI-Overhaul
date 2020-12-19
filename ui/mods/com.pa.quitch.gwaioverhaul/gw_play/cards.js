@@ -207,7 +207,7 @@ if (!model.game().isTutorial()) {
         "gwc_speed_vehicles",
         "gwc_storage_1",
         "gwc_storage_and_buff",
-        "gwc_weapon_heavybomber"
+        "gwc_weapon_wyrm"
       );
 
       var cards = [];
