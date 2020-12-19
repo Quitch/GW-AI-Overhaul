@@ -149,6 +149,7 @@ if (!model.game().isTutorial()) {
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
         "gwaio_weapon_dox",
+        "gwaio_weapon_lob",
         "gwaio_weapon_wyrm",
         "gwc_add_card_slot",
         "gwc_bld_efficiency_cdr",
