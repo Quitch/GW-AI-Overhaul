@@ -148,6 +148,8 @@ if (!model.game().isTutorial()) {
       if (!model.gwaioDeck) model.gwaioDeck = [];
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
+        "gwaio_weapon_dox",
+        "gwaio_weapon_wyrm",
         "gwc_add_card_slot",
         "gwc_bld_efficiency_cdr",
         "gwc_bld_efficiency_fabs",
@@ -206,9 +208,7 @@ if (!model.game().isTutorial()) {
         "gwc_speed_sea",
         "gwc_speed_vehicles",
         "gwc_storage_1",
-        "gwc_storage_and_buff",
-        "gwc_weapon_dox",
-        "gwc_weapon_wyrm"
+        "gwc_storage_and_buff"
       );
 
       var cards = [];
