@@ -15,6 +15,8 @@
 - Errors and inconsistencies in base game tech cards
   - Combat Commander Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Orbital Combat Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
 
 ## v4.10.3 - 2020-11-30
 
