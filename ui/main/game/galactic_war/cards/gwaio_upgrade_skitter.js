@@ -22,7 +22,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/vehicle_factory.json"
+          "/pa/units/land/vehicle_factory/vehicle_factory.json"
         ) &&
         gwaioFunctions.hasUnit("/pa/units/land/land_scout/land_scout.json")
       )
