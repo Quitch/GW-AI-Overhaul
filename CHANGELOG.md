@@ -25,6 +25,8 @@
     - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
   - Storage Compression Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Efficiency Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
 
 ## v4.10.3 - 2020-11-30
 
