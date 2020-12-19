@@ -31,7 +31,7 @@ define([
       var mods = [
         {
           file: "/pa/units/land/assault_bot/assault_bot.json",
-          path: "tools.spec_id",
+          path: "tools.0.spec_id",
           op: "replace",
           value: "/pa/units/land/tank_armor/tank_armor_tool_weapon.json",
         },

@@ -35,7 +35,7 @@ define([
       var mods = [
         {
           file: "/pa/units/air/bomber_heavy/bomber_heavy.json",
-          path: "tools.spec_id",
+          path: "tools.0.spec_id",
           op: "replace",
           value: "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
         },
