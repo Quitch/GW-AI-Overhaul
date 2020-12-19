@@ -982,5 +982,9 @@ define({
       id: "gwaio_upgrade_skitter",
       units: ["/pa/units/land/land_scout/land_scout.json"],
     },
+    {
+      id: "gwaio_upgrade_leveler",
+      units: ["/pa/units/land/tank_laser_adv/tank_laser_adv.json"],
+    },
   ],
 });
