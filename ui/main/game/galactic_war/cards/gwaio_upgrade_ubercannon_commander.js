@@ -3,7 +3,7 @@ define({
   describe: _.constant(
     "!LOC:The Uber Cannon deals 100% more damage to enemy Commanders."
   ),
-  summarize: _.constant("!LOC:Uber Cannon Commander Crusher"),
+  summarize: _.constant("!LOC:Commander Crusher"),
   icon: _.constant(
     "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
   ),

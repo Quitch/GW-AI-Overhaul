@@ -3,7 +3,7 @@ define({
   describe: _.constant(
     "!LOC:The Uber Cannon deals 300% more damage to enemy structures."
   ),
-  summarize: _.constant("!LOC:Uber Cannon Base Breaker"),
+  summarize: _.constant("!LOC:Base Breaker"),
   icon: _.constant(
     "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
   ),

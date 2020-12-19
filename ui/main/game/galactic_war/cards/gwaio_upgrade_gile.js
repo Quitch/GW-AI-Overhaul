@@ -6,7 +6,7 @@ define([
     describe: _.constant(
       "!LOC:Upgrades the Gil-E's weapon to a railgun capable of passing through rocks and other matter."
     ),
-    summarize: _.constant("!LOC:Railgun"),
+    summarize: _.constant("!LOC:Scoped Railgun"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),
