@@ -21,6 +21,8 @@
     - Inconsistent change of appearing across different galaxy sizes
   - Intelligence Fabrication Tech
     - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
+  - Orbital Fabrication Tech
+    - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
 
 ## v4.10.3 - 2020-11-30
 
