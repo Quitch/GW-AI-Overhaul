@@ -1,6 +1,7 @@
 define([
+  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
-], function (gwaioFunctions) {
+], function (GW, gwaioFunctions) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,13 +21,32 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (system, context) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
         gwaioFunctions.hasUnit("/pa/units/land/assault_bot/assault_bot.json")
-      )
-        chance = 70;
+      ) {
+        var dist = system.distance();
+        if (dist > 0) {
+          if (context.totalSize <= GW.balance.numberOfSystems[0]) {
+            chance = 28;
+            if (dist > 4) chance = 142;
+          } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
+            chance = 28;
+            if (dist > 6) chance = 142;
+          } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
+            chance = 28;
+            if (dist > 9) chance = 142;
+          } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
+            chance = 28;
+            if (dist > 11) chance = 142;
+          } else {
+            chance = 28;
+            if (dist > 13) chance = 142;
+          }
+        }
+      }
 
       return { chance: chance };
     },
