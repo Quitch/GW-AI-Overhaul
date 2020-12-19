@@ -149,6 +149,7 @@ if (!model.game().isTutorial()) {
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
         "gwaio_weapon_dox",
+        "gwaio_weapon_gile",
         "gwaio_weapon_lob",
         "gwaio_weapon_omega",
         "gwaio_weapon_ubercannon_commander",

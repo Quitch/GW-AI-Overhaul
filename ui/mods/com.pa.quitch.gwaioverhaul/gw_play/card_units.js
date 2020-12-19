@@ -970,5 +970,9 @@ define({
       id: "gwaio_weapon_dox",
       units: ["/pa/units/land/assault_bot/assault_bot.json"],
     },
+    {
+      id: "gwaio_weapon_gile",
+      units: ["/pa/units/land/bot_sniper/bot_sniper.json"],
+    },
   ],
 });
