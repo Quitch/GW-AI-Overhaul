@@ -944,5 +944,31 @@ define({
         "/pa/units/orbital/mining_platform/mining_platform.json",
       ],
     },
+    {
+      id: "gwaio_weapon_wyrm",
+      units: ["/pa/units/air/bomber_heavy/bomber_heavy.json"],
+    },
+    {
+      id: "gwaio_weapon_ubercannon_structure",
+      units: ["/pa/units/commanders/base_commander/base_commander.json"],
+    },
+    {
+      id: "gwaio_weapon_ubercannon_commander",
+      units: ["/pa/units/commanders/base_commander/base_commander.json"],
+    },
+    {
+      id: "gwaio_weapon_omega",
+      units: ["/pa/units/orbital/orbital_battleship/orbital_battleship.json"],
+    },
+    {
+      id: "gwaio_weapon_lob",
+      units: [
+        "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+      ],
+    },
+    {
+      id: "gwaio_weapon_dox",
+      units: ["/pa/units/land/assault_bot/assault_bot.json"],
+    },
   ],
 });
