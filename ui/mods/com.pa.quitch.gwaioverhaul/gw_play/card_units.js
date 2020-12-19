@@ -974,5 +974,9 @@ define({
       id: "gwaio_weapon_gile",
       units: ["/pa/units/land/bot_sniper/bot_sniper.json"],
     },
+    {
+      id: "gwaio_upgrade_kaiju",
+      units: ["/pa/units/sea/hover_ship/hover_ship.json"],
+    },
   ],
 });
