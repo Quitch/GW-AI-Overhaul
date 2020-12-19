@@ -945,33 +945,33 @@ define({
       ],
     },
     {
-      id: "gwaio_weapon_wyrm",
+      id: "gwaio_upgrade_wyrm",
       units: ["/pa/units/air/bomber_heavy/bomber_heavy.json"],
     },
     {
-      id: "gwaio_weapon_ubercannon_structure",
+      id: "gwaio_upgrade_ubercannon_structure",
       units: ["/pa/units/commanders/base_commander/base_commander.json"],
     },
     {
-      id: "gwaio_weapon_ubercannon_commander",
+      id: "gwaio_upgrade_ubercannon_commander",
       units: ["/pa/units/commanders/base_commander/base_commander.json"],
     },
     {
-      id: "gwaio_weapon_omega",
+      id: "gwaio_upgrade_omega",
       units: ["/pa/units/orbital/orbital_battleship/orbital_battleship.json"],
     },
     {
-      id: "gwaio_weapon_lob",
+      id: "gwaio_upgrade_lob",
       units: [
         "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
       ],
     },
     {
-      id: "gwaio_weapon_dox",
+      id: "gwaio_upgrade_dox",
       units: ["/pa/units/land/assault_bot/assault_bot.json"],
     },
     {
-      id: "gwaio_weapon_gile",
+      id: "gwaio_upgrade_gile",
       units: ["/pa/units/land/bot_sniper/bot_sniper.json"],
     },
     {
