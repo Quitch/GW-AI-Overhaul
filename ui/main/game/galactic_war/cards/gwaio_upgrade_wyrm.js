@@ -28,7 +28,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/air/bomber_heavy/bomber_heavy.json")
       )
-        chance = 50;
+        chance = 80;
 
       return { chance: chance };
     },

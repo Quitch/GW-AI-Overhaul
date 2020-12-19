@@ -18,7 +18,7 @@ define({
     };
   },
   deal: function () {
-    return { chance: 50 };
+    return { chance: 80 };
   },
   buff: function (inventory) {
     var mods = [
