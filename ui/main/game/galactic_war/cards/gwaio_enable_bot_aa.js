@@ -27,7 +27,7 @@ define([
       if (
         !gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json")
       )
-        chance = 0;
+        return chance;
       else if (dist > 0) {
         if (context.totalSize <= GW.balance.numberOfSystems[0]) {
           chance = 250;
