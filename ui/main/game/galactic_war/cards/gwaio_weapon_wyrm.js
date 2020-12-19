@@ -25,7 +25,8 @@ define([
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        )
+        ) &&
+        gwaioFunctions.hasUnit("/pa/units/air/bomber_heavy/bomber_heavy.json")
       )
         chance = 50;
 

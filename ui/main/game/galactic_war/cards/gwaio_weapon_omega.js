@@ -25,6 +25,9 @@ define([
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_factory/orbital_factory.json"
+        ) &&
+        gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_battleship/orbital_battleship.json"
         )
       )
         chance = 50;
