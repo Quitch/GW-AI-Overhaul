@@ -32,10 +32,10 @@ define(["shared/gw_common"], function (GW) {
           chance = 100;
           if (dist > 9) chance = 50;
         } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-          chance = 28;
+          chance = 100;
           if (dist > 11) chance = 50;
         } else {
-          chance = 28;
+          chance = 100;
           if (dist > 13) chance = 50;
         }
       }
