@@ -953,10 +953,6 @@ define({
       units: ["/pa/units/commanders/base_commander/base_commander.json"],
     },
     {
-      id: "gwaio_upgrade_ubercannon_commander",
-      units: ["/pa/units/commanders/base_commander/base_commander.json"],
-    },
-    {
       id: "gwaio_upgrade_omega",
       units: ["/pa/units/orbital/orbital_battleship/orbital_battleship.json"],
     },
