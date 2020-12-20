@@ -159,6 +159,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_jig",
         "gwaio_upgrade_kaiju",
         "gwaio_upgrade_leveler",
+        "gwaio_upgrade_leviathan",
         "gwaio_upgrade_lob",
         "gwaio_upgrade_metalstorage",
         "gwaio_upgrade_narwhal",

@@ -1038,5 +1038,9 @@ define({
       id: "gwaio_upgrade_phoenix",
       units: ["/pa/units/air/fighter_adv/fighter_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_leviathan",
+      units: ["/pa/units/sea/battleship/battleship.json"],
+    },
   ],
 });
