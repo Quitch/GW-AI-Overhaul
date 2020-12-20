@@ -1022,5 +1022,9 @@ define({
       id: "gwaio_upgrade_sxx",
       units: ["/pa/units/orbital/orbital_laser/orbital_laser.json"],
     },
+    {
+      id: "gwaio_upgrade_jig",
+      units: ["/pa/units/orbital/mining_platform/mining_platform.json"],
+    },
   ],
 });
