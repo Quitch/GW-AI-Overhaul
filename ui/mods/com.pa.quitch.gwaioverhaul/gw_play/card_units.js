@@ -1006,5 +1006,9 @@ define({
       id: "gwaio_upgrade_narwhal",
       units: ["/pa/units/sea/frigate/frigate.json"],
     },
+    {
+      id: "gwaio_upgrade_teleporter",
+      units: ["/pa/units/land/teleporter/teleporter.json"],
+    },
   ],
 });
