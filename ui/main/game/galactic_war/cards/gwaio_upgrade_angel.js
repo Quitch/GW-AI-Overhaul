@@ -37,7 +37,8 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/air/support_platform/support_platform.json",
+          file:
+            "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "rate_of_fire",
           op: "multiply",
           value: 2,
