@@ -1034,5 +1034,9 @@ define({
       id: "gwaio_upgrade_metalstorage",
       units: ["/pa/units/land/metal_storage/metal_storage.json"],
     },
+    {
+      id: "gwaio_upgrade_icarus",
+      units: ["/pa/units/air/solar_drone/solar_drone.json"],
+    },
   ],
 });
