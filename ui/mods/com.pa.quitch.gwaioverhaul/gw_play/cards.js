@@ -148,6 +148,7 @@ if (!model.game().isTutorial()) {
       if (!model.gwaioDeck) model.gwaioDeck = [];
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
+        "gwaio_upgrade_angel",
         "gwaio_upgrade_dox",
         "gwaio_upgrade_firefly",
         "gwaio_upgrade_gile",

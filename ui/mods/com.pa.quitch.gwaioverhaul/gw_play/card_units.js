@@ -998,5 +998,9 @@ define({
       id: "gwaio_upgrade_hummingbird",
       units: ["/pa/units/air/fighter/fighter.json"],
     },
+    {
+      id: "gwaio_upgrade_angel",
+      units: ["/pa/units/air/support_platform/support_platform.json"],
+    },
   ],
 });
