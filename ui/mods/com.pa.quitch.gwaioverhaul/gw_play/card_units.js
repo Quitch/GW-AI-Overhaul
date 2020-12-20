@@ -1026,5 +1026,9 @@ define({
       id: "gwaio_upgrade_jig",
       units: ["/pa/units/orbital/mining_platform/mining_platform.json"],
     },
+    {
+      id: "gwaio_upgrade_energystorage",
+      units: ["/pa/units/land/energy_storage/energy_storage.json"],
+    },
   ],
 });

@@ -151,6 +151,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_angel",
         "gwaio_upgrade_astraeus",
         "gwaio_upgrade_dox",
+        "gwaio_upgrade_energystorage",
         "gwaio_upgrade_firefly",
         "gwaio_upgrade_gile",
         "gwaio_upgrade_hummingbird",
