@@ -164,6 +164,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_narwhal",
         "gwaio_upgrade_nukes",
         "gwaio_upgrade_omega",
+        "gwaio_upgrade_phoenix",
         "gwaio_upgrade_singlelaserturret",
         "gwaio_upgrade_skitter",
         "gwaio_upgrade_sxx",

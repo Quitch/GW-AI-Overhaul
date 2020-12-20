@@ -1034,5 +1034,9 @@ define({
       id: "gwaio_upgrade_icarus",
       units: ["/pa/units/air/solar_drone/solar_drone.json"],
     },
+    {
+      id: "gwaio_upgrade_phoenix",
+      units: ["/pa/units/air/fighter_adv/fighter_adv.json"],
+    },
   ],
 });
