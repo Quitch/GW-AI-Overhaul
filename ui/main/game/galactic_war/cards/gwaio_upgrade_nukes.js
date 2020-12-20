@@ -43,13 +43,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: " /pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
+          file: "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
           path: "armor_damage_map.AT_Commander",
           op: "multiply",
           value: 3,
         },
         {
-          file: " /pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
+          file: "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
           path: "armor_damage_map.AT_Orbital",
           op: "multiply",
           value: 3,
