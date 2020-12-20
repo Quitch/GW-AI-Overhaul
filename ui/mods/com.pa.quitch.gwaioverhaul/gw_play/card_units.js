@@ -1014,5 +1014,9 @@ define({
       id: "gwaio_upgrade_singlelaserturret",
       units: ["/pa/units/land/laser_defense_single/laser_defense_single.json"],
     },
+    {
+      id: "gwaio_upgrade_astraeus",
+      units: ["/pa/units/orbital/orbital_lander/orbital_lander.json"],
+    },
   ],
 });
