@@ -1002,5 +1002,9 @@ define({
       id: "gwaio_upgrade_angel",
       units: ["/pa/units/air/support_platform/support_platform.json"],
     },
+    {
+      id: "gwaio_upgrade_narwhal",
+      units: ["/pa/units/sea/frigate/frigate.json"],
+    },
   ],
 });

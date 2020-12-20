@@ -156,6 +156,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_kaiju",
         "gwaio_upgrade_leveler",
         "gwaio_upgrade_lob",
+        "gwaio_upgrade_narwhal",
         "gwaio_upgrade_nukes",
         "gwaio_upgrade_omega",
         "gwaio_upgrade_skitter",
