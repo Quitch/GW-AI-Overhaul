@@ -24,19 +24,24 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
+          "/pa/units/land/nuke_launcher/nuke_launcher.json"
         )
       )
-        chance = 60;
+        if (
+          gwaioFunctions.hasUnit(
+            "/pa/units/air/air_factory_adv/air_factory_adv.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
+          )
+        )
+          chance = 60;
 
       return { chance: chance };
     },
