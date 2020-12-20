@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Doubles the rate of fire of the Angel's interceptor."
+      "!LOC:Angel Upgrade Tech doubles the support platform's rate of fire."
     ),
-    summarize: _.constant("!LOC:Heavenly Intervention"),
+    summarize: _.constant("!LOC:Angel Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_air_engine.png"
     ),

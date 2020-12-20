@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:Adds a low powered laser to the Firefly."),
-    summarize: _.constant("!LOC:Scouting Technical"),
+    describe: _.constant(
+      "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout."
+    ),
+    summarize: _.constant("!LOC:Firefly Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
     ),

@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Replace the Single Laser Turret's laser with a flamethrower."
+      "!LOC:Single Laser Turret Upgrade Tech replaces the basic turret's laser with a flamethrower."
     ),
-    summarize: _.constant("!LOC:Infero Turret"),
+    summarize: _.constant("!LOC:Single Laser Turret Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png"
     ),

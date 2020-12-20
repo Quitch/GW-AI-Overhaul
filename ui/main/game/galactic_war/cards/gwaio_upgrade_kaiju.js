@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Kaiju can use teleporters."),
-    summarize: _.constant("!LOC:Intergalactic Navy"),
+    describe: _.constant(
+      "!LOC:Kaiju Upgrade Tech enables the use of teleporters by hover destroyers."
+    ),
+    summarize: _.constant("!LOC:Kaiju Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
     ),

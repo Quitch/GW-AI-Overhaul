@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:The Nuclear Missile Launcher does full damage to both Commanders and orbital units."
+      "!LOC:Nuclear Missile Launcher Upgrade Tech doubles the damage dealt to Commanders by LR-96 Pacifier Nuclear Missiles."
     ),
-    summarize: _.constant("!LOC:Super Nuke"),
+    summarize: _.constant("!LOC:Nuclear Missile Launcher Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_super_weapons.png"
     ),
@@ -51,13 +51,7 @@ define([
           file: "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
           path: "armor_damage_map.AT_Commander",
           op: "multiply",
-          value: 3,
-        },
-        {
-          file: "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
-          path: "armor_damage_map.AT_Orbital",
-          op: "multiply",
-          value: 3,
+          value: 2,
         },
       ];
       inventory.addMods(mods);

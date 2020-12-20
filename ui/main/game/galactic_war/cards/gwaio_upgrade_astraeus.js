@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Doubles the speed at which the Astraeus moves through space."
+      "!LOC:Astraeus Upgrade Tech doubles the orbital lander's interplanetary movement speed."
     ),
-    summarize: _.constant("!LOC:Speed of Light"),
+    summarize: _.constant("!LOC:Astraeus Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),

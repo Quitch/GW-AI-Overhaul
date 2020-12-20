@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Narwhal can fire torpedoes."),
-    summarize: _.constant("!LOC:Torpedo Tubes"),
+    describe: _.constant(
+      "!LOC:Narwhal Upgrade Tech adds a torpedo launcher to the frigate."
+    ),
+    summarize: _.constant("!LOC:Narwhal Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
     ),

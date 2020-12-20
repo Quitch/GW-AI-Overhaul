@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Energy Storage can hold five times as much energy."
+      "!LOC:Energy Storage Upgrade Tech increases Energy Storage's capacity by 400%."
     ),
-    summarize: _.constant("!LOC:Denser Battery"),
+    summarize: _.constant("!LOC:Energy Storage Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage_compression.png"
     ),

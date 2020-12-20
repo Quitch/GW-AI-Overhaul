@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Replace's the Wyrm's bomb bay with a drone launcher."
+      "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones."
     ),
-    summarize: _.constant("!LOC:Air Carrier"),
+    summarize: _.constant("!LOC:Wyrm Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
     ),

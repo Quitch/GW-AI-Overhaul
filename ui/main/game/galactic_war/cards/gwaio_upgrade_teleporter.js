@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:Teleporters no longer require energy to run."),
-    summarize: _.constant("!LOC:Teleporter Battery"),
+    describe: _.constant(
+      "!LOC:Teleporter Upgrade Tech removes all energy consumption and efficiency requirements from the interplanetary teleporter."
+    ),
+    summarize: _.constant("!LOC:Teleporter Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
     ),

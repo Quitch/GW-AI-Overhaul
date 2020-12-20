@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Leveler can be built by the Unit Cannon."),
-    summarize: _.constant("!LOC:Space Tank"),
+    describe: _.constant(
+      "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon."
+    ),
+    summarize: _.constant("!LOC:Leveler Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
     ),

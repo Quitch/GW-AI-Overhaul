@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Icarus produces two metal."),
-    summarize: _.constant("!LOC:Airborne Panning"),
+    describe: _.constant(
+      "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone."
+    ),
+    summarize: _.constant("!LOC:Icarus Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage_compression.png"
     ),

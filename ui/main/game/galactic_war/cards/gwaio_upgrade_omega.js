@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Replace's the Omega's anti-ground laser with a drone launcher."
+      "!LOC:Omega Upgrade Tech replaces the orbital battleship's anti-ground laser with a drone launcher."
     ),
-    summarize: _.constant("!LOC:Orbital Carrier"),
+    summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),

@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Replace's the Dox's lasers with a flamethrower."
+      "!LOC:Dox Upgrade Tech replaces the basic infantry's current weapons with a flamethrower."
     ),
-    summarize: _.constant("!LOC:Flaming Fist"),
+    summarize: _.constant("!LOC:Dox Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),

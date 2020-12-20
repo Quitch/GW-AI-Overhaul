@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:Metal Storage can hold twice as much."),
-    summarize: _.constant("!LOC:Bigger Boxes"),
+    describe: _.constant(
+      "!LOC:Metal Storage Upgrade Tech doubles the storage capacity of Metal Storage."
+    ),
+    summarize: _.constant("!LOC:Metal Storage Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage_compression.png"
     ),

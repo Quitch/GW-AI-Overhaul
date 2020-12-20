@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Halves the delay between the SXX arriving at a planet and responding to orders."
+      "!LOC:SXX-1304 Laser Platform Upgrade Tech halves the delay between the SXX arriving at a planet and responding to orders."
     ),
-    summarize: _.constant("!LOC:Operational Efficiency"),
+    summarize: _.constant("!LOC:SXX-1304 Laser Platform Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),

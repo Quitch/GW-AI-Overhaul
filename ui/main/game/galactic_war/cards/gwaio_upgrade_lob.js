@@ -4,8 +4,10 @@ define([
 ], function (GW, gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Lob now launches Booms."),
-    summarize: _.constant("!LOC:Boom Launcher"),
+    describe: _.constant(
+      "!LOC:Lob Upgrade Tech enables the launching of Booms in place of Dox."
+    ),
+    summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),

@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Upgrades the Gil-E's weapon to a railgun capable of passing through rocks and other matter."
+      "!LOC:Gil-E Upgrade Tech allows the sniper's weapon to pass through terrain and hit its target instantly."
     ),
-    summarize: _.constant("!LOC:Scoped Railgun"),
+    summarize: _.constant("!LOC:Gil-E Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),

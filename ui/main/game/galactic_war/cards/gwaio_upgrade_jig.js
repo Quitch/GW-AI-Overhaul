@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:Jig explosions no longer harm friendly units."),
-    summarize: _.constant("!LOC:Controlled Explosion"),
+    describe: _.constant(
+      "!LOC:Jig Upgrade Tech removes friendly damage from gas mining explosions."
+    ),
+    summarize: _.constant("!LOC:Jig Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),

@@ -1,9 +1,9 @@
 define({
   visible: _.constant(true),
   describe: _.constant(
-    "!LOC:The Uber Cannon deals 300% more damage to enemy structures."
+    "!LOC:Commander Upgrade Tech increases the damage to enemy structures from the Uber Cannon by 300%."
   ),
-  summarize: _.constant("!LOC:Base Breaker"),
+  summarize: _.constant("!LOC:Commander Upgrade Tech"),
   icon: _.constant(
     "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
   ),

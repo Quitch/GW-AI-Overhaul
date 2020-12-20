@@ -3,8 +3,10 @@ define([
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC:The Hummingbird can travel between planets."),
-    summarize: _.constant("!LOC:Basic Interplanetary Fighter"),
+    describe: _.constant(
+      "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
+    ),
+    summarize: _.constant("!LOC:Hummingbird Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_air_engine.png"
     ),
