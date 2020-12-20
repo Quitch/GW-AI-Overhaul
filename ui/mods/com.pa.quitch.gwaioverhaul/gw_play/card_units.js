@@ -994,5 +994,9 @@ define({
       id: "gwaio_upgrade_skitter",
       units: ["/pa/units/air/air_scout/air_scout.json"],
     },
+    {
+      id: "gwaio_upgrade_hummingbird",
+      units: ["/pa/units/air/fighter/fighter.json"],
+    },
   ],
 });
