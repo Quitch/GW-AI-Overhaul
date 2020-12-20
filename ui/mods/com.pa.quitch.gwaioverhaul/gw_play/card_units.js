@@ -1010,5 +1010,9 @@ define({
       id: "gwaio_upgrade_teleporter",
       units: ["/pa/units/land/teleporter/teleporter.json"],
     },
+    {
+      id: "gwaio_upgrade_singlelaserturret",
+      units: ["/pa/units/land/laser_defense_single/laser_defense_single.json"],
+    },
   ],
 });
