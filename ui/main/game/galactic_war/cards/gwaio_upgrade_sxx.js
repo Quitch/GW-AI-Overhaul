@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Doubles the speed at which the Astraeus moves through space."
+      "!LOC:Halves the delay between the SXX arriving at a planet and responding to orders."
     ),
     summarize: _.constant("!LOC:Operational Efficiency"),
     icon: _.constant(
