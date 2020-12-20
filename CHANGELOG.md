@@ -18,7 +18,7 @@
   - Orbital Combat Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
   - Economy Fabrication Tech
-    - Inconsistent change of appearing across different galaxy sizes
+    - Inconsistent chance of appearing across different galaxy sizes
   - Intelligence Fabrication Tech
     - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
   - Orbital Fabrication Tech
