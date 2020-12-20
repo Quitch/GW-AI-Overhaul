@@ -1018,5 +1018,9 @@ define({
       id: "gwaio_upgrade_astraeus",
       units: ["/pa/units/orbital/orbital_lander/orbital_lander.json"],
     },
+    {
+      id: "gwaio_upgrade_sxx",
+      units: ["/pa/units/orbital/orbital_laser/orbital_laser.json"],
+    },
   ],
 });

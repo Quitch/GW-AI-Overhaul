@@ -162,6 +162,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_omega",
         "gwaio_upgrade_singlelaserturret",
         "gwaio_upgrade_skitter",
+        "gwaio_upgrade_sxx",
         "gwaio_upgrade_teleporter",
         "gwaio_upgrade_ubercannon_commander",
         "gwaio_upgrade_ubercannon_structure",
