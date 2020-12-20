@@ -149,6 +149,7 @@ if (!model.game().isTutorial()) {
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
         "gwaio_upgrade_dox",
+        "gwaio_upgrade_firefly",
         "gwaio_upgrade_gile",
         "gwaio_upgrade_kaiju",
         "gwaio_upgrade_leveler",
