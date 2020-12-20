@@ -27,7 +27,7 @@ define([
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
         ) &&
         gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_laser/orbital_laser.json.json"
+          "/pa/units/orbital/orbital_laser/orbital_laser.json"
         )
       )
         chance = 60;
