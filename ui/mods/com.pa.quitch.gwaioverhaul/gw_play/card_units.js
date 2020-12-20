@@ -1030,5 +1030,9 @@ define({
       id: "gwaio_upgrade_energystorage",
       units: ["/pa/units/land/energy_storage/energy_storage.json"],
     },
+    {
+      id: "gwaio_upgrade_metalstorage",
+      units: ["/pa/units/land/metal_storage/metal_storage.json"],
+    },
   ],
 });
