@@ -43,14 +43,8 @@ define([
         {
           file: "/pa/units/sea/hover_ship/hover_ship.json",
           path: "command_caps",
-          op: "replace",
-          value: [
-            "ORDER_Move",
-            "ORDER_Patrol",
-            "ORDER_Attack",
-            "ORDER_Assist",
-            "ORDER_Use",
-          ],
+          op: "push",
+          value: "ORDER_Use",
         },
       ];
       inventory.addMods(mods);
