@@ -22,7 +22,7 @@ define({
     if (
       inventory.hasCard("gwc_enable_vehicles_t1") ||
       inventory.hasCard("gwc_enable_vehicles_all") ||
-      inventory.hasCard("gwc_start_vehicles")
+      inventory.hasCard("gwc_start_vehicle")
     )
       chance = 80;
 

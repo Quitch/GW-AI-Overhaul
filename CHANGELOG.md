@@ -27,6 +27,26 @@
     - Card has the same chance of appearing in a medium size galaxy as any other size
   - Efficiency Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Bot Combat Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Ammunition Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Engine Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Fabrication Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Armor Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Vehicle Combat Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Ammunition Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Engine Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Fabrication Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Armor Tech
+    - Correctly offered when player using the Vehicle Commander loadout
 
 ## v4.10.3 - 2020-11-30
 
