@@ -31,31 +31,40 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      var unit = "/pa/units/land/assault_bot/assault_bot.json";
+      var weapon = "/pa/units/land/assault_bot/assault_bot_tool_weapon.json";
+      var ammo = "/pa/units/land/assault_bot/assault_bot_ammo.json";
       var mods = [
         {
-          file: "assault_bot_tool_weapon.json",
+          file: unit,
+          path: "events.fired.effect_spec",
+          op: "replace",
+          value:
+            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
+        },
+        {
+          file: weapon,
           path: "max_range",
           op: "replace",
           value: 20,
         },
         {
-          file: "assault_bot_ammo.json",
+          file: weapon,
+          path: "spread_fire",
+          op: "replace",
+          value: true,
+        },
+        {
+          file: ammo,
           path: "ammo_type",
           op: "replace",
           value: "AMMO_Beam",
         },
         {
-          file: "assault_bot_ammo.json",
+          file: ammo,
           path: "damage",
           op: "replace",
           value: 100,
-        },
-        {
-          file: "/pa/units/land/assault_bot/assault_bot.json",
-          path: "events.fired.effect_spec",
-          op: "replace",
-          value:
-            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
         },
       ];
       inventory.addMods(mods);

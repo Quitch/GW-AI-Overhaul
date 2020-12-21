@@ -32,13 +32,43 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      var unit =
+        "/pa/units/land/laser_defense_single/laser_defense_single.json";
+      var weapon =
+        "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json";
+      var ammo =
+        "/pa/units/land/laser_defense_single/laser_defense_single_ammo.json";
       var mods = [
         {
-          file:
-            "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json",
-          path: "ammo_id",
+          file: unit,
+          path: "events.fired.effect_spec",
           op: "replace",
-          value: "/pa/units/land/tank_armor/tank_armor_ammo.json",
+          value:
+            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_muzzle",
+        },
+        {
+          file: weapon,
+          path: "max_range",
+          op: "replace",
+          value: 20,
+        },
+        {
+          file: weapon,
+          path: "spread_fire",
+          op: "replace",
+          value: true,
+        },
+        {
+          file: ammo,
+          path: "ammo_type",
+          op: "replace",
+          value: "AMMO_Beam",
+        },
+        {
+          file: ammo,
+          path: "damage",
+          op: "replace",
+          value: 100,
         },
       ];
       inventory.addMods(mods);
