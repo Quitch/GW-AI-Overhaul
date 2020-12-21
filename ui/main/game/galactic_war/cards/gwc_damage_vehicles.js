@@ -17,7 +17,7 @@ define({
       totalSize: galaxy.stars().length,
     };
   },
-  deal: function (system, context, inventory) {
+  deal: function (_, __, inventory) {
     var chance = 0;
     if (
       inventory.hasCard("gwc_enable_vehicles_t1") ||
