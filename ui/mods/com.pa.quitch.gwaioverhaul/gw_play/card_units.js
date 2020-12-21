@@ -1058,5 +1058,9 @@ define({
       id: "gwaio_upgrade_hornet",
       units: ["/pa/units/air/bomber_adv/bomber_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_pelican",
+      units: ["/pa/units/air/transport/transport.json"],
+    },
   ],
 });
