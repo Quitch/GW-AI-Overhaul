@@ -1046,5 +1046,9 @@ define({
       id: "gwaio_upgrade_orca",
       units: ["/pa/units/sea/destroyer/destroyer.json"],
     },
+    {
+      id: "gwaio_upgrade_piranha",
+      units: ["/pa/units/sea/sea_scout/sea_scout.json"],
+    },
   ],
 });
