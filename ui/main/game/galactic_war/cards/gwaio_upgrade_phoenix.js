@@ -24,7 +24,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
+          "/pa/units/air/air_factory_adv/air_factory_adv.json"
         ) &&
         gwaioFunctions.hasUnit("/pa/units/air/fighter_adv/fighter_adv.json")
       )
