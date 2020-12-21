@@ -1050,5 +1050,9 @@ define({
       id: "gwaio_upgrade_piranha",
       units: ["/pa/units/sea/sea_scout/sea_scout.json"],
     },
+    {
+      id: "gwaio_upgrade_horsefly",
+      units: ["/pa/units/air/strafer/strafer.json"],
+    },
   ],
 });
