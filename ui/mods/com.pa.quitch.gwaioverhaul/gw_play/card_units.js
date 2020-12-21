@@ -1062,5 +1062,9 @@ define({
       id: "gwaio_upgrade_pelican",
       units: ["/pa/units/air/transport/transport.json"],
     },
+    {
+      id: "gwaio_upgrade_grenadier",
+      units: ["/pa/units/land/bot_grenadier/bot_grenadier.json"],
+    },
   ],
 });
