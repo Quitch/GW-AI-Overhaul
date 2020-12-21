@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Dox Upgrade Tech replaces the basic infantry's current weapons with a flamethrower."
+      "!LOC:Dox Upgrade Tech replaces the basic infantry's current weapons with flamethrowers."
     ),
     summarize: _.constant("!LOC:Dox Upgrade Tech"),
     icon: _.constant(
@@ -33,16 +33,16 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/assault_bot/assault_bot.json",
-          path: "tools.0.spec_id",
+          file: "assault_bot_tool_weapon.json",
+          path: "max_range",
           op: "replace",
-          value: "/pa/units/land/tank_armor/tank_armor_tool_weapon.json",
+          value: 20,
         },
         {
-          file: "/pa/units/land/assault_bot/assault_bot.json",
-          path: "tools.projectiles_per_fire",
+          file: "assault_bot_ammo.json",
+          path: "ammo_type",
           op: "replace",
-          value: 1,
+          value: "AMMO_Beam",
         },
         {
           file: "/pa/units/land/assault_bot/assault_bot.json",
