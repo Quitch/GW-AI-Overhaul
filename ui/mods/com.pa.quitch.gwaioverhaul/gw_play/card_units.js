@@ -1054,5 +1054,9 @@ define({
       id: "gwaio_upgrade_horsefly",
       units: ["/pa/units/air/strafer/strafer.json"],
     },
+    {
+      id: "gwaio_upgrade_hornet",
+      units: ["/pa/units/air/bomber_adv/bomber_adv.json"],
+    },
   ],
 });
