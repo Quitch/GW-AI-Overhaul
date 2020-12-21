@@ -45,6 +45,12 @@ define([
           value: "AMMO_Beam",
         },
         {
+          file: "assault_bot_ammo.json",
+          path: "damage",
+          op: "replace",
+          value: 100,
+        },
+        {
           file: "/pa/units/land/assault_bot/assault_bot.json",
           path: "events.fired.effect_spec",
           op: "replace",
