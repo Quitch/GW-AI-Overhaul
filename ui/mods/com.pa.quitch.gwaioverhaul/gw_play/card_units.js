@@ -1042,5 +1042,9 @@ define({
       id: "gwaio_upgrade_leviathan",
       units: ["/pa/units/sea/battleship/battleship.json"],
     },
+    {
+      id: "gwaio_upgrade_orca",
+      units: ["/pa/units/sea/destroyer/destroyer.json"],
+    },
   ],
 });
