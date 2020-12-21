@@ -30,6 +30,7 @@ define({
   },
   buff: function (inventory) {
     var units = [
+      "/pa/units/land/land_scout/land_scout_ammo.json",
       "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
       "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_ammo.json",
       "/pa/units/land/tank_armor/tank_armor_ammo.json",

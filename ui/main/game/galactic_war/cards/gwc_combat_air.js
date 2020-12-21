@@ -79,6 +79,7 @@ define({
       );
     });
     var ammos = [
+      "/pa/units/air/air_scout/air_scout_ammo.json",
       "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
       "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
       "/pa/units/air/bomber/bomber_ammo.json",
