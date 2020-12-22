@@ -1078,5 +1078,11 @@ define({
       id: "gwaio_upgrade_manhattan",
       units: ["/pa/units/land/tank_nuke/tank_nuke.json"],
     },
+    {
+      id: "gwaio_upgrade_colonel",
+      units: [
+        "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      ],
+    },
   ],
 });
