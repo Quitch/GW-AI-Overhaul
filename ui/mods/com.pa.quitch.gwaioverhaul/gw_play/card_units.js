@@ -1106,5 +1106,9 @@ define({
       id: "gwaio_upgrade_halley",
       units: ["/pa/units/orbital/delta_v_engine/delta_v_engine.json"],
     },
+    {
+      id: "gwaio_upgrade_ragnarok",
+      units: ["/pa/units/land/titan_structure/titan_structure.json"],
+    },
   ],
 });
