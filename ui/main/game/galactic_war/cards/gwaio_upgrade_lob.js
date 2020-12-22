@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"
     ),
     audio: function () {
       return {
