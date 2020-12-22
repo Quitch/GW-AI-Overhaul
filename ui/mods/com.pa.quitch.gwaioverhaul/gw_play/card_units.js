@@ -1088,5 +1088,15 @@ define({
       id: "gwaio_upgrade_vanguard",
       units: ["/pa/units/land/tank_heavy_armor/tank_heavy_armor.json"],
     },
+    {
+      id: "gwaio_upgrade_torpedolauncher",
+      units: ["/pa/units/sea/torpedo_launcher/torpedo_launcher.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedtorpedolauncher",
+      units: [
+        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+      ],
+    },
   ],
 });

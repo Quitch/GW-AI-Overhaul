@@ -148,6 +148,7 @@ if (!model.game().isTutorial()) {
       if (!model.gwaioDeck) model.gwaioDeck = [];
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
+        "gwaio_upgrade_advancedtorpedolauncher",
         "gwaio_upgrade_angel",
         "gwaio_upgrade_astraeus",
         "gwaio_upgrade_boom",
@@ -180,6 +181,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_skitter",
         "gwaio_upgrade_sxx",
         "gwaio_upgrade_teleporter",
+        "gwaio_upgrade_torpedolauncher",
         "gwaio_upgrade_ubercannon_structure",
         "gwaio_upgrade_vanguard",
         "gwaio_upgrade_wyrm",
