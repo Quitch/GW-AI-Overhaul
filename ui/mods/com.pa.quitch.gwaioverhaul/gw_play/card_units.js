@@ -1102,5 +1102,9 @@ define({
       id: "gwaio_upgrade_catalyst",
       units: ["/pa/units/land/control_module/control_module.json"],
     },
+    {
+      id: "gwaio_upgrade_halley",
+      units: ["/pa/units/orbital/delta_v_engine/delta_v_engine.json"],
+    },
   ],
 });

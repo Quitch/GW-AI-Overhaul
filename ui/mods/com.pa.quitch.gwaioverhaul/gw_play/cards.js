@@ -159,6 +159,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_firefly",
         "gwaio_upgrade_gile",
         "gwaio_upgrade_grenadier",
+        "gwaio_upgrade_halley",
         "gwaio_upgrade_holkins",
         "gwaio_upgrade_hornet",
         "gwaio_upgrade_horsefly",
