@@ -1066,5 +1066,9 @@ define({
       id: "gwaio_upgrade_grenadier",
       units: ["/pa/units/land/bot_grenadier/bot_grenadier.json"],
     },
+    {
+      id: "gwaio_upgrade_boom",
+      units: ["/pa/units/land/bot_bomb/bot_bomb.json"],
+    },
   ],
 });
