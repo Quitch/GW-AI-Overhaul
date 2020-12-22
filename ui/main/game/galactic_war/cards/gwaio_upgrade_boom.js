@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Boom Upgrade Tech enables the launching of Booms in place of Dox from the Lob."
+      "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob."
     ),
     summarize: _.constant("!LOC:Boom Upgrade Tech"),
     icon: _.constant(

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Omega Upgrade Tech replaces the orbital battleship's anti-ground laser with a drone launcher."
+      "!LOC:Omega Upgrade Tech replaces the orbital battleship's anti-ground laser with an anti-ground drone launcher."
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Piranha Upgrade Tech changes the gunboat into a hover unit, allowing it to cross land and lava."
+      "!LOC:Piranha Upgrade Tech changes the gunboat into a hover unit allowing it to cross land and lava."
     ),
     summarize: _.constant("!LOC:Piranha Upgrade Tech"),
     icon: _.constant(

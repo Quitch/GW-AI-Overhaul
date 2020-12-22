@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Grenadier Upgrade Tech swaps out the artillery for a mine launcher."
+      "!LOC:Grenadier Upgrade Tech replaces this fire support's artillery with mine launchers."
     ),
     summarize: _.constant("!LOC:Grenadier Upgrade Tech"),
     icon: _.constant(

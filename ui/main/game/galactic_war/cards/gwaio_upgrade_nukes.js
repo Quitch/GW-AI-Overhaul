@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Nuclear Missile Launcher Upgrade Tech doubles the damage dealt to Commanders by LR-96 Pacifier Nuclear Missiles."
+      "!LOC:Nuclear Missile Launcher Upgrade Tech doubles the damage dealt to commanders by LR-96 Pacifier Nuclear Missiles."
     ),
     summarize: _.constant("!LOC:Nuclear Missile Launcher Upgrade Tech"),
     icon: _.constant(

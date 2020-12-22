@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit, preventing torpedoes from targetting it and allowing the navigation of shallow waters."
+      "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit preventing torpedoes from targeting it and allowing the navigation of shallow waters."
     ),
     summarize: _.constant("!LOC:Orca Upgrade Tech"),
     icon: _.constant(

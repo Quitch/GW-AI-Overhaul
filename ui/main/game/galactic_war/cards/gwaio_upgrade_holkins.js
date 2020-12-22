@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Holkins Upgrade Tech triples the number of shots fired per volley while also tripling deviation from target."
+      "!LOC:Holkins Upgrade Tech triples the number of shots fired per volley by the advanced artillery while also tripling their deviation from target."
     ),
     summarize: _.constant("!LOC:Holkins Upgrade Tech"),
     icon: _.constant(
