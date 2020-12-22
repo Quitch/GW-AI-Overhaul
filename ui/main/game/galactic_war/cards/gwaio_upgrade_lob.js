@@ -1,11 +1,10 @@
 define([
-  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
-], function (GW, gwaioFunctions) {
+], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Lob Upgrade Tech enables the launching of Booms in place of Dox."
+      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%."
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(
@@ -21,33 +20,14 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (system, context) {
+    deal: function () {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
         )
-      ) {
-        var dist = system.distance();
-        if (dist > 0) {
-          if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-            chance = 28;
-            if (dist > 4) chance = 142;
-          } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-            chance = 28;
-            if (dist > 6) chance = 142;
-          } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-            chance = 28;
-            if (dist > 9) chance = 142;
-          } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-            chance = 28;
-            if (dist > 11) chance = 142;
-          } else {
-            chance = 28;
-            if (dist > 13) chance = 142;
-          }
-        }
-      }
+      )
+        chance = 60;
 
       return { chance: chance };
     },
@@ -55,10 +35,17 @@ define([
       var mods = [
         {
           file:
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_ammo.json",
-          path: "spawn_unit_on_death",
-          op: "replace",
-          value: "/pa/units/land/bot_bomb/bot_bomb.json",
+            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          path: "max_range",
+          op: "multiply",
+          value: 2.5,
+        },
+        {
+          file:
+            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          path: "max_firing_velocity",
+          op: "multiply",
+          value: 2.5,
         },
       ];
       inventory.addMods(mods);
