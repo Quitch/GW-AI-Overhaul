@@ -20,14 +20,30 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
         )
       )
-        chance = 60;
+        if (
+          gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory/bot_factory.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/air/air_factory/air_factory.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/sea/naval_factory/naval_factory.json"
+          ) ||
+          gwaioFunctions.hasUnit(
+            "/pa/units/land/vehicle_factory/vehicle_factory.json"
+          ) ||
+          inventory.hasCard("gwaio_start_paratrooper") ||
+          inventory.hasCard("gwc_start_artillery")
+        )
+          chance = 60;
 
       return { chance: chance };
     },
