@@ -181,6 +181,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_sxx",
         "gwaio_upgrade_teleporter",
         "gwaio_upgrade_ubercannon_structure",
+        "gwaio_upgrade_vanguard",
         "gwaio_upgrade_wyrm",
         "gwc_add_card_slot",
         "gwc_bld_efficiency_cdr",

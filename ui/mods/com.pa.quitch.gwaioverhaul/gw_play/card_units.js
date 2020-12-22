@@ -1084,5 +1084,9 @@ define({
         "/pa/units/land/bot_support_commander/bot_support_commander.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_vanguard",
+      units: ["/pa/units/land/tank_heavy_armor/tank_heavy_armor.json"],
+    },
   ],
 });
