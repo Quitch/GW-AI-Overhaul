@@ -52,7 +52,7 @@ define([
             "/pa/units/land/radar/radar.json",
             "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
           ];
-          var mediiumStructures = [
+          var mediumStructures = [
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
@@ -71,12 +71,10 @@ define([
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
           var allStructures = smallStructures.concat(
-            mediiumStructures,
+            mediumStructures,
             largeStructures
           );
-          var teleportableStructures = smallStructures.concat(
-            mediiumStructures
-          );
+          var teleportableStructures = smallStructures.concat(mediumStructures);
           allStructures.forEach(function (unit) {
             mods.push(
               {
