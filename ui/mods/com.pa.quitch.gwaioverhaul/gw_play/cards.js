@@ -176,6 +176,8 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_nukes",
         "gwaio_upgrade_omega",
         "gwaio_upgrade_orca",
+        "gwaio_upgrade_radar",
+        "gwaio_upgrade_advancedradar",
         "gwaio_upgrade_pelican",
         "gwaio_upgrade_phoenix",
         "gwaio_upgrade_piranha",

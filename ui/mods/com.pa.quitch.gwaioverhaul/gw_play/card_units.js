@@ -1110,5 +1110,13 @@ define({
       id: "gwaio_upgrade_ragnarok",
       units: ["/pa/units/land/titan_structure/titan_structure.json"],
     },
+    {
+      id: "gwaio_upgrade_radar",
+      units: ["/pa/units/land/radar/radar.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedradar",
+      units: ["/pa/units/land/radar_adv/radar_adv.json"],
+    },
   ],
 });
