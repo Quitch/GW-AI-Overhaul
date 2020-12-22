@@ -1098,5 +1098,9 @@ define({
         "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_catalyst",
+      units: ["/pa/units/land/control_module/control_module.json"],
+    },
   ],
 });

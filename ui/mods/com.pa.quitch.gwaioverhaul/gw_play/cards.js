@@ -152,6 +152,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_angel",
         "gwaio_upgrade_astraeus",
         "gwaio_upgrade_boom",
+        "gwaio_upgrade_catalyst",
         "gwaio_upgrade_colonel",
         "gwaio_upgrade_dox",
         "gwaio_upgrade_energystorage",
