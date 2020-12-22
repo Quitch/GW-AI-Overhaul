@@ -1,4 +1,4 @@
-# Galactic War AI Overhaul Readme
+# Galactic War Overhaul Readme
 
 This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
