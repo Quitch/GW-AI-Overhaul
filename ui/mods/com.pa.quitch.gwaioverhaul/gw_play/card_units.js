@@ -1074,5 +1074,9 @@ define({
       id: "gwaio_upgrade_holkins",
       units: ["/pa/units/land/artillery_long/artillery_long.json"],
     },
+    {
+      id: "gwaio_upgrade_manhattan",
+      units: ["/pa/units/land/tank_nuke/tank_nuke.json"],
+    },
   ],
 });
