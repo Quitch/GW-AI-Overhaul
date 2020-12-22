@@ -1070,5 +1070,9 @@ define({
       id: "gwaio_upgrade_boom",
       units: ["/pa/units/land/bot_bomb/bot_bomb.json"],
     },
+    {
+      id: "gwaio_upgrade_holkins",
+      units: ["/pa/units/land/artillery_long/artillery_long.json"],
+    },
   ],
 });

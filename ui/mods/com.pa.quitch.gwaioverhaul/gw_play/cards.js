@@ -147,6 +147,7 @@ if (!model.game().isTutorial()) {
       /* Start of GWAIO implementation of GWDealer */
       if (!model.gwaioDeck) model.gwaioDeck = [];
       model.gwaioDeck.push(
+        "/pa/units/land/artillery_long/artillery_long.json",
         "gwaio_enable_bot_aa",
         "gwaio_upgrade_angel",
         "gwaio_upgrade_astraeus",
