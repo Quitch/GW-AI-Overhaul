@@ -1178,5 +1178,9 @@ define({
       id: "gwaio_upgrade_spinner",
       units: ["/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json"],
     },
+    {
+      id: "gwaio_upgrade_storm",
+      units: ["/pa/units/land/tank_flak/tank_flak.json"],
+    },
   ],
 });
