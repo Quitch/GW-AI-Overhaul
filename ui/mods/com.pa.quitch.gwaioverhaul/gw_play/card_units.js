@@ -1190,5 +1190,9 @@ define({
       id: "gwaio_upgrade_stryker",
       units: ["/pa/units/land/attack_vehicle/attack_vehicle.json"],
     },
+    {
+      id: "gwaio_upgrade_barracuda",
+      units: ["/pa/units/sea/attack_sub/attack_sub.json"],
+    },
   ],
 });
