@@ -177,6 +177,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_leveler",
         "gwaio_upgrade_leviathan",
         "gwaio_upgrade_lob",
+        "gwaio_upgrade_locusts",
         "gwaio_upgrade_manhattan",
         "gwaio_upgrade_metalstorage",
         "gwaio_upgrade_narwhal",

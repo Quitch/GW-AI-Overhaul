@@ -1162,5 +1162,9 @@ define({
       id: "gwaio_upgrade_bluehawk",
       units: ["/pa/units/land/bot_tactical_missile/bot_tactical_missile.json"],
     },
+    {
+      id: "gwaio_upgrade_locusts",
+      units: ["/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"],
+    },
   ],
 });
