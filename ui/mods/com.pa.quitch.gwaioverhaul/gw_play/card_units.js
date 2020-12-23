@@ -1130,5 +1130,9 @@ define({
       id: "gwaio_upgrade_squall",
       units: ["/pa/units/sea/drone_carrier/drone.json"],
     },
+    {
+      id: "gwaio_upgrade_typhoon",
+      units: ["/pa/units/sea/drone_carrier/carrier.json"],
+    },
   ],
 });

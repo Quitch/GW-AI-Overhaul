@@ -190,6 +190,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_sxx",
         "gwaio_upgrade_teleporter",
         "gwaio_upgrade_torpedolauncher",
+        "gwaio_upgrade_typhoon",
         "gwaio_upgrade_ubercannon_structure",
         "gwaio_upgrade_vanguard",
         "gwaio_upgrade_wyrm",
