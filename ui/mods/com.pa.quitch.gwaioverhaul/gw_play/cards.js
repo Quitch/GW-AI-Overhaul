@@ -200,6 +200,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_spinner",
         "gwaio_upgrade_squall",
         "gwaio_upgrade_stinger",
+        "gwaio_upgrade_stingray",
         "gwaio_upgrade_storm",
         "gwaio_upgrade_stryker",
         "gwaio_upgrade_sxx",
