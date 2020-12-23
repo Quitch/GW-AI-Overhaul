@@ -1146,5 +1146,9 @@ define({
       id: "gwaio_upgrade_bumblebee",
       units: ["/pa/units/air/bomber/bomber.json"],
     },
+    {
+      id: "gwaio_upgrade_kestrel",
+      units: ["/pa/units/air/gunship/gunship.json"],
+    },
   ],
 });
