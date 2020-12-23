@@ -1186,5 +1186,9 @@ define({
       id: "gwaio_upgrade_drifter",
       units: ["/pa/units/land/tank_hover/tank_hover.json"],
     },
+    {
+      id: "gwaio_upgrade_stryker",
+      units: ["/pa/units/land/attack_vehicle/attack_vehicle.json"],
+    },
   ],
 });
