@@ -1007,7 +1007,7 @@ define({
       units: ["/pa/units/land/teleporter/teleporter.json"],
     },
     {
-      id: "gwaio_upgrade_singlelaserturret",
+      id: "gwaio_upgrade_singlelaserdefensetower",
       units: ["/pa/units/land/laser_defense_single/laser_defense_single.json"],
     },
     {
@@ -1119,7 +1119,7 @@ define({
       units: ["/pa/units/land/radar_adv/radar_adv.json"],
     },
     {
-      id: "gwaio_upgrade_laserturret",
+      id: "gwaio_upgrade_laserdefensetower",
       units: ["/pa/units/land/laser_defense/laser_defense_tool_weapon.json"],
     },
     {
