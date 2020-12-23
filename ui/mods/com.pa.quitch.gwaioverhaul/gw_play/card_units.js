@@ -1202,5 +1202,11 @@ define({
       id: "gwaio_upgrade_kraken",
       units: ["/pa/units/sea/nuclear_sub/nuclear_sub.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedlaserdefensetower",
+      units: [
+        "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+      ],
+    },
   ],
 });
