@@ -1118,5 +1118,9 @@ define({
       id: "gwaio_upgrade_advancedradar",
       units: ["/pa/units/land/radar_adv/radar_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_laserturret",
+      units: ["/pa/units/land/laser_defense/laser_defense_tool_weapon.json"],
+    },
   ],
 });
