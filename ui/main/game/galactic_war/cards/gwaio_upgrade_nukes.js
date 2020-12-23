@@ -20,12 +20,13 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/nuke_launcher/nuke_launcher.json"
-        )
+        ) &&
+        !inventory.hasCard("nem_start_nuke")
       )
         if (
           gwaioFunctions.hasUnit(
