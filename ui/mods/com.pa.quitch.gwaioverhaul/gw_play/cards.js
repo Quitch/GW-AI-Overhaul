@@ -154,6 +154,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_antinuke",
         "gwaio_upgrade_astraeus",
         "gwaio_upgrade_boom",
+        "gwaio_upgrade_bumblebee",
         "gwaio_upgrade_catalyst",
         "gwaio_upgrade_colonel",
         "gwaio_upgrade_dox",

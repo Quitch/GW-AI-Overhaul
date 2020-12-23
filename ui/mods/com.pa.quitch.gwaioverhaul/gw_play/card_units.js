@@ -1142,5 +1142,9 @@ define({
       id: "gwaio_upgrade_sheller",
       units: ["/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json"],
     },
+    {
+      id: "gwaio_upgrade_bumblebee",
+      units: ["/pa/units/air/bomber/bomber.json"],
+    },
   ],
 });
