@@ -77,32 +77,32 @@ define([
               }
             );
           });
-          var weaps = [
+          var weapons = [
             "/pa/tools/uber_cannon/uber_cannon.json",
             "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
           ];
-          weaps.forEach(function (weap) {
+          weapons.forEach(function (weapon) {
             mods.push(
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_capacity",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_demand",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_per_shot",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "rate_of_fire",
                 op: "multiply",
                 value: 2.0,
