@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Sheller Upgrade Tech enables interception of tactical missiles by the mortar tank."
+      "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks."
     ),
     summarize: _.constant("!LOC:Sheller Upgrade Tech"),
     icon: _.constant(
@@ -37,15 +37,10 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id:
-              "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
-            aim_bone: "socket_aim",
-            muzzle_bone: "socket_muzzle",
-          },
+          file: "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar_ammo.json",
+          path: "spawn_unit_on_death",
+          op: "replace",
+          value: "/pa/units/land/land_mine/land_mine.json",
         },
       ];
       inventory.addMods(mods);
