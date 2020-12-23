@@ -1182,5 +1182,9 @@ define({
       id: "gwaio_upgrade_storm",
       units: ["/pa/units/land/tank_flak/tank_flak.json"],
     },
+    {
+      id: "gwaio_upgrade_drifter",
+      units: ["/pa/units/land/tank_hover/tank_hover.json"],
+    },
   ],
 });
