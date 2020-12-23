@@ -1126,5 +1126,9 @@ define({
       id: "gwaio_upgrade_antinuke",
       units: ["/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json"],
     },
+    {
+      id: "gwaio_upgrade_typhoon",
+      units: ["/pa/units/sea/drone_carrier/drone.json"],
+    },
   ],
 });
