@@ -1170,5 +1170,9 @@ define({
       id: "gwaio_upgrade_slammer",
       units: ["/pa/units/land/assault_bot_adv/assault_bot_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_ant",
+      units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
+    },
   ],
 });
