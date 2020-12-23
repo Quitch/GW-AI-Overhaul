@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
@@ -39,7 +39,9 @@ define([
           ) ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory/vehicle_factory.json"
-          )
+          ) ||
+          inventory.hasCard("gwc_start_artillery") ||
+          inventory.hasCard("nem_start_tower_rush")
         )
           chance = 60;
 
