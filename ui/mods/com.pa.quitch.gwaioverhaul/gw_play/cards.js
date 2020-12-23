@@ -185,6 +185,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_piranha",
         "gwaio_upgrade_radar",
         "gwaio_upgrade_ragnarok",
+        "gwaio_upgrade_sheller",
         "gwaio_upgrade_singlelaserturret",
         "gwaio_upgrade_skitter",
         "gwaio_upgrade_squall",

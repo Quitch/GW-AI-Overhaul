@@ -1138,5 +1138,9 @@ define({
       id: "gwaio_upgrade_inferno",
       units: ["/pa/units/land/tank_armor/tank_armor.json"],
     },
+    {
+      id: "gwaio_upgrade_sheller",
+      units: ["/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json"],
+    },
   ],
 });
