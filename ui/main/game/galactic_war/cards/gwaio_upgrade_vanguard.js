@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Vanguard Upgrade Tech enables the heavy tank to intercept tactical missiles."
+      "!LOC:Vanguard Upgrade Tech makes the heavy tank amphibious."
     ),
     summarize: _.constant("!LOC:Vanguard Upgrade Tech"),
     icon: _.constant(
@@ -12,7 +12,7 @@ define([
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
     getContext: function (galaxy) {
@@ -38,27 +38,15 @@ define([
       var mods = [
         {
           file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "tools.aim_bone",
-          op: "replace",
-          value: "bone_turret",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Amphibious",
         },
         {
           file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "tools.muzzle_bone",
+          path: "navigation.type",
           op: "replace",
-          value: "socket_muzzle",
-        },
-        {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "tools.record_index",
-          op: "replace",
-          value: 1,
-        },
-        {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "tools.spec_id",
-          op: "replace",
-          value: "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+          value: "amphibious",
         },
       ];
       inventory.addMods(mods);
