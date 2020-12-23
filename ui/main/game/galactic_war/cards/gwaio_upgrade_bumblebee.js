@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Firefly Upgrade Tech causes the carpet bomber to drop mines instead of bombs."
+      "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop mines instead of bombs."
     ),
-    summarize: _.constant("!LOC:Firefly Upgrade Tech"),
+    summarize: _.constant("!LOC:Bumblebee Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
     ),
