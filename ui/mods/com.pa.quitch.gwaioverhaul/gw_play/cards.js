@@ -160,6 +160,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_boom",
         "gwaio_upgrade_bumblebee",
         "gwaio_upgrade_catalyst",
+        "gwaio_upgrade_catapult",
         "gwaio_upgrade_colonel",
         "gwaio_upgrade_dox",
         "gwaio_upgrade_drifter",

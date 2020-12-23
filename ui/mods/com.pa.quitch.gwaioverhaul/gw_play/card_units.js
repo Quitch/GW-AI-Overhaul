@@ -1208,5 +1208,11 @@ define({
         "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_catapult",
+      units: [
+        "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+      ],
+    },
   ],
 });
