@@ -1198,5 +1198,9 @@ define({
       id: "gwaio_upgrade_stingray",
       units: ["/pa/units/sea/missile_ship/missile_ship.json"],
     },
+    {
+      id: "gwaio_upgrade_kraken",
+      units: ["/pa/units/sea/nuclear_sub/nuclear_sub.json"],
+    },
   ],
 });
