@@ -1174,5 +1174,9 @@ define({
       id: "gwaio_upgrade_ant",
       units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
     },
+    {
+      id: "gwaio_upgrade_spinner",
+      units: ["/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json"],
+    },
   ],
 });
