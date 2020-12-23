@@ -190,6 +190,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_sheller",
         "gwaio_upgrade_singlelaserturret",
         "gwaio_upgrade_skitter",
+        "gwaio_upgrade_spark",
         "gwaio_upgrade_squall",
         "gwaio_upgrade_sxx",
         "gwaio_upgrade_teleporter",

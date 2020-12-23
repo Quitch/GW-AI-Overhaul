@@ -1150,5 +1150,9 @@ define({
       id: "gwaio_upgrade_kestrel",
       units: ["/pa/units/air/gunship/gunship.json"],
     },
+    {
+      id: "gwaio_upgrade_spark",
+      units: ["/pa/units/land/bot_tesla/bot_tesla.json"],
+    },
   ],
 });
