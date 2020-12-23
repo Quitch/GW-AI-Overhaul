@@ -22,7 +22,11 @@ define([
     },
     deal: function (_, __, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("gwaio_upgrade_advancedlaserdefensetower"))
+      if (
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json"
+        )
+      )
         if (
           gwaioFunctions.hasUnit(
             "/pa/units/air/air_factory_adv/air_factory_adv.json"
