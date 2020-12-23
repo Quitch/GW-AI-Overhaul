@@ -1154,5 +1154,9 @@ define({
       id: "gwaio_upgrade_spark",
       units: ["/pa/units/land/bot_tesla/bot_tesla.json"],
     },
+    {
+      id: "gwaio_upgrade_stinger",
+      units: ["/pa/units/land/bot_tesla/bot_aa.json"],
+    },
   ],
 });
