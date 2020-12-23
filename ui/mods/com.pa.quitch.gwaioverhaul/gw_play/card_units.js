@@ -1122,5 +1122,9 @@ define({
       id: "gwaio_upgrade_laserturret",
       units: ["/pa/units/land/laser_defense/laser_defense_tool_weapon.json"],
     },
+    {
+      id: "gwaio_upgrade_antinuke",
+      units: ["/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json"],
+    },
   ],
 });
