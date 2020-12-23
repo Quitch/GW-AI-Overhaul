@@ -42,7 +42,7 @@ define([
           ) ||
           inventory.hasCard("nem_start_tower_rush")
         )
-          chance = 30;
+          chance = 35;
 
       return { chance: chance };
     },

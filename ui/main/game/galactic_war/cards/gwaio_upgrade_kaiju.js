@@ -28,7 +28,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/sea/hover_ship/hover_ship.json")
       )
-        chance = 30;
+        chance = 35;
 
       return { chance: chance };
     },

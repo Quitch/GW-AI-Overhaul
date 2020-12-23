@@ -28,7 +28,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/air/strafer/strafer.json")
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

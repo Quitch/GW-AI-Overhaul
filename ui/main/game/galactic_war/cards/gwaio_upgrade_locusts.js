@@ -30,7 +30,7 @@ define([
           "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

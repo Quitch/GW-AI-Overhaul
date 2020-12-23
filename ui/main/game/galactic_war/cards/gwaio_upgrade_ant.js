@@ -30,7 +30,7 @@ define([
           "/pa/units/land/tank_light_laser/tank_light_laser.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

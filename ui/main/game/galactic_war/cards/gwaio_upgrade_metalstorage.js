@@ -27,7 +27,7 @@ define([
           "/pa/units/land/metal_storage/metal_storage.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

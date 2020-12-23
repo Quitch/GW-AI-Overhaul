@@ -30,7 +30,7 @@ define([
           "/pa/units/orbital/orbital_lander/orbital_lander.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

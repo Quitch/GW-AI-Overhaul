@@ -30,7 +30,7 @@ define([
           "/pa/units/land/attack_vehicle/attack_vehicle.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

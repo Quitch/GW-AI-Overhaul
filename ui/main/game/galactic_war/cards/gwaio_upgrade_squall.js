@@ -33,7 +33,7 @@ define([
           inventory.hasCard("gwaio_upgrade_omega") ||
           inventory.hasCard("gwaio_upgrade_wyrm")
         )
-          chance = 60;
+          chance = 70;
 
       return { chance: chance };
     },

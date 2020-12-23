@@ -30,7 +30,7 @@ define([
           "/pa/units/air/support_platform/support_platform.json"
         )
       )
-        chance = 60;
+        chance = 70;
 
       return { chance: chance };
     },

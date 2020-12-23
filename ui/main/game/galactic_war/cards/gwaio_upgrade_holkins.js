@@ -42,7 +42,7 @@ define([
           ) ||
           inventory.hasCard("gwc_start_artillery")
         )
-          chance = 60;
+          chance = 70;
 
       return { chance: chance };
     },
