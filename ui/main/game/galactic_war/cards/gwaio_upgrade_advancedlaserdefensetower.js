@@ -22,11 +22,7 @@ define([
     },
     deal: function (_, __, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/laser_defense_adv/laser_defense_adv.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit("gwaio_upgrade_advancedlaserdefensetower"))
         if (
           gwaioFunctions.hasUnit(
             "/pa/units/air/air_factory_adv/air_factory_adv.json"
@@ -82,6 +78,13 @@ define([
           path: "ammo_per_shot",
           op: "replace",
           value: 100,
+        },
+        {
+          file:
+            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          path: "spread_fire",
+          op: "replace",
+          value: true,
         },
         {
           file:
