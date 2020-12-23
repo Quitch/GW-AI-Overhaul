@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Typhoon Upgrade Tech increases the lifespan of Squall drones by 50%."
+      "!LOC:Squall Upgrade Tech increases the lifespan of Squall drones by 50%."
     ),
-    summarize: _.constant("!LOC:Typhoon Upgrade Tech"),
+    summarize: _.constant("!LOC:Squall Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
     ),
@@ -20,15 +20,20 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/carrier.json")
-      )
-        chance = 30;
+      if (gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone.json"))
+        if (
+          (gwaioFunctions.hasUnit(
+            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
+          ) &&
+            gwaioFunctions.hasUnit(
+              "/pa/units/sea/drone_carrier/carrier.json"
+            )) ||
+          inventory.hasCard("gwaio_upgrade_omega") ||
+          inventory.hasCard("gwaio_upgrade_wyrm")
+        )
+          chance = 60;
 
       return { chance: chance };
     },
