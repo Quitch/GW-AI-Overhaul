@@ -1158,5 +1158,9 @@ define({
       id: "gwaio_upgrade_stinger",
       units: ["/pa/units/land/bot_tesla/bot_aa.json"],
     },
+    {
+      id: "gwaio_upgrade_bluehawk",
+      units: ["/pa/units/land/bot_tactical_missile/bot_tactical_missile.json"],
+    },
   ],
 });
