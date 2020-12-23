@@ -4,7 +4,7 @@
 
 ### Added
 
-- New tech cards to discover in your wars
+- 65 new tech cards to discover in your wars
 
 ### Changed
 
