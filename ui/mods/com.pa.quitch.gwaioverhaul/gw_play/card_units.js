@@ -1166,5 +1166,9 @@ define({
       id: "gwaio_upgrade_locusts",
       units: ["/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"],
     },
+    {
+      id: "gwaio_upgrade_slammer",
+      units: ["/pa/units/land/assault_bot_adv/assault_bot_adv.json"],
+    },
   ],
 });
