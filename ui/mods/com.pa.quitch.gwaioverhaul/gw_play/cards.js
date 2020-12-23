@@ -167,6 +167,7 @@ if (!model.game().isTutorial()) {
         "gwaio_upgrade_horsefly",
         "gwaio_upgrade_hummingbird",
         "gwaio_upgrade_icarus",
+        "gwaio_upgrade_inferno",
         "gwaio_upgrade_jig",
         "gwaio_upgrade_kaiju",
         "gwaio_upgrade_laserturret",

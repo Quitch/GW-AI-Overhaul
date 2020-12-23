@@ -1134,5 +1134,9 @@ define({
       id: "gwaio_upgrade_typhoon",
       units: ["/pa/units/sea/drone_carrier/carrier.json"],
     },
+    {
+      id: "gwaio_upgrade_inferno",
+      units: ["/pa/units/land/tank_armor/tank_armor.json"],
+    },
   ],
 });
