@@ -47,6 +47,7 @@
     - Correctly offered when player using the Vehicle Commander loadout
   - Vehicle Armor Tech
     - Correctly offered when player using the Vehicle Commander loadout
+- Bot Anti-Air Tech breaking acquire buttons on new tech display or failing to be added to your inventory successfully
 
 ## v4.10.3 - 2020-11-30
 

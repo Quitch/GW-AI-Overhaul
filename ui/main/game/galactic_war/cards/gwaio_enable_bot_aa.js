@@ -71,5 +71,6 @@ define([
       ];
       inventory.addMods(mods);
     },
+    dull: function () {},
   };
 });
