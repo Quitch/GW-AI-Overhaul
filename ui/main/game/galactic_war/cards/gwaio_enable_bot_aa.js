@@ -27,7 +27,7 @@ define([
       if (
         gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
         dist > 0
-      ) {
+      )
         if (context.totalSize <= GW.balance.numberOfSystems[0]) {
           chance = 250;
           if (dist > 2) chance = 100;
@@ -44,7 +44,7 @@ define([
           chance = 250;
           if (dist > 6) chance = 100;
         }
-      }
+
       return { chance: chance };
     },
     buff: function (inventory) {
