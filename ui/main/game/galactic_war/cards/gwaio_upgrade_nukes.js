@@ -25,8 +25,7 @@ define([
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/nuke_launcher/nuke_launcher.json"
-        ) &&
-        !inventory.hasCard("nem_start_nuke")
+        )
       )
         if (
           gwaioFunctions.hasUnit(
@@ -40,7 +39,8 @@ define([
           ) ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-          )
+          ) ||
+          inventory.hasCard("nem_start_nuke")
         )
           chance = 70;
 
