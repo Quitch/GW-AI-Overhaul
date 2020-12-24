@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (GW, gwaioFunctions) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -21,13 +24,10 @@ define(["shared/gw_common"], function (GW) {
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
-      function hasUnit(id) {
-        return _.some(model.game().inventory().units(), function (unit) {
-          return id === unit;
-        });
-      }
-      if (!hasUnit("/pa/units/land/bot_factory/bot_factory.json")) chance = 0;
-      else if (dist > 0) {
+      if (
+        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
+        dist > 0
+      )
         if (context.totalSize <= GW.balance.numberOfSystems[0]) {
           chance = 250;
           if (dist > 2) chance = 100;
@@ -44,7 +44,7 @@ define(["shared/gw_common"], function (GW) {
           chance = 250;
           if (dist > 6) chance = 100;
         }
-      }
+
       return { chance: chance };
     },
     buff: function (inventory) {

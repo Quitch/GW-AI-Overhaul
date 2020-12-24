@@ -22,7 +22,7 @@ define({
     if (
       inventory.hasCard("gwc_enable_bots_t1") ||
       inventory.hasCard("gwc_enable_bots_all") ||
-      inventory.hasCard("gwc_start_bots")
+      inventory.hasCard("gwc_start_bot")
     )
       chance = 70;
 

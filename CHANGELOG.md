@@ -1,5 +1,54 @@
 # CHANGELOG
 
+## v4.11.0 - 2020-12-24
+
+### Added
+
+- 65 new tech cards to discover in your wars
+
+### Changed
+
+- Mod now named Galactic War Overhaul
+
+### Fixed
+
+- Errors and inconsistencies in base game tech cards
+  - Combat Commander Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Orbital Combat Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Economy Fabrication Tech
+    - Inconsistent chance of appearing across different galaxy sizes
+  - Intelligence Fabrication Tech
+    - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
+  - Orbital Fabrication Tech
+    - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
+  - Storage Compression Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Efficiency Tech
+    - Card has the same chance of appearing in a medium size galaxy as any other size
+  - Bot Combat Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Ammunition Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Engine Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Fabrication Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Bot Armor Tech
+    - Correctly offered when player using the Bot Commander loadout
+  - Vehicle Combat Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Ammunition Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Engine Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Fabrication Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+  - Vehicle Armor Tech
+    - Correctly offered when player using the Vehicle Commander loadout
+- Bot Anti-Air Tech breaking acquire buttons on new tech display or failing to be added to your inventory successfully
+
 ## v4.10.3 - 2020-11-30
 
 ### Changed

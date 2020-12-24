@@ -148,6 +148,71 @@ if (!model.game().isTutorial()) {
       if (!model.gwaioDeck) model.gwaioDeck = [];
       model.gwaioDeck.push(
         "gwaio_enable_bot_aa",
+        "gwaio_upgrade_advancedlaserdefensetower",
+        "gwaio_upgrade_advancedradar",
+        "gwaio_upgrade_advancedtorpedolauncher",
+        "gwaio_upgrade_angel",
+        "gwaio_upgrade_ant",
+        "gwaio_upgrade_antinuke",
+        "gwaio_upgrade_astraeus",
+        "gwaio_upgrade_barracuda",
+        "gwaio_upgrade_bluehawk",
+        "gwaio_upgrade_boom",
+        "gwaio_upgrade_bumblebee",
+        "gwaio_upgrade_catalyst",
+        "gwaio_upgrade_catapult",
+        "gwaio_upgrade_colonel",
+        "gwaio_upgrade_dox",
+        "gwaio_upgrade_drifter",
+        "gwaio_upgrade_energystorage",
+        "gwaio_upgrade_firefly",
+        "gwaio_upgrade_gile",
+        "gwaio_upgrade_grenadier",
+        "gwaio_upgrade_halley",
+        "gwaio_upgrade_holkins",
+        "gwaio_upgrade_hornet",
+        "gwaio_upgrade_horsefly",
+        "gwaio_upgrade_hummingbird",
+        "gwaio_upgrade_icarus",
+        "gwaio_upgrade_inferno",
+        "gwaio_upgrade_jig",
+        "gwaio_upgrade_kaiju",
+        "gwaio_upgrade_kestrel",
+        "gwaio_upgrade_kraken",
+        "gwaio_upgrade_laserdefensetower",
+        "gwaio_upgrade_leveler",
+        "gwaio_upgrade_leviathan",
+        "gwaio_upgrade_lob",
+        "gwaio_upgrade_locusts",
+        "gwaio_upgrade_manhattan",
+        "gwaio_upgrade_metalstorage",
+        "gwaio_upgrade_narwhal",
+        "gwaio_upgrade_nukes",
+        "gwaio_upgrade_omega",
+        "gwaio_upgrade_orca",
+        "gwaio_upgrade_pelican",
+        "gwaio_upgrade_phoenix",
+        "gwaio_upgrade_piranha",
+        "gwaio_upgrade_radar",
+        "gwaio_upgrade_ragnarok",
+        "gwaio_upgrade_sheller",
+        "gwaio_upgrade_singlelaserdefensetower",
+        "gwaio_upgrade_skitter",
+        "gwaio_upgrade_slammer",
+        "gwaio_upgrade_spark",
+        "gwaio_upgrade_spinner",
+        "gwaio_upgrade_squall",
+        "gwaio_upgrade_stinger",
+        "gwaio_upgrade_stingray",
+        "gwaio_upgrade_storm",
+        "gwaio_upgrade_stryker",
+        "gwaio_upgrade_sxx",
+        "gwaio_upgrade_teleporter",
+        "gwaio_upgrade_torpedolauncher",
+        "gwaio_upgrade_typhoon",
+        "gwaio_upgrade_ubercannon_structure",
+        "gwaio_upgrade_vanguard",
+        "gwaio_upgrade_wyrm",
         "gwc_add_card_slot",
         "gwc_bld_efficiency_cdr",
         "gwc_bld_efficiency_fabs",
@@ -390,16 +455,16 @@ if (!model.game().isTutorial()) {
               }
             });
             affectedUnits = affectedUnits.sort();
-            model.gwaioTechCardTooltip()[i] = _.map(affectedUnits, function (
-              unit,
-              i
-            ) {
-              if (affectedUnits.length < 13)
-                return (unit = unit.concat("<br>"));
-              else if (i < affectedUnits.length - 1)
-                return (unit = unit.concat("; "));
-              else return unit;
-            });
+            model.gwaioTechCardTooltip()[i] = _.map(
+              affectedUnits,
+              function (unit, i) {
+                if (affectedUnits.length < 13)
+                  return (unit = unit.concat("<br>"));
+                else if (i < affectedUnits.length - 1)
+                  return (unit = unit.concat("; "));
+                else return unit;
+              }
+            );
           }
         }
       };

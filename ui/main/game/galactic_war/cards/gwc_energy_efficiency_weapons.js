@@ -23,7 +23,7 @@ define({
     return { chance: chance };
   },
   buff: function (inventory) {
-    var weaps = [
+    var weapons = [
       "/pa/tools/uber_cannon/uber_cannon.json",
       "/pa/units/air/bomber_heavy/bomber_heavy_tool_weapon.json",
       "/pa/units/air/bomber/bomber_tool_weapon.json",
@@ -37,22 +37,22 @@ define({
       "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
     ];
     var mods = [];
-    weaps.forEach(function (weap) {
+    weapons.forEach(function (weapon) {
       mods.push(
         {
-          file: weap,
+          file: weapon,
           path: "ammo_capacity",
           op: "multiply",
           value: 0.25,
         },
         {
-          file: weap,
+          file: weapon,
           path: "ammo_demand",
           op: "multiply",
           value: 0.25,
         },
         {
-          file: weap,
+          file: weapon,
           path: "ammo_per_shot",
           op: "multiply",
           value: 0.25,

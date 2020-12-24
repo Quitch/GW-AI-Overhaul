@@ -49,60 +49,60 @@ define([
                 file: unit,
                 path: "navigation.move_speed",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.brake",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.acceleration",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "navigation.turn_speed",
                 op: "multiply",
-                value: 5.0,
+                value: 5,
               },
               {
                 file: unit,
                 path: "max_health",
                 op: "multiply",
-                value: 3.0,
+                value: 3,
               }
             );
           });
-          var weaps = [
+          var weapons = [
             "/pa/tools/uber_cannon/uber_cannon.json",
             "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
           ];
-          weaps.forEach(function (weap) {
+          weapons.forEach(function (weapon) {
             mods.push(
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_capacity",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_demand",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "ammo_per_shot",
                 op: "multiply",
                 value: 0.25,
               },
               {
-                file: weap,
+                file: weapon,
                 path: "rate_of_fire",
                 op: "multiply",
                 value: 2.0,

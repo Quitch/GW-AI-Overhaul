@@ -944,5 +944,275 @@ define({
         "/pa/units/orbital/mining_platform/mining_platform.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_wyrm",
+      units: ["/pa/units/air/bomber_heavy/bomber_heavy.json"],
+    },
+    {
+      id: "gwaio_upgrade_ubercannon_structure",
+      units: ["/pa/units/commanders/base_commander/base_commander.json"],
+    },
+    {
+      id: "gwaio_upgrade_omega",
+      units: ["/pa/units/orbital/orbital_battleship/orbital_battleship.json"],
+    },
+    {
+      id: "gwaio_upgrade_lob",
+      units: [
+        "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_dox",
+      units: ["/pa/units/land/assault_bot/assault_bot.json"],
+    },
+    {
+      id: "gwaio_upgrade_gile",
+      units: ["/pa/units/land/bot_sniper/bot_sniper.json"],
+    },
+    {
+      id: "gwaio_upgrade_kaiju",
+      units: ["/pa/units/sea/hover_ship/hover_ship.json"],
+    },
+    {
+      id: "gwaio_upgrade_skitter",
+      units: ["/pa/units/land/land_scout/land_scout.json"],
+    },
+    {
+      id: "gwaio_upgrade_leveler",
+      units: ["/pa/units/land/tank_laser_adv/tank_laser_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_nukes",
+      units: ["/pa/units/land/nuke_launcher/nuke_launcher.json"],
+    },
+    {
+      id: "gwaio_upgrade_skitter",
+      units: ["/pa/units/air/air_scout/air_scout.json"],
+    },
+    {
+      id: "gwaio_upgrade_hummingbird",
+      units: ["/pa/units/air/fighter/fighter.json"],
+    },
+    {
+      id: "gwaio_upgrade_angel",
+      units: ["/pa/units/air/support_platform/support_platform.json"],
+    },
+    {
+      id: "gwaio_upgrade_narwhal",
+      units: ["/pa/units/sea/frigate/frigate.json"],
+    },
+    {
+      id: "gwaio_upgrade_teleporter",
+      units: ["/pa/units/land/teleporter/teleporter.json"],
+    },
+    {
+      id: "gwaio_upgrade_singlelaserdefensetower",
+      units: ["/pa/units/land/laser_defense_single/laser_defense_single.json"],
+    },
+    {
+      id: "gwaio_upgrade_astraeus",
+      units: ["/pa/units/orbital/orbital_lander/orbital_lander.json"],
+    },
+    {
+      id: "gwaio_upgrade_sxx",
+      units: ["/pa/units/orbital/orbital_laser/orbital_laser.json"],
+    },
+    {
+      id: "gwaio_upgrade_jig",
+      units: ["/pa/units/orbital/mining_platform/mining_platform.json"],
+    },
+    {
+      id: "gwaio_upgrade_energystorage",
+      units: ["/pa/units/land/energy_storage/energy_storage.json"],
+    },
+    {
+      id: "gwaio_upgrade_metalstorage",
+      units: ["/pa/units/land/metal_storage/metal_storage.json"],
+    },
+    {
+      id: "gwaio_upgrade_icarus",
+      units: ["/pa/units/air/solar_drone/solar_drone.json"],
+    },
+    {
+      id: "gwaio_upgrade_phoenix",
+      units: ["/pa/units/air/fighter_adv/fighter_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_leviathan",
+      units: ["/pa/units/sea/battleship/battleship.json"],
+    },
+    {
+      id: "gwaio_upgrade_orca",
+      units: ["/pa/units/sea/destroyer/destroyer.json"],
+    },
+    {
+      id: "gwaio_upgrade_piranha",
+      units: ["/pa/units/sea/sea_scout/sea_scout.json"],
+    },
+    {
+      id: "gwaio_upgrade_horsefly",
+      units: ["/pa/units/air/strafer/strafer.json"],
+    },
+    {
+      id: "gwaio_upgrade_hornet",
+      units: ["/pa/units/air/bomber_adv/bomber_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_pelican",
+      units: ["/pa/units/air/transport/transport.json"],
+    },
+    {
+      id: "gwaio_upgrade_grenadier",
+      units: ["/pa/units/land/bot_grenadier/bot_grenadier.json"],
+    },
+    {
+      id: "gwaio_upgrade_boom",
+      units: ["/pa/units/land/bot_bomb/bot_bomb.json"],
+    },
+    {
+      id: "gwaio_upgrade_holkins",
+      units: ["/pa/units/land/artillery_long/artillery_long.json"],
+    },
+    {
+      id: "gwaio_upgrade_manhattan",
+      units: ["/pa/units/land/tank_nuke/tank_nuke.json"],
+    },
+    {
+      id: "gwaio_upgrade_colonel",
+      units: [
+        "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_vanguard",
+      units: ["/pa/units/land/tank_heavy_armor/tank_heavy_armor.json"],
+    },
+    {
+      id: "gwaio_upgrade_torpedolauncher",
+      units: ["/pa/units/sea/torpedo_launcher/torpedo_launcher.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedtorpedolauncher",
+      units: [
+        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_catalyst",
+      units: ["/pa/units/land/control_module/control_module.json"],
+    },
+    {
+      id: "gwaio_upgrade_halley",
+      units: ["/pa/units/orbital/delta_v_engine/delta_v_engine.json"],
+    },
+    {
+      id: "gwaio_upgrade_ragnarok",
+      units: ["/pa/units/land/titan_structure/titan_structure.json"],
+    },
+    {
+      id: "gwaio_upgrade_radar",
+      units: ["/pa/units/land/radar/radar.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedradar",
+      units: ["/pa/units/land/radar_adv/radar_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_laserdefensetower",
+      units: ["/pa/units/land/laser_defense/laser_defense_tool_weapon.json"],
+    },
+    {
+      id: "gwaio_upgrade_antinuke",
+      units: ["/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json"],
+    },
+    {
+      id: "gwaio_upgrade_squall",
+      units: ["/pa/units/sea/drone_carrier/drone.json"],
+    },
+    {
+      id: "gwaio_upgrade_typhoon",
+      units: ["/pa/units/sea/drone_carrier/carrier.json"],
+    },
+    {
+      id: "gwaio_upgrade_inferno",
+      units: ["/pa/units/land/tank_armor/tank_armor.json"],
+    },
+    {
+      id: "gwaio_upgrade_sheller",
+      units: ["/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json"],
+    },
+    {
+      id: "gwaio_upgrade_bumblebee",
+      units: ["/pa/units/air/bomber/bomber.json"],
+    },
+    {
+      id: "gwaio_upgrade_kestrel",
+      units: ["/pa/units/air/gunship/gunship.json"],
+    },
+    {
+      id: "gwaio_upgrade_spark",
+      units: ["/pa/units/land/bot_tesla/bot_tesla.json"],
+    },
+    {
+      id: "gwaio_upgrade_stinger",
+      units: ["/pa/units/land/bot_tesla/bot_aa.json"],
+    },
+    {
+      id: "gwaio_upgrade_bluehawk",
+      units: ["/pa/units/land/bot_tactical_missile/bot_tactical_missile.json"],
+    },
+    {
+      id: "gwaio_upgrade_locusts",
+      units: ["/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"],
+    },
+    {
+      id: "gwaio_upgrade_slammer",
+      units: ["/pa/units/land/assault_bot_adv/assault_bot_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_ant",
+      units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
+    },
+    {
+      id: "gwaio_upgrade_spinner",
+      units: ["/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json"],
+    },
+    {
+      id: "gwaio_upgrade_storm",
+      units: ["/pa/units/land/tank_flak/tank_flak.json"],
+    },
+    {
+      id: "gwaio_upgrade_drifter",
+      units: ["/pa/units/land/tank_hover/tank_hover.json"],
+    },
+    {
+      id: "gwaio_upgrade_stryker",
+      units: ["/pa/units/land/attack_vehicle/attack_vehicle.json"],
+    },
+    {
+      id: "gwaio_upgrade_barracuda",
+      units: ["/pa/units/sea/attack_sub/attack_sub.json"],
+    },
+    {
+      id: "gwaio_upgrade_stingray",
+      units: ["/pa/units/sea/missile_ship/missile_ship.json"],
+    },
+    {
+      id: "gwaio_upgrade_kraken",
+      units: ["/pa/units/sea/nuclear_sub/nuclear_sub.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedlaserdefensetower",
+      units: [
+        "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_catapult",
+      units: [
+        "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+      ],
+    },
   ],
 });
