@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Kestrel Upgrade Tech replaces the gunship's current weapons with flamethrowers."
+      "!LOC:Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers."
     ),
     summarize: _.constant("!LOC:Kestrel Upgrade Tech"),
     icon: _.constant(

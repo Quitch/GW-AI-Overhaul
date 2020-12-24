@@ -28,7 +28,8 @@ define([
         ) &&
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_battleship/orbital_battleship.json"
-        )
+        ) &&
+        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone.json")
       )
         chance = 70;
 

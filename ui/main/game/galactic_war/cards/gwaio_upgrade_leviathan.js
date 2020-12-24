@@ -12,7 +12,7 @@ define([
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
     getContext: function (galaxy) {

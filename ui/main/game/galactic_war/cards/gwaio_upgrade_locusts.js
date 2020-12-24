@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Locusts Upgrade Tech doubles the vision of the nanoswarm."
+      "!LOC:Locusts Upgrade Tech doubles the vision radius of nanoswarms."
     ),
     summarize: _.constant("!LOC:Locusts Upgrade Tech"),
     icon: _.constant(

@@ -24,7 +24,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
-        gwaioFunctions.hasUnit("/pa/units/land/bot_tesla/bot_aa.json")
+        gwaioFunctions.hasUnit("/pa/units/land/bot_aa/bot_aa.json")
       )
         chance = 70;
 
@@ -33,19 +33,19 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/bot_tesla/bot_aa_ammo.json",
+          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
           path: "splash_damage",
           op: "replace",
           value: 10,
         },
         {
-          file: "/pa/units/land/bot_tesla/bot_aa_ammo.json",
+          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
           path: "splash_damage",
           op: "replace",
           value: 0.75,
         },
         {
-          file: "/pa/units/land/bot_tesla/bot_aa_ammo.json",
+          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
           path: "full_damage_splash_radius",
           op: "replace",
           value: 0.75,

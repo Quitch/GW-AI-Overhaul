@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Halley Upgrade Tech increases the health of the delta V engine by 75%."
+      "!LOC:Halley Upgrade Tech increases the health of the delta V engine by 75%, enough to survive a nuclear blast."
     ),
     summarize: _.constant("!LOC:Halley Upgrade Tech"),
     icon: _.constant(

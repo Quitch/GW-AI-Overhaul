@@ -24,6 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
+        ) &&
+        gwaioFunctions.hasUnit(
           "/pa/units/orbital/mining_platform/mining_platform.json"
         )
       )

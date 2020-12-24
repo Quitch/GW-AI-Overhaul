@@ -8,11 +8,11 @@ define([
     ),
     summarize: _.constant("!LOC:Pelican Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_air_engine.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
     getContext: function (galaxy) {

@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Astraeus Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital_fighter.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),
     audio: function () {
       return {

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Dox Upgrade Tech replaces the basic infantry's current weapons with flamethrowers."
+      "!LOC:Dox Upgrade Tech replaces the basic infantry's bullet weapons for flamethrowers."
     ),
     summarize: _.constant("!LOC:Dox Upgrade Tech"),
     icon: _.constant(

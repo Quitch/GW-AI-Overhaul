@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Squall Upgrade Tech increases the lifespan of Squall drones by 50%."
+      "!LOC:Squall Upgrade Tech increases the lifespan of drones by 50%."
     ),
     summarize: _.constant("!LOC:Squall Upgrade Tech"),
     icon: _.constant(

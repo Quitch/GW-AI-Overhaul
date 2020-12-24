@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Gil-E Upgrade Tech allows the sniper's weapon to pass through terrain and hit its target instantly."
+      "!LOC:Gil-E Upgrade Tech allows the sniper's shots to pass through terrain and hit their target instantly."
     ),
     summarize: _.constant("!LOC:Gil-E Upgrade Tech"),
     icon: _.constant(
