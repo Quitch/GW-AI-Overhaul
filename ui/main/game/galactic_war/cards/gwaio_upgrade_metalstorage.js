@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Metal Storage Upgrade Tech doubles the storage capacity of Metal Storage."
+      "!LOC:Metal Storage Upgrade Tech allows Metal Storage to also hold energy."
     ),
     summarize: _.constant("!LOC:Metal Storage Upgrade Tech"),
     icon: _.constant(
@@ -35,9 +35,9 @@ define([
       var mods = [
         {
           file: "/pa/units/land/metal_storage/metal_storage.json",
-          path: "storage.metal",
-          op: "multiply",
-          value: 2,
+          path: "storage.energy",
+          op: "replace",
+          value: 100000,
         },
       ];
       inventory.addMods(mods);
