@@ -74,7 +74,7 @@ if (!model.game().isTutorial())
 
     // Planetary Intelligence
 
-    var formatedString = function (number) {
+    var formattedString = function (number) {
       var km2 = 1000000;
       number = number / km2;
       if (number < 1000) {
@@ -95,7 +95,7 @@ if (!model.game().isTutorial())
             area += 4 * Math.PI * Math.pow(world.planet.radius, 2);
           }
         });
-      return formatedString(area);
+      return formattedString(area);
     });
 
     var totalThreat = function (totalRate) {
