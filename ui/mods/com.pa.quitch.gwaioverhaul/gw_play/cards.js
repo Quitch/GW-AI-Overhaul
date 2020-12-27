@@ -130,12 +130,12 @@ if (!model.game().isTutorial()) {
           .inventory()
           .getTag("global", "playerFaction");
         _.times(2, function () {
-          var minion = _.sample(GWFactions[playerFaction].minions);
-          model
-            .game()
-            .inventory()
-            .cards()
-            .push({ id: "gwc_minion", minion: minion, unique: Math.random() });
+          var subCommander = _.sample(GWFactions[playerFaction].minions);
+          model.game().inventory().cards().push({
+            id: "gwc_minion",
+            minion: subCommander,
+            unique: Math.random(),
+          });
         });
         model.game().inventory().applyCards();
         model.driveAccessInProgress(true);
