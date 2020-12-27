@@ -130,19 +130,12 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 1. Add the following to the gw_start scene:
 
    ```javascript
-   if (
-     model.gwaioNewStartCards &&
-     model.gwaioAllStartCards &&
-     model.gwaioTreasureCards
-   ) {
-     model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
-     model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
-     model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
-   } else {
-     model.gwaioNewStartCards = [{ id: "YOUR_LOADOUT_ID" }];
-     model.gwaioAllStartCards = ["YOUR_LOADOUT_ID"];
-     model.gwaioTreasureCards = [{ id: "YOUR_LOADOUT_ID" }];
-   }
+   if (model.gwaioNewStartCards) model.gwaioNewStartCards = [];
+   if (model.gwaioAllStartCards) model.gwaioAllStartCards = [];
+   if (model.gwaioTreasureCards) model.gwaioTreasureCards = [];
+   model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
+   model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
+   model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
    ```
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
@@ -163,18 +156,14 @@ If you are adding new tech cards to the game and want to be GWAIO compatible, th
 1. Add the following to the gw_play scene:
 
    ```javascript
-   if (model.gwaioDeck) model.gwaioDeck.push("YOUR_TECH_ID");
-   else model.gwaioDeck = ["YOUR_TECH_ID"];
-   if (model.gwaioCardsToUnits)
-     model.gwaioCardsToUnits.push({
-       id: "YOUR_TECH_ID",
-       units: ["AFFECTED_UNIT_PATH"],
-     });
-   else
-     model.gwaioCardsToUnits = [
-       // Use the base_commander for commander and always the use unit, not the ammo, etc.
-       { id: "YOUR_TECH_ID", units: ["AFFECTED_UNIT_PATH"] },
-     ];
+   if (!model.gwaioDeck) model.gwaioDeck = [];
+   if (!model.gwaioCardsToUnits) model.gwaioCardsToUnits = [];
+   model.gwaioDeck.push("YOUR_TECH_ID");
+   model.gwaioCardsToUnits.push({
+     id: "YOUR_TECH_ID",
+     // Use the base_commander for commander and always the use unit, not the ammo, etc.
+     units: ["AFFECTED_UNIT_PATH"],
+   });
    ```
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
