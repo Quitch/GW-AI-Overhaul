@@ -391,23 +391,21 @@ if (!model.game().isTutorial()) {
 
         var star = model.game().galaxy().stars()[model.game().currentStar()];
 
-        var dealStarCards =
-          !model.game().isTutorial() &&
-          chooseCards({
-            inventory: model.game().inventory(),
-            count: 3,
-            star: star,
-            galaxy: model.game().galaxy(),
-          }).then(function (result) {
-            var ok = true;
+        var dealStarCards = chooseCards({
+          inventory: model.game().inventory(),
+          count: 3,
+          star: star,
+          galaxy: model.game().galaxy(),
+        }).then(function (result) {
+          var ok = true;
 
-            _.forEach(star.cardList(), function (card) {
-              if (!GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card))
-                ok = false;
-            });
-
-            if (ok) star.cardList(result);
+          _.forEach(star.cardList(), function (card) {
+            if (!GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card))
+              ok = false;
           });
+
+          if (ok) star.cardList(result);
+        });
         $.when(dealStarCards).then(function () {
           model.driveAccessInProgress(true);
           GW.manifest.saveGame(model.game()).then(function () {
