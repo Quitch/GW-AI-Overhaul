@@ -89,11 +89,11 @@ if (!model.game().isTutorial())
         .system()
         .planets()
         .forEach(function (world) {
-          if (world.generator && world.generator.biome != "gas") {
+          if (
+            (world.generator && world.generator.biome !== "gas") ||
+            (world.planet && world.planet.biome !== "gas")
+          )
             area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
-          } else if (world.planet && world.planet.biome != "gas") {
-            area += 4 * Math.PI * Math.pow(world.planet.radius, 2);
-          }
         });
       return formattedString(area);
     });
