@@ -1,7 +1,7 @@
-var galacticWarOverhaulLoaded;
+var gwaioColourLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioColourLoaded) {
+  gwaioColourLoaded = true;
 
   try {
     if (!model.game().isTutorial())

@@ -1,7 +1,7 @@
-var galacticWarOverhaulLoaded;
+var gwaioCardsLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioCardsLoaded) {
+  gwaioCardsLoaded = true;
 
   try {
     if (!model.game().isTutorial()) {

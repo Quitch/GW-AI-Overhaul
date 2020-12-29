@@ -1,7 +1,7 @@
-var galacticWarOverhaulLoaded;
+var gwaioSystemsLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioSystemsLoaded) {
+  gwaioSystemsLoaded = true;
 
   try {
     // All of this is in service of changing the extractor function to prioritise system information

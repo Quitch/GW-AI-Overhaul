@@ -1,7 +1,7 @@
-var galacticWarOverhaulLoaded;
+var gwaioSetupLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioSetupLoaded) {
+  gwaioSetupLoaded = true;
 
   try {
     ko.extenders.decimals = function (target, decimals) {

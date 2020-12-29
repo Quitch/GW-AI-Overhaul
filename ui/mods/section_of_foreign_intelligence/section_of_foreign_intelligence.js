@@ -1,8 +1,8 @@
 // Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
-var galacticWarOverhaulLoaded;
+var gwaioIntelligenceLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioIntelligenceLoaded) {
+  gwaioIntelligenceLoaded = true;
 
   try {
     if (!model.game().isTutorial())
