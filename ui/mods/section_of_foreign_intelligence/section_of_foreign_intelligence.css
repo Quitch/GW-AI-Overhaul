@@ -46,7 +46,7 @@
 .section_of_foreign_intelligence .table {
   display: table;
   table-layout: fixed;
-  width: 80%;
+  width: 90%;
 }
 .section_of_foreign_intelligence .tablebody {
   display: table-row-group;

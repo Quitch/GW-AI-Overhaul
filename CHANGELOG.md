@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Improved spacing on intelligence tables
+
 ## v4.11.0 - 2020-12-24
 
 ### Added
