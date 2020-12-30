@@ -6,6 +6,10 @@
 
 - Improved spacing on intelligence tables
 
+### Fixed
+
+- Broken tooltips on three of the new tech cards
+
 ## v4.11.0 - 2020-12-24
 
 ### Added
