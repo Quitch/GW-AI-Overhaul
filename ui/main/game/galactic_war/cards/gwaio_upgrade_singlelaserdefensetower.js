@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a flamethrower."
+      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabricator which repairs units and reclaims wreckage within range."
     ),
     summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -32,43 +32,51 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var unit =
-        "/pa/units/land/laser_defense_single/laser_defense_single.json";
-      var weapon =
-        "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json";
-      var ammo =
-        "/pa/units/land/laser_defense_single/laser_defense_single_ammo.json";
       var mods = [
         {
-          file: unit,
-          path: "events.fired.effect_spec",
+          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          path: "tools",
           op: "replace",
-          value:
-            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_muzzle",
+          value: [
+            {
+              spec_id:
+                "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+              aim_bone: "bone_pitch",
+            },
+          ],
         },
         {
-          file: weapon,
-          path: "max_range",
+          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          path: "command_caps",
           op: "replace",
-          value: 20,
+          value: ["ORDER_Reclaim", "ORDER_Repair"],
         },
         {
-          file: weapon,
-          path: "spread_fire",
+          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          path: "fx_offsets",
           op: "replace",
-          value: true,
+          value: {
+            type: "build",
+            filename: "/pa/effects/specs/fab_combat_spray.pfx",
+            bone: "socket_muzzle",
+            offset: [0, 0, 0],
+            orientation: [0, 0, 0],
+          },
         },
         {
-          file: ammo,
-          path: "ammo_type",
+          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          path: "audio",
           op: "replace",
-          value: "AMMO_Beam",
-        },
-        {
-          file: ammo,
-          path: "damage",
-          op: "replace",
-          value: 100,
+          value: {
+            loops: {
+              build: {
+                cue: "/SE/Construction/Fab_contruction_beam_loop",
+                flag: "build_target_changed",
+                should_start_func: "has_build_target",
+                should_stop_func: "no_build_target",
+              },
+            },
+          },
         },
       ];
       inventory.addMods(mods);

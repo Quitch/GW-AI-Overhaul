@@ -1094,9 +1094,7 @@ define({
     },
     {
       id: "gwaio_upgrade_advancedtorpedolauncher",
-      units: [
-        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
-      ],
+      units: ["/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json"],
     },
     {
       id: "gwaio_upgrade_catalyst",
@@ -1120,7 +1118,7 @@ define({
     },
     {
       id: "gwaio_upgrade_laserdefensetower",
-      units: ["/pa/units/land/laser_defense/laser_defense_tool_weapon.json"],
+      units: ["/pa/units/land/laser_defense/laser_defense.json"],
     },
     {
       id: "gwaio_upgrade_antinuke",
@@ -1204,9 +1202,7 @@ define({
     },
     {
       id: "gwaio_upgrade_advancedlaserdefensetower",
-      units: [
-        "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
-      ],
+      units: ["/pa/units/land/laser_defense_adv/laser_defense_adv.json"],
     },
     {
       id: "gwaio_upgrade_catapult",

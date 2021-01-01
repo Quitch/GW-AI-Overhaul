@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v4.12.0 - 2021-01-01
+
+### Changed
+
+- Spacing on intelligence tables
+- Single Laser Defense Tower Upgrade Tech card has a new effect
+
+### Fixed
+
+- Broken tooltips on three of the new tech cards
+- CSS classes
+
 ## v4.11.0 - 2020-12-24
 
 ### Added
@@ -20,9 +32,9 @@
   - Economy Fabrication Tech
     - Inconsistent chance of appearing across different galaxy sizes
   - Intelligence Fabrication Tech
-    - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
+    - Card has the same chance of appearing in an epic or larger size galaxy as smaller sizes
   - Orbital Fabrication Tech
-    - Card has the same chance of appearing in a epic or larger size galaxy as smaller sizes
+    - Card has the same chance of appearing in an epic or larger size galaxy as smaller sizes
   - Storage Compression Tech
     - Card has the same chance of appearing in a medium size galaxy as any other size
   - Efficiency Tech
