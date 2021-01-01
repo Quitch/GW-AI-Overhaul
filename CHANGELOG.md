@@ -10,6 +10,7 @@
 ### Fixed
 
 - Broken tooltips on three of the new tech cards
+- CSS classes
 
 ## v4.11.0 - 2020-12-24
 
