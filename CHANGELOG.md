@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Improved spacing on intelligence tables
+- Spacing on intelligence tables
 - Single Laser Defense Tower Upgrade Tech card has a new effect
 
 ### Fixed
