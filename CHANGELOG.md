@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- The player's name is displayed on the player list in place of "Player"
+
 ## v4.12.0 - 2021-01-01
 
 ### Changed
