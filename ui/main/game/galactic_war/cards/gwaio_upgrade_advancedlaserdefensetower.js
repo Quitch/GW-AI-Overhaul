@@ -24,7 +24,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json"
+          "/pa/units/land/laser_defense_adv/laser_defense_adv.json"
         )
       )
         if (
