@@ -1,23 +1,23 @@
 <div
   id="hover-card"
-  data-bind="visible: !!model.hoverCard() && !hidingUI()"
+  data-bind="visible: !!$root.hoverCard() && !hidingUI()"
   style="display: none"
 >
   <div class="card" data-bind="with: hoverCard">
     <div
       class="close"
-      data-bind="click: function () { model.setHoverCard(undefined); }, click_sound: 'default', rollover_sound: 'default'"
+      data-bind="click: function () { $root.setHoverCard(undefined); }, click_sound: 'default', rollover_sound: 'default'"
     ></div>
     <!-- ko template: 'cardTemplate' -->
     <!-- /ko -->
     <!-- ko if: !isEmpty() -->
     <span
       class="info_tip"
-      data-bind="visible: model.gwaioShowTechCardTooltip()[3], tooltip: model.gwaioTechCardTooltip()[3]"
+      data-bind="visible: $root.gwaioShowTechCardTooltip()[3], tooltip: $root.gwaioTechCardTooltip()[3]"
       ><loc>Which Units?</loc></span
     >
     <div class="card_action">
-      <div class="btn_neg discard" data-bind="click: model.discardHoverCard">
+      <div class="btn_neg discard" data-bind="click: $root.discardHoverCard">
         <div class="btn_label" style="font-size: 16px">
           <loc>Delete Tech</loc>
         </div>
