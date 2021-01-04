@@ -12,7 +12,7 @@ if (!gwaioIntelligenceLoaded) {
         $.get(url, function (html) {
           var $fi = $(html);
           $("#system-detail").append($fi);
-          locUpdateDocument();
+          locTree($(".section_of_foreign_intelligence"));
           ko.applyBindings(model, $fi[0]);
         });
 
