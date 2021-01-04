@@ -29,7 +29,7 @@
 
 .war_info .table {
   display: table;
-  table-layout: fixed;
+  table-layout: auto;
 }
 .war_info .tablebody {
   display: table-row-group;
