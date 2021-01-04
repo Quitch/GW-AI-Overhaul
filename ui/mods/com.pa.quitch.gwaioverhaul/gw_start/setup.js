@@ -53,6 +53,7 @@ if (!gwaioSetupLoaded) {
       easierStart: ko.observable(false),
       tougherCommanders: ko.observable(false),
       customDifficulty: ko.observable(false),
+      difficultyName: ko.observable(""),
       goForKill: ko.observable(false),
       microType: ko.observableArray([0, 1, 2]),
       microTypeDescription: ko.observable({
@@ -275,6 +276,7 @@ if (!gwaioSetupLoaded) {
           {
             // Casual
             customDifficulty: false,
+            difficultyName: "!LOC:Casual",
             goForKill: false,
             microType: 0,
             mandatoryMinions: 0,
@@ -302,6 +304,7 @@ if (!gwaioSetupLoaded) {
           {
             // Iron
             customDifficulty: false,
+            difficultyName: "!LOC:Iron",
             goForKill: false,
             microType: 1,
             mandatoryMinions: 0,
@@ -330,6 +333,7 @@ if (!gwaioSetupLoaded) {
           {
             // Bronze
             customDifficulty: false,
+            difficultyName: "!LOC:Bronze",
             goForKill: true,
             microType: 2,
             mandatoryMinions: 0,
@@ -358,6 +362,7 @@ if (!gwaioSetupLoaded) {
           {
             // Silver
             customDifficulty: false,
+            difficultyName: "!LOC:Silver",
             goForKill: true,
             microType: 2,
             mandatoryMinions: 0,
@@ -386,6 +391,7 @@ if (!gwaioSetupLoaded) {
           {
             // Gold
             customDifficulty: false,
+            difficultyName: "!LOC:Gold",
             goForKill: true,
             microType: 2,
             mandatoryMinions: 0,
@@ -414,6 +420,7 @@ if (!gwaioSetupLoaded) {
           {
             // Platinum
             customDifficulty: false,
+            difficultyName: "!LOC:Platinum",
             goForKill: true,
             microType: 2,
             mandatoryMinions: 0,
@@ -442,6 +449,7 @@ if (!gwaioSetupLoaded) {
           {
             // Diamond
             customDifficulty: false,
+            difficultyName: "!LOC:Diamond",
             goForKill: true,
             microType: 2,
             mandatoryMinions: 1,
@@ -470,6 +478,7 @@ if (!gwaioSetupLoaded) {
           {
             // Uber
             customDifficulty: false,
+            difficultyName: "!LOC:Uber",
             goForKill: true,
             microType: 2,
             mandatoryMinions: -1,
@@ -513,6 +522,9 @@ if (!gwaioSetupLoaded) {
               .customDifficulty
           ) {
             model.gwaioDifficultySettings.customDifficulty(false);
+            model.gwaioDifficultySettings.difficultyName(
+              difficultyInfo[model.newGameDifficultyIndex() || 0].difficultyName
+            );
             model.gwaioDifficultySettings.goForKill(
               difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
             );
@@ -1195,8 +1207,29 @@ if (!gwaioSetupLoaded) {
               }
             });
 
+            // Hacky way to store war information
+            var origin = game.galaxy().stars()[game.galaxy().origin()];
+            var galaxySizes = [
+              "!LOC:Small",
+              "!LOC:Medium",
+              "!LOC:Large",
+              "!LOC:Epic",
+              "!LOC:Uber",
+              "!LOC:Vast",
+              "!LOC:Gigantic",
+              "!LOC:Ridiculous",
+              "!LOC:Marathon",
+            ];
+            origin.system().gwaio = {};
+            origin.system().gwaio.version = "#.##.#";
+            origin.system().gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
+            origin.system().gwaio.galaxySize =
+              galaxySizes[model.newGameSizeIndex()];
+            origin.system().gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
+            origin.system().gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
+            origin.system().gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
+
             if (model.creditsMode()) {
-              var origin = game.galaxy().stars()[game.galaxy().origin()];
               origin.system().name = GWCredits.startSystem.name;
               origin.system().description = GWCredits.startSystem.description;
             }

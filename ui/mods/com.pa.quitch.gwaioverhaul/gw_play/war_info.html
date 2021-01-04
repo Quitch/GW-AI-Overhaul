@@ -1,0 +1,62 @@
+<div
+  id="war-detail"
+  class="attendmouse"
+  data-bind="visible: !$root.showSystemCard() && !$root.hidingUI()"
+  style="display: none"
+>
+  <div class="war_info">
+    <h2><loc>Galactic War Overhaul</loc></h2>
+    <!-- ko if: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio -->
+    <div class="table">
+      <div class="tablebody">
+        <div class="tr">
+          <div class="td"><loc>Version:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.version"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Difficulty:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.difficulty"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Size:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.galaxySize"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Faction Scaling:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.factionScaling"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Easier Start:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.easierStart"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Tough Comms:</loc></div>
+          <div
+            class="data"
+            data-bind="text: model.game().galaxy().stars()[model.game().galaxy().origin()].system().gwaio.tougherCommanders"
+          ></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Hardcore:</loc></div>
+          <div class="data" data-bind="text: model.game().hardcore()"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
+  </div>
+</div>
