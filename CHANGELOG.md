@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Information panel detailing the current war's settings
+
 ## v4.12.1 - 2020-01-04
 
 ### Changed
