@@ -22,13 +22,15 @@ define([
     },
     deal: function (_, __, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone.json"))
+      if (
+        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone/drone.json")
+      )
         if (
           (gwaioFunctions.hasUnit(
             "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
           ) &&
             gwaioFunctions.hasUnit(
-              "/pa/units/sea/drone_carrier/carrier.json"
+              "/pa/units/sea/drone_carrier/carrier/carrier.json"
             )) ||
           inventory.hasCard("gwaio_upgrade_omega") ||
           inventory.hasCard("gwaio_upgrade_wyrm")
@@ -40,7 +42,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/sea/drone_carrier/drone.json",
+          file: "/pa/units/sea/drone_carrier/drone/drone.json",
           path: "passive_health_regen",
           op: "multiply",
           value: 0.5,

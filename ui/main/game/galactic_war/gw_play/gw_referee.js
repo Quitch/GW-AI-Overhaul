@@ -161,10 +161,11 @@ define(["shared/gw_common"], function (GW) {
       "on_player_planet",
       "no_restriction",
     ];
+    var playerName = ko.observable().extend({ session: "displayName" });
 
     // Setup the player
     armies.push({
-      slots: [{ name: "Player" }],
+      slots: [{ name: playerName() || "Player" }],
       color: playerColor,
       econ_rate: 1,
       spec_tag: ".player",

@@ -26,8 +26,10 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
         ) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/carrier.json") &&
-        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/sea/drone_carrier/carrier/carrier.json"
+        ) &&
+        gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone/drone.json")
       )
         chance = 35;
 
@@ -36,7 +38,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/sea/drone_carrier/carrier_tool_weapon.json",
+          file: "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
           path: "ammo_capacity",
           op: "multiply",
           value: 2,

@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v4.12.1 - 2020-01-04
+
+### Changed
+
+- The player's name is displayed on the player list in place of "Player"
+
+### Fixed
+
+- Omega Upgrade Tech card never being dealt
+- Squall Upgrade Tech card never being dealt
+- Typhoon Upgrade Tech card never being dealt
+- Advanced Laser Defense Tower Upgrade Tech card never being dealt
+
 ## v4.12.0 - 2021-01-01
 
 ### Changed
