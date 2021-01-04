@@ -17,6 +17,7 @@
   color: white;
   display: table-cell;
   padding: 1px 0px;
+  vertical-align: bottom;
 }
 
 .section_of_foreign_intelligence .inline {

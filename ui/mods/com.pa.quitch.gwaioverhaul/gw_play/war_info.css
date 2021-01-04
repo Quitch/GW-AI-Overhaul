@@ -25,6 +25,7 @@
   color: white;
   display: table-cell;
   padding: 1px 0px;
+  vertical-align: bottom;
 }
 
 .war_info .table {
