@@ -1,7 +1,7 @@
 define({
-  hasUnit: function (id) {
+  hasUnit: function (path) {
     return _.some(model.game().inventory().units(), function (unit) {
-      return id === unit;
+      return path === unit;
     });
   },
 });
