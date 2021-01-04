@@ -8,7 +8,10 @@
 
 ### Fixed
 
-- Three upgrade cards never appearing due to invalid conditions
+- Omega Upgrade Tech card never being dealt
+- Squall Upgrade Tech card never being dealt
+- Typhoon Upgrade Tech card never being dealt
+- Advanced Laser Defense Tower Upgrade Tech card never being dealt
 
 ## v4.12.0 - 2021-01-01
 
