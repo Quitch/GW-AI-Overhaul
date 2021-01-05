@@ -6,19 +6,20 @@ if (!gwaioWarInfoPanelLoaded) {
   function gwaioWarInfoPanel() {
     try {
       if (!model.game().isTutorial()) {
-        var stars = model.game().galaxy().stars();
-        var origin = model.game().galaxy().origin();
-        if (stars[origin].system().gwaio) {
-          model.gwaioVersion = loc(stars[origin].system().gwaio.version);
-          model.gwaioDifficulty = loc(stars[origin].system().gwaio.difficulty);
-          model.gwaioSize = loc(stars[origin].system().gwaio.galaxySize);
-          if (stars[origin].system().gwaio.factionScaling === true)
+        var origin = model.game().galaxy().stars()[
+          model.game().galaxy().origin()
+        ];
+        if (origin.system().gwaio) {
+          model.gwaioVersion = loc(origin.system().gwaio.version);
+          model.gwaioDifficulty = loc(origin.system().gwaio.difficulty);
+          model.gwaioSize = loc(origin.system().gwaio.galaxySize);
+          if (origin.system().gwaio.factionScaling === true)
             model.gwaioFactionScaling = loc("!LOC:Enabled");
           else model.gwaioFactionScaling = loc("!LOC:Disabled");
-          if (stars[origin].system().gwaio.easierStart === true)
+          if (origin.system().gwaio.easierStart === true)
             model.gwaioEasierStart = loc("!LOC:Enabled");
           else model.gwaioEasierStart = loc("!LOC:Disabled");
-          if (stars[origin].system().gwaio.tougherCommanders === true)
+          if (origin.system().gwaio.tougherCommanders === true)
             model.gwaioTougherCommanders = loc("!LOC:Enabled");
           else model.gwaioTougherCommanders = loc("!LOC:Disabled");
         } else {
