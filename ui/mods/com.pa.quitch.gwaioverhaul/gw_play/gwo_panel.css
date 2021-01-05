@@ -1,0 +1,43 @@
+#gwo-panel {
+  width: 280px;
+  text-align: left;
+  background: rgba(11, 26, 31, 0.9);
+  padding: 0px 0px 0px 9px;
+  box-shadow: 0px 0px 100px rgb(0, 0, 0);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  float: right;
+  margin: 10px;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+.gwo_info {
+  color: #88dbff;
+}
+
+.gwo_info h3 {
+  color: white;
+}
+
+.gwo_info .data {
+  font-weight: bold;
+  color: white;
+  display: table-cell;
+  padding: 1px 0px;
+  vertical-align: bottom;
+}
+
+.gwo_info .table {
+  display: table;
+  table-layout: auto;
+}
+.gwo_info .tablebody {
+  display: table-row-group;
+}
+.gwo_info .tr {
+  display: table-row;
+}
+.gwo_info .td {
+  display: table-cell;
+}

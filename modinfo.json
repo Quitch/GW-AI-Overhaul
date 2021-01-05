@@ -4,9 +4,9 @@
   "display_name": "Galactic War Overhaul",
   "description": "Make Galactic War both more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and even more besides. Start a new war to enjoy all the new features and check out the new war tooltips for more information and difficulty recommendations.",
   "author": "Quitch",
-  "version": "4.12.1",
+  "version": "4.13.0",
   "build": "115280",
-  "date": "2021/01/04",
+  "date": "2021/01/05",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-ai-overhaul.72360/",
   "category": [
@@ -27,9 +27,10 @@
   "scenes": {
     "gw_start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"],
     "gw_play": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"

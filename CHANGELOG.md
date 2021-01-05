@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v4.13.0 - 2020-01-05
+
+### Added
+
+- Information panel detailing the current war's settings
+
+### Changed
+
+- Vertical padding added to intelligence data
+
+### Fixed
+
+- Align table data to colon where wrapping has occurred
+
 ## v4.12.1 - 2020-01-04
 
 ### Changed

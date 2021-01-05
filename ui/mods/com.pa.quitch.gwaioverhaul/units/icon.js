@@ -1,12 +1,15 @@
-var galacticWarOverhaulLoaded;
+var gwaioStrategicIconsLoaded;
 
-if (!galacticWarOverhaulLoaded) {
-  galacticWarOverhaulLoaded = true;
+if (!gwaioStrategicIconsLoaded) {
+  gwaioStrategicIconsLoaded = true;
 
-  try {
-    model.strategicIcons.push("bot_aa");
-  } catch (e) {
-    console.error(e);
-    console.error(JSON.stringify(e));
+  function gwaioStrategicIcons() {
+    try {
+      model.strategicIcons.push("bot_aa");
+    } catch (e) {
+      console.error(e);
+      console.error(JSON.stringify(e));
+    }
   }
+  gwaioStrategicIcons();
 }
