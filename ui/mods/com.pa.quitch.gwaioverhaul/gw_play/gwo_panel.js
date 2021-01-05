@@ -5,9 +5,9 @@ if (!gwaioWarInfoPanelLoaded) {
 
   function gwaioWarInfoPanel() {
     try {
-      var stars = model.game().galaxy().stars();
-      var origin = model.game().galaxy().origin();
       if (!model.game().isTutorial()) {
+        var stars = model.game().galaxy().stars();
+        var origin = model.game().galaxy().origin();
         if (stars[origin].system().gwaio) {
           model.gwaioVersion = loc(stars[origin].system().gwaio.version);
           model.gwaioDifficulty = loc(stars[origin].system().gwaio.difficulty);
