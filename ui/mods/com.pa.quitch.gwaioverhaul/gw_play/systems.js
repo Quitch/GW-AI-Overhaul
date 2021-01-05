@@ -29,7 +29,7 @@ if (!gwaioSystemChangesLoaded) {
           });
         });
 
-        // Everything from this point is in service of changing the extractor function to prioritise system information
+        // Everything from this point on is in service of changing extractor() to use system names not AI names
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
@@ -127,7 +127,7 @@ if (!gwaioSystemChangesLoaded) {
               var system = self.system();
               if (system) {
                 var ai = system.star.ai();
-                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - prioritise system information over AI
+                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - use system information before AI information
               } else {
                 return "";
               }
