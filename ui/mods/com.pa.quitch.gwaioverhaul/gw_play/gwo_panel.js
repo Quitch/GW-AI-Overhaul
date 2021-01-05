@@ -24,7 +24,6 @@ if (!gwaioWarInfoPanelLoaded) {
         } else {
           model.gwaioVersion = "Pre-4.13.0";
           model.gwaioDifficulty = loc("!LOC:Unknown");
-          model.gwaioSize = "";
           model.gwaioSize = model.game().galaxy().stars().length;
           model.gwaioFactionScaling = loc("!LOC:Unknown");
           model.gwaioEasierStart = loc("!LOC:Unknown");
