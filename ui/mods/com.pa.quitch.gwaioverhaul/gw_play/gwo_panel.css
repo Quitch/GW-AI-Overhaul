@@ -1,4 +1,4 @@
-#war-detail {
+#gwo-panel {
   width: 280px;
   text-align: left;
   background: rgba(11, 26, 31, 0.9);
@@ -12,15 +12,15 @@
   overflow-y: auto;
 }
 
-.war_info {
+.gwo_info {
   color: #88dbff;
 }
 
-.war_info h3 {
+.gwo_info h3 {
   color: white;
 }
 
-.war_info .data {
+.gwo_info .data {
   font-weight: bold;
   color: white;
   display: table-cell;
@@ -28,16 +28,16 @@
   vertical-align: bottom;
 }
 
-.war_info .table {
+.gwo_info .table {
   display: table;
   table-layout: auto;
 }
-.war_info .tablebody {
+.gwo_info .tablebody {
   display: table-row-group;
 }
-.war_info .tr {
+.gwo_info .tr {
   display: table-row;
 }
-.war_info .td {
+.gwo_info .td {
   display: table-cell;
 }

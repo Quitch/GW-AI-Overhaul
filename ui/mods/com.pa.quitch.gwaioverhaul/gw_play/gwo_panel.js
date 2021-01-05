@@ -38,10 +38,10 @@ if (!gwaioWarInfoPanelLoaded) {
 
         $("#header").append(
           loadHtml(
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/war_info.html"
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html"
           )
         );
-        locTree($("#war-detail"));
+        locTree($("#gwo-panel"));
       }
     } catch (e) {
       console.error(e);
