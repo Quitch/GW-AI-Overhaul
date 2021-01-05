@@ -6,15 +6,11 @@
 >
   <div class="gwo_info">
     <h2><loc>Galactic War Overhaul</loc></h2>
-    <!-- ko if: $root.game().galaxy().stars()[$root.game().galaxy().origin()].system().gwaio -->
     <div class="table">
       <div class="tablebody">
         <div class="tr">
           <div class="td"><loc>Version:</loc></div>
-          <div
-            class="data"
-            data-bind="text: $root.game().galaxy().stars()[$root.game().galaxy().origin()].system().gwaio.version"
-          ></div>
+          <div class="data" data-bind="text: $root.gwaioVersion"></div>
         </div>
         <div class="tr">
           <div class="td"><loc>Difficulty:</loc></div>
@@ -46,6 +42,5 @@
         </div>
       </div>
     </div>
-    <!-- /ko -->
   </div>
 </div>

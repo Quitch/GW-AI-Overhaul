@@ -5,33 +5,31 @@ if (!gwaioWarInfoPanelLoaded) {
 
   function gwaioWarInfoPanel() {
     try {
+      var stars = model.game().galaxy().stars();
+      var origin = model.game().galaxy().origin();
       if (!model.game().isTutorial()) {
-        model.gwaioDifficulty = loc(
-          model.game().galaxy().stars()[model.game().galaxy().origin()].system()
-            .gwaio.difficulty
-        );
-        model.gwaioSize = loc(
-          model.game().galaxy().stars()[model.game().galaxy().origin()].system()
-            .gwaio.galaxySize
-        );
-        if (
-          model.game().galaxy().stars()[model.game().galaxy().origin()].system()
-            .gwaio.factionScaling === true
-        )
-          model.gwaioFactionScaling = loc("!LOC:Enabled");
-        else model.gwaioFactionScaling = loc("!LOC:Disabled");
-        if (
-          model.game().galaxy().stars()[model.game().galaxy().origin()].system()
-            .gwaio.easierStart === true
-        )
-          model.gwaioEasierStart = loc("!LOC:Enabled");
-        else model.gwaioEasierStart = loc("!LOC:Disabled");
-        if (
-          model.game().galaxy().stars()[model.game().galaxy().origin()].system()
-            .gwaio.tougherCommanders === true
-        )
-          model.gwaioTougherCommanders = loc("!LOC:Enabled");
-        else model.gwaioTougherCommanders = loc("!LOC:Disabled");
+        if (stars[origin].system().gwaio) {
+          model.gwaioVersion = loc(stars[origin].system().gwaio.version);
+          model.gwaioDifficulty = loc(stars[origin].system().gwaio.difficulty);
+          model.gwaioSize = loc(stars[origin].system().gwaio.galaxySize);
+          if (stars[origin].system().gwaio.factionScaling === true)
+            model.gwaioFactionScaling = loc("!LOC:Enabled");
+          else model.gwaioFactionScaling = loc("!LOC:Disabled");
+          if (stars[origin].system().gwaio.easierStart === true)
+            model.gwaioEasierStart = loc("!LOC:Enabled");
+          else model.gwaioEasierStart = loc("!LOC:Disabled");
+          if (stars[origin].system().gwaio.tougherCommanders === true)
+            model.gwaioTougherCommanders = loc("!LOC:Enabled");
+          else model.gwaioTougherCommanders = loc("!LOC:Disabled");
+        } else {
+          model.gwaioVersion = "Pre-4.13.0";
+          model.gwaioDifficulty = loc("!LOC:Unknown");
+          model.gwaioSize = "";
+          model.gwaioSize = model.game().galaxy().stars().length;
+          model.gwaioFactionScaling = loc("!LOC:Unknown");
+          model.gwaioEasierStart = loc("!LOC:Unknown");
+          model.gwaioTougherCommanders = loc("!LOC:Unknown");
+        }
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");
         else model.gwaioHardcore = loc("!LOC:Disabled");
