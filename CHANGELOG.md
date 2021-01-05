@@ -9,7 +9,6 @@
 ### Changed
 
 - Vertical padding added to intelligence data
-- Code aligned to recommended exception handling for PA
 
 ### Fixed
 
