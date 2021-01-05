@@ -29,7 +29,6 @@
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/colour.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/war_info.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/war_info.js",

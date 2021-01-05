@@ -1,12 +1,35 @@
-var gwaioSystemInformationLoaded;
+var gwaioSystemChangesLoaded;
 
-if (!gwaioSystemInformationLoaded) {
-  gwaioSystemInformationLoaded = true;
+if (!gwaioSystemChangesLoaded) {
+  gwaioSystemChangesLoaded = true;
 
-  function gwaioSystemInformation() {
+  function gwaioSystemChanges() {
     try {
-      // All of this is in service of changing the extractor function to prioritise system information
       if (!model.game().isTutorial()) {
+        requireGW(["shared/gw_factions"], function (GWFactions) {
+          _.forEach(model.galaxy.systems(), function (system) {
+            ko.computed(function () {
+              var ai = system.star.ai();
+              if (!ai) return;
+              else if (ai.treasurePlanet === true)
+                normalizedColor = [255, 255, 255];
+              else {
+                var faction = GWFactions[ai.faction];
+                // Ensures we assign faction colour, not minion colour, to each system
+                var normalizedColor = _.map(faction.color[0], function (c) {
+                  return c / 255;
+                });
+              }
+              system.ownerColor(normalizedColor.concat(3));
+              // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
+              system.connected();
+              model.cheats.noFog();
+              system.star.hasCard();
+            });
+          });
+        });
+
+        // Everything from this point is in service of changing the extractor function to prioritise system information
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
@@ -104,7 +127,7 @@ if (!gwaioSystemInformationLoaded) {
               var system = self.system();
               if (system) {
                 var ai = system.star.ai();
-                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - prioritise system information
+                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - prioritise system information over AI
               } else {
                 return "";
               }
@@ -204,5 +227,5 @@ if (!gwaioSystemInformationLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioSystemInformation();
+  gwaioSystemChanges();
 }
