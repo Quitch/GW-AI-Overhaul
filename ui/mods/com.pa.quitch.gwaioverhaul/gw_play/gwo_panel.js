@@ -22,7 +22,7 @@ if (!gwaioWarInfoPanelLoaded) {
             model.gwaioTougherCommanders = loc("!LOC:Enabled");
           else model.gwaioTougherCommanders = loc("!LOC:Disabled");
         } else {
-          model.gwaioVersion = "Pre-4.13.0";
+          model.gwaioVersion = loc("!LOC:Unknown");
           model.gwaioDifficulty = loc("!LOC:Unknown");
           model.gwaioSize = model.game().galaxy().stars().length;
           model.gwaioFactionScaling = loc("!LOC:Unknown");
