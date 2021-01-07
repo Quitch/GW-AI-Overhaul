@@ -36,9 +36,27 @@ define([
       var mods = [
         {
           file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
-          path: "base_spec",
+          path: "ammo_type",
           op: "replace",
-          value: "/pa/ammo/base_beam/base_beam.json",
+          value: "AMMO_Beam",
+        },
+        {
+          file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
+          path: "audio_loop",
+          op: "replace",
+          value: "/SE/Impacts/laser_blast",
+        },
+        {
+          file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
+          path: "collision_audio",
+          op: "replace",
+          value: "/SE/Impacts/laser_blast",
+        },
+        {
+          file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
+          path: "recon.observable.ignore_radar",
+          op: "replace",
+          value: true,
         },
         {
           file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
