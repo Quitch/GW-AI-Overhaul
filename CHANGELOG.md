@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Gil-E Upgrade Tech causing Gil-E to deal no damage
+
 ## v4.13.0 - 2020-01-05
 
 ### Added
