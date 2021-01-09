@@ -510,6 +510,7 @@ if (!gwaioSetupLoaded) {
             {
               // Custom
               customDifficulty: true,
+              difficultyName: "!LOC:Custom",
             },
           ];
 

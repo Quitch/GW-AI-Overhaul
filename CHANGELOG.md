@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Custom difficulty recognised by the Galactic War Overhaul information panel
+
 ## v4.13.1 - 2020-01-07
 
 ### Fixed
