@@ -130,9 +130,9 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 1. Add the following to the gw_start scene:
 
    ```javascript
-   if (model.gwaioNewStartCards) model.gwaioNewStartCards = [];
-   if (model.gwaioAllStartCards) model.gwaioAllStartCards = [];
-   if (model.gwaioTreasureCards) model.gwaioTreasureCards = [];
+   if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
+   if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
+   if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
    model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
    model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
    model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
