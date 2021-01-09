@@ -516,6 +516,9 @@ if (!gwaioSetupLoaded) {
 
           // ensures custom difficulty shows the previously selected difficulty's values
           ko.computed(function () {
+            model.gwaioDifficultySettings.difficultyName(
+              difficultyInfo[model.newGameDifficultyIndex() || 0].difficultyName
+            );
             if (
               difficultyInfo[model.newGameDifficultyIndex() || 0]
                 .customDifficulty
@@ -527,10 +530,6 @@ if (!gwaioSetupLoaded) {
                 .customDifficulty
             ) {
               model.gwaioDifficultySettings.customDifficulty(false);
-              model.gwaioDifficultySettings.difficultyName(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .difficultyName
-              );
               model.gwaioDifficultySettings.goForKill(
                 difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
               );
