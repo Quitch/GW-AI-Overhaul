@@ -5,6 +5,7 @@
 ### Fixed
 
 - Custom difficulty recognised by the Galactic War Overhaul information panel
+- Nomad Commander's orbital structures can now move
 
 ## v4.13.1 - 2020-01-07
 
