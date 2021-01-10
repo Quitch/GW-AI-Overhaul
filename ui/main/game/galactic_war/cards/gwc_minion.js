@@ -49,6 +49,8 @@ define([
         inventory.hasCard("gwaio_start_rapid")
       )
         chance = 0;
+      else if (inventory.minions)
+        chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
       return {
         params: {
