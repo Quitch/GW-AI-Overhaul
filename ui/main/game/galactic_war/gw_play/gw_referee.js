@@ -49,11 +49,6 @@ define(["shared/gw_common"], function (GW) {
         aiMapGet,
         aiX1MapGet
       ) {
-        var units = parse(unitsGet[0]).units;
-
-        var aiUnitMap = parse(aiMapGet[0]);
-        var aiX1UnitMap = parse(aiX1MapGet[0]);
-
         /* Replace part of gw_spec.js to setup ops.remove() */
         var flattenBaseSpecs = function (spec, specs, tag) {
           if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
@@ -189,6 +184,10 @@ define(["shared/gw_common"], function (GW) {
           _.forEach(mods, applyMod);
         };
         /* end of gw_spec.js replacement */
+
+        var units = parse(unitsGet[0]).units;
+        var aiUnitMap = parse(aiMapGet[0]);
+        var aiX1UnitMap = parse(aiX1MapGet[0]);
 
         _.times(aiFactionCount, function (n) {
           var currentCount = n;
