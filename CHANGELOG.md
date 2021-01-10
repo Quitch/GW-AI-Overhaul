@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Deep Space Radar and Umbrella using wrong navigation settings under Nomad Commander loadout
+- Nomad Commander loadout can no longer move Metal Extractors
+
 ## v4.13.2 - 2020-01-10
 
 ### Fixed
