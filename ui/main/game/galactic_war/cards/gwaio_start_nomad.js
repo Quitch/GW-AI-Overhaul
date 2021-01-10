@@ -133,6 +133,28 @@ define([
               }
             );
           });
+          var groundStructures = _.filter(allStructures, function (structure) {
+            return structure.indexOf("/pa/units/orbital/") !== 1;
+          });
+          groundStructures.forEach(function (unit) {
+            mods.push({
+              file: unit,
+              path: "navigation.type",
+              op: "replace",
+              value: "hover",
+            });
+          });
+          var orbitalStructures = _.filter(allStructures, function (structure) {
+            return _.includes(structure, "/pa/units/orbital/");
+          });
+          orbitalStructures.forEach(function (unit) {
+            mods.push({
+              file: unit,
+              path: "navigation.type",
+              op: "replace",
+              value: "orbital",
+            });
+          });
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

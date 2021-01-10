@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v4.13.2 - 2020-01-10
+
+### Fixed
+
+- Custom difficulty recognised by the Galactic War Overhaul information panel
+- Nomad Commander's orbital structures can now move
+- Nomad Commander's structures now hover
+- Single Laser Defense Tower Upgrade will work correctly with the Nomad Commander loadout
+
 ## v4.13.1 - 2020-01-07
 
 ### Fixed
