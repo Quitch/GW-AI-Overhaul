@@ -166,7 +166,7 @@ define([
               {
                 file: unit,
                 path: "unit_types",
-                op: "eval",
+                op: "push",
                 value: "UNITTYPE_Mobile",
               }
             );
