@@ -55,6 +55,24 @@ define(["shared/gw_common"], function (GW) {
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
         /* Replace part of gw_spec.js to setup ops.remove() */
+        var flattenBaseSpecs = function (spec, specs, tag) {
+          if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
+            return spec;
+
+          var base = specs[spec.base_spec];
+          if (!base) {
+            base = specs[spec.base_spec + tag];
+            if (!base) return spec;
+          }
+
+          spec = _.cloneDeep(spec);
+          delete spec.base_spec;
+
+          base = flattenBaseSpecs(base, specs, tag);
+
+          return _.merge({}, base, spec);
+        };
+
         var modSpecs = function (specs, mods, specTag) {
           var load = function (specId) {
             taggedId = specId;
@@ -65,7 +83,7 @@ define(["shared/gw_common"], function (GW) {
             }
             var result = specs[taggedId];
             if (result)
-              specs[taggedId] = result = GW.specs.flattenBaseSpecs(
+              specs[taggedId] = result = flattenBaseSpecs(
                 result,
                 specs,
                 specTag
