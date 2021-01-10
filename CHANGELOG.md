@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Always offer Additional Data Bank as a fourth card when the inventory is full
+
 ### Fixed
 
 - Deep Space Radar and Umbrella using wrong navigation settings under Nomad Commander loadout

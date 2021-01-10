@@ -411,9 +411,13 @@ if (!gwaioCardsLoaded) {
                 model.game().currentStar()
               ];
 
+              if (model.game().inventory().handIsFull())
+                var numCardsToOffer = 4;
+              else numCardsToOffer = 3;
+
               var dealStarCards = chooseCards({
                 inventory: model.game().inventory(),
-                count: 3,
+                count: numCardsToOffer,
                 star: star,
                 galaxy: model.game().galaxy(),
               }).then(function (result) {
