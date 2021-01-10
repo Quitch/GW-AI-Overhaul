@@ -2,7 +2,7 @@
 
 ## v4.14.0 - 20201-01-10
 
-### Change
+### Changed
 
 - Always offer Additional Data Bank as a fourth card when the inventory is full
 - Each Sub Commander in your tech banks reduces the chance of finding another
