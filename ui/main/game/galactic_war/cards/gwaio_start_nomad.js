@@ -134,19 +134,53 @@ define([
             );
           });
           var groundStructures = _.filter(allStructures, function (structure) {
-            return structure.indexOf("/pa/units/orbital/") !== 1;
+            return (
+              !_.includes(structure, "defense_satellite") &&
+              !_.includes(structure, "mining_platform")
+            );
           });
           groundStructures.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "navigation.type",
-              op: "replace",
-              value: "hover",
-            });
+            mods.push(
+              {
+                file: unit,
+                path: "navigation.type",
+                op: "replace",
+                value: "hover",
+              },
+              {
+                file: unit,
+                path: "navigation.park_stamp",
+                op: "replace",
+                value: {
+                  shape: "sphere",
+                  cost: 10,
+                  type_data: [{ move_type: "hover", stamp_type: "simple" }],
+                },
+              },
+              {
+                file: unit,
+                path: "physics",
+                op: "replace",
+                value: { radius: 1, air_friction: 1.0 },
+              },
+              {
+                file: unit,
+                path: "wreckage",
+                op: "replace",
+                value: { remove_ground_cost_stamp: true, collision: ["none"] },
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "eval",
+                value: "UNITTYPE_Mobile",
+              }
+            );
           });
-          var orbitalStructures = _.filter(allStructures, function (structure) {
-            return _.includes(structure, "/pa/units/orbital/");
-          });
+          var orbitalStructures = [
+            "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            "/pa/units/orbital/mining_platform/mining_platform.json",
+          ];
           orbitalStructures.forEach(function (unit) {
             mods.push({
               file: unit,
@@ -154,6 +188,32 @@ define([
               op: "replace",
               value: "orbital",
             });
+          });
+          mods.push({
+            file: "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            path: "unit_types",
+            op: "replace",
+            value: [
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Orbital",
+              "UNITTYPE_Defense",
+              "UNITTYPE_OrbitalDefense",
+              "UNITTYPE_Advanced",
+              "UNITTYPE_FabOrbBuild",
+            ],
+          });
+          mods.push({
+            file: "/pa/units/orbital/mining_platform/mining_platform.json",
+            path: "unit_types",
+            op: "replace",
+            value: [
+              "UNITTYPE_Orbital",
+              "UNITTYPE_FabOrbBuild",
+              "UNITTYPE_EnergyProduction",
+              "UNITTYPE_MetalProduction",
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Economy",
+            ],
           });
           inventory.addMods(mods);
         } else {
