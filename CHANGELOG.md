@@ -6,11 +6,11 @@
 
 - Always offer Additional Data Bank as a fourth card when the inventory is full
 - Each Sub Commander in your tech banks reduces the chance of finding another
+- Nomad Commander loadout can no longer move metal extractors
 
 ### Fixed
 
 - Deep Space Radar and Umbrella using wrong navigation settings under Nomad Commander loadout
-- Nomad Commander loadout can no longer move metal extractors
 - Nomad Commander buildings blocking the location they were built at even after moving elsewhere
 - Structures overlapping when executing an attack move
 
