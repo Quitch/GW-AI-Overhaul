@@ -127,7 +127,7 @@ define([
                 file: unit,
                 path: "command_caps",
                 op: "push",
-                value: ["ORDER_Use"],
+                value: "ORDER_Use",
               }
             );
           });
