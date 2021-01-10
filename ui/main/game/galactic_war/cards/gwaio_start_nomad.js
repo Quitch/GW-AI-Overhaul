@@ -47,7 +47,6 @@ define([
             "/pa/units/land/land_mine/land_mine.json",
             "/pa/units/land/laser_defense_single/laser_defense_single.json",
             "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/metal_extractor/metal_extractor.json",
             "/pa/units/land/metal_storage/metal_storage.json",
             "/pa/units/land/radar/radar.json",
             "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
@@ -56,7 +55,6 @@ define([
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/orbital/ion_defense/ion_defense.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
@@ -129,31 +127,63 @@ define([
                 file: unit,
                 path: "command_caps",
                 op: "push",
-                value: ["ORDER_Use"],
+                value: "ORDER_Use",
               }
             );
           });
           var groundStructures = _.filter(allStructures, function (structure) {
-            return structure.indexOf("/pa/units/orbital/") !== 1;
+            return (
+              !_.includes(structure, "defense_satellite") &&
+              !_.includes(structure, "mining_platform")
+            );
           });
           groundStructures.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "navigation.type",
-              op: "replace",
-              value: "hover",
-            });
+            mods.push(
+              {
+                file: unit,
+                path: "navigation.type",
+                op: "replace",
+                value: "hover",
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "remove",
+                value: "UNITTYPE_Structure",
+              },
+              {
+                file: unit,
+                path: "physics",
+                op: "remove",
+                value: { radius: 10, air_friction: 1.0 },
+              }
+            );
           });
-          var orbitalStructures = _.filter(allStructures, function (structure) {
-            return _.includes(structure, "/pa/units/orbital/");
-          });
+          var orbitalStructures = [
+            "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            "/pa/units/orbital/mining_platform/mining_platform.json",
+          ];
           orbitalStructures.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "navigation.type",
-              op: "replace",
-              value: "orbital",
-            });
+            mods.push(
+              {
+                file: unit,
+                path: "navigation.type",
+                op: "replace",
+                value: "orbital",
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "remove",
+                value: "UNITTYPE_Structure",
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_Mobile",
+              }
+            );
           });
           inventory.addMods(mods);
         } else {
