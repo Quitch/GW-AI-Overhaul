@@ -54,7 +54,7 @@ define(["shared/gw_common"], function (GW) {
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
 
-        /* Replace part of gw_spec.js */
+        /* Replace part of gw_spec.js to setup ops.remove() */
         var flattenBaseSpecs = function (spec, specs, tag) {
           if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
             return spec;
@@ -121,6 +121,7 @@ define(["shared/gw_common"], function (GW) {
             tag: function (attribute) {
               return attribute + specTag;
             },
+            // New op to allow removal of an item from an array
             remove: function (attribute, value) {
               return _.filter(attribute, function (entry) {
                 return entry !== value;
