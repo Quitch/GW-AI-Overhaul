@@ -339,6 +339,7 @@ define(["shared/gw_common"], function (GW) {
     ai.personality.adv_eco_mod_alone =
       ai.personality.adv_eco_mod_alone * ai.econ_rate;
     if (ai.landing_policy)
+      // support for old shared armies implementation
       _.times(ai.landing_policy.length, function () {
         slotsArray.push({
           ai: true,
@@ -371,6 +372,7 @@ define(["shared/gw_common"], function (GW) {
       minion.personality.adv_eco_mod_alone =
         minion.personality.adv_eco_mod_alone * minion.econ_rate;
       if (minion.landing_policy)
+        // support for old shared armies implementation
         _.times(minion.landing_policy.length, function () {
           slotsArrayMinions.push({
             ai: true,
@@ -397,6 +399,7 @@ define(["shared/gw_common"], function (GW) {
         alliance_group: 2,
       });
     });
+
     // Setup Additional Factions
     var allianceGroup = 3;
     var foeCount = 1;
@@ -406,6 +409,7 @@ define(["shared/gw_common"], function (GW) {
       foe.personality.adv_eco_mod_alone =
         foe.personality.adv_eco_mod_alone * foe.econ_rate;
       if (foe.landing_policy)
+        // support for old shared armies implementation
         _.times(foe.landing_policy.length, function () {
           slotsArrayFoes.push({
             ai: true,
