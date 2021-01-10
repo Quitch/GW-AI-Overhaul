@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define({
   visible: _.constant(false), // Can't discard this card
   describe: _.constant("!LOC:Adds a new slot for another technology."),
