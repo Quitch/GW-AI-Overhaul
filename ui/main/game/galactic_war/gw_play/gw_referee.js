@@ -97,7 +97,7 @@ define(["shared/gw_common"], function (GW) {
             add: function (attribute, value) {
               return attribute !== undefined ? attribute + value : value;
             },
-            replace: function (attribute, value) {
+            replace: function (_, value) {
               return value;
             },
             merge: function (attribute, value) {
