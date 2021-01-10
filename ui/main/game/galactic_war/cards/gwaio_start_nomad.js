@@ -147,25 +147,15 @@ define([
               },
               {
                 file: unit,
-                path: "navigation.park_stamp",
-                op: "replace",
-                value: {
-                  shape: "sphere",
-                  cost: 10,
-                  type_data: [{ move_type: "hover", stamp_type: "simple" }],
-                },
-              },
-              {
-                file: unit,
-                path: "wreckage",
-                op: "replace",
-                value: { remove_ground_cost_stamp: true, collision: ["none"] },
-              },
-              {
-                file: unit,
                 path: "unit_types",
                 op: "remove",
                 value: "UNITTYPE_Structure",
+              },
+              {
+                file: unit,
+                path: "physics",
+                op: "remove",
+                value: { radius: 10, air_friction: 1.0 },
               }
             );
           });

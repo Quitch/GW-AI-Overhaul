@@ -11,6 +11,7 @@
 - Deep Space Radar and Umbrella using wrong navigation settings under Nomad Commander loadout
 - Nomad Commander loadout can no longer move Metal Extractors
 - Nomad Commander buildings blocking the location they were built even after moving elsewhere
+- Structures overlapping when executing an attack move
 
 ## v4.13.2 - 2020-01-10
 
