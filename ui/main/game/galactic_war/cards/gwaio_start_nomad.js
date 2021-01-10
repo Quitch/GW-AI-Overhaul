@@ -159,12 +159,6 @@ define([
               },
               {
                 file: unit,
-                path: "physics",
-                op: "replace",
-                value: { radius: 1, air_friction: 1.0 },
-              },
-              {
-                file: unit,
                 path: "wreckage",
                 op: "replace",
                 value: { remove_ground_cost_stamp: true, collision: ["none"] },
