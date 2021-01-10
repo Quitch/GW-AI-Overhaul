@@ -164,10 +164,8 @@ define([
               {
                 file: unit,
                 path: "unit_types",
-                op: "eval",
-                value: function () {
-                  return _.filter;
-                },
+                op: "remove",
+                value: "UNITTYPE_Structure",
               }
             );
           });
@@ -176,42 +174,27 @@ define([
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
           orbitalStructures.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "navigation.type",
-              op: "replace",
-              value: "orbital",
-            });
+            mods.push(
+              {
+                file: unit,
+                path: "navigation.type",
+                op: "replace",
+                value: "orbital",
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "remove",
+                value: "UNITTYPE_Structure",
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_Mobile",
+              }
+            );
           });
-          mods.push(
-            {
-              file:
-                "/pa/units/orbital/defense_satellite/defense_satellite.json",
-              path: "unit_types",
-              op: "replace",
-              value: [
-                "UNITTYPE_Mobile",
-                "UNITTYPE_Orbital",
-                "UNITTYPE_Defense",
-                "UNITTYPE_OrbitalDefense",
-                "UNITTYPE_Advanced",
-                "UNITTYPE_FabOrbBuild",
-              ],
-            },
-            {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
-              path: "unit_types",
-              op: "replace",
-              value: [
-                "UNITTYPE_Orbital",
-                "UNITTYPE_FabOrbBuild",
-                "UNITTYPE_EnergyProduction",
-                "UNITTYPE_MetalProduction",
-                "UNITTYPE_Mobile",
-                "UNITTYPE_Economy",
-              ],
-            }
-          );
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
