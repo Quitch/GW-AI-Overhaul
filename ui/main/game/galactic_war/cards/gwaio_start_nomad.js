@@ -133,12 +133,20 @@ define([
               }
             );
           });
-          var orbitalStructures = [
-            "/pa/units/orbital/ion_defense/ion_defense.json",
-            "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-          ];
+          var groundStructures = _.filter(allStructures, function (structure) {
+            return structure.indexOf("/pa/units/orbital/") !== 1;
+          });
+          groundStructures.forEach(function (unit) {
+            mods.push({
+              file: unit,
+              path: "navigation.type",
+              op: "replace",
+              value: "hover",
+            });
+          });
+          var orbitalStructures = _.filter(allStructures, function (structure) {
+            return _.includes(structure, "/pa/units/orbital/");
+          });
           orbitalStructures.forEach(function (unit) {
             mods.push({
               file: unit,

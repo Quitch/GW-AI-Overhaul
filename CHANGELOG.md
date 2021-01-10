@@ -6,6 +6,7 @@
 
 - Custom difficulty recognised by the Galactic War Overhaul information panel
 - Nomad Commander's orbital structures can now move
+- Nomad Commander's structures now hover
 
 ## v4.13.1 - 2020-01-07
 
