@@ -29,7 +29,7 @@ if (!gwaioSystemChangesLoaded) {
           });
         });
 
-        // Everything from this point on is in service of changing extractor() to use system names not AI names
+        /* extractor() change start */
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
@@ -221,6 +221,7 @@ if (!gwaioSystemChangesLoaded) {
             model.selection.star() === model.game().currentStar()
           );
         });
+        /* extractor() change end */
 
         requireGW(
           ["pages/gw_play/gw_referee", "shared/gw_common"],
