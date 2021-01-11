@@ -222,11 +222,11 @@ if (!gwaioSystemChangesLoaded) {
           );
         });
 
-        // call our own gw_referee implementation
         requireGW(
           ["pages/gw_play/gw_referee", "shared/gw_common"],
           function (GWReferee, GW) {
             GWReferee.hire = function (game) {
+              // call our own gw_referee implementation
               var ref = new gwaioReferee(game);
               return _.bind(generateGameFiles, ref)()
                 .then(_.bind(generateConfig, ref))
