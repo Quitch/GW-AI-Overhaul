@@ -65,7 +65,21 @@
     </div>
   </div>
   <div data-bind="visible: model.selection.system().star.ai()">
-    <h3><loc>System Faction</loc></h3>
+    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 0 -->
+    <h3><loc>Legonis Machina</loc></h3>
+    <!-- /ko -->
+    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 1 -->
+    <h3><loc>Foundation</loc></h3>
+    <!-- /ko -->
+    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 2 -->
+    <h3><loc>Synchronous</loc></h3>
+    <!-- /ko -->
+    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 3 -->
+    <h3><loc>Revenants</loc></h3>
+    <!-- /ko -->
+    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 4 -->
+    <h3><loc>Cluster</loc></h3>
+    <!-- /ko -->
   </div>
   <ul data-bind="foreach: $root.systemOwner">
     <li class="commander">
