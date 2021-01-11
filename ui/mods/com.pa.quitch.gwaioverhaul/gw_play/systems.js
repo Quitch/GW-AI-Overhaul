@@ -224,8 +224,8 @@ if (!gwaioSystemChangesLoaded) {
         /* extractor() change end */
 
         requireGW(
-          ["pages/gw_play/gw_referee", "shared/gw_common"],
-          function (GWReferee, GW) {
+          ["shared/gw_common", "pages/gw_play/gw_referee"],
+          function (GW, GWReferee) {
             GWReferee.hire = function (game) {
               // call our own gw_referee implementation
               var ref = new gwaioReferee(game);
