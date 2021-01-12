@@ -5,6 +5,7 @@
 ### Changed
 
 - Minor performance optimisations
+- Enemy Commanders displayed by faction in the intelligence panel
 
 ### Fixed
 
