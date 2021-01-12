@@ -95,12 +95,11 @@
       </div>
     </li>
   </ul>
-  <div
-    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().foes"
-  >
-    <h3><loc>Additional Factions</loc></h3>
-  </div>
+  <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().foes && !model.selection.system().star.ai().foes[0].faction -->
+  <h3><loc>Additional Factions</loc></h3>
+  <!-- /ko -->
   <ul data-bind="foreach: $root.ffaOpponents">
+    <h3><span data-bind="text: faction"></span></h3>
     <li class="commander">
       <div class="div_player_icon">
         <div
