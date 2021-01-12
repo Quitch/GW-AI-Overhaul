@@ -91,7 +91,11 @@ if (!gwaioCardsLoaded) {
             if (
               model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
               model.currentSystemCardList()[i].id() === "gwc_minion" ||
-              model.currentSystemCardList()[i].isLoadout() === true
+              // isLoadout() doesn't work on refresh for tooltips so do it the long-winded way
+              model.currentSystemCardList()[i].id().startsWith("gwc_start") ||
+              model.currentSystemCardList()[i].id().startsWith("gwaio_start") ||
+              model.currentSystemCardList()[i].id().startsWith("nem_start") ||
+              model.currentSystemCardList()[i].id().startsWith("tgw_start")
             )
               model.gwaioShowTechCardTooltip()[i] = false;
             else model.gwaioShowTechCardTooltip()[i] = true;

@@ -6,6 +6,10 @@
 
 - Minor performance optimisations
 
+### Fixed
+
+- Tooltips showing on a new loadout card if you refreshed the UI
+
 ## v4.14.0 - 2021-01-10
 
 ### Changed
