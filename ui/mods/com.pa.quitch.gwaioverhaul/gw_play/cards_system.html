@@ -10,7 +10,7 @@
   <!-- /ko -->
   <span
     class="info_tip"
-    data-bind="visible: $root.gwaioShowTechCardTooltip()[$index()], tooltip: $root.gwaioTechCardTooltip()[$index()]"
+    data-bind="visible: $root.gwaioShowTechCardTooltip()[$index()] && !$root.gwaioShowTechCardTooltip()[$index()].isLoadout(), tooltip: $root.gwaioTechCardTooltip()[$index()]"
     ><loc>Which Units?</loc></span
   >
   <div
