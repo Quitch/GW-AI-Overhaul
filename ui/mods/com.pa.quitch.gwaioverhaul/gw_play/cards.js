@@ -10,14 +10,14 @@ if (!gwaioCardsLoaded) {
           var self = this;
 
           self.params = ko.observable(params);
-          self.id = ko.computed(function () {
+          self.id = ko.pureComputed(function () {
             var p = self.params();
             return _.isObject(p) ? p.id : p;
           });
 
           self.visible = ko.observable(false);
           self.desc = ko.observable();
-          self.locDesc = ko.computed(function () {
+          self.locDesc = ko.pureComputed(function () {
             return loc(self.desc());
           });
           self.summary = ko.observable();
@@ -25,11 +25,11 @@ if (!gwaioCardsLoaded) {
           self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
           self.audio = ko.observable();
 
-          self.isEmpty = ko.computed(function () {
+          self.isEmpty = ko.pureComputed(function () {
             return !self.id();
           });
           // GWAIO - recognise the mod's loadouts as loadouts
-          self.isLoadout = ko.computed(function () {
+          self.isLoadout = ko.pureComputed(function () {
             return (
               self.id() &&
               (self.id().startsWith("gwc_start") ||
@@ -82,28 +82,6 @@ if (!gwaioCardsLoaded) {
             } else loadCard({}, data);
           });
         };
-
-        model.gwaioTechCardTooltip = ko.observableArray([]);
-        model.gwaioShowTechCardTooltip = ko.observableArray([]);
-
-        var showCardTooltip = function () {
-          _.forEach(model.currentSystemCardList(), function (_, i) {
-            if (
-              model.currentSystemCardList()[i].id() === "gwc_add_card_slot" ||
-              model.currentSystemCardList()[i].id() === "gwc_minion" ||
-              model.currentSystemCardList()[i].isLoadout() === true
-            )
-              model.gwaioShowTechCardTooltip()[i] = false;
-            else model.gwaioShowTechCardTooltip()[i] = true;
-          });
-        };
-
-        // Hide Which Unit? tooltips for cards which don't modify units
-        model.currentSystemCardList.subscribe(function () {
-          showCardTooltip();
-        });
-        // Ensure the tooltip is shown even if the UI is refreshed
-        if (model.currentSystemCardList()[0] !== undefined) showCardTooltip();
 
         // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
         $("#hover-card").replaceWith(
@@ -450,6 +428,8 @@ if (!gwaioCardsLoaded) {
                 gwaioCardsToUnits.cards
               );
             else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+
+            model.gwaioTechCardTooltip = ko.observableArray([]);
 
             var makeCardTooltip = function (card, i) {
               if (card.isLoadout()) return;

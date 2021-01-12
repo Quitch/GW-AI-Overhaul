@@ -206,7 +206,7 @@ if (!gwaioSetupLoaded) {
       };
 
       // Don't let the player go to war with unsaved custom difficulty changes
-      model.ready = ko.computed(function () {
+      model.ready = ko.pureComputed(function () {
         return (
           !!model.newGame() &&
           !!model.activeStartCard() &&
@@ -905,7 +905,14 @@ if (!gwaioSetupLoaded) {
                 return Math.random() * (max - min) + min;
               }
 
-              var setAIData = function (ai, dist, isBossSystem, isBoss) {
+              var setAIData = function (
+                ai,
+                dist,
+                isBossSystem,
+                isBoss,
+                faction
+              ) {
+                if (ai.faction === undefined) ai.faction = faction;
                 ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
                 ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
                 ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
@@ -1102,7 +1109,7 @@ if (!gwaioSetupLoaded) {
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
                       }
-                      setAIData(foeCommander, dist, false, false);
+                      setAIData(foeCommander, dist, false, false, foeFaction);
                       foeCommander.inventory = [];
                       if (foeCommander.isCluster === true)
                         foeCommander.inventory = gwaioTech.clusterCommanders;
@@ -1232,7 +1239,7 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Marathon",
               ];
               origin.system().gwaio = {};
-              origin.system().gwaio.version = "4.14.0";
+              origin.system().gwaio.version = "4.15.0";
               origin.system().gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
               origin.system().gwaio.galaxySize =
                 galaxySizes[model.newGameSizeIndex()];

@@ -108,7 +108,7 @@ define(function () {
     ],
     minions: [
       {
-        name: "Legate Able",
+        name: "Able",
         character: "!LOC:Armour",
         color: [
           [204, 255, 255],
@@ -155,7 +155,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_able/imperial_able.json",
       },
       {
-        name: "Legate AceAI",
+        name: "AceAI",
         character: "!LOC:Roboticist",
         color: [
           [153, 255, 255],
@@ -201,7 +201,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json",
       },
       {
-        name: "Legate Alpha",
+        name: "Alpha",
         character: "!LOC:Uber",
         color: [
           [102, 255, 255],
@@ -248,7 +248,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
       },
       {
-        name: "Legate Aryst0krat",
+        name: "Aryst0krat",
         character: "!LOC:Platinum",
         color: [
           [0, 255, 255],
@@ -296,7 +296,7 @@ define(function () {
           "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
       },
       {
-        name: "Legate Chronoblip",
+        name: "Chronoblip",
         character: "!LOC:Gold",
         color: [
           [0, 204, 204],
@@ -343,7 +343,7 @@ define(function () {
           "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json",
       },
       {
-        name: "Legate Mjon",
+        name: "Mjon",
         character: "!LOC:Defender",
         color: [
           [0, 153, 153],
@@ -390,7 +390,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
       },
       {
-        name: "Legate Delta",
+        name: "Delta",
         character: "!LOC:Luddite",
         color: [
           [153, 204, 255],
@@ -436,7 +436,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_delta/imperial_delta.json",
       },
       {
-        name: "Legate Enzomatrix",
+        name: "Enzomatrix",
         character: "!LOC:Technologist",
         color: [
           [102, 178, 255],
@@ -483,7 +483,7 @@ define(function () {
           "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json",
       },
       {
-        name: "Legate Fiveleafclover",
+        name: "Fiveleafclover",
         character: "!LOC:Cautious",
         color: [
           [51, 153, 255],
@@ -530,7 +530,7 @@ define(function () {
           "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json",
       },
       {
-        name: "Legate Gamma",
+        name: "Gamma",
         character: "!LOC:Aggressive",
         color: [
           [0, 128, 255],
@@ -576,7 +576,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json",
       },
       {
-        name: "Legate Gnugfur",
+        name: "Gnugfur",
         character: "!LOC:Rush",
         color: [
           [0, 102, 204],
@@ -624,7 +624,7 @@ define(function () {
           "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json",
       },
       {
-        name: "Legate Nemicus",
+        name: "Nemicus",
         character: "!LOC:Turtle",
         color: [
           [0, 76, 153],
@@ -670,7 +670,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
       },
       {
-        name: "Legate Kapowaz",
+        name: "Kapowaz",
         character: "!LOC:Original",
         color: [
           [0, 0, 153],
@@ -717,7 +717,7 @@ define(function () {
           "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json",
       },
       {
-        name: "Legate JT100010117",
+        name: "JT100010117",
         character: "!LOC:Absurd",
         color: [
           [0, 0, 204],
@@ -765,7 +765,7 @@ define(function () {
           "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
       },
       {
-        name: "Legate Kevin4001",
+        name: "Kevin4001",
         character: "!LOC:Relentless",
         color: [
           [0, 0, 225],
@@ -813,7 +813,7 @@ define(function () {
           "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",
       },
       {
-        name: "Legate Mostlikely",
+        name: "Mostlikely",
         character: "!LOC:Swarm",
         color: [
           [51, 51, 255],
@@ -861,7 +861,7 @@ define(function () {
           "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
       },
       {
-        name: "Legate Nagasher",
+        name: "Nagasher",
         character: "!LOC:Economist",
         color: [
           [204, 229, 255],

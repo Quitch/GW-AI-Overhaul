@@ -123,7 +123,7 @@ define(function () {
     ],
     minions: [
       {
-        name: "Acolyte Progenitor",
+        name: "Progenitor",
         character: "!LOC:Air Force",
         color: [
           [229, 204, 255],
@@ -170,7 +170,7 @@ define(function () {
           "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
       },
       {
-        name: "Acolyte Sangudo",
+        name: "Sangudo",
         character: "!LOC:Navy",
         color: [
           [204, 153, 255],
@@ -217,7 +217,7 @@ define(function () {
           "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
       },
       {
-        name: "Acolyte Seniorhelix",
+        name: "Seniorhelix",
         character: "!LOC:Uber",
         color: [
           [178, 102, 255],
@@ -265,7 +265,7 @@ define(function () {
           "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
       },
       {
-        name: "Acolyte Stelarch",
+        name: "Stelarch",
         character: "!LOC:Platinum",
         color: [
           [153, 51, 255],
@@ -313,7 +313,7 @@ define(function () {
           "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
       },
       {
-        name: "Acolyte TheChessKnight",
+        name: "TheChessKnight",
         character: "!LOC:Gold",
         color: [
           [127, 0, 255],
@@ -360,7 +360,7 @@ define(function () {
           "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
       },
       {
-        name: "Acolyte Theta",
+        name: "Theta",
         character: "!LOC:Defender",
         color: [
           [102, 0, 204],
@@ -406,7 +406,7 @@ define(function () {
         commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
       },
       {
-        name: "Acolyte ToddFather",
+        name: "ToddFather",
         character: "!LOC:Luddite",
         color: [
           [76, 0, 153],
@@ -453,7 +453,7 @@ define(function () {
           "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
       },
       {
-        name: "Acolyte Ajax",
+        name: "Ajax",
         character: "!LOC:Technologist",
         color: [
           [255, 204, 255],
@@ -499,7 +499,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
       },
       {
-        name: "Acolyte Armalisk",
+        name: "Armalisk",
         character: "!LOC:Cautious",
         color: [
           [255, 153, 255],
@@ -545,7 +545,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
       },
       {
-        name: "Acolyte Calyx",
+        name: "Calyx",
         character: "!LOC:Aggressive",
         color: [
           [255, 102, 255],
@@ -591,7 +591,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
       },
       {
-        name: "Acolyte Gambitdfa",
+        name: "Gambitdfa",
         character: "!LOC:Rush",
         color: [
           [255, 0, 255],
@@ -637,7 +637,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
       },
       {
-        name: "Acolyte Berlinetta",
+        name: "Berlinetta",
         character: "!LOC:Turtle",
         color: [
           [204, 0, 204],
@@ -684,7 +684,7 @@ define(function () {
           "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
       },
       {
-        name: "Acolyte Osiris",
+        name: "Osiris",
         character: "!LOC:Original",
         color: [
           [153, 0, 153],
@@ -730,7 +730,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
       },
       {
-        name: "Acolyte Tykus24",
+        name: "Tykus24",
         character: "!LOC:Absurd",
         color: [
           [255, 204, 229],
@@ -777,7 +777,7 @@ define(function () {
           "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
       },
       {
-        name: "Acolyte Vidicarus",
+        name: "Vidicarus",
         character: "!LOC:Relentless",
         color: [
           [255, 153, 204],
@@ -824,7 +824,7 @@ define(function () {
           "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
       },
       {
-        name: "Acolyte Visionik",
+        name: "Visionik",
         character: "!LOC:Swarm",
         color: [
           [255, 102, 178],
@@ -871,7 +871,7 @@ define(function () {
           "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
       },
       {
-        name: "Acolyte Commandonut",
+        name: "Commandonut",
         character: "!LOC:Economist",
         color: [
           [255, 51, 153],

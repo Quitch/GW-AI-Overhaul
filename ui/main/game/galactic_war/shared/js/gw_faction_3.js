@@ -123,7 +123,7 @@ define(function () {
     ],
     minions: [
       {
-        name: "Seeker Betadyne",
+        name: "Betadyne",
         character: "!LOC:Space Invader",
         color: [
           [255, 204, 204],
@@ -169,7 +169,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
       },
       {
-        name: "Seeker Centurion",
+        name: "Centurion",
         character: "!LOC:Astronaut",
         color: [
           [255, 153, 153],
@@ -216,7 +216,7 @@ define(function () {
           "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
       },
       {
-        name: "Seeker Diremachine",
+        name: "Diremachine",
         character: "!LOC:Uber",
         color: [
           [255, 102, 102],
@@ -264,7 +264,7 @@ define(function () {
           "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
       },
       {
-        name: "Seeker Enderstryke71",
+        name: "Enderstryke71",
         character: "!LOC:Platinum",
         color: [
           [255, 0, 0],
@@ -312,7 +312,7 @@ define(function () {
           "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
       },
       {
-        name: "Seeker Iwmiked",
+        name: "Iwmiked",
         character: "!LOC:Gold",
         color: [
           [204, 0, 0],
@@ -358,7 +358,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
       },
       {
-        name: "Seeker Majuju",
+        name: "Majuju",
         character: "!LOC:Defender",
         color: [
           [153, 0, 0],
@@ -405,7 +405,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
       },
       {
-        name: "Seeker Nefelpitou",
+        name: "Nefelpitou",
         character: "!LOC:Luddite",
         color: [
           [255, 204, 153],
@@ -452,7 +452,7 @@ define(function () {
           "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
       },
       {
-        name: "Seeker Invictus",
+        name: "Invictus",
         character: "!LOC:Technologist",
         color: [
           [255, 178, 102],
@@ -499,7 +499,7 @@ define(function () {
           "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
       },
       {
-        name: "Seeker Rallus",
+        name: "Rallus",
         character: "!LOC:Cautious",
         color: [
           [255, 153, 51],
@@ -545,7 +545,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
       },
       {
-        name: "Seeker Stickman9000",
+        name: "Stickman9000",
         character: "!LOC:Aggressive",
         color: [
           [255, 128, 0],
@@ -592,7 +592,7 @@ define(function () {
           "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
       },
       {
-        name: "Seeker Zaazzaa",
+        name: "Zaazzaa",
         character: "!LOC:Rush",
         color: [
           [204, 102, 0],
@@ -639,7 +639,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
       },
       {
-        name: "Seeker Aeson",
+        name: "Aeson",
         character: "!LOC:Turtle",
         color: [
           [255, 255, 204],
@@ -685,7 +685,7 @@ define(function () {
         commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
       },
       {
-        name: "Seeker Banditks",
+        name: "Banditks",
         character: "!LOC:Original",
         color: [
           [255, 255, 153],
@@ -731,7 +731,7 @@ define(function () {
         commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
       },
       {
-        name: "Seeker SPZ58624",
+        name: "SPZ58624",
         character: "!LOC:Absurd",
         color: [
           [255, 255, 102],
@@ -778,7 +778,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
       },
       {
-        name: "Seeker XOV",
+        name: "XOV",
         character: "!LOC:Relentless",
         color: [
           [255, 255, 0],
@@ -825,7 +825,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
       },
       {
-        name: "Seeker Reaver",
+        name: "Reaver",
         character: "!LOC:Swarm",
         color: [
           [204, 204, 0],
@@ -872,7 +872,7 @@ define(function () {
         commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
       },
       {
-        name: "Seeker Sadiga",
+        name: "Sadiga",
         character: "!LOC:Economist",
         color: [
           [153, 153, 0],

@@ -1,20 +1,37 @@
 # CHANGELOG
 
-## v4.14.0 - 20201-01-10
+## v4.15.0 - 2021-01-12
 
-### Change
+### Changed
+
+- Reduced file shadowing
+- Minor performance optimisations
+- Enemy Commanders displayed by faction in the intelligence panel
+- Only display active AI tech and game modifiers
+- Updated AI tech and game modifier names
+- Removed titles from AI Commander names
+- List Guardian unique tech bonus in intelligence panel
+
+### Fixed
+
+- Tooltips showing on a new loadout card if you refreshed the UI
+- Tutorial breakage
+
+## v4.14.0 - 2021-01-10
+
+### Changed
 
 - Always offer Additional Data Bank as a fourth card when the inventory is full
 - Each Sub Commander in your tech banks reduces the chance of finding another
+- Nomad Commander loadout can no longer move metal extractors
 
 ### Fixed
 
 - Deep Space Radar and Umbrella using wrong navigation settings under Nomad Commander loadout
-- Nomad Commander loadout can no longer move metal extractors
 - Nomad Commander buildings blocking the location they were built at even after moving elsewhere
 - Structures overlapping when executing an attack move
 
-## v4.13.2 - 2020-01-10
+## v4.13.2 - 2021-01-10
 
 ### Fixed
 
@@ -23,13 +40,13 @@
 - Nomad Commander's structures now hover
 - Single Laser Defense Tower Upgrade will work correctly with the Nomad Commander loadout
 
-## v4.13.1 - 2020-01-07
+## v4.13.1 - 2021-01-07
 
 ### Fixed
 
 - Gil-E Upgrade Tech causing Gil-E to deal no damage
 
-## v4.13.0 - 2020-01-05
+## v4.13.0 - 2021-01-05
 
 ### Added
 
@@ -43,7 +60,7 @@
 
 - Align table data to colon where wrapping has occurred
 
-## v4.12.1 - 2020-01-04
+## v4.12.1 - 2021-01-04
 
 ### Changed
 
