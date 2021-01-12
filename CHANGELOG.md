@@ -9,6 +9,7 @@
 ### Fixed
 
 - Tooltips showing on a new loadout card if you refreshed the UI
+- Tutorial breakage
 
 ## v4.14.0 - 2021-01-10
 
