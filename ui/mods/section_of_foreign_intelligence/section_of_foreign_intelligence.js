@@ -166,9 +166,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().bountyMode
           )
-            var bountyMode = "!LOC:Enabled";
-          else bountyMode = "!LOC:Disabled";
-          return loc(bountyMode);
+            return true;
         });
 
         model.landAnywhere = ko.pureComputed(function () {
@@ -176,9 +174,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().landAnywhere
           )
-            var landAnywhere = "!LOC:Enabled";
-          else landAnywhere = "!LOC:Disabled";
-          return loc(landAnywhere);
+            return true;
         });
 
         model.suddenDeath = ko.pureComputed(function () {
@@ -186,9 +182,12 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().suddenDeath
           )
-            var suddenDeath = "!LOC:Enabled";
-          else suddenDeath = "!LOC:Disabled";
-          return loc(suddenDeath);
+            return true;
+        });
+
+        model.gameOptions = ko.pureComputed(function () {
+          if (model.bountyMode() || model.landAnywhere() || model.suddenDeath())
+            return true;
         });
 
         // AI Buffs
@@ -199,9 +198,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
           )
-            var techBuild = "!LOC:Enabled";
-          else techBuild = "!LOC:Disabled";
-          return loc(techBuild);
+            return true;
         });
 
         model.techCost = ko.pureComputed(function () {
@@ -210,9 +207,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 0)
           )
-            var techCost = "!LOC:Enabled";
-          else techCost = "!LOC:Disabled";
-          return loc(techCost);
+            return true;
         });
 
         model.techDamage = ko.pureComputed(function () {
@@ -221,9 +216,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 1)
           )
-            var techDamage = "!LOC:Enabled";
-          else techDamage = "!LOC:Disabled";
-          return loc(techDamage);
+            return true;
         });
 
         model.techHealth = ko.pureComputed(function () {
@@ -232,9 +225,7 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 2)
           )
-            var techHealth = "!LOC:Enabled";
-          else techHealth = "!LOC:Disabled";
-          return loc(techHealth);
+            return true;
         });
 
         model.techSpeed = ko.pureComputed(function () {
@@ -243,9 +234,18 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 3)
           )
-            var techSpeed = "!LOC:Enabled";
-          else techSpeed = "!LOC:Disabled";
-          return loc(techSpeed);
+            return true;
+        });
+
+        model.aiBuffs = ko.pureComputed(function () {
+          if (
+            model.techBuild() ||
+            model.techCost() ||
+            model.techDamage() ||
+            model.techHealth() ||
+            model.techSpeed()
+          )
+            return true;
         });
 
         // System Faction

@@ -16,53 +16,27 @@
       </div>
     </div>
   </div>
-  <div data-bind="visible: model.selection.system().star.ai()">
-    <h3><loc>Game Options</loc></h3>
-    <div class="table">
-      <div class="tablebody">
-        <div class="tr">
-          <div class="td"><loc>Bounties:</loc></div>
-          <div class="data" data-bind="text: $root.bountyMode"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Big Spawns:</loc></div>
-          <div class="data" data-bind="text: $root.landAnywhere"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Team Death:</loc></div>
-          <div class="data" data-bind="text: $root.suddenDeath"></div>
-        </div>
-      </div>
-    </div>
+  <div
+    data-bind="visible: model.selection.system().star.ai() && $root.gameOptions"
+  >
+    <h3><loc>Game Modifiers</loc></h3>
+    <ul>
+      <li data-bind="visible: $root.bountyMode"><loc>Bounties</loc></li>
+      <li data-bind="visible: $root.landAnywhere"><loc>Land Anywhere</loc></li>
+      <li data-bind="visible: $root.suddenDeath"><loc>Sudden Death</loc></li>
+    </ul>
   </div>
   <div
-    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().typeOfBuffs"
+    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().typeOfBuffs && $root.aiBuffs"
   >
-    <h3><loc>AI Buffs</loc></h3>
-    <div class="table">
-      <div class="tablebody">
-        <div class="tr">
-          <div class="td"><loc>Build:</loc></div>
-          <div class="data" data-bind="text: $root.techBuild"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Cost:</loc></div>
-          <div class="data" data-bind="text: $root.techCost"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Damage:</loc></div>
-          <div class="data" data-bind="text: $root.techDamage"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Health:</loc></div>
-          <div class="data" data-bind="text: $root.techHealth"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Speed:</loc></div>
-          <div class="data" data-bind="text: $root.techSpeed"></div>
-        </div>
-      </div>
-    </div>
+    <h3><loc>AI Tech</loc></h3>
+    <ul>
+      <li data-bind="visible: $root.techBuild"><loc>Build faster</loc></li>
+      <li data-bind="visible: $root.techCost"><loc>Cost decrease</loc></li>
+      <li data-bind="visible: $root.techDamage"><loc>Damage increase</loc></li>
+      <li data-bind="visible: $root.techHealth"><loc>Health increase</loc></li>
+      <li data-bind="visible: $root.techSpeed"><loc>Speed increase</loc></li>
+    </ul>
   </div>
   <!-- ko if: model.selection.system().star.ai() && $root.systemOwner() -->
   <h3><span data-bind="text: $root.systemOwner()[0].faction"></span></h3>
