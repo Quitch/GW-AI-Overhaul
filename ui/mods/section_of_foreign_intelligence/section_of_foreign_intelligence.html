@@ -64,23 +64,9 @@
       </div>
     </div>
   </div>
-  <div data-bind="visible: model.selection.system().star.ai()">
-    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 0 -->
-    <h3><loc>Legonis Machina</loc></h3>
-    <!-- /ko -->
-    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 1 -->
-    <h3><loc>Foundation</loc></h3>
-    <!-- /ko -->
-    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 2 -->
-    <h3><loc>Synchronous</loc></h3>
-    <!-- /ko -->
-    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 3 -->
-    <h3><loc>Revenants</loc></h3>
-    <!-- /ko -->
-    <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().faction === 4 -->
-    <h3><loc>Cluster</loc></h3>
-    <!-- /ko -->
-  </div>
+  <!-- ko if: model.selection.system().star.ai() && $root.systemOwner() -->
+  <h3><span data-bind="text: $root.systemOwner()[0].faction"></span></h3>
+  <!-- /ko -->
   <ul data-bind="foreach: $root.systemOwner">
     <li class="commander">
       <div class="div_player_icon">

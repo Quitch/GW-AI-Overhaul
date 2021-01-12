@@ -58,9 +58,17 @@ if (!gwaioIntelligenceLoaded) {
       var rgb = function (color) {
         return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
       };
+      var factionNames = [
+        "Legonis Machina",
+        "Foundation",
+        "Synchronous",
+        "Revenants",
+        "Cluster",
+      ];
       var intelligence = function (commander) {
         var name = commander.name;
         var eco = commander.econ_rate;
+        var faction = factionNames[commander.faction];
         if (commander.bossCommanders > 1)
           var numCommanders = commander.bossCommanders;
         else if (commander.commanderCount > 1)
@@ -77,6 +85,7 @@ if (!gwaioIntelligenceLoaded) {
           ),
           character: loc(commander.character),
           eco: eco,
+          faction: faction,
         };
       };
 
