@@ -8,7 +8,7 @@
 - Minor performance optimisations
 - Enemy Commanders displayed by faction in the intelligence panel
 - Only display active AI tech and game modifiers
-- Clarified AI tech and game modifier names and descriptions
+- Updated AI tech and game modifier names
 - Removed titles from AI Commander names
 - List Guardian unique tech bonus in intelligence panel
 
