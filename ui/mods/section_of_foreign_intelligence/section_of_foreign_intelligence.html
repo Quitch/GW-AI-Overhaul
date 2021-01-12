@@ -17,7 +17,7 @@
     </div>
   </div>
   <div
-    data-bind="visible: model.selection.system().star.ai() && $root.gameOptions"
+    data-bind="visible: $root.selection.system().star.ai() && $root.gameOptions"
   >
     <h3><loc>Game Modifiers</loc></h3>
     <ul>
@@ -27,7 +27,7 @@
     </ul>
   </div>
   <div
-    data-bind="visible: model.selection.system().star.ai() && model.selection.system().star.ai().typeOfBuffs && $root.aiBuffs"
+    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().typeOfBuffs && $root.aiBuffs"
   >
     <h3><loc>AI Tech</loc></h3>
     <ul>
@@ -43,7 +43,7 @@
       </li>
     </ul>
   </div>
-  <!-- ko if: model.selection.system().star.ai() && $root.systemOwner() -->
+  <!-- ko if: $root.selection.system().star.ai() && $root.systemOwner() -->
   <h3><span data-bind="text: $root.systemOwner()[0].faction"></span></h3>
   <!-- /ko -->
   <ul data-bind="foreach: $root.systemOwner">
@@ -74,7 +74,7 @@
       </div>
     </li>
   </ul>
-  <!-- ko if: model.selection.system().star.ai() && model.selection.system().star.ai().foes && !model.selection.system().star.ai().foes[0].faction -->
+  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().foes && !$root.selection.system().star.ai().foes[0].faction -->
   <h3><loc>Additional Factions</loc></h3>
   <!-- /ko -->
   <ul data-bind="foreach: $root.ffaOpponents">
