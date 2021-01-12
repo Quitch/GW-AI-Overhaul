@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Reduced file shadowing
 - Minor performance optimisations
 - Enemy Commanders displayed by faction in the intelligence panel
 - Only display active AI tech and game modifiers
