@@ -36,6 +36,11 @@
       <li data-bind="visible: $root.techDamage"><loc>Damage increased</loc></li>
       <li data-bind="visible: $root.techHealth"><loc>Health increased</loc></li>
       <li data-bind="visible: $root.techSpeed"><loc>Speed increased</loc></li>
+      <li
+        data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().mirrorMode"
+      >
+        <loc>Your technology bonuses</loc>
+      </li>
     </ul>
   </div>
   <!-- ko if: model.selection.system().star.ai() && $root.systemOwner() -->

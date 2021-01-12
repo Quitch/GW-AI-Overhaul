@@ -10,6 +10,7 @@
 - Only display active AI tech and game modifiers
 - Clarified AI tech and game modifier names and descriptions
 - Removed titles from AI Commander names
+- List Guardian unique tech bonus in intelligence panel
 
 ### Fixed
 
