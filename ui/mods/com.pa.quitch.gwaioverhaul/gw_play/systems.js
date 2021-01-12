@@ -118,7 +118,7 @@ if (!gwaioSystemChangesLoaded) {
 
           self.visible = ko.observable(true);
           self.star = ko.observable(-1);
-          self.system = ko.computed(function () {
+          self.system = ko.pureComputed(function () {
             return self.star() >= 0 ? galaxy.systems()[self.star()] : undefined;
           });
 
@@ -210,11 +210,11 @@ if (!gwaioSystemChangesLoaded) {
           return galaxy.pathBetween(from, to, model.cheats.noFog());
         });
 
-        model.displayMove = ko.computed(function () {
+        model.displayMove = ko.pureComputed(function () {
           return model.canMove();
         });
 
-        model.displayFight = ko.computed(function () {
+        model.displayFight = ko.pureComputed(function () {
           return (
             model.canFight() &&
             !model.allowLoad() &&

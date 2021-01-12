@@ -206,7 +206,7 @@ if (!gwaioSetupLoaded) {
       };
 
       // Don't let the player go to war with unsaved custom difficulty changes
-      model.ready = ko.computed(function () {
+      model.ready = ko.pureComputed(function () {
         return (
           !!model.newGame() &&
           !!model.activeStartCard() &&

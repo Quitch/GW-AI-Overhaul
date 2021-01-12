@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Minor performance optimisations
+
 ## v4.14.0 - 2021-01-10
 
 ### Changed
