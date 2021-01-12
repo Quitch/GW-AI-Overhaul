@@ -8,6 +8,7 @@
 - Enemy Commanders displayed by faction in the intelligence panel
 - Only display active AI tech and game modifiers
 - Clarified AI tech and game modifier names and descriptions
+- Removed titles from AI Commander names
 
 ### Fixed
 

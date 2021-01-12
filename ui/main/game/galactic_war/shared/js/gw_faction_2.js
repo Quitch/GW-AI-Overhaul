@@ -124,7 +124,7 @@ define(function () {
     ],
     minions: [
       {
-        name: "Servant Potbelly79",
+        name: "Potbelly79",
         character: "!LOC:Grunt",
         color: [
           [229, 255, 204],
@@ -170,7 +170,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json",
       },
       {
-        name: "Servant Raventhornn",
+        name: "Raventhornn",
         character: "!LOC:Dragoon",
         color: [
           [204, 255, 153],
@@ -217,7 +217,7 @@ define(function () {
           "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json",
       },
       {
-        name: "Servant SacrificialLamb",
+        name: "SacrificialLamb",
         character: "!LOC:Uber",
         color: [
           [178, 255, 102],
@@ -265,7 +265,7 @@ define(function () {
           "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
       },
       {
-        name: "Servant Shadowdaemon",
+        name: "Shadowdaemon",
         character: "!LOC:Platinum",
         color: [
           [153, 255, 51],
@@ -313,7 +313,7 @@ define(function () {
           "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
       },
       {
-        name: "Servant Spartandano",
+        name: "Spartandano",
         character: "!LOC:Gold",
         color: [
           [128, 255, 0],
@@ -360,7 +360,7 @@ define(function () {
           "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
       },
       {
-        name: "Servant Xenosentry",
+        name: "Xenosentry",
         character: "!LOC:Defender",
         color: [
           [102, 204, 0],
@@ -407,7 +407,7 @@ define(function () {
           "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json",
       },
       {
-        name: "Servant TheFlax",
+        name: "TheFlax",
         character: "!LOC:Luddite",
         color: [
           [76, 153, 0],
@@ -453,7 +453,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_theflax/quad_theflax.json",
       },
       {
-        name: "Servant Tokamaktech",
+        name: "Tokamaktech",
         character: "!LOC:Technologist",
         color: [
           [204, 255, 204],
@@ -500,7 +500,7 @@ define(function () {
           "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json",
       },
       {
-        name: "Servant Twoboots",
+        name: "Twoboots",
         character: "!LOC:Cautious",
         color: [
           [153, 255, 153],
@@ -546,7 +546,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json",
       },
       {
-        name: "Servant XenosentryPrime",
+        name: "XenosentryPrime",
         character: "!LOC:Aggressive",
         color: [
           [102, 255, 102],
@@ -593,7 +593,7 @@ define(function () {
           "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json",
       },
       {
-        name: "Servant Xinthar",
+        name: "Xinthar",
         character: "!LOC:Rush",
         color: [
           [0, 255, 0],
@@ -640,7 +640,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json",
       },
       {
-        name: "Servant Beast",
+        name: "Beast",
         character: "!LOC:Turtle",
         color: [
           [0, 204, 0],
@@ -687,7 +687,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_beast/raptor_beast.json",
       },
       {
-        name: "Servant Beniesk",
+        name: "Beniesk",
         character: "!LOC:Original",
         color: [
           [0, 153, 0],
@@ -733,7 +733,7 @@ define(function () {
         commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
       },
       {
-        name: "Servant Locust",
+        name: "Locust",
         character: "!LOC:Absurd",
         color: [
           [0, 102, 0],
@@ -779,7 +779,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_locust/quad_locust.json",
       },
       {
-        name: "Servant Zancrowe",
+        name: "Zancrowe",
         character: "!LOC:Relentless",
         color: [
           [0, 153, 76],
@@ -825,7 +825,7 @@ define(function () {
         commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
       },
       {
-        name: "Servant Damubbster",
+        name: "Damubbster",
         character: "!LOC:Swarm",
         color: [
           [0, 204, 102],
@@ -872,7 +872,7 @@ define(function () {
           "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
       },
       {
-        name: "Servant Raizell",
+        name: "Raizell",
         character: "!LOC:Economist",
         color: [
           [0, 255, 128],
