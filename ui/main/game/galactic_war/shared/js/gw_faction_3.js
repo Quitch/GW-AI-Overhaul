@@ -55,6 +55,7 @@ define(function () {
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
+
   var commanders = [
     {
       name: "Betadyne",
