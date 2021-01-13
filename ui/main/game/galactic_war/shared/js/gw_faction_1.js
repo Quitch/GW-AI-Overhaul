@@ -1,3 +1,4 @@
+// Foundation
 define(function () {
   var systemDescriptions = [
     "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
