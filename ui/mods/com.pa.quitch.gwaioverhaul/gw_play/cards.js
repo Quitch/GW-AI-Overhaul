@@ -497,12 +497,7 @@ if (!gwaioCardsLoaded) {
                   model.hoverCard(undefined);
                 }, 300);
                 return;
-              } else if (card.id() === "gwc_minion")
-                model.gwaioShowTechCardTooltip()[3] = false;
-              else {
-                model.gwaioShowTechCardTooltip()[3] = true;
-                makeCardTooltip(card);
-              }
+              } else makeCardTooltip(card);
 
               var $block = $(hoverEvent.target);
               if (!$block.is(".one-card")) $block = $block.parent(".one-card");

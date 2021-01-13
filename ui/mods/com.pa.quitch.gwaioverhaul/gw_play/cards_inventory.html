@@ -13,7 +13,7 @@
     <!-- ko if: !isEmpty() -->
     <span
       class="info_tip"
-      data-bind="visible: $root.gwaioShowTechCardTooltip()[3], tooltip: $root.gwaioTechCardTooltip()[3]"
+      data-bind="visible: $root.hoverCard().id() !== 'gwc_add_card_slot' && $root.hoverCard().id() !== 'gwc_minion', tooltip: $root.gwaioTechCardTooltip()[3]"
       ><loc>Which Units?</loc></span
     >
     <div class="card_action">

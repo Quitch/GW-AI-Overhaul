@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v4.16.0 - 20201-01-13
+
+### Changed
+
+- Revisions to faction personalities
+
+### Fixed
+
+- Inventory cards not displaying when clicked
+
 ## v4.15.0 - 2021-01-12
 
 ### Changed
