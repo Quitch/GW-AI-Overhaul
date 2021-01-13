@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Faction personalities revised
+
 ### Fixed
 
 - Inventory cards not displaying when clicked
