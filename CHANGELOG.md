@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Inventory cards not displaying when clicked
+
 ## v4.15.0 - 2021-01-12
 
 ### Changed
