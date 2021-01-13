@@ -335,11 +335,13 @@ define(function () {
     {
       name: "JT100010117",
       character: "!LOC:Absurd",
-      adv_eco_mod: 1.3,
       color: [
         [0, 0, 204],
         [192, 192, 192],
       ],
+      personality: {
+        adv_eco_mod: 1.3,
+      },
       commander:
         "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
     },
