@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Faction personalities revised
+- Minor revisions to faction personalities
 
 ### Fixed
 
