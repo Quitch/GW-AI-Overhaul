@@ -5,6 +5,12 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
+      $(".all-planets").replaceWith(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
+        )
+      );
+
       if (!model.game().isTutorial()) {
         requireGW(["shared/gw_factions"], function (GWFactions) {
           _.forEach(model.galaxy.systems(), function (system) {
