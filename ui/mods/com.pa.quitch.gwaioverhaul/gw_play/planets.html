@@ -9,16 +9,26 @@
       style="height: 20px; width: 20px"
       data-bind="attr: { src: 'coui://ui/main/shared/img/planets/' + $data.generator.biome + '.png' }"
     />
-    <img
-      data-bind="visible: $data.starting_planet"
-      class="img_start"
-      src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
-    />
-    <img
-      data-bind="visible: $data.required_thrust_to_move > 0"
-      class="thruster_count"
-      src="coui://ui/main/game/server_browser/img/icon_thruster.png"
-    />
+    <div class="start" data-bind="visible: $data.starting_planet">
+      <img
+        class="img_start"
+        src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
+      />
+      <img
+        data-bind="visible: $data.required_thrust_to_move > 0"
+        class="thruster_count"
+        src="coui://ui/main/game/server_browser/img/icon_thruster.png"
+      />
+    </div>
+    <div
+      class="no_start"
+      data-bind="visible: !$data.starting_planet && $data.required_thrust_to_move > 0"
+    >
+      <img
+        class="thruster_count"
+        src="coui://ui/main/game/server_browser/img/icon_thruster.png"
+      />
+    </div>
   </div>
   <!-- /ko -->
   <!-- ko if: ($index() > 3 && $index() <= 7) || $index() > 11 -->
@@ -31,16 +41,26 @@
       style="height: 20px; width: 20px"
       data-bind="attr: { src: 'coui://ui/main/shared/img/planets/' + $data.generator.biome + '.png' }"
     />
-    <img
-      data-bind="visible: $data.starting_planet"
-      class="img_start"
-      src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
-    />
-    <img
-      data-bind="visible: $data.required_thrust_to_move > 0"
-      class="thruster_count"
-      src="coui://ui/main/game/server_browser/img/icon_thruster.png"
-    />
+    <div class="start" data-bind="visible: $data.starting_planet">
+      <img
+        class="img_start"
+        src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
+      />
+      <img
+        data-bind="visible: $data.required_thrust_to_move > 0"
+        class="thruster_count"
+        src="coui://ui/main/game/server_browser/img/icon_thruster.png"
+      />
+    </div>
+    <div
+      class="no_start"
+      data-bind="visible: !$data.starting_planet && $data.required_thrust_to_move > 0"
+    >
+      <img
+        class="thruster_count"
+        src="coui://ui/main/game/server_browser/img/icon_thruster.png"
+      />
+    </div>
   </div>
   <!-- /ko -->
 </div>

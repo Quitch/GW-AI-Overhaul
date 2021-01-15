@@ -20,9 +20,18 @@
   right: -10px;
 }
 
-#system-detail .thruster_count {
+#system-detail .start .thruster_count {
+  height: 12px;
+  width: 13px;
+  position: relative;
+  top: -25px;
+  right: 2px;
+}
+
+#system-detail .no_start .thruster_count {
   height: 12px;
   width: 13px;
   position: relative;
   top: -8px;
+  right: 2px;
 }
