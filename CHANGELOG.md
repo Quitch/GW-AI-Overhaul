@@ -8,7 +8,7 @@
 - Starting planet icons on intelligence panel
 - Thruster icons for smashable planets on intelligence panel
 
-## v4.16.0 - 20201-01-13
+## v4.16.0 - 2021-01-13
 
 ### Changed
 
