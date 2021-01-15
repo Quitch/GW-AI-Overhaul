@@ -1,0 +1,37 @@
+#system-detail .all-planets {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 16px 0px 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#system-detail .div_planet {
+  height: 20px;
+  width: 20px;
+  margin: 4px;
+}
+
+#system-detail img.img_start {
+  height: 16px;
+  width: 16px;
+  position: relative;
+  top: -12px;
+  right: -10px;
+}
+
+#system-detail .start .thruster_count {
+  height: 12px;
+  width: 13px;
+  position: relative;
+  top: -25px;
+  right: 2px;
+}
+
+#system-detail .no_start .thruster_count {
+  height: 12px;
+  width: 13px;
+  position: relative;
+  top: -8px;
+  right: 2px;
+}

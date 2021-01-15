@@ -1,3 +1,4 @@
+// Synchronous
 define(function () {
   var systemDescriptions = [
     "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",

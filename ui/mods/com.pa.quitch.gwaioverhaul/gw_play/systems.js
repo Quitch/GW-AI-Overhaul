@@ -5,6 +5,19 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
+      // Cannot translate multiple strings in a single tooltip so we do it here instead
+      model.gwaioRadius = loc("!LOC:Radius:");
+      model.gwaioMetalClusters = loc("!LOC:Metal Clusters:");
+      model.gwaioMetalDensity = loc("!LOC:Metal Density:");
+      model.gwaioTemperature = loc("!LOC:Temperature:");
+      model.gwaioWaterDepth = loc("!LOC:Water Depth:");
+      model.gwaioWaterHeight = loc("!LOC:Water Height:");
+      $(".all-planets").replaceWith(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
+        )
+      );
+
       if (!model.game().isTutorial()) {
         requireGW(["shared/gw_factions"], function (GWFactions) {
           _.forEach(model.galaxy.systems(), function (system) {
@@ -29,7 +42,6 @@ if (!gwaioSystemChangesLoaded) {
           });
         });
 
-        /* extractor() change start */
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
@@ -177,7 +189,76 @@ if (!gwaioSystemChangesLoaded) {
             );
             self.system.subscribe(function () {
               var newSystem = self.system();
-              if (newSystem) newSystem.selected(true);
+              if (newSystem) {
+                newSystem.selected(true);
+                model.gwaioPlanetData = _.map(
+                  self.system().planets(),
+                  function (planet) {
+                    if (planet.generator.biome === "gas")
+                      return "Radius: " + planet.generator.radius;
+                    else if (
+                      planet.generator.biome === "metal" ||
+                      planet.generator.biome === "metal_boss"
+                    )
+                      if (planet.metal_spots)
+                        return (
+                          "Radius: " +
+                          planet.generator.radius +
+                          "<br>" +
+                          "Metal Spots: " +
+                          planet.metal_spots.length
+                        );
+                      else
+                        return (
+                          "Radius: " +
+                          planet.generator.radius +
+                          "<br>" +
+                          "Metal Clusters: " +
+                          Math.round(planet.generator.metalClusters) +
+                          "<br>" +
+                          "Metal Density: " +
+                          Math.round(planet.generator.metalDensity)
+                        );
+                    else if (planet.metal_spots)
+                      return (
+                        "Radius: " +
+                        planet.generator.radius +
+                        "<br>" +
+                        "Metal Spots: " +
+                        planet.metal_spots.length +
+                        "<br>" +
+                        "Temperature: " +
+                        Math.round(planet.generator.temperature) +
+                        "<br>" +
+                        "Water Depth: " +
+                        Math.round(planet.generator.waterDepth) +
+                        "<br>" +
+                        "Water Height: " +
+                        Math.round(planet.generator.waterHeight)
+                      );
+                    else
+                      return (
+                        "Radius: " +
+                        planet.generator.radius +
+                        "<br>" +
+                        "Metal Clusters: " +
+                        Math.round(planet.generator.metalClusters) +
+                        "<br>" +
+                        "Metal Density: " +
+                        Math.round(planet.generator.metalDensity) +
+                        "<br>" +
+                        "Temperature: " +
+                        Math.round(planet.generator.temperature) +
+                        "<br>" +
+                        "Water Depth: " +
+                        Math.round(planet.generator.waterDepth) +
+                        "<br>" +
+                        "Water Height: " +
+                        Math.round(planet.generator.waterHeight)
+                      );
+                  }
+                );
+              }
             });
           }
         }
@@ -221,7 +302,6 @@ if (!gwaioSystemChangesLoaded) {
             model.selection.star() === model.game().currentStar()
           );
         });
-        /* extractor() change end */
 
         requireGW(
           ["shared/gw_common", "pages/gw_play/gw_referee"],

@@ -1,3 +1,4 @@
+// Legonis Machina
 define(function () {
   var systemDescriptions = [
     "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",

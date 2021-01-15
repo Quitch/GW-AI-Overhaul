@@ -6,36 +6,51 @@
       <div class="tr">
         <div class="td"><loc>Surface Area:</loc></div>
         <div class="td">
-          <span class="inline" data-bind="text: $root.systemSurfaceArea"></span
+          <span
+            class="inline"
+            data-bind="text: $root.gwaioSystemSurfaceArea"
+          ></span
           >k<sup>2</sup>
         </div>
       </div>
       <div class="tr">
         <div class="td"><loc>Threat Level:</loc></div>
-        <div class="data" data-bind="text: $root.systemThreat"></div>
+        <div class="data" data-bind="text: $root.gwaioSystemThreat"></div>
       </div>
     </div>
   </div>
   <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.gameOptions"
+    data-bind="visible: $root.selection.system().star.ai() && $root.gwaioGameOptions"
   >
     <h3><loc>Game Modifiers</loc></h3>
     <ul>
-      <li data-bind="visible: $root.bountyMode"><loc>Bounties</loc></li>
-      <li data-bind="visible: $root.landAnywhere"><loc>Land Anywhere</loc></li>
-      <li data-bind="visible: $root.suddenDeath"><loc>Sudden Death</loc></li>
+      <li data-bind="visible: $root.gwaioBountyMode"><loc>Bounties</loc></li>
+      <li data-bind="visible: $root.gwaioLandAnywhere">
+        <loc>Land Anywhere</loc>
+      </li>
+      <li data-bind="visible: $root.gwaioSuddenDeath">
+        <loc>Sudden Death</loc>
+      </li>
     </ul>
   </div>
   <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().typeOfBuffs && $root.aiBuffs"
+    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().typeOfBuffs && $root.gwaioAiBuffs"
   >
     <h3><loc>AI Tech</loc></h3>
     <ul>
-      <li data-bind="visible: $root.techBuild"><loc>Build faster</loc></li>
-      <li data-bind="visible: $root.techCost"><loc>Costs decreased</loc></li>
-      <li data-bind="visible: $root.techDamage"><loc>Damage increased</loc></li>
-      <li data-bind="visible: $root.techHealth"><loc>Health increased</loc></li>
-      <li data-bind="visible: $root.techSpeed"><loc>Speed increased</loc></li>
+      <li data-bind="visible: $root.gwaioTechBuild"><loc>Build faster</loc></li>
+      <li data-bind="visible: $root.gwaioTechCost">
+        <loc>Costs decreased</loc>
+      </li>
+      <li data-bind="visible: $root.gwaioTechDamage">
+        <loc>Damage increased</loc>
+      </li>
+      <li data-bind="visible: $root.gwaioTechHealth">
+        <loc>Health increased</loc>
+      </li>
+      <li data-bind="visible: $root.gwaioTechSpeed">
+        <loc>Speed increased</loc>
+      </li>
       <li
         data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().mirrorMode"
       >
@@ -43,13 +58,13 @@
       </li>
     </ul>
   </div>
-  <!-- ko if: $root.selection.system().star.ai() && !$root.selection.system().star.ai().treasurePlanet && $root.systemOwner() -->
-  <h3><span data-bind="text: $root.systemOwner()[0].faction"></span></h3>
+  <!-- ko if: $root.selection.system().star.ai() && !$root.selection.system().star.ai().treasurePlanet && $root.gwaioSystemOwner() -->
+  <h3><span data-bind="text: $root.gwaioSystemOwner()[0].faction"></span></h3>
   <!-- /ko -->
-  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().treasurePlanet && $root.systemOwner() -->
+  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().treasurePlanet && $root.gwaioSystemOwner() -->
   <h3><loc>Unknown Faction</loc></h3>
   <!-- /ko -->
-  <ul data-bind="foreach: $root.systemOwner">
+  <ul data-bind="foreach: $root.gwaioSystemOwner">
     <li class="commander">
       <div class="div_player_icon">
         <div
@@ -80,7 +95,7 @@
   <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().foes && !$root.selection.system().star.ai().foes[0].faction -->
   <h3><loc>Additional Factions</loc></h3>
   <!-- /ko -->
-  <ul data-bind="foreach: $root.ffaOpponents">
+  <ul data-bind="foreach: $root.gwaioFfaOpponents">
     <h3><span data-bind="text: faction"></span></h3>
     <li class="commander">
       <div class="div_player_icon">
