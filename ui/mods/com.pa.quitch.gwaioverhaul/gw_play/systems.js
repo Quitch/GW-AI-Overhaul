@@ -195,20 +195,21 @@ if (!gwaioSystemChangesLoaded) {
                   self.system().planets(),
                   function (planet) {
                     if (planet.generator.biome === "gas")
-                      var result = "Radius: " + planet.generator.radius;
+                      return "Radius: " + planet.generator.radius;
                     else if (
                       planet.generator.biome === "metal" ||
                       planet.generator.biome === "metal_boss"
-                    ) {
+                    )
                       if (planet.metal_spots)
-                        result =
+                        return (
                           "Radius: " +
                           planet.generator.radius +
                           "<br>" +
                           "Metal Spots: " +
-                          planet.metal_spots.length;
+                          planet.metal_spots.length
+                        );
                       else
-                        result =
+                        return (
                           "Radius: " +
                           planet.generator.radius +
                           "<br>" +
@@ -216,10 +217,10 @@ if (!gwaioSystemChangesLoaded) {
                           Math.round(planet.generator.metalClusters) +
                           "<br>" +
                           "Metal Density: " +
-                          Math.round(planet.generator.metalDensity);
-                      return result;
-                    } else if (planet.metal_spots)
-                      result =
+                          Math.round(planet.generator.metalDensity)
+                        );
+                    else if (planet.metal_spots)
+                      return (
                         "Radius: " +
                         planet.generator.radius +
                         "<br>" +
@@ -233,9 +234,10 @@ if (!gwaioSystemChangesLoaded) {
                         Math.round(planet.generator.waterDepth) +
                         "<br>" +
                         "Water Height: " +
-                        Math.round(planet.generator.waterHeight);
+                        Math.round(planet.generator.waterHeight)
+                      );
                     else
-                      result =
+                      return (
                         "Radius: " +
                         planet.generator.radius +
                         "<br>" +
@@ -252,8 +254,8 @@ if (!gwaioSystemChangesLoaded) {
                         Math.round(planet.generator.waterDepth) +
                         "<br>" +
                         "Water Height: " +
-                        Math.round(planet.generator.waterHeight);
-                    return result;
+                        Math.round(planet.generator.waterHeight)
+                      );
                   }
                 );
               }
