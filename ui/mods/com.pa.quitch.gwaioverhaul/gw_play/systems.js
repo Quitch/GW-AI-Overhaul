@@ -6,7 +6,7 @@ if (!gwaioSystemChangesLoaded) {
   function gwaioSystemChanges() {
     try {
       // Cannot translate multiple strings in a single tooltip so we do it here instead
-      model.gwaioRadius = loc("!LOC:Radius");
+      model.gwaioRadius = loc("!LOC:Radius:");
       model.gwaioMetalClusters = loc("!LOC:Metal Clusters:");
       model.gwaioMetalDensity = loc("!LOC:Metal Density:");
       model.gwaioTemperature = loc("!LOC:Temperature:");
