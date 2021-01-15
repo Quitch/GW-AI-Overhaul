@@ -3,7 +3,7 @@
   <div
     class="div_planet"
     data-placement="right"
-    data-bind="tooltip: model.gwaioRadius + ' ' + $data.generator.radius + '<br>' + model.gwaioMetalClusters + ' ' + $data.generator.metalClusters + '<br>' + model.gwaioMetalDensity + ' ' + $data.generator.metalDensity + '<br>' + model.gwaioTemperature + ' ' + $data.generator.temperature + '<br>' + model.gwaioWaterDepth + ' ' + $data.generator.waterDepth + '<br>' + model.gwaioWaterHeight + ' ' + $data.generator.waterHeight"
+    data-bind="tooltip: model.gwaioRadius + ' ' + Math.round($data.generator.radius) + '<br>' + model.gwaioMetalClusters + ' ' + Math.round($data.generator.metalClusters) + '<br>' + model.gwaioMetalDensity + ' ' + Math.round($data.generator.metalDensity) + '<br>' + model.gwaioTemperature + ' ' + Math.round($data.generator.temperature) + '<br>' + model.gwaioWaterDepth + ' ' + Math.round($data.generator.waterDepth) + '<br>' + model.gwaioWaterHeight + ' ' + Math.round($data.generator.waterHeight)"
   >
     <img
       style="height: 20px; width: 20px"
@@ -25,7 +25,7 @@
   <div
     class="div_planet"
     data-placement="left"
-    data-bind="tooltip: model.gwaioRadius + ' ' + $data.generator.radius + '<br>' + model.gwaioMetalClusters + ' ' + $data.generator.metalClusters + '<br>' + model.gwaioMetalDensity + ' ' + $data.generator.metalDensity + '<br>' + model.gwaioTemperature + ' ' + $data.generator.temperature + '<br>' + model.gwaioWaterDepth + ' ' + $data.generator.waterDepth + '<br>' + model.gwaioWaterHeight + ' ' + $data.generator.waterHeight"
+    data-bind="tooltip: model.gwaioRadius + ' ' + Math.round($data.generator.radius) + '<br>' + model.gwaioMetalClusters + ' ' + Math.round($data.generator.metalClusters) + '<br>' + model.gwaioMetalDensity + ' ' + Math.round($data.generator.metalDensity) + '<br>' + model.gwaioTemperature + ' ' + Math.round($data.generator.temperature) + '<br>' + model.gwaioWaterDepth + ' ' + Math.round($data.generator.waterDepth) + '<br>' + model.gwaioWaterHeight + ' ' + Math.round($data.generator.waterHeight)"
   >
     <img
       style="height: 20px; width: 20px"
