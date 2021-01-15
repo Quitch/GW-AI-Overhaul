@@ -42,7 +42,6 @@ if (!gwaioSystemChangesLoaded) {
           });
         });
 
-        /* extractor() change start */
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
@@ -190,7 +189,74 @@ if (!gwaioSystemChangesLoaded) {
             );
             self.system.subscribe(function () {
               var newSystem = self.system();
-              if (newSystem) newSystem.selected(true);
+              if (newSystem) {
+                newSystem.selected(true);
+                model.gwaioPlanetData = _.map(
+                  self.system().planets(),
+                  function (planet) {
+                    if (planet.generator.biome === "gas")
+                      var result = "Radius: " + planet.generator.radius;
+                    else if (
+                      planet.generator.biome === "metal" ||
+                      planet.generator.biome === "metal_boss"
+                    ) {
+                      if (planet.metal_spots)
+                        result =
+                          "Radius: " +
+                          planet.generator.radius +
+                          "<br>" +
+                          "Metal Spots: " +
+                          planet.metal_spots.length;
+                      else
+                        result =
+                          "Radius: " +
+                          planet.generator.radius +
+                          "<br>" +
+                          "Metal Clusters: " +
+                          Math.round(planet.generator.metalClusters) +
+                          "<br>" +
+                          "Metal Density: " +
+                          Math.round(planet.generator.metalDensity);
+                      return result;
+                    } else if (planet.metal_spots)
+                      result =
+                        "Radius: " +
+                        planet.generator.radius +
+                        "<br>" +
+                        "Metal Spots: " +
+                        planet.metal_spots.length +
+                        "<br>" +
+                        "Temperature: " +
+                        Math.round(planet.generator.temperature) +
+                        "<br>" +
+                        "Water Depth: " +
+                        Math.round(planet.generator.waterDepth) +
+                        "<br>" +
+                        "Water Height: " +
+                        Math.round(planet.generator.waterHeight);
+                    else
+                      result =
+                        "Radius: " +
+                        planet.generator.radius +
+                        "<br>" +
+                        "Metal Clusters: " +
+                        Math.round(planet.generator.metalClusters) +
+                        "<br>" +
+                        "Metal Density: " +
+                        Math.round(planet.generator.metalDensity) +
+                        "<br>" +
+                        "Temperature: " +
+                        Math.round(planet.generator.temperature) +
+                        "<br>" +
+                        "Water Depth: " +
+                        Math.round(planet.generator.waterDepth) +
+                        "<br>" +
+                        "Water Height: " +
+                        Math.round(planet.generator.waterHeight);
+                    return result;
+                  }
+                );
+              }
             });
           }
         }
@@ -234,7 +300,6 @@ if (!gwaioSystemChangesLoaded) {
             model.selection.star() === model.game().currentStar()
           );
         });
-        /* extractor() change end */
 
         requireGW(
           ["shared/gw_common", "pages/gw_play/gw_referee"],
