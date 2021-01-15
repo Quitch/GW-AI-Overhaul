@@ -1,7 +1,7 @@
 <div class="all-planets" data-bind="foreach: selection.system().planets()">
   <span
     data-placement="right"
-    data-bind="tooltip: 'Radius:' + ' ' + $data.generator.radius + '<br>' + 'Metal Clusters:' + ' ' + $data.generator.metalClusters + '<br>' + 'Metal Density:' + ' ' + $data.generator.metalDensity + '<br>' + 'Temperature:' + ' ' + $data.generator.temperature + '<br>' + 'Water Depth:' + ' ' + $data.generator.waterDepth + '<br>' + 'Water Height:' + ' ' + $data.generator.waterHeight"
+    data-bind="tooltip: model.gwaioRadius + ' ' + $data.generator.radius + '<br>' + model.gwaioMetalClusters + ' ' + $data.generator.metalClusters + '<br>' + model.gwaioMetalDensity + ' ' + $data.generator.metalDensity + '<br>' + model.gwaioTemperature + ' ' + $data.generator.temperature + '<br>' + model.gwaioWaterDepth + ' ' + $data.generator.waterDepth + '<br>' + model.gwaioWaterHeight + ' ' + $data.generator.waterHeight"
     ><img
       style="height: 20px; width: 20px"
       data-bind="attr: { src: 'coui://ui/main/shared/img/planets/' + $data.generator.biome + '.png' }"

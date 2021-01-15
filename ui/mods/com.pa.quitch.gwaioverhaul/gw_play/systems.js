@@ -5,6 +5,13 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
+      // Cannot translate multiple strings in a single tooltip so we do it here instead
+      model.gwaioRadius = loc("!LOC:Radius");
+      model.gwaioMetalClusters = loc("!LOC:Metal Clusters:");
+      model.gwaioMetalDensity = loc("!LOC:Metal Density:");
+      model.gwaioTemperature = loc("!LOC:Temperature:");
+      model.gwaioWaterDepth = loc("!LOC:Water Depth:");
+      model.gwaioWaterHeight = loc("!LOC:Water Height:");
       $(".all-planets").replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
