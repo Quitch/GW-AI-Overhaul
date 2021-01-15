@@ -14,6 +14,11 @@
       class="img_start"
       src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
     />
+    <img
+      data-bind="visible: $data.required_thrust_to_move > 0"
+      class="thruster_count"
+      src="coui://ui/main/game/server_browser/img/icon_thruster.png"
+    />
   </div>
   <!-- /ko -->
   <!-- ko if: $index() > 3 -->
@@ -30,6 +35,11 @@
       data-bind="visible: $data.starting_planet"
       class="img_start"
       src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
+    />
+    <img
+      data-bind="visible: $data.required_thrust_to_move > 0"
+      class="thruster_count"
+      src="coui://ui/main/game/server_browser/img/icon_thruster.png"
     />
   </div>
   <!-- /ko -->
