@@ -1,5 +1,5 @@
 <div class="all-planets" data-bind="foreach: selection.system().planets()">
-  <!-- ko if: ($index() <= 3 && $index() <= 7) || ($index() > 7 && $index() <= 11) -->
+  <!-- ko if: $index() <= 3 || ($index() > 7 && $index() <= 11) -->
   <div
     class="div_planet"
     data-placement="right"
