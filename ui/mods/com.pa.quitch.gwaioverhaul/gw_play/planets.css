@@ -1,17 +1,17 @@
-.all-planets {
+#system-detail .all-planets {
   margin: 0px 0px 0px 0px;
   padding: 0px 16px 0px 4px;
   display: flex;
   flex-direction: row;
 }
 
-.div_planet {
+#system-detail .div_planet {
   height: 20px;
   width: 20px;
   margin: 4px;
 }
 
-img.img_start {
+#system-detail img.img_start {
   height: 16px;
   width: 16px;
   position: relative;
