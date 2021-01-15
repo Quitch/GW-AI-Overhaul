@@ -5,6 +5,7 @@
 ### Added
 
 - Tooltips to planets on the intelligence panel with data about metal, radius, etc.
+- Starting planet icons on intelligence panel
 
 ## v4.16.0 - 20201-01-13
 
