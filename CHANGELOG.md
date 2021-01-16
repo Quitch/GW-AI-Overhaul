@@ -6,6 +6,7 @@
 
 - Support translation of new tooltips
 - Original personalities behaving incorrectly
+- Moon tooltips showing water and temperature information
 
 ## v4.17.0 - 2021-01-15
 

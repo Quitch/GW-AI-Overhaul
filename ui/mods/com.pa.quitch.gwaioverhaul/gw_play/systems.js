@@ -201,7 +201,8 @@ if (!gwaioSystemChangesLoaded) {
                       return radius + " " + planet.generator.radius;
                     else if (
                       planet.generator.biome === "metal" ||
-                      planet.generator.biome === "metal_boss"
+                      planet.generator.biome === "metal_boss" ||
+                      planet.generator.biome === "moon"
                     )
                       if (planet.metal_spots)
                         return (
