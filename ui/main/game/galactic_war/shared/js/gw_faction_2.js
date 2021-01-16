@@ -329,7 +329,6 @@ define(function () {
         percent_air: 0.3,
         percent_naval: 0.05,
         percent_orbital: 0.35,
-        fabber_to_factory_ratio_basic: 1.5,
         min_basic_fabbers: 1,
       },
       commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
