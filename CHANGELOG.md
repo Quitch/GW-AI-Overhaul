@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v4.17.1 - 2021-01-16
+
+### Fixed
+
+- Support translation of new tooltips
+- Original personalities behaving incorrectly
+- Moon tooltips showing water and temperature information
+
 ## v4.17.0 - 2021-01-15
 
 ### Added
