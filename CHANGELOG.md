@@ -5,6 +5,7 @@
 ### Fixed
 
 - Support translation of new tooltips
+- Original personalities behaving incorrectly
 
 ## v4.17.0 - 2021-01-15
 
