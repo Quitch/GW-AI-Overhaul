@@ -180,73 +180,99 @@ if (!gwaioSystemChangesLoaded) {
               null,
               "beforeChange"
             );
+
+            var radius = loc("!LOC:Radius:");
+            var metalSpots = loc("!LOC:Metal Spots:");
+            var metalClusters = loc("!LOC:Metal Clusters:");
+            var metalDensity = loc("!LOC:Metal Density:");
+            var temperature = loc("!LOC:Temperature:");
+            var waterDepth = loc("!LOC:Water Depth:");
+            var waterHeight = loc("!LOC:Water Height:");
+
             self.system.subscribe(function () {
               var newSystem = self.system();
+
               if (newSystem) {
                 newSystem.selected(true);
                 model.gwaioPlanetData = _.map(
                   self.system().planets(),
                   function (planet) {
                     if (planet.generator.biome === "gas")
-                      return "Radius: " + planet.generator.radius;
+                      return radius + " " + planet.generator.radius;
                     else if (
                       planet.generator.biome === "metal" ||
                       planet.generator.biome === "metal_boss"
                     )
                       if (planet.metal_spots)
                         return (
-                          "Radius: " +
+                          radius +
+                          " " +
                           planet.generator.radius +
                           "<br>" +
-                          "Metal Spots: " +
+                          metalSpots +
+                          " " +
                           planet.metal_spots.length
                         );
                       else
                         return (
-                          "Radius: " +
+                          radius +
+                          " " +
                           planet.generator.radius +
                           "<br>" +
-                          "Metal Clusters: " +
+                          metalClusters +
+                          " " +
                           Math.round(planet.generator.metalClusters) +
                           "<br>" +
-                          "Metal Density: " +
+                          metalDensity +
+                          " " +
                           Math.round(planet.generator.metalDensity)
                         );
                     else if (planet.metal_spots)
                       return (
-                        "Radius: " +
+                        radius +
+                        " " +
                         planet.generator.radius +
                         "<br>" +
-                        "Metal Spots: " +
+                        metalSpots +
+                        " " +
                         planet.metal_spots.length +
                         "<br>" +
-                        "Temperature: " +
+                        temperature +
+                        " " +
                         Math.round(planet.generator.temperature) +
                         "<br>" +
-                        "Water Depth: " +
+                        waterDepth +
+                        " " +
                         Math.round(planet.generator.waterDepth) +
                         "<br>" +
-                        "Water Height: " +
+                        waterHeight +
+                        " " +
                         Math.round(planet.generator.waterHeight)
                       );
                     else
                       return (
-                        "Radius: " +
+                        radius +
+                        " " +
                         planet.generator.radius +
                         "<br>" +
-                        "Metal Clusters: " +
+                        metalClusters +
+                        " " +
                         Math.round(planet.generator.metalClusters) +
                         "<br>" +
-                        "Metal Density: " +
+                        metalDensity +
+                        " " +
                         Math.round(planet.generator.metalDensity) +
                         "<br>" +
-                        "Temperature: " +
+                        temperature +
+                        " " +
                         Math.round(planet.generator.temperature) +
                         "<br>" +
-                        "Water Depth: " +
+                        waterDepth +
+                        " " +
                         Math.round(planet.generator.waterDepth) +
                         "<br>" +
-                        "Water Height: " +
+                        waterHeight +
+                        " " +
                         Math.round(planet.generator.waterHeight)
                       );
                   }

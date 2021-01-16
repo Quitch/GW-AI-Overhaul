@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Support translation of new tooltips
+
 ## v4.17.0 - 2021-01-15
 
 ### Added
