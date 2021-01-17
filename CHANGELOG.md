@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Planet alignment with text in intelligence panel
+
 ## v4.17.1 - 2021-01-16
 
 ### Fixed
