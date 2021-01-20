@@ -1222,7 +1222,10 @@ if (!gwaioSetupLoaded) {
               });
 
               // Hacky way to store war information
-              var origin = game.galaxy().stars()[game.galaxy().origin()];
+              var originSystem = game
+                .galaxy()
+                .stars()
+                [game.galaxy().origin()].system();
               var galaxySizes = [
                 "!LOC:Small",
                 "!LOC:Medium",
@@ -1234,18 +1237,18 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Ridiculous",
                 "!LOC:Marathon",
               ];
-              origin.system().gwaio = {};
-              origin.system().gwaio.version = "#.##.#";
-              origin.system().gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
-              origin.system().gwaio.galaxySize =
+              originSystem.gwaio = {};
+              originSystem.gwaio.version = "#.##.#";
+              originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
+              originSystem.gwaio.galaxySize =
                 galaxySizes[model.newGameSizeIndex()];
-              origin.system().gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
-              origin.system().gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
-              origin.system().gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
+              originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
+              originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
+              originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
 
               if (model.creditsMode()) {
-                origin.system().name = GWCredits.startSystem.name;
-                origin.system().description = GWCredits.startSystem.description;
+                originSystem.name = GWCredits.startSystem.name;
+                originSystem.description = GWCredits.startSystem.description;
               }
             });
 
