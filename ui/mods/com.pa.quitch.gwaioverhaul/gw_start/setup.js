@@ -669,11 +669,10 @@ if (!gwaioSetupLoaded) {
                 !gwaioBank.hasStartCard(cardData)) ||
               (cardData.id === "gwc_start_storage" &&
                 !GW.bank.hasStartCard(cardData))
-            ) {
+            )
               model.startCards().push(model.makeUnknown(cardData));
-            } else if (cardData.id != "gwc_start_storage") {
+            else if (cardData.id != "gwc_start_storage")
               model.startCards().push(model.makeKnown(cardData));
-            }
           });
           model.startCards.valueHasMutated();
 
