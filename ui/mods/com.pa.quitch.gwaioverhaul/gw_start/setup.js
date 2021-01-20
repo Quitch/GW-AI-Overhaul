@@ -761,7 +761,7 @@ if (!gwaioSetupLoaded) {
               aiFactions = _.sample(aiFactions, numFactions);
             }
 
-            if (model.creditsMode()) {
+            if (model.creditsMode())
               size = _.reduce(
                 GWFactions,
                 function (factionSum, faction) {
@@ -775,7 +775,6 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-            }
 
             model.updateCommander();
             game
@@ -826,12 +825,11 @@ if (!gwaioSetupLoaded) {
               // Scatter some AIs
               if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
               var teams = _.map(aiFactions, GWTeams.getTeam);
-              if (model.creditsMode()) {
+              if (model.creditsMode())
                 // Duplicate the workers so we can keep them unique
                 _.forEach(teams, function (team) {
                   team.workers = (team.workers || []).slice(0);
                 });
-              }
 
               var teamInfo = _.map(teams, function (team, teamIndex) {
                 return {
@@ -936,12 +934,11 @@ if (!gwaioSetupLoaded) {
                     getRandomArbitrary(0.9, 1.1);
                   if (isBoss)
                     ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-                } else {
+                } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
-                }
               };
 
               var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
