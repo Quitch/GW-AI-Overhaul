@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic vehicle manufacturing."
+      "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
     ),
     summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
     icon: _.constant(
