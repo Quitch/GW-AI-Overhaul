@@ -22,9 +22,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/air/air_factory_adv/air_factory.json")
-      )
+      if (gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json"))
         chance = 70;
 
       return { chance: chance };
@@ -32,7 +30,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/air/air_factory_adv/air_factory.json",
+          file: "/pa/units/air/air_factory/air_factory.json",
           path: "buildable_types",
           op: "replace",
           value: "Air & Mobile & FactoryBuild",
