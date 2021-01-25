@@ -1210,5 +1210,29 @@ define({
         "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_airfactory",
+      units: ["/pa/units/air/air_factory/air_factory.json"],
+    },
+    {
+      id: "gwaio_upgrade_botfactory",
+      units: ["/pa/units/land/bot_factory/bot_factory.json"],
+    },
+    {
+      id: "gwaio_upgrade_navalfactory",
+      units: ["/pa/units/sea/naval_factory/naval_factory.json"],
+    },
+    {
+      id: "gwaio_upgrade_orbitallauncher",
+      units: ["/pa/units/orbital/orbital_launcher/orbital_launcher.json"],
+    },
+    {
+      id: "gwaio_upgrade_unitcannon",
+      units: ["/pa/units/land/unit_cannon/unit_cannon.json"],
+    },
+    {
+      id: "gwaio_upgrade_vehiclefactory",
+      units: ["/pa/units/land/vehicle_factory/vehicle_factory.json"],
+    },
   ],
 });
