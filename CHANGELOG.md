@@ -5,6 +5,7 @@
 ### Fixed
 
 - Planet alignment with text in intelligence panel
+- Guardian tech modifier not always showing on the intelligence panel
 
 ## v4.17.1 - 2021-01-16
 

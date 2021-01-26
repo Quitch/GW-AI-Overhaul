@@ -34,7 +34,7 @@
     </ul>
   </div>
   <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().typeOfBuffs && $root.gwaioAiBuffs"
+    data-bind="visible: $root.selection.system().star.ai() && ($root.selection.system().star.ai().mirrorMode || ($root.selection.system().star.ai().typeOfBuffs && $root.gwaioAiBuffs))"
   >
     <h3><loc>AI Tech</loc></h3>
     <ul>
