@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- New upgrade tech cards
+
 ### Fixed
 
 - Planet alignment with text in intelligence panel
