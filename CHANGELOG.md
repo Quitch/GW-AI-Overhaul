@@ -5,6 +5,7 @@
 ### Added
 
 - New upgrade tech cards
+- The Guardians are marked by their own icon on the map
 
 ### Fixed
 

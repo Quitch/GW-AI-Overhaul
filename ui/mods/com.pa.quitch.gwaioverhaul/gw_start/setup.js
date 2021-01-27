@@ -1200,6 +1200,9 @@ if (!gwaioSetupLoaded) {
                     delete ai.minions;
                     delete ai.foes;
                     delete ai.team;
+                    ai.icon =
+                      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
+                    ai.boss = true;
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
                     ai.econ_rate =
