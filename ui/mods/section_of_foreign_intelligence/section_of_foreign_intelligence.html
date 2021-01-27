@@ -33,9 +33,7 @@
       </li>
     </ul>
   </div>
-  <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().mirrorMode || $root.gwaioAiBuffs"
-  >
+  <div data-bind="visible: $root.gwaioAiBuffs">
     <h3><loc>AI Tech</loc></h3>
     <ul>
       <li data-bind="visible: $root.gwaioTechBuild"><loc>Build faster</loc></li>
@@ -51,9 +49,7 @@
       <li data-bind="visible: $root.gwaioTechSpeed">
         <loc>Speed increased</loc>
       </li>
-      <li
-        data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().mirrorMode"
-      >
+      <li data-bind="visible: $root.gwaioTechMirror">
         <loc>Your technology bonuses</loc>
       </li>
     </ul>
