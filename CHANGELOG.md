@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.18.1 - 2021-01-28
+
+### Fixed
+
+- Error preventing battles launching
+
 ## v4.18.0 - 2021-01-28
 
 ### Added

@@ -646,7 +646,7 @@ if (!gwaioSystemChangesLoaded) {
                 });
 
                 $.when.apply($, filesToProcess).always(function () {
-                  self.files(_.assign.apply(unused0, arguments));
+                  self.files(_.assign.apply(_, arguments));
                   done.resolve();
                 });
               });
