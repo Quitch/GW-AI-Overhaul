@@ -4,7 +4,7 @@
 
 ### Added
 
-- New upgrade tech cards
+- Upgrade tech cards for T1 factories
 - The Guardians are marked by their own icon on the map
 
 ### Changed
