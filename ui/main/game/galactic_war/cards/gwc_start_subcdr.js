@@ -22,7 +22,7 @@ define([
         description: "!LOC:General Commander",
       };
     },
-    getContext: function (_, inventory) {
+    getContext: function (unused0, inventory) {
       return {
         faction: inventory.getTag("global", "playerFaction") || 0,
       };

@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (_, __, inventory) {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
         (gwaioFunctions.hasUnit(
