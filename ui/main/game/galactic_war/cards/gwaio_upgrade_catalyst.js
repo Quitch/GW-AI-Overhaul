@@ -43,7 +43,7 @@ define([
           ) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory"))
       )
-        chance = 70000;
+        chance = 70;
 
       return { chance: chance };
     },
