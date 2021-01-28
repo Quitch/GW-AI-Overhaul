@@ -5,6 +5,7 @@ define({
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/ammo/cannon_uber/cannon_uber.json",
   ],
+
   // AI Buffs
   legonisUnits: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
@@ -415,6 +416,7 @@ define({
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   ],
+
   // Faction specific setup
   clusterCommanders: [
     "/pa/units/air/support_platform/support_platform.json",

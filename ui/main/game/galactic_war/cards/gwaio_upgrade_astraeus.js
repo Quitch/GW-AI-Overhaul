@@ -20,17 +20,18 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) &&
-        gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_lander/orbital_lander.json"
-        )
+        ) &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
+        ) ||
+          inventory.hasCard("gwaio_upgrade_orbitallauncher"))
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

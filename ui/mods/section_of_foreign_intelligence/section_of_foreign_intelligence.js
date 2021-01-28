@@ -241,13 +241,22 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
+        model.gwaioTechMirror = ko.pureComputed(function () {
+          if (
+            model.selection.system().star.ai() &&
+            model.selection.system().star.ai().mirrorMode === true
+          )
+            return true;
+        });
+
         model.gwaioAiBuffs = ko.pureComputed(function () {
           if (
             model.gwaioTechBuild() ||
             model.gwaioTechCost() ||
             model.gwaioTechDamage() ||
             model.gwaioTechHealth() ||
-            model.gwaioTechSpeed()
+            model.gwaioTechSpeed() ||
+            model.gwaioTechMirror()
           )
             return true;
         });

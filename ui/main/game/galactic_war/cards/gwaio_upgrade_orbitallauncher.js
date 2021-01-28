@@ -4,15 +4,15 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spark Upgrade Tech doubles the tesla bot's splash damage radius."
+      "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
     ),
-    summarize: _.constant("!LOC:Spark Upgrade Tech"),
+    summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_orbital",
       };
     },
     getContext: function (galaxy) {
@@ -23,8 +23,9 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
-        gwaioFunctions.hasUnit("/pa/units/land/bot_tesla/bot_tesla.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
+        )
       )
         chance = 60;
 
@@ -33,10 +34,10 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
-          path: "splash_radius",
-          op: "multiply",
-          value: 2,
+          file: "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
+          path: "buildable_types",
+          op: "replace",
+          value: "Orbital & FactoryBuild",
         },
       ];
       inventory.addMods(mods);

@@ -19,9 +19,7 @@
       </div>
     </div>
   </div>
-  <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.gwaioGameOptions"
-  >
+  <div data-bind="visible: $root.gwaioGameOptions">
     <h3><loc>Game Modifiers</loc></h3>
     <ul>
       <li data-bind="visible: $root.gwaioBountyMode"><loc>Bounties</loc></li>
@@ -33,9 +31,7 @@
       </li>
     </ul>
   </div>
-  <div
-    data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().typeOfBuffs && $root.gwaioAiBuffs"
-  >
+  <div data-bind="visible: $root.gwaioAiBuffs">
     <h3><loc>AI Tech</loc></h3>
     <ul>
       <li data-bind="visible: $root.gwaioTechBuild"><loc>Build faster</loc></li>
@@ -51,9 +47,7 @@
       <li data-bind="visible: $root.gwaioTechSpeed">
         <loc>Speed increased</loc>
       </li>
-      <li
-        data-bind="visible: $root.selection.system().star.ai() && $root.selection.system().star.ai().mirrorMode"
-      >
+      <li data-bind="visible: $root.gwaioTechMirror">
         <loc>Your technology bonuses</loc>
       </li>
     </ul>
@@ -93,6 +87,7 @@
     </li>
   </ul>
   <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().foes && !$root.selection.system().star.ai().foes[0].faction -->
+  <!-- header for versions prior to v4.15.0 -->
   <h3><loc>Additional Factions</loc></h3>
   <!-- /ko -->
   <ul data-bind="foreach: $root.gwaioFfaOpponents">

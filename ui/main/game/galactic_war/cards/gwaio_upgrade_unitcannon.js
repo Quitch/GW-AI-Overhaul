@@ -4,15 +4,15 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Radar Upgrade Tech doubles the vision radius of advanced radar."
+      "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport."
     ),
-    summarize: _.constant("!LOC:Advanced Radar Upgrade Tech"),
+    summarize: _.constant("!LOC:Unit Cannon Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
+        found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
     getContext: function (galaxy) {
@@ -23,10 +23,11 @@ define([
     deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/radar_adv/radar_adv.json") &&
+        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json") &&
         (gwaioFunctions.hasUnit(
           "/pa/units/air/air_factory_adv/air_factory_adv.json"
         ) ||
+          inventory.hasCard("gwaio_upgrade_airfactory") ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
           ) ||
@@ -38,6 +39,10 @@ define([
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
+          inventory.hasCard("gwaio_upgrade_vehiclefactory") ||
+          inventory.hasCard("gwaio_upgrade_airfactory") ||
+          inventory.hasCard("gwaio_upgrade_botfactory") ||
+          inventory.hasCard("gwaio_upgrade_navalfactory") ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory"))
       )
         chance = 60;
@@ -47,16 +52,23 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
-          path: "recon.observer.items.3.radius",
-          op: "multiply",
-          value: 2,
+          file: "/pa/units/land/unit_cannon/unit_cannon.json",
+          path: "factory.spawn_points",
+          op: "push",
+          value: [
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+          ],
         },
       ];
       inventory.addMods(mods);

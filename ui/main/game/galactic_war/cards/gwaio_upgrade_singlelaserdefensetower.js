@@ -27,7 +27,7 @@ define([
           "/pa/units/land/laser_defense_single/laser_defense_single.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

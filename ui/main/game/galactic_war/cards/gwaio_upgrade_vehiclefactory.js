@@ -4,15 +4,15 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spark Upgrade Tech doubles the tesla bot's splash damage radius."
+      "!LOC:Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing."
     ),
-    summarize: _.constant("!LOC:Spark Upgrade Tech"),
+    summarize: _.constant("!LOC:Vehicle Factory Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_vehicle",
       };
     },
     getContext: function (galaxy) {
@@ -23,8 +23,9 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
-        gwaioFunctions.hasUnit("/pa/units/land/bot_tesla/bot_tesla.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/vehicle_factory/vehicle_factory.json"
+        )
       )
         chance = 60;
 
@@ -33,10 +34,10 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
-          path: "splash_radius",
-          op: "multiply",
-          value: 2,
+          file: "/pa/units/land/vehicle_factory/vehicle_factory.json",
+          path: "buildable_types",
+          op: "replace",
+          value: "Tank & Mobile & FactoryBuild",
         },
       ];
       inventory.addMods(mods);

@@ -669,11 +669,10 @@ if (!gwaioSetupLoaded) {
                 !gwaioBank.hasStartCard(cardData)) ||
               (cardData.id === "gwc_start_storage" &&
                 !GW.bank.hasStartCard(cardData))
-            ) {
+            )
               model.startCards().push(model.makeUnknown(cardData));
-            } else if (cardData.id != "gwc_start_storage") {
+            else if (cardData.id != "gwc_start_storage")
               model.startCards().push(model.makeKnown(cardData));
-            }
           });
           model.startCards.valueHasMutated();
 
@@ -762,7 +761,7 @@ if (!gwaioSetupLoaded) {
               aiFactions = _.sample(aiFactions, numFactions);
             }
 
-            if (model.creditsMode()) {
+            if (model.creditsMode())
               size = _.reduce(
                 GWFactions,
                 function (factionSum, faction) {
@@ -776,7 +775,6 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-            }
 
             model.updateCommander();
             game
@@ -827,12 +825,11 @@ if (!gwaioSetupLoaded) {
               // Scatter some AIs
               if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
               var teams = _.map(aiFactions, GWTeams.getTeam);
-              if (model.creditsMode()) {
+              if (model.creditsMode())
                 // Duplicate the workers so we can keep them unique
                 _.forEach(teams, function (team) {
                   team.workers = (team.workers || []).slice(0);
                 });
-              }
 
               var teamInfo = _.map(teams, function (team, teamIndex) {
                 return {
@@ -853,7 +850,7 @@ if (!gwaioSetupLoaded) {
                 neutralStars: neutralStars,
                 orderedSpawn: model.creditsMode(),
                 spawn: function () {},
-                canSpread: function (_, ai) {
+                canSpread: function (unused0, ai) {
                   return (
                     !model.creditsMode() ||
                     !ai ||
@@ -937,12 +934,11 @@ if (!gwaioSetupLoaded) {
                     getRandomArbitrary(0.9, 1.1);
                   if (isBoss)
                     ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-                } else {
+                } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
-                }
               };
 
               var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -1204,6 +1200,9 @@ if (!gwaioSetupLoaded) {
                     delete ai.minions;
                     delete ai.foes;
                     delete ai.team;
+                    ai.icon =
+                      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
+                    ai.boss = true;
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
                     ai.econ_rate =
@@ -1226,7 +1225,10 @@ if (!gwaioSetupLoaded) {
               });
 
               // Hacky way to store war information
-              var origin = game.galaxy().stars()[game.galaxy().origin()];
+              var originSystem = game
+                .galaxy()
+                .stars()
+                [game.galaxy().origin()].system();
               var galaxySizes = [
                 "!LOC:Small",
                 "!LOC:Medium",
@@ -1238,18 +1240,18 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Ridiculous",
                 "!LOC:Marathon",
               ];
-              origin.system().gwaio = {};
-              origin.system().gwaio.version = "4.17.1";
-              origin.system().gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
-              origin.system().gwaio.galaxySize =
+              originSystem.gwaio = {};
+              originSystem.gwaio.version = "#.##.#";
+              originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
+              originSystem.gwaio.galaxySize =
                 galaxySizes[model.newGameSizeIndex()];
-              origin.system().gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
-              origin.system().gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
-              origin.system().gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
+              originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
+              originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
+              originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
 
               if (model.creditsMode()) {
-                origin.system().name = GWCredits.startSystem.name;
-                origin.system().description = GWCredits.startSystem.description;
+                originSystem.name = GWCredits.startSystem.name;
+                originSystem.description = GWCredits.startSystem.description;
               }
             });
 

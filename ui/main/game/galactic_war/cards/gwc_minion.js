@@ -69,10 +69,10 @@ define([
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
     dull: function () {},
-    keep: function (_, context) {
+    keep: function (unused0, context) {
       context.chance = 50;
     },
-    discard: function (_, context) {
+    discard: function (unused0, context) {
       context.chance *= Math.log(context.totalSize) * 0.25;
     },
   };

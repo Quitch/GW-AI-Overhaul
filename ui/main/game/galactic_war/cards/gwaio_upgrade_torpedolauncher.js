@@ -27,7 +27,7 @@ define([
           "/pa/units/sea/torpedo_launcher/torpedo_launcher.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

@@ -20,18 +20,19 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
+        (gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) &&
+        ) ||
+          inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
         gwaioFunctions.hasUnit(
           "/pa/units/land/tank_laser_adv/tank_laser_adv.json"
         ) &&
         gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json")
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

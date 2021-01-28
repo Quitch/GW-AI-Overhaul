@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v4.18.0 - 2021-01-28
+
+### Added
+
+- Upgrade tech cards for T1 factories
+- The Guardians are marked by their own icon on the map
+
+### Changed
+
+- Reduced chance of receiving an upgrade tech card
+
+### Fixed
+
+- Planet alignment with text in intelligence panel
+- Guardian tech modifier not always showing on the intelligence panel
+
 ## v4.17.1 - 2021-01-16
 
 ### Fixed

@@ -20,7 +20,6 @@
     "star_system_templates": "readonly",
     "parse": "readonly",
     "loadScript": "readonly",
-    "locUpdateDocument": "readonly",
     "createjs": "readonly",
     "loadHtml": "readonly",
     "locTree": "readonly",

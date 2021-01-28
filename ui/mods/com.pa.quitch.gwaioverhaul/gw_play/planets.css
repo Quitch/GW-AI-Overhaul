@@ -1,6 +1,4 @@
 #system-detail .all-planets {
-  margin: 0px 0px 0px 0px;
-  padding: 0px 16px 0px 4px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

@@ -27,7 +27,7 @@ define([
           "/pa/units/land/energy_storage/energy_storage.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

@@ -20,29 +20,31 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (_, __, inventory) {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/nuke_launcher/nuke_launcher.json"
-        )
-      )
-        if (
-          gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory_adv/air_factory_adv.json"
-          ) ||
+        ) &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/air/air_factory_adv/air_factory_adv.json"
+        ) ||
+          inventory.hasCard("gwaio_upgrade_airfactory") ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
           ) ||
+          inventory.hasCard("gwaio_upgrade_botfactory") ||
           gwaioFunctions.hasUnit(
             "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
           ) ||
+          inventory.hasCard("gwaio_upgrade_navalfactory") ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
-          inventory.hasCard("nem_start_nuke")
-        )
-          chance = 70;
+          inventory.hasCard("gwaio_upgrade_vehiclefactory") ||
+          inventory.hasCard("nem_start_nuke"))
+      )
+        chance = 60;
 
       return { chance: chance };
     },

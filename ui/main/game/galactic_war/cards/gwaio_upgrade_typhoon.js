@@ -20,18 +20,19 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
+        (gwaioFunctions.hasUnit(
           "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) &&
+        ) ||
+          inventory.hasCard("gwaio_upgrade_navalfactory")) &&
         gwaioFunctions.hasUnit(
           "/pa/units/sea/drone_carrier/carrier/carrier.json"
         ) &&
         gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone/drone.json")
       )
-        chance = 35;
+        chance = 30;
 
       return { chance: chance };
     },

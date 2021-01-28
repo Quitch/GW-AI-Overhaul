@@ -28,7 +28,7 @@ define([
           "/pa/units/land/bot_grenadier/bot_grenadier.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

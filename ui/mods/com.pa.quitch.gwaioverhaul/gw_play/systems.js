@@ -441,7 +441,7 @@ if (!gwaioSystemChangesLoaded) {
                           ? attribute + value
                           : value;
                       },
-                      replace: function (_, value) {
+                      replace: function (unused0, value) {
                         return value;
                       },
                       merge: function (attribute, value) {
@@ -646,7 +646,7 @@ if (!gwaioSystemChangesLoaded) {
                 });
 
                 $.when.apply($, filesToProcess).always(function () {
-                  self.files(_.assign.apply(_, arguments));
+                  self.files(_.assign.apply(unused0, arguments));
                   done.resolve();
                 });
               });

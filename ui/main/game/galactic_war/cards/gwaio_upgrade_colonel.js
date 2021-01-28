@@ -20,17 +20,18 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (unused0, unused1, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
+        (gwaioFunctions.hasUnit(
           "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) &&
+        ) ||
+          inventory.hasCard("gwaio_upgrade_botfactory")) &&
         gwaioFunctions.hasUnit(
           "/pa/units/land/bot_support_commander/bot_support_commander.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

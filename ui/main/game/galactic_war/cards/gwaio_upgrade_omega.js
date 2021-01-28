@@ -31,7 +31,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone/drone.json")
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },
