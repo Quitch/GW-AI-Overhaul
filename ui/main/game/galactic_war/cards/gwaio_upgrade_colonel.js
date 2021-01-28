@@ -31,7 +31,7 @@ define([
           "/pa/units/land/bot_support_commander/bot_support_commander.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

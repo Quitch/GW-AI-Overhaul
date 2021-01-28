@@ -27,7 +27,7 @@ define([
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

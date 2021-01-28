@@ -30,7 +30,7 @@ define([
           "/pa/units/orbital/orbital_laser/orbital_laser.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

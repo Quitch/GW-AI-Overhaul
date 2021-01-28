@@ -29,7 +29,7 @@ define([
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
         gwaioFunctions.hasUnit("/pa/units/air/strafer/strafer.json")
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

@@ -31,7 +31,7 @@ define([
           "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

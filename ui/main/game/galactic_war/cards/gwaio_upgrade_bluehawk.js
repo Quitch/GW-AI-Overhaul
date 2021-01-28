@@ -31,7 +31,7 @@ define([
           "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

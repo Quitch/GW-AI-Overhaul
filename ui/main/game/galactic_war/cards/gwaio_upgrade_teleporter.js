@@ -23,7 +23,7 @@ define([
     deal: function () {
       var chance = 0;
       if (gwaioFunctions.hasUnit("/pa/units/land/teleporter/teleporter.json"))
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

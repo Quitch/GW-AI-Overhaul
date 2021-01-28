@@ -29,7 +29,7 @@ define([
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
         gwaioFunctions.hasUnit("/pa/units/sea/missile_ship/missile_ship.json")
       )
-        chance = 35;
+        chance = 30;
 
       return { chance: chance };
     },

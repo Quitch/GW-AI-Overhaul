@@ -26,7 +26,7 @@ define([
         gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json") &&
         gwaioFunctions.hasUnit("/pa/units/air/solar_drone/solar_drone.json")
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

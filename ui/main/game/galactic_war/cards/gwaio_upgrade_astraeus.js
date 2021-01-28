@@ -31,7 +31,7 @@ define([
         ) ||
           inventory.hasCard("gwaio_upgrade_orbitallauncher"))
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

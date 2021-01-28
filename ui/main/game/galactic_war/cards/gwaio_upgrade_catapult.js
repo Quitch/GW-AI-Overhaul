@@ -44,7 +44,7 @@ define([
           inventory.hasCard("gwaio_upgrade_vehiclefactory") ||
           inventory.hasCard("nem_start_tower_rush"))
       )
-        chance = 35;
+        chance = 30;
 
       return { chance: chance };
     },

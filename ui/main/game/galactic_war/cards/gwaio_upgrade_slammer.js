@@ -31,7 +31,7 @@ define([
           "/pa/units/land/assault_bot_adv/assault_bot_adv.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

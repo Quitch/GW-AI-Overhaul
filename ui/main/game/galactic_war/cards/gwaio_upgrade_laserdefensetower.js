@@ -41,7 +41,7 @@ define([
           inventory.hasCard("gwc_start_artillery") ||
           inventory.hasCard("nem_start_tower_rush"))
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

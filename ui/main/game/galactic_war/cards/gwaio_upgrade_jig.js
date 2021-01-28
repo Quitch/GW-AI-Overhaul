@@ -31,7 +31,7 @@ define([
           "/pa/units/orbital/mining_platform/mining_platform.json"
         )
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },

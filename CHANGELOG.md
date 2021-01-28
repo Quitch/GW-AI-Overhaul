@@ -7,6 +7,10 @@
 - New upgrade tech cards
 - The Guardians are marked by their own icon on the map
 
+### Changed
+
+- Reduced chance of receiving an upgrade tech card
+
 ### Fixed
 
 - Planet alignment with text in intelligence panel

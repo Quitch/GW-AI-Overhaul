@@ -28,7 +28,7 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/land/tank_armor/tank_armor.json")
       )
-        chance = 70;
+        chance = 60;
 
       return { chance: chance };
     },
