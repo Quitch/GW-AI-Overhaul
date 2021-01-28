@@ -20,15 +20,16 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) &&
-        gwaioFunctions.hasUnit(
           "/pa/units/air/support_platform/support_platform.json"
-        )
+        ) &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/air/air_factory_adv/air_factory_adv.json"
+        ) ||
+          inventory.hasCard("gwaio_upgrade_airfactory"))
       )
         chance = 70;
 

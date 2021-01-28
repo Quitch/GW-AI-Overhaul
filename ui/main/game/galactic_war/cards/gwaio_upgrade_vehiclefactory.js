@@ -27,7 +27,7 @@ define([
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
         )
       )
-        chance = 70;
+        chance = 70000;
 
       return { chance: chance };
     },

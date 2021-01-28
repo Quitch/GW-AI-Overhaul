@@ -26,9 +26,10 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/sea/drone_carrier/drone/drone.json"
         ) &&
-        ((gwaioFunctions.hasUnit(
+        (((gwaioFunctions.hasUnit(
           "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) &&
+        ) ||
+          inventory.hasCard("gwaio_upgrade_navalfactory")) &&
           gwaioFunctions.hasUnit(
             "/pa/units/sea/drone_carrier/carrier/carrier.json"
           )) ||

@@ -22,11 +22,11 @@ define([
     },
     deal: function (_, __, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/radar/radar.json"))
-        if (
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory/bot_factory.json"
-          ) ||
+      if (
+        gwaioFunctions.hasUnit("/pa/units/land/radar/radar.json") &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/land/bot_factory/bot_factory.json"
+        ) ||
           gwaioFunctions.hasUnit(
             "/pa/units/air/air_factory/air_factory.json"
           ) ||
@@ -37,9 +37,9 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json"
           ) ||
           inventory.hasCard("gwc_start_artillery") ||
-          inventory.hasCard("nem_start_tower_rush")
-        )
-          chance = 70;
+          inventory.hasCard("nem_start_tower_rush"))
+      )
+        chance = 70;
 
       return { chance: chance };
     },

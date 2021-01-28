@@ -20,12 +20,13 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (_, __, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
+        (gwaioFunctions.hasUnit(
           "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) &&
+        ) ||
+          inventory.hasCard("gwaio_upgrade_airfactory")) &&
         gwaioFunctions.hasUnit("/pa/units/air/bomber_adv/bomber_adv.json")
       )
         chance = 70;
