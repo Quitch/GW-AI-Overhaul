@@ -25,12 +25,10 @@ define([
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/nuke_launcher/nuke_launcher.json"
-        )
-      )
-        if (
-          gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory_adv/air_factory_adv.json"
-          ) ||
+        ) &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/air/air_factory_adv/air_factory_adv.json"
+        ) ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
           ) ||
@@ -40,9 +38,9 @@ define([
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
-          inventory.hasCard("nem_start_nuke")
-        )
-          chance = 70;
+          inventory.hasCard("nem_start_nuke"))
+      )
+        chance = 70;
 
       return { chance: chance };
     },
