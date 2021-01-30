@@ -1,12 +1,6 @@
 # CHANGELOG
 
-## v4.18.3 - 2021-01-30
-
-### Fixed
-
-- Rolled back previous fix due to working locally but not via Community Mods
-
-## v4.18.2 - 2021-01-30
+## Unreleased
 
 ### Fixed
 
