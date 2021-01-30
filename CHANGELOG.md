@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## Unreleased
+
+### v4.18.4 - 2021-01-30
+
+- Continue War does not return you to the galactic map if more than one enemy faction remains alive
+  - The previous fix which worked in local testing fails when loaded via Community Mods for reasons I don't understand, so a slightly clunkier fix has been implemented
+- Galactic War Overhaul panel showing the wrong difficulty if you are using Shared Systems for Galactic War
+- Vehicle Ammunition Tech chance being set too high
+
+## v4.18.3 - 2021-01-30
+
+### Fixed
+
+- Rolled back previous fix due to working locally but not via Community Mods
+
+## v4.18.2 - 2021-01-30
+
+### Fixed
+
+- Continue War does not return you to the galactic map if more than one enemy faction remains alive
+
 ## v4.18.1 - 2021-01-28
 
 ### Fixed

@@ -1241,8 +1241,11 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Marathon",
               ];
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "4.18.1";
-              originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
+              originSystem.gwaio.version = "#.##.#";
+              originSystem.gwaio.difficulty =
+                difficultyInfo[
+                  model.newGameDifficultyIndex() || 0
+                ].difficultyName;
               originSystem.gwaio.galaxySize =
                 galaxySizes[model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();

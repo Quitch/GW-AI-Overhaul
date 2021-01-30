@@ -24,7 +24,7 @@ define({
       inventory.hasCard("gwc_enable_vehicles_all") ||
       inventory.hasCard("gwc_start_vehicle")
     )
-      chance = 70000;
+      chance = 70;
 
     return { chance: chance };
   },
