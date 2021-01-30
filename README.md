@@ -204,7 +204,7 @@ When the Synchronous have the speed bonus their defences will move to engage you
 
 ## Known Issues
 
-1. Continue War does not continue the war if more than one enemy faction remains alive. Use Quit then Return to Galactic War to work around this.
+None.
 
 ## Recommended mods
 

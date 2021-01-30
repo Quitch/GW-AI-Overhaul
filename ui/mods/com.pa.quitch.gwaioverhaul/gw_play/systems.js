@@ -326,6 +326,153 @@ if (!gwaioSystemChangesLoaded) {
         requireGW(
           ["shared/gw_common", "pages/gw_play/gw_referee"],
           function (GW, GWReferee) {
+            // allow us to patch live_game
+            model.fight = function (model, event, cheat) {
+              var game = model.game();
+
+              if (
+                model.launchingFight() ||
+                (!model.fighting() && !game.fight())
+              ) {
+                return;
+              }
+              var save = GW.manifest.saveGame(game);
+
+              if (cheat) return;
+
+              model.launchingFight(true);
+
+              if (!model.launchingTutorialFight())
+                api.audio.playSound("/VO/Computer/gw/board_initiating_battle");
+
+              var inventory = game.inventory();
+              var oldCommander = inventory.getTag("global", "commander");
+              var tutorialCommander;
+              if (game.isTutorial()) {
+                // ADD TUTORIAL SPECIFIC DATA HERE
+                switch (game.currentStar()) {
+                  case 0:
+                    tutorialCommander =
+                      "/pa/units/commanders/tutorial_titan_commander/tutorial_titan_commander.json";
+                    break;
+                  default:
+                    tutorialCommander =
+                      "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json";
+                    break;
+                }
+
+                inventory.setTag("global", "commander", tutorialCommander);
+                inventory.units().push(tutorialCommander);
+              }
+
+              var hireReferee = GWReferee.hire(game);
+              var liveGameScriptLoad = $.get(
+                "coui://ui/main/game/live_game/live_game.js"
+              );
+              var liveGameScriptPatchLoad = $.get(
+                "coui://ui/main/game/galactic_war/gw_play/live_game_patch.js"
+              );
+              var gwaioLiveGamePatchLoad = $.get(
+                "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/live_game.js"
+              );
+
+              $.when(
+                save,
+                hireReferee,
+                liveGameScriptLoad,
+                liveGameScriptPatchLoad,
+                gwaioLiveGamePatchLoad
+              ).always(function (
+                saveResult,
+                referee,
+                liveGameScriptGet,
+                liveGameScriptPatchGet,
+                gwaioLiveGamePatchGet
+              ) {
+                referee.localFiles({
+                  "/ui/main/game/live_game/live_game.js":
+                    liveGameScriptGet[0] +
+                    gwaioLiveGamePatchGet[0] +
+                    liveGameScriptPatchGet[0],
+                });
+
+                referee.stripSystems();
+                referee.mountFiles().always(function () {
+                  referee.tagGame();
+
+                  model.battleConfig(referee.config());
+
+                  // Come back if we fail.
+                  model.connectFailDestination(window.location.href);
+
+                  var tutorial = ko
+                    .observable()
+                    .extend({ session: "current_system_tutorial" });
+                  tutorial(model.currentSystem().star.tutorial());
+
+                  // Remove the tutorial commander from the game.  (It's not supposed to persist.)
+                  if (tutorialCommander) {
+                    inventory.units().pop();
+                    game
+                      .inventory()
+                      .setTag("global", "commander", oldCommander);
+                  }
+
+                  var params = {
+                    action: "start",
+                    mode: "gw",
+                    content: game.content(),
+                  };
+
+                  if (model.useLocalServer()) {
+                    model.serverType("local");
+                    params["local"] = true;
+                  } else {
+                    model.serverType("uber");
+                  }
+
+                  var connect = function () {
+                    api.debug.log("start gw: ok");
+                    model.serverSetup("game");
+                    window.location.href =
+                      "coui://ui/main/game/connect_to_game/connect_to_game.html?" +
+                      $.param(params);
+                  };
+
+                  if (!model.allowLoad()) connect();
+                  else if (model.useLocalServer()) {
+                    api.file.listReplays().then(function (replays) {
+                      if (_.has(replays, game.replayName())) {
+                        var paths = replays[game.replayName()];
+                        api.debug.log(
+                          "local gw loadsave: ok",
+                          game.replayName(),
+                          paths
+                        );
+                        model.serverSetup("loadsave");
+                        model.serverType("uber");
+                        params["mode"] = "loadsave";
+                        params["loadpath"] = paths.replay;
+                      } else {
+                        /* we could not find a match.  the replay is missing or the data is corrupted. */
+                        console.log(
+                          "loadsave: failed with" + game.replayName()
+                        );
+                      }
+
+                      connect();
+                    });
+                  } else {
+                    api.debug.log("remote gw loadsave: ok");
+                    model.serverSetup("loadsave");
+                    params["mode"] = "loadsave";
+                    params["replayid"] = game.replayLobbyId();
+                    connect();
+                  }
+                });
+              });
+            };
+
             GWReferee.hire = function (game) {
               // call our own gw_referee implementation
               var ref = new gwaioReferee(game);
