@@ -326,6 +326,26 @@ if (!gwaioSystemChangesLoaded) {
         requireGW(
           ["shared/gw_common", "pages/gw_play/gw_referee"],
           function (GW, GWReferee) {
+            GWReferee.hire = function (game) {
+              // call our own gw_referee implementation
+              var ref = new gwaioReferee(game);
+              return _.bind(generateGameFiles, ref)()
+                .then(_.bind(generateConfig, ref))
+                .then(function () {
+                  return ref;
+                });
+            };
+
+            var gwaioReferee = function (game) {
+              var self = this;
+
+              self.game = ko.observable(game);
+
+              self.files = ko.observable();
+              self.localFiles = ko.observable();
+              self.config = ko.observable();
+            };
+
             // allow us to patch live_game
             model.fight = function (model, event, cheat) {
               var game = model.game();
@@ -471,26 +491,6 @@ if (!gwaioSystemChangesLoaded) {
                   }
                 });
               });
-            };
-
-            GWReferee.hire = function (game) {
-              // call our own gw_referee implementation
-              var ref = new gwaioReferee(game);
-              return _.bind(generateGameFiles, ref)()
-                .then(_.bind(generateConfig, ref))
-                .then(function () {
-                  return ref;
-                });
-            };
-
-            var gwaioReferee = function (game) {
-              var self = this;
-
-              self.game = ko.observable(game);
-
-              self.files = ko.observable();
-              self.localFiles = ko.observable();
-              self.config = ko.observable();
             };
 
             var generateGameFiles = function () {
