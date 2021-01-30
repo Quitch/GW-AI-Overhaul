@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Continue War does not return you to the galactic map if more than one enemy faction remains alive. Without the game breaking side-effects. For reals this time.
+
 ## v4.18.5 - 2020-01-30
 
 ### Fixed
