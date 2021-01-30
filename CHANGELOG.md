@@ -6,6 +6,7 @@
 
 - Continue War does not return you to the galactic map if more than one enemy faction remains alive
 - Galactic War Overhaul panel showing the wrong difficulty if you are using Shared Systems for Galactic War
+- Vehicle Ammunition Tech chance being set too high
 
 ## v4.18.1 - 2021-01-28
 
