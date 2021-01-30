@@ -1241,7 +1241,7 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Marathon",
               ];
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "4.18.5";
+              originSystem.gwaio.version = "4.18.6";
               originSystem.gwaio.difficulty =
                 difficultyInfo[
                   model.newGameDifficultyIndex() || 0
