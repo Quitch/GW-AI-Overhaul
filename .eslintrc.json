@@ -25,7 +25,8 @@
     "locTree": "readonly",
     "Build": "readonly",
     "globals": "readonly",
-    "app": "readonly"
+    "app": "readonly",
+    "engine": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
