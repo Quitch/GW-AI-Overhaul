@@ -412,7 +412,7 @@ if (!gwaioSystemChangesLoaded) {
                 referee.localFiles({
                   "/ui/main/game/live_game/live_game.js":
                     liveGameScriptGet[0] +
-                    //gwaioLiveGamePatchGet[0] +
+                    gwaioLiveGamePatchGet[0] +
                     liveGameScriptPatchGet[0],
                 });
 
