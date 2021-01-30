@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.18.5 - 2020-01-30
+
+### Fixed
+
+- Rolled back the alternate Continue War fix as that also works locally but not via Community Mods
+
 ## v4.18.4 - 2021-01-30
 
 ### Fixed
