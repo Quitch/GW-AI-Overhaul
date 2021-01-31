@@ -19,7 +19,6 @@ if (!gwaioMenuLoaded) {
             tutorial(game.isTutorial());
           });
 
-          // patch Surrender and Continue War buttons for multi-faction battles
           model.menuConfigGenerator = ko.observable(function () {
             var over_string = tutorial()
               ? "!LOC:Continue Tutorial"
@@ -54,6 +53,7 @@ if (!gwaioMenuLoaded) {
                 action: "menuSettings",
               },
               {
+                // patch Surrender and Continue War buttons to handle more than two teams
                 label:
                   model.gameOver() || model.defeated()
                     ? over_string
