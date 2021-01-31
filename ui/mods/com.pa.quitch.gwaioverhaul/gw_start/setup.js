@@ -194,7 +194,7 @@ if (!gwaioSetupLoaded) {
       });
 
       /* Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
-   Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
+      Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
       model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
         model.gwaioDifficultySettings.unsavedChanges(false);
       });
