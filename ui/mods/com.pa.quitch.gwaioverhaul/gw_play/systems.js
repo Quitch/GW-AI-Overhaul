@@ -445,7 +445,7 @@ if (!gwaioSystemChangesLoaded) {
                         return value;
                       },
                       merge: function (attribute, value) {
-                        return _.extend({}, attribute, value);
+                        return _.assign({}, attribute, value);
                       },
                       push: function (attribute, value) {
                         if (!_.isArray(attribute))
@@ -883,7 +883,7 @@ if (!gwaioSystemChangesLoaded) {
               }
 
               if (self.localFiles()) {
-                _.extend(allFiles, self.localFiles());
+                _.assign(allFiles, self.localFiles());
               }
 
               var cookedFiles = _.mapValues(allFiles, function (value) {
