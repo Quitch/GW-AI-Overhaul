@@ -6,7 +6,7 @@ if (!gwaioMenuLoaded) {
   function gwaioMenu() {
     try {
       if (model.gameType() === "Galactic War") {
-        requireGW(["require", "shared/gw_common"], function (require, GW) {
+        requireGW(["shared/gw_common"], function (GW) {
           var activeGameId = ko
             .observable()
             .extend({ local: "gw_active_game" });
