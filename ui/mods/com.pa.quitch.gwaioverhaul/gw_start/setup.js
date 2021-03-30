@@ -733,6 +733,7 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
+            api.debug.log("MAKING NEW GALAXY");
             model.newGame(undefined);
 
             var busyToken = {};
@@ -745,6 +746,29 @@ if (!gwaioSetupLoaded) {
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
+            api.debug.log(
+              "Detected difficulty: " +
+                loc(model.gwaioDifficultySettings.difficultyName())
+            );
+            api.debug.log(
+              "Actual difficulty: " +
+                loc(
+                  difficultyInfo[model.newGameDifficultyIndex()].difficultyName
+                )
+            );
+            api.debug.log(
+              "Faction scaling: " +
+                model.gwaioDifficultySettings.factionScaling()
+            );
+            api.debug.log(
+              "Easier start: " + model.gwaioDifficultySettings.easierStart()
+            );
+            api.debug.log(
+              "Tougher commanders: " +
+                model.gwaioDifficultySettings.tougherCommanders()
+            );
+            api.debug.log("Hardcore: " + game.hardcore());
+
             var useEasySystems =
               difficultyInfo[model.newGameDifficultyIndex() || 0]
                 .useEasierSystemTemplate;
@@ -753,6 +777,7 @@ if (!gwaioSetupLoaded) {
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;
+            api.debug.log("Galaxy size: " + size);
 
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
@@ -897,6 +922,7 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
+              api.debug.log("Max distance: " + maxDist);
 
               function getRandomArbitrary(min, max) {
                 return Math.random() * (max - min) + min;
@@ -1006,6 +1032,14 @@ if (!gwaioSetupLoaded) {
                         setAIData(bossMinion, maxDist, true, false);
                         info.boss.minions.push(bossMinion);
                       });
+                  }
+                  // prettier-ignore
+                  api.debug.log("BOSS: " + info.boss.name + " | Faction: " + info.boss.faction + " | Eco: " + info.boss.econ_rate.toPrecision(3) + " | Commanders: " + info.boss.bossCommanders + " | Dist: " + maxDist)
+                  if (info.boss.minions) {
+                    _.times(info.boss.minions.length, function (n) {
+                      // prettier-ignore
+                      api.debug.log("\tMinion: " + info.boss.minions[n].name + " | Eco: " + info.boss.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + info.boss.minions[n].commanderCount)
+                    });
                   }
                 }
 
@@ -1118,6 +1152,20 @@ if (!gwaioSetupLoaded) {
                       worker.ai.foes.push(foeCommander);
                     }
                   });
+                  // prettier-ignore
+                  api.debug.log("WORKER: " +  worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
+                  if (worker.ai.minions) {
+                    _.times(worker.ai.minions.length, function (n) {
+                      // prettier-ignore
+                      api.debug.log("\tMinion: " + worker.ai.minions[n].name + " | Eco: " + worker.ai.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.minions[n].commanderCount)
+                    });
+                  }
+                  if (worker.ai.foes) {
+                    _.times(worker.ai.foes.length, function (n) {
+                      // prettier-ignore
+                      api.debug.log("\tFoe: " + worker.ai.foes[n].name + " | Eco: " + worker.ai.foes[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.foes[n].commanderCount)
+                    });
+                  }
                 });
               });
 
