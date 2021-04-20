@@ -767,7 +767,7 @@ if (!gwaioSetupLoaded) {
                   return _.reduce(
                     faction.teams,
                     function (teamSum, team) {
-                      return teamSum, (team.workers || []).length;
+                      return teamSum + (team.workers || []).length;
                     },
                     factionSum,
                     1
