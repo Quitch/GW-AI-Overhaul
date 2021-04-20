@@ -899,10 +899,6 @@ if (!gwaioSetupLoaded) {
               );
               console.log("Max distance:", maxDist);
 
-              function getRandomArbitrary(min, max) {
-                return Math.random() * (max - min) + min;
-              }
-
               var setAIData = function (
                 ai,
                 dist,
@@ -932,14 +928,14 @@ if (!gwaioSetupLoaded) {
                     (model.gwaioDifficultySettings.econBase() +
                       maxDist *
                         model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
+                    (Math.random() * (1.1 - 0.9) + 0.9);
                   if (isBoss)
                     ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
                 } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
+                    (Math.random() * (1.1 - 0.9) + 0.9);
               };
 
               var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -1252,22 +1248,12 @@ if (!gwaioSetupLoaded) {
                 .galaxy()
                 .stars()
                 [game.galaxy().origin()].system();
-              var galaxySizes = [
-                "!LOC:Small",
-                "!LOC:Medium",
-                "!LOC:Large",
-                "!LOC:Epic",
-                "!LOC:Uber",
-                "!LOC:Vast",
-                "!LOC:Gigantic",
-                "!LOC:Ridiculous",
-                "!LOC:Marathon",
-              ];
               originSystem.gwaio = {};
               originSystem.gwaio.version = "#.##.#";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
-              originSystem.gwaio.galaxySize =
-                galaxySizes[model.newGameSizeIndex()];
+              originSystem.gwaio.galaxySize = "!LOC:Small !LOC:Medium !LOC:Large !LOC:Epic !LOC:Uber !LOC:Vast !LOC:Gigantic !LOC:Ridiculous !LOC:Marathon".split(
+                " "
+              )[model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
               originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
