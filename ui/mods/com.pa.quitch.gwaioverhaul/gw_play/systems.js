@@ -477,7 +477,7 @@ if (!gwaioSystemChangesLoaded) {
                     var applyMod = function (mod) {
                       var spec = load(mod.file);
                       if (!spec)
-                        return api.debug.log(
+                        return console.warn(
                           "Warning: File not found in mod",
                           mod
                         );
