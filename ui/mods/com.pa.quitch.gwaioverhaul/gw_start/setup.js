@@ -747,27 +747,26 @@ if (!gwaioSetupLoaded) {
             game.content(api.content.activeContent());
 
             console.log(
-              "Detected difficulty: " +
-                loc(model.gwaioDifficultySettings.difficultyName())
+              "Detected difficulty:",
+              loc(model.gwaioDifficultySettings.difficultyName())
             );
             console.log(
-              "Actual difficulty: " +
-                loc(
-                  difficultyInfo[model.newGameDifficultyIndex()].difficultyName
-                )
+              "Actual difficulty:",
+              loc(difficultyInfo[model.newGameDifficultyIndex()].difficultyName)
             );
             console.log(
-              "Faction scaling: " +
-                model.gwaioDifficultySettings.factionScaling()
+              "Faction scaling:",
+              model.gwaioDifficultySettings.factionScaling()
             );
             console.log(
-              "Easier start: " + model.gwaioDifficultySettings.easierStart()
+              "Easier start:",
+              model.gwaioDifficultySettings.easierStart()
             );
             console.log(
-              "Tougher commanders: " +
-                model.gwaioDifficultySettings.tougherCommanders()
+              "Tougher commanders:",
+              model.gwaioDifficultySettings.tougherCommanders()
             );
-            console.log("Hardcore: " + game.hardcore());
+            console.log("Hardcore:", game.hardcore());
 
             var useEasySystems =
               difficultyInfo[model.newGameDifficultyIndex() || 0]
@@ -777,7 +776,7 @@ if (!gwaioSetupLoaded) {
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;
-            console.log("Galaxy size: " + size);
+            console.log("Galaxy size:", size);
 
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
@@ -793,9 +792,10 @@ if (!gwaioSetupLoaded) {
                   return _.reduce(
                     faction.teams,
                     function (teamSum, team) {
-                      return teamSum + (team.workers || []).length;
+                      return teamSum, (team.workers || []).length;
                     },
-                    factionSum + 1
+                    factionSum,
+                    1
                   );
                 },
                 0
@@ -922,10 +922,10 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-              console.log("Max distance: " + maxDist);
+              console.log("Max distance:", maxDist);
 
               function getRandomArbitrary(min, max) {
-                return Math.random() * (max - min) + min;
+                return Math.random() * (max - min), min;
               }
 
               var setAIData = function (
@@ -1034,11 +1034,11 @@ if (!gwaioSetupLoaded) {
                       });
                   }
                   // prettier-ignore
-                  console.log("BOSS: " + info.boss.name + " | Faction: " + info.boss.faction + " | Eco: " + info.boss.econ_rate.toPrecision(3) + " | Commanders: " + info.boss.bossCommanders + " | Dist: " + maxDist)
+                  console.log("BOSS:", info.boss.name, "| Faction:", info.boss.faction, "| Eco:", info.boss.econ_rate.toPrecision(3), "| Commanders:", info.boss.bossCommanders, "| Dist:", maxDist)
                   if (info.boss.minions) {
                     _.times(info.boss.minions.length, function (n) {
                       // prettier-ignore
-                      console.log("\tMinion: " + info.boss.minions[n].name + " | Eco: " + info.boss.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + info.boss.minions[n].commanderCount)
+                      console.log("\tMinion:", info.boss.minions[n].name, "| Eco:", info.boss.minions[n].econ_rate.toPrecision(3), "| Commanders:", info.boss.minions[n].commanderCount)
                     });
                   }
                 }
@@ -1133,7 +1133,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = _.clone(
                         _.sample(GWFactions[foeFaction].minions)
                       );
-                      var numFoes = Math.round((numMinions + 1) / 2);
+                      var numFoes = Math.round((numMinions, 1) / 2);
                       if (foeCommander.name === "Worker") {
                         numFoes += Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
@@ -1153,17 +1153,17 @@ if (!gwaioSetupLoaded) {
                     }
                   });
                   // prettier-ignore
-                  console.log("WORKER: " +  worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
+                  console.log("WORKER:",  worker.ai.name, "| Faction:", worker.ai.faction, "| Eco:", worker.ai.econ_rate.toPrecision(3), "| Commanders:", worker.ai.commanderCount, "| Dist:", dist)
                   if (worker.ai.minions) {
                     _.times(worker.ai.minions.length, function (n) {
                       // prettier-ignore
-                      console.log("\tMinion: " + worker.ai.minions[n].name + " | Eco: " + worker.ai.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.minions[n].commanderCount)
+                      console.log("\tMinion:", worker.ai.minions[n].name, "| Eco:", worker.ai.minions[n].econ_rate.toPrecision(3), "| Commanders:", worker.ai.minions[n].commanderCount)
                     });
                   }
                   if (worker.ai.foes) {
                     _.times(worker.ai.foes.length, function (n) {
                       // prettier-ignore
-                      console.log("\tFoe: " + worker.ai.foes[n].name + " | Eco: " + worker.ai.foes[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.foes[n].commanderCount)
+                      console.log("\tFoe:", worker.ai.foes[n].name, "| Eco:", worker.ai.foes[n].econ_rate.toPrecision(3), "| Commanders:", worker.ai.foes[n].commanderCount)
                     });
                   }
                 });
