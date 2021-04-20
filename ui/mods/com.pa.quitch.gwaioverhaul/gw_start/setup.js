@@ -1251,9 +1251,17 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio = {};
               originSystem.gwaio.version = "#.##.#";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
-              originSystem.gwaio.galaxySize = "!LOC:Small !LOC:Medium !LOC:Large !LOC:Epic !LOC:Uber !LOC:Vast !LOC:Gigantic !LOC:Ridiculous !LOC:Marathon".split(
-                " "
-              )[model.newGameSizeIndex()];
+              originSystem.gwaio.galaxySize = [
+                "!LOC:Small",
+                "!LOC:Medium",
+                "!LOC:Large",
+                "!LOC:Epic",
+                "!LOC:Uber",
+                "!LOC:Vast",
+                "!LOC:Gigantic",
+                "!LOC:Ridiculous",
+                "!LOC:Marathon",
+              ][model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
               originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
