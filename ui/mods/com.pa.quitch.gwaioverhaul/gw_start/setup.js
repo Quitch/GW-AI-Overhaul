@@ -384,7 +384,7 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
-            console.debug("MAKING NEW GALAXY");
+            console.debug(" ---- MAKING NEW GALAXY ----");
             model.newGame(undefined);
 
             var busyToken = {};
