@@ -1108,7 +1108,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = _.clone(
                         _.sample(GWFactions[foeFaction].minions)
                       );
-                      var numFoes = Math.round((numMinions, 1) / 2);
+                      var numFoes = Math.round((numMinions + 1) / 2);
                       if (foeCommander.name === "Worker") {
                         numFoes += Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
