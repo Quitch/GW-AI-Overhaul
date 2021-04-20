@@ -1266,8 +1266,7 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio = {};
               originSystem.gwaio.version = "#.##.#";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
-              originSystem.gwaio.galaxySize =
-                galaxySizes[model.newGameSizeIndex()];
+              originSystem.gwaio.galaxySize = galaxySizes[size];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
               originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
