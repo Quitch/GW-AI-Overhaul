@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.18.7 - 2021-04-20
+
+- Fix a timing bug that could cause difficulty values to be incorrectly set
+
 ## v4.18.6 - 2021-01-30
 
 ### Fixed

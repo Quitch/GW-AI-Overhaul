@@ -10,7 +10,7 @@ if (!gwaioWarInfoPanelLoaded) {
           model.game().galaxy().origin()
         ];
         if (origin.system().gwaio) {
-          model.gwaioVersion = loc(origin.system().gwaio.version);
+          model.gwaioVersion = origin.system().gwaio.version;
           model.gwaioDifficulty = loc(origin.system().gwaio.difficulty);
           model.gwaioSize = loc(origin.system().gwaio.galaxySize);
           if (origin.system().gwaio.factionScaling === true)
