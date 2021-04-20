@@ -636,110 +636,89 @@ if (!gwaioSetupLoaded) {
               },
             ];
 
+            var selectedDifficulty = model.newGameDifficultyIndex() || 0;
+
             model.gwaioDifficultySettings.difficultyName(
-              difficultyInfo[model.newGameDifficultyIndex() || 0].difficultyName
+              difficultyInfo[selectedDifficulty].difficultyName
             );
-            if (
-              difficultyInfo[model.newGameDifficultyIndex() || 0]
-                .customDifficulty
-            ) {
+            if (difficultyInfo[selectedDifficulty].customDifficulty) {
               model.gwaioDifficultySettings.customDifficulty(true);
             }
-            if (
-              !difficultyInfo[model.newGameDifficultyIndex() || 0]
-                .customDifficulty
-            ) {
+            if (!difficultyInfo[selectedDifficulty].customDifficulty) {
               model.gwaioDifficultySettings.customDifficulty(false);
               model.gwaioDifficultySettings.goForKill(
-                difficultyInfo[model.newGameDifficultyIndex() || 0].goForKill
+                difficultyInfo[selectedDifficulty].goForKill
               );
               model.gwaioDifficultySettings.microTypeChosen(
-                difficultyInfo[model.newGameDifficultyIndex() || 0].microType
+                difficultyInfo[selectedDifficulty].microType
               );
               model.gwaioDifficultySettings.mandatoryMinions(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .mandatoryMinions
+                difficultyInfo[selectedDifficulty].mandatoryMinions
               );
               model.gwaioDifficultySettings.minionMod(
-                difficultyInfo[model.newGameDifficultyIndex() || 0].minionMod
+                difficultyInfo[selectedDifficulty].minionMod
               );
               model.gwaioDifficultySettings.priorityScoutMetalSpots(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .priority_scout_metal_spots
+                difficultyInfo[selectedDifficulty].priority_scout_metal_spots
               );
               model.gwaioDifficultySettings.useEasierSystemTemplate(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .useEasierSystemTemplate
+                difficultyInfo[selectedDifficulty].useEasierSystemTemplate
               );
               model.gwaioDifficultySettings.factoryBuildDelayMin(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .factory_build_delay_min
+                difficultyInfo[selectedDifficulty].factory_build_delay_min
               );
               model.gwaioDifficultySettings.factoryBuildDelayMax(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .factory_build_delay_max
+                difficultyInfo[selectedDifficulty].factory_build_delay_max
               );
               model.gwaioDifficultySettings.unableToExpandDelay(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .unable_to_expand_delay
+                difficultyInfo[selectedDifficulty].unable_to_expand_delay
               );
               model.gwaioDifficultySettings.enableCommanderDangerResponses(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
+                difficultyInfo[selectedDifficulty]
                   .enable_commander_danger_responses
               );
               model.gwaioDifficultySettings.perExpansionDelay(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .per_expansion_delay
+                difficultyInfo[selectedDifficulty].per_expansion_delay
               );
               model.gwaioDifficultySettings.personalityTagsChosen(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .personality_tags
+                difficultyInfo[selectedDifficulty].personality_tags
               );
               model.gwaioDifficultySettings.econBase(
-                difficultyInfo[model.newGameDifficultyIndex() || 0].econBase
+                difficultyInfo[selectedDifficulty].econBase
               );
               model.gwaioDifficultySettings.econRatePerDist(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .econRatePerDist
+                difficultyInfo[selectedDifficulty].econRatePerDist
               );
               model.gwaioDifficultySettings.maxBasicFabbers(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .max_basic_fabbers
+                difficultyInfo[selectedDifficulty].max_basic_fabbers
               );
               model.gwaioDifficultySettings.maxAdvancedFabbers(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .max_advanced_fabbers
+                difficultyInfo[selectedDifficulty].max_advanced_fabbers
               );
               model.gwaioDifficultySettings.ffaChance(
-                difficultyInfo[model.newGameDifficultyIndex() || 0].ffa_chance
+                difficultyInfo[selectedDifficulty].ffa_chance
               );
               model.gwaioDifficultySettings.bossCommanders(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .bossCommanders
+                difficultyInfo[selectedDifficulty].bossCommanders
               );
               model.gwaioDifficultySettings.startingLocationEvaluationRadius(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
+                difficultyInfo[selectedDifficulty]
                   .starting_location_evaluation_radius
               );
               model.gwaioDifficultySettings.landAnywhereChance(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .landAnywhereChance
+                difficultyInfo[selectedDifficulty].landAnywhereChance
               );
               model.gwaioDifficultySettings.suddenDeathChance(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .suddenDeathChance
+                difficultyInfo[selectedDifficulty].suddenDeathChance
               );
               model.gwaioDifficultySettings.bountyModeChance(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .bountyModeChance
+                difficultyInfo[selectedDifficulty].bountyModeChance
               );
               model.gwaioDifficultySettings.bountyModeValue(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .bountyModeValue
+                difficultyInfo[selectedDifficulty].bountyModeValue
               );
               model.gwaioDifficultySettings.factionTechHandicap(
-                difficultyInfo[model.newGameDifficultyIndex() || 0]
-                  .factionTechHandicap
+                difficultyInfo[selectedDifficulty].factionTechHandicap
               );
             }
 
@@ -766,8 +745,7 @@ if (!gwaioSetupLoaded) {
             console.log("Hardcore:", game.hardcore());
 
             var useEasySystems =
-              difficultyInfo[model.newGameDifficultyIndex() || 0]
-                .useEasierSystemTemplate;
+              difficultyInfo[selectedDifficulty].useEasierSystemTemplate;
             var systemTemplates = useEasySystems
               ? easy_system_templates
               : star_system_templates;
@@ -809,7 +787,7 @@ if (!gwaioSetupLoaded) {
             var buildGalaxy = game.galaxy().build({
               seed: model.newGameSeed(),
               size: size,
-              difficultyIndex: model.newGameDifficultyIndex() || 0,
+              difficultyIndex: selectedDifficulty,
               systemTemplates: systemTemplates,
               content: game.content(),
               minStarDistance: 2,
@@ -1288,9 +1266,7 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio = {};
               originSystem.gwaio.version = "#.##.#";
               originSystem.gwaio.difficulty =
-                difficultyInfo[
-                  model.newGameDifficultyIndex() || 0
-                ].difficultyName;
+                difficultyInfo[selectedDifficulty].difficultyName;
               originSystem.gwaio.galaxySize =
                 galaxySizes[model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
