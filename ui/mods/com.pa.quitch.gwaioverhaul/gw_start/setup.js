@@ -384,7 +384,6 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
-            console.debug(" ---- MAKING NEW GALAXY ----");
             model.newGame(undefined);
 
             var busyToken = {};
@@ -722,29 +721,6 @@ if (!gwaioSetupLoaded) {
               );
             }
 
-            console.debug(
-              "Detected difficulty: " +
-                loc(model.gwaioDifficultySettings.difficultyName())
-            );
-            console.debug(
-              "Selected difficulty: " +
-                loc(
-                  difficultyInfo[model.newGameDifficultyIndex()].difficultyName
-                )
-            );
-            console.debug(
-              "Faction scaling: " +
-                model.gwaioDifficultySettings.factionScaling()
-            );
-            console.debug(
-              "Easier start: " + model.gwaioDifficultySettings.easierStart()
-            );
-            console.debug(
-              "Tougher commanders: " +
-                model.gwaioDifficultySettings.tougherCommanders()
-            );
-            console.debug("Hardcore: " + game.hardcore());
-
             var useEasySystems =
               difficultyInfo[selectedDifficulty].useEasierSystemTemplate;
             var systemTemplates = useEasySystems
@@ -752,7 +728,6 @@ if (!gwaioSetupLoaded) {
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;
-            console.debug("Galaxy size: " + size);
 
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
@@ -898,7 +873,6 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-              console.debug("Max distance: " + maxDist);
 
               var setAIData = function (
                 ai,
@@ -1004,14 +978,6 @@ if (!gwaioSetupLoaded) {
                         setAIData(bossMinion, maxDist, true, false);
                         info.boss.minions.push(bossMinion);
                       });
-                  }
-                  // prettier-ignore
-                  console.debug("BOSS: " + info.boss.name + " | Faction: " + info.boss.faction + " | Eco: " + info.boss.econ_rate.toPrecision(3) + " | Commanders: " + info.boss.bossCommanders + " | Dist: " + maxDist)
-                  if (info.boss.minions) {
-                    _.times(info.boss.minions.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tMinion: " + info.boss.minions[n].name + " | Eco: " + info.boss.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + info.boss.minions[n].commanderCount)
-                    });
                   }
                 }
 
@@ -1124,20 +1090,6 @@ if (!gwaioSetupLoaded) {
                       worker.ai.foes.push(foeCommander);
                     }
                   });
-                  // prettier-ignore
-                  console.debug("WORKER: " +  worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
-                  if (worker.ai.minions) {
-                    _.times(worker.ai.minions.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tMinion: " + worker.ai.minions[n].name + " | Eco: " + worker.ai.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.minions[n].commanderCount)
-                    });
-                  }
-                  if (worker.ai.foes) {
-                    _.times(worker.ai.foes.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tFoe: " + worker.ai.foes[n].name + " | Eco: " + worker.ai.foes[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.foes[n].commanderCount)
-                    });
-                  }
                 });
               });
 
