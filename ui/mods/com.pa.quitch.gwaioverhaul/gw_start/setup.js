@@ -1125,7 +1125,7 @@ if (!gwaioSetupLoaded) {
                     }
                   });
                   // prettier-ignore
-                  console.debug("WORKER: " +  worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
+                  console.debug("WORKER: " + worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
                   if (worker.ai.minions) {
                     _.times(worker.ai.minions.length, function (n) {
                       // prettier-ignore
