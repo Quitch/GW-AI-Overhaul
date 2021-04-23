@@ -900,6 +900,10 @@ if (!gwaioSetupLoaded) {
               );
               console.debug("Max distance: " + maxDist);
 
+              var getRandomArbitrary = function (min, max) {
+                return Math.random() * (max - min) + min;
+              };
+
               var setAIData = function (
                 ai,
                 dist,
@@ -929,14 +933,14 @@ if (!gwaioSetupLoaded) {
                     (model.gwaioDifficultySettings.econBase() +
                       maxDist *
                         model.gwaioDifficultySettings.econRatePerDist()) *
-                    (Math.random() * (1.1 - 0.9) + 0.9);
+                    getRandomArbitrary(0.9, 1.1);
                   if (isBoss)
                     ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
                 } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
-                    (Math.random() * (1.1 - 0.9) + 0.9);
+                    getRandomArbitrary(0.9, 1.1);
               };
 
               var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
