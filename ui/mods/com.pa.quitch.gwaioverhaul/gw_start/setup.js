@@ -900,10 +900,6 @@ if (!gwaioSetupLoaded) {
               );
               console.debug("Max distance: " + maxDist);
 
-              var getRandomArbitrary = function (min, max) {
-                return Math.random() * (max - min) + min;
-              };
-
               var setAIData = function (
                 ai,
                 dist,
@@ -928,6 +924,9 @@ if (!gwaioSetupLoaded) {
                   0
                 )
                   ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+                var getRandomArbitrary = function (min, max) {
+                  return Math.random() * (max - min) + min;
+                };
                 if (isBossSystem) {
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
