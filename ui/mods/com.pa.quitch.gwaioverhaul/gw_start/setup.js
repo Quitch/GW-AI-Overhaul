@@ -1144,7 +1144,24 @@ if (!gwaioSetupLoaded) {
                 });
               });
 
-              var gw_intro_systems = [
+              // Replacement for GWDealer.dealBossCards
+              var treasurePlanetSetup = true;
+              var lockedStartCards = _.filter(
+                model.gwaioTreasureCards,
+                function (card) {
+                  return (
+                    !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card)
+                  );
+                }
+              );
+              var treasurePlanetCard = _.sample(lockedStartCards);
+              if (treasurePlanetCard) {
+                _.assign(treasurePlanetCard, { allowOverflow: true });
+                treasurePlanetSetup = false;
+              }
+
+              var n = 0;
+              var gw_intro_systems = _.shuffle([
                 {
                   name: "!LOC:The Progenitors",
                   description:
@@ -1180,26 +1197,7 @@ if (!gwaioSetupLoaded) {
                   description:
                     "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy.",
                 },
-              ];
-
-              // Replacement for GWDealer.dealBossCards
-              var treasurePlanetSetup = true;
-              var lockedStartCards = _.filter(
-                model.gwaioTreasureCards,
-                function (card) {
-                  return (
-                    !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card)
-                  );
-                }
-              );
-              var treasurePlanetCard = _.sample(lockedStartCards);
-              if (treasurePlanetCard) {
-                _.assign(treasurePlanetCard, { allowOverflow: true });
-                treasurePlanetSetup = false;
-              }
-
-              var n = 0;
-              gw_intro_systems = _.shuffle(gw_intro_systems);
+              ]);
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
