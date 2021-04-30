@@ -1008,12 +1008,28 @@ if (!gwaioSetupLoaded) {
                         info.boss.minions.push(bossMinion);
                       });
                   }
-                  // prettier-ignore
-                  console.debug("BOSS: " + info.boss.name + " | Faction: " + info.boss.faction + " | Eco: " + info.boss.econ_rate.toPrecision(3) + " | Commanders: " + info.boss.bossCommanders + " | Dist: " + maxDist)
+                  console.debug(
+                    "BOSS: " +
+                      info.boss.name +
+                      " | Faction: " +
+                      info.boss.faction +
+                      " | Eco: " +
+                      info.boss.econ_rate.toPrecision(3) +
+                      " | Commanders: " +
+                      info.boss.bossCommanders +
+                      " | Dist: " +
+                      maxDist
+                  );
                   if (info.boss.minions) {
                     _.times(info.boss.minions.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tMinion: " + info.boss.minions[n].name + " | Eco: " + info.boss.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + info.boss.minions[n].commanderCount)
+                      console.debug(
+                        "\tMinion: " +
+                          info.boss.minions[n].name +
+                          " | Eco: " +
+                          info.boss.minions[n].econ_rate.toPrecision(3) +
+                          " | Commanders: " +
+                          info.boss.minions[n].commanderCount
+                      );
                     });
                   }
                 }
@@ -1127,18 +1143,40 @@ if (!gwaioSetupLoaded) {
                       worker.ai.foes.push(foeCommander);
                     }
                   });
-                  // prettier-ignore
-                  console.debug("WORKER: " + worker.ai.name + " | Faction: " + worker.ai.faction + " | Eco: " + worker.ai.econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.commanderCount + " | Dist: " + dist)
+                  console.debug(
+                    "WORKER: " +
+                      worker.ai.name +
+                      " | Faction: " +
+                      worker.ai.faction +
+                      " | Eco: " +
+                      worker.ai.econ_rate.toPrecision(3) +
+                      " | Commanders: " +
+                      worker.ai.commanderCount +
+                      " | Dist: " +
+                      dist
+                  );
                   if (worker.ai.minions) {
                     _.times(worker.ai.minions.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tMinion: " + worker.ai.minions[n].name + " | Eco: " + worker.ai.minions[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.minions[n].commanderCount)
+                      console.debug(
+                        "\tMinion: " +
+                          worker.ai.minions[n].name +
+                          " | Eco: " +
+                          worker.ai.minions[n].econ_rate.toPrecision(3) +
+                          " | Commanders: " +
+                          worker.ai.minions[n].commanderCount
+                      );
                     });
                   }
                   if (worker.ai.foes) {
                     _.times(worker.ai.foes.length, function (n) {
-                      // prettier-ignore
-                      console.debug("\tFoe: " + worker.ai.foes[n].name + " | Eco: " + worker.ai.foes[n].econ_rate.toPrecision(3) + " | Commanders: " + worker.ai.foes[n].commanderCount)
+                      console.debug(
+                        "\tFoe: " +
+                          worker.ai.foes[n].name +
+                          " | Eco: " +
+                          worker.ai.foes[n].econ_rate.toPrecision(3) +
+                          " | Commanders: " +
+                          worker.ai.foes[n].commanderCount
+                      );
                     });
                   }
                 });
