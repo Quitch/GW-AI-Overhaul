@@ -1212,7 +1212,7 @@ if (!gwaioSetupLoaded) {
                   if (gwaioLore.introSystem[n]) {
                     system.name = gwaioLore.introSystem[n].name;
                     system.description = gwaioLore.introSystem[n].description;
-                    n = n + 1;
+                    n += 1;
                   }
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
