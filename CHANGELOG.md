@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Option to enable system lore during war setup
+
 ## v4.18.7 - 2021-04-20
 
 ### Fixed
