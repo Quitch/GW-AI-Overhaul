@@ -1227,13 +1227,6 @@ if (!gwaioSetupLoaded) {
                       else world.generator.shuffleLandingZones = true;
                   });
                   if (!ai.bossCommanders) {
-                    if (
-                      model.gwaioDifficultySettings.paLore() &&
-                      gwaioLore.lore[m]
-                    ) {
-                      ai.description = gwaioLore.lore[m];
-                      m += 1;
-                    }
                     if (treasurePlanetSetup === false) {
                       treasurePlanetSetup = true;
                       delete ai.commanderCount;
@@ -1261,6 +1254,12 @@ if (!gwaioSetupLoaded) {
                       system.description =
                         "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
                       star.cardList().push(treasurePlanetCard);
+                    } else if (
+                      model.gwaioDifficultySettings.paLore() &&
+                      gwaioLore.lore[m]
+                    ) {
+                      ai.description = gwaioLore.lore[m];
+                      m += 1;
                     }
                   }
                 }
