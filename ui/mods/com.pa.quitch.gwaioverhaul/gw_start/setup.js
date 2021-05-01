@@ -1201,8 +1201,8 @@ if (!gwaioSetupLoaded) {
                   );
                 }
               );
-              var treasurePlanetCard = _.sample(lockedStartCards);
-              if (treasurePlanetCard) {
+              if (lockedStartCards) {
+                var treasurePlanetCard = _.sample(lockedStartCards);
                 _.assign(treasurePlanetCard, { allowOverflow: true });
                 var treasurePlanetSetup = false;
               } else treasurePlanetSetup = true;
