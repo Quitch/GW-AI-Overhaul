@@ -1255,9 +1255,9 @@ if (!gwaioSetupLoaded) {
                       star.cardList().push(treasurePlanetCard);
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
-                      gwaioLore.lore[m]
+                      gwaioLore.aiSystems[m]
                     ) {
-                      ai.description = gwaioLore.lore[m];
+                      ai.description = gwaioLore.aiSystems[m];
                       m += 1;
                     }
                   }
