@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.19.1 - 2021-05-01
+
+### Fixed
+
+- Grammatical errors in the lore
+
 ## v4.19.0 - 2021-05-01
 
 ### Added
