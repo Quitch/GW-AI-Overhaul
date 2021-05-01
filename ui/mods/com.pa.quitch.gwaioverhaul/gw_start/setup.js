@@ -1193,7 +1193,6 @@ if (!gwaioSetupLoaded) {
               });
 
               // Replacement for GWDealer.dealBossCards
-              var treasurePlanetSetup = true;
               var lockedStartCards = _.filter(
                 model.gwaioTreasureCards,
                 function (card) {
@@ -1205,8 +1204,8 @@ if (!gwaioSetupLoaded) {
               var treasurePlanetCard = _.sample(lockedStartCards);
               if (treasurePlanetCard) {
                 _.assign(treasurePlanetCard, { allowOverflow: true });
-                treasurePlanetSetup = false;
-              }
+                var treasurePlanetSetup = false;
+              } else treasurePlanetSetup = true;
 
               var n = 0;
               var m = 0;
