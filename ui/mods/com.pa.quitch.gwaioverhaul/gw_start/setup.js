@@ -53,7 +53,7 @@ if (!gwaioSetupLoaded) {
         factionScaling: ko.observable(true),
         easierStart: ko.observable(false),
         tougherCommanders: ko.observable(false),
-        paLore: ko.observable(false),
+        paLore: ko.observable(true),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
         goForKill: ko.observable(false),
