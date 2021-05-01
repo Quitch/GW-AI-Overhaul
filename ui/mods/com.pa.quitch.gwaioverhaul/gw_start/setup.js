@@ -51,6 +51,7 @@ if (!gwaioSetupLoaded) {
       // gw_start uses ko.applyBindings(model)
       model.gwaioDifficultySettings = {
         factionScaling: ko.observable(true),
+        systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
         tougherCommanders: ko.observable(false),
         paLore: ko.observable(true),
@@ -152,6 +153,7 @@ if (!gwaioSetupLoaded) {
 
       ko.computed(function () {
         model.gwaioDifficultySettings.factionScaling();
+        model.gwaioDifficultySettings.systemScaling();
         model.gwaioDifficultySettings.easierStart();
         model.gwaioDifficultySettings.tougherCommanders();
         model.gwaioDifficultySettings.paLore();
@@ -1194,6 +1196,7 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Marathon",
               ][model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
+              originSystem.gwaio.systemScaling = model.gwaioDifficultySettings.systemScaling();
               originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
 

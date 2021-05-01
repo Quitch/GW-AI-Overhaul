@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.20.0 - 2021-05-01
+
+### Added
+
+- Ability to disable system scaling and have all system sizes used at all distances
+
 ## v4.19.1 - 2021-05-01
 
 ### Fixed
