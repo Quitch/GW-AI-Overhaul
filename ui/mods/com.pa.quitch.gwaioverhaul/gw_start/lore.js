@@ -16,7 +16,7 @@ define([], function () {
         "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago.",
     },
     {
-      name: "!LOC:The Machine Liberation Army (MLA)",
+      name: "!LOC:The Machine Liberation Army",
       description:
         "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy.",
     },
