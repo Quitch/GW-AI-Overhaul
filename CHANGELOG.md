@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v4.19.0 - 2021-05-01
+
+### Added
+
+- Lore from the original pre-release Galactic War
+- Option to disable lore during Galactic War setup
+
 ## v4.18.7 - 2021-04-20
 
 ### Fixed

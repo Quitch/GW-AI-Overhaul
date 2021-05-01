@@ -53,6 +53,7 @@ if (!gwaioSetupLoaded) {
         factionScaling: ko.observable(true),
         easierStart: ko.observable(false),
         tougherCommanders: ko.observable(false),
+        paLore: ko.observable(true),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
         goForKill: ko.observable(false),
@@ -153,6 +154,7 @@ if (!gwaioSetupLoaded) {
         model.gwaioDifficultySettings.factionScaling();
         model.gwaioDifficultySettings.easierStart();
         model.gwaioDifficultySettings.tougherCommanders();
+        model.gwaioDifficultySettings.paLore();
         model.gwaioDifficultySettings.newGalaxyNeeded(true);
       });
 
@@ -262,6 +264,7 @@ if (!gwaioSetupLoaded) {
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         ],
         function (
           require,
@@ -273,7 +276,8 @@ if (!gwaioSetupLoaded) {
           normal_system_templates, // window.star_system_templates is set instead
           easy_system_templates,
           gwaioTech,
-          gwaioBank
+          gwaioBank,
+          gwaioLore
         ) {
           /* Start of GWAIO implementation of GWDealer */
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
@@ -898,19 +902,22 @@ if (!gwaioSetupLoaded) {
                   0
                 )
                   ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+                var getRandomArbitrary = function (min, max) {
+                  return Math.random() * (max - min) + min;
+                };
                 if (isBossSystem) {
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       maxDist *
                         model.gwaioDifficultySettings.econRatePerDist()) *
-                    (Math.random() * (1.1 - 0.9) + 0.9);
+                    getRandomArbitrary(0.9, 1.1);
                   if (isBoss)
                     ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
                 } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
-                    (Math.random() * (1.1 - 0.9) + 0.9);
+                    getRandomArbitrary(0.9, 1.1);
               };
 
               var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
@@ -1093,44 +1100,6 @@ if (!gwaioSetupLoaded) {
                 });
               });
 
-              var gw_intro_systems = [
-                {
-                  name: "!LOC:The Progenitors",
-                  description:
-                    "!LOC:What little is clear is that the galaxy was once inhabited by a sprawling empire, seemingly destroyed by conflict. The commanders refer to these beings as The Progenitors. Many commanders believe answers to their origins lie within the ruins of this once great civilization.",
-                },
-                {
-                  name: "!LOC:Galactic War",
-                  description:
-                    "!LOC:Some commanders fight because it's all they know, while others seek answers to their origins. Conflicts in motivation and creed drive the commanders into a war that is poised to ravage the galaxy for centuries.",
-                },
-                {
-                  name: "!LOC:The Commanders",
-                  description:
-                    "!LOC:The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago.",
-                },
-                {
-                  name: "!LOC:The Machine Liberation Army",
-                  description:
-                    "!LOC:Buried deep within the data banks of the oldest commanders are references to the MLA. Some commanders believe that at one time all the factions fought as one against the Progenitors, while others dismiss this as heresy.",
-                },
-                {
-                  name: "!LOC:The Legion",
-                  description:
-                    "!LOC:Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.",
-                },
-                {
-                  name: "!LOC:The Union",
-                  description:
-                    "!LOC:Commanders on the fringes of the galaxy speak of a new force not of the four factions with units of many origins. It is rumoured that their forces include organics.",
-                },
-                {
-                  name: "!LOC:Queller",
-                  description:
-                    "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy.",
-                },
-              ];
-
               // Replacement for GWDealer.dealBossCards
               var treasurePlanetSetup = true;
               var lockedStartCards = _.filter(
@@ -1148,16 +1117,15 @@ if (!gwaioSetupLoaded) {
               }
 
               var n = 0;
-              gw_intro_systems = _.shuffle(gw_intro_systems);
+              var m = 0;
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
-                  var intro_system = gw_intro_systems[n];
-                  if (intro_system) {
-                    system.name = intro_system.name;
-                    system.description = intro_system.description;
-                    n = n + 1;
+                  if (gwaioLore.introSystem[n]) {
+                    system.name = gwaioLore.introSystem[n].name;
+                    system.description = gwaioLore.introSystem[n].description;
+                    n += 1;
                   }
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
@@ -1166,32 +1134,42 @@ if (!gwaioSetupLoaded) {
                       if (world.planet) world.planet.shuffleLandingZones = true;
                       else world.generator.shuffleLandingZones = true;
                   });
-                  if (!ai.bossCommanders && treasurePlanetSetup === false) {
-                    treasurePlanetSetup = true;
-                    delete ai.commanderCount;
-                    delete ai.minions;
-                    delete ai.foes;
-                    delete ai.team;
-                    ai.icon =
-                      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
-                    ai.boss = true;
-                    ai.mirrorMode = true;
-                    ai.treasurePlanet = true;
-                    ai.econ_rate =
-                      model.gwaioDifficultySettings.econBase() +
-                      maxDist * model.gwaioDifficultySettings.econRatePerDist();
-                    ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
-                    ai.name = "The Guardians";
-                    ai.character = "!LOC:Unknown";
-                    ai.color = [
-                      [255, 255, 255],
-                      [255, 192, 203],
-                    ];
-                    ai.commander =
-                      "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-                    system.description =
-                      "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-                    star.cardList().push(treasurePlanetCard);
+                  if (!ai.bossCommanders) {
+                    if (
+                      model.gwaioDifficultySettings.paLore() &&
+                      gwaioLore.lore[m]
+                    ) {
+                      ai.description = gwaioLore.lore[m];
+                      m += 1;
+                    }
+                    if (treasurePlanetSetup === false) {
+                      treasurePlanetSetup = true;
+                      delete ai.commanderCount;
+                      delete ai.minions;
+                      delete ai.foes;
+                      delete ai.team;
+                      ai.icon =
+                        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
+                      ai.boss = true;
+                      ai.mirrorMode = true;
+                      ai.treasurePlanet = true;
+                      ai.econ_rate =
+                        model.gwaioDifficultySettings.econBase() +
+                        maxDist *
+                          model.gwaioDifficultySettings.econRatePerDist();
+                      ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+                      ai.name = "The Guardians";
+                      ai.character = "!LOC:Unknown";
+                      ai.color = [
+                        [255, 255, 255],
+                        [255, 192, 203],
+                      ];
+                      ai.commander =
+                        "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+                      system.description =
+                        "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
+                      star.cardList().push(treasurePlanetCard);
+                    }
                   }
                 }
               });
