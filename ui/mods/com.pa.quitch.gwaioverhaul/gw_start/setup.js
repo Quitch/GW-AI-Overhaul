@@ -1222,7 +1222,10 @@ if (!gwaioSetupLoaded) {
                       else world.generator.shuffleLandingZones = true;
                   });
                   if (!ai.bossCommanders) {
-                    if (model.gwaioDifficultySettings.paLore()) {
+                    if (
+                      model.gwaioDifficultySettings.paLore() &&
+                      gwaioLore.lore[m]
+                    ) {
                       ai.description = gwaioLore.lore[m];
                       m += 1;
                     }
