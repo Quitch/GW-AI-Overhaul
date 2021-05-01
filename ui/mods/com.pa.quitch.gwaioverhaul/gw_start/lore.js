@@ -1,4 +1,4 @@
-define([], function () {
+define(function () {
   var introSystems = _.shuffle([
     {
       name: "!LOC:The Progenitors",
