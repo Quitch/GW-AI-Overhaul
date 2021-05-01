@@ -1214,9 +1214,9 @@ if (!gwaioSetupLoaded) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
-                  if (gwaioLore.introSystem[n]) {
-                    system.name = gwaioLore.introSystem[n].name;
-                    system.description = gwaioLore.introSystem[n].description;
+                  if (gwaioLore.introSystems[n]) {
+                    system.name = gwaioLore.introSystems[n].name;
+                    system.description = gwaioLore.introSystems[n].description;
                     n += 1;
                   }
                 } else {

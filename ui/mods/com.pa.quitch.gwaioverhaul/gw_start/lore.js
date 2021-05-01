@@ -1,6 +1,6 @@
 define(function () {
   return {
-    introSystem: _.shuffle([
+    introSystems: _.shuffle([
       {
         name: "!LOC:The Progenitors",
         description:
