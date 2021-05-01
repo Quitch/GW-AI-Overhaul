@@ -214,10 +214,17 @@ define([
         config.useEasierSystemTemplate
       );
 
-      // Generate the planets, increasing the size based on the distance from the start.
       var starGenerators = _.map(self.stars(), function (star) {
+        if (
+          model.gwaioDifficultySettings &&
+          !model.gwaioDifficultySettings.systemScaling()
+        ) {
+          var players = Math.floor(Math.random() * 10 + 1);
+        } else {
+          players = star.distance();
+        }
         return StarSystemTemplates.generate({
-          players: star.distance(), // GWAIO - don't adjust by maxDist
+          players: players,
           seed: rng() * rng(),
         }).then(function (system) {
           star.system(system);

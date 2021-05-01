@@ -379,6 +379,19 @@
   <div>
     <input
       type="checkbox"
+      data-bind="checked: $root.gwaioDifficultySettings.systemScaling"
+    />
+    <span style="margin-left: 6px"></span>
+    <loc>System Scaling</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:System size determined by distance into the galaxy.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
       data-bind="checked: $root.gwaioDifficultySettings.easierStart"
     />
     <span style="margin-left: 6px"></span>
