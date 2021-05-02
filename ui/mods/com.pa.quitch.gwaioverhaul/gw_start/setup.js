@@ -248,7 +248,7 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
         )
       );
-      locTree($("#additional-settings"));
+      locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwaioFactionScalingTooltip =
