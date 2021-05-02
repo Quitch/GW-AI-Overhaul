@@ -1,6 +1,6 @@
 define(function () {
   return {
-    introSystem: _.shuffle([
+    neutralSystems: _.shuffle([
       {
         name: "!LOC:The Progenitors",
         description:
@@ -37,7 +37,7 @@ define(function () {
           "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy.",
       },
     ]),
-    lore: _.shuffle([
+    aiSystems: _.shuffle([
       "Named for the famed Progenitor explorer Johan Thrale, the system was known to be rich in minerals, especially plentiful in diamonds and other precious gems. However, the only way to access the area was to navigate through the extensive asteroid fields that had made up the system. Thrale was able to do just that, successfully surveying the area, which he named after himself. Unfortunately, he would later die on a return trip through the system when his ship lost engine power and drifted into a nearby asteroid, killing all on board.",
       "Taigos was home to a handful of 'pirate colonies' during the height of Progenitor Coalition expansion. Using captured commercial distress beacons, the Red Talon Pirates were able to lure many an unsuspecting trade and transport ship to the system where they would be stripped of anything valuable and its crews and passengers forced into slavery. The pirates luck ran out when their distress beacon got the attention of a Progenitor military convoy passing near the system. It would take Progenitor Marines over a year to clear the system; freeing over 20,000 citizens who had spent years as Red Talon Pirate slaves.",
       "The Gairdin system was most famous for a scientific discovery made there. Researchers from Hawking University first discovered the Maisha plant in Gairdin, a plant that when properly processed had the ability to rid the human body of nearly ninety-five percent of all known cancers. The system was promptly designated a 'sanctuary system' by Progenitor Coalition government and Parantua Pharmaceuticals given exclusive rights to research and development.",

@@ -248,7 +248,7 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
         )
       );
-      locTree($("#additional-settings"));
+      locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwaioFactionScalingTooltip =
@@ -1103,7 +1103,6 @@ if (!gwaioSetupLoaded) {
               });
 
               // Replacement for GWDealer.dealBossCards
-              var treasurePlanetSetup = true;
               var lockedStartCards = _.filter(
                 model.gwaioTreasureCards,
                 function (card) {
@@ -1112,11 +1111,11 @@ if (!gwaioSetupLoaded) {
                   );
                 }
               );
-              var treasurePlanetCard = _.sample(lockedStartCards);
-              if (treasurePlanetCard) {
+              if (lockedStartCards) {
+                var treasurePlanetCard = _.sample(lockedStartCards);
                 _.assign(treasurePlanetCard, { allowOverflow: true });
-                treasurePlanetSetup = false;
-              }
+                var treasurePlanetSetup = false;
+              } else treasurePlanetSetup = true;
 
               var n = 0;
               var m = 0;
@@ -1124,9 +1123,10 @@ if (!gwaioSetupLoaded) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
-                  if (gwaioLore.introSystem[n]) {
-                    system.name = gwaioLore.introSystem[n].name;
-                    system.description = gwaioLore.introSystem[n].description;
+                  if (gwaioLore.neutralSystems[n]) {
+                    system.name = gwaioLore.neutralSystems[n].name;
+                    system.description =
+                      gwaioLore.neutralSystems[n].description;
                     n += 1;
                   }
                 } else {
@@ -1137,13 +1137,6 @@ if (!gwaioSetupLoaded) {
                       else world.generator.shuffleLandingZones = true;
                   });
                   if (!ai.bossCommanders) {
-                    if (
-                      model.gwaioDifficultySettings.paLore() &&
-                      gwaioLore.lore[m]
-                    ) {
-                      ai.description = gwaioLore.lore[m];
-                      m += 1;
-                    }
                     if (treasurePlanetSetup === false) {
                       treasurePlanetSetup = true;
                       delete ai.commanderCount;
@@ -1171,6 +1164,12 @@ if (!gwaioSetupLoaded) {
                       system.description =
                         "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
                       star.cardList().push(treasurePlanetCard);
+                    } else if (
+                      model.gwaioDifficultySettings.paLore() &&
+                      gwaioLore.aiSystems[m]
+                    ) {
+                      ai.description = gwaioLore.aiSystems[m];
+                      m += 1;
                     }
                   }
                 }
@@ -1182,7 +1181,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "4.20.0";
+              originSystem.gwaio.version = "4.20.1";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
                 "!LOC:Small",

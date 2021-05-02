@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v.4.20.1 - 2021-05-02
+
+### Fixed
+
+- Additional difficulty options not being translated
+
 ## v4.20.0 - 2021-05-01
 
 ### Added
