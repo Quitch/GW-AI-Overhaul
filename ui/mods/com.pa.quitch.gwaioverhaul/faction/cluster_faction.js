@@ -103,12 +103,12 @@ define([
         systemTemplate: {
           name: "Cluster",
           Planets: [
-            { fromRandomList: planets.planet1 },
-            { fromRandomList: planets.planet2 },
-            { fromRandomList: planets.planet3 },
+            planets.planet1,
+            planets.planet2,
+            planets.planet3,
             { fromRandomList: planets.planet4 },
-            { fromRandomList: planets.asteroid1 },
-            { fromRandomList: planets.asteroid2 },
+            planets.asteroid1,
+            planets.asteroid2,
           ],
         },
       },
