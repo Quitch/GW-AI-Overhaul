@@ -6,7 +6,7 @@
 
 - Lore overrides system descriptions when using Shared Systems for Galactic War
 
-## v.4.20.1 - 2021-05-02
+## v4.20.1 - 2021-05-02
 
 ### Fixed
 
