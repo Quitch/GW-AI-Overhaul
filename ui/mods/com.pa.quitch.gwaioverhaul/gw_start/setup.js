@@ -1168,7 +1168,7 @@ if (!gwaioSetupLoaded) {
                       model.gwaioDifficultySettings.paLore() &&
                       gwaioLore.aiSystems[m]
                     ) {
-                      ai.description = gwaioLore.aiSystems[m];
+                      system.description = gwaioLore.aiSystems[m];
                       m += 1;
                     }
                   }
@@ -1181,7 +1181,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "4.20.1";
+              originSystem.gwaio.version = "#.#.#";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
                 "!LOC:Small",
