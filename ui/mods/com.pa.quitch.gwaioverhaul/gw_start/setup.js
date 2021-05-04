@@ -1258,7 +1258,7 @@ if (!gwaioSetupLoaded) {
                       model.gwaioDifficultySettings.paLore() &&
                       gwaioLore.aiSystems[m]
                     ) {
-                      ai.description = gwaioLore.aiSystems[m];
+                      system.description = gwaioLore.aiSystems[m];
                       m += 1;
                     }
                   }
