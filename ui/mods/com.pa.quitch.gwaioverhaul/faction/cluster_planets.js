@@ -1,8 +1,4 @@
 define(function () {
-  var biome1 = _.sample(["asteroid", "desert", "tropical", "lava"]);
-  var biome2 = _.sample(["asteroid", "desert", "ice_boss", "lava"]);
-  var biome3 = _.sample(["earth", "ice_boss", "moon", "tropical"]);
-
   return {
     planet1: {
       isExplicit: true,
@@ -29,7 +25,7 @@ define(function () {
         metalClusters: 0,
         metalSpotLimit: -1,
         biomeScale: 50,
-        biome: biome1,
+        biome: _.sample(["asteroid", "desert", "tropical", "lava"]),
         symmetryType: "none",
         symmetricalMetal: false,
         symmetricalStarts: false,
@@ -3667,7 +3663,7 @@ define(function () {
         metalClusters: 0,
         metalSpotLimit: -1,
         biomeScale: 50,
-        biome: biome2,
+        biome: _.sample(["asteroid", "desert", "ice_boss", "lava"]),
         symmetryType: "terrain and CSG",
         symmetricalMetal: true,
         symmetricalStarts: false,
@@ -5914,7 +5910,7 @@ define(function () {
         metalClusters: 0,
         metalSpotLimit: -1,
         biomeScale: 50,
-        biome: biome3,
+        biome: _.sample(["earth", "ice_boss", "moon", "tropical"]),
         symmetryType: "none",
         symmetricalMetal: false,
         symmetricalStarts: false,
