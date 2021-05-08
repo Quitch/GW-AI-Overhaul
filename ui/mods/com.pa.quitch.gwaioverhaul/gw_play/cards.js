@@ -208,6 +208,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_singlelaserdefensetower",
               "gwaio_upgrade_skitter",
               "gwaio_upgrade_slammer",
+              "gwaio_upgrade_solararray",
               "gwaio_upgrade_spark",
               "gwaio_upgrade_spinner",
               "gwaio_upgrade_squall",

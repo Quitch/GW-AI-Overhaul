@@ -1304,5 +1304,9 @@ define({
       id: "gwaio_upgrade_ares",
       units: ["/pa/units/land/titan_vehicle/titan_vehicle.json"],
     },
+    {
+      id: "gwaio_upgrade_solararray",
+      units: ["/pa/units/orbital/solar_array/solar_array.json"],
+    },
   ],
 });
