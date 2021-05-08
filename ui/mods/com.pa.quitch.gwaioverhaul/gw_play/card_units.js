@@ -1268,5 +1268,11 @@ define({
         "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_mend",
+      units: [
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+      ],
+    },
   ],
 });
