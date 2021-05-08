@@ -1238,5 +1238,9 @@ define({
       id: "gwaio_upgrade_hermes",
       units: ["/pa/units/orbital/orbital_probe/orbital_probe.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedradarsatellite",
+      units: ["/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json"],
+    },
   ],
 });
