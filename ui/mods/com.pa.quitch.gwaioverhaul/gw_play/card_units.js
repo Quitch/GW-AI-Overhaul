@@ -1246,5 +1246,9 @@ define({
       id: "gwaio_upgrade_umbrella",
       units: ["/pa/units/orbital/ion_defense/ion_defense.json"],
     },
+    {
+      id: "gwaio_upgrade_galata",
+      units: ["/pa/units/orbital/air_defense/air_defense.json"],
+    },
   ],
 });
