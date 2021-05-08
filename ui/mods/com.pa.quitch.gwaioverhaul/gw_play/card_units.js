@@ -1296,5 +1296,9 @@ define({
       id: "gwaio_upgrade_atlas",
       units: ["/pa/units/land/titan_bot/titan_bot.json"],
     },
+    {
+      id: "gwaio_upgrade_helios",
+      units: ["/pa/units/orbital/titan_orbital/titan_orbital.json"],
+    },
   ],
 });
