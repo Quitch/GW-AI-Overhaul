@@ -37,19 +37,19 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/orbital/orbital_laser/orbital_laser.json",
+          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/orbital_laser/orbital_laser.json",
+          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/orbital_laser/orbital_laser.json",
+          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
