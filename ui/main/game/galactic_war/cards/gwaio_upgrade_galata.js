@@ -22,9 +22,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/orbital/air_defense/air_defense.json")
-      )
+      if (gwaioFunctions.hasUnit("/pa/units/land/air_defense/air_defense.json"))
         chance = 60;
 
       return { chance: chance };
@@ -32,13 +30,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/orbital/air_defense/air_defense_tool_weapon.json",
+          file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/orbital/air_defense/air_defense_tool_weapon.json",
+          file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
           path: "target_priorities",
           op: "push",
           value: ["Mobile & (Land | Naval)"],
