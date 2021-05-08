@@ -357,14 +357,10 @@ if (!gwaioSystemChangesLoaded) {
                 var titans = api.content.usingTitans();
 
                 var game = self.game();
-                var galaxy = game.galaxy();
-                var battleGround = galaxy.stars()[game.currentStar()];
-                var ai = battleGround.ai();
-
+                var ai = game.galaxy().stars()[game.currentStar()].ai();
                 var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
                 var aiTag = [];
                 var aiFactions = [];
-
                 _.times(aiFactionCount, function (n) {
                   var aiNewTag = ".ai";
                   n = n.toString();
@@ -665,33 +661,27 @@ if (!gwaioSystemChangesLoaded) {
             var generateConfig = function () {
               var self = this;
 
+              // Setup the player
               var game = self.game();
-              var galaxy = game.galaxy();
-              var battleGround = galaxy.stars()[game.currentStar()];
-              var system = battleGround.system();
-              var ai = battleGround.ai();
               var inventory = game.inventory();
               var playerColor = inventory.getTag("global", "playerColor");
-              var playerCommander = inventory.getTag("global", "commander");
-              var armies = [];
-              var slotsArray = [];
+              var playerName = ko
+                .observable()
+                .extend({ session: "displayName" });
+              var armies = [
+                {
+                  slots: [{ name: playerName() || "Player" }],
+                  color: playerColor,
+                  econ_rate: 1,
+                  spec_tag: ".player",
+                  alliance_group: 1,
+                },
+              ];
               var aiLandingOptions = [
                 "off_player_planet",
                 "on_player_planet",
                 "no_restriction",
               ];
-              var playerName = ko
-                .observable()
-                .extend({ session: "displayName" });
-
-              // Setup the player
-              armies.push({
-                slots: [{ name: playerName() || "Player" }],
-                color: playerColor,
-                econ_rate: 1,
-                spec_tag: ".player",
-                alliance_group: 1,
-              });
               // eslint-disable-next-line lodash/prefer-map
               _.forEach(inventory.minions(), function (subcommander) {
                 armies.push({
@@ -712,6 +702,8 @@ if (!gwaioSystemChangesLoaded) {
               });
 
               // Setup the AI
+              var currentSystem = game.galaxy().stars()[game.currentStar()];
+              var ai = currentSystem.ai();
               var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
               var aiTag = [];
               _.times(aiFactionCount, function (n) {
@@ -720,11 +712,12 @@ if (!gwaioSystemChangesLoaded) {
                 aiNewTag = aiNewTag.concat(n);
                 aiTag.push(aiNewTag);
               });
-              // Setup System Faction
+              // Setup AI System Owner
               ai.personality.adv_eco_mod =
                 ai.personality.adv_eco_mod * ai.econ_rate;
               ai.personality.adv_eco_mod_alone =
                 ai.personality.adv_eco_mod_alone * ai.econ_rate;
+              var slotsArray = [];
               if (ai.landing_policy)
                 // support for old shared armies implementation
                 _.times(ai.landing_policy.length, function () {
@@ -756,11 +749,11 @@ if (!gwaioSystemChangesLoaded) {
                 alliance_group: 2,
               });
               _.forEach(ai.minions, function (minion) {
-                var slotsArrayMinions = [];
                 minion.personality.adv_eco_mod =
                   minion.personality.adv_eco_mod * minion.econ_rate;
                 minion.personality.adv_eco_mod_alone =
                   minion.personality.adv_eco_mod_alone * minion.econ_rate;
+                var slotsArrayMinions = [];
                 if (minion.landing_policy)
                   // support for old shared armies implementation
                   _.times(minion.landing_policy.length, function () {
@@ -790,7 +783,7 @@ if (!gwaioSystemChangesLoaded) {
                 });
               });
 
-              // Setup Additional Factions
+              // Setup Additional AI Factions
               var allianceGroup = 3;
               var foeCount = 1;
               _.forEach(ai.foes, function (foe) {
@@ -830,6 +823,8 @@ if (!gwaioSystemChangesLoaded) {
                 foeCount += 1;
               });
 
+              var playerCommander = inventory.getTag("global", "commander");
+              var system = currentSystem.system();
               var config = {
                 files: self.files(),
                 armies: armies,
