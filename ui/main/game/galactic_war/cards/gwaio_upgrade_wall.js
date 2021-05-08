@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Wall Upgrade Tech increases the health of walls by 50%"
+      "!LOC:Wall Upgrade Tech increases the health of walls by 50%."
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(
