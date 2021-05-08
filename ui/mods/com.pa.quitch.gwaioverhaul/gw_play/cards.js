@@ -164,6 +164,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_gile",
               "gwaio_upgrade_grenadier",
               "gwaio_upgrade_halley",
+              "gwaio_upgrade_hermes",
               "gwaio_upgrade_holkins",
               "gwaio_upgrade_hornet",
               "gwaio_upgrade_horsefly",

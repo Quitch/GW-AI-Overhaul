@@ -1234,5 +1234,9 @@ define({
       id: "gwaio_upgrade_vehiclefactory",
       units: ["/pa/units/land/vehicle_factory/vehicle_factory.json"],
     },
+    {
+      id: "gwaio_upgrade_hermes",
+      units: ["/pa/units/orbital/orbital_probe/orbital_probe.json"],
+    },
   ],
 });
