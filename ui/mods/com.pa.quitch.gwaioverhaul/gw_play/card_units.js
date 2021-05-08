@@ -1262,5 +1262,11 @@ define({
       id: "gwaio_upgrade_arkyd",
       units: ["/pa/units/orbital/radar_satellite/radar_satellite.json"],
     },
+    {
+      id: "gwaio_upgrade_stitch",
+      units: [
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+      ],
+    },
   ],
 });

@@ -207,6 +207,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_squall",
               "gwaio_upgrade_stinger",
               "gwaio_upgrade_stingray",
+              "gwaio_upgrade_stitch",
               "gwaio_upgrade_storm",
               "gwaio_upgrade_stryker",
               "gwaio_upgrade_sxx",
