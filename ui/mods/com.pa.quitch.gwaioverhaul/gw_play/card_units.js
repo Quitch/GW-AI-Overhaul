@@ -1292,5 +1292,9 @@ define({
       id: "gwaio_upgrade_zeus",
       units: ["/pa/units/air/titan_air/titan_air.json"],
     },
+    {
+      id: "gwaio_upgrade_atlas",
+      units: ["/pa/units/land/titan_bot/titan_bot.json"],
+    },
   ],
 });
