@@ -20,28 +20,12 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function () {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/titan_structure/titan_structure.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
-          inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory"))
+        )
       )
         chance = 60;
 

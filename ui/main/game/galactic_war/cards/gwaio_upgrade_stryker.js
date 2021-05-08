@@ -24,9 +24,6 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit(
           "/pa/units/land/attack_vehicle/attack_vehicle.json"
         )
       )

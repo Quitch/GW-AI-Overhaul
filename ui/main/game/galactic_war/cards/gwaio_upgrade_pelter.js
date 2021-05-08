@@ -20,25 +20,12 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function () {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/artillery_short/artillery_short.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/bot_factory.json"
-        ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory/naval_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory/vehicle_factory.json"
-          ) ||
-          inventory.hasCard("gwc_start_artillery"))
+        )
       )
         chance = 60;
 

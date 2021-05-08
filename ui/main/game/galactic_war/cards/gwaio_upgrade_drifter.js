@@ -22,12 +22,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/land/tank_hover/tank_hover.json")
-      )
+      if (gwaioFunctions.hasUnit("/pa/units/land/tank_hover/tank_hover.json"))
         chance = 60;
 
       return { chance: chance };

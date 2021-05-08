@@ -6,6 +6,10 @@
 
 - New unit upgrade cards
 
+### Changed
+
+- Simplified upgrade tech checks to improve future compatibility
+
 ## v4.20.2 - 2021-05-04
 
 ### Fixed
