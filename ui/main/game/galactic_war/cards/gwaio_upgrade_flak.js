@@ -41,7 +41,7 @@ define([
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory") ||
+          inventory.hasCard("gwaio_upgrade_airfactory") ||
           inventory.hasCard("nem_start_tower_rush"))
       )
         chance = 60;
