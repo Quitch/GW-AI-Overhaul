@@ -1288,5 +1288,9 @@ define({
       id: "gwaio_upgrade_wall",
       units: ["/pa/units/land/land_barrier/land_barrier.json"],
     },
+    {
+      id: "gwaio_upgrade_zeus",
+      units: ["/pa/units/air/titan_air/titan_air.json"],
+    },
   ],
 });

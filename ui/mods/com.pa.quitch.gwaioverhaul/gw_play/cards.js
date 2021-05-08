@@ -224,6 +224,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_vehiclefactory",
               "gwaio_upgrade_wall",
               "gwaio_upgrade_wyrm",
+              "gwaio_upgrade_zeus",
               "gwc_add_card_slot",
               "gwc_bld_efficiency_cdr",
               "gwc_bld_efficiency_fabs",
