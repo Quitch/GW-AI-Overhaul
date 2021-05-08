@@ -1258,5 +1258,9 @@ define({
       id: "gwaio_upgrade_pelter",
       units: ["/pa/units/land/artillery_short/artillery_short.json"],
     },
+    {
+      id: "gwaio_upgrade_arkyd",
+      units: ["/pa/units/orbital/radar_satellite/radar_satellite.json"],
+    },
   ],
 });
