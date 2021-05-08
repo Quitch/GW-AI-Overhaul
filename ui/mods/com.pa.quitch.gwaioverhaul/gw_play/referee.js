@@ -57,7 +57,7 @@ requireGW(
           aiMapGet,
           aiX1MapGet
         ) {
-          /* Replace part of gw_spec.js to setup ops.remove() */
+          /* Replace part of gw_spec.js to add ops.remove() */
           var flattenBaseSpecs = function (spec, specs, tag) {
             if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
               return spec;
