@@ -1280,5 +1280,9 @@ define({
         "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_mine",
+      units: ["/pa/units/land/land_mine/land_mine.json"],
+    },
   ],
 });

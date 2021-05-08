@@ -188,6 +188,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_manhattan",
               "gwaio_upgrade_mend",
               "gwaio_upgrade_metalstorage",
+              "gwaio_upgrade_mine",
               "gwaio_upgrade_narwhal",
               "gwaio_upgrade_navalfactory",
               "gwaio_upgrade_nukes",
