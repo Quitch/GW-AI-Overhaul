@@ -1254,5 +1254,9 @@ define({
       id: "gwaio_upgrade_flak",
       units: ["/pa/units/orbital/air_defense_adv/air_defense_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_pelter",
+      units: ["/pa/units/land/artillery_short/artillery_short.json"],
+    },
   ],
 });

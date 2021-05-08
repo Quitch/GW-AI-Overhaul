@@ -192,6 +192,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_orbitallauncher",
               "gwaio_upgrade_orca",
               "gwaio_upgrade_pelican",
+              "gwaio_upgrade_pelter",
               "gwaio_upgrade_phoenix",
               "gwaio_upgrade_piranha",
               "gwaio_upgrade_radar",
