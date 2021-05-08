@@ -1242,5 +1242,9 @@ define({
       id: "gwaio_upgrade_advancedradarsatellite",
       units: ["/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_umbrella",
+      units: ["/pa/units/orbital/ion_defense/ion_defense.json"],
+    },
   ],
 });

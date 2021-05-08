@@ -210,6 +210,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_torpedolauncher",
               "gwaio_upgrade_typhoon",
               "gwaio_upgrade_ubercannon_structure",
+              "gwaio_upgrade_umbrella",
               "gwaio_upgrade_unitcannon",
               "gwaio_upgrade_vanguard",
               "gwaio_upgrade_vehiclefactory",
