@@ -1274,5 +1274,11 @@ define({
         "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_barnacle",
+      units: [
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+      ],
+    },
   ],
 });
