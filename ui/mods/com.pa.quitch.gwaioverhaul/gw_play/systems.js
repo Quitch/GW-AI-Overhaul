@@ -323,6 +323,7 @@ if (!gwaioSystemChangesLoaded) {
           );
         });
 
+        // replacement for gw_referee.js
         requireGW(
           ["shared/gw_common", "pages/gw_play/gw_referee"],
           function (GW, GWReferee) {
