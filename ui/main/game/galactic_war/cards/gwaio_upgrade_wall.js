@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Wall Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
+      "!LOC:Wall Upgrade Tech increases the health of walls by 50%"
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(
@@ -12,7 +12,7 @@ define([
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
+        found: "/VO/Computer/gw/board_tech_available_armor",
       };
     },
     getContext: function (galaxy) {
@@ -33,9 +33,9 @@ define([
       var mods = [
         {
           file: "/pa/units/land/land_barrier/land_barrier.json",
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);

@@ -222,6 +222,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_unitcannon",
               "gwaio_upgrade_vanguard",
               "gwaio_upgrade_vehiclefactory",
+              "gwaio_upgrade_wall",
               "gwaio_upgrade_wyrm",
               "gwc_add_card_slot",
               "gwc_bld_efficiency_cdr",

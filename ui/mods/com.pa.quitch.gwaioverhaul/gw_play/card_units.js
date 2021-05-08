@@ -1284,5 +1284,9 @@ define({
       id: "gwaio_upgrade_mine",
       units: ["/pa/units/land/land_mine/land_mine.json"],
     },
+    {
+      id: "gwaio_upgrade_wall",
+      units: ["/pa/units/land/land_barrier/land_barrier.json"],
+    },
   ],
 });
