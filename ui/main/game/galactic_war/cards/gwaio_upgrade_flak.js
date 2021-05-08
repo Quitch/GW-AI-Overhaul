@@ -24,7 +24,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/orbital/air_defense_adv/air_defense_adv.json"
+          "/pa/units/land/air_defense_adv/air_defense_adv.json"
         )
       )
         chance = 60;
@@ -35,14 +35,14 @@ define([
       var mods = [
         {
           file:
-            "/pa/units/orbital/air_defense_adv/air_defense_adv_tool_weapon.json",
+            "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
           file:
-            "/pa/units/orbital/air_defense_adv/air_defense_adv_tool_weapon.json",
+            "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
           path: "target_priorities",
           op: "push",
           value: ["Mobile & (Land | Naval)"],
