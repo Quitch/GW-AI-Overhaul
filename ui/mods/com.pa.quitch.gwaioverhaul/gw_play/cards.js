@@ -478,7 +478,7 @@ if (!gwaioCardsLoaded) {
                     if (index === -1)
                       console.warn(
                         unit,
-                        "is invalid or missing from GWAIO unit_names.js"
+                        "is invalid or missing from GWO unit_names.js"
                       );
                     else {
                       var name = loc(gwaioUnitsToNames.units[index].name);
