@@ -20,7 +20,7 @@
 ### Fixed
 
 - Fabrication Bot, Stitch, and Mend being misidentified in the What Units? tooltip
-- Chance of some naval techs being too high
+- Chance of receiving some naval techs being too high
 
 ## v4.20.2 - 2021-05-04
 
