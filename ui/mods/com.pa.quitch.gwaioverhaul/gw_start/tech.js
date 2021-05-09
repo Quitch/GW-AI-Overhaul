@@ -7,17 +7,9 @@ define([
   var synchronousTech = [];
   var revenantsTech = [];
   var clusterTech = [];
-
   var factionsTech = [
     legonisTech,
     foundationTech,
-    synchronousTech,
-    revenantsTech,
-    clusterTech,
-  ];
-  var factionsTechAir = [foundationTech, clusterTech];
-  var factionsTechNoAir = [
-    legonisTech,
     synchronousTech,
     revenantsTech,
     clusterTech,
@@ -30,13 +22,18 @@ define([
     inventory.revenantsUnits,
     inventory.clusterUnits,
   ];
-  var factionUnitsAir = [inventory.foundationUnits, inventory.clusterUnitsAir];
-  var factionUnitsNoAir = [
-    inventory.legonisUnits,
-    inventory.synchronousUnits,
-    inventory.revenantsUnits,
-    inventory.clusterUnitsNoAir,
-  ];
+
+  factionUnits.forEach(function (faction, i) {
+    factionsTech[i][0] = faction.map(function (unit) {
+      return {
+        file: unit,
+        path: "build_metal_cost",
+        op: "multiply",
+        value: "0.75",
+      };
+    });
+  });
+
   var factionWeapons = [
     inventory.legonisWeapons,
     inventory.foundationWeapons,
@@ -51,25 +48,6 @@ define([
     inventory.revenantsAmmo,
     inventory.clusterAmmo,
   ];
-  var factionBuildArms = [
-    inventory.legonisBuildArms,
-    inventory.foundationBuildArms,
-    inventory.synchronousBuildArms,
-    inventory.revenantsBuildArms,
-    inventory.clusterBuildArms,
-  ];
-
-  factionUnits.forEach(function (faction, i) {
-    factionsTech[i][0] = faction.map(function (unit) {
-      return {
-        file: unit,
-        path: "build_metal_cost",
-        op: "multiply",
-        value: "0.75",
-      };
-    });
-  });
-
   factionAmmo.forEach(function (faction, i) {
     factionsTech[i][1] = _.flatten(
       faction.map(function (ammo) {
@@ -90,7 +68,6 @@ define([
       })
     );
   });
-
   factionWeapons.forEach(function (faction, i) {
     factionsTech[i][1] = factionsTech[i][1].concat(
       _.flatten(
@@ -131,6 +108,20 @@ define([
     });
   });
 
+  var factionsTechAir = [foundationTech, clusterTech];
+  var factionsTechNoAir = [
+    legonisTech,
+    synchronousTech,
+    revenantsTech,
+    clusterTech,
+  ];
+  var factionUnitsAir = [inventory.foundationUnits, inventory.clusterUnitsAir];
+  var factionUnitsNoAir = [
+    inventory.legonisUnits,
+    inventory.synchronousUnits,
+    inventory.revenantsUnits,
+    inventory.clusterUnitsNoAir,
+  ];
   factionUnitsAir.forEach(function (faction, i) {
     factionsTechAir[i][3] = _.flatten(
       faction.map(function (unit) {
@@ -163,7 +154,6 @@ define([
       })
     );
   });
-
   factionUnitsNoAir.forEach(function (faction, i) {
     factionsTechNoAir[i][3] = _.flatten(
       faction.map(function (unit) {
@@ -197,6 +187,13 @@ define([
     );
   });
 
+  var factionBuildArms = [
+    inventory.legonisBuildArms,
+    inventory.foundationBuildArms,
+    inventory.synchronousBuildArms,
+    inventory.revenantsBuildArms,
+    inventory.clusterBuildArms,
+  ];
   factionBuildArms.forEach(function (faction, i) {
     factionsTech[i][4] = _.flatten(
       faction.map(function (buildArm) {
@@ -218,7 +215,6 @@ define([
     );
   });
 
-  // Enhanced Commanders
   var factionCommanders = [
     inventory.commanderUnits, // Legonis Machina
     inventory.commanderUnits, // Foundation
@@ -294,7 +290,7 @@ define([
     );
   });
 
-  // Faction specific setup
+  // Cluster commander setup
   var clusterCommanderTech = [
     {
       file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
