@@ -16,6 +16,7 @@
   - Skitter
   - Manhattan
   - Slammer
+  - Radar
 
 ### Fixed
 
