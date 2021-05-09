@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_defense.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png"
     ),
     audio: function () {
       return {
