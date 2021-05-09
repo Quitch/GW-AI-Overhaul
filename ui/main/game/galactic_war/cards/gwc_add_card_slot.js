@@ -32,10 +32,10 @@ define({
     inventory.maxCards(inventory.maxCards() + 2); // Note: One for us, and one for an extra.
   },
   dull: function () {},
-  keep: function (unused0, context) {
+  keep: function (params, context) {
     context.chance = 100;
   },
-  discard: function (unused0, context) {
+  discard: function (params, context) {
     context.chance *= Math.log(context.totalSize) * 0.4;
   },
 });

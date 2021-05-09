@@ -115,7 +115,7 @@ if (!gwaioRefereeChangesLoaded) {
                         ? attribute + value
                         : value;
                     },
-                    replace: function (unused0, value) {
+                    replace: function (attribute, value) {
                       return value;
                     },
                     merge: function (attribute, value) {

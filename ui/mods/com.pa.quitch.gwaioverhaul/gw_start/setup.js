@@ -861,7 +861,7 @@ if (!gwaioSetupLoaded) {
                 neutralStars: neutralStars,
                 orderedSpawn: model.creditsMode(),
                 spawn: function () {},
-                canSpread: function (unused0, ai) {
+                canSpread: function (star, ai) {
                   return (
                     !model.creditsMode() ||
                     !ai ||
