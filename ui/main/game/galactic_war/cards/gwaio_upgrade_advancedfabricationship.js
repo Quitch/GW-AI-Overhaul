@@ -24,6 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
+          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
+        ) &&
+        gwaioFunctions.hasUnit(
           "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json"
         )
       )
