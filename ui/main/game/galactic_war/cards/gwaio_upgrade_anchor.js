@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Anchor Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital_fighter.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_defense.png"
     ),
     audio: function () {
       return {
