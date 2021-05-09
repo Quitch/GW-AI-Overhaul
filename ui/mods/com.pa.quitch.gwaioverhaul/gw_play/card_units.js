@@ -1308,5 +1308,9 @@ define({
       id: "gwaio_upgrade_solararray",
       units: ["/pa/units/orbital/solar_array/solar_array.json"],
     },
+    {
+      id: "gwaio_upgrade_fabricationbot",
+      units: ["/pa/units/land/fabrication_bot/fabrication_bot.json"],
+    },
   ],
 });
