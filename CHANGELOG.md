@@ -19,6 +19,7 @@
   - Radar
   - Advanced Radar
   - Leviathan
+  - Stingray
 
 ### Fixed
 
