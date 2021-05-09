@@ -27,7 +27,7 @@ define([
           "/pa/units/sea/fabrication_barge/fabrication_barge.json"
         )
       )
-        chance = 60;
+        chance = 30;
 
       return { chance: chance };
     },
