@@ -1340,5 +1340,9 @@ define({
         "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_advancedfabricationship",
+      units: ["/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json"],
+    },
   ],
 });
