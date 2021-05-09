@@ -1,0 +1,51 @@
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (gwaioFunctions) {
+  return {
+    visible: _.constant(true),
+    describe: _.constant(
+      "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%."
+    ),
+    summarize: _.constant("!LOC:Advanced Fabrication Vehicle Upgrade Tech"),
+    icon: _.constant(
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_metal.png"
+    ),
+    audio: function () {
+      return {
+        found: "/VO/Computer/gw/board_tech_available_vehicle",
+      };
+    },
+    getContext: function (galaxy) {
+      return {
+        totalSize: galaxy.stars().length,
+      };
+    },
+    deal: function () {
+      var chance = 0;
+      if (
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
+        ) &&
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json"
+        )
+      )
+        chance = 60;
+
+      return { chance: chance };
+    },
+    buff: function (inventory) {
+      var mods = [
+        {
+          file:
+            "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv_build_arm.json",
+          path: "max_range",
+          op: "multiply",
+          value: 2.5,
+        },
+      ];
+      inventory.addMods(mods);
+    },
+    dull: function () {},
+  };
+});

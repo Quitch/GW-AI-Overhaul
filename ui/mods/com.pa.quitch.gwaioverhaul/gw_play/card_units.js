@@ -1334,5 +1334,11 @@ define({
       id: "gwaio_upgrade_advancedfabricationbot",
       units: ["/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedfabricationvehicle",
+      units: [
+        "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+      ],
+    },
   ],
 });
