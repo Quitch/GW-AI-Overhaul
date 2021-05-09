@@ -21,7 +21,7 @@
   - Leviathan
   - Stingray
 - Removed Tougher Commanders option from war setup
-- Added new tech Enhanced Commanders to possible AI buffs
+- Tougher Commanders added as an AI buff
 
 ### Fixed
 
