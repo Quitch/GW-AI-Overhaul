@@ -142,6 +142,7 @@ if (!gwaioCardsLoaded) {
             model.gwaioDeck.push(
               "gwaio_enable_bot_aa",
               "gwaio_upgrade_advancedfabricationaircraft",
+              "gwaio_upgrade_advancedfabricationbot",
               "gwaio_upgrade_advancedlaserdefensetower",
               "gwaio_upgrade_advancedradar",
               "gwaio_upgrade_advancedradarsatellite",

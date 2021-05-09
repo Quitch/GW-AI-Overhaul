@@ -1330,5 +1330,9 @@ define({
         "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_advancedfabricationbot",
+      units: ["/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json"],
+    },
   ],
 });
