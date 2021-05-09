@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Radar Upgrade Tech doubles the vision radius of advanced radar."
+      "!LOC:Advanced Radar Upgrade Tech increases the vision and radar radius of advanced radar by 50%."
     ),
     summarize: _.constant("!LOC:Advanced Radar Upgrade Tech"),
     icon: _.constant(
@@ -51,13 +51,31 @@ define([
           file: "/pa/units/land/radar_adv/radar_adv.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
-          value: 2,
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar_adv/radar_adv.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar_adv/radar_adv.json",
+          path: "recon.observer.items.2.radius",
+          op: "multiply",
+          value: 1.5,
         },
         {
           file: "/pa/units/land/radar_adv/radar_adv.json",
           path: "recon.observer.items.3.radius",
           op: "multiply",
-          value: 2,
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar_adv/radar_adv.json",
+          path: "recon.observer.items.4.radius",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);

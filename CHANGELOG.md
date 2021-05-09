@@ -17,6 +17,7 @@
   - Manhattan
   - Slammer
   - Radar
+  - Advanced Radar
 
 ### Fixed
 
