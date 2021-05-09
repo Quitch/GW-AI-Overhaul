@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic ship fabricator."
+      "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic naval fabricator."
     ),
     summarize: _.constant("!LOC:Fabrication Ship Upgrade Tech"),
     icon: _.constant(
