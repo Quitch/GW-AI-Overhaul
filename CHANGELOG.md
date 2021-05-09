@@ -9,6 +9,8 @@
 ### Changed
 
 - Simplified upgrade tech checks to improve future compatibility
+- The following unit upgrades:
+  - Angel
 
 ### Fixed
 
