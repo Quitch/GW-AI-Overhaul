@@ -10,6 +10,10 @@
 
 - Simplified upgrade tech checks to improve future compatibility
 
+### Fixed
+
+- Fabrication Bot, Stitch, and Mend being misidentified in the What Units? tooltip
+
 ## v4.20.2 - 2021-05-04
 
 ### Fixed
