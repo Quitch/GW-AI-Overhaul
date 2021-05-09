@@ -18,6 +18,7 @@
   - Slammer
   - Radar
   - Advanced Radar
+  - Leviathan
 
 ### Fixed
 
