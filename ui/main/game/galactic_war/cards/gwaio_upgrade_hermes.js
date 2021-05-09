@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Hermes Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital_fighter.png"
     ),
     audio: function () {
       return {
