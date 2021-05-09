@@ -12,6 +12,7 @@
 - The following unit upgrades:
   - Angel
   - Laser Defense Tower
+  - Firefly
 
 ### Fixed
 
