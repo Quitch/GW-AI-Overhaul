@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Fabrication Vehicle Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_metal.png"
     ),
     audio: function () {
       return {
