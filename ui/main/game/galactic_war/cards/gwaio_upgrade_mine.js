@@ -31,7 +31,7 @@ define([
             "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json"
           ) ||
           ((gwaioFunctions.hasUnit(
-            "/pa/units/air/bot_factory_adv/bot_factory_adv.json"
+            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
           ) ||
             inventory.hasCard("gwaio_upgrade_botfactory")) &&
             gwaioFunctions.hasUnit(
