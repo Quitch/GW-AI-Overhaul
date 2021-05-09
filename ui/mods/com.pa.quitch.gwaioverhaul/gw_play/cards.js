@@ -155,6 +155,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_antinuke",
               "gwaio_upgrade_ares",
               "gwaio_upgrade_arkyd",
+              "gwaio_upgrade_artemis",
               "gwaio_upgrade_astraeus",
               "gwaio_upgrade_atlas",
               "gwaio_upgrade_barnacle",

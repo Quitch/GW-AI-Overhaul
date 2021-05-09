@@ -1350,5 +1350,9 @@ define({
         "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
       ],
     },
+    {
+      id: "gwaio_upgrade_artemis",
+      units: ["/pa/units/orbital/orbital_railgun/orbital_railgun.json"],
+    },
   ],
 });
