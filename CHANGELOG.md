@@ -4,7 +4,7 @@
 
 ### Added
 
-- New unit upgrade cards
+- 29 unit upgrade cards
 
 ### Changed
 
