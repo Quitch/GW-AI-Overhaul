@@ -27,6 +27,7 @@ define([
         (gwaioFunctions.hasUnit(
           "/pa/units/air/air_factory_adv/air_factory_adv.json"
         ) ||
+          inventory.hasCard("gwaio_upgrade_airfactory") ||
           gwaioFunctions.hasUnit(
             "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
           ) ||
