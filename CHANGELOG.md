@@ -15,6 +15,7 @@
   - Firefly
   - Skitter
   - Manhattan
+  - Slammer
 
 ### Fixed
 
