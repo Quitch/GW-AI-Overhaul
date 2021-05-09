@@ -37,15 +37,8 @@ define([
         {
           file: "/pa/units/sea/sea_scout/sea_scout.json",
           path: "unit_types",
-          op: "replace",
-          value: [
-            "UNITTYPE_Naval",
-            "UNITTYPE_Mobile",
-            "UNITTYPE_Offense",
-            "UNITTYPE_Basic",
-            "UNITTYPE_FactoryBuild",
-            "UNITTYPE_Hover",
-          ],
+          op: "push",
+          value: "UNITTYPE_Hover",
         },
         {
           file: "/pa/units/sea/sea_scout/sea_scout.json",
