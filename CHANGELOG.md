@@ -9,10 +9,11 @@
 ### Changed
 
 - Simplified upgrade tech checks to improve future compatibility
-- The following unit upgrades:
+- Enhanced the following unit upgrades:
   - Angel
   - Laser Defense Tower
   - Firefly
+  - Skitter
 
 ### Fixed
 
