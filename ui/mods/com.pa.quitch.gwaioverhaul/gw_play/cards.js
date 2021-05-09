@@ -158,6 +158,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_artemis",
               "gwaio_upgrade_astraeus",
               "gwaio_upgrade_atlas",
+              "gwaio_upgrade_avenger",
               "gwaio_upgrade_barnacle",
               "gwaio_upgrade_barracuda",
               "gwaio_upgrade_bluehawk",

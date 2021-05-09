@@ -1354,5 +1354,9 @@ define({
       id: "gwaio_upgrade_artemis",
       units: ["/pa/units/orbital/orbital_railgun/orbital_railgun.json"],
     },
+    {
+      id: "gwaio_upgrade_avenger",
+      units: ["/pa/units/orbital/orbital_fighter/orbital_fighter.json"],
+    },
   ],
 });
