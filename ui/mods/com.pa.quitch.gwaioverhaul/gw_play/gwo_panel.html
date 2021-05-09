@@ -33,13 +33,15 @@
           <div class="td"><loc>Easier Start:</loc></div>
           <div class="data" data-bind="text: $root.gwaioEasierStart"></div>
         </div>
+        <!-- ko if: $root.gwaioLegacyTougherCommanders -->
         <div class="tr">
           <div class="td"><loc>Tougher Commanders:</loc></div>
           <div
             class="data"
-            data-bind="text: $root.gwaioTougherCommanders"
+            data-bind="text: $root.gwaioLegacyTougherCommanders"
           ></div>
         </div>
+        <!-- /ko -->
         <div class="tr">
           <div class="td"><loc>Hardcore:</loc></div>
           <div class="data" data-bind="text: $root.gwaioHardcore"></div>

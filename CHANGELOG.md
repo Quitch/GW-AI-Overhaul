@@ -20,6 +20,8 @@
   - Advanced Radar
   - Leviathan
   - Stingray
+- Removed Tougher Commanders option from war setup
+- Added new tech Enhanced Commanders to possible AI buffs
 
 ### Fixed
 

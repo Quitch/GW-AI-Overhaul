@@ -1,117 +1,6 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/inventory.js",
 ], function (inventory) {
-  // Tougher Commanders
-  var commanderArmourTech = [];
-  inventory.commanderUnits.forEach(function (unit) {
-    commanderArmourTech.push({
-      file: unit,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-  var clusterCommanderArmourTech = [];
-  inventory.clusterCommanders.forEach(function (unit) {
-    clusterCommanderArmourTech.push({
-      file: unit,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-
-  var commanderCombatTech = [];
-  inventory.commanderUnits.forEach(function (unit) {
-    commanderCombatTech.push(
-      {
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 3,
-      }
-    );
-  });
-  inventory.commanderAmmo.forEach(function (ammo) {
-    commanderCombatTech.push(
-      {
-        file: ammo,
-        path: "damage",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: ammo,
-        path: "splash_damage",
-        op: "multiply",
-        value: 1.25,
-      }
-    );
-  });
-  var clusterCommanderCombatTech = [];
-  inventory.clusterCommanders.forEach(function (unit) {
-    clusterCommanderCombatTech.push(
-      {
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 3,
-      },
-      {
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 3,
-      }
-    );
-  });
-  inventory.clusterCommanderAmmo.forEach(function (ammo) {
-    clusterCommanderCombatTech.push(
-      {
-        file: ammo,
-        path: "damage",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: ammo,
-        path: "splash_damage",
-        op: "multiply",
-        value: 1.25,
-      }
-    );
-  });
-
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
@@ -329,6 +218,82 @@ define([
     );
   });
 
+  // Enhanced Commanders
+  var factionCommanders = [
+    inventory.commanderUnits, // Legonis Machina
+    inventory.commanderUnits, // Foundation
+    inventory.commanderUnits, // Synchronous
+    inventory.commanderUnits, // Revenants
+    inventory.clusterCommanders,
+  ];
+  var factionCommanderAmmo = [
+    inventory.commanderAmmo, // Legonis Machina
+    inventory.commanderAmmo, // Foundation
+    inventory.commanderAmmo, // Synchronous
+    inventory.commanderAmmo, // Revenants
+    inventory.clusterCommanderAmmo,
+  ];
+  factionCommanders.forEach(function (faction, i) {
+    factionsTech[i][5] = _.flatten(
+      faction.map(function (commander) {
+        return [
+          {
+            file: commander,
+            path: "max_health",
+            op: "multiply",
+            value: 2,
+          },
+          {
+            file: commander,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: commander,
+            path: "navigation.brake",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: commander,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: 3,
+          },
+          {
+            file: commander,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: 3,
+          },
+        ];
+      })
+    );
+  });
+  factionCommanderAmmo.forEach(function (faction, i) {
+    factionsTech[i][5] = factionsTech[i][5].concat(
+      _.flatten(
+        faction.map(function (ammo) {
+          return [
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            },
+          ];
+        })
+      )
+    );
+  });
+
   // Faction specific setup
   var clusterCommanderTech = [
     {
@@ -461,12 +426,6 @@ define([
   });
 
   return {
-    tougherCommander: [
-      commanderArmourTech,
-      commanderCombatTech,
-      clusterCommanderArmourTech,
-      clusterCommanderCombatTech,
-    ],
     factionTechs: [
       legonisTech,
       foundationTech,

@@ -241,6 +241,15 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
+        model.gwaioTougherCommanders = ko.pureComputed(function () {
+          if (
+            model.selection.system().star.ai() &&
+            model.selection.system().star.ai().typeOfBuffs &&
+            _.includes(model.selection.system().star.ai().typeOfBuffs, 5)
+          )
+            return true;
+        });
+
         model.gwaioTechMirror = ko.pureComputed(function () {
           if (
             model.selection.system().star.ai() &&
@@ -256,6 +265,7 @@ if (!gwaioIntelligenceLoaded) {
             model.gwaioTechDamage() ||
             model.gwaioTechHealth() ||
             model.gwaioTechSpeed() ||
+            model.gwaioTougherCommanders() ||
             model.gwaioTechMirror()
           )
             return true;
