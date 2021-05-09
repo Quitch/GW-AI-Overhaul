@@ -40,7 +40,7 @@ define([
               "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
             aim_bone: "bone_root",
             record_index: 0,
-            muzzle_bone: ["bone_root", "bone_root"],
+            muzzle_bone: "bone_root",
           },
         },
       ];
