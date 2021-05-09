@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Manhattan Upgrade Tech increases the damage dealt by the mobile nuke to orbital units and commanders by 200%."
+      "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion."
     ),
     summarize: _.constant("!LOC:Manhattan Upgrade Tech"),
     icon: _.constant(
@@ -37,15 +37,39 @@ define([
       var mods = [
         {
           file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
-          path: "armor_damage_map.AT_Orbital",
+          path: "splash_radius",
           op: "multiply",
-          value: 3,
+          value: 2,
         },
         {
           file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
-          path: "armor_damage_map.AT_Commander",
+          path: "full_damage_splash_radius",
           op: "multiply",
-          value: 3,
+          value: 2,
+        },
+        {
+          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          path: "burn_radius",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          path: "damage_volume.initial_radius",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          path: "damage_volume.radius_velocity",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          path: "damage_volume.burnable_remove_radius",
+          op: "multiply",
+          value: 2,
         },
       ];
       inventory.addMods(mods);

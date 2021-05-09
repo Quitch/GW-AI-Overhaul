@@ -14,6 +14,7 @@
   - Laser Defense Tower
   - Firefly
   - Skitter
+  - Manhattan
 
 ### Fixed
 
