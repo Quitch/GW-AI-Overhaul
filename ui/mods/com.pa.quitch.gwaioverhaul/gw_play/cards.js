@@ -167,6 +167,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_energystorage",
               "gwaio_upgrade_fabricationaircraft",
               "gwaio_upgrade_fabricationbot",
+              "gwaio_upgrade_fabricationship",
               "gwaio_upgrade_fabricationvehicle",
               "gwaio_upgrade_firefly",
               "gwaio_upgrade_flak",

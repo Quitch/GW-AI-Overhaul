@@ -1320,5 +1320,9 @@ define({
       id: "gwaio_upgrade_fabricationaircraft",
       units: ["/pa/units/air/fabrication_aircraft/fabrication_aircraft.json"],
     },
+    {
+      id: "gwaio_upgrade_fabricationship",
+      units: ["/pa/units/sea/fabrication_ship/fabrication_ship.json"],
+    },
   ],
 });
