@@ -204,6 +204,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_navalfactory",
               "gwaio_upgrade_nukes",
               "gwaio_upgrade_omega",
+              "gwaio_upgrade_orbitalfabricationbot",
               "gwaio_upgrade_orbitallauncher",
               "gwaio_upgrade_orca",
               "gwaio_upgrade_pelican",

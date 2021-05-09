@@ -1344,5 +1344,11 @@ define({
       id: "gwaio_upgrade_advancedfabricationship",
       units: ["/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_orbitalfabricationbot",
+      units: [
+        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+      ],
+    },
   ],
 });
