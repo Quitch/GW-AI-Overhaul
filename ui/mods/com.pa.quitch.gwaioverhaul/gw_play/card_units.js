@@ -1358,5 +1358,9 @@ define({
       id: "gwaio_upgrade_avenger",
       units: ["/pa/units/orbital/orbital_fighter/orbital_fighter.json"],
     },
+    {
+      id: "gwaio_upgrade_anchor",
+      units: ["/pa/units/orbital/defense_satellite/defense_satellite.json"],
+    },
   ],
 });

@@ -150,6 +150,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_advancedradarsatellite",
               "gwaio_upgrade_advancedtorpedolauncher",
               "gwaio_upgrade_airfactory",
+              "gwaio_upgrade_anchor",
               "gwaio_upgrade_angel",
               "gwaio_upgrade_ant",
               "gwaio_upgrade_antinuke",
