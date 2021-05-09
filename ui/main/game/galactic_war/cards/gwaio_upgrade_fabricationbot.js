@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Fabrication Bot Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_metal.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot.png"
     ),
     audio: function () {
       return {
