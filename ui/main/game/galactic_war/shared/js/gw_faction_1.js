@@ -325,8 +325,7 @@ define(function () {
             [192, 192, 192],
           ],
           personality: {
-            adv_eco_mod: 3,
-            adv_eco_mod_alone: 3,
+            basic_to_advanced_factory_ratio: 10,
           },
           commander:
             "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",

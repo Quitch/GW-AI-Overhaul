@@ -226,8 +226,7 @@ define([
           ],
           isCluster: true,
           personality: {
-            adv_eco_mod: 3,
-            adv_eco_mod_alone: 3,
+            basic_to_advanced_factory_ratio: 10,
           },
           commander: "/pa/units/air/support_platform/support_platform.json",
         },
@@ -508,8 +507,7 @@ define([
           ],
           isCluster: true,
           personality: {
-            adv_eco_mod: 3,
-            adv_eco_mod_alone: 3,
+            basic_to_advanced_factory_ratio: 10,
           },
           commander:
             "/pa/units/land/bot_support_commander/bot_support_commander.json",
