@@ -31,6 +31,7 @@
 - Foundation invest more heavily into their navy where possible
 - Tougher Commanders gives enemy commanders mine vision
 - Luddites no longer tech late but instead maintain a high ratio of T1 to T2 factories
+- Rush is no longer bot focused
 
 ### Fixed
 
