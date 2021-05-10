@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Astraeus Upgrade Tech doubles the orbital lander's interplanetary movement speed."
+      "!LOC:Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200%."
     ),
     summarize: _.constant("!LOC:Astraeus Upgrade Tech"),
     icon: _.constant(
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
@@ -41,13 +41,13 @@ define([
           file: "/pa/units/orbital/orbital_lander/orbital_lander.json",
           path: "system_velocity_multiplier",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
         {
           file: "/pa/units/orbital/orbital_lander/orbital_lander.json",
           path: "gravwell_velocity_multiplier",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
       ];
       inventory.addMods(mods);

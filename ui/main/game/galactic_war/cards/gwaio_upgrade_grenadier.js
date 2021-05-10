@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Grenadier Upgrade Tech replaces this fire support's artillery with mine launchers."
+      "!LOC:Grenadier Upgrade Tech replaces this fire support's artillery with mine launchers, triples its cost and reduces its rate of fire by 75%."
     ),
     summarize: _.constant("!LOC:Grenadier Upgrade Tech"),
     icon: _.constant(
@@ -23,7 +23,6 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
         gwaioFunctions.hasUnit(
           "/pa/units/land/bot_grenadier/bot_grenadier.json"
         )
@@ -34,6 +33,18 @@ define([
     },
     buff: function (inventory) {
       var mods = [
+        {
+          file: "/pa/units/land/bot_grenadier/bot_grenadier.json",
+          path: "build_metal_cost",
+          op: "multiply",
+          value: 3,
+        },
+        {
+          file: "/pa/units/land/bot_grenadier/bot_grenadier_tool_weapon.json",
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 0.25,
+        },
         {
           file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
           path: "damage",

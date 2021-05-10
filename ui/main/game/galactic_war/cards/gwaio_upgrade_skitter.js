@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout."
+      "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 50%."
     ),
     summarize: _.constant("!LOC:Skitter Upgrade Tech"),
     icon: _.constant(
@@ -51,6 +51,24 @@ define([
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
+        },
+        {
+          file: "/pa/units/air/air_scout/air_scout.json",
+          path: "recon.observer.items.0.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/air/air_scout/air_scout.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/air/air_scout/air_scout.json",
+          path: "recon.observer.items.2.radius",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);

@@ -1,5 +1,50 @@
 # CHANGELOG
 
+## v4.21.0 - 2021-05-10
+
+### Added
+
+- 38 unit upgrade cards, every unit now has an associated upgrade for a total of 109
+- Your system lore preference is now saved between wars
+
+### Changed
+
+- Simplified upgrade tech checks to improve future compatibility
+- Buffed the following unit upgrades:
+  - Advanced Radar
+  - Angel
+  - Ant
+  - Astraeus
+  - Firefly
+  - Laser Defense Tower
+  - Leviathan
+  - Manhattan
+  - Phoenix
+  - Radar
+  - Skitter
+  - Slammer
+  - Stingray
+  - SXX-1304 Laser Platform
+- Nerfed the following unit upgrades:
+  - Grenadier
+- Removed Tougher Commanders option from war setup
+- Tougher Commanders added as an AI buff
+- Foundation invest more heavily into their navy where possible
+- Tougher Commanders gives enemy commanders mine vision
+- Luddites no longer tech late but instead maintain a high ratio of T1 to T2 factories
+- Rush is no longer bot focused
+- Economist builds less defences
+- Increased naval usage by Uber, Platinum, and Gold
+- AI buffs appear one system earlier at Silver and above
+- AI buffs appear one system later at Bronze and below
+- Sub-commanders produce less fabbers
+
+### Fixed
+
+- Fabrication Bot, Stitch, and Mend being misidentified in the What Units? tooltip
+- Chance of receiving some naval techs being too high
+- Cluster Worker Rush using the wrong number of fabbers
+
 ## v4.20.2 - 2021-05-04
 
 ### Fixed

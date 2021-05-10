@@ -1234,5 +1234,169 @@ define({
       id: "gwaio_upgrade_vehiclefactory",
       units: ["/pa/units/land/vehicle_factory/vehicle_factory.json"],
     },
+    {
+      id: "gwaio_upgrade_hermes",
+      units: ["/pa/units/orbital/orbital_probe/orbital_probe.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedradarsatellite",
+      units: ["/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_umbrella",
+      units: ["/pa/units/orbital/ion_defense/ion_defense.json"],
+    },
+    {
+      id: "gwaio_upgrade_galata",
+      units: ["/pa/units/orbital/air_defense/air_defense.json"],
+    },
+    {
+      id: "gwaio_upgrade_flak",
+      units: ["/pa/units/orbital/air_defense_adv/air_defense_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_pelter",
+      units: ["/pa/units/land/artillery_short/artillery_short.json"],
+    },
+    {
+      id: "gwaio_upgrade_arkyd",
+      units: ["/pa/units/orbital/radar_satellite/radar_satellite.json"],
+    },
+    {
+      id: "gwaio_upgrade_stitch",
+      units: [
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_mend",
+      units: [
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_barnacle",
+      units: [
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_mine",
+      units: ["/pa/units/land/land_mine/land_mine.json"],
+    },
+    {
+      id: "gwaio_upgrade_wall",
+      units: ["/pa/units/land/land_barrier/land_barrier.json"],
+    },
+    {
+      id: "gwaio_upgrade_zeus",
+      units: ["/pa/units/air/titan_air/titan_air.json"],
+    },
+    {
+      id: "gwaio_upgrade_atlas",
+      units: ["/pa/units/land/titan_bot/titan_bot.json"],
+    },
+    {
+      id: "gwaio_upgrade_helios",
+      units: ["/pa/units/orbital/titan_orbital/titan_orbital.json"],
+    },
+    {
+      id: "gwaio_upgrade_ares",
+      units: ["/pa/units/land/titan_vehicle/titan_vehicle.json"],
+    },
+    {
+      id: "gwaio_upgrade_solararray",
+      units: ["/pa/units/orbital/solar_array/solar_array.json"],
+    },
+    {
+      id: "gwaio_upgrade_fabricationbot",
+      units: ["/pa/units/land/fabrication_bot/fabrication_bot.json"],
+    },
+    {
+      id: "gwaio_upgrade_fabricationvehicle",
+      units: ["/pa/units/land/fabrication_vehicle/fabrication_vehicle.json"],
+    },
+    {
+      id: "gwaio_upgrade_fabricationaircraft",
+      units: ["/pa/units/air/fabrication_aircraft/fabrication_aircraft.json"],
+    },
+    {
+      id: "gwaio_upgrade_fabricationship",
+      units: ["/pa/units/sea/fabrication_ship/fabrication_ship.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedfabricationaircraft",
+      units: [
+        "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_advancedfabricationbot",
+      units: ["/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedfabricationvehicle",
+      units: [
+        "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_advancedfabricationship",
+      units: ["/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_orbitalfabricationbot",
+      units: [
+        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+      ],
+    },
+    {
+      id: "gwaio_upgrade_artemis",
+      units: ["/pa/units/orbital/orbital_railgun/orbital_railgun.json"],
+    },
+    {
+      id: "gwaio_upgrade_avenger",
+      units: ["/pa/units/orbital/orbital_fighter/orbital_fighter.json"],
+    },
+    {
+      id: "gwaio_upgrade_anchor",
+      units: ["/pa/units/orbital/defense_satellite/defense_satellite.json"],
+    },
+    {
+      id: "gwaio_upgrade_energyplant",
+      units: ["/pa/units/land/energy_plant/energy_plant.json"],
+    },
+    {
+      id: "gwaio_upgrade_metalextractor",
+      units: ["/pa/units/land/metal_extractor/metal_extractor.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedmetalextractor",
+      units: ["/pa/units/land/metal_extractor_adv/metal_extractor_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedenergyplant",
+      units: ["/pa/units/land/energy_plant_adv/energy_plant_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedairfactory",
+      units: ["/pa/units/air/air_factory_adv/air_factory_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedbotfactory",
+      units: ["/pa/units/land/bot_factory_adv/bot_factory_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancednavalfactory",
+      units: ["/pa/units/sea/naval_factory_adv/naval_factory_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_advancedvehiclefactory",
+      units: ["/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"],
+    },
+    {
+      id: "gwaio_upgrade_orbitalfactory",
+      units: ["/pa/units/orbital/orbital_factory/orbital_factory.json"],
+    },
   ],
 });

@@ -23,7 +23,6 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json") &&
         gwaioFunctions.hasUnit("/pa/units/air/bomber/bomber.json") &&
         gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json")
       )

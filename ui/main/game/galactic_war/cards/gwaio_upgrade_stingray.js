@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Stingray Upgrade Tech enables interception of tactical missiles by the missile ship."
+      "!LOC:Stingray Upgrade Tech enables interception of tactical missiles by the missile ship and increases vision and radar radius by 50%."
     ),
     summarize: _.constant("!LOC:Stingray Upgrade Tech"),
     icon: _.constant(
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         (gwaioFunctions.hasUnit(
@@ -46,6 +46,30 @@ define([
             record_index: 0,
             muzzle_bone: ["socket_missile_muzzle01", "socket_missile_muzzle02"],
           },
+        },
+        {
+          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          path: "recon.observer.items.0.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          path: "recon.observer.items.2.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          path: "recon.observer.items.3.radius",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Laser Defense Tower Upgrade Tech increases the turn speed of the turret by 200%."
+      "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 25%."
     ),
     summarize: _.constant("!LOC:Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
@@ -49,9 +49,9 @@ define([
       var mods = [
         {
           file: "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
-          path: "yaw_rate",
+          path: "max_range",
           op: "multiply",
-          value: 3,
+          value: 1.25,
         },
       ];
       inventory.addMods(mods);

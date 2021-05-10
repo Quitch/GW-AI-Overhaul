@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabricator which repairs units and reclaims wreckage within range."
+      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
     ),
     summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
     icon: _.constant(

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout."
+      "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 50%."
     ),
     summarize: _.constant("!LOC:Firefly Upgrade Tech"),
     icon: _.constant(
@@ -22,10 +22,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json") &&
-        gwaioFunctions.hasUnit("/pa/units/air/air_scout/air_scout.json")
-      )
+      if (gwaioFunctions.hasUnit("/pa/units/air/air_scout/air_scout.json"))
         chance = 60;
 
       return { chance: chance };
@@ -49,6 +46,18 @@ define([
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
+        },
+        {
+          file: "/pa/units/air/air_scout/air_scout.json",
+          path: "recon.observer.items.0.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/air/air_scout/air_scout.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);

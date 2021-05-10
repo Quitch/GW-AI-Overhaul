@@ -53,8 +53,7 @@ if (!gwaioSetupLoaded) {
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
-        tougherCommanders: ko.observable(false),
-        paLore: ko.observable(true),
+        paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
         goForKill: ko.observable(false),
@@ -155,7 +154,6 @@ if (!gwaioSetupLoaded) {
         model.gwaioDifficultySettings.factionScaling();
         model.gwaioDifficultySettings.systemScaling();
         model.gwaioDifficultySettings.easierStart();
-        model.gwaioDifficultySettings.tougherCommanders();
         model.gwaioDifficultySettings.paLore();
         model.gwaioDifficultySettings.newGalaxyNeeded(true);
       });
@@ -429,7 +427,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 25,
                 bountyModeValue: 0.5,
-                factionTechHandicap: 3,
+                factionTechHandicap: 4,
               },
               {
                 // Iron
@@ -457,7 +455,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 25,
                 bountyModeValue: 0.45,
-                factionTechHandicap: 2.5,
+                factionTechHandicap: 3,
                 starting_location_evaluation_radius: 100,
               },
               {
@@ -515,7 +513,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 20,
                 bountyModeValue: 0.35,
-                factionTechHandicap: 1.5,
+                factionTechHandicap: 1,
                 starting_location_evaluation_radius: 200,
               },
               {
@@ -544,7 +542,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 15,
                 bountyModeValue: 0.3,
-                factionTechHandicap: 1,
+                factionTechHandicap: 0.5,
                 starting_location_evaluation_radius: 250,
               },
               {
@@ -573,7 +571,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 15,
                 bountyModeValue: 0.25,
-                factionTechHandicap: 0.5,
+                factionTechHandicap: 0,
                 starting_location_evaluation_radius: 300,
               },
               {
@@ -602,7 +600,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 10,
                 bountyModeValue: 0.2,
-                factionTechHandicap: 0,
+                factionTechHandicap: -0.5,
                 starting_location_evaluation_radius: 400,
               },
               {
@@ -631,7 +629,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 10,
                 bountyModeValue: 0.2,
-                factionTechHandicap: 0,
+                factionTechHandicap: -0.5,
                 starting_location_evaluation_radius: 400,
               },
               {
@@ -832,7 +830,7 @@ if (!gwaioSetupLoaded) {
                 neutralStars: neutralStars,
                 orderedSpawn: model.creditsMode(),
                 spawn: function () {},
-                canSpread: function (unused0, ai) {
+                canSpread: function (star, ai) {
                   return (
                     !model.creditsMode() ||
                     !ai ||
@@ -922,38 +920,18 @@ if (!gwaioSetupLoaded) {
                     getRandomArbitrary(0.9, 1.1);
               };
 
-              var buffType = [0, 1, 2, 3, 4]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build
+              var buffType = [0, 1, 2, 3, 4, 5]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders
               var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
-              var aiInventory = [];
-              var bossInventory = [];
-              var clusterCommanderInventory = [];
-              var clusterBossInventory = [];
-
-              if (model.gwaioDifficultySettings.tougherCommanders()) {
-                aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
-                bossInventory = bossInventory.concat(
-                  gwaioTech.tougherCommander[1]
-                );
-                clusterCommanderInventory = clusterCommanderInventory.concat(
-                  gwaioTech.tougherCommander[2]
-                );
-                clusterBossInventory = clusterBossInventory.concat(
-                  gwaioTech.tougherCommander[3]
-                );
-              }
 
               _.forEach(teamInfo, function (info) {
                 // Setup boss system
                 if (info.boss) {
                   setAIData(info.boss, maxDist, true, true);
-                  if (info.boss.isCluster === true)
-                    info.boss.inventory = aiInventory.concat(
-                      gwaioTech.clusterCommanders,
-                      bossInventory,
-                      clusterCommanderInventory,
-                      clusterBossInventory
-                    );
-                  else info.boss.inventory = aiInventory.concat(bossInventory);
+                  if (info.boss.isCluster === true) {
+                    info.boss.inventory = gwaioTech.clusterCommanders;
+                  } else {
+                    info.boss.inventory = [];
+                  }
                   var numBuffs = Math.floor(maxDist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -992,12 +970,6 @@ if (!gwaioSetupLoaded) {
 
                 // Setup non-boss AI system
                 _.forEach(info.workers, function (worker) {
-                  if (worker.ai.isCluster === true)
-                    worker.ai.inventory = aiInventory.concat(
-                      gwaioTech.clusterCommanders,
-                      clusterCommanderInventory
-                    );
-                  else worker.ai.inventory = aiInventory;
                   var dist = worker.star.distance();
                   setAIData(worker.ai, dist, false, false);
                   if (
@@ -1016,6 +988,11 @@ if (!gwaioSetupLoaded) {
                   )
                     worker.ai.bountyMode = true;
                   worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
+                  if (worker.ai.isCluster === true) {
+                    worker.ai.inventory = gwaioTech.clusterCommanders;
+                  } else {
+                    worker.ai.inventory = [];
+                  }
                   var numBuffs = Math.floor(dist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -1181,7 +1158,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "4.20.2";
+              originSystem.gwaio.version = "4.21.0";
               originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
                 "!LOC:Small",
@@ -1197,7 +1174,6 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
               originSystem.gwaio.systemScaling = model.gwaioDifficultySettings.systemScaling();
               originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
-              originSystem.gwaio.tougherCommanders = model.gwaioDifficultySettings.tougherCommanders();
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;

@@ -128,16 +128,16 @@ define({
     },
     {
       name: "!LOC:Fabrication Bot",
+      path: "/pa/units/land/fabrication_bot/fabrication_bot.json",
+    },
+    {
+      name: "Mend",
       path:
         "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
     },
     {
-      name: "Mend",
-      path: "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
-    },
-    {
       name: "Stitch",
-      path: "/pa/units/land/fabrication_bot/fabrication_bot.json",
+      path: "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
     },
     {
       name: "!LOC:Advanced Fabrication Vehicle",

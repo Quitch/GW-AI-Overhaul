@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Leviathan Upgrade Tech adds a radar to the battleship."
+      "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
     ),
     summarize: _.constant("!LOC:Leviathan Upgrade Tech"),
     icon: _.constant(
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         (gwaioFunctions.hasUnit(
@@ -36,26 +36,56 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/sea/battleship/battleship.json",
-          path: "recon.observer.items",
-          op: "push",
-          value: {
-            shape: "capsule",
-            layer: "surface_and_air",
-            channel: "radar",
-            radius: 350,
-          },
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.0.spec_id",
+          op: "replace",
+          value:
+            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
-          path: "recon.observer.items",
-          op: "push",
-          value: {
-            shape: "capsule",
-            layer: "underwater",
-            channel: "radar",
-            radius: 350,
-          },
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.0.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.1.spec_id",
+          op: "replace",
+          value:
+            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.1.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.2.spec_id",
+          op: "replace",
+          value:
+            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.2.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.3.spec_id",
+          op: "replace",
+          value:
+            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+        },
+        {
+          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          path: "tools.3.projectiles_per_fire",
+          op: "replace",
+          value: 1,
         },
       ];
       inventory.addMods(mods);

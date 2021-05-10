@@ -42,12 +42,15 @@ define([
       basic_to_advanced_factory_ratio: 0,
       factory_alone_on_planet_mod: 0.5,
       min_basic_fabbers: 3,
-      max_basic_fabbers: 5,
+      max_basic_fabbers: 4,
       min_advanced_fabbers: 1,
-      max_advanced_fabbers: 5,
+      max_advanced_fabbers: 3,
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
+  var supportPlatform = "/pa/units/air/support_platform/support_platform.json";
+  var supportCommander =
+    "/pa/units/land/bot_support_commander/bot_support_commander.json";
 
   return {
     name: "Cluster",
@@ -129,10 +132,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0,
             percent_open_orbital: 0,
-            percent_bot: 0.4,
-            percent_vehicle: 0.4,
-            percent_air: 0.2,
-            percent_naval: 0,
+            percent_bot: 0.3,
+            percent_vehicle: 0.3,
+            percent_air: 0.15,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
@@ -140,7 +143,7 @@ define([
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -156,10 +159,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0.05,
             percent_open_orbital: 0,
-            percent_bot: 0.25,
-            percent_vehicle: 0.55,
-            percent_air: 0.2,
-            percent_naval: 0,
+            percent_bot: 0.1875,
+            percent_vehicle: 0.4125,
+            percent_air: 0.15,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -170,7 +173,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -186,10 +189,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0,
             percent_open_orbital: 0,
-            percent_vehicle: 0.5,
-            percent_bot: 0.5,
+            percent_vehicle: 0.375,
+            percent_bot: 0.375,
             percent_air: 0,
-            percent_naval: 0,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -198,7 +201,7 @@ define([
             fabber_alone_on_planet_mod: 3,
             min_advanced_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -215,7 +218,7 @@ define([
             energy_demand_check: 0.65,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -226,10 +229,9 @@ define([
           ],
           isCluster: true,
           personality: {
-            adv_eco_mod: 3,
-            adv_eco_mod_alone: 3,
+            basic_to_advanced_factory_ratio: 10,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -246,7 +248,7 @@ define([
             min_basic_fabbers: 4,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -260,7 +262,7 @@ define([
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -274,7 +276,7 @@ define([
             neural_data_mod: 2,
             min_basic_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -285,21 +287,11 @@ define([
           ],
           isCluster: true,
           personality: {
-            percent_open_vehicle: 0,
-            percent_open_bot: 1,
-            percent_open_air: 0,
-            percent_open_naval: 0,
-            percent_open_orbital: 0,
-            percent_bot: 1,
-            percent_vehicle: 0,
-            percent_air: 0,
-            percent_naval: 0,
-            percent_orbital: 0,
             neural_data_mod: 1.5,
             adv_eco_mod: 2,
             min_basic_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -321,10 +313,10 @@ define([
             fabber_to_factory_ratio_basic: 3,
             fabber_to_factory_ratio_advanced: 3,
             min_basic_fabbers: 4,
-            max_basic_fabbers: 10,
-            max_advanced_fabbers: 10,
+            max_basic_fabbers: 8,
+            max_advanced_fabbers: 6,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -339,7 +331,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -360,7 +352,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -374,7 +366,7 @@ define([
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -387,11 +379,11 @@ define([
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
+            metal_demand_check: 0.99,
+            energy_demand_check: 0.99,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Security",
@@ -407,10 +399,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0,
             percent_open_orbital: 0,
-            percent_bot: 0.4,
-            percent_vehicle: 0.4,
-            percent_air: 0.2,
-            percent_naval: 0,
+            percent_bot: 0.3,
+            percent_vehicle: 0.3,
+            percent_air: 0.15,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
@@ -418,8 +410,7 @@ define([
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -435,10 +426,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0.05,
             percent_open_orbital: 0,
-            percent_bot: 0.25,
-            percent_vehicle: 0.55,
-            percent_air: 0.2,
-            percent_naval: 0,
+            percent_bot: 0.1875,
+            percent_vehicle: 0.4125,
+            percent_air: 0.15,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -449,8 +440,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -466,10 +456,10 @@ define([
             percent_open_air: 0,
             percent_open_naval: 0,
             percent_open_orbital: 0,
-            percent_vehicle: 0.5,
-            percent_bot: 0.5,
+            percent_vehicle: 0.375,
+            percent_bot: 0.375,
             percent_air: 0,
-            percent_naval: 0,
+            percent_naval: 0.25,
             percent_orbital: 0,
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -478,8 +468,7 @@ define([
             fabber_alone_on_planet_mod: 3,
             min_advanced_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -496,8 +485,7 @@ define([
             energy_demand_check: 0.65,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -508,11 +496,9 @@ define([
           ],
           isCluster: true,
           personality: {
-            adv_eco_mod: 3,
-            adv_eco_mod_alone: 3,
+            basic_to_advanced_factory_ratio: 10,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -527,10 +513,8 @@ define([
             adv_eco_mod_alone: 0.5,
             fabber_to_factory_ratio_basic: 3,
             min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -544,8 +528,7 @@ define([
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -557,10 +540,8 @@ define([
           isCluster: true,
           personality: {
             neural_data_mod: 2,
-            min_advanced_fabbers: 1,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -571,22 +552,11 @@ define([
           ],
           isCluster: true,
           personality: {
-            percent_open_vehicle: 0,
-            percent_open_bot: 1,
-            percent_open_air: 0,
-            percent_open_naval: 0,
-            percent_open_orbital: 0,
-            percent_bot: 1,
-            percent_vehicle: 0,
-            percent_air: 0,
-            percent_naval: 0,
-            percent_orbital: 0,
             neural_data_mod: 1.5,
             adv_eco_mod: 2,
-            min_advanced_fabbers: 1,
+            min_basic_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -608,11 +578,10 @@ define([
             fabber_to_factory_ratio_basic: 3,
             fabber_to_factory_ratio_advanced: 3,
             min_basic_fabbers: 4,
-            max_basic_fabbers: 10,
-            max_advanced_fabbers: 10,
+            max_basic_fabbers: 8,
+            max_advanced_fabbers: 6,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -627,8 +596,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -649,8 +617,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -664,8 +631,7 @@ define([
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -678,12 +644,11 @@ define([
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
+            metal_demand_check: 0.99,
+            energy_demand_check: 0.99,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
       ],
       function (personalityModifiers) {

@@ -20,13 +20,9 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function () {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) ||
-          inventory.hasCard("gwaio_upgrade_orbitallauncher")) &&
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/mining_platform/mining_platform.json"
         )

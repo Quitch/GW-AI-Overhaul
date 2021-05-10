@@ -1,12 +1,11 @@
 define({
-  // Tougher Commanders
+  // AI Buffs
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
   commanderAmmo: [
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/ammo/cannon_uber/cannon_uber.json",
   ],
 
-  // AI Buffs
   legonisUnits: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
     "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
@@ -84,6 +83,7 @@ define({
     "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv_build_arm.json",
     "/pa/units/land/vehicle_factory/vehicle_factory_build_arm.json",
   ],
+
   foundationUnits: [
     "/pa/units/air/air_factory_adv/air_factory_adv.json",
     "/pa/units/air/air_factory/air_factory.json",
@@ -164,6 +164,7 @@ define({
     "/pa/units/sea/naval_factory_adv/naval_factory_adv_build_arm.json",
     "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
   ],
+
   synchronousUnits: [
     "/pa/units/land/air_defense_adv/air_defense_adv.json",
     "/pa/units/land/air_defense/air_defense.json",
@@ -224,6 +225,7 @@ define({
     "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_build_arm.json",
     "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
   ],
+
   revenantsUnits: [
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
     "/pa/units/orbital/defense_satellite/defense_satellite.json",
@@ -261,6 +263,14 @@ define({
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
     "/pa/units/orbital/orbital_factory/orbital_factory_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
+  ],
+
+  clusterCommanders: [
+    "/pa/units/air/support_platform/support_platform.json",
+    "/pa/units/land/bot_support_commander/bot_support_commander.json",
+  ],
+  clusterCommanderAmmo: [
+    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
   ],
   clusterUnits: [
     "/pa/units/air/air_factory/air_factory.json",
@@ -415,14 +425,5 @@ define({
     "/pa/units/sea/naval_factory/naval_factory_build_arm.json",
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
-  ],
-
-  // Faction specific setup
-  clusterCommanders: [
-    "/pa/units/air/support_platform/support_platform.json",
-    "/pa/units/land/bot_support_commander/bot_support_commander.json",
-  ],
-  clusterCommanderAmmo: [
-    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
   ],
 });

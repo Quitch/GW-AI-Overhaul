@@ -3,9 +3,9 @@
 This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
-  - Legonis Machina: land
+  - Legonis Machina: tank
   - Foundation: air/naval
-  - Synchronous: balanced
+  - Synchronous: bot
   - Revenants: orbital
 - Customise each enemy/Sub Commander:
   - Unique model
@@ -70,7 +70,6 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
-- **Tougher Commanders**: enemies have Commander Armour Tech and bosses have Commander Combat Tech.
 
 ## Planetary Intelligence
 
@@ -92,6 +91,7 @@ Each system will display the following information:
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
+- **Tougher**: AI has Commander Combat Tech and commander mine vision.
 
 These buffs are applied on a per-faction basis:
 

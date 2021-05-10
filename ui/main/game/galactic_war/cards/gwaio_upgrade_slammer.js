@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Slammer Upgrade Tech doubles the vision of the advanced assault bot."
+      "!LOC:Slammer Upgrade Tech changes the advanced assault bot's torpedo into a rocket that targets surface units."
     ),
     summarize: _.constant("!LOC:Slammer Upgrade Tech"),
     icon: _.constant(
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         (gwaioFunctions.hasUnit(
@@ -38,16 +38,36 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
+          file:
+            "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          path: "spawn_layers",
+          op: "replace",
+          value: "WL_Air",
         },
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
+          file:
+            "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          path: "target_layers",
+          op: "replace",
+          value: ["WL_LandHorizontal", "WL_WaterSurface"],
+        },
+        {
+          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          path: "flight_layer",
+          op: "replace",
+          value: "Air",
+        },
+        {
+          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          path: "spawn_layers",
+          op: "replace",
+          value: "WL_Air",
+        },
+        {
+          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          path: "cruise_height",
+          op: "replace",
+          value: 75,
         },
       ];
       inventory.addMods(mods);

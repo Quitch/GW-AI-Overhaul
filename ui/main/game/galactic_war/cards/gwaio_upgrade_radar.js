@@ -4,11 +4,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Radar Upgrade Tech doubles the vision radius of basic radar."
+      "!LOC:Radar Upgrade Tech increases the vision and radar radius of basic radar by 50%."
     ),
     summarize: _.constant("!LOC:Radar Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
     ),
     audio: function () {
       return {
@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (unused0, unused1, inventory) {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/radar/radar.json") &&
@@ -49,13 +49,31 @@ define([
           file: "/pa/units/land/radar/radar.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
-          value: 2,
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar/radar.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar/radar.json",
+          path: "recon.observer.items.2.radius",
+          op: "multiply",
+          value: 1.5,
         },
         {
           file: "/pa/units/land/radar/radar.json",
           path: "recon.observer.items.3.radius",
           op: "multiply",
-          value: 2,
+          value: 1.5,
+        },
+        {
+          file: "/pa/units/land/radar/radar.json",
+          path: "recon.observer.items.4.radius",
+          op: "multiply",
+          value: 1.5,
         },
       ];
       inventory.addMods(mods);
