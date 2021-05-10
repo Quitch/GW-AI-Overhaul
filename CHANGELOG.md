@@ -20,6 +20,7 @@
   - Advanced Radar
   - Leviathan
   - Stingray
+  - SXX-1304 Laser Platform
 - Removed Tougher Commanders option from war setup
 - Tougher Commanders added as an AI buff
 

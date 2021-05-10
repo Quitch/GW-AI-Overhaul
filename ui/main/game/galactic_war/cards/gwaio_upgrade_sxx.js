@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:SXX-1304 Laser Platform Upgrade Tech halves the delay between orbital laser platforms arriving at a planet and responding to orders."
+      "!LOC:SXX-1304 Laser Platform Upgrade Tech removes the delay between orbital laser platforms arriving at a planet and responding to orders."
     ),
     summarize: _.constant("!LOC:SXX-1304 Laser Platform Upgrade Tech"),
     icon: _.constant(
@@ -40,7 +40,7 @@ define([
           file: "/pa/units/orbital/orbital_laser/orbital_laser.json",
           path: "planetary_arrival_cooldown_time",
           op: "replace",
-          value: 1.5,
+          value: 0,
         },
       ];
       inventory.addMods(mods);
