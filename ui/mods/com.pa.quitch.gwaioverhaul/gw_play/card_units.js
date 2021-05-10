@@ -1378,5 +1378,9 @@ define({
       id: "gwaio_upgrade_advancedenergyplant",
       units: ["/pa/units/land/energy_plant_adv/energy_plant_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedairfactory",
+      units: ["/pa/units/air/air_factory_adv/air_factory_adv.json"],
+    },
   ],
 });

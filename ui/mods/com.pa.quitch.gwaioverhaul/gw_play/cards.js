@@ -141,6 +141,7 @@ if (!gwaioCardsLoaded) {
             if (!model.gwaioDeck) model.gwaioDeck = [];
             model.gwaioDeck.push(
               "gwaio_enable_bot_aa",
+              "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedenergyplant",
               "gwaio_upgrade_advancedfabricationaircraft",
               "gwaio_upgrade_advancedfabricationbot",
