@@ -69,6 +69,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 ### Difficulty Options
 
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
+- **System Scaling**: system size depends on how far into the galaxy you are.
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
 
 ## Planetary Intelligence
@@ -87,11 +88,11 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
+- **Commander**: AI has Commander Combat Tech and commander mine vision.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
-- **Tougher**: AI has Commander Combat Tech and commander mine vision.
 
 These buffs are applied on a per-faction basis:
 

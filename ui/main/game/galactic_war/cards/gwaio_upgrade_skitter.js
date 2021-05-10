@@ -53,19 +53,19 @@ define([
           value: "ORDER_Attack",
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
