@@ -49,6 +49,10 @@ define([
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
 
+  var supportPlatform = "/pa/units/air/support_platform/support_platform.json";
+  var supportCommander =
+    "/pa/units/land/bot_support_commander/bot_support_commander.json";
+
   return {
     name: "Cluster",
     color: [
@@ -140,7 +144,7 @@ define([
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -170,7 +174,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -198,7 +202,7 @@ define([
             fabber_alone_on_planet_mod: 3,
             min_advanced_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -215,7 +219,7 @@ define([
             energy_demand_check: 0.65,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -228,7 +232,7 @@ define([
           personality: {
             basic_to_advanced_factory_ratio: 10,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -245,7 +249,7 @@ define([
             min_basic_fabbers: 4,
             min_advanced_fabbers: 1,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -259,7 +263,7 @@ define([
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -273,7 +277,7 @@ define([
             neural_data_mod: 2,
             min_basic_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -288,7 +292,7 @@ define([
             adv_eco_mod: 2,
             min_basic_fabbers: 2,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -313,7 +317,7 @@ define([
             max_basic_fabbers: 10,
             max_advanced_fabbers: 10,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -328,7 +332,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -349,7 +353,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -363,7 +367,7 @@ define([
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Worker",
@@ -380,7 +384,7 @@ define([
             energy_demand_check: 0.8,
             min_basic_fabbers: 4,
           },
-          commander: "/pa/units/air/support_platform/support_platform.json",
+          commander: supportPlatform,
         },
         {
           name: "Security",
@@ -407,8 +411,7 @@ define([
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -438,8 +441,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -467,8 +469,7 @@ define([
             fabber_alone_on_planet_mod: 3,
             min_advanced_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -485,8 +486,7 @@ define([
             energy_demand_check: 0.65,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -499,8 +499,7 @@ define([
           personality: {
             basic_to_advanced_factory_ratio: 10,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -516,8 +515,7 @@ define([
             fabber_to_factory_ratio_basic: 3,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -531,8 +529,7 @@ define([
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -545,8 +542,7 @@ define([
           personality: {
             neural_data_mod: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -561,8 +557,7 @@ define([
             adv_eco_mod: 2,
             min_basic_fabbers: 2,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -587,8 +582,7 @@ define([
             max_basic_fabbers: 10,
             max_advanced_fabbers: 10,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -603,8 +597,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -625,8 +618,7 @@ define([
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -640,8 +632,7 @@ define([
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
         {
           name: "Security",
@@ -658,8 +649,7 @@ define([
             energy_demand_check: 0.8,
             min_basic_fabbers: 4,
           },
-          commander:
-            "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          commander: supportCommander,
         },
       ],
       function (personalityModifiers) {
