@@ -1394,5 +1394,9 @@ define({
       id: "gwaio_upgrade_advancedvehiclefactory",
       units: ["/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_orbitalfactory",
+      units: ["/pa/units/orbital/orbital_factory/orbital_factory.json"],
+    },
   ],
 });
