@@ -41,22 +41,20 @@ define([
         "/pa/units/air/support_platform/support_platform.json",
         "/pa/units/air/strafer/strafer.json",
       ];
-      var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
+      var mods = units.map(function (unit) {
+        return {
           file: unit,
           path: "build_metal_cost",
           op: "multiply",
           value: 0.75,
-        });
-      };
+        };
+      });
       mods.push({
         file: "/pa/units/air/air_factory_adv/air_factory_adv.json",
         path: "max_health",
         op: "multiply",
         value: 0.5,
       });
-      _.forEach(units, modUnit);
       inventory.addMods(mods);
     },
     dull: function () {},
