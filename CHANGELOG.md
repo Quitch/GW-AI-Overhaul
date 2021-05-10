@@ -33,6 +33,7 @@
 - Luddites no longer tech late but instead maintain a high ratio of T1 to T2 factories
 - Rush is no longer bot focused
 - Economist builds less defences
+- Increased naval usage by Uber
 
 ### Fixed
 
