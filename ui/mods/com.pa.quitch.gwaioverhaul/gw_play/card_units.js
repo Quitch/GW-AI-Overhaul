@@ -1383,7 +1383,7 @@ define({
       units: ["/pa/units/air/air_factory_adv/air_factory_adv.json"],
     },
     {
-      id: "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+      id: "gwaio_upgrade_advancedbotfactory",
       units: ["/pa/units/land/bot_factory_adv/bot_factory_adv.json"],
     },
   ],
