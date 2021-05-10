@@ -41,9 +41,9 @@ define(function () {
       basic_to_advanced_factory_ratio: 0,
       factory_alone_on_planet_mod: 0.5,
       min_basic_fabbers: 2,
-      max_basic_fabbers: 5,
+      max_basic_fabbers: 4,
       min_advanced_fabbers: 3,
-      max_advanced_fabbers: 5,
+      max_advanced_fabbers: 3,
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
@@ -405,8 +405,8 @@ define(function () {
             fabber_to_factory_ratio_basic: 3,
             fabber_to_factory_ratio_advanced: 3,
             min_basic_fabbers: 4,
-            max_basic_fabbers: 10,
-            max_advanced_fabbers: 10,
+            max_basic_fabbers: 8,
+            max_advanced_fabbers: 6,
           },
           commander:
             "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
