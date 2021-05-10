@@ -10,7 +10,7 @@
 ### Changed
 
 - Simplified upgrade tech checks to improve future compatibility
-- Enhanced the following unit upgrades:
+- Buffed the following unit upgrades:
   - Advanced Radar
   - Angel
   - Firefly
