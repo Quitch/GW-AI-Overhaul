@@ -171,6 +171,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_colonel",
               "gwaio_upgrade_dox",
               "gwaio_upgrade_drifter",
+              "gwaio_upgrade_energyplant",
               "gwaio_upgrade_energystorage",
               "gwaio_upgrade_fabricationaircraft",
               "gwaio_upgrade_fabricationbot",

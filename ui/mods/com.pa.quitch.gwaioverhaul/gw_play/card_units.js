@@ -1362,5 +1362,9 @@ define({
       id: "gwaio_upgrade_anchor",
       units: ["/pa/units/orbital/defense_satellite/defense_satellite.json"],
     },
+    {
+      id: "gwaio_upgrade_energyplant",
+      units: ["/pa/units/land/energy_plant/energy_plant.json"],
+    },
   ],
 });
