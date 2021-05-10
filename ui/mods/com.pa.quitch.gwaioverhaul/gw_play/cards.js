@@ -141,11 +141,13 @@ if (!gwaioCardsLoaded) {
             if (!model.gwaioDeck) model.gwaioDeck = [];
             model.gwaioDeck.push(
               "gwaio_enable_bot_aa",
+              "gwaio_upgrade_advancedenergyplant",
               "gwaio_upgrade_advancedfabricationaircraft",
               "gwaio_upgrade_advancedfabricationbot",
               "gwaio_upgrade_advancedfabricationship",
               "gwaio_upgrade_advancedfabricationvehicle",
               "gwaio_upgrade_advancedlaserdefensetower",
+              "gwaio_upgrade_advancedmetalextractor",
               "gwaio_upgrade_advancedradar",
               "gwaio_upgrade_advancedradarsatellite",
               "gwaio_upgrade_advancedtorpedolauncher",
@@ -185,7 +187,6 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_halley",
               "gwaio_upgrade_helios",
               "gwaio_upgrade_hermes",
-              "gwaio_upgrade_advancedmetalextractor",
               "gwaio_upgrade_holkins",
               "gwaio_upgrade_hornet",
               "gwaio_upgrade_horsefly",

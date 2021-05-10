@@ -1374,5 +1374,9 @@ define({
       id: "gwaio_upgrade_advancedmetalextractor",
       units: ["/pa/units/land/metal_extractor_adv/metal_extractor_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedenergyplant",
+      units: ["/pa/units/land/energy_plant_adv/energy_plant_adv.json"],
+    },
   ],
 });
