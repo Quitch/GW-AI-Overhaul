@@ -428,7 +428,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 25,
                 bountyModeValue: 0.5,
-                factionTechHandicap: 3,
+                factionTechHandicap: 4,
               },
               {
                 // Iron
@@ -456,7 +456,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 25,
                 bountyModeValue: 0.45,
-                factionTechHandicap: 2.5,
+                factionTechHandicap: 3,
                 starting_location_evaluation_radius: 100,
               },
               {
