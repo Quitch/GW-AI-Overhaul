@@ -150,6 +150,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_advancedfabricationvehicle",
               "gwaio_upgrade_advancedlaserdefensetower",
               "gwaio_upgrade_advancedmetalextractor",
+              "gwaio_upgrade_advancednavalfactory",
               "gwaio_upgrade_advancedradar",
               "gwaio_upgrade_advancedradarsatellite",
               "gwaio_upgrade_advancedtorpedolauncher",

@@ -1386,5 +1386,9 @@ define({
       id: "gwaio_upgrade_advancedbotfactory",
       units: ["/pa/units/land/bot_factory_adv/bot_factory_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_advancednavalfactory",
+      units: ["/pa/units/land/naval_factory_adv/naval_factory_adv.json"],
+    },
   ],
 });
