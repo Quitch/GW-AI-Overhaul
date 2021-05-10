@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Air Factory Upgrade Tech decreases advanced air unit costs by 25% but decreases the factory's health by 50%."
+      "!LOC:Advanced Air Factory Upgrade Tech decreases advanced air unit costs by 25% but also decreases the factory's health by 50%."
     ),
     summarize: _.constant("!LOC:Advanced Air Factory Upgrade Tech"),
     icon: _.constant(
