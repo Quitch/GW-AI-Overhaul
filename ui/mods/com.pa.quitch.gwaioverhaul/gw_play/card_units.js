@@ -1382,5 +1382,9 @@ define({
       id: "gwaio_upgrade_advancedairfactory",
       units: ["/pa/units/air/air_factory_adv/air_factory_adv.json"],
     },
+    {
+      id: "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+      units: ["/pa/units/land/bot_factory_adv/bot_factory_adv.json"],
+    },
   ],
 });
