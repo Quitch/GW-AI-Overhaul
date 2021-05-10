@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Energy Plant Upgrade Tech increases the energy production of this basic economy structure by 25%, but decreases its health by 50%."
+      "!LOC:Energy Plant Upgrade Tech increases the energy production of this basic economy structure by 25% but decreases its health by 50%."
     ),
     summarize: _.constant("!LOC:Energy Plant Upgrade Tech"),
     icon: _.constant(

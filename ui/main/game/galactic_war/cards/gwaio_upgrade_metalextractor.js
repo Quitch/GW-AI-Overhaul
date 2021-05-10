@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Metal Extractor Upgrade Tech increases the metal production of this basic economy structure by 25%, but decreases its health by 50%."
+      "!LOC:Metal Extractor Upgrade Tech increases the metal production of this basic economy structure by 25% but decreases its health by 50%."
     ),
     summarize: _.constant("!LOC:Metal Extractor Upgrade Tech"),
     icon: _.constant(
