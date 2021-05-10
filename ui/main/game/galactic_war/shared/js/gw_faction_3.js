@@ -490,8 +490,8 @@ define(function () {
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
+            metal_demand_check: 0.99,
+            energy_demand_check: 0.99,
             adv_eco_mod: 1,
             min_basic_fabbers: 4,
           },
