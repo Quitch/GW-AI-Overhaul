@@ -25,6 +25,8 @@
 - Removed Tougher Commanders option from war setup
 - Tougher Commanders added as an AI buff
 - Foundation invest more heavily into their navy where possible
+- Nerfed the following unit upgrades:
+  - Grenadier
 
 ### Fixed
 
