@@ -17,6 +17,7 @@
   - Laser Defense Tower
   - Leviathan
   - Manhattan
+  - Phoenix
   - Radar
   - Skitter
   - Slammer

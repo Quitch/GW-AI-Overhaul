@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Phoenix Upgrade Tech doubles the interplanetary movement speed of the advanced interplanetary fighter."
+      "!LOC:Phoenix Upgrade Tech increases the interplanetary movement speed of the advanced interplanetary fighter by 200%."
     ),
     summarize: _.constant("!LOC:Phoenix Upgrade Tech"),
     icon: _.constant(
@@ -45,7 +45,7 @@ define([
           file: "/pa/units/air/fighter_adv/fighter_adv.json",
           path: "gravwell_velocity_multiplier",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
       ];
       inventory.addMods(mods);
