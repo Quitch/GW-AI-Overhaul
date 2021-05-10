@@ -13,6 +13,7 @@
 - Buffed the following unit upgrades:
   - Advanced Radar
   - Angel
+  - Ant
   - Astraeus
   - Firefly
   - Laser Defense Tower

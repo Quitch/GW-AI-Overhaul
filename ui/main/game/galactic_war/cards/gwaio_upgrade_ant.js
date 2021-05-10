@@ -43,13 +43,24 @@ define([
           file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
           path: "splash_radius",
           op: "replace",
-          value: 5,
+          value: 10,
         },
         {
           file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
           path: "full_damage_splash_radius",
           op: "replace",
           value: 2,
+        },
+        {
+          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          path: "events",
+          op: "replace",
+          value: {
+            died: {
+              audio_cue: "/SE/Impacts/bot_spark_impact",
+              effect_spec: "/pa/effects/specs/tesla_hit.pfx",
+            },
+          },
         },
       ];
       inventory.addMods(mods);
