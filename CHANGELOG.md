@@ -24,11 +24,11 @@
   - Slammer
   - Stingray
   - SXX-1304 Laser Platform
+- Nerfed the following unit upgrades:
+  - Grenadier
 - Removed Tougher Commanders option from war setup
 - Tougher Commanders added as an AI buff
 - Foundation invest more heavily into their navy where possible
-- Nerfed the following unit upgrades:
-  - Grenadier
 - Tougher Commanders gives enemy commanders mine vision
 
 ### Fixed
