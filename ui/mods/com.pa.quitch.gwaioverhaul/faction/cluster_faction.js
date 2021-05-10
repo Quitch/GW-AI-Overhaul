@@ -515,7 +515,6 @@ define([
             adv_eco_mod_alone: 0.5,
             fabber_to_factory_ratio_basic: 3,
             min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
           },
           commander:
             "/pa/units/land/bot_support_commander/bot_support_commander.json",
@@ -545,7 +544,6 @@ define([
           isCluster: true,
           personality: {
             neural_data_mod: 2,
-            min_advanced_fabbers: 1,
           },
           commander:
             "/pa/units/land/bot_support_commander/bot_support_commander.json",
@@ -561,7 +559,7 @@ define([
           personality: {
             neural_data_mod: 1.5,
             adv_eco_mod: 2,
-            min_advanced_fabbers: 1,
+            min_basic_fabbers: 2,
           },
           commander:
             "/pa/units/land/bot_support_commander/bot_support_commander.json",
