@@ -10,15 +10,15 @@
 
 - Simplified upgrade tech checks to improve future compatibility
 - Enhanced the following unit upgrades:
-  - Angel
-  - Laser Defense Tower
-  - Firefly
-  - Skitter
-  - Manhattan
-  - Slammer
-  - Radar
   - Advanced Radar
+  - Angel
+  - Firefly
+  - Laser Defense Tower
   - Leviathan
+  - Manhattan
+  - Radar
+  - Skitter
+  - Slammer
   - Stingray
   - SXX-1304 Laser Platform
 - Removed Tougher Commanders option from war setup
