@@ -27,6 +27,7 @@
 - Foundation invest more heavily into their navy where possible
 - Nerfed the following unit upgrades:
   - Grenadier
+- Tougher Commanders gives enemy commanders mine vision
 
 ### Fixed
 
