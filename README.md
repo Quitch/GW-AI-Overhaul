@@ -3,9 +3,9 @@
 This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
-  - Legonis Machina: land
+  - Legonis Machina: tank
   - Foundation: air/naval
-  - Synchronous: balanced
+  - Synchronous: bot
   - Revenants: orbital
 - Customise each enemy/Sub Commander:
   - Unique model
