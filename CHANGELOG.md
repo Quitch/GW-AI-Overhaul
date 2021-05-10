@@ -37,6 +37,7 @@
 
 - Fabrication Bot, Stitch, and Mend being misidentified in the What Units? tooltip
 - Chance of receiving some naval techs being too high
+- Cluster Worker Rush using the wrong number of fabbers
 
 ## v4.20.2 - 2021-05-04
 
