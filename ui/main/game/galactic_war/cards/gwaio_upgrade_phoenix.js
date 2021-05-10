@@ -39,7 +39,7 @@ define([
           file: "/pa/units/air/fighter_adv/fighter_adv.json",
           path: "system_velocity_multiplier",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
         {
           file: "/pa/units/air/fighter_adv/fighter_adv.json",
