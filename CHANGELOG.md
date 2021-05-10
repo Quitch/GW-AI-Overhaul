@@ -5,6 +5,7 @@
 ### Added
 
 - 38 unit upgrade cards, every unit now has an associated upgrade for a total of 109
+- Your system lore preference is now saved
 
 ### Changed
 
