@@ -35,6 +35,8 @@
 - Rush is no longer bot focused
 - Economist builds less defences
 - Increased naval usage by Uber, Platinum, and Gold
+- AI buffs appear one system earlier at Silver and above
+- AI buffs appear one system later at Casual
 
 ### Fixed
 
