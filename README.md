@@ -88,11 +88,11 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
+- **Commander**: AI has Commander Combat Tech and commander mine vision.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
-- **Tougher**: AI has Commander Combat Tech and commander mine vision.
 
 These buffs are applied on a per-faction basis:
 
