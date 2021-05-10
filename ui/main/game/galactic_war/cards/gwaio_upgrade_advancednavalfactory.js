@@ -24,7 +24,7 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
-          "/pa/units/land/naval_factory_adv/naval_factory_adv.json"
+          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
         )
       )
         chance = 60;
@@ -50,7 +50,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/land/naval_factory_adv/naval_factory_adv.json",
+        file: "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
         path: "max_health",
         op: "multiply",
         value: 0.5,
