@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Skitter upgrade not correctly applying all its buffs
+- Skitter upgrade preventing battles from starting if you also had T1 air
+
 ## v4.21.0 - 2021-05-10
 
 ### Added
