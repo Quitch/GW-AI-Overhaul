@@ -154,6 +154,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_advancedradar",
               "gwaio_upgrade_advancedradarsatellite",
               "gwaio_upgrade_advancedtorpedolauncher",
+              "gwaio_upgrade_advancedvehiclefactory",
               "gwaio_upgrade_airfactory",
               "gwaio_upgrade_anchor",
               "gwaio_upgrade_angel",

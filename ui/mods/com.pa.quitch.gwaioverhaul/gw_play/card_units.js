@@ -1390,5 +1390,9 @@ define({
       id: "gwaio_upgrade_advancednavalfactory",
       units: ["/pa/units/sea/naval_factory_adv/naval_factory_adv.json"],
     },
+    {
+      id: "gwaio_upgrade_advancedvehiclefactory",
+      units: ["/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"],
+    },
   ],
 });
