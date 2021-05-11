@@ -300,6 +300,22 @@ define([
       )
     );
   });
+  factionsTech.forEach(function (faction) {
+    faction[5].push(
+      {
+        file: "/pa/tools/commander_build_arm/commander_build_arm.json",
+        path: "construction_demand.energy",
+        op: "multiply",
+        value: 0.5,
+      },
+      {
+        file: "/pa/tools/commander_build_arm/commander_build_arm.json",
+        path: "construction_demand.metal",
+        op: "multiply",
+        value: 1.5,
+      }
+    );
+  });
 
   // Cluster commander setup
   var clusterCommanderTech = [

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Commander AI buff has had Improved Commander Build Arms added to it
+
 ## v4.21.1 - 2021-05-10
 
 ### Fixed
