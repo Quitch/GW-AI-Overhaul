@@ -29,9 +29,9 @@ if (!gwaioWarInfoPanelLoaded) {
           else model.gwaioEasierStart = loc("!LOC:Disabled");
 
           if (origin.system().gwaio.tougherCommanders === true) {
-            model.gwaioLegacyTougherCommanders = loc("!LOC:Enabled");
+            model.gwaioTougherCommanders = loc("!LOC:Enabled");
           } else {
-            model.gwaioLegacyTougherCommanders = loc("!LOC:Disabled");
+            model.gwaioTougherCommanders = loc("!LOC:Disabled");
           }
         } else {
           model.gwaioVersion = loc("!LOC:Unknown");
@@ -40,7 +40,7 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioFactionScaling = loc("!LOC:Unknown");
           model.gwaioSystemScaling = loc("!LOC:Enabled");
           model.gwaioEasierStart = loc("!LOC:Unknown");
-          model.gwaioLegacyTougherCommanders = loc("!LOC:Unknown");
+          model.gwaioTougherCommanders = loc("!LOC:Unknown");
         }
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");

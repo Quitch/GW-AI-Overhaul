@@ -241,7 +241,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTougherCommanders = ko.pureComputed(function () {
+        model.gwaioEnhancedCommanders = ko.pureComputed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -262,10 +262,10 @@ if (!gwaioIntelligenceLoaded) {
           if (
             model.gwaioTechBuild() ||
             model.gwaioTechCost() ||
+            model.gwaioEnhancedCommanders() ||
             model.gwaioTechDamage() ||
             model.gwaioTechHealth() ||
             model.gwaioTechSpeed() ||
-            model.gwaioTougherCommanders() ||
             model.gwaioTechMirror()
           )
             return true;
