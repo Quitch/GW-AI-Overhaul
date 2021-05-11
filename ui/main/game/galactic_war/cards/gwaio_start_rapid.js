@@ -3,22 +3,22 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "cards/gwaio_faction_cluster",
-], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Rapid Deployment Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:Factories build fabricators and fabricators build units. Disgusted by this break from tradition, Sub Commanders will not join you in your fight."
     ),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:Rapid Deployment Commander",
       };
     },
@@ -69,8 +69,7 @@ define([
               value: "(Tank & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file:
-                "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+              file: "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
               path: "buildable_types",
               op: "replace",
               value: "(Tank & Fabber & Mobile) & FactoryBuild",
@@ -88,24 +87,21 @@ define([
               value: "(Naval & Fabber & Mobile) & FactoryBuild",
             },
             {
-              file:
-                "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+              file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+              file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+              file: "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
               path: "buildable_types",
               op: "replace",
               value:
@@ -119,24 +115,21 @@ define([
                 "Mobile & Basic & Bot | Land & Structure & Basic - Factory | Factory & Advanced & Bot & Land | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json",
+              file: "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json",
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
             },
             {
-              file:
-                "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
+              file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Tank | Land & Structure & Basic - Factory | Factory & Land & Tank & Advanced | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+              file: "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
               path: "buildable_types",
               op: "replace",
               value:
@@ -150,16 +143,14 @@ define([
                 "Mobile & Basic & Naval | Naval & Structure & Basic - Factory | Naval & Factory & Advanced | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/land/fabrication_ship_adv/fabrication_ship_adv.json",
+              file: "/pa/units/land/fabrication_ship_adv/fabrication_ship_adv.json",
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory",
             },
             {
-              file:
-                "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "Mobile & Orbital | FabOrbBuild - Factory",

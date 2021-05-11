@@ -3,22 +3,22 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "cards/gwaio_faction_cluster",
-], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:CEO Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:Enjoy an immediate buff to your basic economy structures, but short-term thinking means you can never access the advanced economy. Win the war while the quarterly returns still look hot."
     ),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:CEO Commander",
       };
     },

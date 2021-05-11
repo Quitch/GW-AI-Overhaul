@@ -4,20 +4,27 @@ define([
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWCStart, GWCStorage, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+], function (
+  module,
+  GW,
+  GWCStart,
+  GWCStorage,
+  gwaioFactionCluster,
+  gwaioFunctions
+) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Storage Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant("!LOC:Trades flame tanks for storage"),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:Storage Commander",
       };
     },
