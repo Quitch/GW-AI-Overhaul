@@ -216,6 +216,7 @@ None.
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
 - Section of Foreign Intelligence for galactic war
+- Unique Commander Loadouts
 - Galactic War Unique Loadouts
 
 ## Thanks to
