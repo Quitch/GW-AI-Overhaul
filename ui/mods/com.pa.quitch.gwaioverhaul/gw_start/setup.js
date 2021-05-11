@@ -991,9 +991,7 @@ if (!gwaioSetupLoaded) {
                 if (info.boss) {
                   setAIData(info.boss, maxDist, true, true);
                   if (info.boss.isCluster === true)
-                    info.boss.inventory = aiInventory.concat(
-                      gwaioTech.clusterCommanders,
-                      bossInventory,
+                    info.boss.inventory = gwaioTech.clusterCommanders.concat(
                       clusterCommanderInventory,
                       clusterBossInventory
                     );
@@ -1080,8 +1078,7 @@ if (!gwaioSetupLoaded) {
                   worker.ai.bountyModeValue =
                     model.gwaioDifficultySettings.bountyModeValue();
                   if (worker.ai.isCluster === true)
-                    worker.ai.inventory = aiInventory.concat(
-                      gwaioTech.clusterCommanders,
+                    worker.ai.inventory = gwaioTech.clusterCommanders.concat(
                       clusterCommanderInventory
                     );
                   else worker.ai.inventory = aiInventory;
@@ -1158,10 +1155,10 @@ if (!gwaioSetupLoaded) {
                       setAIData(foeCommander, dist, false, false, foeFaction);
                       foeCommander.inventory = [];
                       if (foeCommander.isCluster === true)
-                        foeCommander.inventory = aiInventory.concat(
-                          gwaioTech.clusterCommanders,
-                          clusterCommanderInventory
-                        );
+                        foeCommander.inventory =
+                          gwaioTech.clusterCommanders.concat(
+                            clusterCommanderInventory
+                          );
                       else foeCommander.inventory = aiInventory;
                       _.times(typeOfBuffs.length, function (n) {
                         foeCommander.inventory = foeCommander.inventory.concat(
