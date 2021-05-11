@@ -14,7 +14,6 @@ define([
       });
     },
     loadoutIcon: function (loadout) {
-      console.log(loadout);
       var highestDifficultyDefeated = ko
         .observable()
         .extend({ local: "gwaio_victory_" + loadout });
