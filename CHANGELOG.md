@@ -5,6 +5,7 @@
 ### Added
 
 - Restored Tougher Commander option for new wars especially for Dreadnought and his big puppy dog eyes.
+- Loadouts change their icon to show the highest difficulty war you've won with them. This is not retrospective.
 
 ### Changed
 
