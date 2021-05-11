@@ -53,6 +53,7 @@ if (!gwaioSetupLoaded) {
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
+        tougherCommanders: ko.observable(false),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
@@ -154,6 +155,7 @@ if (!gwaioSetupLoaded) {
         model.gwaioDifficultySettings.factionScaling();
         model.gwaioDifficultySettings.systemScaling();
         model.gwaioDifficultySettings.easierStart();
+        model.gwaioDifficultySettings.tougherCommanders();
         model.gwaioDifficultySettings.paLore();
         model.gwaioDifficultySettings.newGalaxyNeeded(true);
       });
@@ -746,6 +748,10 @@ if (!gwaioSetupLoaded) {
             console.debug(
               "Easier start: " + model.gwaioDifficultySettings.easierStart()
             );
+            console.debug(
+              "Tougher commanders: " +
+                model.gwaioDifficultySettings.tougherCommanders()
+            );
             console.debug("PA lore: " + model.gwaioDifficultySettings.paLore());
             console.debug("Hardcore: " + game.hardcore());
 
@@ -962,16 +968,36 @@ if (!gwaioSetupLoaded) {
               var buffType = [0, 1, 2, 3, 4, 5]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders
               var buffDelay =
                 model.gwaioDifficultySettings.factionTechHandicap();
+              var aiInventory = [];
+              var bossInventory = [];
+              var clusterCommanderInventory = [];
+              var clusterBossInventory = [];
+
+              if (model.gwaioDifficultySettings.tougherCommanders()) {
+                aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
+                bossInventory = bossInventory.concat(
+                  gwaioTech.tougherCommander[1]
+                );
+                clusterCommanderInventory = clusterCommanderInventory.concat(
+                  gwaioTech.tougherCommander[2]
+                );
+                clusterBossInventory = clusterBossInventory.concat(
+                  gwaioTech.tougherCommander[3]
+                );
+              }
 
               _.forEach(teamInfo, function (info) {
                 // Setup boss system
                 if (info.boss) {
                   setAIData(info.boss, maxDist, true, true);
-                  if (info.boss.isCluster === true) {
-                    info.boss.inventory = gwaioTech.clusterCommanders;
-                  } else {
-                    info.boss.inventory = [];
-                  }
+                  if (info.boss.isCluster === true)
+                    info.boss.inventory = aiInventory.concat(
+                      gwaioTech.clusterCommanders,
+                      bossInventory,
+                      clusterCommanderInventory,
+                      clusterBossInventory
+                    );
+                  else info.boss.inventory = aiInventory.concat(bossInventory);
                   var numBuffs = Math.floor(maxDist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -1053,11 +1079,12 @@ if (!gwaioSetupLoaded) {
                     worker.ai.bountyMode = true;
                   worker.ai.bountyModeValue =
                     model.gwaioDifficultySettings.bountyModeValue();
-                  if (worker.ai.isCluster === true) {
-                    worker.ai.inventory = gwaioTech.clusterCommanders;
-                  } else {
-                    worker.ai.inventory = [];
-                  }
+                  if (worker.ai.isCluster === true)
+                    worker.ai.inventory = aiInventory.concat(
+                      gwaioTech.clusterCommanders,
+                      clusterCommanderInventory
+                    );
+                  else worker.ai.inventory = aiInventory;
                   var numBuffs = Math.floor(dist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -1280,6 +1307,8 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.systemScaling();
               originSystem.gwaio.easierStart =
                 model.gwaioDifficultySettings.easierStart();
+              originSystem.gwaio.tougherCommanders =
+                model.gwaioDifficultySettings.tougherCommanders();
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;

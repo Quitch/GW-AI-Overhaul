@@ -2,9 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Restored Tougher Commander option for new wars especially for Dreadnought and his big puppy dog eyes.
+
 ### Changed
 
 - Commander AI buff has had Improved Commander Build Arms added to it
+
+### Fixed
+
+- Tougher Commanders not being applied in older saves
 
 ## v4.21.1 - 2021-05-10
 

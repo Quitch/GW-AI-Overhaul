@@ -28,10 +28,9 @@ if (!gwaioWarInfoPanelLoaded) {
             model.gwaioEasierStart = loc("!LOC:Enabled");
           else model.gwaioEasierStart = loc("!LOC:Disabled");
 
-          // Support GWAIO v4.20.2 and earlier
           if (origin.system().gwaio.tougherCommanders === true) {
             model.gwaioLegacyTougherCommanders = loc("!LOC:Enabled");
-          } else if (origin.system().gwaio.tougherCommanders === false) {
+          } else {
             model.gwaioLegacyTougherCommanders = loc("!LOC:Disabled");
           }
         } else {

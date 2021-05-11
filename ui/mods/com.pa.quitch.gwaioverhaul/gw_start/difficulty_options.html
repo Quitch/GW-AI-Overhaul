@@ -405,6 +405,19 @@
   <div>
     <input
       type="checkbox"
+      data-bind="checked: $root.gwaioDifficultySettings.tougherCommanders"
+    />
+    <span style="margin-left: 6px"></span>
+    <loc>Tougher Commanders</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:Enemies use Commander Armor Tech on regular worlds and Commander Combat Tech on boss worlds.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
       data-bind="checked: $root.gwaioDifficultySettings.paLore"
     />
     <span style="margin-left: 6px"></span>
