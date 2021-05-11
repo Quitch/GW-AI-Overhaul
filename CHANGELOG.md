@@ -9,6 +9,7 @@
 ### Changed
 
 - Commander AI buff has had Improved Commander Build Arms added to it
+- Tougher Commanders now only applies the Commander Armor Tech
 
 ### Fixed
 

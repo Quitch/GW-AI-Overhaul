@@ -969,20 +969,12 @@ if (!gwaioSetupLoaded) {
               var buffDelay =
                 model.gwaioDifficultySettings.factionTechHandicap();
               var aiInventory = [];
-              var bossInventory = [];
               var clusterCommanderInventory = [];
-              var clusterBossInventory = [];
 
               if (model.gwaioDifficultySettings.tougherCommanders()) {
                 aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
-                bossInventory = bossInventory.concat(
-                  gwaioTech.tougherCommander[1]
-                );
                 clusterCommanderInventory = clusterCommanderInventory.concat(
-                  gwaioTech.tougherCommander[2]
-                );
-                clusterBossInventory = clusterBossInventory.concat(
-                  gwaioTech.tougherCommander[3]
+                  gwaioTech.tougherCommander[1]
                 );
               }
 
@@ -992,10 +984,9 @@ if (!gwaioSetupLoaded) {
                   setAIData(info.boss, maxDist, true, true);
                   if (info.boss.isCluster === true)
                     info.boss.inventory = gwaioTech.clusterCommanders.concat(
-                      clusterCommanderInventory,
-                      clusterBossInventory
+                      clusterCommanderInventory
                     );
-                  else info.boss.inventory = aiInventory.concat(bossInventory);
+                  else info.boss.inventory = aiInventory;
                   var numBuffs = Math.floor(maxDist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
