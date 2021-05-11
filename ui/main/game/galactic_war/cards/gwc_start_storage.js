@@ -4,7 +4,7 @@ define([
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
   "cards/gwaio_faction_cluster",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (
   module,
   GW,

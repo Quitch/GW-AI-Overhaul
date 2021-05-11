@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -50,8 +50,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json",
+          file: "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json",
           path: "build_metal_cost",
           op: "multiply",
           value: 0.5,

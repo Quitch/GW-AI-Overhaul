@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -35,8 +35,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_ammo.json",
+          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_ammo.json",
           path: "spawn_unit_on_death",
           op: "replace",
           value: "/pa/units/land/bot_bomb/bot_bomb.json",

@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,8 +34,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+          file: "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,

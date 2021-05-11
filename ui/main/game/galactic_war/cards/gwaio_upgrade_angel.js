@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -38,15 +38,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/air/support_platform/support_platform_tool_interception.json",
+          file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "anti_entity_targets_units",
           op: "replace",
           value: true,
         },
         {
-          file:
-            "/pa/units/air/support_platform/support_platform_tool_interception.json",
+          file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "anti_entity_targets",
           op: "push",
           value: [
@@ -226,8 +224,7 @@ define([
           ],
         },
         {
-          file:
-            "/pa/units/air/support_platform/support_platform_tool_interception.json",
+          file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],

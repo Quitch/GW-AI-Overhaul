@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -40,15 +40,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/orbital/defense_satellite/defense_satellite_tool_ground.json",
+          file: "/pa/units/orbital/defense_satellite/defense_satellite_tool_ground.json",
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
         {
-          file:
-            "/pa/units/orbital/defense_satellite/defense_satellite_tool_orbital.json",
+          file: "/pa/units/orbital/defense_satellite/defense_satellite_tool_orbital.json",
           path: "max_range",
           op: "multiply",
           value: 1.25,

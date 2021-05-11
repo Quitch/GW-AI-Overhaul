@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -37,8 +37,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
+          file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
           path: "reclaim_types",
           op: "push",
           value: "Unit",

@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,15 +34,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
           path: "max_range",
           op: "multiply",
           value: 2.5,
         },
         {
-          file:
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
           path: "max_firing_velocity",
           op: "multiply",
           value: 2.5,

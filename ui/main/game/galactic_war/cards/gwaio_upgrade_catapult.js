@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,8 +34,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+          file: "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
           path: "tools",
           op: "push",
           value: {

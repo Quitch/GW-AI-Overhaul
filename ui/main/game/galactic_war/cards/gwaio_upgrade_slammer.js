@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -38,15 +38,13 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file:
-            "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
