@@ -912,22 +912,34 @@ if (!gwaioSetupLoaded) {
                 faction
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
-                ai.personality.micro_type = model.gwaioDifficultySettings.microTypeChosen();
-                ai.personality.go_for_the_kill = model.gwaioDifficultySettings.goForKill();
-                ai.personality.priority_scout_metal_spots = model.gwaioDifficultySettings.priorityScoutMetalSpots();
-                ai.personality.factory_build_delay_min = model.gwaioDifficultySettings.factoryBuildDelayMin();
-                ai.personality.factory_build_delay_max = model.gwaioDifficultySettings.factoryBuildDelayMax();
-                ai.personality.unable_to_expand_delay = model.gwaioDifficultySettings.unableToExpandDelay();
-                ai.personality.enable_commander_danger_responses = model.gwaioDifficultySettings.enableCommanderDangerResponses();
-                ai.personality.per_expansion_delay = model.gwaioDifficultySettings.perExpansionDelay();
-                ai.personality.max_basic_fabbers = model.gwaioDifficultySettings.maxBasicFabbers();
-                ai.personality.max_advanced_fabbers = model.gwaioDifficultySettings.maxAdvancedFabbers();
-                ai.personality.personality_tags = model.gwaioDifficultySettings.personalityTagsChosen();
+                ai.personality.micro_type =
+                  model.gwaioDifficultySettings.microTypeChosen();
+                ai.personality.go_for_the_kill =
+                  model.gwaioDifficultySettings.goForKill();
+                ai.personality.priority_scout_metal_spots =
+                  model.gwaioDifficultySettings.priorityScoutMetalSpots();
+                ai.personality.factory_build_delay_min =
+                  model.gwaioDifficultySettings.factoryBuildDelayMin();
+                ai.personality.factory_build_delay_max =
+                  model.gwaioDifficultySettings.factoryBuildDelayMax();
+                ai.personality.unable_to_expand_delay =
+                  model.gwaioDifficultySettings.unableToExpandDelay();
+                ai.personality.enable_commander_danger_responses =
+                  model.gwaioDifficultySettings.enableCommanderDangerResponses();
+                ai.personality.per_expansion_delay =
+                  model.gwaioDifficultySettings.perExpansionDelay();
+                ai.personality.max_basic_fabbers =
+                  model.gwaioDifficultySettings.maxBasicFabbers();
+                ai.personality.max_advanced_fabbers =
+                  model.gwaioDifficultySettings.maxAdvancedFabbers();
+                ai.personality.personality_tags =
+                  model.gwaioDifficultySettings.personalityTagsChosen();
                 if (
                   model.gwaioDifficultySettings.startingLocationEvaluationRadius() >
                   0
                 )
-                  ai.personality.starting_location_evaluation_radius = model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+                  ai.personality.starting_location_evaluation_radius =
+                    model.gwaioDifficultySettings.startingLocationEvaluationRadius();
                 var getRandomArbitrary = function (min, max) {
                   return Math.random() * (max - min) + min;
                 };
@@ -938,7 +950,8 @@ if (!gwaioSetupLoaded) {
                         model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
                   if (isBoss)
-                    ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+                    ai.bossCommanders =
+                      model.gwaioDifficultySettings.bossCommanders();
                 } else
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
@@ -947,7 +960,8 @@ if (!gwaioSetupLoaded) {
               };
 
               var buffType = [0, 1, 2, 3, 4, 5]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders
-              var buffDelay = model.gwaioDifficultySettings.factionTechHandicap();
+              var buffDelay =
+                model.gwaioDifficultySettings.factionTechHandicap();
 
               _.forEach(teamInfo, function (info) {
                 // Setup boss system
@@ -1037,7 +1051,8 @@ if (!gwaioSetupLoaded) {
                     model.gwaioDifficultySettings.bountyModeChance()
                   )
                     worker.ai.bountyMode = true;
-                  worker.ai.bountyModeValue = model.gwaioDifficultySettings.bountyModeValue();
+                  worker.ai.bountyModeValue =
+                    model.gwaioDifficultySettings.bountyModeValue();
                   if (worker.ai.isCluster === true) {
                     worker.ai.inventory = gwaioTech.clusterCommanders;
                   } else {
@@ -1215,7 +1230,8 @@ if (!gwaioSetupLoaded) {
                         model.gwaioDifficultySettings.econBase() +
                         maxDist *
                           model.gwaioDifficultySettings.econRatePerDist();
-                      ai.bossCommanders = model.gwaioDifficultySettings.bossCommanders();
+                      ai.bossCommanders =
+                        model.gwaioDifficultySettings.bossCommanders();
                       ai.name = "The Guardians";
                       ai.character = "!LOC:Unknown";
                       ai.color = [
@@ -1245,7 +1261,8 @@ if (!gwaioSetupLoaded) {
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
               originSystem.gwaio.version = "#.#.#";
-              originSystem.gwaio.difficulty = model.gwaioDifficultySettings.difficultyName();
+              originSystem.gwaio.difficulty =
+                model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
                 "!LOC:Small",
                 "!LOC:Medium",
@@ -1257,9 +1274,12 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Ridiculous",
                 "!LOC:Marathon",
               ][model.newGameSizeIndex()];
-              originSystem.gwaio.factionScaling = model.gwaioDifficultySettings.factionScaling();
-              originSystem.gwaio.systemScaling = model.gwaioDifficultySettings.systemScaling();
-              originSystem.gwaio.easierStart = model.gwaioDifficultySettings.easierStart();
+              originSystem.gwaio.factionScaling =
+                model.gwaioDifficultySettings.factionScaling();
+              originSystem.gwaio.systemScaling =
+                model.gwaioDifficultySettings.systemScaling();
+              originSystem.gwaio.easierStart =
+                model.gwaioDifficultySettings.easierStart();
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
