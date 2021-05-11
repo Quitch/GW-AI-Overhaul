@@ -37,6 +37,9 @@
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ],
+    "gw_war_over": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
+    ],
     "live_game": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
     ],
