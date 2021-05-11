@@ -1248,11 +1248,11 @@ define({
     },
     {
       id: "gwaio_upgrade_galata",
-      units: ["/pa/units/orbital/air_defense/air_defense.json"],
+      units: ["/pa/units/land/air_defense/air_defense.json"],
     },
     {
       id: "gwaio_upgrade_flak",
-      units: ["/pa/units/orbital/air_defense_adv/air_defense_adv.json"],
+      units: ["/pa/units/land/air_defense_adv/air_defense_adv.json"],
     },
     {
       id: "gwaio_upgrade_pelter",

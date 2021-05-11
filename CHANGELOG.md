@@ -16,6 +16,7 @@
 
 - Tougher Commanders not being applied in older saves
 - Tougher Commanders only being applied to the primary AI faction in a system
+- Galata and Flak upgrade cards not correctly displaying affected units in their tooltip
 
 ## v4.21.1 - 2021-05-10
 
