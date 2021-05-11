@@ -1158,7 +1158,11 @@ if (!gwaioSetupLoaded) {
                       setAIData(foeCommander, dist, false, false, foeFaction);
                       foeCommander.inventory = [];
                       if (foeCommander.isCluster === true)
-                        foeCommander.inventory = gwaioTech.clusterCommanders;
+                        foeCommander.inventory = aiInventory.concat(
+                          gwaioTech.clusterCommanders,
+                          clusterCommanderInventory
+                        );
+                      else foeCommander.inventory = aiInventory;
                       _.times(typeOfBuffs.length, function (n) {
                         foeCommander.inventory = foeCommander.inventory.concat(
                           gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
