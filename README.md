@@ -27,12 +27,12 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
-- New loadouts
+- 11 new loadouts
 - Unlocks Galactic War's biggest planetary systems
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
 - Fixes all the errors in the tech cards
-- Adds new tech cards
+- 109 new tech cards
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -48,23 +48,23 @@ Install this mod via the Planetary Annihilation: TITANS in-game Community Mod ma
 
 Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-![Casual badge](./images/casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
+![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/0_casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
-![Iron badge](./images/iron.png) **Iron**: for when you've some PA experience under your belt.
+![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/1_iron.png) **Iron**: for when you've some PA experience under your belt.
 
-![Bronze badge](./images/bronze.png) **Bronze**: you've beaten vanilla Galactic War.
+![Bronze badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/2_bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 
-![Silver badge](./images/silver.png) **Silver**: you can beat the skirmish AI.
+![Silver badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/3_silver.png) **Silver**: you can beat the skirmish AI.
 
-![Gold badge](./images/gold.png) **Gold**: you can beat the Queller AI.
+![Gold badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/4_gold.png) **Gold**: you can beat the Queller AI.
 
-![Platinum badge](./images/platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
+![Platinum badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/5_platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
-![Diamond badge](./images/diamond.png) **Diamond**: for when your loadouts become too powerful.
+![Diamond badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/6_diamond.png) **Diamond**: for when your loadouts become too powerful.
 
-![Uber badge](./images/uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+![Uber badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/7_uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
-![Custom badge](./images/custom.png) **Custom**: for when you want to create your own challenge.
+![Custom badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/8_custom.png) **Custom**: for when you want to create your own challenge.
 
 ### Difficulty Options
 
@@ -88,7 +88,7 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
-- **Commander**: AI has Commander Combat Tech and commander mine vision.
+- **Commander**: AI has Commander Combat Tech, Improved Commander Build arms, and commander mine vision.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
@@ -216,6 +216,7 @@ None.
 - Enemy ramp for galactic war
 - Challenge Levels for galactic war
 - Section of Foreign Intelligence for galactic war
+- Unique Commander Loadouts
 - Galactic War Unique Loadouts
 
 ## Thanks to
@@ -225,3 +226,4 @@ None.
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - WPMarshall, for the Cluster faction logo and home system
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod
+- Tristan, who created the casual, iron, and diamond icons

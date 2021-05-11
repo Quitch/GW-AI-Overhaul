@@ -3,22 +3,22 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWCStart, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+], function (module, GW, GWCStart, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Bionic Augmentation Commander Of Neutralizing"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 650%."
     ),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:Bionic Augmentation Commander Of Neutralizing",
       };
     },

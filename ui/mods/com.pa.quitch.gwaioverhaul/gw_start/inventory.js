@@ -1,5 +1,4 @@
 define({
-  // AI Buffs
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
   commanderAmmo: [
     "/pa/units/commanders/base_commander/base_commander_ammo.json",

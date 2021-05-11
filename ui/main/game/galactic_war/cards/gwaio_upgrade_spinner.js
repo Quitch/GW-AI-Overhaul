@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,8 +34,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_tool_weapon.json",
+          file: "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_tool_weapon.json",
           path: "rate_of_fire",
           op: "multiply",
           value: 1.25,

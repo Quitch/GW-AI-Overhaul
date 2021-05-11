@@ -3,22 +3,22 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWCStart, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+], function (module, GW, GWCStart, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:General Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:The General Commander loadout contains very limited mobile forces and only two data banks. However, the loadout comes with two Sub Commanders that accompany you into each battle."
     ),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:General Commander",
       };
     },

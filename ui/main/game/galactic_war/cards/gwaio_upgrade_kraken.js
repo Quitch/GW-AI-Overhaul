@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -42,8 +42,7 @@ define([
           value: 1.5,
         },
         {
-          file:
-            "/pa/units/sea/nuclear_sub/nuclear_sub_tool_weapon_missile.json",
+          file: "/pa/units/sea/nuclear_sub/nuclear_sub_tool_weapon_missile.json",
           path: "max_range",
           op: "multiply",
           value: 1.5,

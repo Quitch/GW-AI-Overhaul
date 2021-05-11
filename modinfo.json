@@ -6,7 +6,7 @@
   "author": "Quitch",
   "version": "4.21.1",
   "build": "115626",
-  "date": "2021-05-10",
+  "date": "2021-05-11",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-overhaul.72360/",
   "category": [
@@ -36,6 +36,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
       "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
+    ],
+    "gw_war_over": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
     "live_game": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"

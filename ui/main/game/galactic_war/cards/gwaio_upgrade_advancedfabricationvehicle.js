@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -38,8 +38,7 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv_build_arm.json",
+          file: "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv_build_arm.json",
           path: "max_range",
           op: "multiply",
           value: 2.5,

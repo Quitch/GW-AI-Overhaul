@@ -3,15 +3,16 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwaio_faction_cluster",
-], function (module, GW, GWCStart, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+], function (module, GW, GWCStart, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Vehicle Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:The Vehicle Commander loadout contains basic vehicle factories."
     ),

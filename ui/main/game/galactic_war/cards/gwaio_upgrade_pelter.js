@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -46,8 +46,7 @@ define([
           value: ["socket_muzzle", "socket_muzzle", "socket_muzzle"],
         },
         {
-          file:
-            "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
+          file: "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
           path: "firing_standard_deviation",
           op: "multiply",
           value: 3,

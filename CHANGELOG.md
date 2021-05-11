@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## v4.22.0 - 2021-05-11
+
+### Added
+
+- Restored Tougher Commander option for new wars especially for Dreadnought and his big puppy dog eyes.
+- Loadouts change their icon to show the highest difficulty war you've won with them. This is not retrospective.
+
+### Changed
+
+- Commander AI buff has had Improved Commander Build Arms added to it
+- AI buff for commanders renamed to distinguish it from Tougher Commanders
+- Tougher Commanders now only applies the Commander Armor Tech
+
+### Fixed
+
+- Tougher Commanders not being applied in older saves
+- Tougher Commanders only being applied to the primary AI faction in a system
+- Galata and Flak upgrade cards not correctly displaying affected units in their tooltip
+
 ## v4.21.1 - 2021-05-10
 
 ### Fixed

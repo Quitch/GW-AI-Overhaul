@@ -3,22 +3,22 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "cards/gwaio_faction_cluster",
-], function (module, GWCStart, gwaioBank, gwaioFactionCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+], function (module, GWCStart, gwaioBank, gwaioFactionCluster, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Planetary Excavation Commander"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
-    ),
+    icon: function () {
+      return gwaioFunctions.loadoutIcon(CARD.id);
+    },
     describe: _.constant(
       "!LOC:Modifies Metal Extractors to allowing building them anywhere, at a cost to efficiency. Starts with basic vehicles."
     ),
     hint: function () {
       return {
-        icon:
-          "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
         description: "!LOC:Planetary Excavation Commander",
       };
     },

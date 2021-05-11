@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,57 +34,49 @@ define([
     buff: function (inventory) {
       var mods = [
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "rate_of_fire",
           op: "multiply",
           value: 4,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "ammo_source",
           op: "replace",
           value: "energy",
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "ammo_capacity",
           op: "replace",
           value: 1200,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "ammo_demand",
           op: "replace",
           value: 300,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "ammo_per_shot",
           op: "replace",
           value: 100,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "spread_fire",
           op: "replace",
           value: true,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "carpet_fire",
           op: "replace",
           value: true,
         },
         {
-          file:
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
+          file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "carpet_wait_for_full_ammo",
           op: "replace",
           value: true,
