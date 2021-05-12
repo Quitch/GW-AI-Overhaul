@@ -735,7 +735,6 @@ if (!gwaioSetupLoaded) {
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;
-            console.debug("Galaxy size: " + size);
 
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
