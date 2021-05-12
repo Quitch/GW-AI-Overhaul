@@ -469,7 +469,7 @@ define([
   });
 
   return {
-    tougherCommander: [commanderArmourTech, clusterCommanderArmourTech],
+    tougherCommanders: [commanderArmourTech, clusterCommanderArmourTech],
     factionTechs: [
       legonisTech,
       foundationTech,

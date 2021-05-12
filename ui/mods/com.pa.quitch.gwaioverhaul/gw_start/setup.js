@@ -944,9 +944,11 @@ if (!gwaioSetupLoaded) {
               var clusterCommanderInventory = [];
 
               if (model.gwaioDifficultySettings.tougherCommanders()) {
-                aiInventory = aiInventory.concat(gwaioTech.tougherCommander[0]);
+                aiInventory = aiInventory.concat(
+                  gwaioTech.tougherCommanders[0]
+                );
                 clusterCommanderInventory = clusterCommanderInventory.concat(
-                  gwaioTech.tougherCommander[1]
+                  gwaioTech.tougherCommanders[1]
                 );
               }
 
