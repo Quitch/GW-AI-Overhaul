@@ -9,6 +9,7 @@
 ### Fixed
 
 - Disabled some debugging that had been left active
+- Galata upgrade not causing damage to its targets
 
 ## v4.22.0 - 2021-05-11
 
