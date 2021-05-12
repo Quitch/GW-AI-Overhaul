@@ -728,33 +728,6 @@ if (!gwaioSetupLoaded) {
               );
             }
 
-            console.debug(
-              "Detected difficulty: " +
-                loc(model.gwaioDifficultySettings.difficultyName())
-            );
-            console.debug(
-              "Selected difficulty: " +
-                loc(
-                  difficultyInfo[model.newGameDifficultyIndex()].difficultyName
-                )
-            );
-            console.debug(
-              "Faction scaling: " +
-                model.gwaioDifficultySettings.factionScaling()
-            );
-            console.debug(
-              "System scaling: " + model.gwaioDifficultySettings.systemScaling()
-            );
-            console.debug(
-              "Easier start: " + model.gwaioDifficultySettings.easierStart()
-            );
-            console.debug(
-              "Tougher commanders: " +
-                model.gwaioDifficultySettings.tougherCommanders()
-            );
-            console.debug("PA lore: " + model.gwaioDifficultySettings.paLore());
-            console.debug("Hardcore: " + game.hardcore());
-
             var useEasySystems =
               difficultyInfo[selectedDifficulty].useEasierSystemTemplate;
             var systemTemplates = useEasySystems
