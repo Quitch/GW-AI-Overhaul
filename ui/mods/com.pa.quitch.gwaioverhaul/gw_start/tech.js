@@ -3,18 +3,18 @@ define([
 ], function (inventory) {
   // Tougher Commanders
   var commanderArmourTech = [];
-  inventory.commanderUnits.forEach(function (unit) {
+  inventory.commanderUnits.forEach(function (commander) {
     commanderArmourTech.push({
-      file: unit,
+      file: commander,
       path: "max_health",
       op: "multiply",
       value: 2,
     });
   });
   var clusterCommanderArmourTech = [];
-  inventory.clusterCommanders.forEach(function (unit) {
+  inventory.clusterCommanders.forEach(function (commander) {
     clusterCommanderArmourTech.push({
-      file: unit,
+      file: commander,
       path: "max_health",
       op: "multiply",
       value: 2,
@@ -410,52 +410,52 @@ define([
       ],
     },
   ];
-  inventory.clusterCommanders.forEach(function (unit) {
+  inventory.clusterCommanders.forEach(function (commander) {
     clusterCommanderTech.push(
       {
-        file: unit,
+        file: commander,
         path: "build_metal_cost",
         op: "replace",
         value: 25000,
       },
       {
-        file: unit,
+        file: commander,
         path: "si_name",
         op: "replace",
         value: "commander",
       },
       {
-        file: unit,
+        file: commander,
         path: "storage.energy",
         op: "replace",
         value: 45000,
       },
       {
-        file: unit,
+        file: commander,
         path: "storage.metal",
         op: "replace",
         value: 1500,
       },
       {
-        file: unit,
+        file: commander,
         path: "strategic_icon_priority",
         op: "replace",
         value: 0,
       },
       {
-        file: unit,
+        file: commander,
         path: "production.energy",
         op: "replace",
         value: 2000,
       },
       {
-        file: unit,
+        file: commander,
         path: "production.metal",
         op: "replace",
         value: 20,
       },
       {
-        file: unit,
+        file: commander,
         path: "recon.observer.items",
         op: "push",
         value: {
@@ -469,7 +469,7 @@ define([
   });
 
   return {
-    tougherCommander: [commanderArmourTech, clusterCommanderArmourTech],
+    tougherCommanders: [commanderArmourTech, clusterCommanderArmourTech],
     factionTechs: [
       legonisTech,
       foundationTech,

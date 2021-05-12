@@ -71,6 +71,7 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
 - **System Scaling**: system size depends on how far into the galaxy you are.
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
+- **Tougher Commanders**: the AI has Commander Armor Tech.
 
 ## Planetary Intelligence
 
@@ -88,7 +89,7 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
-- **Commander**: AI has Commander Combat Tech, Improved Commander Build arms, and commander mine vision.
+- **Commander**: AI has Commander Combat Tech, Improved Commander Build Arms, and commander mine vision.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.

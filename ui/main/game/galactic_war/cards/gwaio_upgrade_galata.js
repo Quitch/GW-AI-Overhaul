@@ -41,6 +41,12 @@ define([
           op: "push",
           value: ["Mobile & (Land | Naval)"],
         },
+        {
+          file: "/pa/units/land/air_defense/air_defense_ammo.json",
+          path: "armor_damage_map",
+          op: "replace",
+          value: {},
+        },
       ];
       inventory.addMods(mods);
     },
