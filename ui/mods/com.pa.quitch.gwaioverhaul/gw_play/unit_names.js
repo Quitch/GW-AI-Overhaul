@@ -14,8 +14,7 @@ define({
     { name: "Bumblebee", path: "/pa/units/air/bomber/bomber.json" },
     {
       name: "!LOC:Advanced Fab Aircraft",
-      path:
-        "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+      path: "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
     },
     {
       name: "!LOC:Fabrication Aircraft",
@@ -62,8 +61,7 @@ define({
     },
     {
       name: "Lob",
-      path:
-        "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+      path: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
     },
     {
       name: "Slammer",
@@ -132,8 +130,7 @@ define({
     },
     {
       name: "Mend",
-      path:
-        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
+      path: "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
     },
     {
       name: "Stitch",
@@ -141,8 +138,7 @@ define({
     },
     {
       name: "!LOC:Advanced Fabrication Vehicle",
-      path:
-        "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+      path: "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
     },
     {
       name: "!LOC:Fabrication Vehicle",
@@ -189,8 +185,7 @@ define({
     { name: "!LOC:Radar", path: "/pa/units/land/radar/radar.json" },
     {
       name: "Catapult",
-      path:
-        "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+      path: "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
     },
     { name: "Inferno", path: "/pa/units/land/tank_armor/tank_armor.json" },
     { name: "Storm", path: "/pa/units/land/tank_flak/tank_flak.json" },
@@ -264,8 +259,7 @@ define({
     },
     {
       name: "!LOC:Orbital Fabrication Bot",
-      path:
-        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+      path: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
     },
     {
       name: "!LOC:Orbital Factory",

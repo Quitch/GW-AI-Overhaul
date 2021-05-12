@@ -229,18 +229,15 @@ if (!gwaioRefereeChangesLoaded) {
                   GW.specs
                     .genUnitSpecs(units, aiTag[n])
                     .then(function (aiSpecFiles) {
-                      var enemyAIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map.json".concat(
-                        aiTag[n]
-                      );
+                      var enemyAIUnitMapFile =
+                        "/pa/ai/unit_maps/ai_unit_map.json".concat(aiTag[n]);
                       var enemyAIUnitMapPair = {};
                       enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                      var enemyX1AIUnitMapFile = "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(
-                        aiTag[n]
-                      );
+                      var enemyX1AIUnitMapFile =
+                        "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(aiTag[n]);
                       var enemyX1AIUnitMapPair = {};
-                      enemyX1AIUnitMapPair[
-                        enemyX1AIUnitMapFile
-                      ] = enemyX1AIUnitMap;
+                      enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
+                        enemyX1AIUnitMap;
                       var aiFilesClassic = _.assign(
                         enemyAIUnitMapPair,
                         aiSpecFiles
@@ -288,14 +285,16 @@ if (!gwaioRefereeChangesLoaded) {
                   .then(function (playerSpecFiles) {
                     var playerFilesClassic = _.assign(
                       {
-                        "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
+                        "/pa/ai/unit_maps/ai_unit_map.json.player":
+                          playerAIUnitMap,
                       },
                       playerSpecFiles
                     );
                     var playerFilesX1 = titans
                       ? _.assign(
                           {
-                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player": playerX1AIUnitMap,
+                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                              playerX1AIUnitMap,
                           },
                           playerSpecFiles
                         )
