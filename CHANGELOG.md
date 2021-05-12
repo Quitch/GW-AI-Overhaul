@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Updated Diamond rank icon to better match other rank icons
+
 ## v4.22.0 - 2021-05-11
 
 ### Added
