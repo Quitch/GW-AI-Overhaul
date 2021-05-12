@@ -127,7 +127,7 @@ From easiest to hardest:
 
 ## Compatible Loadouts
 
-If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
+If you are adding new loadouts to the game and want to be compatible, then you will need to do the following:
 
 1. Add the following to the gw_start scene:
 
@@ -153,7 +153,7 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 ## Compatible Tech Cards
 
-If you are adding new tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
+If you are adding new tech cards to the game and want to be compatible, then you will need to do the following:
 
 1. Add the following to the gw_play scene:
 
