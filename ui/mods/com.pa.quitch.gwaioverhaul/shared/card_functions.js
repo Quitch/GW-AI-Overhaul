@@ -8,7 +8,7 @@ define([
         console.warn(path, "is invalid or missing from GWO unit_names.js");
     },
     hasUnit: function (path) {
-      this.validatePaths(path);
+      //this.validatePaths(path);
       return _.some(model.game().inventory().units(), function (unit) {
         return path === unit;
       });
