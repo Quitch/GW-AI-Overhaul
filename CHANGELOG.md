@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Updated Diamond rank icon to better match other rank icons
+- Updated Diamond rank icon
 
 ### Fixed
 
