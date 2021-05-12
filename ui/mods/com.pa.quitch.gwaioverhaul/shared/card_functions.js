@@ -13,10 +13,10 @@ define([
         return path === unit;
       });
     },
-    loadoutIcon: function (loadout) {
+    loadoutIcon: function (loadoutId) {
       var highestDifficultyDefeated = ko
         .observable()
-        .extend({ local: "gwaio_victory_" + loadout });
+        .extend({ local: "gwaio_victory_" + loadoutId });
       if (highestDifficultyDefeated() === 0) {
         return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/0_casual.png";
       }
