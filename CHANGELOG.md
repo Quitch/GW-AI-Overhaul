@@ -6,6 +6,10 @@
 
 - Updated Diamond rank icon to better match other rank icons
 
+### Fixed
+
+- Disabled some debugging that had been left active
+
 ## v4.22.0 - 2021-05-11
 
 ### Added
