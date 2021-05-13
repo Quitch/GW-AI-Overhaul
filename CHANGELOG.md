@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Reduced aliasing on Diamond rank icon
+
 ## v4.22.1 - 2021-05-12
 
 ### Changed
