@@ -3,16 +3,9 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-  "cards/gwaio_faction_cluster",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
-], function (
-  module,
-  GW,
-  GWCStart,
-  GWCStorage,
-  gwaioFactionCluster,
-  gwaioFunctions
-) {
+], function (module, GW, GWCStart, GWCStorage, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -43,7 +36,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
-            gwaioFactionCluster.buff(inventory);
+            inventory.addMods(gwaioTech.clusterCommanders);
           GWCStorage.buff(inventory);
         } else {
           // Don't clog up a slot.
