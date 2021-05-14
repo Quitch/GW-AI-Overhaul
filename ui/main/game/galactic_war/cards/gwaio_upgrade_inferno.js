@@ -33,7 +33,7 @@ define([
           file: "/pa/units/land/tank_armor/tank_armor.json",
           path: "passive_health_regen",
           op: "replace",
-          value: 5,
+          value: 10,
         },
       ];
       inventory.addMods(mods);

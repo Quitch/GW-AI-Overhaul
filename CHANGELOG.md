@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed
+
+- Buffed the following unit upgrades
+  - Inferno
+
 ### Fixed
 
 - Reduced aliasing on Diamond rank icon
