@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "cards/gwaio_faction_cluster",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
-], function (module, GWCStart, gwaioBank, gwaioFactionCluster, gwaioFunctions) {
+], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -36,7 +36,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
-            gwaioFactionCluster.buff(inventory);
+            inventory.addMods(gwaioTech.clusterCommanders);
           var mods = [
             {
               file: "/pa/units/land/energy_plant/energy_plant.json",

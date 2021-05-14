@@ -2,9 +2,9 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "cards/gwaio_faction_cluster",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
-], function (module, GW, GWCStart, gwaioFactionCluster, gwaioFunctions) {
+], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -42,7 +42,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
-            gwaioFactionCluster.buff(inventory);
+            inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",

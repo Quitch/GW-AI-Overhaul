@@ -127,7 +127,7 @@ From easiest to hardest:
 
 ## Compatible Loadouts
 
-If you are adding new loadouts to the game and want to be GWAIO compatible, then you will need to do the following:
+If you are adding new loadouts to the game and want to be compatible, then you will need to do the following:
 
 1. Add the following to the gw_start scene:
 
@@ -142,18 +142,18 @@ If you are adding new loadouts to the game and want to be GWAIO compatible, then
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-3. Add `cards/gwaio_faction_cluster` and `gwaioFactionCluster` to your loadout's `define()` function
+3. Add `coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js` and `gwaioTech` to your loadout's `define()` function
 
 4. Within the `if (!buffCount)` block of your loadout add:
 
    ```javascript
    if (inventory.getTag("global", "playerFaction") === 4)
-     gwaioFactionCluster.buff(inventory);
+     inventory.addMods(gwaioTech.clusterCommanders);
    ```
 
 ## Compatible Tech Cards
 
-If you are adding new tech cards to the game and want to be GWAIO compatible, then you will need to do the following:
+If you are adding new tech cards to the game and want to be compatible, then you will need to do the following:
 
 1. Add the following to the gw_play scene:
 
