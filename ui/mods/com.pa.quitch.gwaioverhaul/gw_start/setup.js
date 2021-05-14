@@ -534,7 +534,7 @@ if (!gwaioSetupLoaded) {
                 unable_to_expand_delay: 0,
                 enable_commander_danger_responses: true,
                 per_expansion_delay: 0,
-                personality_tags: ["Default", "PreventsWaste"],
+                personality_tags: ["Default"],
                 econBase: 0.85,
                 econRatePerDist: 0.15,
                 max_basic_fabbers: 20,

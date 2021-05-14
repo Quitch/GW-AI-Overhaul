@@ -6,6 +6,7 @@
 
 - Buffed the following unit upgrades
   - Inferno
+- Gold difficulty AI is slightly less effective at using its resources
 
 ### Fixed
 
