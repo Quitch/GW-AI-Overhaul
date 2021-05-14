@@ -8,6 +8,7 @@
   - Inferno
 - Gold difficulty AI is slightly less effective at using its resources
 - All difficulties below Uber introduce additional commanders one system later than previously
+- Silver through Diamond introduce AI buffs one system later than previously
 
 ### Fixed
 

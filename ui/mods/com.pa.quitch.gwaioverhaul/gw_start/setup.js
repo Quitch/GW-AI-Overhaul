@@ -516,7 +516,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 20,
                 bountyModeValue: 0.35,
-                factionTechHandicap: 1,
+                factionTechHandicap: 1.5,
                 starting_location_evaluation_radius: 200,
               },
               {
@@ -545,7 +545,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 15,
                 bountyModeValue: 0.3,
-                factionTechHandicap: 0.5,
+                factionTechHandicap: 1,
                 starting_location_evaluation_radius: 250,
               },
               {
@@ -574,7 +574,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 15,
                 bountyModeValue: 0.25,
-                factionTechHandicap: 0,
+                factionTechHandicap: 0.5,
                 starting_location_evaluation_radius: 300,
               },
               {
@@ -603,7 +603,7 @@ if (!gwaioSetupLoaded) {
                 suddenDeathChance: 10,
                 bountyModeChance: 10,
                 bountyModeValue: 0.2,
-                factionTechHandicap: -0.5,
+                factionTechHandicap: 0,
                 starting_location_evaluation_radius: 400,
               },
               {
