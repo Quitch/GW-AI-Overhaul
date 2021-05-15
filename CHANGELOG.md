@@ -8,6 +8,10 @@
   - Backpacker
   - Hoarder
 
+### Changed
+
+- System Scaling option isn't shown if Shared Systems for Galactic War is in use
+
 ## v4.23.0 - 2021-05-14
 
 ### Changed
