@@ -1222,7 +1222,7 @@ if (!gwaioSetupLoaded) {
                       delete ai.team;
                       ai.icon =
                         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
-                      ai.boss = true;
+                      ai.boss = true; // otherwise they don't display an icon
                       ai.mirrorMode = true;
                       ai.treasurePlanet = true;
                       ai.econ_rate =
