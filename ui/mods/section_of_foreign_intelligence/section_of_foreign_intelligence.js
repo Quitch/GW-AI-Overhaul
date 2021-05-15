@@ -118,23 +118,23 @@ if (!gwaioIntelligenceLoaded) {
         var totalThreat = function (totalRate) {
           if (!totalRate) {
             return "!LOC:None";
-          } else if (totalRate < 1) {
+          } else if (totalRate < 0.7) {
             return "!LOC:Very Low";
-          } else if (totalRate < 2) {
+          } else if (totalRate <= 1) {
             return "!LOC:Low";
-          } else if (totalRate < 3) {
+          } else if (totalRate <= 1.4) {
             return "!LOC:Moderate";
-          } else if (totalRate < 4) {
+          } else if (totalRate <= 2.6) {
             return "!LOC:High";
-          } else if (totalRate < 6) {
+          } else if (totalRate <= 4.2) {
             return "!LOC:Very High";
-          } else if (totalRate < 9) {
+          } else if (totalRate <= 5.1) {
             return "!LOC:Extreme";
-          } else if (totalRate < 13) {
+          } else if (totalRate <= 8) {
             return "!LOC:Critical";
-          } else if (totalRate < 18) {
+          } else if (totalRate <= 11) {
             return "!LOC:Suicidal";
-          } else if (totalRate < 24) {
+          } else if (totalRate <= 20) {
             return "!LOC:Impossible";
           } else {
             return "!LOC:Skynet";
