@@ -151,6 +151,9 @@ if (!gwaioSetupLoaded) {
         }),
       };
 
+      // Scaling isn't applied if Shared Systems for Galactic War is present
+      if (model.systemSources) model.gwaioDifficultySettings.Scaling(false);
+
       ko.computed(function () {
         model.gwaioDifficultySettings.factionScaling();
         model.gwaioDifficultySettings.systemScaling();
