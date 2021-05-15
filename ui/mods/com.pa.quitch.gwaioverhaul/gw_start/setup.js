@@ -1085,7 +1085,6 @@ if (!gwaioSetupLoaded) {
                       worker.ai.minions.push(minion);
                     } else if (worker.ai.name === "Worker")
                       worker.ai.commanderCount =
-                        1 +
                         numMinions +
                         Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2

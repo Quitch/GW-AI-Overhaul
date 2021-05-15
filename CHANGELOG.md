@@ -11,6 +11,7 @@
 ### Changed
 
 - System Scaling option isn't shown if Shared Systems for Galactic War is in use
+- Reduced the number of Workers per system
 
 ## v4.23.0 - 2021-05-14
 
