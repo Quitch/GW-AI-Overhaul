@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- New loadouts:
+  - Backpacker
+
 ## v4.23.0 - 2021-05-14
 
 ### Changed
