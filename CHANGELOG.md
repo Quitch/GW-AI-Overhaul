@@ -6,6 +6,7 @@
 
 - New loadouts:
   - Backpacker
+  - Hoarder
 
 ## v4.23.0 - 2021-05-14
 
