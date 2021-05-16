@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:You start with access to every factory on every tier of the tech tree, but this has left you with no space for anything else. You will need to seek out additional databanks."
+      "!LOC:Contains every factory on every tier of the tech tree, but this has left you with no space for anything else. You will need to seek out additional data banks."
     ),
     hint: function () {
       return {
