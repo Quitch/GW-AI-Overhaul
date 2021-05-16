@@ -223,7 +223,7 @@ None.
 ## Thanks to
 
 - wondible, who continues to be amazing with his JavaScript support and for his mod Section of Foreign Intelligence for Galactic War, a modified version of which is included within this mod
-- PA Inc, for including official translations for the mod
+- PA Inc, for including official translations for the mod and assistance in integrating AI modifications
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - WPMarshall, for the Cluster faction logo and home system
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod

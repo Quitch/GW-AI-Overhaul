@@ -12,6 +12,7 @@ if (!gwaioRefereeChangesLoaded) {
             // call our own gw_referee implementation
             var ref = new gwaioReferee(game);
             return _.bind(generateGameFiles, ref)()
+              .then(_.bind(generateAI, ref))
               .then(_.bind(generateConfig, ref))
               .then(function () {
                 return ref;
@@ -328,6 +329,20 @@ if (!gwaioRefereeChangesLoaded) {
             if (_.isObject(commander) && _.isString(commander.UnitSpec))
               return commander.UnitSpec;
             return commander;
+          };
+
+          var generateAI = function () {
+            var self = this;
+
+            api.file.list("/ai/", true).then(function (files) {
+              _.forEach(files, function (file) {
+                if (_.endsWith(file, ".json")) {
+                  $.getJSON("coui:/" + file).then(function (json) {
+                    self.files()["/pa" + file] = json;
+                  });
+                }
+              });
+            });
           };
 
           var generateConfig = function () {

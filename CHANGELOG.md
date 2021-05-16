@@ -7,6 +7,7 @@
 - New loadouts:
   - Backpacker
   - Hoarder
+- Integrated [AI Bugfixes and Enhancements](https://forums.planetaryannihilation.com/threads/server-ai-bugfixes-and-enhancements.73444/) v2.5.0 with thanks to PA Inc for the assistance
 
 ### Changed
 
