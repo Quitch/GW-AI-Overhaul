@@ -52,31 +52,20 @@ define([
             "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
-          var units = [
-            "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
-          ];
-          var mods = [];
-          units.forEach(function (unit) {
-            mods.push({
-              file: unit,
+          inventory.addMods([
+            {
+              file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
-            });
-          });
-          inventory.addMods(mods);
-          var buildUnits = [
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-          ];
-          buildUnits.forEach(function (unit) {
-            mods.push({
-              file: unit,
+            },
+            {
+              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
-            });
-          });
-          inventory.addMods(mods);
+            },
+          ]);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);
