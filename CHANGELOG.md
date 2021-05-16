@@ -19,6 +19,10 @@
 - Space Excavation can no longer build the Solar Array
 - Added percentage information to many loadout descriptions where it was previously missing
 
+### Fixed
+
+- Complete Orbital Tech being offered when you were using the Space Excavation loadout
+
 ## v4.23.0 - 2021-05-14
 
 ### Changed
