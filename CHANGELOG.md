@@ -16,6 +16,7 @@
 - The following loadouts use multipliers rather than fixed values to track with balance changes to the game:
   - Planetary Excavation
   - Space Excavation
+- Space Excavation can no longer build the Solar Array
 - Added percentage information to many loadout descriptions where it was previously missing
 
 ## v4.23.0 - 2021-05-14
