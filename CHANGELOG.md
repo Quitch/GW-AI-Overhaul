@@ -14,6 +14,7 @@
 - Reduced the number of Workers per Cluster system
 - Improved granularity of system threat level at all difficulties
 - Planetary Excavation loadout now uses multipliers rather than fixed values to ensure it tracks with balance changes to the game
+- Added percentage information to loadout descriptions where it was previously missing
 
 ## v4.23.0 - 2021-05-14
 
