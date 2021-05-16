@@ -47,7 +47,7 @@ if (!gwaioRefereeChangesLoaded) {
               _.times(aiFactionCount, function (n) {
                 var aiNewTag = ".ai";
                 n = n.toString();
-                aiNewTag = aiNewTag.concat(n);
+                aiNewTag = aiNewTag + n;
                 aiTag.push(aiNewTag);
                 aiFactions.push($.Deferred());
               });
@@ -231,11 +231,11 @@ if (!gwaioRefereeChangesLoaded) {
                     .genUnitSpecs(units, aiTag[n])
                     .then(function (aiSpecFiles) {
                       var enemyAIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map.json".concat(aiTag[n]);
+                        "/pa/ai/unit_maps/ai_unit_map.json" + aiTag[n];
                       var enemyAIUnitMapPair = {};
                       enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
                       var enemyX1AIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(aiTag[n]);
+                        "/pa/ai/unit_maps/ai_unit_map_x1.json" + aiTag[n];
                       var enemyX1AIUnitMapPair = {};
                       enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
                         enemyX1AIUnitMap;
@@ -394,7 +394,7 @@ if (!gwaioRefereeChangesLoaded) {
             _.times(aiFactionCount, function (n) {
               var aiNewTag = ".ai";
               n = n.toString();
-              aiNewTag = aiNewTag.concat(n);
+              aiNewTag = aiNewTag + n;
               aiTag.push(aiNewTag);
             });
             // Setup AI System Owner
