@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. This commander starts with some orbital units."
+      "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper, but produce 30% less metal and energy. This commander starts with some orbital units."
     ),
     hint: function () {
       return {
@@ -68,14 +68,14 @@ define([
               {
                 file: unit,
                 path: "production.energy",
-                op: "replace",
-                value: 6250,
+                op: "multiply",
+                value: 0.7,
               },
               {
                 file: unit,
                 path: "production.metal",
-                op: "replace",
-                value: 30,
+                op: "multiply",
+                value: 0.7,
               },
               {
                 file: unit,
