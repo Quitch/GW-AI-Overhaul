@@ -419,6 +419,19 @@
   <div>
     <input
       type="checkbox"
+      data-bind="checked: $root.gwaioDifficultySettings.quellerAI"
+    />
+    <span style="margin-left: 6px"></span>
+    <loc>Queller AI (beta)</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:Enable the Queller AI. Doesn't require the mod to be installed.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
       data-bind="checked: $root.gwaioDifficultySettings.paLore"
     />
     <span style="margin-left: 6px"></span>

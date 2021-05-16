@@ -54,6 +54,7 @@ if (!gwaioSetupLoaded) {
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
         tougherCommanders: ko.observable(false),
+        quellerAI: ko.observable(false),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
@@ -160,6 +161,7 @@ if (!gwaioSetupLoaded) {
         model.gwaioDifficultySettings.systemScaling();
         model.gwaioDifficultySettings.easierStart();
         model.gwaioDifficultySettings.tougherCommanders();
+        model.gwaioDifficultySettings.quellerAI();
         model.gwaioDifficultySettings.paLore();
         model.gwaioDifficultySettings.newGalaxyNeeded(true);
       });
@@ -1066,6 +1068,7 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders =
                 model.gwaioDifficultySettings.tougherCommanders();
+              originSystem.gwaio.ai = model.gwaioDifficultySettings.quellerAI();
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
