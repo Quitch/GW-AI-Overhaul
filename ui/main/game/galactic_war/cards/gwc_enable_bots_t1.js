@@ -22,9 +22,9 @@ define(["shared/gw_common"], function (GW) {
       var chance = 0;
       if (
         !(
-          inventory.hasCard("gwc_enable_bots_all") &&
-          inventory.hasCard("gwc_start_bot") &&
-          inventory.hasCard("gwc_start_allfactory") &&
+          inventory.hasCard("gwc_enable_bots_all") ||
+          inventory.hasCard("gwc_start_bot") ||
+          inventory.hasCard("gwc_start_allfactory") ||
           inventory.hasCard("gwaio_start_hoarder")
         )
       ) {
