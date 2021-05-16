@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Modifies Metal Extractors to allowing building them anywhere, at a cost to efficiency. Starts with basic vehicles."
+      "!LOC:Modifies Metal Extractors to enable building them anywhere at 150% the cost and 50% efficiency. Starts with basic vehicles."
     ),
     hint: function () {
       return {
@@ -44,40 +44,9 @@ define([
             "/pa/units/land/tank_armor/tank_armor.json",
             "/pa/units/land/tank_hover/tank_hover.json",
           ]);
-          var costUnits = [
-            "/pa/units/land/metal_extractor/metal_extractor.json",
-          ];
           var mods = [];
-          costUnits.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "replace",
-                value: 250,
-              },
-              {
-                file: unit,
-                path: "production.metal",
-                op: "replace",
-                value: 4,
-              },
-              {
-                file: unit,
-                path: "feature_requirements",
-                op: "replace",
-                value: "none",
-              },
-              {
-                file: unit,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
-              }
-            );
-          });
           var units = [
+            "/pa/units/land/metal_extractor/metal_extractor.json",
             "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
           ];
           units.forEach(function (unit) {
@@ -85,29 +54,36 @@ define([
               {
                 file: unit,
                 path: "build_metal_cost",
-                op: "replace",
-                value: 2000,
+                op: "multiply",
+                value: 1.5,
               },
               {
                 file: unit,
                 path: "production.metal",
-                op: "replace",
-                value: 15,
+                op: "multiply",
+                value: 0.5,
               },
               {
                 file: unit,
                 path: "feature_requirements",
                 op: "replace",
                 value: "none",
-              },
-              {
-                file: unit,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
               }
             );
+          });
+          mods.push({
+            file: "/pa/units/land/metal_extractor/metal_extractor.json",
+            path: "description",
+            op: "replace",
+            value:
+              "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
+          });
+          mods.push({
+            file: "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
+            path: "description",
+            op: "replace",
+            value:
+              "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
           });
           inventory.addMods(mods);
         } else {

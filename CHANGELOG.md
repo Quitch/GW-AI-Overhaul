@@ -13,6 +13,7 @@
 - System Scaling option at setup isn't shown if Shared Systems for Galactic War is in use
 - Reduced the number of Workers per Cluster system
 - Improved granularity of system threat level at all difficulties
+- Planetary Excavation loadout now uses multipliers rather than fixed values to ensure it tracks with balance changes to the game
 
 ## v4.23.0 - 2021-05-14
 
