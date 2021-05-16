@@ -348,6 +348,12 @@ if (!gwaioRefereeChangesLoaded) {
           var generateConfig = function () {
             var self = this;
 
+            var aiLandingOptions = [
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ];
+
             // Setup the player
             var game = self.game();
             var inventory = game.inventory();
@@ -361,11 +367,6 @@ if (!gwaioRefereeChangesLoaded) {
                 spec_tag: ".player",
                 alliance_group: 1,
               },
-            ];
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
             ];
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
