@@ -97,6 +97,7 @@ if (!gwaioSetupLoaded) {
           "Tutorial",
           "SlowerExpansion",
           "PreventsWaste",
+          "queller",
         ]),
         personalityTagsDescription: ko.observable({
           Default: "!LOC:Default",
