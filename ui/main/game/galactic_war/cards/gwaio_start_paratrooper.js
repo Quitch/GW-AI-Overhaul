@@ -37,25 +37,20 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var lob =
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json";
-          var unitCannon = "/pa/units/land/unit_cannon/unit_cannon.json";
-          var mods = [
-            {
-              file: lob,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            },
-            {
-              file: unitCannon,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            },
+          var units = [
+            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+            "/pa/units/land/unit_cannon/unit_cannon.json",
           ];
+          inventory.addUnits(units);
+          var mods = _.map(units, function (unit) {
+            return {
+              file: unit,
+              path: "unit_types",
+              op: "push",
+              value: "UNITTYPE_CmdBuild",
+            };
+          });
           inventory.addMods(mods);
-          inventory.addUnits([lob, unitCannon]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
