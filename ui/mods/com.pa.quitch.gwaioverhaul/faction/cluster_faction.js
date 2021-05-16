@@ -27,7 +27,7 @@ define([
       micro_type: 0,
       go_for_the_kill: false,
       neural_data_mod: 1,
-      personality_tags: ["Default", "GWAlly", "SlowerExpansion"],
+      personality_tags: ["Default", "GWAlly", "SlowerExpansion", "queller"],
       adv_eco_mod: 1.5,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: false,
