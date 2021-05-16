@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:This Commander likes to raid and has modified its blueprints to that end. Units are faster and cheaper but have lower damage output."
+      "!LOC:This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%."
     ),
     hint: function () {
       return {
