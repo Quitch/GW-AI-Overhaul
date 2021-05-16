@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Improved defensive structures built by both the commander and basic fabricators."
+      "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators."
     ),
     hint: function () {
       return {
