@@ -1069,7 +1069,11 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders =
                 model.gwaioDifficultySettings.tougherCommanders();
-              originSystem.gwaio.ai = model.gwaioDifficultySettings.quellerAI();
+              if (model.gwaioDifficultySettings.quellerAI()) {
+                originSystem.gwaio.ai = "Queller";
+              } else {
+                originSystem.gwaio.ai = "Titans";
+              }
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
