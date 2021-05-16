@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Lots of space for additional tech but you start by travelling light."
+      "!LOC:Contains 16 data banks but travelling light means you start nothing but the most basic of bot units."
     ),
     hint: function () {
       return {
