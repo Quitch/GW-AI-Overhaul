@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper, but produce 30% less metal and energy. This commander starts with some orbital units."
+      "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build Omegas or any resource generating unit or structure."
     ),
     hint: function () {
       return {
@@ -38,93 +38,62 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
-            "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/orbital_probe/orbital_probe.json",
             "/pa/units/orbital/orbital_factory/orbital_factory.json",
             "/pa/units/orbital/radar_satellite/radar_satellite.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
-            "/pa/units/orbital/orbital_laser/orbital_laser.json",
           ]);
-          var costUnits = [
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-          ];
           var mods = [];
-          costUnits.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.25,
-              },
-              {
-                file: unit,
-                path: "area_build_separation",
-                op: "replace",
-                value: 12,
-              },
-              {
-                file: unit,
-                path: "production.energy",
-                op: "multiply",
-                value: 0.7,
-              },
-              {
-                file: unit,
-                path: "production.metal",
-                op: "multiply",
-                value: 0.7,
-              },
-              {
-                file: unit,
-                path: "build_restrictions",
-                op: "replace",
-                value: "none",
-              },
-              {
-                file: unit,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
-              }
-            );
-          });
-          var units = [
-            "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
-          ];
-          units.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            });
-          });
-          var ammos = [
-            "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
-          ];
-          ammos.forEach(function (ammo) {
-            mods.push({
-              file: ammo,
+          mods.push(
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "build_metal_cost",
+              op: "multiply",
+              value: 0.25,
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "area_build_separation",
+              op: "replace",
+              value: 12,
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "production.energy",
+              op: "multiply",
+              value: 0.7,
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "production.metal",
+              op: "multiply",
+              value: 0.7,
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "build_restrictions",
+              op: "replace",
+              value: "none",
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "description",
+              op: "replace",
+              value:
+                "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
+            },
+            {
+              file: "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
               path: "damage",
               op: "multiply",
               value: 0.1,
-            });
-          });
-          var buildUnits = [
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-          ];
-          buildUnits.forEach(function (unit) {
-            mods.push({
-              file: unit,
+            },
+            {
+              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
-            });
-          });
+            }
+          );
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
@@ -144,6 +113,7 @@ define([
             "/pa/units/land/metal_extractor/metal_extractor.json",
             "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
             "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+            "/pa/units/orbital/solar_array/solar_array.json",
             "/pa/units/land/energy_plant/energy_plant.json",
             "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
           ]);
