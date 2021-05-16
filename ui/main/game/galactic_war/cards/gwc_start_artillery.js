@@ -49,7 +49,6 @@ define([
             "/pa/units/land/artillery_long/artillery_long.json",
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
             "/pa/units/land/radar/radar.json",
-            "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
           ];
           var mods = [];
           units.forEach(function (unit) {

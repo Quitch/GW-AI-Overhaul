@@ -53,9 +53,7 @@ define([
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
           var units = [
-            "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
             "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
-            "/pa/units/orbital/ion_defense/ion_defense.json",
           ];
           var mods = [];
           units.forEach(function (unit) {

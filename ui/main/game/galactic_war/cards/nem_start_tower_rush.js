@@ -47,13 +47,10 @@ define([
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
           ]);
           var units = [
-            "/pa/units/land/laser_defense_single/laser_defense_single.json",
             "/pa/units/land/laser_defense/laser_defense.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/land/air_defense/air_defense.json",
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
             "/pa/units/land/radar/radar.json",
           ];
