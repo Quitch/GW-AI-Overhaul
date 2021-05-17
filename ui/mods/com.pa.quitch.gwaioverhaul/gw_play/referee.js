@@ -433,10 +433,8 @@ if (!gwaioRefereeChangesLoaded) {
               aiTag.push(aiNewTag);
             });
             // Setup AI System Owner
-            ai.personality.adv_eco_mod =
-              ai.personality.adv_eco_mod * ai.econ_rate;
-            ai.personality.adv_eco_mod_alone =
-              ai.personality.adv_eco_mod_alone * ai.econ_rate;
+            ai.personality.adv_eco_mod *= ai.econ_rate;
+            ai.personality.adv_eco_mod_alone *= ai.econ_rate;
             var slotsArray = [];
             if (ai.landing_policy)
               // support for old shared armies implementation
@@ -466,10 +464,8 @@ if (!gwaioRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion) {
-              minion.personality.adv_eco_mod =
-                minion.personality.adv_eco_mod * minion.econ_rate;
-              minion.personality.adv_eco_mod_alone =
-                minion.personality.adv_eco_mod_alone * minion.econ_rate;
+              minion.personality.adv_eco_mod *= minion.econ_rate;
+              minion.personality.adv_eco_mod_alone *= minion.econ_rate;
               var slotsArrayMinions = [];
               if (minion.landing_policy)
                 // support for old shared armies implementation
