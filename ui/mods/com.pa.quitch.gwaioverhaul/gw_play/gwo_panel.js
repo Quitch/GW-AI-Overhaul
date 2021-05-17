@@ -44,9 +44,11 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioEasierStart = loc("!LOC:Unknown");
           model.gwaioTougherCommanders = loc("!LOC:Unknown");
         }
+
         if (originSystem.gwaio.ai) {
           model.gwaioQuellerAI = originSystem.gwaio.ai;
         } else model.gwaioQuellerAI = "Titans";
+
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");
         else model.gwaioHardcore = loc("!LOC:Disabled");
