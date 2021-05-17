@@ -1075,7 +1075,7 @@ if (!gwaioSetupLoaded) {
               if (model.gwaioDifficultySettings.quellerAI()) {
                 originSystem.gwaio.ai = "Queller";
               } else {
-                originSystem.gwaio.ai = "Titans";
+                originSystem.gwaio.ai = "Bugfix";
               }
 
               if (model.creditsMode()) {
