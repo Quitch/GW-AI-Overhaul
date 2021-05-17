@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains every factory on every tier of the tech tree, but this has left you with no space for anything else. You will need to seek out additional data banks."
+      "!LOC:Contains every factory on every tier of the tech tree, but this has left no space for anything else. You will need to seek out additional data banks."
     ),
     hint: function () {
       return {
