@@ -43,7 +43,7 @@ define([
       } else
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
-    isQueller: function () {
+    quellerAIEnabled: function () {
       var originSystem = model
         .game()
         .galaxy()

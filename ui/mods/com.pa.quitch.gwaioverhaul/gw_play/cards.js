@@ -126,7 +126,7 @@ if (!gwaioCardsLoaded) {
                 .getTag("global", "playerFaction");
               _.times(2, function () {
                 var subCommander = _.sample(GWFactions[playerFaction].minions);
-                if (gwaioFunctions.isQueller()) {
+                if (gwaioFunctions.quellerAIEnabled()) {
                   subCommander.personality.ai_path = "/ai_queller";
                 }
                 model.game().inventory().cards().push({

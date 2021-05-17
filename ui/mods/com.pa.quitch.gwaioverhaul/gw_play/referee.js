@@ -59,7 +59,7 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              if (gwaioFunctions.isQueller()) {
+              if (gwaioFunctions.quellerAIEnabled()) {
                 var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/ai_queller/unit_maps/ai_unit_map_x1.json";
@@ -294,7 +294,7 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), ".player")
                   .then(function (playerSpecFiles) {
-                    if (gwaioFunctions.isQueller()) {
+                    if (gwaioFunctions.quellerAIEnabled()) {
                       var playerFilesClassic = _.assign(
                         {
                           "/ai_queller/unit_maps/ai_unit_map.json.player":
@@ -363,7 +363,7 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            if (gwaioFunctions.isQueller()) {
+            if (gwaioFunctions.quellerAIEnabled()) {
               var aiPath = "/ai_queller/";
               var prefix = "";
             } else {
