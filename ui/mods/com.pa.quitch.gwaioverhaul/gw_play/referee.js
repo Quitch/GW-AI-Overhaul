@@ -294,22 +294,41 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), ".player")
                   .then(function (playerSpecFiles) {
-                    var playerFilesClassic = _.assign(
-                      {
-                        "/pa/ai/unit_maps/ai_unit_map.json.player":
-                          playerAIUnitMap,
-                      },
-                      playerSpecFiles
-                    );
-                    var playerFilesX1 = titans
-                      ? _.assign(
-                          {
-                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                              playerX1AIUnitMap,
-                          },
-                          playerSpecFiles
-                        )
-                      : {};
+                    if (gwaioFunctions.isQueller()) {
+                      var playerFilesClassic = _.assign(
+                        {
+                          "/ai_queller/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      var playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/ai_queller/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    }
                     var playerFiles = _.assign(
                       {},
                       playerFilesClassic,
