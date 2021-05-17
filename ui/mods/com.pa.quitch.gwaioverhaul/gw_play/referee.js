@@ -55,11 +55,11 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var originSystem = model
+              var originSystem = self
                 .game()
                 .galaxy()
                 .stars()
-                [model.game().galaxy().origin()].system();
+                [self.game().galaxy().origin()].system();
               if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
                 var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
@@ -345,11 +345,11 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            var originSystem = model
+            var originSystem = self
               .game()
               .galaxy()
               .stars()
-              [model.game().galaxy().origin()].system();
+              [self.game().galaxy().origin()].system();
             if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
               var aiPath = "/ai_queller/";
               var prefix = "";
