@@ -6,8 +6,12 @@ if (!gwaioRefereeChangesLoaded) {
   function gwaioRefereeChanges() {
     try {
       requireGW(
-        ["shared/gw_common", "pages/gw_play/gw_referee"],
-        function (GW, GWReferee) {
+        [
+          "shared/gw_common",
+          "pages/gw_play/gw_referee",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+        ],
+        function (GW, GWReferee, gwaioFunctions) {
           GWReferee.hire = function (game) {
             // call our own gw_referee implementation
             var ref = new gwaioReferee(game);
@@ -27,17 +31,6 @@ if (!gwaioRefereeChangesLoaded) {
             self.files = ko.observable();
             self.localFiles = ko.observable();
             self.config = ko.observable();
-          };
-
-          var isAIQueller = function () {
-            var originSystem = model
-              .game()
-              .galaxy()
-              .stars()
-              [model.game().galaxy().origin()].system();
-            if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
-              return true;
-            } else return false;
           };
 
           var generateGameFiles = function () {
@@ -66,7 +59,7 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              if (isAIQueller()) {
+              if (gwaioFunctions.isQueller()) {
                 var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/ai_queller/unit_maps/ai_unit_map_x1.json";
@@ -351,7 +344,7 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            if (isAIQueller()) {
+            if (gwaioFunctions.isQueller()) {
               var aiPath = "/ai_queller/";
               var prefix = "";
             } else {
