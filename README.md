@@ -173,22 +173,6 @@ If you are adding new tech cards to the game and want to be compatible, then you
 
 ## FAQ
 
-**Q. Can I use an AI mod like Queller?**
-
-No. Queller won't break this mod, it simply won't be used.
-
-**Q. Will Sub Commanders fighting for me have the same personality if I fight against them?**
-
-Yes. Mostly.
-
-**Q. Are all Sub Commanders created equal?**
-
-No, some are objectively stupider than others.
-
-**Q. Is there a "fair" difficulty level?**
-
-No. I felt it was pointless to create a level where each battle is easier than the last.
-
 **Q. Why am I not seeing the latest changes in my war?**
 
 Many changes will only apply to new wars.
