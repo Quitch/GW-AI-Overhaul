@@ -33,12 +33,6 @@ if (!gwaioWarInfoPanelLoaded) {
           } else {
             model.gwaioTougherCommanders = loc("!LOC:Disabled");
           }
-
-          if (origin.system().gwaio.quellerAI === true) {
-            model.gwaioQuellerAI = loc("!LOC:Enabled");
-          } else {
-            model.gwaioQuellerAI = loc("!LOC:Disabled");
-          }
         } else {
           model.gwaioVersion = loc("!LOC:Unknown");
           model.gwaioDifficulty = loc("!LOC:Unknown");
@@ -47,8 +41,10 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioSystemScaling = loc("!LOC:Enabled");
           model.gwaioEasierStart = loc("!LOC:Unknown");
           model.gwaioTougherCommanders = loc("!LOC:Unknown");
-          model.gwaioQuellerAI = loc("!LOC:Disabled");
         }
+        if (origin.system().gwaio.ai) {
+          model.gwaioQuellerAI = origin.system().gwaio.ai;
+        } else model.gwaioQuellerAI = "Titans";
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");
         else model.gwaioHardcore = loc("!LOC:Disabled");
