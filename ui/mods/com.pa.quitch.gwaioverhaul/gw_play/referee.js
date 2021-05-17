@@ -334,7 +334,19 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            api.file.list("/ai/", true).then(function (files) {
+            var originSystem = model
+              .game()
+              .galaxy()
+              .stars()
+              [model.game().galaxy().origin()].system();
+
+            if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+              var aiPath = "/ai_queller";
+            } else {
+              aiPath = "/ai";
+            }
+
+            api.file.list(aiPath, true).then(function (files) {
               _.forEach(files, function (file) {
                 if (_.endsWith(file, ".json")) {
                   $.getJSON("coui:/" + file).then(function (json) {
