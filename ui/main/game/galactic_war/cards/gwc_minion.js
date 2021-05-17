@@ -52,6 +52,9 @@ define([
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
+      if (gwaioFunctions.isQueller()) {
+        minion.personality.ai_path = "/ai_queller";
+      }
       return {
         params: {
           minion: minion,

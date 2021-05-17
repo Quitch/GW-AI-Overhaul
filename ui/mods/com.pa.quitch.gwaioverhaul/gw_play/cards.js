@@ -104,13 +104,15 @@ if (!gwaioCardsLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
           ],
           function (
             GW,
             GWFactions,
             gwaioBank,
             gwaioCardsToUnits,
-            gwaioUnitsToNames
+            gwaioUnitsToNames,
+            gwaioFunctions
           ) {
             // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
             if (
@@ -124,6 +126,9 @@ if (!gwaioCardsLoaded) {
                 .getTag("global", "playerFaction");
               _.times(2, function () {
                 var subCommander = _.sample(GWFactions[playerFaction].minions);
+                if (gwaioFunctions.isQueller()) {
+                  subCommander.personality.ai_path = "/ai_queller";
+                }
                 model.game().inventory().cards().push({
                   id: "gwc_minion",
                   minion: subCommander,
