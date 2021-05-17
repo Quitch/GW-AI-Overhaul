@@ -368,6 +368,7 @@ if (!gwaioRefereeChangesLoaded) {
               var prefix = "";
             } else {
               aiPath = "/ai/";
+              // to avoid remounting game files when parsing the file list
               prefix = "/pa";
             }
             api.file.list(aiPath, true).then(function (files) {
