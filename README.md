@@ -27,7 +27,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
-- 11 new loadouts
+- 13 new loadouts
 - Unlocks Galactic War's biggest planetary systems
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
