@@ -29,6 +29,17 @@ if (!gwaioRefereeChangesLoaded) {
             self.config = ko.observable();
           };
 
+          var isAIQueller = function () {
+            var originSystem = model
+              .game()
+              .galaxy()
+              .stars()
+              [model.game().galaxy().origin()].system();
+            if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+              return true;
+            } else return false;
+          };
+
           var generateGameFiles = function () {
             var self = this;
 
@@ -55,12 +66,7 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var originSystem = self
-                .game()
-                .galaxy()
-                .stars()
-                [self.game().galaxy().origin()].system();
-              if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+              if (isAIQueller()) {
                 var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/ai_queller/unit_maps/ai_unit_map_x1.json";
@@ -345,12 +351,7 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            var originSystem = self
-              .game()
-              .galaxy()
-              .stars()
-              [self.game().galaxy().origin()].system();
-            if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+            if (isAIQueller()) {
               var aiPath = "/ai_queller/";
               var prefix = "";
             } else {
