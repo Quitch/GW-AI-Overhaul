@@ -349,15 +349,6 @@ if (!gwaioRefereeChangesLoaded) {
             return done.promise();
           };
 
-          // The commanders changed from an object notation to a string.  In order to
-          // process old save games properly, we need to patch up the commander spec
-          // before sending to the server.
-          var fixupCommander = function (commander) {
-            if (_.isObject(commander) && _.isString(commander.UnitSpec))
-              return commander.UnitSpec;
-            return commander;
-          };
-
           var generateAI = function () {
             var self = this;
 
@@ -409,7 +400,7 @@ if (!gwaioRefereeChangesLoaded) {
                   {
                     ai: true,
                     name: subcommander.name,
-                    commander: fixupCommander(subcommander.commander),
+                    commander: subcommander.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   },
                 ],
@@ -442,7 +433,7 @@ if (!gwaioRefereeChangesLoaded) {
                 slotsArray.push({
                   ai: true,
                   name: ai.name,
-                  commander: fixupCommander(ai.commander),
+                  commander: ai.commander,
                   landing_policy: _.sample(aiLandingOptions),
                 });
               });
@@ -451,7 +442,7 @@ if (!gwaioRefereeChangesLoaded) {
                 slotsArray.push({
                   ai: true,
                   name: ai.name,
-                  commander: fixupCommander(ai.commander),
+                  commander: ai.commander,
                   landing_policy: _.sample(aiLandingOptions),
                 });
               });
@@ -473,7 +464,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayMinions.push({
                     ai: true,
                     name: minion.name,
-                    commander: fixupCommander(minion.commander),
+                    commander: minion.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -482,7 +473,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayMinions.push({
                     ai: true,
                     name: minion.name,
-                    commander: fixupCommander(minion.commander),
+                    commander: minion.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -511,7 +502,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayFoes.push({
                     ai: true,
                     name: foe.name,
-                    commander: fixupCommander(foe.commander),
+                    commander: foe.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -520,7 +511,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayFoes.push({
                     ai: true,
                     name: foe.name,
-                    commander: fixupCommander(foe.commander),
+                    commander: foe.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -542,7 +533,7 @@ if (!gwaioRefereeChangesLoaded) {
               files: self.files(),
               armies: armies,
               player: {
-                commander: fixupCommander(playerCommander),
+                commander: playerCommander,
               },
               system: system,
               land_anywhere: ai.landAnywhere,
