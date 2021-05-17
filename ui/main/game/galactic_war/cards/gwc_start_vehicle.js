@@ -3,7 +3,7 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 

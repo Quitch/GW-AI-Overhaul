@@ -1,6 +1,6 @@
 define([
   "shared/gw_factions",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (GWFactions, gwaioFunctions) {
   return {
     visible: _.constant(true),

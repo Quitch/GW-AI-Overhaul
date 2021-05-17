@@ -9,7 +9,7 @@ if (!gwaioRefereeChangesLoaded) {
         [
           "shared/gw_common",
           "pages/gw_play/gw_referee",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
         ],
         function (GW, GWReferee, gwaioFunctions) {
           GWReferee.hire = function (game) {
