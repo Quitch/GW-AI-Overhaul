@@ -55,10 +55,24 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
+              var originSystem = model
+                .game()
+                .galaxy()
+                .stars()
+                [model.game().galaxy().origin()].system();
+              if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+                var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
+                var aiUnitMapTitansPath =
+                  "/ai_queller/unit_maps/ai_unit_map_x1.json";
+              } else {
+                aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
+                aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
+              }
+
               var unitsLoad = $.get("spec://pa/units/unit_list.json");
-              var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
+              var aiMapLoad = $.get("spec:/" + aiUnitMapPath);
               var aiX1MapLoad = titans
-                ? $.get("spec://pa/ai/unit_maps/ai_unit_map_x1.json")
+                ? $.get("spec:/" + aiUnitMapTitansPath)
                 : {};
               $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(function (
                 unitsGet,
@@ -215,7 +229,6 @@ if (!gwaioRefereeChangesLoaded) {
                 var units = parse(unitsGet[0]).units;
                 var aiUnitMap = parse(aiMapGet[0]);
                 var aiX1UnitMap = parse(aiX1MapGet[0]);
-
                 _.times(aiFactionCount, function (n) {
                   var currentCount = n;
                   var enemyAIUnitMap = GW.specs.genAIUnitMap(
@@ -230,12 +243,10 @@ if (!gwaioRefereeChangesLoaded) {
                   GW.specs
                     .genUnitSpecs(units, aiTag[n])
                     .then(function (aiSpecFiles) {
-                      var enemyAIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map.json" + aiTag[n];
+                      var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
                       var enemyAIUnitMapPair = {};
                       enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                      var enemyX1AIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map_x1.json" + aiTag[n];
+                      var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
                       var enemyX1AIUnitMapPair = {};
                       enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
                         enemyX1AIUnitMap;
@@ -339,18 +350,18 @@ if (!gwaioRefereeChangesLoaded) {
               .galaxy()
               .stars()
               [model.game().galaxy().origin()].system();
-
             if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
-              var aiPath = "/ai_queller";
+              var aiPath = "/ai_queller/";
+              var prefix = "";
             } else {
-              aiPath = "/ai";
+              aiPath = "/ai/";
+              prefix = "/pa";
             }
-
             api.file.list(aiPath, true).then(function (files) {
               _.forEach(files, function (file) {
                 if (_.endsWith(file, ".json")) {
                   $.getJSON("coui:/" + file).then(function (json) {
-                    self.files()["/pa" + file] = json;
+                    self.files()[prefix + file] = json;
                   });
                 }
               });
