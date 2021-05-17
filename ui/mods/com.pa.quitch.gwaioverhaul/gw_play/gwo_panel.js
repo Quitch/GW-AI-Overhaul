@@ -45,7 +45,7 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioTougherCommanders = loc("!LOC:Unknown");
         }
 
-        if (originSystem.gwaio.ai) {
+        if (originSystem.gwaio && originSystem.gwaio.ai) {
           model.gwaioAI = originSystem.gwaio.ai;
         } else model.gwaioAI = "Titans";
 
