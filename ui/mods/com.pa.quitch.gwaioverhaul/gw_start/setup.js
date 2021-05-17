@@ -685,6 +685,9 @@ if (!gwaioSetupLoaded) {
                 faction
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
+                if (model.gwaioDifficultySettings.quellerAI()) {
+                  ai.personality.ai_path = "/pa/ai_queller";
+                }
                 ai.personality.micro_type =
                   model.gwaioDifficultySettings.microTypeChosen();
                 ai.personality.go_for_the_kill =
