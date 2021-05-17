@@ -46,8 +46,8 @@ if (!gwaioWarInfoPanelLoaded) {
         }
 
         if (originSystem.gwaio.ai) {
-          model.gwaioQuellerAI = originSystem.gwaio.ai;
-        } else model.gwaioQuellerAI = "Titans";
+          model.gwaioAI = originSystem.gwaio.ai;
+        } else model.gwaioAI = "Titans";
 
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");
