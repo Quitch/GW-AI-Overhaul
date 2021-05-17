@@ -274,7 +274,6 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.js",
         ],
         function (
           require,
@@ -287,8 +286,7 @@ if (!gwaioSetupLoaded) {
           easy_system_templates,
           gwaioTech,
           gwaioBank,
-          gwaioLore,
-          gwaioDifficulty
+          gwaioLore
         ) {
           /* Start of GWAIO implementation of GWDealer */
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
@@ -418,113 +416,331 @@ if (!gwaioSetupLoaded) {
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
+            var diffInfo = [
+              {
+                // Casual
+                customDifficulty: false,
+                difficultyName: "!LOC:Casual",
+                goForKill: false,
+                microType: 0,
+                mandatoryMinions: 0,
+                minionMod: 0.17,
+                priority_scout_metal_spots: false,
+                useEasierSystemTemplate: true,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 12,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: false,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "SlowerExpansion", "queller"],
+                econBase: 0.4,
+                econRatePerDist: 0.05,
+                max_basic_fabbers: 10,
+                max_advanced_fabbers: 5,
+                ffa_chance: 21,
+                bossCommanders: 1,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 25,
+                bountyModeValue: 0.5,
+                factionTechHandicap: 4,
+              },
+              {
+                // Iron
+                customDifficulty: false,
+                difficultyName: "!LOC:Iron",
+                goForKill: false,
+                microType: 1,
+                mandatoryMinions: 0,
+                minionMod: 0.19,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "SlowerExpansion", "queller"],
+                econBase: 0.5,
+                econRatePerDist: 0.075,
+                max_basic_fabbers: 10,
+                max_advanced_fabbers: 10,
+                ffa_chance: 21,
+                bossCommanders: 2,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 25,
+                bountyModeValue: 0.45,
+                factionTechHandicap: 3,
+                starting_location_evaluation_radius: 100,
+              },
+              {
+                // Bronze
+                customDifficulty: false,
+                difficultyName: "!LOC:Bronze",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: 0,
+                minionMod: 0.24,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "queller"],
+                econBase: 0.6,
+                econRatePerDist: 0.1,
+                max_basic_fabbers: 15,
+                max_advanced_fabbers: 10,
+                ffa_chance: 21,
+                bossCommanders: 3,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 20,
+                bountyModeValue: 0.4,
+                factionTechHandicap: 2,
+                starting_location_evaluation_radius: 150,
+              },
+              {
+                // Silver
+                customDifficulty: false,
+                difficultyName: "!LOC:Silver",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: 0,
+                minionMod: 0.28,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "queller"],
+                econBase: 0.7,
+                econRatePerDist: 0.1,
+                max_basic_fabbers: 15,
+                max_advanced_fabbers: 15,
+                ffa_chance: 21,
+                bossCommanders: 3,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 20,
+                bountyModeValue: 0.35,
+                factionTechHandicap: 1.5,
+                starting_location_evaluation_radius: 200,
+              },
+              {
+                // Gold
+                customDifficulty: false,
+                difficultyName: "!LOC:Gold",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: 0,
+                minionMod: 0.34,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "queller"],
+                econBase: 0.85,
+                econRatePerDist: 0.15,
+                max_basic_fabbers: 20,
+                max_advanced_fabbers: 15,
+                ffa_chance: 21,
+                bossCommanders: 4,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 15,
+                bountyModeValue: 0.3,
+                factionTechHandicap: 1,
+                starting_location_evaluation_radius: 250,
+              },
+              {
+                // Platinum
+                customDifficulty: false,
+                difficultyName: "!LOC:Platinum",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: 0,
+                minionMod: 0.44,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "PreventsWaste", "queller"],
+                econBase: 1,
+                econRatePerDist: 0.175,
+                max_basic_fabbers: 20,
+                max_advanced_fabbers: 20,
+                ffa_chance: 21,
+                bossCommanders: 4,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 15,
+                bountyModeValue: 0.25,
+                factionTechHandicap: 0.5,
+                starting_location_evaluation_radius: 300,
+              },
+              {
+                // Diamond
+                customDifficulty: false,
+                difficultyName: "!LOC:Diamond",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: 0,
+                minionMod: 0.5,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "PreventsWaste", "queller"],
+                econBase: 1.2,
+                econRatePerDist: 0.2,
+                max_basic_fabbers: 25,
+                max_advanced_fabbers: 20,
+                ffa_chance: 21,
+                bossCommanders: 5,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 10,
+                bountyModeValue: 0.2,
+                factionTechHandicap: 0,
+                starting_location_evaluation_radius: 400,
+              },
+              {
+                // Uber
+                customDifficulty: false,
+                difficultyName: "!LOC:Uber",
+                goForKill: true,
+                microType: 2,
+                mandatoryMinions: -1,
+                minionMod: 0.74,
+                priority_scout_metal_spots: true,
+                useEasierSystemTemplate: false,
+                factory_build_delay_min: 0,
+                factory_build_delay_max: 0,
+                unable_to_expand_delay: 0,
+                enable_commander_danger_responses: true,
+                per_expansion_delay: 0,
+                personality_tags: ["Default", "PreventsWaste", "queller"],
+                econBase: 10,
+                econRatePerDist: 0,
+                max_basic_fabbers: 25,
+                max_advanced_fabbers: 25,
+                ffa_chance: 21,
+                bossCommanders: 5,
+                landAnywhereChance: 10,
+                suddenDeathChance: 10,
+                bountyModeChance: 10,
+                bountyModeValue: 0.2,
+                factionTechHandicap: -0.5,
+                starting_location_evaluation_radius: 400,
+              },
+              {
+                // Custom
+                customDifficulty: true,
+                difficultyName: "!LOC:Custom",
+              },
+            ];
+
             var selectedDifficulty = model.newGameDifficultyIndex() || 0;
 
             model.gwaioDifficultySettings.difficultyName(
-              gwaioDifficulty.difficulties[selectedDifficulty].difficultyName
+              diffInfo[selectedDifficulty].difficultyName
             );
-            if (
-              gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
-            ) {
+            if (diffInfo[selectedDifficulty].customDifficulty) {
               model.gwaioDifficultySettings.customDifficulty(true);
             }
-            if (
-              !gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
-            ) {
+            if (!diffInfo[selectedDifficulty].customDifficulty) {
               model.gwaioDifficultySettings.customDifficulty(false);
               model.gwaioDifficultySettings.goForKill(
-                gwaioDifficulty.difficulties[selectedDifficulty].goForKill
+                diffInfo[selectedDifficulty].goForKill
               );
               model.gwaioDifficultySettings.microTypeChosen(
-                gwaioDifficulty.difficulties[selectedDifficulty].microType
+                diffInfo[selectedDifficulty].microType
               );
               model.gwaioDifficultySettings.mandatoryMinions(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .mandatoryMinions
+                diffInfo[selectedDifficulty].mandatoryMinions
               );
               model.gwaioDifficultySettings.minionMod(
-                gwaioDifficulty.difficulties[selectedDifficulty].minionMod
+                diffInfo[selectedDifficulty].minionMod
               );
               model.gwaioDifficultySettings.priorityScoutMetalSpots(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .priority_scout_metal_spots
+                diffInfo[selectedDifficulty].priority_scout_metal_spots
               );
               model.gwaioDifficultySettings.useEasierSystemTemplate(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .useEasierSystemTemplate
+                diffInfo[selectedDifficulty].useEasierSystemTemplate
               );
               model.gwaioDifficultySettings.factoryBuildDelayMin(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factory_build_delay_min
+                diffInfo[selectedDifficulty].factory_build_delay_min
               );
               model.gwaioDifficultySettings.factoryBuildDelayMax(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factory_build_delay_max
+                diffInfo[selectedDifficulty].factory_build_delay_max
               );
               model.gwaioDifficultySettings.unableToExpandDelay(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .unable_to_expand_delay
+                diffInfo[selectedDifficulty].unable_to_expand_delay
               );
               model.gwaioDifficultySettings.enableCommanderDangerResponses(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .enable_commander_danger_responses
+                diffInfo[selectedDifficulty].enable_commander_danger_responses
               );
               model.gwaioDifficultySettings.perExpansionDelay(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .per_expansion_delay
+                diffInfo[selectedDifficulty].per_expansion_delay
               );
               model.gwaioDifficultySettings.personalityTagsChosen(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .personality_tags
+                diffInfo[selectedDifficulty].personality_tags
               );
               model.gwaioDifficultySettings.econBase(
-                gwaioDifficulty.difficulties[selectedDifficulty].econBase
+                diffInfo[selectedDifficulty].econBase
               );
               model.gwaioDifficultySettings.econRatePerDist(
-                gwaioDifficulty.difficulties[selectedDifficulty].econRatePerDist
+                diffInfo[selectedDifficulty].econRatePerDist
               );
               model.gwaioDifficultySettings.maxBasicFabbers(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .max_basic_fabbers
+                diffInfo[selectedDifficulty].max_basic_fabbers
               );
               model.gwaioDifficultySettings.maxAdvancedFabbers(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .max_advanced_fabbers
+                diffInfo[selectedDifficulty].max_advanced_fabbers
               );
               model.gwaioDifficultySettings.ffaChance(
-                gwaioDifficulty.difficulties[selectedDifficulty].ffa_chance
+                diffInfo[selectedDifficulty].ffa_chance
               );
               model.gwaioDifficultySettings.bossCommanders(
-                gwaioDifficulty.difficulties[selectedDifficulty].bossCommanders
+                diffInfo[selectedDifficulty].bossCommanders
               );
               model.gwaioDifficultySettings.startingLocationEvaluationRadius(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .starting_location_evaluation_radius
+                diffInfo[selectedDifficulty].starting_location_evaluation_radius
               );
               model.gwaioDifficultySettings.landAnywhereChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .landAnywhereChance
+                diffInfo[selectedDifficulty].landAnywhereChance
               );
               model.gwaioDifficultySettings.suddenDeathChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .suddenDeathChance
+                diffInfo[selectedDifficulty].suddenDeathChance
               );
               model.gwaioDifficultySettings.bountyModeChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .bountyModeChance
+                diffInfo[selectedDifficulty].bountyModeChance
               );
               model.gwaioDifficultySettings.bountyModeValue(
-                gwaioDifficulty.difficulties[selectedDifficulty].bountyModeValue
+                diffInfo[selectedDifficulty].bountyModeValue
               );
               model.gwaioDifficultySettings.factionTechHandicap(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factionTechHandicap
+                diffInfo[selectedDifficulty].factionTechHandicap
               );
             }
 
             var useEasySystems =
-              gwaioDifficulty.difficulties[selectedDifficulty]
-                .useEasierSystemTemplate;
+              diffInfo[selectedDifficulty].useEasierSystemTemplate;
             var systemTemplates = useEasySystems
               ? easy_system_templates
               : star_system_templates;
