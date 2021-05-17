@@ -274,7 +274,7 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         ],
         function (
           require,
