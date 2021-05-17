@@ -104,6 +104,7 @@ if (!gwaioSetupLoaded) {
           Tutorial: "!LOC:Lobotomy",
           SlowerExpansion: "!LOC:Slower Expansion",
           PreventsWaste: "!LOC:Prevent Waste",
+          queller: "!LOC:Queller",
         }),
         personalityTagsChosen: ko.observableArray([]),
         getpersonalityTagsDescription: function (value) {
