@@ -5,8 +5,8 @@
 ### Added
 
 - New loadouts:
-  - Backpacker
-  - Hoarder
+  - Backpacker Commander
+  - Hoarder Commander
 - Integrated the following AI enhancements with thanks to PA Inc for the assistance:
   - [AI Bugfixes and Enhancements](https://forums.planetaryannihilation.com/threads/server-ai-bugfixes-and-enhancements.73444/) v2.5.0
   - [Queller AI](https://forums.planetaryannihilation.com/threads/server-queller-ai.65795/) v5.13.0
@@ -16,10 +16,10 @@
 - System Scaling option isn't shown at setup if Shared Systems for Galactic War is in use
 - Reduced the number of Workers per Cluster system
 - Improved granularity of system threat level at all difficulties
-- The following loadouts use multipliers rather than fixed values to track balance changes to the game:
-  - Planetary Excavation
-  - Space Excavation
-- Space Excavation can no longer build the Solar Array
+- The following loadouts use multipliers rather than fixed values to account for balance changes to the game:
+  - Planetary Excavation Commander
+  - Space Excavation Commander
+- Space Excavation Commander can no longer build the Solar Array
 - Added percentage information to many loadout descriptions where it was previously missing
 
 ### Fixed
