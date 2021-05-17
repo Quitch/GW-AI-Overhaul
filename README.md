@@ -33,7 +33,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Adds a new faction
 - Fixes all the errors in the tech cards
 - 109 new tech cards
-- Enhanced AI
+- Enhanced AI through AI Bugfixes and Enhancements and Queller AI
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
