@@ -7,7 +7,7 @@
 - New loadouts:
   - Backpacker Commander
   - Hoarder Commander
-- Integrated the following AI enhancements with thanks to PA Inc for their assistance:
+- Integrated the following AI enhancements with thanks to PA Inc for their guidance:
   - [AI Bugfixes and Enhancements](https://forums.planetaryannihilation.com/threads/server-ai-bugfixes-and-enhancements.73444/) v2.5.0
   - [Queller AI](https://forums.planetaryannihilation.com/threads/server-queller-ai.65795/) v5.13.0
 
