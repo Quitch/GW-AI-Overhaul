@@ -50,7 +50,7 @@ if (!gwaioRefereeChangesLoaded) {
               var aiFactions = [];
               _.times(aiFactionCount, function (n) {
                 var aiNewTag = ".ai";
-                aiNewTag = aiNewTag + n.toString();
+                aiNewTag = aiNewTag + n;
                 aiTag.push(aiNewTag);
                 aiFactions.push($.Deferred());
               });
