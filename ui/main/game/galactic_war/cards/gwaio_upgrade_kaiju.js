@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/hover_ship/hover_ship.json",
           path: "teleportable",
@@ -47,8 +47,7 @@ define([
           op: "push",
           value: "ORDER_Use",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -28,15 +28,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/air_factory/air_factory.json",
           path: "buildable_types",
           op: "replace",
           value: "Air & Mobile & FactoryBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

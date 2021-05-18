@@ -37,15 +37,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
           path: "ammo_capacity",
           op: "multiply",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

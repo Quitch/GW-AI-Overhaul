@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
           path: "splash_damage",
@@ -62,8 +62,7 @@ define([
             },
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

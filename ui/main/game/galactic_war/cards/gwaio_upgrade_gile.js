@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
           path: "ammo_type",
@@ -83,8 +83,7 @@ define([
           op: "replace",
           value: "/pa/effects/specs/default_proj_explosion.pfx",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

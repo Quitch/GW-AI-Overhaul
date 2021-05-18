@@ -42,8 +42,7 @@ define([
             "/pa/units/orbital/radar_satellite/radar_satellite.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
-          var mods = [];
-          mods.push(
+          inventory.addMods([
             {
               file: "/pa/units/orbital/mining_platform/mining_platform.json",
               path: "build_metal_cost",
@@ -92,9 +91,8 @@ define([
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
-            }
-          );
-          inventory.addMods(mods);
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

@@ -48,15 +48,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
           path: "max_health",
           op: "multiply",
           value: 1.75,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

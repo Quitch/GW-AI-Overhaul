@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
           path: "max_range",
@@ -45,8 +45,7 @@ define([
           op: "multiply",
           value: 2.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

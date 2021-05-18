@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

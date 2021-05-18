@@ -30,7 +30,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/solar_array/solar_array.json",
           path: "tools",
@@ -43,8 +43,7 @@ define([
             muzzle_bone: "bone_root",
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

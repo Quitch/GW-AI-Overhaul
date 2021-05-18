@@ -36,15 +36,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

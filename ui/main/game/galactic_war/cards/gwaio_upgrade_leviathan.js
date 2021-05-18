@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
           path: "tools.0.spec_id",
@@ -87,8 +87,7 @@ define([
           op: "replace",
           value: 1,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

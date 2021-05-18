@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/sea_scout/sea_scout.json",
           path: "unit_types",
@@ -46,8 +46,7 @@ define([
           op: "replace",
           value: "hover",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

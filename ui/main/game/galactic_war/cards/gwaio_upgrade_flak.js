@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
           path: "target_layers",
@@ -45,8 +45,7 @@ define([
           op: "push",
           value: ["Mobile & (Land | Naval)"],
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

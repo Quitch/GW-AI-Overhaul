@@ -28,15 +28,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/solar_drone/solar_drone.json",
           path: "production.metal",
           op: "replace",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/artillery_long/artillery_long.json",
           path: "tools.0.projectiles_per_fire",
@@ -51,8 +51,7 @@ define([
           op: "multiply",
           value: 3,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

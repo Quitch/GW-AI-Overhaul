@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/fabrication_barge/fabrication_barge_build_arm.json",
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

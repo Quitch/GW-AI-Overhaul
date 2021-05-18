@@ -28,7 +28,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/titan_air/titan_air.json",
           path: "system_velocity_multiplier",
@@ -47,8 +47,7 @@ define([
           op: "replace",
           value: "system",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_grenadier/bot_grenadier.json",
           path: "build_metal_cost",
@@ -75,8 +75,7 @@ define([
           op: "replace",
           value: "/pa/units/land/land_mine/land_mine.json",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

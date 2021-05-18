@@ -37,15 +37,14 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var mods = [
+          inventory.addMods([
             {
               file: "/pa/units/commanders/base_commander/base_commander.json",
               path: "storage.metal",
               op: "multiply",
               value: 200,
             },
-          ];
-          inventory.addMods(mods);
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

@@ -48,15 +48,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json",
           path: "build_metal_cost",
           op: "multiply",
           value: 0.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -28,15 +28,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/transport/transport.json",
           path: "transporter.transportable_unit_types",
           op: "replace",
           value: "Mobile & Land",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

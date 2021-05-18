@@ -30,7 +30,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/energy_plant/energy_plant.json",
           path: "production.energy",
@@ -43,8 +43,7 @@ define([
           op: "multiply",
           value: 0.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

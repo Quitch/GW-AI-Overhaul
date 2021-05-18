@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
           path: "splash_damage",
@@ -47,8 +47,7 @@ define([
           op: "replace",
           value: 12,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

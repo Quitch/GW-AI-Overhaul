@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
           path: "exclude_unit_types",
           op: "replace",
           value: "",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

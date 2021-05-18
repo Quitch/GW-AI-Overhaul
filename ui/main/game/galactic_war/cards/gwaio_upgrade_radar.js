@@ -44,7 +44,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/radar/radar.json",
           path: "recon.observer.items.0.radius",
@@ -75,8 +75,7 @@ define([
           op: "multiply",
           value: 1.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

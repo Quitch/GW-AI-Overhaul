@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
           path: "death_weapon.ground_ammo_spec",
@@ -55,8 +55,7 @@ define([
           op: "replace",
           value: 50,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

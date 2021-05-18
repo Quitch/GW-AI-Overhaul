@@ -37,7 +37,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var mods = [
+          inventory.addMods([
             {
               file: "/pa/units/air/air_factory/air_factory.json",
               path: "buildable_types",
@@ -155,8 +155,7 @@ define([
               op: "replace",
               value: "Mobile & Orbital | FabOrbBuild - Factory",
             },
-          ];
-          inventory.addMods(mods);
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

@@ -35,7 +35,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/fabrication_ship/fabrication_ship.json",
           path: "buildable_types",
@@ -43,8 +43,7 @@ define([
           value:
             "Naval & Structure & Advanced | Naval & Factory & Advanced | FabAdvBuild | FabBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

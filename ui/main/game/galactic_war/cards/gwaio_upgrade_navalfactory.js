@@ -30,15 +30,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/naval_factory/naval_factory.json",
           path: "buildable_types",
           op: "replace",
           value: "Naval & Mobile & FactoryBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

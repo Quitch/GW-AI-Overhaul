@@ -28,7 +28,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/air_scout/air_scout.json",
           path: "tools",
@@ -59,8 +59,7 @@ define([
           op: "multiply",
           value: 1.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

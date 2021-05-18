@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/frigate/frigate.json",
           path: "tools",
@@ -47,8 +47,7 @@ define([
             show_range: false,
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

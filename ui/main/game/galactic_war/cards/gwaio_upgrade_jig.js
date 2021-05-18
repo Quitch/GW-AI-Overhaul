@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
           path: "splash_damages_allies",
           op: "replace",
           value: false,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

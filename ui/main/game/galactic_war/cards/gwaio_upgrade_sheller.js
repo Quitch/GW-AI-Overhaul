@@ -36,15 +36,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar_ammo.json",
           path: "spawn_unit_on_death",
           op: "replace",
           value: "/pa/units/land/land_mine/land_mine.json",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

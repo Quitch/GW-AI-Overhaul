@@ -36,15 +36,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv_build_arm.json",
           path: "max_range",
           op: "multiply",
           value: 2.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

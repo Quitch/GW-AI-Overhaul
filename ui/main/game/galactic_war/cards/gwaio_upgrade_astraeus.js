@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/orbital_lander/orbital_lander.json",
           path: "system_velocity_multiplier",
@@ -49,8 +49,7 @@ define([
           op: "multiply",
           value: 3,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

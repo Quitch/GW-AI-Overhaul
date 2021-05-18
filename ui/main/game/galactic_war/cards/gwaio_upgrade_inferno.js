@@ -28,15 +28,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_armor/tank_armor.json",
           path: "passive_health_regen",
           op: "replace",
           value: 15,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

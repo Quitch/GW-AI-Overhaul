@@ -28,15 +28,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
           path: "splash_radius",
           op: "multiply",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
           path: "max_range",
@@ -51,8 +51,7 @@ define([
           op: "multiply",
           value: 1.25,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

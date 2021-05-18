@@ -35,7 +35,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
           path: "buildable_types",
@@ -43,8 +43,7 @@ define([
           value:
             "Structure & Land & Advanced - Factory | Factory & Land & Tank & Advanced | FabAdvBuild | FabBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

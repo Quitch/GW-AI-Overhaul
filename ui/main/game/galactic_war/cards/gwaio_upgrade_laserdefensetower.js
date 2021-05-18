@@ -46,15 +46,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

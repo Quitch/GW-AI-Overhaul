@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/metal_storage/metal_storage.json",
           path: "storage.energy",
           op: "replace",
           value: 100000,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/fighter_adv/fighter_adv.json",
           path: "system_velocity_multiplier",
@@ -47,8 +47,7 @@ define([
           op: "multiply",
           value: 3,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

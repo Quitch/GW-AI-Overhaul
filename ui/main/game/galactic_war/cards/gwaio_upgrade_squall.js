@@ -41,15 +41,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/sea/drone_carrier/drone/drone.json",
           path: "passive_health_regen",
           op: "multiply",
           value: 0.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_flak/tank_flak.json",
           path: "tools",
@@ -51,8 +51,7 @@ define([
             ],
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

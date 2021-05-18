@@ -35,15 +35,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
           path: "reclaim_types",
           op: "push",
           value: "Unit",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

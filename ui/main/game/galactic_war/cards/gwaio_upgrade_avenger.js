@@ -35,7 +35,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
           path: "tools",
@@ -52,8 +52,7 @@ define([
             },
           ],
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

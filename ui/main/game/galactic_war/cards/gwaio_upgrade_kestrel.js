@@ -34,43 +34,39 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var unit = "/pa/units/air/gunship/gunship.json";
-      var weapon = "/pa/units/air/gunship/gunship_tool_weapon.json";
-      var ammo = "/pa/units/air/gunship/gunship_ammo.json";
-      var mods = [
+      inventory.addMods([
         {
-          file: unit,
+          file: "/pa/units/air/gunship/gunship.json",
           path: "events.fired.effect_spec",
           op: "replace",
           value:
             "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
         },
         {
-          file: weapon,
+          file: "/pa/units/air/gunship/gunship_tool_weapon.json",
           path: "max_range",
           op: "replace",
           value: 20,
         },
         {
-          file: weapon,
+          file: "/pa/units/air/gunship/gunship_tool_weapon.json",
           path: "spread_fire",
           op: "replace",
           value: true,
         },
         {
-          file: ammo,
+          file: "/pa/units/air/gunship/gunship_ammo.json",
           path: "ammo_type",
           op: "replace",
           value: "AMMO_Beam",
         },
         {
-          file: ammo,
+          file: "/pa/units/air/gunship/gunship_ammo.json",
           path: "damage",
           op: "replace",
           value: 100,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

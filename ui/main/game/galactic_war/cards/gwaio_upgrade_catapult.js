@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
           path: "tools",
@@ -49,8 +49,7 @@ define([
             ],
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

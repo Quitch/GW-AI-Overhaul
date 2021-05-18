@@ -46,7 +46,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/unit_cannon/unit_cannon.json",
           path: "factory.spawn_points",
@@ -66,8 +66,7 @@ define([
             "socket_build",
           ],
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

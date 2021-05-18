@@ -37,7 +37,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var mods = [
+          inventory.addMods([
             {
               file: "/pa/units/land/energy_plant/energy_plant.json",
               path: "production.energy",
@@ -50,8 +50,7 @@ define([
               op: "multiply",
               value: 1.25,
             },
-          ];
-          inventory.addMods(mods);
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

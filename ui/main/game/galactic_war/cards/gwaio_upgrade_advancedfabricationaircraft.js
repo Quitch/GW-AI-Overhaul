@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
           path: "tools",
@@ -49,8 +49,7 @@ define([
             muzzle_bone: "socket_muzzle",
           },
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

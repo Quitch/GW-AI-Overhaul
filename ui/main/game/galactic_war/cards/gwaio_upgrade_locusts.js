@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
           path: "recon.observer.items.0.radius",
@@ -49,8 +49,7 @@ define([
           op: "multiply",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

@@ -30,15 +30,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/ion_defense/ion_defense_tool_weapon.json",
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

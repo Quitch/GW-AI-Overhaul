@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
           path: "buildable_types",
@@ -41,8 +41,7 @@ define([
           value:
             "Land & Structure & Advanced - Factory | Factory & Advanced & Air | FabAdvBuild | FabBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

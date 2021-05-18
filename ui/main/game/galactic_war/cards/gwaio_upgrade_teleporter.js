@@ -28,7 +28,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/teleporter/teleporter.json",
           path: "energy_efficiency_requirement",
@@ -41,8 +41,7 @@ define([
           op: "replace",
           value: 0,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

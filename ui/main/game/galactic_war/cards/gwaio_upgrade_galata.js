@@ -28,7 +28,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
           path: "target_layers",
@@ -47,8 +47,7 @@ define([
           op: "replace",
           value: {},
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

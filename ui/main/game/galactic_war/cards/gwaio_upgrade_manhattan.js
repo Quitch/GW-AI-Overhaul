@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
           path: "splash_radius",
@@ -71,8 +71,7 @@ define([
           op: "multiply",
           value: 2,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

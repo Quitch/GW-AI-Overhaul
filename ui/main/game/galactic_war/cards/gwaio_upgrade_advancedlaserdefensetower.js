@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
           path: "rate_of_fire",
@@ -81,8 +81,7 @@ define([
           op: "replace",
           value: true,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

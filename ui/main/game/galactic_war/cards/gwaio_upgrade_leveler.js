@@ -37,15 +37,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_CannonBuildable",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

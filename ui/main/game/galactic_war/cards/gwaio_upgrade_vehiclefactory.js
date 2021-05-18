@@ -32,15 +32,14 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/vehicle_factory/vehicle_factory.json",
           path: "buildable_types",
           op: "replace",
           value: "Tank & Mobile & FactoryBuild",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

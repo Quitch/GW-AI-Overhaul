@@ -31,7 +31,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/bomber/bomber_ammo.json",
           path: "damage",
@@ -62,8 +62,7 @@ define([
           op: "replace",
           value: "/pa/units/land/land_mine/land_mine.json",
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

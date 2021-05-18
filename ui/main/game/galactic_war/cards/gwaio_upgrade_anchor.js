@@ -38,7 +38,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/orbital/defense_satellite/defense_satellite_tool_ground.json",
           path: "max_range",
@@ -51,8 +51,7 @@ define([
           op: "multiply",
           value: 1.25,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };
