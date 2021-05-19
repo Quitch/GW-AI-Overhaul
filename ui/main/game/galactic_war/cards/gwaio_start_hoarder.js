@@ -31,14 +31,13 @@ define([
       };
     },
     buff: function (inventory) {
-      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          maxCards(1);
+          inventory.maxCards(1);
           inventory.addUnits([
             "/pa/units/air/air_factory/air_factory.json",
             "/pa/units/air/air_factory_adv/air_factory_adv.json",
@@ -73,12 +72,12 @@ define([
             "/pa/units/land/attack_vehicle/attack_vehicle.json",
           ]);
         } else {
-          maxCards(maxCards() + 1);
+          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        maxCards(maxCards() + 1);
+        inventory.maxCards(inventory.maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }
     },

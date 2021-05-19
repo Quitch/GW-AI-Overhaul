@@ -31,7 +31,6 @@ define([
       };
     },
     buff: function (inventory) {
-      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
@@ -53,12 +52,12 @@ define([
             },
           ]);
         } else {
-          maxCards(maxCards() + 1);
+          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        maxCards(maxCards() + 1);
+        inventory.maxCards(inventory.maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }
     },

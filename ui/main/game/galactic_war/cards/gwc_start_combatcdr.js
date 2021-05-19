@@ -31,7 +31,6 @@ define([
       };
     },
     buff: function (inventory) {
-      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -39,7 +38,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          maxCards(maxCards() - 2);
+          inventory.maxCards(inventory.maxCards() - 2);
           var units = [
             "/pa/units/commanders/base_commander/base_commander.json",
           ];
@@ -113,13 +112,13 @@ define([
           inventory.addMods(mods);
         } else {
           // Don't clog up a slot.
-          maxCards(maxCards() + 1);
+          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
         // Don't clog up a slot.
-        maxCards(maxCards() + 1);
+        inventory.maxCards(inventory.maxCards() + 1);
         GW.bank.addStartCard(CARD);
       }
     },

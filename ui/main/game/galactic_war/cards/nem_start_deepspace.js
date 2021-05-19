@@ -94,12 +94,12 @@ define([
             },
           ]);
         } else {
-          maxCards(maxCards() + 1);
+          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        maxCards(maxCards() + 1);
+        inventory.maxCards(inventory.maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }
     },
