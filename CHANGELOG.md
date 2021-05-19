@@ -8,6 +8,7 @@
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
   - Phoenix
+  - Kraken
 - Nerfed the following unit upgrades:
   - Bumblebee
 
