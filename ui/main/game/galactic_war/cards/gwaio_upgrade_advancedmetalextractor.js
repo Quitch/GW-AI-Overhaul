@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -48,7 +48,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
           path: "production.metal",
@@ -61,8 +61,7 @@ define([
           op: "multiply",
           value: 0.5,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

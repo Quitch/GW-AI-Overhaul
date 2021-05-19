@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/fighter_adv/fighter_adv.json",
           path: "system_velocity_multiplier",
@@ -47,8 +47,7 @@ define([
           op: "multiply",
           value: 3,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

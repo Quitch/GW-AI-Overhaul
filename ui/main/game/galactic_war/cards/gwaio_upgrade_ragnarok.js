@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -32,7 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
           path: "damage",
@@ -111,8 +111,7 @@ define([
           op: "replace",
           value: 99999, // this is a hack and if I understood the eval op that might be better
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

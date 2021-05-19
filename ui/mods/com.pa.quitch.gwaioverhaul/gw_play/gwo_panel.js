@@ -6,29 +6,31 @@ if (!gwaioWarInfoPanelLoaded) {
   function gwaioWarInfoPanel() {
     try {
       if (!model.game().isTutorial()) {
-        var origin = model.game().galaxy().stars()[
-          model.game().galaxy().origin()
-        ];
-        if (origin.system().gwaio) {
-          model.gwaioVersion = origin.system().gwaio.version;
-          model.gwaioDifficulty = loc(origin.system().gwaio.difficulty);
-          model.gwaioSize = loc(origin.system().gwaio.galaxySize);
+        var originSystem = model
+          .game()
+          .galaxy()
+          .stars()
+          [model.game().galaxy().origin()].system();
+        if (originSystem.gwaio) {
+          model.gwaioVersion = originSystem.gwaio.version;
+          model.gwaioDifficulty = loc(originSystem.gwaio.difficulty);
+          model.gwaioSize = loc(originSystem.gwaio.galaxySize);
 
-          if (origin.system().gwaio.factionScaling === true)
+          if (originSystem.gwaio.factionScaling === true)
             model.gwaioFactionScaling = loc("!LOC:Enabled");
           else model.gwaioFactionScaling = loc("!LOC:Disabled");
 
-          if (origin.system().gwaio.systemScaling === false) {
+          if (originSystem.gwaio.systemScaling === false) {
             model.gwaioSystemScaling = loc("!LOC:Disabled");
           } else {
             model.gwaioSystemScaling = loc("!LOC:Enabled");
           }
 
-          if (origin.system().gwaio.easierStart === true)
+          if (originSystem.gwaio.easierStart === true)
             model.gwaioEasierStart = loc("!LOC:Enabled");
           else model.gwaioEasierStart = loc("!LOC:Disabled");
 
-          if (origin.system().gwaio.tougherCommanders === true) {
+          if (originSystem.gwaio.tougherCommanders === true) {
             model.gwaioTougherCommanders = loc("!LOC:Enabled");
           } else {
             model.gwaioTougherCommanders = loc("!LOC:Disabled");
@@ -42,6 +44,11 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioEasierStart = loc("!LOC:Unknown");
           model.gwaioTougherCommanders = loc("!LOC:Unknown");
         }
+
+        if (originSystem.gwaio && originSystem.gwaio.ai) {
+          model.gwaioAI = originSystem.gwaio.ai;
+        } else model.gwaioAI = "Titans";
+
         if (model.game().hardcore() === true)
           model.gwaioHardcore = loc("!LOC:Enabled");
         else model.gwaioHardcore = loc("!LOC:Disabled");

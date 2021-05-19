@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "anti_entity_targets_units",
@@ -229,8 +229,7 @@ define([
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };

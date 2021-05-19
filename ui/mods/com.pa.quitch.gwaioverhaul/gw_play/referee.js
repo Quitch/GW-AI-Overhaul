@@ -6,12 +6,17 @@ if (!gwaioRefereeChangesLoaded) {
   function gwaioRefereeChanges() {
     try {
       requireGW(
-        ["shared/gw_common", "pages/gw_play/gw_referee"],
-        function (GW, GWReferee) {
+        [
+          "shared/gw_common",
+          "pages/gw_play/gw_referee",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+        ],
+        function (GW, GWReferee, gwaioFunctions) {
           GWReferee.hire = function (game) {
             // call our own gw_referee implementation
             var ref = new gwaioReferee(game);
             return _.bind(generateGameFiles, ref)()
+              .then(_.bind(generateAI, ref))
               .then(_.bind(generateConfig, ref))
               .then(function () {
                 return ref;
@@ -44,9 +49,7 @@ if (!gwaioRefereeChangesLoaded) {
               var aiTag = [];
               var aiFactions = [];
               _.times(aiFactionCount, function (n) {
-                var aiNewTag = ".ai";
-                n = n.toString();
-                aiNewTag = aiNewTag.concat(n);
+                var aiNewTag = ".ai" + n;
                 aiTag.push(aiNewTag);
                 aiFactions.push($.Deferred());
               });
@@ -54,10 +57,20 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
+              if (gwaioFunctions.quellerAIEnabled()) {
+                var aiUnitMapPath =
+                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json";
+                var aiUnitMapTitansPath =
+                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+              } else {
+                aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
+                aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
+              }
+
               var unitsLoad = $.get("spec://pa/units/unit_list.json");
-              var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
+              var aiMapLoad = $.get("spec:/" + aiUnitMapPath);
               var aiX1MapLoad = titans
-                ? $.get("spec://pa/ai/unit_maps/ai_unit_map_x1.json")
+                ? $.get("spec:/" + aiUnitMapTitansPath)
                 : {};
               $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(function (
                 unitsGet,
@@ -214,7 +227,6 @@ if (!gwaioRefereeChangesLoaded) {
                 var units = parse(unitsGet[0]).units;
                 var aiUnitMap = parse(aiMapGet[0]);
                 var aiX1UnitMap = parse(aiX1MapGet[0]);
-
                 _.times(aiFactionCount, function (n) {
                   var currentCount = n;
                   var enemyAIUnitMap = GW.specs.genAIUnitMap(
@@ -229,12 +241,10 @@ if (!gwaioRefereeChangesLoaded) {
                   GW.specs
                     .genUnitSpecs(units, aiTag[n])
                     .then(function (aiSpecFiles) {
-                      var enemyAIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map.json".concat(aiTag[n]);
+                      var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
                       var enemyAIUnitMapPair = {};
                       enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                      var enemyX1AIUnitMapFile =
-                        "/pa/ai/unit_maps/ai_unit_map_x1.json".concat(aiTag[n]);
+                      var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
                       var enemyX1AIUnitMapPair = {};
                       enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
                         enemyX1AIUnitMap;
@@ -283,22 +293,41 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), ".player")
                   .then(function (playerSpecFiles) {
-                    var playerFilesClassic = _.assign(
-                      {
-                        "/pa/ai/unit_maps/ai_unit_map.json.player":
-                          playerAIUnitMap,
-                      },
-                      playerSpecFiles
-                    );
-                    var playerFilesX1 = titans
-                      ? _.assign(
-                          {
-                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                              playerX1AIUnitMap,
-                          },
-                          playerSpecFiles
-                        )
-                      : {};
+                    if (gwaioFunctions.quellerAIEnabled()) {
+                      var playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      var playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    }
                     var playerFiles = _.assign(
                       {},
                       playerFilesClassic,
@@ -321,13 +350,47 @@ if (!gwaioRefereeChangesLoaded) {
             return done.promise();
           };
 
-          // The commanders changed from an object notation to a string.  In order to
-          // process old save games properly, we need to patch up the commander spec
-          // before sending to the server.
-          var fixupCommander = function (commander) {
-            if (_.isObject(commander) && _.isString(commander.UnitSpec))
-              return commander.UnitSpec;
-            return commander;
+          var generateAI = function () {
+            var self = this;
+
+            var deferred = $.Deferred();
+
+            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+
+            if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
+            else aiFilePath = "/pa/ai/bugfix/";
+
+            api.file.list(aiFilePath, true).then(function (files) {
+              var configFiles = self.files();
+              var queue = [];
+
+              _.forEach(files, function (file) {
+                if (_.endsWith(file, ".json")) {
+                  var deferred2 = $.Deferred();
+
+                  queue.push(deferred2);
+
+                  $.getJSON("coui:/" + file)
+                    .then(function (json) {
+                      if (quellerEnabled) configFiles[file] = json;
+                      else
+                        configFiles[
+                          "/pa/ai" + file.slice(aiFilePath.length - 1)
+                        ] = json;
+                    })
+                    .always(function () {
+                      deferred2.resolve();
+                    });
+                }
+              });
+
+              $.when.apply($, queue).then(function () {
+                self.files.valueHasMutated();
+                deferred.resolve();
+              });
+            });
+
+            return deferred.promise();
           };
 
           var generateConfig = function () {
@@ -359,7 +422,7 @@ if (!gwaioRefereeChangesLoaded) {
                   {
                     ai: true,
                     name: subcommander.name,
-                    commander: fixupCommander(subcommander.commander),
+                    commander: subcommander.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   },
                 ],
@@ -379,14 +442,12 @@ if (!gwaioRefereeChangesLoaded) {
             _.times(aiFactionCount, function (n) {
               var aiNewTag = ".ai";
               n = n.toString();
-              aiNewTag = aiNewTag.concat(n);
+              aiNewTag = aiNewTag + n;
               aiTag.push(aiNewTag);
             });
             // Setup AI System Owner
-            ai.personality.adv_eco_mod =
-              ai.personality.adv_eco_mod * ai.econ_rate;
-            ai.personality.adv_eco_mod_alone =
-              ai.personality.adv_eco_mod_alone * ai.econ_rate;
+            ai.personality.adv_eco_mod *= ai.econ_rate;
+            ai.personality.adv_eco_mod_alone *= ai.econ_rate;
             var slotsArray = [];
             if (ai.landing_policy)
               // support for old shared armies implementation
@@ -394,7 +455,7 @@ if (!gwaioRefereeChangesLoaded) {
                 slotsArray.push({
                   ai: true,
                   name: ai.name,
-                  commander: fixupCommander(ai.commander),
+                  commander: ai.commander,
                   landing_policy: _.sample(aiLandingOptions),
                 });
               });
@@ -403,7 +464,7 @@ if (!gwaioRefereeChangesLoaded) {
                 slotsArray.push({
                   ai: true,
                   name: ai.name,
-                  commander: fixupCommander(ai.commander),
+                  commander: ai.commander,
                   landing_policy: _.sample(aiLandingOptions),
                 });
               });
@@ -416,10 +477,8 @@ if (!gwaioRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion) {
-              minion.personality.adv_eco_mod =
-                minion.personality.adv_eco_mod * minion.econ_rate;
-              minion.personality.adv_eco_mod_alone =
-                minion.personality.adv_eco_mod_alone * minion.econ_rate;
+              minion.personality.adv_eco_mod *= minion.econ_rate;
+              minion.personality.adv_eco_mod_alone *= minion.econ_rate;
               var slotsArrayMinions = [];
               if (minion.landing_policy)
                 // support for old shared armies implementation
@@ -427,7 +486,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayMinions.push({
                     ai: true,
                     name: minion.name,
-                    commander: fixupCommander(minion.commander),
+                    commander: minion.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -436,7 +495,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayMinions.push({
                     ai: true,
                     name: minion.name,
-                    commander: fixupCommander(minion.commander),
+                    commander: minion.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -465,7 +524,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayFoes.push({
                     ai: true,
                     name: foe.name,
-                    commander: fixupCommander(foe.commander),
+                    commander: foe.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -474,7 +533,7 @@ if (!gwaioRefereeChangesLoaded) {
                   slotsArrayFoes.push({
                     ai: true,
                     name: foe.name,
-                    commander: fixupCommander(foe.commander),
+                    commander: foe.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
                 });
@@ -496,7 +555,7 @@ if (!gwaioRefereeChangesLoaded) {
               files: self.files(),
               armies: armies,
               player: {
-                commander: fixupCommander(playerCommander),
+                commander: playerCommander,
               },
               system: system,
               land_anywhere: ai.landAnywhere,

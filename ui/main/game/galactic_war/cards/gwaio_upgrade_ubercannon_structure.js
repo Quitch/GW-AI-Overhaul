@@ -21,15 +21,14 @@ define({
     return { chance: 30 };
   },
   buff: function (inventory) {
-    var mods = [
+    inventory.addMods([
       {
         file: "/pa/ammo/cannon_uber/cannon_uber.json",
         path: "armor_damage_map.AT_Structure",
         op: "multiply",
         value: 4,
       },
-    ];
-    inventory.addMods(mods);
+    ]);
   },
   dull: function () {},
 });

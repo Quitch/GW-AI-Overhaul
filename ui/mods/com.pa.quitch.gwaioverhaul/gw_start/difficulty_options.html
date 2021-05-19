@@ -376,7 +376,8 @@
       >?</span
     >
   </div>
-  <div>
+  <!-- Don't show if Shared Systems for Galactic War is loaded -->
+  <div data-bind="visible: !model.systemSources">
     <input
       type="checkbox"
       data-bind="checked: $root.gwaioDifficultySettings.systemScaling"
@@ -412,6 +413,19 @@
     <span
       class="info_tip"
       data-bind="tooltip: '!LOC:AI uses Commander Armor Tech.'"
+      >?</span
+    >
+  </div>
+  <div>
+    <input
+      type="checkbox"
+      data-bind="checked: $root.gwaioDifficultySettings.quellerAI"
+    />
+    <span style="margin-left: 6px"></span>
+    <loc>Queller AI (beta)</loc>
+    <span
+      class="info_tip"
+      data-bind="tooltip: '!LOC:Enables the Queller AI. Increases enemy and Sub Commander strength, decreases faction and personality differentiation. Does not require that the mod be installed.'"
       >?</span
     >
   </div>

@@ -3,7 +3,7 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
@@ -37,7 +37,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var mods = [
+          inventory.addMods([
             {
               file: "/pa/units/air/air_factory/air_factory.json",
               path: "buildable_types",
@@ -155,8 +155,7 @@ define([
               op: "replace",
               value: "Mobile & Orbital | FabOrbBuild - Factory",
             },
-          ];
-          inventory.addMods(mods);
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

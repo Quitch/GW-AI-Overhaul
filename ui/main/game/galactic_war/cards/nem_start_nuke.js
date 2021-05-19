@@ -3,7 +3,7 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
@@ -42,12 +42,12 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
-          var costUnits = [
+          var nukes = [
             "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
             "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
           ];
           var mods = [];
-          costUnits.forEach(function (unit) {
+          nukes.forEach(function (unit) {
             mods.push(
               {
                 file: unit,
@@ -88,49 +88,39 @@ define([
               }
             );
           });
-          var ammos = ["/pa/units/land/nuke_launcher/nuke_launcher.json"];
-          ammos.forEach(function (ammo) {
-            mods.push(
-              {
-                file: ammo,
-                path: "build_metal_cost",
-                op: "replace",
-                value: 2500,
-              },
-              {
-                file: ammo,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_FabBuild",
-              },
-              {
-                file: ammo,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
-              }
-            );
-          });
-          var units = [
-            "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
-          ];
-          units.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "construction_demand.metal",
-                op: "replace",
-                value: 15,
-              },
-              {
-                file: unit,
-                path: "construction_demand.energy",
-                op: "replace",
-                value: 2250,
-              }
-            );
-          });
+          mods.push(
+            {
+              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              path: "build_metal_cost",
+              op: "replace",
+              value: 2500,
+            },
+            {
+              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              path: "unit_types",
+              op: "push",
+              value: "UNITTYPE_FabBuild",
+            },
+            {
+              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              path: "description",
+              op: "replace",
+              value:
+                "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
+            },
+            {
+              file: "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+              path: "construction_demand.metal",
+              op: "replace",
+              value: 15,
+            },
+            {
+              file: "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+              path: "construction_demand.energy",
+              op: "replace",
+              value: 2250,
+            }
+          );
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

@@ -3,7 +3,7 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Improved defensive structures built by both the commander and basic fabricators."
+      "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators."
     ),
     hint: function () {
       return {
@@ -47,13 +47,10 @@ define([
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
           ]);
           var units = [
-            "/pa/units/land/laser_defense_single/laser_defense_single.json",
             "/pa/units/land/laser_defense/laser_defense.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/land/air_defense/air_defense.json",
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
             "/pa/units/land/radar/radar.json",
           ];

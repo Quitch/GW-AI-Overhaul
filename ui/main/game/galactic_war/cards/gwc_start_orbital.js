@@ -3,7 +3,7 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
@@ -52,33 +52,20 @@ define([
             "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
-          var units = [
-            "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
-            "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
-            "/pa/units/orbital/ion_defense/ion_defense.json",
-          ];
-          var mods = [];
-          units.forEach(function (unit) {
-            mods.push({
-              file: unit,
+          inventory.addMods([
+            {
+              file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
-            });
-          });
-          inventory.addMods(mods);
-          var buildUnits = [
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-          ];
-          buildUnits.forEach(function (unit) {
-            mods.push({
-              file: unit,
+            },
+            {
+              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "FabBuild | FabOrbBuild",
-            });
-          });
-          inventory.addMods(mods);
+            },
+          ]);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);

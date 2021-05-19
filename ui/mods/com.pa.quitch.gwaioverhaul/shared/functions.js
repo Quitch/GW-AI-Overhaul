@@ -43,5 +43,15 @@ define([
       } else
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
+    quellerAIEnabled: function () {
+      var originSystem = model
+        .game()
+        .galaxy()
+        .stars()
+        [model.game().galaxy().origin()].system();
+      if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
+        return true;
+      }
+    },
   };
 });

@@ -27,12 +27,13 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
-- 11 new loadouts
+- 13 new loadouts
 - Unlocks Galactic War's biggest planetary systems
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
 - Fixes all the errors in the tech cards
 - 109 new tech cards
+- Enhanced AI through AI Bugfixes and Enhancements and Queller AI
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
@@ -172,22 +173,6 @@ If you are adding new tech cards to the game and want to be compatible, then you
 
 ## FAQ
 
-**Q. Can I use an AI mod like Queller?**
-
-No. Queller won't break this mod, it simply won't be used.
-
-**Q. Will Sub Commanders fighting for me have the same personality if I fight against them?**
-
-Yes. Mostly.
-
-**Q. Are all Sub Commanders created equal?**
-
-No, some are objectively stupider than others.
-
-**Q. Is there a "fair" difficulty level?**
-
-No. I felt it was pointless to create a level where each battle is easier than the last.
-
 **Q. Why am I not seeing the latest changes in my war?**
 
 Many changes will only apply to new wars.
@@ -223,7 +208,7 @@ None.
 ## Thanks to
 
 - wondible, who continues to be amazing with his JavaScript support and for his mod Section of Foreign Intelligence for Galactic War, a modified version of which is included within this mod
-- PA Inc, for including official translations for the mod
+- PA Inc, for including official translations for the mod and assistance in integrating AI modifications
 - nemuneko, whose Unique Commander Loadouts for Galactic War are included in this mod
 - WPMarshall, for the Cluster faction logo and home system
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod

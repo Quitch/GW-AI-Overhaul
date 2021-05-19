@@ -1,6 +1,6 @@
 define([
   "shared/gw_factions",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (GWFactions, gwaioFunctions) {
   return {
     visible: _.constant(true),
@@ -52,6 +52,9 @@ define([
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
+      if (gwaioFunctions.quellerAIEnabled()) {
+        minion.personality.ai_path = "/pa/ai/queller/q_uber";
+      }
       return {
         params: {
           minion: minion,

@@ -3,7 +3,7 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
 ], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
@@ -37,15 +37,14 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          var mods = [
+          inventory.addMods([
             {
               file: "/pa/units/commanders/base_commander/base_commander.json",
               path: "storage.metal",
               op: "multiply",
               value: 200,
             },
-          ];
-          inventory.addMods(mods);
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
