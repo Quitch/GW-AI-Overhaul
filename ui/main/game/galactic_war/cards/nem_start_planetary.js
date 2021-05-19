@@ -31,6 +31,7 @@ define([
       };
     },
     buff: function (inventory) {
+      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
