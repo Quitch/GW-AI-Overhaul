@@ -5,6 +5,8 @@
 ### Changed
 
 - Backpacker Commander starting units increased
+- Buffed the following unit upgrades:
+  - Advanced Torpedo Launcher
 
 ## v5.0.0 - 2021-05-19
 
