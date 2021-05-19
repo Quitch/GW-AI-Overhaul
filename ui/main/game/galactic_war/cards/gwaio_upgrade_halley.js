@@ -21,20 +21,21 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasCard = inventory.hasCard();
       var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
         hasUnit("/pa/units/orbital/delta_v_engine/delta_v_engine.json") &&
         (hasUnit("/pa/units/air/air_factory_adv/air_factory_adv.json") ||
-          inventory.hasCard("gwaio_upgrade_airfactory") ||
+          hasCard("gwaio_upgrade_airfactory") ||
           hasUnit("/pa/units/land/bot_factory_adv/bot_factory_adv.json") ||
-          inventory.hasCard("gwaio_upgrade_botfactory") ||
+          hasCard("gwaio_upgrade_botfactory") ||
           hasUnit("/pa/units/sea/naval_factory_adv/naval_factory_adv.json") ||
-          inventory.hasCard("gwaio_upgrade_navalfactory") ||
+          hasCard("gwaio_upgrade_navalfactory") ||
           hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory"))
+          hasCard("gwaio_upgrade_vehiclefactory"))
       )
         chance = 60;
 

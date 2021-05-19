@@ -21,6 +21,7 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasCard = inventory.hasCard();
       var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
@@ -29,8 +30,8 @@ define([
           hasUnit("/pa/units/air/air_factory/air_factory.json") ||
           hasUnit("/pa/units/sea/naval_factory/naval_factory.json") ||
           hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") ||
-          inventory.hasCard("gwc_start_artillery") ||
-          inventory.hasCard("nem_start_tower_rush"))
+          hasCard("gwc_start_artillery") ||
+          hasCard("nem_start_tower_rush"))
       )
         chance = 60;
 

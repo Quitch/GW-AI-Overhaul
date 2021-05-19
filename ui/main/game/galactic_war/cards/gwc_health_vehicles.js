@@ -18,11 +18,12 @@ define({
     };
   },
   deal: function (system, context, inventory) {
+    var hasCard = inventory.hasCard();
     var chance = 0;
     if (
-      inventory.hasCard("gwc_enable_vehicles_t1") ||
-      inventory.hasCard("gwc_enable_vehicles_all") ||
-      inventory.hasCard("gwc_start_vehicle")
+      hasCard("gwc_enable_vehicles_t1") ||
+      hasCard("gwc_enable_vehicles_all") ||
+      hasCard("gwc_start_vehicle")
     )
       chance = 70;
     return { chance: chance };
