@@ -21,14 +21,11 @@ define([
       };
     },
     deal: function () {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory/naval_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/fabrication_ship/fabrication_ship.json"
-        )
+        hasUnit("/pa/units/sea/naval_factory/naval_factory.json") &&
+        hasUnit("/pa/units/sea/fabrication_ship/fabrication_ship.json")
       )
         chance = 30;
 

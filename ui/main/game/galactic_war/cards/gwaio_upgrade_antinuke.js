@@ -21,24 +21,17 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        hasUnit("/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json") &&
+        (hasUnit("/pa/units/air/air_factory_adv/air_factory_adv.json") ||
           inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
+          hasUnit("/pa/units/land/bot_factory_adv/bot_factory_adv.json") ||
           inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-          ) ||
+          hasUnit("/pa/units/sea/naval_factory_adv/naval_factory_adv.json") ||
           inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(
+          hasUnit(
             "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
           ) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory"))

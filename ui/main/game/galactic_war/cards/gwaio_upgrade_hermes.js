@@ -21,14 +21,11 @@ define([
       };
     },
     deal: function () {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_probe/orbital_probe.json"
-        )
+        hasUnit("/pa/units/orbital/orbital_launcher/orbital_launcher.json") &&
+        hasUnit("/pa/units/orbital/orbital_probe/orbital_probe.json")
       )
         chance = 60;
 

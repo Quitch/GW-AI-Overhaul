@@ -21,14 +21,11 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_lander/orbital_lander.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) ||
+        hasUnit("/pa/units/orbital/orbital_lander/orbital_lander.json") &&
+        (hasUnit("/pa/units/orbital/orbital_launcher/orbital_launcher.json") ||
           inventory.hasCard("gwaio_upgrade_orbitallauncher"))
       )
         chance = 60;

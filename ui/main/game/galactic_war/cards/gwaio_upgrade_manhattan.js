@@ -21,13 +21,14 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
+        (hasUnit(
           "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
         ) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/land/tank_nuke/tank_nuke.json")
+        hasUnit("/pa/units/land/tank_nuke/tank_nuke.json")
       )
         chance = 60;
 

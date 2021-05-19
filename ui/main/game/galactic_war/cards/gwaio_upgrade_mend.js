@@ -21,13 +21,12 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        (hasUnit("/pa/units/land/bot_factory_adv/bot_factory_adv.json") ||
           inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(
+        hasUnit(
           "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json"
         )
       )

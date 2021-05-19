@@ -35,17 +35,12 @@ define([
       };
     },
     deal: function (system, context, inventory) {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = context.chance;
       if (
-        (!gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory/bot_factory.json"
-          ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          )) ||
+        (!hasUnit("/pa/units/land/vehicle_factory/vehicle_factory.json") &&
+          !hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
+          !hasUnit("/pa/units/air/air_factory/air_factory.json")) ||
         inventory.hasCard("gwaio_start_rapid")
       )
         chance = 0;

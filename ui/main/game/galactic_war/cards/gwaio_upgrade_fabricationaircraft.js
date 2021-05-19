@@ -21,12 +21,11 @@ define([
       };
     },
     deal: function () {
+      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json") &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json"
-        )
+        hasUnit("/pa/units/air/air_factory/air_factory.json") &&
+        hasUnit("/pa/units/air/fabrication_aircraft/fabrication_aircraft.json")
       )
         chance = 60;
 
