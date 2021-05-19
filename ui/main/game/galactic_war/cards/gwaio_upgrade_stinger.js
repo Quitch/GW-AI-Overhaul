@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Stinger Upgrade Tech adds splash damage to the anti-air bot's missiles."
+      "!LOC:Stinger Upgrade Tech replaces the anti-air bot's missiles with flak from the Flak Cannon. It fires two projectiles per volley as opposed to the Flak Cannons four."
     ),
     summarize: _.constant("!LOC:Stinger Upgrade Tech"),
     icon: _.constant(
@@ -30,22 +30,16 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
-          path: "splash_damage",
+          file: "/pa/units/land/bot_aa/bot_aa_weapon.json",
+          path: "tools",
           op: "replace",
-          value: 10,
-        },
-        {
-          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
-          path: "splash_damage",
-          op: "replace",
-          value: 0.75,
-        },
-        {
-          file: "/pa/units/land/bot_aa/bot_aa_ammo.json",
-          path: "full_damage_splash_radius",
-          op: "replace",
-          value: 0.75,
+          value: {
+            spec_id:
+              "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+            aim_bone: "bone_turret",
+            projectiles_per_fire: 2,
+            muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],
+          },
         },
       ]);
     },

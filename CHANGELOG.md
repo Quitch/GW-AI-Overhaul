@@ -9,6 +9,7 @@
   - Advanced Torpedo Launcher
   - Phoenix
   - Kraken
+  - Stinger
 - Nerfed the following unit upgrades:
   - Bumblebee
 
