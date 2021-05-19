@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Backpacker Commander starting units increased
+- Backpacker Commander starts with more units
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
   - Phoenix
@@ -43,7 +43,7 @@
 
 ### Changed
 
-- Buffed the following unit upgrades
+- Buffed the following unit upgrades:
   - Inferno
 - Gold difficulty AI is slightly less effective at using its resources
 - All difficulties below Uber introduce additional commanders later than previously
