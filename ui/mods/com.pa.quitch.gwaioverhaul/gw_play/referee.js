@@ -353,31 +353,44 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
 
-            if (gwaioFunctions.quellerAIEnabled()) {
-              var aiFilePath = "/pa/ai/queller/q_uber/";
-            } else {
-              aiFilePath = "/pa/ai/bugfix/";
-            }
+            var deferred = $.Deferred();
+
+            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+
+            if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
+            else aiFilePath = "/pa/ai/bugfix/";
+
             api.file.list(aiFilePath, true).then(function (files) {
-              console.debug(files);
+              var configFiles = self.files();
+              var queue = [];
+
               _.forEach(files, function (file) {
                 if (_.endsWith(file, ".json")) {
-                  $.getJSON("coui:/" + file).then(function (json) {
-                    if (gwaioFunctions.quellerAIEnabled()) {
-                      console.debug(file);
-                      self.files()[file] = json;
-                    } else {
-                      console.debug(
-                        "/pa/ai" + file.slice(aiFilePath.length - 1)
-                      );
-                      self.files()[
-                        "/pa/ai" + file.slice(aiFilePath.length - 1)
-                      ] = json;
-                    }
-                  });
+                  var deferred2 = $.Deferred();
+
+                  queue.push(deferred2);
+
+                  $.getJSON("coui:/" + file)
+                    .then(function (json) {
+                      if (quellerEnabled) configFiles[file] = json;
+                      else
+                        configFiles[
+                          "/pa/ai" + file.slice(aiFilePath.length - 1)
+                        ] = json;
+                    })
+                    .always(function () {
+                      deferred2.resolve();
+                    });
                 }
               });
+
+              $.when.apply($, queue).then(function () {
+                self.files.valueHasMutated();
+                deferred.resolve();
+              });
             });
+
+            return deferred.promise();
           };
 
           var generateConfig = function () {
