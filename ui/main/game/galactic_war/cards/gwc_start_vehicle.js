@@ -25,6 +25,7 @@ define([
       };
     },
     buff: function (inventory) {
+      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -42,13 +43,13 @@ define([
           ]);
         } else {
           // Don't clog up a slot.
-          inventory.maxCards(inventory.maxCards() + 1);
+          maxCards(maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
         // Don't clog up a slot.
-        inventory.maxCards(inventory.maxCards() + 1);
+        maxCards(maxCards() + 1);
         GW.bank.addStartCard(CARD);
       }
     },

@@ -36,6 +36,7 @@ define([
       };
     },
     buff: function (inventory, context) {
+      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -53,7 +54,7 @@ define([
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
         ) {
-          inventory.maxCards(inventory.maxCards() - 1);
+          maxCards(maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
           context.minions.forEach(function (minion) {
             inventory.minions.push(minion);
@@ -65,7 +66,7 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         // Don't clog up a slot.
-        inventory.maxCards(inventory.maxCards() + 1);
+        maxCards(maxCards() + 1);
         GW.bank.addStartCard(CARD);
       }
     },
