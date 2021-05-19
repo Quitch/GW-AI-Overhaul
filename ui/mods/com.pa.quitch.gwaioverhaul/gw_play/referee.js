@@ -296,7 +296,7 @@ if (!gwaioRefereeChangesLoaded) {
                     if (gwaioFunctions.quellerAIEnabled()) {
                       var playerFilesClassic = _.assign(
                         {
-                          "/ai_queller/unit_maps/ai_unit_map.json.player":
+                          "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
                             playerAIUnitMap,
                         },
                         playerSpecFiles
@@ -304,7 +304,7 @@ if (!gwaioRefereeChangesLoaded) {
                       var playerFilesX1 = titans
                         ? _.assign(
                             {
-                              "/ai_queller/unit_maps/ai_unit_map_x1.json.player":
+                              "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
                                 playerX1AIUnitMap,
                             },
                             playerSpecFiles
