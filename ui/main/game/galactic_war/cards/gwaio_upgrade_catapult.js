@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Catapult Upgrade Tech adds flak to the tactical missile launcher."
+      "!LOC:Catapult Upgrade Tech adds flak rom the Storm flak tank to the tactical missile launcher."
     ),
     summarize: _.constant("!LOC:Catapult Upgrade Tech"),
     icon: _.constant(
