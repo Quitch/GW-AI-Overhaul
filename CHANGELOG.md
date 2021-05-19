@@ -7,6 +7,8 @@
 - Backpacker Commander starting units increased
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
+- Nerfed the following unit upgrades:
+  - Bumblebee
 
 ## v5.0.0 - 2021-05-19
 
