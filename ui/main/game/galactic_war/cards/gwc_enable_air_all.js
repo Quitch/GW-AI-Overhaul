@@ -19,14 +19,14 @@ define(["shared/gw_common"], function (GW) {
       };
     },
     deal: function (system, context, inventory) {
-      var hasCard = inventory.hasCard();
       var chance = 0;
-      if (!hasCard("gwaio_start_hoarder")) {
+      if (!inventory.hasCard("gwaio_start_hoarder")) {
         var dist = system.distance();
         var chanceMod = 1;
         if (
           !(
-            hasCard("gwc_enable_bots_all") || hasCard("gwc_enable_vehicles_all")
+            inventory.hasCard("gwc_enable_bots_all") ||
+            inventory.hasCard("gwc_enable_vehicles_all")
           )
         ) {
           chanceMod = 3;
