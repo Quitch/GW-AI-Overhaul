@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Horsefly Upgrade Tech adds bombs to the strafer which it will drop as it passes over its target."
+      "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
     ),
     summarize: _.constant("!LOC:Horsefly Upgrade Tech"),
     icon: _.constant(
