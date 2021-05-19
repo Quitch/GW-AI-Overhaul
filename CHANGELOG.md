@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Backpacker Commander starting units increased
+
 ## v5.0.0 - 2021-05-19
 
 ### Added
