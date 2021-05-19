@@ -5,7 +5,9 @@ if (!gwaioCardsLoaded) {
 
   function gwaioCards() {
     try {
-      if (!model.game().isTutorial()) {
+      var game = model.game();
+
+      if (!game.isTutorial()) {
         globals.CardViewModel = function (params) {
           var self = this;
 
@@ -116,9 +118,9 @@ if (!gwaioCardsLoaded) {
           ) {
             // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
             if (
-              model.game().inventory().cards().length === 1 &&
-              model.game().inventory().cards()[0].id === "gwc_start_subcdr" &&
-              !model.game().inventory().cards()[0].minions
+              game.inventory().cards().length === 1 &&
+              game.inventory().cards()[0].id === "gwc_start_subcdr" &&
+              !game.inventory().cards()[0].minions
             ) {
               var playerFaction = model
                 .game()
@@ -129,15 +131,15 @@ if (!gwaioCardsLoaded) {
                 if (gwaioFunctions.quellerAIEnabled()) {
                   subCommander.personality.ai_path = "/pa/ai/queller/q_uber";
                 }
-                model.game().inventory().cards().push({
+                game.inventory().cards().push({
                   id: "gwc_minion",
                   minion: subCommander,
                   unique: Math.random(),
                 });
               });
-              model.game().inventory().applyCards();
+              game.inventory().applyCards();
               model.driveAccessInProgress(true);
-              GW.manifest.saveGame(model.game()).then(function () {
+              GW.manifest.saveGame(game).then(function () {
                 model.driveAccessInProgress(false);
               });
             }
@@ -428,25 +430,22 @@ if (!gwaioCardsLoaded) {
 
             // gw_play self.explore - we need to call our chooseCards function
             model.explore = function () {
-              if (!model.game() || !model.game().explore()) return;
+              if (!game || !game.explore()) return;
 
               model.scanning(true);
 
               api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-              var star = model.game().galaxy().stars()[
-                model.game().currentStar()
-              ];
+              var star = game.galaxy().stars()[game.currentStar()];
 
-              if (model.game().inventory().handIsFull())
-                var numCardsToOffer = 4;
+              if (game.inventory().handIsFull()) var numCardsToOffer = 4;
               else numCardsToOffer = 3;
 
               var dealStarCards = chooseCards({
-                inventory: model.game().inventory(),
+                inventory: game.inventory(),
                 count: numCardsToOffer,
                 star: star,
-                galaxy: model.game().galaxy(),
+                galaxy: game.galaxy(),
               }).then(function (result) {
                 var ok = true;
 
@@ -462,7 +461,7 @@ if (!gwaioCardsLoaded) {
               });
               $.when(dealStarCards).then(function () {
                 model.driveAccessInProgress(true);
-                GW.manifest.saveGame(model.game()).then(function () {
+                GW.manifest.saveGame(game).then(function () {
                   model.driveAccessInProgress(false);
                 });
 
