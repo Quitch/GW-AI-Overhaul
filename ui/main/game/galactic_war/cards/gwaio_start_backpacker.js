@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains 16 data banks. Alas, travelling light means you start with nothing."
+      "!LOC:Contains 16 data banks. Alas, travelling light means you start with only the most basic of bots."
     ),
     hint: function () {
       return {
@@ -31,20 +31,25 @@ define([
       };
     },
     buff: function (inventory) {
+      var maxCards = inventory.maxCards();
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          inventory.maxCards(inventory.maxCards() + 12);
+          inventory.addUnits([
+            "/pa/units/land/bot_factory/bot_factory.json",
+            "/pa/units/land/assault_bot/assault_bot.json",
+          ]);
+          maxCards(maxCards() + 12);
         } else {
-          inventory.maxCards(inventory.maxCards() + 1);
+          maxCards(maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
       } else {
-        inventory.maxCards(inventory.maxCards() + 1);
+        maxCards(maxCards() + 1);
         gwaioBank.addStartCard(CARD);
       }
     },
