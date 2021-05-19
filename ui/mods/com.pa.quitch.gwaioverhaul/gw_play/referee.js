@@ -367,8 +367,12 @@ if (!gwaioRefereeChangesLoaded) {
                       console.debug(file);
                       self.files()[file] = json;
                     } else {
-                      console.debug("/pa/ai" + file.slice(13));
-                      self.files()["/pa/ai" + file.slice(13)] = json;
+                      console.debug(
+                        "/pa/ai" + file.slice(aiFilePath.length - 1)
+                      );
+                      self.files()[
+                        "/pa/ai" + file.slice(aiFilePath.length - 1)
+                      ] = json;
                     }
                   });
                 }
