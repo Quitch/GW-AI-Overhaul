@@ -21,17 +21,20 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/land/land_mine/land_mine.json") &&
-        (hasUnit("/pa/units/sea/fabrication_barge/fabrication_barge.json") ||
-          hasUnit(
+        gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json") &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/sea/fabrication_barge/fabrication_barge.json"
+        ) ||
+          gwaioFunctions.hasUnit(
             "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json"
           ) ||
-          ((hasUnit("/pa/units/land/bot_factory_adv/bot_factory_adv.json") ||
+          ((gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
+          ) ||
             inventory.hasCard("gwaio_upgrade_botfactory")) &&
-            hasUnit(
+            gwaioFunctions.hasUnit(
               "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json"
             )))
       )

@@ -21,11 +21,12 @@ define([
       };
     },
     deal: function () {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/orbital/orbital_factory/orbital_factory.json") &&
-        hasUnit(
+        gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_factory/orbital_factory.json"
+        ) &&
+        gwaioFunctions.hasUnit(
           "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json"
         )
       )

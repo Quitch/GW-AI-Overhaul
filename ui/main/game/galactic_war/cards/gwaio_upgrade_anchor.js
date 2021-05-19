@@ -21,14 +21,17 @@ define([
       };
     },
     deal: function () {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/orbital/orbital_launcher/orbital_launcher.json") &&
-        hasUnit(
+        gwaioFunctions.hasUnit(
+          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
+        ) &&
+        gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json"
         ) &&
-        hasUnit("/pa/units/orbital/defense_satellite/defense_satellite.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/orbital/defense_satellite/defense_satellite.json"
+        )
       )
         chance = 60;
 

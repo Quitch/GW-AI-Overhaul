@@ -21,11 +21,14 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/air/support_platform/support_platform.json") &&
-        (hasUnit("/pa/units/air/air_factory_adv/air_factory_adv.json") ||
+        gwaioFunctions.hasUnit(
+          "/pa/units/air/support_platform/support_platform.json"
+        ) &&
+        (gwaioFunctions.hasUnit(
+          "/pa/units/air/air_factory_adv/air_factory_adv.json"
+        ) ||
           inventory.hasCard("gwaio_upgrade_airfactory"))
       )
         chance = 60;

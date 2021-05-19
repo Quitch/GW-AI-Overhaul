@@ -21,11 +21,10 @@ define([
       };
     },
     deal: function () {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/air/bomber/bomber.json") &&
-        hasUnit("/pa/units/land/land_mine/land_mine.json")
+        gwaioFunctions.hasUnit("/pa/units/air/bomber/bomber.json") &&
+        gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json")
       )
         chance = 60;
 

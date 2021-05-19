@@ -21,11 +21,10 @@ define([
       };
     },
     deal: function () {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/land/bot_bomb/bot_bomb.json") &&
-        hasUnit(
+        gwaioFunctions.hasUnit("/pa/units/land/bot_bomb/bot_bomb.json") &&
+        gwaioFunctions.hasUnit(
           "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
         )
       )

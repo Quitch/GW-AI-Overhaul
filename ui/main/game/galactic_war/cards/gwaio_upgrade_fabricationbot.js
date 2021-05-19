@@ -21,11 +21,12 @@ define([
       };
     },
     deal: function () {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
-        hasUnit("/pa/units/land/fabrication_bot/fabrication_bot.json")
+        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/fabrication_bot/fabrication_bot.json"
+        )
       )
         chance = 60;
 

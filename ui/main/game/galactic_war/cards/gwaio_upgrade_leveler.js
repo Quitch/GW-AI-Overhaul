@@ -21,15 +21,16 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      var hasUnit = gwaioFunctions.hasUnit();
       var chance = 0;
       if (
-        (hasUnit(
+        (gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
         ) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        hasUnit("/pa/units/land/tank_laser_adv/tank_laser_adv.json") &&
-        hasUnit("/pa/units/land/unit_cannon/unit_cannon.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/land/tank_laser_adv/tank_laser_adv.json"
+        ) &&
+        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json")
       )
         chance = 60;
 
