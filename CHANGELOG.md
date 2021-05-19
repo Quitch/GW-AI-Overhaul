@@ -7,6 +7,7 @@
 - Backpacker Commander starting units increased
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
+  - Phoenix
 - Nerfed the following unit upgrades:
   - Bumblebee
 
