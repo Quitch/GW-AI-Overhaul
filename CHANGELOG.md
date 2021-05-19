@@ -10,6 +10,7 @@
   - Phoenix
   - Kraken
   - Stinger
+  - Solar Array
 - Nerfed the following unit upgrades:
   - Bumblebee
 
