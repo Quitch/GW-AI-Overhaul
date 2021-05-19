@@ -58,9 +58,10 @@ if (!gwaioRefereeChangesLoaded) {
               var filesToProcess = [playerFileGen];
 
               if (gwaioFunctions.quellerAIEnabled()) {
-                var aiUnitMapPath = "/ai_queller/unit_maps/ai_unit_map.json";
+                var aiUnitMapPath =
+                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
-                  "/ai_queller/unit_maps/ai_unit_map_x1.json";
+                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json";
               } else {
                 aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
@@ -353,18 +354,22 @@ if (!gwaioRefereeChangesLoaded) {
             var self = this;
 
             if (gwaioFunctions.quellerAIEnabled()) {
-              var aiPath = "/ai_queller/";
-              var prefix = "";
+              var aiFilePath = "/pa/ai/queller/q_uber/";
             } else {
-              aiPath = "/ai/";
-              // to avoid remounting game files when parsing the file list
-              prefix = "/pa";
+              aiFilePath = "/pa/ai/bugfix/";
             }
-            api.file.list(aiPath, true).then(function (files) {
+            api.file.list(aiFilePath, true).then(function (files) {
+              console.debug(files);
               _.forEach(files, function (file) {
                 if (_.endsWith(file, ".json")) {
                   $.getJSON("coui:/" + file).then(function (json) {
-                    self.files()[prefix + file] = json;
+                    if (gwaioFunctions.quellerAIEnabled()) {
+                      console.debug(file);
+                      self.files()[file] = json;
+                    } else {
+                      console.debug("/pa/ai" + file.slice(13));
+                      self.files()["/pa/ai" + file.slice(13)] = json;
+                    }
                   });
                 }
               });
