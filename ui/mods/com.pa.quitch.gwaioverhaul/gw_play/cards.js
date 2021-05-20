@@ -148,6 +148,7 @@ if (!gwaioCardsLoaded) {
             if (!model.gwaioDeck) model.gwaioDeck = [];
             model.gwaioDeck.push(
               "gwaio_enable_bot_aa",
+              "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedbotfactory",
               "gwaio_upgrade_advancedenergyplant",
@@ -230,6 +231,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_pelter",
               "gwaio_upgrade_phoenix",
               "gwaio_upgrade_piranha",
+              "gwaio_upgrade_planetaryradar",
               "gwaio_upgrade_radar",
               "gwaio_upgrade_ragnarok",
               "gwaio_upgrade_sheller",

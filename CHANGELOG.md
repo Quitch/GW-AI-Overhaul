@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- New tech cards:
+  - Planetary Radar
+  - Planetary Radar Upgrade
+
 ### Changed
 
 - Backpacker Commander starts with more units
