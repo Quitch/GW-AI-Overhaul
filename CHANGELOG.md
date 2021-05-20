@@ -7,11 +7,11 @@
 - Backpacker Commander starts with more units
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
-  - Phoenix
   - Kraken
-  - Stinger
-  - Solar Array
   - Orca
+  - Phoenix
+  - Solar Array
+  - Stinger
 - Nerfed the following unit upgrades:
   - Bumblebee
 
