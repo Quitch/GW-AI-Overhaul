@@ -12,6 +12,7 @@
   - Phoenix
   - Solar Array
   - Stinger
+  - Teleporter
 - Nerfed the following unit upgrades:
   - Bumblebee
 
