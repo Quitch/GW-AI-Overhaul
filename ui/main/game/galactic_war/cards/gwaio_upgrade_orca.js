@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit, preventing torpedoes from targeting it and allowing the navigation of shallow waters."
+      "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit, preventing torpedoes from targeting it and allowing the navigation of shallow waters. Weapon range is increased by 50%."
     ),
     summarize: _.constant("!LOC:Orca Upgrade Tech"),
     icon: _.constant(
@@ -45,6 +45,18 @@ define([
           path: "navigation.type",
           op: "replace",
           value: "water-hover",
+        },
+        {
+          spec_id: "/pa/units/sea/destroyer/destroyer_tool_weapon.json",
+          path: "max_range",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          spec_id: "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
+          path: "max_range",
+          op: "multiply",
+          value: 1.5,
         },
       ]);
     },

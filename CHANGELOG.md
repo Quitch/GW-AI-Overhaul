@@ -11,6 +11,7 @@
   - Kraken
   - Stinger
   - Solar Array
+  - Orca
 - Nerfed the following unit upgrades:
   - Bumblebee
 
