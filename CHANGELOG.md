@@ -7,7 +7,9 @@
 - New tech cards:
   - Planetary Radar
   - Planetary Radar Upgrade
-- AI support for Planetary Radar
+- Titans AI support for:
+  - Planetary Radar
+  - Stinger
 
 ### Changed
 
