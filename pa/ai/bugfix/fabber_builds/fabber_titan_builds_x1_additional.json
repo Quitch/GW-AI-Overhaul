@@ -8,7 +8,7 @@
       "max_num_assisters": 15,
       "shared_instance_count": "Titan",
       "priority": 480,
-      "builders": ["AdvancedBotFabber", "SupportCommander"],
+      "builders": ["AdvancedBotFabber", "UberSupportCommander"],
       "build_conditions": [
         [
           {
