@@ -37,7 +37,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
+          file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           path: "buildable_types",
           op: "replace",
           value: "FabAdvBuild | FabBuild | FabOrbBuild",
