@@ -109,7 +109,7 @@ if (!gwaioCardsLoaded) {
         if (game.turnState() === "begin") {
           model.gwaioRerollsUsed(0);
         }
-        // avoid incorrect values when loading an exploration save game
+        // avoid incorrect rerolls when loading an exploration save game
         else if (game.turnState() === "explore") {
           var star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed = ko.observable(
