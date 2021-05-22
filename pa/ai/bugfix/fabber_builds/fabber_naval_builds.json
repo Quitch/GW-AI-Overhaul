@@ -9,7 +9,7 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
+        "Commander",
         "BasicAirFabber",
         "AdvancedAirFabber",
         "BasicNavalFabber",
@@ -128,7 +128,7 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
+        "Commander",
         "BasicAirFabber",
         "AdvancedAirFabber",
         "BasicNavalFabber",

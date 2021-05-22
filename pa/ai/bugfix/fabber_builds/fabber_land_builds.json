@@ -9,10 +9,10 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber",
-        "UberSupportCommander"
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
       ],
       "build_conditions": [
         [
@@ -127,10 +127,10 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber",
-        "UberSupportCommander"
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
       ],
       "build_conditions": [
         [
@@ -245,10 +245,10 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber",
-        "UberSupportCommander"
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
       ],
       "build_conditions": [
         [
@@ -355,10 +355,10 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber",
-        "UberSupportCommander"
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
       ],
       "build_conditions": [
         [
@@ -464,11 +464,7 @@
       "priority": 477,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
-      "builders": [
-        "BasicBotFabber",
-        "AdvancedBotFabber",
-        "UberSupportCommander"
-      ],
+      "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -642,11 +638,7 @@
       "priority": 525,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
-      "builders": [
-        "BasicBotFabber",
-        "AdvancedBotFabber",
-        "UberSupportCommander"
-      ],
+      "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
           {

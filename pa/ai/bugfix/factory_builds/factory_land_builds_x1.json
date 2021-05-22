@@ -147,7 +147,7 @@
     },
     {
       "name": "Support Commander",
-      "to_build": "UberSupportCommander",
+      "to_build": "SupportCommander",
       "instance_count": 1,
       "max_num_assisters": 15,
       "priority": 199,
@@ -163,7 +163,7 @@
           },
           {
             "test_type": "CanAffordPotentialDrain",
-            "string0": "UberSupportCommander"
+            "string0": "SupportCommander"
           },
           {
             "test_type": "UnitCountOnPlanet",
