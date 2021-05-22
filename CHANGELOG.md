@@ -10,7 +10,7 @@
 - Titans AI support for:
   - Planetary Radar
   - Stinger
-- Ability to reroll the data caches offered to you
+- Ability to reroll the tech offered to you
 
 ### Changed
 
