@@ -127,9 +127,14 @@ if (!gwaioCardsLoaded) {
           }
         });
         model.rerollTech = function () {
+          if (game.inventory().handIsFull()) {
+            var cardsOffered = numCardsToOffer + 1;
+          } else {
+            cardsOffered = numCardsToOffer;
+          }
           var star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (model.gwaioRerollsUsed() >= numCardsToOffer - 1) {
+          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
             model.gwaioOfferRerolls(false);
           }
           star.cardList([]);
