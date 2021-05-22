@@ -99,6 +99,49 @@ if (!gwaioCardsLoaded) {
         );
         locTree($("#system-card"));
 
+        var numCardsToOffer = 3;
+
+        model.gwaioOfferRerolls = ko.observable(true);
+        model.gwaioRerollsUsed = ko
+          .observable(0)
+          .extend({ session: "gwaio_rerolls_used" });
+        if (game.turnState() === "begin") {
+          // clean start for new games in a single session
+          model.gwaioRerollsUsed(0);
+        } else if (game.turnState() === "explore") {
+          var star = game.galaxy().stars()[game.currentStar()];
+          // avoid incorrect values when loading an exploration save game
+          model.gwaioRerollsUsed = ko.observable(
+            numCardsToOffer - star.cardList().length
+          );
+          if (model.gwaioRerollsUsed() >= numCardsToOffer - 1) {
+            model.gwaioOfferRerolls(false);
+          }
+        }
+        ko.computed(function () {
+          game.turnState();
+          if (game.turnState() === "end") {
+            model.gwaioRerollsUsed(0);
+            model.gwaioOfferRerolls(true);
+          }
+        });
+        model.rerollTech = function () {
+          var star = game.galaxy().stars()[game.currentStar()];
+          model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
+          if (model.gwaioRerollsUsed() >= numCardsToOffer - 1) {
+            model.gwaioOfferRerolls(false);
+          }
+          star.cardList([]);
+          game.turnState("begin");
+          model.explore();
+        };
+        $(".div_options_bar").replaceWith(
+          loadHtml(
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
+          )
+        );
+        locTree($(".div_options_bar"));
+
         requireGW(
           [
             "shared/gw_common",
@@ -438,14 +481,15 @@ if (!gwaioCardsLoaded) {
 
               api.audio.playSound("/VO/Computer/gw/board_exploring");
 
+              if (game.inventory().handIsFull()) {
+                var cardsOffered = numCardsToOffer + 1;
+              } else {
+                cardsOffered = numCardsToOffer;
+              }
               var star = game.galaxy().stars()[game.currentStar()];
-
-              if (game.inventory().handIsFull()) var numCardsToOffer = 4;
-              else numCardsToOffer = 3;
-
               var dealStarCards = chooseCards({
                 inventory: game.inventory(),
-                count: numCardsToOffer,
+                count: cardsOffered - model.gwaioRerollsUsed(),
                 star: star,
                 galaxy: game.galaxy(),
               }).then(function (result) {
