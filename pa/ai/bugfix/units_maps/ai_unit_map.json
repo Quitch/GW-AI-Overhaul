@@ -1,7 +1,7 @@
 {
   "unit_map": {
     "Commander": {
-      "unit_types": "Commander - Custom1 - Custom2 - Custom3 - Custom4"
+      "unit_types": "Commander"
     },
     "AnyBasicFactory": {
       "unit_types": "Factory & Basic"
@@ -10,10 +10,10 @@
       "unit_types": "Factory & Advanced"
     },
     "AnyBasicFabber": {
-      "unit_types": "((Fabber & (Basic | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
+      "unit_types": "(Fabber & (Basic | Debug)) - Orbital"
     },
     "AnyAdvancedFabber": {
-      "unit_types": "((Fabber & (Advanced | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
+      "unit_types": "(Fabber & (Advanced | Debug)) - Orbital"
     },
     "BasicBotFabber": {
       "spec_id": "/pa/units/land/fabrication_bot/fabrication_bot.json"
