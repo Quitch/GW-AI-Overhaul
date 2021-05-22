@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all structures."
+      "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all basic structures."
     ),
     summarize: _.constant("!LOC:Orbital Fabrication Bot Upgrade Tech"),
     icon: _.constant(
@@ -40,7 +40,8 @@ define([
           file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
           path: "buildable_types",
           op: "replace",
-          value: "FabAdvBuild | FabBuild | FabOrbBuild",
+          value:
+            "Land & Structure & Basic | Factory & Basic | FabBuild | FabOrbBuild",
         },
       ]);
     },
