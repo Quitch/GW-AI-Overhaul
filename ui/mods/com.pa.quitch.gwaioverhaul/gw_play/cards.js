@@ -104,7 +104,7 @@ if (!gwaioCardsLoaded) {
         model.gwaioOfferRerolls = ko.observable(true);
         model.gwaioRerollsUsed = ko
           .observable(0)
-          .extend({ session: "gwaio_rerolls_used" });
+          .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
         if (game.turnState() === "begin") {
           // clean start for new games in a single session
           model.gwaioRerollsUsed(0);
