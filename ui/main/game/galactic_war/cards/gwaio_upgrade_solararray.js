@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles by the Solar Array."
+      "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
     ),
     summarize: _.constant("!LOC:Solar Array Upgrade Tech"),
     icon: _.constant(
@@ -35,13 +35,23 @@ define([
           file: "/pa/units/orbital/solar_array/solar_array.json",
           path: "tools",
           op: "push",
-          value: {
-            spec_id:
-              "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
-            aim_bone: "bone_root",
-            record_index: 0,
-            muzzle_bone: "bone_root",
-          },
+          value: [
+            {
+              spec_id:
+                "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+              aim_bone: "bone_root",
+              record_index: 0,
+              muzzle_bone: "bone_root",
+            },
+            {
+              spec_id:
+                "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
+              aim_bone: "bone_turret",
+              record_index: 1,
+              fire_event: "fired1",
+              muzzle_bone: "bone_root",
+            },
+          ],
         },
       ]);
     },

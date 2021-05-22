@@ -45,39 +45,40 @@ define({
       "/pa/units/land/attack_vehicle/attack_vehicle.json",
     ];
     var mods = [];
-    var modUnit = function (unit) {
-      mods.push({
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.5,
-      });
-      mods.push({
-        file: unit,
-        path: "max_health",
-        op: "multiply",
-        value: 1.5,
-      });
-    };
-    _.forEach(units, modUnit);
+    units.forEach(function (unit) {
+      mods.push(
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
+        }
+      );
+    });
     var ammos = [
       "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_ammo.json",
       "/pa/units/land/land_scout/land_scout_ammo.json",

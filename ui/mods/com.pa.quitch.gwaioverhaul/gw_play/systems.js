@@ -5,7 +5,9 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
-      if (!model.game().isTutorial()) {
+      var game = model.game();
+
+      if (!game.isTutorial()) {
         requireGW(["shared/gw_factions"], function (GWFactions) {
           _.forEach(model.galaxy.systems(), function (system) {
             ko.computed(function () {
@@ -287,7 +289,7 @@ if (!gwaioSystemChangesLoaded) {
           galaxy: model.galaxy,
           hover: false,
         });
-        model.selection.star(model.game().currentStar());
+        model.selection.star(game.currentStar());
 
         model.hoverSystem = new SelectionViewModel({
           galaxy: model.galaxy,
@@ -297,7 +299,6 @@ if (!gwaioSystemChangesLoaded) {
         model.canMove = ko.computed(function () {
           if (model.player.moving()) return false;
 
-          var game = model.game();
           var galaxy = game.galaxy();
           var from = game.currentStar();
           var to = model.selection.star();
@@ -319,7 +320,7 @@ if (!gwaioSystemChangesLoaded) {
           return (
             model.canFight() &&
             !model.allowLoad() &&
-            model.selection.star() === model.game().currentStar()
+            model.selection.star() === game.currentStar()
           );
         });
       }

@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v5.1.0 - 2021-05-22
+
+### Added
+
+- New tech cards:
+  - Planetary Radar
+  - Planetary Radar Upgrade
+- Titans AI support for:
+  - Planetary Radar
+  - Stinger
+- Ability to reroll the tech offered to you
+
+### Changed
+
+- Backpacker Commander starts with more units
+- Buffed the following unit upgrades:
+  - Advanced Torpedo Launcher
+  - Kraken
+  - Orbital Fabrication Bot
+  - Orca
+  - Phoenix
+  - Solar Array
+  - Stinger
+  - Teleporter
+- Nerfed the following unit upgrades:
+  - Bumblebee
+- Disabled building of the Stitch by the AI due to failure to treat it as a combat unit in Galactic War
+
 ## v5.0.0 - 2021-05-19
 
 ### Added
@@ -30,7 +58,7 @@
 
 ### Changed
 
-- Buffed the following unit upgrades
+- Buffed the following unit upgrades:
   - Inferno
 - Gold difficulty AI is slightly less effective at using its resources
 - All difficulties below Uber introduce additional commanders later than previously

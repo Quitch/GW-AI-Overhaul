@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Phoenix Upgrade Tech increases the interplanetary movement speed of the advanced interplanetary fighter by 200%."
+      "!LOC:Phoenix Upgrade Tech changes the advanced interplanetary fighter's weapon from anti-air to anti-ground."
     ),
     summarize: _.constant("!LOC:Phoenix Upgrade Tech"),
     icon: _.constant(
@@ -36,16 +36,10 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/fighter_adv/fighter_adv.json",
-          path: "system_velocity_multiplier",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: "/pa/units/air/fighter_adv/fighter_adv.json",
-          path: "gravwell_velocity_multiplier",
-          op: "multiply",
-          value: 3,
+          file: "/pa/units/air/fighter_adv/fighter_adv_tool_weapon.json",
+          path: "target_layers",
+          op: "replace",
+          value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
       ]);
     },

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop mines instead of bombs."
+      "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
     ),
     summarize: _.constant("!LOC:Bumblebee Upgrade Tech"),
     icon: _.constant(
@@ -61,6 +61,12 @@ define([
           path: "spawn_unit_on_death",
           op: "replace",
           value: "/pa/units/land/land_mine/land_mine.json",
+        },
+        {
+          file: "/pa/units/air/bomber/bomber_tool_weapon.json",
+          path: "ammo_per_shot",
+          op: "replace",
+          value: 425,
         },
       ]);
     },

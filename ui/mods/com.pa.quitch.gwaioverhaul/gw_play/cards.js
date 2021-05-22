@@ -5,7 +5,9 @@ if (!gwaioCardsLoaded) {
 
   function gwaioCards() {
     try {
-      if (!model.game().isTutorial()) {
+      var game = model.game();
+
+      if (!game.isTutorial()) {
         globals.CardViewModel = function (params) {
           var self = this;
 
@@ -97,6 +99,55 @@ if (!gwaioCardsLoaded) {
         );
         locTree($("#system-card"));
 
+        var numCardsToOffer = 3;
+
+        model.gwaioOfferRerolls = ko.observable(true);
+        model.gwaioRerollsUsed = ko
+          .observable(0)
+          .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
+        // clean start for new games in a single session
+        if (game.turnState() === "begin") {
+          model.gwaioRerollsUsed(0);
+        }
+        // avoid incorrect rerolls when loading an exploration save game
+        else if (game.turnState() === "explore") {
+          var star = game.galaxy().stars()[game.currentStar()];
+          model.gwaioRerollsUsed = ko.observable(
+            numCardsToOffer - star.cardList().length
+          );
+          if (model.gwaioRerollsUsed() >= numCardsToOffer - 1) {
+            model.gwaioOfferRerolls(false);
+          }
+        }
+        ko.computed(function () {
+          game.turnState();
+          if (game.turnState() === "end") {
+            model.gwaioRerollsUsed(0);
+            model.gwaioOfferRerolls(true);
+          }
+        });
+        model.rerollTech = function () {
+          if (game.inventory().handIsFull()) {
+            var cardsOffered = numCardsToOffer + 1;
+          } else {
+            cardsOffered = numCardsToOffer;
+          }
+          var star = game.galaxy().stars()[game.currentStar()];
+          model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
+          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
+            model.gwaioOfferRerolls(false);
+          }
+          star.cardList([]);
+          game.turnState("begin");
+          model.explore();
+        };
+        $(".div_options_bar").replaceWith(
+          loadHtml(
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
+          )
+        );
+        locTree($(".div_options_bar"));
+
         requireGW(
           [
             "shared/gw_common",
@@ -116,9 +167,9 @@ if (!gwaioCardsLoaded) {
           ) {
             // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
             if (
-              model.game().inventory().cards().length === 1 &&
-              model.game().inventory().cards()[0].id === "gwc_start_subcdr" &&
-              !model.game().inventory().cards()[0].minions
+              game.inventory().cards().length === 1 &&
+              game.inventory().cards()[0].id === "gwc_start_subcdr" &&
+              !game.inventory().cards()[0].minions
             ) {
               var playerFaction = model
                 .game()
@@ -129,15 +180,15 @@ if (!gwaioCardsLoaded) {
                 if (gwaioFunctions.quellerAIEnabled()) {
                   subCommander.personality.ai_path = "/pa/ai/queller/q_uber";
                 }
-                model.game().inventory().cards().push({
+                game.inventory().cards().push({
                   id: "gwc_minion",
                   minion: subCommander,
                   unique: Math.random(),
                 });
               });
-              model.game().inventory().applyCards();
+              game.inventory().applyCards();
               model.driveAccessInProgress(true);
-              GW.manifest.saveGame(model.game()).then(function () {
+              GW.manifest.saveGame(game).then(function () {
                 model.driveAccessInProgress(false);
               });
             }
@@ -146,6 +197,7 @@ if (!gwaioCardsLoaded) {
             if (!model.gwaioDeck) model.gwaioDeck = [];
             model.gwaioDeck.push(
               "gwaio_enable_bot_aa",
+              "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedbotfactory",
               "gwaio_upgrade_advancedenergyplant",
@@ -228,6 +280,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_pelter",
               "gwaio_upgrade_phoenix",
               "gwaio_upgrade_piranha",
+              "gwaio_upgrade_planetaryradar",
               "gwaio_upgrade_radar",
               "gwaio_upgrade_ragnarok",
               "gwaio_upgrade_sheller",
@@ -428,25 +481,23 @@ if (!gwaioCardsLoaded) {
 
             // gw_play self.explore - we need to call our chooseCards function
             model.explore = function () {
-              if (!model.game() || !model.game().explore()) return;
+              if (!game || !game.explore()) return;
 
               model.scanning(true);
 
               api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-              var star = model.game().galaxy().stars()[
-                model.game().currentStar()
-              ];
-
-              if (model.game().inventory().handIsFull())
-                var numCardsToOffer = 4;
-              else numCardsToOffer = 3;
-
+              if (game.inventory().handIsFull()) {
+                var cardsOffered = numCardsToOffer + 1;
+              } else {
+                cardsOffered = numCardsToOffer;
+              }
+              var star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
-                inventory: model.game().inventory(),
-                count: numCardsToOffer,
+                inventory: game.inventory(),
+                count: cardsOffered - model.gwaioRerollsUsed(),
                 star: star,
-                galaxy: model.game().galaxy(),
+                galaxy: game.galaxy(),
               }).then(function (result) {
                 var ok = true;
 
@@ -462,7 +513,7 @@ if (!gwaioCardsLoaded) {
               });
               $.when(dealStarCards).then(function () {
                 model.driveAccessInProgress(true);
-                GW.manifest.saveGame(model.game()).then(function () {
+                GW.manifest.saveGame(game).then(function () {
                   model.driveAccessInProgress(false);
                 });
 

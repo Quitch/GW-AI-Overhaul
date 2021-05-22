@@ -7,6 +7,7 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
   function gwaioWarOverLoadoutStats() {
     try {
       var game = model.game();
+
       if (game.gameState() === "won") {
         var difficultyLevelAsInt = _.findIndex(
           [
@@ -27,6 +28,7 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
             return difficulty === warDifficulty;
           }
         );
+
         var loadout = game.inventory().cards()[0].id;
         var highestDifficultyDefeatedWithLoadout = ko
           .observable()

@@ -1,0 +1,13 @@
+<div class="div_options_bar" data-bind="visible: !$root.game().isTutorial()">
+  <input
+    type="button"
+    value="Reroll Tech"
+    data-bind="visible: $root.gwaioOfferRerolls(),click: $root.rerollTech, click_sound: 'default', rollover_sound: 'default', tooltip: '!LOC:Reroll the data caches but get offered one less.'"
+    data-placement="right"
+  />
+  <input
+    type="button"
+    value="Dismiss Tech"
+    data-bind="visible: !$root.gwaioOfferRerolls(),click: $root.dismissTech, click_sound: 'default', rollover_sound: 'default'"
+  />
+</div>

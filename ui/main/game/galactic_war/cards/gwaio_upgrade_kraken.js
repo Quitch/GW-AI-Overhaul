@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's weapons by 50%."
+      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's weapons by 100%."
     ),
     summarize: _.constant("!LOC:Kraken Upgrade Tech"),
     icon: _.constant(
@@ -39,13 +39,13 @@ define([
           file: "/pa/units/sea/nuclear_sub/nuclear_sub_tool_weapon.json",
           path: "max_range",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
         {
           file: "/pa/units/sea/nuclear_sub/nuclear_sub_tool_weapon_missile.json",
           path: "max_range",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
       ]);
     },
