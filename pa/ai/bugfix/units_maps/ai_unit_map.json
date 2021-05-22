@@ -1,28 +1,19 @@
 {
   "unit_map": {
-    "AnyAdvancedFabber": {
-      "unit_types": "((Fabber & (Advanced | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
+    "Commander": {
+      "unit_types": "Commander - Custom1 - Custom2 - Custom3 - Custom4"
     },
-    "AnyAirFactory": {
-      "unit_types": "(Factory & Air) - Custom1 - Custom2 - Custom3 - Custom4"
+    "AnyBasicFactory": {
+      "unit_types": "Factory & Basic"
+    },
+    "AnyAdvancedFactory": {
+      "unit_types": "Factory & Advanced"
     },
     "AnyBasicFabber": {
       "unit_types": "((Fabber & (Basic | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
     },
-    "AnyBotFactory": {
-      "unit_types": "(Factory & Bot) - Custom1 - Custom2 - Custom3 - Custom4"
-    },
-    "AnyNavalFactory": {
-      "unit_types": "(Factory & Naval) - Custom1 - Custom2 - Custom3 - Custom4"
-    },
-    "AnyOrbitalFactory": {
-      "unit_types": "(Factory & Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
-    },
-    "AnyVehicleFactory": {
-      "unit_types": "(Factory & Tank) - Custom1 - Custom2 - Custom3 - Custom4"
-    },
-    "UberCommander": {
-      "unit_types": "Commander - Custom1 - Custom2 - Custom3 - Custom4"
+    "AnyAdvancedFabber": {
+      "unit_types": "((Fabber & (Advanced | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
     },
     "BasicBotFabber": {
       "spec_id": "/pa/units/land/fabrication_bot/fabrication_bot.json"
