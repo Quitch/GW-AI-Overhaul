@@ -25,6 +25,7 @@
   - Teleporter
 - Nerfed the following unit upgrades:
   - Bumblebee
+- Disabled building of the Stitch by the AI due to failure to treat it as a combat unit in Galactic War
 
 ## v5.0.0 - 2021-05-19
 

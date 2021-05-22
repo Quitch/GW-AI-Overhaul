@@ -280,7 +280,7 @@
       "name": "Basic Combat Fabber Bot",
       "to_build": "BasicBotCombatFabber",
       "instance_count": 1,
-      "priority": 97,
+      "priority": 0,
       "builders": ["BasicBotFactory"],
       "build_conditions": [
         [
