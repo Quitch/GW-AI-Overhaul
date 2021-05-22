@@ -39,7 +39,7 @@ define([
         {
           file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
           path: "buildable_types",
-          op: "push",
+          op: "replace",
           value: "FabAdvBuild | FabBuild | FabOrbBuild",
         },
       ]);
