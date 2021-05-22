@@ -18,6 +18,7 @@
 - Buffed the following unit upgrades:
   - Advanced Torpedo Launcher
   - Kraken
+  - Orbital Fabrication Bot
   - Orca
   - Phoenix
   - Solar Array

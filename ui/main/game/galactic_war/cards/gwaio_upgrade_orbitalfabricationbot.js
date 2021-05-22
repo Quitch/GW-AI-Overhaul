@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to reclaim units."
+      "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all structures."
     ),
     summarize: _.constant("!LOC:Orbital Fabrication Bot Upgrade Tech"),
     icon: _.constant(
@@ -38,9 +38,9 @@ define([
       inventory.addMods([
         {
           file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot_build_arm.json",
-          path: "reclaim_types",
+          path: "buildable_types",
           op: "push",
-          value: "Unit",
+          value: "FabAdvBuild | FabBuild | FabOrbBuild",
         },
       ]);
     },
