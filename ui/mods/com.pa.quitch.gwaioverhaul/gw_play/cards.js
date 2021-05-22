@@ -105,12 +105,13 @@ if (!gwaioCardsLoaded) {
         model.gwaioRerollsUsed = ko
           .observable(0)
           .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
+        // clean start for new games in a single session
         if (game.turnState() === "begin") {
-          // clean start for new games in a single session
           model.gwaioRerollsUsed(0);
-        } else if (game.turnState() === "explore") {
+        }
+        // avoid incorrect values when loading an exploration save game
+        else if (game.turnState() === "explore") {
           var star = game.galaxy().stars()[game.currentStar()];
-          // avoid incorrect values when loading an exploration save game
           model.gwaioRerollsUsed = ko.observable(
             numCardsToOffer - star.cardList().length
           );
