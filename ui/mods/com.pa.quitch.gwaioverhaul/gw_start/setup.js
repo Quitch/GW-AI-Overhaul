@@ -1078,6 +1078,7 @@ if (!gwaioSetupLoaded) {
               } else {
                 originSystem.gwaio.ai = "Titans";
               }
+              originSystem.gwaio.aiBrain = [];
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
