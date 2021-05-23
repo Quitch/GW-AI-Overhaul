@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## Added
+## Unreleased
+
+### Added
 
 - AI support for the following cards
   - Nomad Commander
