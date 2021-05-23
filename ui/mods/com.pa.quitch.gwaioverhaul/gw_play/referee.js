@@ -401,10 +401,13 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
-            else aiFilePath = "/pa/ai/bugfix/";
+            if (quellerEnabled) {
+              var aiFilePath = "/pa/ai/queller/q_uber/";
+            } else {
+              aiFilePath = "/pa/ai/bugfix/";
+              parseFiles("/pa/ai/technology_modifiers/", deferredAIMods, true);
+            }
             parseFiles(aiFilePath, deferredAIFiles, false);
-            parseFiles("/pa/ai/technology_modifiers/", deferredAIMods, true);
 
             $.when.apply($, deferredAll).then(function () {
               deferred.resolve();
