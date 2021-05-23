@@ -6,6 +6,7 @@
 
 - Titans AI support for the following cards:
   - Nomad Commander
+  - Paratrooper Commander
 
 ### Changed
 
