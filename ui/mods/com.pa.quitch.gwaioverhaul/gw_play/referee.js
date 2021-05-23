@@ -367,7 +367,9 @@ if (!gwaioRefereeChangesLoaded) {
 
                 if (filter) {
                   var filesToProcess = _.filter(files, function (file) {
-                    return _.includes(filter, file);
+                    return _.some(filter, function (cardId) {
+                      return _.includes(file, cardId);
+                    });
                   });
                 } else {
                   filesToProcess = files;
