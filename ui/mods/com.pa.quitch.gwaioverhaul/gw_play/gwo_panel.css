@@ -31,6 +31,8 @@
 .gwo_info .table {
   display: table;
   table-layout: auto;
+  margin-top: 10px;
+  margin-bottom: 0px;
 }
 .gwo_info .tablebody {
   display: table-row-group;
@@ -40,4 +42,10 @@
 }
 .gwo_info .td {
   display: table-cell;
+}
+
+.gwo_info .table_bottom {
+  display: table;
+  table-layout: auto;
+  margin-bottom: 10px;
 }
