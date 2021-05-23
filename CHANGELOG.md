@@ -8,6 +8,7 @@
   - Nomad Commander
   - Paratrooper Commander
   - Rapid Commander
+- Loadout name to GWO panel
 
 ### Changed
 
