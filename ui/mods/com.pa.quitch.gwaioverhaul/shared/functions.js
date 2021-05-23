@@ -50,7 +50,7 @@ define([
         return true;
       }
     },
-    addAI: function (cardId) {
+    addAIMods: function (cardId) {
       var galaxy = model.game().galaxy();
       var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (!originSystem.gwaio) {
