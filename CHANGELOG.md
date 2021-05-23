@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Loadout name to GWO panel
+
 ### Fixed
 
 - Rapid Commander not including the Colonel in its modifications

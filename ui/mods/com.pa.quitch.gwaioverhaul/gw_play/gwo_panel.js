@@ -8,6 +8,12 @@ if (!gwaioWarInfoPanelLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
+        var loadoutId = game.inventory().cards()[0].id;
+        model.gwaioLoadout = ko.observable();
+        requireGW(["cards/" + loadoutId], function (card) {
+          model.gwaioLoadout(loc(card.summarize()));
+        });
+
         var originSystem = game
           .galaxy()
           .stars()
