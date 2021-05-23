@@ -4,13 +4,12 @@
 
 ### Added
 
-- AI support for the following cards:
+- Titans AI support for the following cards:
   - Nomad Commander
 
 ### Changed
 
-- Sub Commanders are now enabled again for the following loadouts:
-  - Nomad Commander
+- Sub Commanders are now enabled again for the Nomad Commander when Titans AI is in use:
 
 ## v5.1.0 - 2021-05-22
 
