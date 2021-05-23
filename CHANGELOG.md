@@ -7,10 +7,11 @@
 - Titans AI support for the following cards:
   - Nomad Commander
   - Paratrooper Commander
+  - Rapid Commander
 
 ### Changed
 
-- Sub Commanders are now enabled again for the Nomad Commander when Titans AI is in use:
+- Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use:
 
 ## v5.1.0 - 2021-05-22
 
