@@ -4,7 +4,7 @@
 
 ### Added
 
-- AI support for the following cards
+- AI support for the following cards:
   - Nomad Commander
 
 ### Changed
