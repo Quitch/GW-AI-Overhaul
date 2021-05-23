@@ -360,12 +360,19 @@ if (!gwaioRefereeChangesLoaded) {
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
 
-            var parseFiles = function (path, promise) {
+            var parseFiles = function (path, promise, filter) {
               api.file.list(path, true).then(function (files) {
                 var configFiles = self.files();
                 var queue = [];
 
-                _.forEach(files, function (file) {
+                if (filter) {
+                  var filesToProcess = _.filter(files, function (file) {
+                    return _.includes(filter, file);
+                  });
+                } else {
+                  filesToProcess = files;
+                }
+                _.forEach(filesToProcess, function (file) {
                   if (_.endsWith(file, ".json")) {
                     var deferred2 = $.Deferred();
 
@@ -393,9 +400,20 @@ if (!gwaioRefereeChangesLoaded) {
 
             if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
             else aiFilePath = "/pa/ai/bugfix/";
-
             parseFiles(aiFilePath, deferredAIFiles);
-            parseFiles("/pa/ai/technology_modifiers", deferredAIMods);
+
+            var galaxy = model.game().galaxy();
+            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+            var aiModifiers = gwaioSettings.aiBrain;
+            if (aiModifiers && aiModifiers.length > 0) {
+              parseFiles(
+                "/pa/ai/technology_modifiers",
+                deferredAIMods,
+                aiModifiers
+              );
+            } else {
+              deferredAIMods.resolve();
+            }
 
             $.when.apply($, deferredAll).then(function () {
               deferred.resolve();
