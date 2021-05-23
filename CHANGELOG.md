@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Rapid Commander not including the Colonel in its modifications
+
 ## v5.1.0 - 2021-05-22
 
 ### Added
