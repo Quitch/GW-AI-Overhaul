@@ -375,7 +375,6 @@ if (!gwaioRefereeChangesLoaded) {
                 } else {
                   filesToProcess = files;
                 }
-                console.debug(filesToProcess);
                 _.forEach(filesToProcess, function (file) {
                   if (_.endsWith(file, ".json")) {
                     var deferred2 = $.Deferred();
