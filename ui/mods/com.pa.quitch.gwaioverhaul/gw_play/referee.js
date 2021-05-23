@@ -404,7 +404,7 @@ if (!gwaioRefereeChangesLoaded) {
 
             var galaxy = model.game().galaxy();
             var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-            var aiModifiers = gwaioSettings.aiBrain;
+            var aiModifiers = gwaioSettings.aiModifiers;
             if (aiModifiers && aiModifiers.length > 0) {
               parseFiles(
                 "/pa/ai/technology_modifiers",

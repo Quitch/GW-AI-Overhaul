@@ -56,10 +56,10 @@ define([
       if (!originSystem.gwaio) {
         originSystem.gwaio = {}; // War pre-dates v4.13.0 or is not a GWO save
       }
-      if (!originSystem.gwaio.aiBrains) {
-        originSystem.gwaio.aiBrains = [];
+      if (!originSystem.gwaio.aiModifiers) {
+        originSystem.gwaio.aiModifiers = [];
       }
-      originSystem.gwaio.aiBrains.push(cardId);
+      originSystem.gwaio.aiModifiers.push(cardId);
     },
   };
 });
