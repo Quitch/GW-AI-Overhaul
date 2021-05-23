@@ -122,6 +122,13 @@ define([
                 "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
             },
             {
+              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              path: "buildable_types",
+              op: "replace",
+              value:
+                "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
+            },
+            {
               file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
               path: "buildable_types",
               op: "replace",
