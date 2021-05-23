@@ -50,16 +50,5 @@ define([
         return true;
       }
     },
-    addAIMods: function (cardId) {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (!originSystem.gwaio) {
-        originSystem.gwaio = {}; // War pre-dates v4.13.0 or is not a GWO save
-      }
-      if (!originSystem.gwaio.aiModifiers) {
-        originSystem.gwaio.aiModifiers = [];
-      }
-      originSystem.gwaio.aiModifiers.push(cardId);
-    },
   };
 });

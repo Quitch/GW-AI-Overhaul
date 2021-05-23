@@ -366,14 +366,16 @@ if (!gwaioRefereeChangesLoaded) {
                 var queue = [];
 
                 if (filter) {
+                  var cardIds = _.map(model.game().inventory().cards(), "id");
                   var filesToProcess = _.filter(files, function (file) {
-                    return _.some(filter, function (cardId) {
+                    return _.some(cardIds, function (cardId) {
                       return _.includes(file, cardId);
                     });
                   });
                 } else {
                   filesToProcess = files;
                 }
+                console.debug(filesToProcess);
                 _.forEach(filesToProcess, function (file) {
                   if (_.endsWith(file, ".json")) {
                     var deferred2 = $.Deferred();
@@ -402,20 +404,8 @@ if (!gwaioRefereeChangesLoaded) {
 
             if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
             else aiFilePath = "/pa/ai/bugfix/";
-            parseFiles(aiFilePath, deferredAIFiles);
-
-            var galaxy = model.game().galaxy();
-            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-            var aiModifiers = gwaioSettings.aiModifiers;
-            if (aiModifiers && aiModifiers.length > 0) {
-              parseFiles(
-                "/pa/ai/technology_modifiers",
-                deferredAIMods,
-                aiModifiers
-              );
-            } else {
-              deferredAIMods.resolve();
-            }
+            parseFiles(aiFilePath, deferredAIFiles, false);
+            parseFiles("/pa/ai/technology_modifiers/", deferredAIMods, true);
 
             $.when.apply($, deferredAll).then(function () {
               deferred.resolve();
