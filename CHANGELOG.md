@@ -9,7 +9,7 @@
 
 ### Changed
 
-- Sub Commanders are now enabled against for the following loadouts:
+- Sub Commanders are now enabled again for the following loadouts:
   - Nomad Commander
 
 ## v5.1.0 - 2021-05-22
