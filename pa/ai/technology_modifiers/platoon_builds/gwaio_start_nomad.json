@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Land Defence Platoon",
+      "name": "gwaio_start_nomad - Land Defence Platoon",
       "to_build": "land_defense_platoon",
       "instance_count": -1,
       "priority": 100,
@@ -28,7 +28,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Naval Defence Platoon",
+      "name": "gwaio_start_nomad - Naval Defence Platoon",
       "to_build": "naval_defense_platoon",
       "instance_count": -1,
       "priority": 100,
