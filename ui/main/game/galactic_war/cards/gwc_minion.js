@@ -36,20 +36,24 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
+      var quellerEnabled = gwaioFunctions.quellerAIEnabled();
       if (
-        !gwaioFunctions.hasUnit(
+        (!gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
         ) &&
-        !gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/bot_factory.json"
-        ) &&
-        !gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json")
+          !gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory/bot_factory.json"
+          ) &&
+          !gwaioFunctions.hasUnit(
+            "/pa/units/air/air_factory/air_factory.json"
+          )) ||
+        (quellerEnabled && inventory.hasCard("gwaio_start_rapid"))
       )
         chance = 0;
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
-      if (gwaioFunctions.quellerAIEnabled()) {
+      if (quellerEnabled) {
         minion.personality.ai_path = "/pa/ai/queller/q_uber";
       }
       return {
