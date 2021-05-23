@@ -44,8 +44,8 @@ define([
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
     quellerAIEnabled: function () {
-      var game = model.game();
-      var originSystem = game.galaxy().stars()[game.galaxy().origin()].system();
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
         return true;
       }
