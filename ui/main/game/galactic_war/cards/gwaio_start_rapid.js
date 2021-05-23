@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Factories build fabricators and fabricators build units. Disgusted by this break from tradition, Sub Commanders will not join you in your fight."
+      "!LOC:Factories build fabricators and fabricators build units."
     ),
     hint: function () {
       return {
