@@ -354,40 +354,51 @@ if (!gwaioRefereeChangesLoaded) {
             var self = this;
 
             var deferred = $.Deferred();
+            var deferredAIFiles = $.Deferred();
+            var deferredAIMods = $.Deferred();
+            var deferredAll = [deferredAIFiles, deferredAIMods];
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+
+            var parseFiles = function (path, promise) {
+              api.file.list(path, true).then(function (files) {
+                var configFiles = self.files();
+                var queue = [];
+
+                _.forEach(files, function (file) {
+                  if (_.endsWith(file, ".json")) {
+                    var deferred2 = $.Deferred();
+
+                    queue.push(deferred2);
+
+                    $.getJSON("coui:/" + file)
+                      .then(function (json) {
+                        if (quellerEnabled) configFiles[file] = json;
+                        else
+                          configFiles["/pa/ai" + file.slice(path.length - 1)] =
+                            json;
+                      })
+                      .always(function () {
+                        deferred2.resolve();
+                      });
+                  }
+                });
+
+                $.when.apply($, queue).then(function () {
+                  self.files.valueHasMutated();
+                  promise.resolve();
+                });
+              });
+            };
 
             if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
             else aiFilePath = "/pa/ai/bugfix/";
 
-            api.file.list(aiFilePath, true).then(function (files) {
-              var configFiles = self.files();
-              var queue = [];
+            parseFiles(aiFilePath, deferredAIFiles);
+            parseFiles("/pa/ai/technology_modifiers", deferredAIMods);
 
-              _.forEach(files, function (file) {
-                if (_.endsWith(file, ".json")) {
-                  var deferred2 = $.Deferred();
-
-                  queue.push(deferred2);
-
-                  $.getJSON("coui:/" + file)
-                    .then(function (json) {
-                      if (quellerEnabled) configFiles[file] = json;
-                      else
-                        configFiles[
-                          "/pa/ai" + file.slice(aiFilePath.length - 1)
-                        ] = json;
-                    })
-                    .always(function () {
-                      deferred2.resolve();
-                    });
-                }
-              });
-
-              $.when.apply($, queue).then(function () {
-                self.files.valueHasMutated();
-                deferred.resolve();
-              });
+            $.when.apply($, deferredAll).then(function () {
+              deferred.resolve();
             });
 
             return deferred.promise();
