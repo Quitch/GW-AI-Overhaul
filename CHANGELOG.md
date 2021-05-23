@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Added
+
+- AI support for the following cards
+  - Nomad Commander
+
 ## v5.1.0 - 2021-05-22
 
 ### Added
