@@ -50,5 +50,16 @@ define([
         return true;
       }
     },
+    addAI: function (cardId) {
+      var game = model.game();
+      var originSystem = game.galaxy().stars()[game.galaxy().origin()].system();
+      if (!originSystem.gwaio) {
+        originSystem.gwaio = {}; // War pre-dates v4.13.0 or is not a GWO save
+      }
+      if (!originSystem.gwaio.aiBrains) {
+        originSystem.gwaio.aiBrains = [];
+      }
+      originSystem.gwaio.aiBrains.push(cardId);
+    },
   };
 });
