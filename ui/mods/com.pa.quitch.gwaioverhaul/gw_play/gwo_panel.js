@@ -78,7 +78,11 @@ if (!gwaioWarInfoPanelLoaded) {
           var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
 
           var commanders = [
-            { name: playerName, color: playerColor, character: loc("Human") },
+            {
+              name: playerName,
+              color: playerColor,
+              character: loc("!LOC:Human"),
+            },
           ];
 
           var subCommanders = inventory.minions();
