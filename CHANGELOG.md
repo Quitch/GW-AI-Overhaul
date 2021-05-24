@@ -10,11 +10,13 @@
   - Rapid Commander
 - Loadout name to GWO panel
 - Player information to GWO panel
+- Player army information to GWO panel
 
 ### Changed
 
 - Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
 - Reduced starting eco levels for Casual through Gold
+- Improved how the GWO panel displays war options
 
 ### Fixed
 

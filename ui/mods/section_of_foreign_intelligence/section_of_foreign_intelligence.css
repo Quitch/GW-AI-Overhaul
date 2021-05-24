@@ -49,6 +49,7 @@
   display: table;
   table-layout: fixed;
   width: 90%;
+  margin-bottom: 10px;
 }
 .section_of_foreign_intelligence .tablebody {
   display: table-row-group;
