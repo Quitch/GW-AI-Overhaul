@@ -6,11 +6,12 @@
 >
   <div class="gwo_info">
     <h2><loc>Galactic War Overhaul</loc></h2>
+    <!-- ko if: $root.gwaioSettings -->
     <div class="table">
       <div class="tablebody">
         <div class="tr">
           <div class="td"><loc>Version:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioVersion"></div>
+          <div class="data" data-bind="text: $root.gwaioSettings.version"></div>
         </div>
         <div class="tr">
           <div class="td"><loc>Difficulty:</loc></div>
@@ -24,32 +25,41 @@
           <div class="td"><loc>AI:</loc></div>
           <div class="data" data-bind="text: $root.gwaioAI"></div>
         </div>
-        <h3><loc>Options</loc></h3>
+        <h3 data-bind="visible:$root.gwaioSettings"><loc>Options</loc></h3>
         <div class="tr">
-          <div class="td"><loc>Faction Scaling:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioFactionScaling"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>System Scaling:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioSystemScaling"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Easier Start:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioEasierStart"></div>
-        </div>
-        <div class="tr">
-          <div class="td"><loc>Tougher Commanders:</loc></div>
           <div
-            class="data"
-            data-bind="text: $root.gwaioTougherCommanders"
-          ></div>
+            class="td"
+            data-bind="visible:$root.gwaioSettings.factionScaling"
+          >
+            <loc>Faction scaling</loc>
+          </div>
         </div>
         <div class="tr">
-          <div class="td"><loc>Hardcore:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioHardcore"></div>
+          <div class="td" data-bind="visible:$root.gwaioSettings.systemScaling">
+            <loc>System scaling</loc>
+          </div>
+        </div>
+        <div class="tr">
+          <div class="td" data-bind="visible:$root.gwaioSettings.easierStart">
+            <loc>Easier start</loc>
+          </div>
+        </div>
+        <div class="tr">
+          <div
+            class="td"
+            data-bind="visible:$root.gwaioSettings.tougherCommanders"
+          >
+            <loc>Tougher commanders</loc>
+          </div>
+        </div>
+        <div class="tr">
+          <div class="td" data-bind="visible:$root.game().hardcore()">
+            <loc>Hardcore mode</loc>
+          </div>
         </div>
       </div>
     </div>
+    <!-- /ko -->
     <h3 data-bind="text: $root.gwaioFactionName"></h3>
     <div class="td" data-bind="text: $root.gwaioLoadout"></div>
     <ul data-bind="foreach: $root.gwaioPlayer">

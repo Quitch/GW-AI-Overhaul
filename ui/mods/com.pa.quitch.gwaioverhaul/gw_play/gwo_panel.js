@@ -8,6 +8,21 @@ if (!gwaioWarInfoPanelLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
+        // War Information
+        var originSystem = game
+          .galaxy()
+          .stars()
+          [game.galaxy().origin()].system();
+        if (originSystem.gwaio && originSystem.gwaio.ai) {
+          model.gwaioAI = originSystem.gwaio.ai;
+        } else model.gwaioAI = "Titans";
+        model.gwaioDifficulty =
+          originSystem.gwaio && loc(originSystem.gwaio.difficulty);
+        model.gwaioSize =
+          originSystem.gwaio && loc(originSystem.gwaio.galaxySize);
+        model.gwaioSettings = originSystem.gwaio;
+
+        // Player Information
         var factions = [
           "Legonis Machina",
           "Foundation",
@@ -28,7 +43,6 @@ if (!gwaioWarInfoPanelLoaded) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
         var intelligence = function (subcommander) {
-          console.debug(subcommander);
           return {
             name: subcommander.name,
             color: rgb(
@@ -46,62 +60,15 @@ if (!gwaioWarInfoPanelLoaded) {
             { name: playerName, color: playerColor, character: loc("Human") },
           ];
 
-          var minions = inventory.minions();
-          console.debug(minions);
-          if (minions.length > 0) {
+          var subCommanders = inventory.minions();
+          if (subCommanders.length > 0) {
             // eslint-disable-next-line lodash/prefer-map
-            _.forEach(minions, function (subcommander) {
+            _.forEach(subCommanders, function (subcommander) {
               commanders.push(intelligence(subcommander));
             });
           }
           return commanders;
         });
-
-        var originSystem = game
-          .galaxy()
-          .stars()
-          [game.galaxy().origin()].system();
-
-        if (originSystem.gwaio) {
-          model.gwaioVersion = originSystem.gwaio.version;
-          model.gwaioDifficulty = loc(originSystem.gwaio.difficulty);
-          model.gwaioSize = loc(originSystem.gwaio.galaxySize);
-
-          if (originSystem.gwaio.factionScaling === true)
-            model.gwaioFactionScaling = loc("!LOC:Enabled");
-          else model.gwaioFactionScaling = loc("!LOC:Disabled");
-
-          if (originSystem.gwaio.systemScaling === false) {
-            model.gwaioSystemScaling = loc("!LOC:Disabled");
-          } else {
-            model.gwaioSystemScaling = loc("!LOC:Enabled");
-          }
-
-          if (originSystem.gwaio.easierStart === true)
-            model.gwaioEasierStart = loc("!LOC:Enabled");
-          else model.gwaioEasierStart = loc("!LOC:Disabled");
-
-          if (originSystem.gwaio.tougherCommanders === true) {
-            model.gwaioTougherCommanders = loc("!LOC:Enabled");
-          } else {
-            model.gwaioTougherCommanders = loc("!LOC:Disabled");
-          }
-        } else {
-          model.gwaioVersion = loc("!LOC:Unknown");
-          model.gwaioDifficulty = loc("!LOC:Unknown");
-          model.gwaioSize = game.galaxy().stars().length;
-          model.gwaioFactionScaling = loc("!LOC:Unknown");
-          model.gwaioSystemScaling = loc("!LOC:Enabled");
-          model.gwaioEasierStart = loc("!LOC:Unknown");
-          model.gwaioTougherCommanders = loc("!LOC:Unknown");
-        }
-
-        if (originSystem.gwaio && originSystem.gwaio.ai) {
-          model.gwaioAI = originSystem.gwaio.ai;
-        } else model.gwaioAI = "Titans";
-
-        if (game.hardcore() === true) model.gwaioHardcore = loc("!LOC:Enabled");
-        else model.gwaioHardcore = loc("!LOC:Disabled");
 
         $("#header").append(
           loadHtml(
