@@ -18,25 +18,27 @@ if (!gwaioWarInfoPanelLoaded) {
           model.gwaioSettings && loc(model.gwaioSettings.difficulty);
         model.gwaioSize =
           model.gwaioSettings && loc(model.gwaioSettings.galaxySize);
-        if (model.gwaioSettings && model.gwaioSettings.ai) {
-          model.gwaioAI = model.gwaioSettings.ai;
-        } else model.gwaioAI = "Titans";
+        if (model.gwaioSettings) {
+          if (model.gwaioSettings.ai) {
+            model.gwaioAI = model.gwaioSettings.ai;
+          } else model.gwaioAI = "Titans";
 
-        model.gwaioOptions = ko.observableArray([]);
-        if (model.gwaioSettings.factionScaling) {
-          model.gwaioOptions.push(loc("!LOC:Faction scaling"));
-        }
-        if (model.gwaioSettings.systemScaling) {
-          model.gwaioOptions.push(loc("!LOC:System scaling"));
-        }
-        if (model.gwaioSettings.easierStart) {
-          model.gwaioOptions.push(loc("!LOC:Easier start"));
-        }
-        if (model.gwaioSettings.tougherCommanders) {
-          model.gwaioOptions.push(loc("!LOC:Tougher commanders"));
-        }
-        if (game.hardcore()) {
-          model.gwaioOptions.push(loc("!LOC:Hardcore mode"));
+          model.gwaioOptions = ko.observableArray([]);
+          if (model.gwaioSettings.factionScaling) {
+            model.gwaioOptions.push(loc("!LOC:Faction scaling"));
+          }
+          if (model.gwaioSettings.systemScaling) {
+            model.gwaioOptions.push(loc("!LOC:System scaling"));
+          }
+          if (model.gwaioSettings.easierStart) {
+            model.gwaioOptions.push(loc("!LOC:Easier start"));
+          }
+          if (model.gwaioSettings.tougherCommanders) {
+            model.gwaioOptions.push(loc("!LOC:Tougher commanders"));
+          }
+          if (game.hardcore()) {
+            model.gwaioOptions.push(loc("!LOC:Hardcore mode"));
+          }
         }
 
         // Player Information
