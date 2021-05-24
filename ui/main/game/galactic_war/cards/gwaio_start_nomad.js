@@ -49,7 +49,6 @@ define([
             "/pa/units/land/land_barrier/land_barrier.json",
             "/pa/units/land/land_mine/land_mine.json",
             "/pa/units/land/laser_defense_single/laser_defense_single.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
             "/pa/units/land/metal_storage/metal_storage.json",
             "/pa/units/land/radar/radar.json",
             "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
@@ -58,6 +57,7 @@ define([
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
+            "/pa/units/land/laser_defense/laser_defense.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/orbital/ion_defense/ion_defense.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
@@ -198,12 +198,26 @@ define([
           });
 
           smallStructures.forEach(function (unit) {
-            mods.push({
-              file: unit,
-              path: "transportable",
-              op: "replace",
-              value: { size: 1 },
-            });
+            mods.push(
+              {
+                file: unit,
+                path: "transportable",
+                op: "replace",
+                value: { size: 1 },
+              },
+              {
+                file: unit,
+                path: "attachable",
+                op: "replace",
+                value: { offsets: { root: [0, 0, 0], head: [0, 0, 13] } },
+              }
+            );
+          });
+          mods.push({
+            file: "/pa/units/air/transport/transport.json",
+            path: "transporter.transportable_unit_types",
+            op: "replace",
+            value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
           });
 
           var teleportableStructures = smallStructures.concat(mediumStructures);

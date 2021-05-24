@@ -13,12 +13,14 @@
 ### Changed
 
 - Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
+- Reduced starting eco levels for Casual through Gold
 
 ### Fixed
 
 - Rapid Commander not including the Colonel in its modifications
 - Some Titans AI personalities sometimes not building a factory in low eco situations on specific map configurations
 - Nomad Commander physics issues - this may have been a cause of crashes
+- Nomad Commander unit transporting not functioning for all the units it was supposed to
 
 ## v5.1.0 - 2021-05-22
 
