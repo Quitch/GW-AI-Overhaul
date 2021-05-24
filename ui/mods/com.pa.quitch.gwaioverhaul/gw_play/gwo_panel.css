@@ -47,6 +47,13 @@
   display: table-cell;
   padding-bottom: 4px;
 }
+.gwo_info .table_bottom {
+  display: table;
+  table-layout: auto;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  width: 97%;
+}
 
 .gwo_info .player_masked {
   height: 16px;
