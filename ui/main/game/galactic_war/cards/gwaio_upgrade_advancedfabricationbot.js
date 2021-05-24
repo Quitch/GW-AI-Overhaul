@@ -31,7 +31,7 @@ define([
           "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json"
         )
       )
-        chance = 60000;
+        chance = 60;
 
       return { chance: chance };
     },
