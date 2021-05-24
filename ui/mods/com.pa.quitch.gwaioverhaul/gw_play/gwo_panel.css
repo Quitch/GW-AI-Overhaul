@@ -26,6 +26,7 @@
   display: table-cell;
   padding: 1px 0px;
   vertical-align: bottom;
+  text-align: right;
 }
 
 .gwo_info .table {
@@ -33,6 +34,7 @@
   table-layout: auto;
   margin-top: 10px;
   margin-bottom: 0px;
+  width: 97%;
 }
 .gwo_info .tablebody {
   display: table-row-group;
@@ -47,5 +49,7 @@
 .gwo_info .table_bottom {
   display: table;
   table-layout: auto;
+  margin-top: 0px;
   margin-bottom: 10px;
+  width: 97%;
 }

@@ -4,7 +4,7 @@
 
 ### Added
 
-- Loadout name to GWO panel
+- Player information to GWO panel
 
 ### Changed
 
