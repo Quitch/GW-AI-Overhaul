@@ -9,6 +9,7 @@
 ### Changed
 
 - Reduced starting eco levels for Casual through Gold
+- Improved how the GWO panel displays war options
 
 ### Fixed
 
