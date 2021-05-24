@@ -28,12 +28,13 @@
   vertical-align: bottom;
   text-align: left;
   width: 61%;
+  padding-bottom: 2px;
 }
 
 .gwo_info .table {
   display: table;
   table-layout: auto;
-  margin-top: 0px;
+  margin-top: 5px;
   margin-bottom: 0px;
   width: 97%;
 }
@@ -45,6 +46,7 @@
 }
 .gwo_info .td {
   display: table-cell;
+  padding-bottom: 2px;
 }
 .gwo_info .table_bottom {
   display: table;
