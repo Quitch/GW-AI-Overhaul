@@ -87,6 +87,18 @@ define([
               value: "(Naval & Fabber & Mobile) & FactoryBuild",
             },
             {
+              file: "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
+              path: "buildable_types",
+              op: "replace",
+              value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
+            },
+            {
+              file: "/pa/units/orbital/orbital_factory/orbital_factory.json",
+              path: "buildable_types",
+              op: "replace",
+              value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
+            },
+            {
               file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
               path: "buildable_types",
               op: "replace",
@@ -160,7 +172,7 @@ define([
               file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
-              value: "Mobile & Orbital | FabOrbBuild - Factory",
+              value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
             },
           ]);
         } else {
