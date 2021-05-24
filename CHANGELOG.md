@@ -10,6 +10,7 @@
 
 - Rapid Commander not including the Colonel in its modifications
 - Some Titans AI personalities sometimes not building a factory in low eco situations on specific map configurations
+- Nomad Commander physics issues causing crashes
 
 ## v5.1.0 - 2021-05-22
 

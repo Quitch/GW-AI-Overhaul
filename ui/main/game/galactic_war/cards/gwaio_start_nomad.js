@@ -71,42 +71,122 @@ define([
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
-
           var allStructures = smallStructures.concat(
             mediumStructures,
             largeStructures
           );
-          allStructures.forEach(function (unit) {
+
+          var groundStructures = _.filter(allStructures, function (structure) {
+            return (
+              !_.includes(structure, "defense_satellite") &&
+              !_.includes(structure, "mining_platform")
+            );
+          });
+          groundStructures.forEach(function (unit) {
             mods.push(
               {
                 file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 1,
+                path: "base_spec",
+                op: "replace",
+                value: "/pa/units/land/base_vehicle/base_vehicle.json",
               },
               {
                 file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 1,
+                path: "navigation.type",
+                op: "replace",
+                value: "Hover",
               },
               {
                 file: unit,
                 path: "navigation.acceleration",
-                op: "multiply",
-                value: 1,
+                op: "replace",
+                value: 100,
+              },
+              {
+                file: unit,
+                path: "navigation.brake",
+                op: "replace",
+                value: 100,
+              },
+              {
+                file: unit,
+                path: "navigation.move_speed",
+                op: "replace",
+                value: 10,
               },
               {
                 file: unit,
                 path: "navigation.turn_speed",
-                op: "multiply",
-                value: 1,
+                op: "replace",
+                value: 60,
+              }
+            );
+          });
+
+          var orbitalStructures = [
+            "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            "/pa/units/orbital/mining_platform/mining_platform.json",
+          ];
+          orbitalStructures.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "base_spec",
+                op: "replace",
+                value: "/pa/units/orbital/base_orbital/base_orbital.json",
+              },
+              {
+                file: unit,
+                path: "armor_type",
+                op: "replace",
+                value: "AT_Structure",
+              },
+              {
+                file: unit,
+                path: "navigation.acceleration",
+                op: "replace",
+                value: 25,
+              },
+              {
+                file: unit,
+                path: "navigation.brake",
+                op: "replace",
+                value: 25,
+              },
+              {
+                file: unit,
+                path: "navigation.move_speed",
+                op: "replace",
+                value: 25,
+              },
+              {
+                file: unit,
+                path: "navigation.turn_speed",
+                op: "replace",
+                value: 90,
+              }
+            );
+          });
+
+          allStructures.forEach(function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "physics.type",
+                op: "replace",
+                value: "Mobile",
               },
               {
                 file: unit,
                 path: "command_caps",
                 op: "push",
                 value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "remove",
+                value: "UNITTYPE_Structure",
               },
               {
                 file: unit,
@@ -140,62 +220,6 @@ define([
                 path: "command_caps",
                 op: "push",
                 value: "ORDER_Use",
-              }
-            );
-          });
-
-          var groundStructures = _.filter(allStructures, function (structure) {
-            return (
-              !_.includes(structure, "defense_satellite") &&
-              !_.includes(structure, "mining_platform")
-            );
-          });
-          groundStructures.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.type",
-                op: "replace",
-                value: "hover",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "remove",
-                value: "UNITTYPE_Structure",
-              },
-              {
-                file: unit,
-                path: "physics",
-                op: "remove",
-                value: { radius: 10, air_friction: 1.0 },
-              }
-            );
-          });
-
-          var orbitalStructures = [
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-          ];
-          orbitalStructures.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.type",
-                op: "replace",
-                value: "orbital",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "remove",
-                value: "UNITTYPE_Structure",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_Mobile",
               }
             );
           });
