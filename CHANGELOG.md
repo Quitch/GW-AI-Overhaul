@@ -6,6 +6,10 @@
 
 - Loadout name to GWO panel
 
+### Changed
+
+- Reduced starting eco levels for Casual through Gold
+
 ### Fixed
 
 - Rapid Commander not including the Colonel in its modifications
