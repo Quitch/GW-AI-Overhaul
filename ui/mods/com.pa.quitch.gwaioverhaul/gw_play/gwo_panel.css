@@ -27,12 +27,13 @@
   padding: 1px 0px;
   vertical-align: bottom;
   text-align: right;
+  padding-bottom: 4px;
 }
 
 .gwo_info .table {
   display: table;
   table-layout: auto;
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 0px;
   width: 97%;
 }
@@ -44,14 +45,7 @@
 }
 .gwo_info .td {
   display: table-cell;
-}
-
-.gwo_info .table_bottom {
-  display: table;
-  table-layout: auto;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  width: 97%;
+  padding-bottom: 4px;
 }
 
 .gwo_info .player_masked {

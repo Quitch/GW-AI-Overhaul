@@ -25,37 +25,21 @@
           <div class="td"><loc>AI:</loc></div>
           <div class="data" data-bind="text: $root.gwaioAI"></div>
         </div>
-        <h3 data-bind="visible:$root.gwaioSettings"><loc>Options</loc></h3>
+      </div>
+    </div>
+    <div class="table">
+      <div
+        class="tablebody"
+        data-bind="visible:$root.gwaioOptions().length > 0, foreach: $root.gwaioOptions()"
+      >
         <div class="tr">
+          <div class="td">
+            <span data-bind="visible:$index() === 0"><loc>Options:</loc></span>
+          </div>
           <div
-            class="td"
-            data-bind="visible:$root.gwaioSettings.factionScaling"
-          >
-            <loc>Faction scaling</loc>
-          </div>
-        </div>
-        <div class="tr">
-          <div class="td" data-bind="visible:$root.gwaioSettings.systemScaling">
-            <loc>System scaling</loc>
-          </div>
-        </div>
-        <div class="tr">
-          <div class="td" data-bind="visible:$root.gwaioSettings.easierStart">
-            <loc>Easier start</loc>
-          </div>
-        </div>
-        <div class="tr">
-          <div
-            class="td"
-            data-bind="visible:$root.gwaioSettings.tougherCommanders"
-          >
-            <loc>Tougher commanders</loc>
-          </div>
-        </div>
-        <div class="tr">
-          <div class="td" data-bind="visible:$root.game().hardcore()">
-            <loc>Hardcore mode</loc>
-          </div>
+            class="data"
+            data-bind="text: $root.gwaioOptions()[$index()]"
+          ></div>
         </div>
       </div>
     </div>
