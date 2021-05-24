@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (system, context, inventory) {
+    deal: function () {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json") &&
@@ -30,13 +30,9 @@ define([
           gwaioFunctions.hasUnit(
             "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json"
           ) ||
-          ((gwaioFunctions.hasUnit(
+          gwaioFunctions.hasUnit(
             "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
-            inventory.hasCard("gwaio_upgrade_botfactory")) &&
-            gwaioFunctions.hasUnit(
-              "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json"
-            )))
+          ))
       )
         chance = 60;
 

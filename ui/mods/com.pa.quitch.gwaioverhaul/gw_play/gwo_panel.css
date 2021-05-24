@@ -26,11 +26,16 @@
   display: table-cell;
   padding: 1px 0px;
   vertical-align: bottom;
+  text-align: left;
+  width: 61%;
+  padding-bottom: 2px;
 }
 
 .gwo_info .table {
   display: table;
-  table-layout: auto;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  width: 97%;
 }
 .gwo_info .tablebody {
   display: table-row-group;
@@ -40,4 +45,23 @@
 }
 .gwo_info .td {
   display: table-cell;
+  padding-bottom: 2px;
+}
+.gwo_info .table_bottom {
+  display: table;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  width: 97%;
+}
+
+.gwo_info .player_masked {
+  height: 16px;
+  width: 16px;
+  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+  -webkit-mask-size: cover;
+  mask: url("#player-mask");
+}
+
+.gwo_info .commander-name {
+  margin-left: 18px;
 }

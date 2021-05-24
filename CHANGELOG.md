@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v5.2.0 - 2021-05-24
+
+### Added
+
+- Player army information to GWO panel
+
+### Changed
+
+- Reduced starting eco levels for Casual through Gold
+- Improved how the GWO panel displays war options
+
+### Fixed
+
+- Rapid Commander not including the Colonel in its modifications
+- Some Titans AI personalities sometimes not building a factory in low eco situations on specific map configurations
+- Nomad Commander physics issues - this may have been a cause of crashes
+- Nomad Commander unit transporting not functioning for all the units it was supposed to
+- Mine Upgrade being offered before you had access to mines
+- Rapid Commander orbital factories and fabber not having access to the correct set of units
+
 ## v5.1.0 - 2021-05-22
 
 ### Added
