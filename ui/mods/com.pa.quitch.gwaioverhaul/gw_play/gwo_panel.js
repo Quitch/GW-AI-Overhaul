@@ -9,9 +9,30 @@ if (!gwaioWarInfoPanelLoaded) {
 
       if (!game.isTutorial()) {
         var loadoutId = game.inventory().cards()[0].id;
-        model.gwaioLoadout = ko.observable();
+        model.gwaioLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
           model.gwaioLoadout(loc(card.summarize()));
+        });
+
+        var factions = [
+          "Legonis Machina",
+          "Foundation",
+          "Synchronous",
+          "Revenants",
+          "Cluster",
+        ];
+        var factionIndex = game.inventory().getTag("global", "playerFaction");
+        model.gwaioFactionName = factions[factionIndex];
+
+        var stats = game.stats();
+        model.gwaioStats = ko.observable(
+          stats.turns() + "/" + stats.wins() + "/" + stats.losses()
+        );
+        ko.computed(function () {
+          model.currentStar();
+          model.gwaioStats(
+            stats.turns() + "/" + stats.wins() + "/" + stats.losses()
+          );
         });
 
         var originSystem = game

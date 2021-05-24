@@ -52,9 +52,18 @@
     </div>
     <div class="table_bottom">
       <div class="tablebody">
-        <h3>Loadout</h3>
+        <h3>Player</h3>
         <div class="tr">
-          <div class="td" data-bind="text: $root.gwaioLoadout()"></div>
+          <div class="td"><loc>Faction:</loc></div>
+          <div class="data" data-bind="text: $root.gwaioFactionName"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Loadout:</loc></div>
+          <div class="data" data-bind="text: $root.gwaioLoadout()"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>T/W/L:</loc></div>
+          <div class="data" data-bind="text: $root.gwaioStats()"></div>
         </div>
       </div>
     </div>
