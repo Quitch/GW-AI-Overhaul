@@ -26,8 +26,9 @@
   display: table-cell;
   padding: 1px 0px;
   vertical-align: bottom;
-  text-align: right;
+  text-align: left;
   padding-bottom: 4px;
+  width: 61%;
 }
 
 .gwo_info .table {
