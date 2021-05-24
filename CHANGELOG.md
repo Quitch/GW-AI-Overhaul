@@ -4,7 +4,7 @@
 
 ### Added
 
-- Player information to GWO panel
+- Player army information to GWO panel
 
 ### Changed
 

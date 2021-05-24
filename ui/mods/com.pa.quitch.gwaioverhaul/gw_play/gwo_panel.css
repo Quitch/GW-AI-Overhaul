@@ -53,3 +53,15 @@
   margin-bottom: 10px;
   width: 97%;
 }
+
+.gwo_info .player_masked {
+  height: 16px;
+  width: 16px;
+  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+  -webkit-mask-size: cover;
+  mask: url("#player-mask");
+}
+
+.gwo_info .commander-name {
+  margin-left: 18px;
+}

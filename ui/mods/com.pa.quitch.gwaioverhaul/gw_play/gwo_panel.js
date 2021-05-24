@@ -8,12 +8,6 @@ if (!gwaioWarInfoPanelLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
-        var loadoutId = game.inventory().cards()[0].id;
-        model.gwaioLoadout = ko.observable("");
-        requireGW(["cards/" + loadoutId], function (card) {
-          model.gwaioLoadout(loc(card.summarize()));
-        });
-
         var factions = [
           "Legonis Machina",
           "Foundation",
@@ -24,15 +18,43 @@ if (!gwaioWarInfoPanelLoaded) {
         var factionIndex = game.inventory().getTag("global", "playerFaction");
         model.gwaioFactionName = factions[factionIndex];
 
-        var stats = game.stats();
-        model.gwaioStats = ko.observable(
-          stats.turns() + "/" + stats.wins() + "/" + stats.losses()
-        );
-        ko.computed(function () {
-          model.currentStar();
-          model.gwaioStats(
-            stats.turns() + "/" + stats.wins() + "/" + stats.losses()
-          );
+        var loadoutId = game.inventory().cards()[0].id;
+        model.gwaioLoadout = ko.observable("");
+        requireGW(["cards/" + loadoutId], function (card) {
+          model.gwaioLoadout(loc(card.summarize()));
+        });
+
+        var rgb = function (color) {
+          return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+        };
+        var intelligence = function (subcommander) {
+          console.debug(subcommander);
+          return {
+            name: subcommander.name,
+            color: rgb(
+              (subcommander.color && subcommander.color[0]) || [255, 255, 255]
+            ),
+            character: loc(subcommander.character),
+          };
+        };
+        model.gwaioPlayer = ko.computed(function () {
+          var inventory = game.inventory();
+          var playerName = ko.observable().extend({ session: "displayName" });
+          var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
+
+          var commanders = [
+            { name: playerName, color: playerColor, character: loc("Human") },
+          ];
+
+          var minions = inventory.minions();
+          console.debug(minions);
+          if (minions.length > 0) {
+            // eslint-disable-next-line lodash/prefer-map
+            _.forEach(minions, function (subcommander) {
+              commanders.push(intelligence(subcommander));
+            });
+          }
+          return commanders;
         });
 
         var originSystem = game

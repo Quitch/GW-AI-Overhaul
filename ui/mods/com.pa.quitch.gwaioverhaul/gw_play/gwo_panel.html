@@ -50,22 +50,31 @@
         </div>
       </div>
     </div>
-    <div class="table_bottom">
-      <div class="tablebody">
-        <h3>Player</h3>
-        <div class="tr">
-          <div class="td"><loc>Faction:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioFactionName"></div>
+    <h3 data-bind="text: $root.gwaioFactionName"></h3>
+    <div class="td" data-bind="text: $root.gwaioLoadout"></div>
+    <ul data-bind="foreach: $root.gwaioPlayer">
+      <li class="commander">
+        <div class="div_player_icon">
+          <div
+            class="fill player_masked"
+            data-bind="style: { backgroundColor: color }"
+          ></div>
+          <div class="outline">
+            <img
+              src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png"
+            />
+          </div>
         </div>
-        <div class="tr">
-          <div class="td"><loc>Loadout:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioLoadout()"></div>
+        <h4><span class="commander-name" data-bind="text: name"></span></h4>
+        <div class="table">
+          <div class="tablebody">
+            <div class="tr">
+              <div class="td"><loc>Personality:</loc></div>
+              <div class="data" data-bind="text: character"></div>
+            </div>
+          </div>
         </div>
-        <div class="tr">
-          <div class="td"><loc>T/W/L:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioStats()"></div>
-        </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </div>
