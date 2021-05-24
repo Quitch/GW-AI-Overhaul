@@ -35,9 +35,12 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
+
           var mods = [];
+
           var smallStructures = [
             "/pa/units/land/air_defense/air_defense.json",
             "/pa/units/land/artillery_short/artillery_short.json",
@@ -68,11 +71,11 @@ define([
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
           ];
+
           var allStructures = smallStructures.concat(
             mediumStructures,
             largeStructures
           );
-          var teleportableStructures = smallStructures.concat(mediumStructures);
           allStructures.forEach(function (unit) {
             mods.push(
               {
@@ -107,6 +110,7 @@ define([
               }
             );
           });
+
           smallStructures.forEach(function (unit) {
             mods.push({
               file: unit,
@@ -115,6 +119,8 @@ define([
               value: { size: 1 },
             });
           });
+
+          var teleportableStructures = smallStructures.concat(mediumStructures);
           teleportableStructures.forEach(function (unit) {
             mods.push(
               {
@@ -131,6 +137,7 @@ define([
               }
             );
           });
+
           var groundStructures = _.filter(allStructures, function (structure) {
             return (
               !_.includes(structure, "defense_satellite") &&
@@ -159,6 +166,7 @@ define([
               }
             );
           });
+
           var orbitalStructures = [
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
             "/pa/units/orbital/mining_platform/mining_platform.json",
@@ -185,6 +193,7 @@ define([
               }
             );
           });
+
           inventory.addMods(mods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
