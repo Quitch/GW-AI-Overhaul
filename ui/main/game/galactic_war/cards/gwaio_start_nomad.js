@@ -107,6 +107,12 @@ define([
                 path: "command_caps",
                 op: "push",
                 value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_Mobile",
               }
             );
           });
