@@ -230,7 +230,7 @@ define({
       path: "/pa/units/land/vehicle_factory/vehicle_factory.json",
     },
     {
-      name: "!LOC:Orbital and Deepspace Radar",
+      name: "!LOC:Planetary Radar",
       path: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
     },
     {
