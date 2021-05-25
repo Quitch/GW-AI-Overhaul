@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.2.2 - 2021-05-25
+
+### Fixed
+
+- Removed attack command from Nomad Commander units that don't have an offensive weapon
+
 ## v5.2.1 - 2021-05-24
 
 ### Fixed
