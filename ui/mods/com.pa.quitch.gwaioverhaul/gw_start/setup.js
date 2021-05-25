@@ -406,7 +406,7 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
-            console.debug(" ---- MAKING NEW GALAXY ----");
+            console.log(" ---- MAKING NEW GALAXY ----");
             model.newGame(undefined);
 
             var busyToken = {};
@@ -676,7 +676,7 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-              console.debug("Max distance: " + maxDist);
+              console.log("Max distance: " + maxDist);
 
               var setAIData = function (
                 ai,
@@ -794,7 +794,7 @@ if (!gwaioSetupLoaded) {
                         info.boss.minions.push(bossMinion);
                       });
                   }
-                  console.debug(
+                  console.log(
                     "BOSS: " +
                       info.boss.name +
                       " | Faction: " +
@@ -808,7 +808,7 @@ if (!gwaioSetupLoaded) {
                   );
                   if (info.boss.minions) {
                     _.times(info.boss.minions.length, function (n) {
-                      console.debug(
+                      console.log(
                         "\tMinion: " +
                           info.boss.minions[n].name +
                           " | Eco: " +
@@ -932,7 +932,7 @@ if (!gwaioSetupLoaded) {
                       worker.ai.foes.push(foeCommander);
                     }
                   });
-                  console.debug(
+                  console.log(
                     "WORKER: " +
                       worker.ai.name +
                       " | Faction: " +
@@ -946,7 +946,7 @@ if (!gwaioSetupLoaded) {
                   );
                   if (worker.ai.minions) {
                     _.times(worker.ai.minions.length, function (n) {
-                      console.debug(
+                      console.log(
                         "\tMinion: " +
                           worker.ai.minions[n].name +
                           " | Eco: " +
@@ -958,7 +958,7 @@ if (!gwaioSetupLoaded) {
                   }
                   if (worker.ai.foes) {
                     _.times(worker.ai.foes.length, function (n) {
-                      console.debug(
+                      console.log(
                         "\tFoe: " +
                           worker.ai.foes[n].name +
                           " | Eco: " +
