@@ -374,6 +374,7 @@ if (!gwaioRefereeChangesLoaded) {
 
                     $.getJSON("coui:/" + file)
                       .then(function (json) {
+                        // tie the files to the ai_path location
                         if (quellerEnabled) configFiles[file] = json;
                         else
                           configFiles["/pa/ai" + file.slice(path.length - 1)] =
