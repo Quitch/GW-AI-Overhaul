@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Titans AI support for the following cards:
+  - Nomad Commander
+  - Paratrooper Commander
+  - Rapid Commander
+
+### Changed
+
+- Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
+
 ### Fixed
 
 - Corrected tooltips for and about Planetary Radar
@@ -22,17 +33,10 @@
 
 ### Added
 
-- Titans AI support for the following cards:
-  - Nomad Commander
-  - Paratrooper Commander
-  - Rapid Commander
-- Loadout name to GWO panel
-- Player information to GWO panel
 - Player army information to GWO panel
 
 ### Changed
 
-- Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
 - Reduced starting eco levels for Casual through Gold
 - Improved how the GWO panel displays war options
 
