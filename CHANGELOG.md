@@ -12,6 +12,7 @@
 ### Changed
 
 - Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
+- The Guardians will now utilise tech that modifies what units can build
 
 ### Fixed
 
