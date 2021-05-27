@@ -59,9 +59,9 @@ if (!gwaioRefereeChangesLoaded) {
 
               if (gwaioFunctions.quellerAIEnabled()) {
                 var aiUnitMapPath =
-                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json";
+                  "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
-                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+                  "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
               } else {
                 aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
@@ -167,7 +167,7 @@ if (!gwaioRefereeChangesLoaded) {
                         mod
                       );
                     if (!Object.prototype.hasOwnProperty.call(ops, mod.op))
-                      return console.error("Invalid operation in mod", mod);
+                      return console.error("Invalid operation in mod " + mod);
 
                     var originalPath = (mod.path || "").split(".");
                     var path = originalPath.reverse();
@@ -287,7 +287,7 @@ if (!gwaioRefereeChangesLoaded) {
                     if (gwaioFunctions.quellerAIEnabled()) {
                       var playerFilesClassic = _.assign(
                         {
-                          "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
+                          "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json.player":
                             playerAIUnitMap,
                         },
                         playerSpecFiles
@@ -295,7 +295,7 @@ if (!gwaioRefereeChangesLoaded) {
                       var playerFilesX1 = titans
                         ? _.assign(
                             {
-                              "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
+                              "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
                                 playerX1AIUnitMap,
                             },
                             playerSpecFiles
@@ -346,39 +346,42 @@ if (!gwaioRefereeChangesLoaded) {
 
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
-            var deferredAIMods = $.Deferred();
-            var deferredAll = [deferredAIFiles, deferredAIMods];
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            var aiTechPath = "/pa/ai_personalities/tech_user/";
 
-            var parseFiles = function (path, promise, filter) {
-              api.file.list(path, true).then(function (files) {
+            var parseFiles = function (path, promise, aiToModify) {
+              api.file.list(path, true).then(function (fileList) {
+                console.log(fileList);
                 var configFiles = self.files();
                 var queue = [];
 
-                if (filter) {
-                  var cardIds = _.map(model.game().inventory().cards(), "id");
-                  var filesToProcess = _.filter(files, function (file) {
-                    return _.some(cardIds, function (cardId) {
-                      return _.includes(file, cardId);
-                    });
-                  });
-                } else {
-                  filesToProcess = files;
-                }
-                _.forEach(filesToProcess, function (file) {
-                  if (_.endsWith(file, ".json")) {
+                _.forEach(fileList, function (filePath) {
+                  if (
+                    _.endsWith(filePath, ".json") &&
+                    !_.includes(filePath, "/neural_networks/")
+                  ) {
                     var deferred2 = $.Deferred();
 
                     queue.push(deferred2);
 
-                    $.getJSON("coui:/" + file)
+                    $.getJSON("coui:/" + filePath)
                       .then(function (json) {
-                        // tie the files to the ai_path location
-                        if (quellerEnabled) configFiles[file] = json;
-                        else
-                          configFiles["/pa/ai" + file.slice(path.length - 1)] =
-                            json;
+                        if (aiToModify === "All") {
+                          console.log("MODIFY ALL AIS", filePath);
+                          // RUN SOME MODIFICATION FUNCTION
+                          configFiles[aiTechPath] = json;
+                        } else if (aiToModify === "SubCommanders") {
+                          console.log("MODIFY SUBCOMMANDERS", filePath);
+                          // Setup enemy AI first
+                          configFiles[filePath] = json;
+                          // Setup Sub Commanders
+                          // RUN SOME MODIFICATION FUNCTION
+                          configFiles[aiTechPath] = json;
+                        } else {
+                          console.log("MODIFY NOTHING", filePath);
+                          configFiles[filePath] = json;
+                        }
                       })
                       .always(function () {
                         deferred2.resolve();
@@ -387,6 +390,7 @@ if (!gwaioRefereeChangesLoaded) {
                 });
 
                 $.when.apply($, queue).then(function () {
+                  console.log("FILE PARSING COMPLETE");
                   self.files.valueHasMutated();
                   promise.resolve();
                 });
@@ -394,14 +398,45 @@ if (!gwaioRefereeChangesLoaded) {
             };
 
             if (quellerEnabled) {
-              var aiFilePath = "/pa/ai/queller/q_uber/";
+              var aiFilePath = "/pa/ai_personalities/queller/q_uber/";
             } else {
-              aiFilePath = "/pa/ai/bugfix/";
-              parseFiles("/pa/ai/technology_modifiers/", deferredAIMods, true);
+              aiFilePath = "/pa/ai/";
             }
-            parseFiles(aiFilePath, deferredAIFiles, false);
 
-            $.when.apply($, deferredAll).then(function () {
+            var techModifiers = true; // placeholder
+
+            if (techModifiers) {
+              console.log("WE ARE HOLDING AI AFFECTING TECH");
+              var game = model.game();
+              var ai = game.galaxy().stars()[game.currentStar()].ai();
+              var subCommanders = game.inventory().minions();
+              if (ai.mirrorMode === true) {
+                ai.personality.ai_path = aiTechPath;
+                _.forEach(ai.minions, function (minion) {
+                  minion.personality.ai_path = aiTechPath;
+                });
+                _.forEach(ai.foes, function (foe) {
+                  foe.personality.ai_path = aiTechPath;
+                });
+                console.log("PARSING FILES FOR ALL");
+                parseFiles(aiFilePath, deferredAIFiles, "All");
+              } else if (subCommanders.length > 0) {
+                console.log("PARSING FILES FOR SUB COMMANDERS");
+                _.forEach(subCommanders, function (subCommander) {
+                  subCommander.personality.ai_path = aiTechPath;
+                });
+                parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
+              } else {
+                console.log("PARSING FILES FOR NONE BECAUSE NO AI AFFECTED");
+                parseFiles(aiFilePath, deferredAIFiles, "None");
+              }
+            } else {
+              console.log("PARSING FILES FOR NONE BECAUSE NO TECH");
+              parseFiles(aiFilePath, deferredAIFiles, "None");
+            }
+
+            $.when.apply($, deferredAIFiles).then(function () {
+              console.log("AI GENERATED");
               deferred.resolve();
             });
 
@@ -432,6 +467,11 @@ if (!gwaioRefereeChangesLoaded) {
             ];
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
+              var techModifiers = true; // placeholder
+              if (techModifiers)
+                subcommander.personality.ai_path =
+                  "/pa/ai_personalities/tech_user/";
+
               armies.push({
                 slots: [
                   {

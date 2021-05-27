@@ -54,7 +54,7 @@ define([
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
       if (quellerEnabled) {
-        minion.personality.ai_path = "/pa/ai/queller/q_uber";
+        minion.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
       }
       return {
         params: {

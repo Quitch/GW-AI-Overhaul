@@ -2,21 +2,13 @@
 
 ## Unreleased
 
-### Added
-
-- Titans AI support for the following cards:
-  - Nomad Commander
-  - Paratrooper Commander
-  - Rapid Commander
-
-### Changed
-
-- Sub Commanders are now enabled again for the Rapid Commander when Titans AI is in use
-- The Guardians will now utilise tech that modifies what units can build when Titans AI is in use
-
 ### Fixed
 
 - Corrected tooltips for and about Planetary Radar
+
+### Known Issues
+
+- Queller AI from older version saves will no longer work
 
 ## v5.2.2 - 2021-05-25
 
