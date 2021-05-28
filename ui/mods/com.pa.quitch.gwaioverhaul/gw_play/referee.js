@@ -403,9 +403,7 @@ if (!gwaioRefereeChangesLoaded) {
               aiFilePath = "/pa/ai/";
             }
 
-            var techModifiers = true; // placeholder
-
-            if (techModifiers) {
+            if (gwaioFunctions.hasAIModifyingCards()) {
               console.log("WE ARE HOLDING AI AFFECTING TECH");
               var game = model.game();
               var ai = game.galaxy().stars()[game.currentStar()].ai();
@@ -467,8 +465,7 @@ if (!gwaioRefereeChangesLoaded) {
             ];
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              var techModifiers = true; // placeholder
-              if (techModifiers)
+              if (gwaioFunctions.hasAIModifyingCards())
                 subcommander.personality.ai_path =
                   "/pa/ai_personalities/tech_user/";
 

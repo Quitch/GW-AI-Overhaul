@@ -50,5 +50,16 @@ define([
         return true;
       }
     },
+    hasAIModifyingCards: function () {
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      if (
+        originSystem.gwaio &&
+        originSystem.gwaio.aiMods &&
+        originSystem.gwaio.aiMods.length > 0
+      ) {
+        return true;
+      }
+    },
   };
 });
