@@ -77,7 +77,7 @@ if (!gwaioRefereeChangesLoaded) {
                 aiMapGet,
                 aiX1MapGet
               ) {
-                /* Replace part of gw_spec.js to add ops.remove() */
+                /* Replace part of gw_spec.js to add ops.pull() */
                 var flattenBaseSpecs = function (spec, specs, tag) {
                   if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
                     return spec;
@@ -153,10 +153,14 @@ if (!gwaioRefereeChangesLoaded) {
                       return attribute + specTag;
                     },
                     // New op to allow removal of an item from an array
-                    remove: function (attribute, value) {
-                      return _.filter(attribute, function (entry) {
-                        return entry !== value;
-                      });
+                    pull: function (attribute, value) {
+                      if (!_.isArray(attribute))
+                        attribute = attribute === undefined ? [] : [attribute];
+                      if (_.isArray(value))
+                        var args = [attribute].concat(value);
+                      else args = [attribute, value];
+
+                      return _.pull.apply(this, args);
                     },
                   };
                   var applyMod = function (mod) {
