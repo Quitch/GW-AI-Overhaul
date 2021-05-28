@@ -185,7 +185,7 @@ define([
               {
                 file: unit,
                 path: "unit_types",
-                op: "remove",
+                op: "pull",
                 value: "UNITTYPE_Structure",
               },
               {
