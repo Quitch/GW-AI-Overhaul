@@ -61,5 +61,16 @@ define([
         return true;
       }
     },
+    addAIMods: function (mods) {
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      if (!originSystem.gwaio) {
+        originSystem.gwaio = {};
+        originSystem.gwaio.aiMods = [];
+      } else if (!originSystem.gwaio.aiMods) {
+        originSystem.gwaio.aiMods = [];
+      }
+      originSystem.gwaio.aiMods.concat(mods);
+    },
   };
 });
