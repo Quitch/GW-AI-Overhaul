@@ -687,7 +687,8 @@ if (!gwaioSetupLoaded) {
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
                 if (model.gwaioDifficultySettings.quellerAI()) {
-                  ai.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+                  ai.personality.ai_path =
+                    "/pa/ai_personalities/queller/q_uber";
                 }
                 ai.personality.micro_type =
                   model.gwaioDifficultySettings.microTypeChosen();
@@ -1078,6 +1079,7 @@ if (!gwaioSetupLoaded) {
               } else {
                 originSystem.gwaio.ai = "Titans";
               }
+              originSystem.gwaio.aiMods = [];
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
