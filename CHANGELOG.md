@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.2.3 - 2021-05-28
+
+### Fixed
+
+- Corrected tooltips for and about Planetary Radar
+
 ## v5.2.2 - 2021-05-25
 
 ### Fixed
