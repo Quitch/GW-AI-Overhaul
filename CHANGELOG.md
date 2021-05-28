@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.2.4 - 2021-05-28
+
+### Fixed
+
+- Corrected tooltip for Firefly upgrade
+
 ## v5.2.3 - 2021-05-28
 
 ### Fixed
