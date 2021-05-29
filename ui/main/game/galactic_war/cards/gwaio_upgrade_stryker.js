@@ -49,19 +49,19 @@ define([
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_capacity",
           op: "replace",
-          value: 400,
+          value: 100,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_demand",
           op: "replace",
-          value: 200,
+          value: 50,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_per_shot",
           op: "replace",
-          value: 100,
+          value: 25,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
