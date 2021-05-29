@@ -2,6 +2,10 @@
 
 ## Unreleased - 2021-05-29
 
+### Change
+
+- Orca Upgrade Tech only applies to the destroyer's surface weapon
+
 ### Fixed
 
 - Advanced Energy Plant Upgrade Tech description
