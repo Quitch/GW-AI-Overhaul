@@ -6,6 +6,7 @@
 
 - Buffed the following upgrade techs:
   - Commander
+  - Skitter
   - Spinner
   - Stryker
 
