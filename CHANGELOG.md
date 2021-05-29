@@ -11,7 +11,7 @@
 
 - Advanced Energy Plant Upgrade Tech description
 - Ares Upgrade Tech not utilising its full range
-- Jig Upgrade Tech not working
+- Jig Upgrade Tech not doing what it said it did
 - Hoarder Commander wiping out its own inventory when returning to the galaxy map
 
 ## v5.2.4 - 2021-05-28
