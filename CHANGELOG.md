@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased - 2021-05-29
+
+### Fixed
+
+- Advanced Energy Plant Upgrade Tech description
+
 ## v5.2.4 - 2021-05-28
 
 ### Fixed
