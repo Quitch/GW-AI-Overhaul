@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v5.2.5 - 2021-05-29
+
+### Change
+
+- Orca Upgrade Tech only applies to the destroyer's surface weapon
+- Kraken Upgrade Tech only applies to the advanced submarine's surface weapon
+
+### Fixed
+
+- Advanced Energy Plant Upgrade Tech description
+- Ares Upgrade Tech not utilising its full range
+- Jig Upgrade Tech not doing what it said it did
+- Hoarder Commander wiping out its own inventory when returning to the galaxy map
+
 ## v5.2.4 - 2021-05-28
 
 ### Fixed

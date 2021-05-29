@@ -77,7 +77,122 @@ if (!gwaioRefereeChangesLoaded) {
                 aiMapGet,
                 aiX1MapGet
               ) {
-                /* Replace part of gw_spec.js to add ops.pull() */
+                /* start of gw_spec.js replacements */
+                var tagSpec = function (specId, tag, spec) {
+                  var moreWork = [];
+                  if (!_.isObject(spec)) return moreWork;
+                  var applyTag = function (obj, key) {
+                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                      if (_.isString(obj[key])) {
+                        moreWork.push(obj[key]);
+                        obj[key] = obj[key] + tag;
+                      } else if (_.isArray(obj[key])) {
+                        obj[key] = _.map(obj[key], function (value) {
+                          moreWork.push(value);
+                          return value + tag;
+                        });
+                      }
+                    }
+                  };
+                  // Units
+                  applyTag(spec, "base_spec");
+                  if (spec.tools) {
+                    _.forEach(spec.tools, function (tool) {
+                      applyTag(tool, "spec_id");
+                    });
+                  }
+                  applyTag(spec, "replaceable_units");
+                  applyTag(spec, "buildable_projectiles");
+                  if (
+                    spec.factory &&
+                    _.isString(spec.factory.initial_build_spec)
+                  ) {
+                    applyTag(spec.factory, "initial_build_spec");
+                  }
+                  // Tools
+                  if (spec.ammo_id) {
+                    if (_.isString(spec.ammo_id)) {
+                      applyTag(spec, "ammo_id");
+                    } else {
+                      _.forEach(spec.ammo_id, function (ammo) {
+                        applyTag(ammo, "id");
+                      });
+                    }
+                  }
+                  // Add support for death_weapon specs
+                  if (spec.death_weapon) {
+                    if (_.isString(spec.death_weapon.ground_ammo_spec))
+                      applyTag(spec.death_weapon, "ground_ammo_spec");
+
+                    if (_.isString(spec.death_weapon.air_ammo_spec))
+                      applyTag(spec.death_weapon, "air_ammo_spec");
+                  }
+                  return moreWork;
+                };
+
+                // replace GW.specs.genUnitSpecs() to call our own tagSpec()
+                var genUnitSpecs = function (units, tag) {
+                  if (!tag) return;
+                  var result = $.Deferred();
+                  var results = {};
+                  var work = units.slice(0);
+                  var step = function () {
+                    var item;
+                    var pending = 0;
+                    var fetch = function (item) {
+                      $.ajax({
+                        url: "coui:/" + item,
+                        success: function (data) {
+                          try {
+                            data = JSON.parse(data);
+                          } catch (e) {
+                            /* empty */
+                          }
+                          var newWork = tagSpec(item, tag, data);
+                          work = work.concat(newWork);
+                          results[item + tag] = data;
+                        },
+                        error: function (request, status, error) {
+                          console.log(
+                            "error loading spec:",
+                            item,
+                            request,
+                            status,
+                            error
+                          );
+                        },
+                        complete: function () {
+                          --pending;
+                          if (!pending) _.delay(step);
+                        },
+                      });
+                    };
+                    while (work.length) {
+                      item = work.pop();
+                      if (
+                        Object.prototype.hasOwnProperty.call(
+                          results,
+                          item + tag
+                        )
+                      )
+                        continue;
+                      ++pending;
+                      fetch(item);
+                    }
+                    if (!pending) _.delay(finish);
+                  };
+                  var finish = _.once(function () {
+                    results["/pa/units/unit_list.json" + tag] = {
+                      units: _.map(units, function (unit) {
+                        return unit + tag;
+                      }),
+                    };
+                    result.resolve(results);
+                  });
+                  step();
+                  return result;
+                };
+
                 var flattenBaseSpecs = function (spec, specs, tag) {
                   if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
                     return spec;
@@ -226,7 +341,7 @@ if (!gwaioRefereeChangesLoaded) {
                   };
                   _.forEach(mods, applyMod);
                 };
-                /* end of gw_spec.js replacement */
+                /* end of gw_spec.js replacements */
 
                 var units = parse(unitsGet[0]).units;
                 var aiUnitMap = parse(aiMapGet[0]);
@@ -242,46 +357,39 @@ if (!gwaioRefereeChangesLoaded) {
                     aiTag[n]
                   );
 
-                  GW.specs
-                    .genUnitSpecs(units, aiTag[n])
-                    .then(function (aiSpecFiles) {
-                      var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
-                      var enemyAIUnitMapPair = {};
-                      enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                      var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
-                      var enemyX1AIUnitMapPair = {};
-                      enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
-                        enemyX1AIUnitMap;
-                      var aiFilesClassic = _.assign(
-                        enemyAIUnitMapPair,
-                        aiSpecFiles
-                      );
-                      var aiFilesX1 = titans
-                        ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
-                        : {};
-                      var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-                      if (ai.inventory) {
-                        var aiInventory = [];
-                        aiInventory =
-                          currentCount === 0
-                            ? ai.inventory
-                            : ai.foes[currentCount - 1].inventory;
-                        if (ai.mirrorMode === true) {
-                          // Don't load mods that break the AI
-                          var usablePlayerInventory = _.reject(
-                            inventory.mods(),
-                            {
-                              path: "buildable_types",
-                            }
-                          );
-                          aiInventory = aiInventory.concat(
-                            usablePlayerInventory
-                          );
-                        }
-                        modSpecs(aiFiles, aiInventory, aiTag[n]);
+                  genUnitSpecs(units, aiTag[n]).then(function (aiSpecFiles) {
+                    var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
+                    var enemyAIUnitMapPair = {};
+                    enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+                    var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
+                    var enemyX1AIUnitMapPair = {};
+                    enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
+                      enemyX1AIUnitMap;
+                    var aiFilesClassic = _.assign(
+                      enemyAIUnitMapPair,
+                      aiSpecFiles
+                    );
+                    var aiFilesX1 = titans
+                      ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
+                      : {};
+                    var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+                    if (ai.inventory) {
+                      var aiInventory = [];
+                      aiInventory =
+                        currentCount === 0
+                          ? ai.inventory
+                          : ai.foes[currentCount - 1].inventory;
+                      if (ai.mirrorMode === true) {
+                        // Don't load mods that break the AI
+                        var usablePlayerInventory = _.reject(inventory.mods(), {
+                          path: "buildable_types",
+                        });
+                        aiInventory = aiInventory.concat(usablePlayerInventory);
                       }
-                      aiFactions[currentCount].resolve(aiFiles);
-                    });
+                      modSpecs(aiFiles, aiInventory, aiTag[n]);
+                    }
+                    aiFactions[currentCount].resolve(aiFiles);
+                  });
                 });
 
                 var playerAIUnitMap = GW.specs.genAIUnitMap(
@@ -294,52 +402,52 @@ if (!gwaioRefereeChangesLoaded) {
 
                 var inventory = self.game().inventory();
 
-                GW.specs
-                  .genUnitSpecs(inventory.units(), ".player")
-                  .then(function (playerSpecFiles) {
-                    if (gwaioFunctions.quellerAIEnabled()) {
-                      var playerFilesClassic = _.assign(
-                        {
-                          "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
-                            playerAIUnitMap,
-                        },
-                        playerSpecFiles
-                      );
-                      var playerFilesX1 = titans
-                        ? _.assign(
-                            {
-                              "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
-                                playerX1AIUnitMap,
-                            },
-                            playerSpecFiles
-                          )
-                        : {};
-                    } else {
-                      playerFilesClassic = _.assign(
-                        {
-                          "/pa/ai/unit_maps/ai_unit_map.json.player":
-                            playerAIUnitMap,
-                        },
-                        playerSpecFiles
-                      );
-                      playerFilesX1 = titans
-                        ? _.assign(
-                            {
-                              "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                                playerX1AIUnitMap,
-                            },
-                            playerSpecFiles
-                          )
-                        : {};
-                    }
-                    var playerFiles = _.assign(
-                      {},
-                      playerFilesClassic,
-                      playerFilesX1
+                genUnitSpecs(inventory.units(), ".player").then(function (
+                  playerSpecFiles
+                ) {
+                  if (gwaioFunctions.quellerAIEnabled()) {
+                    var playerFilesClassic = _.assign(
+                      {
+                        "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
+                          playerAIUnitMap,
+                      },
+                      playerSpecFiles
                     );
-                    modSpecs(playerFiles, inventory.mods(), ".player");
-                    playerFileGen.resolve(playerFiles);
-                  });
+                    var playerFilesX1 = titans
+                      ? _.assign(
+                          {
+                            "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
+                              playerX1AIUnitMap,
+                          },
+                          playerSpecFiles
+                        )
+                      : {};
+                  } else {
+                    playerFilesClassic = _.assign(
+                      {
+                        "/pa/ai/unit_maps/ai_unit_map.json.player":
+                          playerAIUnitMap,
+                      },
+                      playerSpecFiles
+                    );
+                    playerFilesX1 = titans
+                      ? _.assign(
+                          {
+                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                              playerX1AIUnitMap,
+                          },
+                          playerSpecFiles
+                        )
+                      : {};
+                  }
+                  var playerFiles = _.assign(
+                    {},
+                    playerFilesClassic,
+                    playerFilesX1
+                  );
+                  modSpecs(playerFiles, inventory.mods(), ".player");
+                  playerFileGen.resolve(playerFiles);
+                });
               });
 
               _.times(aiFactionCount, function (n) {
