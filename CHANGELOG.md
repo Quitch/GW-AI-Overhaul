@@ -13,6 +13,10 @@
   - Spinner
   - Stryker
 
+### Fixed
+
+- Pelican Upgrade Tech compatible with the Nomad Commander
+
 ## v5.2.5 - 2021-05-29
 
 ### Change
