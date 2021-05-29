@@ -8,6 +8,7 @@
   - Commander
   - Energy Storage
   - Firefly
+  - Metal Storage
   - Skitter
   - Spinner
   - Stryker
