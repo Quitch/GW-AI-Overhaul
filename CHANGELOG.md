@@ -6,6 +6,7 @@
 
 - Buffed the following upgrade techs:
   - Spinner
+  - Stryker
 
 ## v5.2.5 - 2021-05-29
 
