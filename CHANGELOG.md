@@ -6,6 +6,7 @@
 
 - Buffed the following upgrade techs:
   - Commander
+  - Energy Storage
   - Firefly
   - Skitter
   - Spinner
