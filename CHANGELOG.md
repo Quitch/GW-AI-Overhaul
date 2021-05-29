@@ -5,6 +5,7 @@
 ### Change
 
 - Orca Upgrade Tech only applies to the destroyer's surface weapon
+- Kraken Upgrade Tech only applies to the advanced submarine's surface weapon
 
 ### Fixed
 
