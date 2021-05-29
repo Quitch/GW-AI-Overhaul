@@ -9,6 +9,7 @@
 ### Fixed
 
 - Advanced Energy Plant Upgrade Tech description
+- Ares Upgrade Tech not utilising its full range
 
 ## v5.2.4 - 2021-05-28
 
