@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Buffed the following upgrade techs:
+  - Spinner
+
 ## v5.2.5 - 2021-05-29
 
 ### Change
