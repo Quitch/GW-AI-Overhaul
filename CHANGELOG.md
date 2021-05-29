@@ -5,6 +5,7 @@
 ### Change
 
 - Buffed the following upgrade techs:
+  - Commander
   - Spinner
   - Stryker
 
