@@ -2,6 +2,10 @@
 
 ## Unreleased - 2021-05-29
 
+### Changed
+
+- Disabled Jig Upgrade Tech as I haven't been able to figure out how to make it work in Galactic War yet
+
 ### Fixed
 
 - Advanced Energy Plant Upgrade Tech description
