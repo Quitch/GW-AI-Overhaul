@@ -13,6 +13,7 @@
   - Spinner
   - Stryker
 - When Queller AI is enabled Sub Commanders use the Q-Gold brain rather than Q-Uber
+- Overhauled the threat measures to smooth their progression
 
 ### Fixed
 

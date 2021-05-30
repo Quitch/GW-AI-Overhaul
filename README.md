@@ -125,6 +125,7 @@ From easiest to hardest:
 - Nightmare
 - Demigod
 - Godlike
+- Titan
 
 ## Compatible Loadouts
 
