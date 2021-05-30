@@ -482,8 +482,7 @@
         "AdvancedBotFabber",
         "SupportCommander",
         "AdvancedVehicleFabber",
-        "AdvancedAirFabber",
-        "BasicBotCombatFabber"
+        "AdvancedAirFabber"
       ],
       "build_conditions": [
         [

@@ -50,8 +50,7 @@
         "AnyBasicFabber",
         "AnyAdvancedFabber",
         "SupportCommander",
-        "OrbitalFabber",
-        "BasicBotCombatFabber"
+        "OrbitalFabber"
       ],
       "build_conditions": [
         [
@@ -134,7 +133,7 @@
       "priority": 615,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
-      "builders": ["OrbitalFabber", "BasicBotCombatFabber"],
+      "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
           {
@@ -178,8 +177,7 @@
         "AnyBasicFabber",
         "AnyAdvancedFabber",
         "SupportCommander",
-        "OrbitalFabber",
-        "BasicBotCombatFabber"
+        "OrbitalFabber"
       ],
       "build_conditions": [
         [
@@ -226,8 +224,7 @@
         "AnyBasicFabber",
         "AnyAdvancedFabber",
         "SupportCommander",
-        "OrbitalFabber",
-        "BasicBotCombatFabber"
+        "OrbitalFabber"
       ],
       "build_conditions": [
         [
@@ -268,8 +265,7 @@
         "AnyBasicFabber",
         "AnyAdvancedFabber",
         "SupportCommander",
-        "OrbitalFabber",
-        "BasicBotCombatFabber"
+        "OrbitalFabber"
       ],
       "build_conditions": [
         [
