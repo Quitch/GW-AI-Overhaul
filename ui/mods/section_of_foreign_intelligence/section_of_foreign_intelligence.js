@@ -17,43 +17,24 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         var threat = function (rate) {
-          if (!rate) {
-            return "!LOC:Unknown";
-          } else if (rate < 0.649) {
-            return "!LOC:Worthless";
-          } else if (rate < 0.749) {
-            return "!LOC:Helpless";
-          } else if (rate < 0.849) {
-            return "!LOC:Weakling";
-          } else if (rate < 0.949) {
-            return "!LOC:Inexperienced";
-          } else if (rate < 1.049) {
-            return "!LOC:Competent";
-          } else if (rate < 1.149) {
-            return "!LOC:Skilled";
-          } else if (rate < 1.249) {
-            return "!LOC:Experienced";
-          } else if (rate < 1.349) {
-            return "!LOC:Veteran";
-          } else if (rate < 1.449) {
-            return "!LOC:Masterful";
-          } else if (rate < 1.649) {
-            return "!LOC:Hardcore";
-          } else if (rate < 1.849) {
-            return "!LOC:Dangerous";
-          } else if (rate < 2.049) {
-            return "!LOC:Deadly";
-          } else if (rate < 2.349) {
-            return "!LOC:Inhuman";
-          } else if (rate < 2.649) {
-            return "!LOC:Genocidal";
-          } else if (rate < 3) {
-            return "!LOC:Nightmare";
-          } else if (rate < 10) {
-            return "!LOC:Demigod";
-          } else {
-            return "!LOC:Godlike";
-          }
+          if (!rate) return "!LOC:Unknown";
+          else if (rate < 0.649) return "!LOC:Worthless";
+          else if (rate < 0.749) return "!LOC:Helpless";
+          else if (rate < 0.849) return "!LOC:Weakling";
+          else if (rate < 0.949) return "!LOC:Inexperienced";
+          else if (rate < 1.049) return "!LOC:Competent";
+          else if (rate < 1.149) return "!LOC:Skilled";
+          else if (rate < 1.249) return "!LOC:Experienced";
+          else if (rate < 1.349) return "!LOC:Veteran";
+          else if (rate < 1.449) return "!LOC:Masterful";
+          else if (rate < 1.649) return "!LOC:Hardcore";
+          else if (rate < 1.849) return "!LOC:Dangerous";
+          else if (rate < 2.049) return "!LOC:Deadly";
+          else if (rate < 2.349) return "!LOC:Inhuman";
+          else if (rate < 2.649) return "!LOC:Genocidal";
+          else if (rate < 3) return "!LOC:Nightmare";
+          else if (rate < 10) return "!LOC:Demigod";
+          else return "!LOC:Godlike";
         };
         var rgb = function (color) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
@@ -116,29 +97,17 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         var totalThreat = function (totalRate) {
-          if (!totalRate) {
-            return "!LOC:None";
-          } else if (totalRate < 0.7) {
-            return "!LOC:Very Low";
-          } else if (totalRate <= 1) {
-            return "!LOC:Low";
-          } else if (totalRate <= 1.4) {
-            return "!LOC:Moderate";
-          } else if (totalRate <= 2.6) {
-            return "!LOC:High";
-          } else if (totalRate <= 4.2) {
-            return "!LOC:Very High";
-          } else if (totalRate <= 5.1) {
-            return "!LOC:Extreme";
-          } else if (totalRate <= 8) {
-            return "!LOC:Critical";
-          } else if (totalRate <= 11) {
-            return "!LOC:Suicidal";
-          } else if (totalRate <= 20) {
-            return "!LOC:Impossible";
-          } else {
-            return "!LOC:Skynet";
-          }
+          if (!totalRate) return "!LOC:None";
+          else if (totalRate < 0.7) return "!LOC:Very Low";
+          else if (totalRate <= 1) return "!LOC:Low";
+          else if (totalRate <= 1.4) return "!LOC:Moderate";
+          else if (totalRate <= 2.6) return "!LOC:High";
+          else if (totalRate <= 4.2) return "!LOC:Very High";
+          else if (totalRate <= 5.1) return "!LOC:Extreme";
+          else if (totalRate <= 8) return "!LOC:Critical";
+          else if (totalRate <= 11) return "!LOC:Suicidal";
+          else if (totalRate <= 20) return "!LOC:Impossible";
+          else return "!LOC:Skynet";
         };
         model.gwaioSystemThreat = ko.pureComputed(function () {
           var primary = model.selection.system().star.ai();
