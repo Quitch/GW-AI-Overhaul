@@ -60,7 +60,7 @@ define([
           minion: minion,
           unique: Math.random(),
         },
-        chance: 100000,
+        chance: system.distance() > 0 ? chance : 0,
       };
     },
     buff: function (inventory, params) {
