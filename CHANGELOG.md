@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## v5.3.0 - 2021-05-30
+
+### Added
+
+- New "wipe" op that cards can use to remove text from a string
+
+### Change
+
+- Buffed the following upgrade techs:
+  - Commander
+  - Energy Storage
+  - Firefly
+  - Metal Storage
+  - Skitter
+  - Spinner
+  - Stryker
+- When Queller AI is enabled Sub Commanders use the Q-Gold brain rather than Q-Uber
+- Overhauled the threat ratings in the intelligence panel to smooth their progression
+- Updated AI Bugfixes and Enhancements to v2.6.0
+- Updated Queller AI to v5.14.0
+
+### Fixed
+
+- Pelican Upgrade Tech compatible with the Nomad Commander
+- Possible fix for issues where JUMP and FIGHT would not appear
+
 ## v5.2.5 - 2021-05-29
 
 ### Change

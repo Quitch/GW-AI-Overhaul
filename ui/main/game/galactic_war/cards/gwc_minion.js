@@ -53,7 +53,7 @@ define([
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
       if (gwaioFunctions.quellerAIEnabled()) {
-        minion.personality.ai_path = "/pa/ai/queller/q_uber";
+        minion.personality.ai_path = "/pa/ai/queller/q_gold";
       }
       return {
         params: {

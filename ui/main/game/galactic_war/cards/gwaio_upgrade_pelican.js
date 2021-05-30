@@ -32,8 +32,8 @@ define([
         {
           file: "/pa/units/air/transport/transport.json",
           path: "transporter.transportable_unit_types",
-          op: "replace",
-          value: "Mobile & Land",
+          op: "wipe",
+          value: " - Commander",
         },
       ]);
     },

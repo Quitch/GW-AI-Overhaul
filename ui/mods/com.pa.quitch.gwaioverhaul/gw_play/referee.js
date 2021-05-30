@@ -277,6 +277,12 @@ if (!gwaioRefereeChangesLoaded) {
 
                       return _.pull.apply(this, args);
                     },
+                    // New op to remove text in a string
+                    wipe: function (attribute, value) {
+                      if (!_.isString(attribute))
+                        attribute = attribute.toString();
+                      return attribute.replace(value, "");
+                    },
                   };
                   var applyMod = function (mod) {
                     var spec = load(mod.file);
@@ -408,7 +414,7 @@ if (!gwaioRefereeChangesLoaded) {
                   if (gwaioFunctions.quellerAIEnabled()) {
                     var playerFilesClassic = _.assign(
                       {
-                        "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json.player":
+                        "/pa/ai/queller/q_gold/unit_maps/ai_unit_map.json.player":
                           playerAIUnitMap,
                       },
                       playerSpecFiles
@@ -416,7 +422,7 @@ if (!gwaioRefereeChangesLoaded) {
                     var playerFilesX1 = titans
                       ? _.assign(
                           {
-                            "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json.player":
+                            "/pa/ai/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
                               playerX1AIUnitMap,
                           },
                           playerSpecFiles
@@ -469,7 +475,9 @@ if (!gwaioRefereeChangesLoaded) {
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
 
-            if (quellerEnabled) var aiFilePath = "/pa/ai/queller/q_uber/";
+            if (quellerEnabled && model.game().inventory().minions().length > 0)
+              var aiFilePath = "/pa/ai/queller/";
+            else if (quellerEnabled) aiFilePath = "/pa/ai/queller/q_uber";
             else aiFilePath = "/pa/ai/bugfix/";
 
             api.file.list(aiFilePath, true).then(function (files) {

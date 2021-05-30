@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 50%."
+      "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 100%."
     ),
     summarize: _.constant("!LOC:Firefly Upgrade Tech"),
     icon: _.constant(
@@ -51,13 +51,13 @@ define([
           file: "/pa/units/air/air_scout/air_scout.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
         {
           file: "/pa/units/air/air_scout/air_scout.json",
           path: "recon.observer.items.1.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
       ]);
     },

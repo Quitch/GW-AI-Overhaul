@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 50%."
+      "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%."
     ),
     summarize: _.constant("!LOC:Skitter Upgrade Tech"),
     icon: _.constant(
@@ -56,19 +56,19 @@ define([
           file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.0.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
         {
           file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.1.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
         {
           file: "/pa/units/land/land_scout/land_scout.json",
           path: "recon.observer.items.2.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
       ]);
     },
