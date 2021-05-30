@@ -312,11 +312,11 @@ if (!gwaioSystemChangesLoaded) {
           return galaxy.pathBetween(from, to, model.cheats.noFog());
         });
 
-        model.displayMove = ko.pureComputed(function () {
+        model.displayMove = ko.computed(function () {
           return model.canMove();
         });
 
-        model.displayFight = ko.pureComputed(function () {
+        model.displayFight = ko.computed(function () {
           return (
             model.canFight() &&
             !model.allowLoad() &&

@@ -24,6 +24,7 @@
 ### Fixed
 
 - Pelican Upgrade Tech compatible with the Nomad Commander
+- Possible fix for issues where JUMP and FIGHT would not appear
 
 ## v5.2.5 - 2021-05-29
 
