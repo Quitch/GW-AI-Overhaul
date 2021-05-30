@@ -1,13 +1,13 @@
 {
   "build_list": [
     {
-      "name": "Anchor - Base",
-      "to_build": "DefenseSatellite",
+      "name": "Centurion - Base",
+      "to_build": "LegionDefenseBasicOrbitalII",
       "instance_count": 1,
       "max_num_assisters": 1,
       "priority": 401,
       "base_sort": "FromMainBase",
-      "builders": ["OrbitalFabber"],
+      "builders": ["LegionOrbitalBasicFabber"],
       "build_conditions": [
         [
           {
@@ -37,7 +37,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "DefenseSatellite"
+            "string0": "LegionDefenseBasicOrbitalII"
           }
         ]
       ],
@@ -62,13 +62,13 @@
       }
     },
     {
-      "name": "Anchor - Beachhead",
-      "to_build": "DefenseSatellite",
+      "name": "Centurion - Beachhead",
+      "to_build": "LegionDefenseBasicOrbitalII",
       "instance_count": 1,
       "max_num_assisters": 1,
       "priority": 478,
       "base_sort": "FromMainBase",
-      "builders": ["OrbitalFabber"],
+      "builders": ["LegionOrbitalBasicFabber"],
       "build_conditions": [
         [
           {
@@ -100,7 +100,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "DefenseSatellite"
+            "string0": "LegionDefenseBasicOrbitalII"
           }
         ]
       ],
@@ -125,17 +125,17 @@
       }
     },
     {
-      "name": "Umbrella - Rush",
-      "to_build": "Umbrella",
+      "name": "Tola - Rush",
+      "to_build": "LegionDefenseBasicOrbital",
       "instance_count": 1,
       "priority": 456,
       "min_num_assisters": 2,
       "max_num_assisters": 4,
       "base_sort": "FromMainBase",
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber"
+        "LegionCommander",
+        "AnyLegionFabberBasic",
+        "AnyLegionFabberAdvanced"
       ],
       "build_conditions": [
         [
@@ -163,7 +163,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ],
         [
@@ -190,7 +190,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ],
         [
@@ -217,7 +217,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ]
       ],
@@ -242,17 +242,17 @@
       }
     },
     {
-      "name": "Umbrella - Base",
-      "to_build": "Umbrella",
+      "name": "Tola - Base",
+      "to_build": "LegionDefenseBasicOrbital",
       "instance_count": 1,
       "priority": 279,
       "min_num_assisters": 1,
       "max_num_assisters": 3,
       "base_sort": "FromMainBase",
       "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber"
+        "LegionCommander",
+        "AnyLegionFabberBasic",
+        "AnyLegionFabberAdvanced"
       ],
       "build_conditions": [
         [
@@ -279,7 +279,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ],
         [
@@ -302,11 +302,11 @@
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & ((EnergyProduction & Advanced) | Factory | PlanetEngine | ControlModule)",
             "compare0": ">=",
-            "value0": 3
+            "value0": 1
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ],
         [
@@ -338,7 +338,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ]
       ],
@@ -363,14 +363,14 @@
       }
     },
     {
-      "name": "Umbrella - Lock Down The Planet",
-      "to_build": "Umbrella",
+      "name": "Tola - Lock Down The Planet",
+      "to_build": "LegionDefenseBasicOrbital",
       "instance_count": 1,
       "priority": 401,
       "min_num_assisters": 1,
       "max_num_assisters": 3,
       "base_sort": "FromBuilder",
-      "builders": ["AnyUberBasicFabber", "AnyUberAdvancedFabber"],
+      "builders": ["AnyLegionFabberBasic", "AnyLegionFabberAdvanced"],
       "build_conditions": [
         [
           {
@@ -400,7 +400,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ]
       ],
@@ -425,14 +425,14 @@
       }
     },
     {
-      "name": "Umbrella - Orbital snipes",
-      "to_build": "Umbrella",
+      "name": "Tola - Orbital snipes",
+      "to_build": "LegionDefenseBasicOrbital",
       "instance_count": 1,
       "priority": 457,
       "min_num_assisters": 1,
       "max_num_assisters": 3,
       "base_sort": "FromBuilder",
-      "builders": ["UberCommander"],
+      "builders": ["LegionCommander"],
       "build_conditions": [
         [
           {
@@ -463,7 +463,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ],
         [
@@ -495,7 +495,7 @@
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
+            "string0": "LegionDefenseBasicOrbital"
           }
         ]
       ],

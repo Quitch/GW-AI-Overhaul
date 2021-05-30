@@ -19,6 +19,7 @@
 - When Queller AI is enabled Sub Commanders use the Q-Gold brain rather than Q-Uber
 - Overhauled the threat measures to smooth their progression
 - Updated AI Bugfixes and Enhancements to v2.6.0
+- Updated Queller AI to v5.14.0
 
 ### Fixed
 
