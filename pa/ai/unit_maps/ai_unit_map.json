@@ -78,9 +78,6 @@
     "BoomBot": {
       "spec_id": "/pa/units/land/bot_bomb/bot_bomb.json"
     },
-    "BasicAABot": {
-      "spec_id": "/pa/units/land/bot_aa/bot_aa.json"
-    },
     "AdvancedAssaultBot": {
       "spec_id": "/pa/units/land/assault_bot_adv/assault_bot_adv.json"
     },
