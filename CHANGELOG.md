@@ -2,10 +2,6 @@
 
 ## Unreleased
 
-### Added
-
-- Titans AI will use land mines
-
 ### Change
 
 - Buffed the following upgrade techs:
