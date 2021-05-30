@@ -12,6 +12,7 @@
   - Skitter
   - Spinner
   - Stryker
+- When Queller AI is enabled Sub Commanders use the Q-Gold brain rather than Q-Uber
 
 ### Fixed
 
