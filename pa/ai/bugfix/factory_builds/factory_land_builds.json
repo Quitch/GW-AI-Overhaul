@@ -277,6 +277,48 @@
       ]
     },
     {
+      "name": "Basic Combat Fabber Bot",
+      "to_build": "BasicBotCombatFabber",
+      "instance_count": 1,
+      "priority": 97,
+      "builders": ["BasicBotFactory"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanDeployLandFromBase",
+            "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "GWAlly",
+            "boolean": false
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "(Bot & Basic & Construction) - Fabber - Factory",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "BasicBotCombatFabber"
+          }
+        ]
+      ]
+    },
+    {
       "name": "Land Scout - Intel",
       "to_build": "LandScout",
       "instance_count": 1,

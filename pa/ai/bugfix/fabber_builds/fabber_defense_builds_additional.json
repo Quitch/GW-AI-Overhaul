@@ -434,6 +434,50 @@
           }
         ]
       }
+    },
+    {
+      "name": "Land Mine",
+      "to_build": "LandMine",
+      "instance_count": 1,
+      "priority": 100,
+      "base_sort": "FromPerimeter",
+      "builders": ["BasicBotCombatFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "DistFromMainBase",
+            "compare0": ">=",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Land & Defense - SurfaceDefense",
+            "compare0": "<",
+            "value0": 20
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Factory | Teleporter",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "LandMine"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromBaseCenter"
+      }
     }
   ]
 }
