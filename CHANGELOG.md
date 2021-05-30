@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- New "wipe" op that cards can use to remove text from a string
+
 ### Change
 
 - Buffed the following upgrade techs:
