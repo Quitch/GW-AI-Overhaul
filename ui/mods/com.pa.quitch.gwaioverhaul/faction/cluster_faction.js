@@ -86,7 +86,7 @@ define([
             percent_air: 0.05,
             percent_naval: 0,
             percent_orbital: 0.2,
-            metal_drain_check: 0.71,
+            metal_drain_check: 0.54,
             energy_drain_check: energyDrainCheck,
             metal_demand_check: metalDemandCheck,
             energy_demand_check: 0.8,

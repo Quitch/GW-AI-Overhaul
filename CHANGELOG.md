@@ -11,6 +11,7 @@
 ### Fixed
 
 - Jig Upgrade Tech still being disabled
+- Some bosses using suboptimal eco handling settings
 
 ## v5.3.2 - 2021-06-01
 
