@@ -1,15 +1,5 @@
 // Synchronous
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
-  if (gwaioFunctions.quellerAIEnabled()) {
-    var energyDrainCheck = 0.72;
-    var metalDemandCheck = 0.8;
-  } else {
-    energyDrainCheck = 0.65;
-    metalDemandCheck = 0.71;
-  }
-
+define(function () {
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -30,8 +20,8 @@ define([
       percent_naval: 0.05,
       percent_orbital: 0.05,
       metal_drain_check: 0.54,
-      energy_drain_check: energyDrainCheck,
-      metal_demand_check: metalDemandCheck,
+      energy_drain_check: 0.65,
+      metal_demand_check: 0.71,
       energy_demand_check: 0.8,
       micro_type: 0,
       go_for_the_kill: false,
@@ -83,8 +73,8 @@ define([
             percent_naval: 0,
             percent_orbital: 0.25,
             metal_drain_check: 0.54,
-            energy_drain_check: energyDrainCheck,
-            metal_demand_check: metalDemandCheck,
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
             energy_demand_check: 0.8,
             micro_type: 2,
             go_for_the_kill: true,
