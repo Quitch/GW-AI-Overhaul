@@ -4,8 +4,8 @@
 
 ### Change
 
-- Foundation planet of Xylcor can be larger and heavily feature water
 - Inquisitor Nemicus focuses on naval and air forces
+- Foundation home system has been redesigned, increasing the water presence and removing a gas giant
 
 ### Fixed
 
