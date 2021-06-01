@@ -5,7 +5,7 @@
 ### Change
 
 - Inquisitor Nemicus focuses on naval and air forces
-- Foundation home system has been redesigned, increasing the water presence and removing a gas giant
+- Foundation's home system has been redesigned to increase the water presence
 
 ### Fixed
 
