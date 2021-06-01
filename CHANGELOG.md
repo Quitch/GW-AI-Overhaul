@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.3.2 - 2021-06-01
+
+### Fixed
+
+- General Commander data bank reduction not being applied
+
 ## v5.3.1 - 2021-06-01
 
 ### Fixed

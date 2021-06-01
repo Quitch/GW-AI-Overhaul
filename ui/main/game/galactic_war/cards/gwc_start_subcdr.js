@@ -47,13 +47,13 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ]);
+          inventory.maxCards(inventory.maxCards() - 2);
         }
         // Support for GWAIO v4.2.2 and earlier
         if (
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
         ) {
-          inventory.maxCards(inventory.maxCards() - 1);
           // eslint-disable-next-line lodash/prefer-map
           context.minions.forEach(function (minion) {
             inventory.minions.push(minion);

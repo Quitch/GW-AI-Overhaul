@@ -518,12 +518,11 @@ if (!gwaioRefereeChangesLoaded) {
             // Setup the player
             var game = self.game();
             var inventory = game.inventory();
-            var playerColor = inventory.getTag("global", "playerColor");
             var playerName = ko.observable().extend({ session: "displayName" });
             var armies = [
               {
                 slots: [{ name: playerName() || "Player" }],
-                color: playerColor,
+                color: inventory.getTag("global", "playerColor"),
                 econ_rate: 1,
                 spec_tag: ".player",
                 alliance_group: 1,
@@ -554,8 +553,8 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             // Setup the AI
-            var currentSystem = game.galaxy().stars()[game.currentStar()];
-            var ai = currentSystem.ai();
+            var currentStar = game.galaxy().stars()[game.currentStar()];
+            var ai = currentStar.ai();
             var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
             var aiTag = [];
             _.times(aiFactionCount, function (n) {
@@ -568,25 +567,21 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
             var slotsArray = [];
-            if (ai.landing_policy)
-              // support for old shared armies implementation
-              _.times(ai.landing_policy.length, function () {
+            _.times(
+              ai.bossCommanders ||
+                ai.commanderCount ||
+                // legacy GWAIO support
+                (ai.landing_policy && ai.landing_policy.length) ||
+                1,
+              function () {
                 slotsArray.push({
                   ai: true,
                   name: ai.name,
                   commander: ai.commander,
                   landing_policy: _.sample(aiLandingOptions),
                 });
-              });
-            else
-              _.times(ai.bossCommanders || ai.commanderCount || 1, function () {
-                slotsArray.push({
-                  ai: true,
-                  name: ai.name,
-                  commander: ai.commander,
-                  landing_policy: _.sample(aiLandingOptions),
-                });
-              });
+              }
+            );
             armies.push({
               slots: slotsArray,
               color: ai.color,
@@ -599,25 +594,20 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
               var slotsArrayMinions = [];
-              if (minion.landing_policy)
-                // support for old shared armies implementation
-                _.times(minion.landing_policy.length, function () {
+              _.times(
+                minion.commanderCount ||
+                  // legacy GWAIO support
+                  (minion.landing_policy && minion.landing_policy.length) ||
+                  1,
+                function () {
                   slotsArrayMinions.push({
                     ai: true,
                     name: minion.name,
                     commander: minion.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
-                });
-              else
-                _.times(minion.commanderCount || 1, function () {
-                  slotsArrayMinions.push({
-                    ai: true,
-                    name: minion.name,
-                    commander: minion.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
-                });
+                }
+              );
               armies.push({
                 slots: slotsArrayMinions,
                 color: minion.color,
@@ -629,54 +619,43 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             // Setup Additional AI Factions
-            var allianceGroup = 3;
-            var foeCount = 1;
-            _.forEach(ai.foes, function (foe) {
+            _.forEach(ai.foes, function (foe, index) {
               var slotsArrayFoes = [];
               foe.personality.adv_eco_mod =
                 foe.personality.adv_eco_mod * foe.econ_rate;
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
-              if (foe.landing_policy)
-                // support for old shared armies implementation
-                _.times(foe.landing_policy.length, function () {
+              _.times(
+                foe.commanderCount ||
+                  // legacy GWAIO support
+                  (foe.landing_policy && foe.landing_policy.length) ||
+                  1,
+                function () {
                   slotsArrayFoes.push({
                     ai: true,
                     name: foe.name,
                     commander: foe.commander,
                     landing_policy: _.sample(aiLandingOptions),
                   });
-                });
-              else
-                _.times(foe.commanderCount || 1, function () {
-                  slotsArrayFoes.push({
-                    ai: true,
-                    name: foe.name,
-                    commander: foe.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
-                });
+                }
+              );
               armies.push({
                 slots: slotsArrayFoes,
                 color: foe.color,
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
-                spec_tag: aiTag[foeCount],
-                alliance_group: allianceGroup,
+                spec_tag: aiTag[index + 1], // 0 taken by primary AI
+                alliance_group: index + 3, //  1 & 2 taken by player and primary AI
               });
-              allianceGroup += 1;
-              foeCount += 1;
             });
 
-            var playerCommander = inventory.getTag("global", "commander");
-            var system = currentSystem.system();
             var config = {
               files: self.files(),
               armies: armies,
               player: {
-                commander: playerCommander,
+                commander: inventory.getTag("global", "commander"),
               },
-              system: system,
+              system: currentStar.system(),
               land_anywhere: ai.landAnywhere,
               bounty_mode: ai.bountyMode,
               bounty_value: ai.bountyModeValue,
