@@ -6,7 +6,7 @@
 
 - Inquisitor Nemicus focuses on naval and air forces
 - Foundation's home system has been redesigned to increase the water presence
-- The Cluster's home system third planet is now a starting planet
+- The Cluster's home system's third planet is now a starting planet
 - Increased the number of spawns in the Cluster home system
 
 ### Fixed
