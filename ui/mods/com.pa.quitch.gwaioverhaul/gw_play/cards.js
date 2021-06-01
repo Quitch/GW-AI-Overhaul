@@ -176,13 +176,13 @@ if (!gwaioCardsLoaded) {
                 .inventory()
                 .getTag("global", "playerFaction");
               _.times(2, function () {
-                var subCommander = _.sample(GWFactions[playerFaction].minions);
+                var subcommander = _.sample(GWFactions[playerFaction].minions);
                 if (gwaioFunctions.quellerAIEnabled()) {
-                  subCommander.personality.ai_path = "/pa/ai/queller/q_gold";
+                  subcommander.personality.ai_path = "/pa/ai/queller/q_gold";
                 }
                 game.inventory().cards().push({
                   id: "gwc_minion",
-                  minion: subCommander,
+                  minion: subcommander,
                   unique: Math.random(),
                 });
               });
