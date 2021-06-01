@@ -668,15 +668,13 @@ if (!gwaioRefereeChangesLoaded) {
               foeCount += 1;
             });
 
-            var playerCommander = inventory.getTag("global", "commander");
-            var system = currentStar.system();
             var config = {
               files: self.files(),
               armies: armies,
               player: {
-                commander: playerCommander,
+                commander: inventory.getTag("global", "commander"),
               },
-              system: system,
+              system: currentStar.system(),
               land_anywhere: ai.landAnywhere,
               bounty_mode: ai.bountyMode,
               bounty_value: ai.bountyModeValue,
