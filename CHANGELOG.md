@@ -6,7 +6,7 @@
 
 - Foundation planet of Xylcor can be larger and heavily feature water
 - Inquisitor Nemicus focuses on naval and air forces
-- Enemy sets its economy handling limits according to the preference of the selected AI
+- Enemies set their economy handling limits according to the preference of the selected AI
 
 ### Fixed
 
