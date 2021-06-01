@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Queller AI not doing anything after spawning
+
 ## v5.3.0 - 2021-05-30
 
 ### Added
