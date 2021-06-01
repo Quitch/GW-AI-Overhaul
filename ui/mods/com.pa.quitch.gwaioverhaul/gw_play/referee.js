@@ -518,12 +518,11 @@ if (!gwaioRefereeChangesLoaded) {
             // Setup the player
             var game = self.game();
             var inventory = game.inventory();
-            var playerColor = inventory.getTag("global", "playerColor");
             var playerName = ko.observable().extend({ session: "displayName" });
             var armies = [
               {
                 slots: [{ name: playerName() || "Player" }],
-                color: playerColor,
+                color: inventory.getTag("global", "playerColor"),
                 econ_rate: 1,
                 spec_tag: ".player",
                 alliance_group: 1,
