@@ -494,9 +494,8 @@ if (!gwaioRefereeChangesLoaded) {
                     .then(function (json) {
                       if (quellerEnabled) configFiles[file] = json;
                       else
-                        configFiles[
-                          "/pa/ai" + file.slice(aiFilePath.length - 1)
-                        ] = json;
+                        configFiles["/pa/ai/" + file.slice(aiFilePath.length)] =
+                          json;
                     })
                     .always(function () {
                       deferred2.resolve();
