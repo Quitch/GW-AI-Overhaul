@@ -629,9 +629,7 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             // Setup Additional AI Factions
-            var allianceGroup = 3;
-            var foeCount = 1;
-            _.forEach(ai.foes, function (foe) {
+            _.forEach(ai.foes, function (foe, index) {
               var slotsArrayFoes = [];
               foe.personality.adv_eco_mod =
                 foe.personality.adv_eco_mod * foe.econ_rate;
@@ -661,11 +659,9 @@ if (!gwaioRefereeChangesLoaded) {
                 color: foe.color,
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
-                spec_tag: aiTag[foeCount],
-                alliance_group: allianceGroup,
+                spec_tag: aiTag[index + 1], // 0 taken by primary AI
+                alliance_group: index + 3, //  1 & 2 taken by player and primary AI
               });
-              allianceGroup += 1;
-              foeCount += 1;
             });
 
             var config = {
