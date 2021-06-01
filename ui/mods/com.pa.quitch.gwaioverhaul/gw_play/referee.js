@@ -554,8 +554,8 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             // Setup the AI
-            var currentSystem = game.galaxy().stars()[game.currentStar()];
-            var ai = currentSystem.ai();
+            var currentStar = game.galaxy().stars()[game.currentStar()];
+            var ai = currentStar.ai();
             var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
             var aiTag = [];
             _.times(aiFactionCount, function (n) {
@@ -669,7 +669,7 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             var playerCommander = inventory.getTag("global", "commander");
-            var system = currentSystem.system();
+            var system = currentStar.system();
             var config = {
               files: self.files(),
               armies: armies,
