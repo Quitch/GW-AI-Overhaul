@@ -477,7 +477,7 @@ if (!gwaioRefereeChangesLoaded) {
 
             if (quellerEnabled && model.game().inventory().minions().length > 0)
               var aiFilePath = "/pa/ai/queller/";
-            else if (quellerEnabled) aiFilePath = "/pa/ai/queller/q_uber";
+            else if (quellerEnabled) aiFilePath = "/pa/ai/queller/q_uber/";
             else aiFilePath = "/pa/ai/bugfix/";
 
             api.file.list(aiFilePath, true).then(function (files) {
