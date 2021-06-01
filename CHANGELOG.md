@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Change
+
+- Foundation planet of Xylcor can be larger and heavily feature water
+- Inquisitor Nemicus focuses on naval and air forces
+
 ### Fixed
 
 - Jig Upgrade Tech still being disabled
