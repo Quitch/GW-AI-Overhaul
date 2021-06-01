@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- General Commander data bank limit not being applied
+- General Commander data bank reduction not being applied
 
 ## v5.3.1 - 2021-06-01
 
