@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v5.4.0 -2021-06-02
+
+### Change
+
+- Inquisitor Nemicus focuses on naval and air forces
+- Foundation's home system has been redesigned to increase the water presence
+- The Cluster's home system's third planet is now a starting planet
+- Increased the number of spawns in the Cluster home system
+
+### Fixed
+
+- Jig Upgrade Tech still being disabled
+- Some bosses using suboptimal eco handling settings
+
 ## v5.3.2 - 2021-06-01
 
 ### Fixed

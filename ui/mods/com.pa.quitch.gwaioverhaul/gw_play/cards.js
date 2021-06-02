@@ -165,28 +165,27 @@ if (!gwaioCardsLoaded) {
             gwaioUnitsToNames,
             gwaioFunctions
           ) {
+            var inventory = game.inventory();
+
             // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
             if (
-              game.inventory().cards().length === 1 &&
-              game.inventory().cards()[0].id === "gwc_start_subcdr" &&
-              !game.inventory().cards()[0].minions
+              inventory.cards().length === 1 &&
+              inventory.cards()[0].id === "gwc_start_subcdr" &&
+              !inventory.cards()[0].minions
             ) {
-              var playerFaction = model
-                .game()
-                .inventory()
-                .getTag("global", "playerFaction");
+              var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
-                var subCommander = _.sample(GWFactions[playerFaction].minions);
+                var subcommander = _.sample(GWFactions[playerFaction].minions);
                 if (gwaioFunctions.quellerAIEnabled()) {
-                  subCommander.personality.ai_path = "/pa/ai/queller/q_gold";
+                  subcommander.personality.ai_path = "/pa/ai/queller/q_gold";
                 }
-                game.inventory().cards().push({
+                inventory.cards().push({
                   id: "gwc_minion",
-                  minion: subCommander,
+                  minion: subcommander,
                   unique: Math.random(),
                 });
               });
-              game.inventory().applyCards();
+              inventory.applyCards();
               model.driveAccessInProgress(true);
               GW.manifest.saveGame(game).then(function () {
                 model.driveAccessInProgress(false);
@@ -254,7 +253,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_hummingbird",
               "gwaio_upgrade_icarus",
               "gwaio_upgrade_inferno",
-              //"gwaio_upgrade_jig",
+              "gwaio_upgrade_jig",
               "gwaio_upgrade_kaiju",
               "gwaio_upgrade_kestrel",
               "gwaio_upgrade_kraken",
@@ -487,14 +486,16 @@ if (!gwaioCardsLoaded) {
 
               api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-              if (game.inventory().handIsFull()) {
+              var inventory = game.inventory();
+
+              if (inventory.handIsFull()) {
                 var cardsOffered = numCardsToOffer + 1;
               } else {
                 cardsOffered = numCardsToOffer;
               }
               var star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
-                inventory: game.inventory(),
+                inventory: inventory,
                 count: cardsOffered - model.gwaioRerollsUsed(),
                 star: star,
                 galaxy: game.galaxy(),

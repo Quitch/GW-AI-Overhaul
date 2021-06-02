@@ -235,7 +235,6 @@ define(function () {
             percent_orbital: 0,
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
-            energy_demand_check: 0.8,
             adv_eco_mod: 1,
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
@@ -446,6 +445,10 @@ define(function () {
             [0, 102, 0],
             [192, 192, 192],
           ],
+          personality: {
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
+          },
           commander: "/pa/units/commanders/quad_locust/quad_locust.json",
         },
         {
