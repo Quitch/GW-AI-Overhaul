@@ -35,7 +35,7 @@ define([
           op: "replace",
           value: [
             {
-              spec_id: "/pa/units/land/air_scout/air_scout_tool_weapon.json",
+              spec_id: "/pa/units/air/air_scout/air_scout_tool_weapon.json",
               aim_bone: "bone_root",
               muzzle_bone: "bone_root",
             },

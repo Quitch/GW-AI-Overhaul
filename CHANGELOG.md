@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Firefly Upgrade Tech not applying one of its effects
+
 ## v5.4.0 - 2021-06-02
 
 ### Change
