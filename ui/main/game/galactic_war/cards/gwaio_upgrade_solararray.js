@@ -46,7 +46,7 @@ define([
             {
               spec_id:
                 "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
-              aim_bone: "bone_turret",
+              aim_bone: "bone_root",
               record_index: 1,
               muzzle_bone: "bone_root",
             },
