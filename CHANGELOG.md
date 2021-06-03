@@ -1,6 +1,14 @@
 # CHANGELOG
 
-## v5.4.0 -2021-06-02
+## v5.4.1 - 2021-06-03
+
+### Fixed
+
+- Firefly Upgrade Tech not applying one of its effects
+- Solar Array Upgrade Tech tied to a valid sound effect
+- Solar Array Upgrade Tech causing the game to hang when entering battle against The Guardians
+
+## v5.4.0 - 2021-06-02
 
 ### Change
 
