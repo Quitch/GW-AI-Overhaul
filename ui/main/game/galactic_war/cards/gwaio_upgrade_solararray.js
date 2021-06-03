@@ -41,6 +41,7 @@ define([
                 "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
               aim_bone: "bone_root",
               record_index: 0,
+              fire_event: "fired",
               muzzle_bone: "bone_root",
             },
             {
@@ -48,6 +49,7 @@ define([
                 "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
               aim_bone: "bone_root",
               record_index: 1,
+              fire_event: "fired",
               muzzle_bone: "bone_root",
             },
           ],

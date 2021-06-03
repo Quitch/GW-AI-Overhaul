@@ -5,6 +5,7 @@
 ### Fixed
 
 - Firefly Upgrade Tech not applying one of its effects
+- Solar Array Upgrade Tech tied to a valid sound effect
 
 ## v5.4.0 - 2021-06-02
 
