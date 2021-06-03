@@ -34,7 +34,7 @@ define([
         {
           file: "/pa/units/orbital/solar_array/solar_array.json",
           path: "tools",
-          op: "push",
+          op: "replace",
           value: [
             {
               spec_id:
