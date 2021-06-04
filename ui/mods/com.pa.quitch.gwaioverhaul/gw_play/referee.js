@@ -251,7 +251,7 @@ if (!gwaioRefereeChangesLoaded) {
                     },
                     push: function (attribute, value) {
                       if (!_.isArray(attribute))
-                        attribute = attribute === undefined ? [] : [attribute];
+                        attribute = _.isEmpty(attribute) ? [] : [attribute];
                       if (_.isArray(value)) attribute = attribute.concat(value);
                       else attribute.push(value);
                       return attribute;
@@ -270,7 +270,7 @@ if (!gwaioRefereeChangesLoaded) {
                     // New op to allow removal of an item from an array
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute))
-                        attribute = attribute === undefined ? [] : [attribute];
+                        attribute = _.isEmpty(attribute) ? [] : [attribute];
                       if (_.isArray(value))
                         var args = [attribute].concat(value);
                       else args = [attribute, value];
