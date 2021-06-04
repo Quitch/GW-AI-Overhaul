@@ -1,6 +1,93 @@
 # CHANGELOG
 
-## Unreleased
+## v5.5.0 - 2021-06-04
+
+### Change
+
+- Bosses more closely aligned to the faction personality
+
+## v5.4.1 - 2021-06-03
+
+### Fixed
+
+- Firefly Upgrade Tech not applying one of its effects
+- Solar Array Upgrade Tech tied to a valid sound effect
+- Solar Array Upgrade Tech causing the game to hang when entering battle against The Guardians
+
+## v5.4.0 - 2021-06-02
+
+### Change
+
+- Inquisitor Nemicus focuses on naval and air forces
+- Foundation's home system has been redesigned to increase the water presence
+- The Cluster's home system's third planet is now a starting planet
+- Increased the number of spawns in the Cluster home system
+
+### Fixed
+
+- Jig Upgrade Tech still being disabled
+- Some bosses using suboptimal eco handling settings
+
+## v5.3.2 - 2021-06-01
+
+### Fixed
+
+- General Commander data bank reduction not being applied
+
+## v5.3.1 - 2021-06-01
+
+### Fixed
+
+- Queller AI not doing anything after spawning
+- Removed unused files from Queller AI to reduce mod size
+
+## v5.3.0 - 2021-05-30
+
+### Added
+
+- New "wipe" op that cards can use to remove text from a string
+
+### Change
+
+- Buffed the following upgrade techs:
+  - Commander
+  - Energy Storage
+  - Firefly
+  - Metal Storage
+  - Skitter
+  - Spinner
+  - Stryker
+- When Queller AI is enabled Sub Commanders use the Q-Gold brain rather than Q-Uber
+- Overhauled the threat ratings in the intelligence panel to smooth their progression
+- Updated AI Bugfixes and Enhancements to v2.6.0
+- Updated Queller AI to v5.14.0
+
+### Fixed
+
+- Pelican Upgrade Tech compatible with the Nomad Commander
+- Possible fix for issues where JUMP and FIGHT would not appear
+
+## v5.2.5 - 2021-05-29
+
+### Change
+
+- Orca Upgrade Tech only applies to the destroyer's surface weapon
+- Kraken Upgrade Tech only applies to the advanced submarine's surface weapon
+
+### Fixed
+
+- Advanced Energy Plant Upgrade Tech description
+- Ares Upgrade Tech not utilising its full range
+- Jig Upgrade Tech not doing what it said it did
+- Hoarder Commander wiping out its own inventory when returning to the galaxy map
+
+## v5.2.4 - 2021-05-28
+
+### Fixed
+
+- Corrected tooltip for Firefly upgrade
+
+## v5.2.3 - 2021-05-28
 
 ### Fixed
 

@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Stryker Upgrade Tech increases the rate of fire of the attack vehicle by 200%, but it fires in bursts and requires energy to recharge."
+      "!LOC:Stryker Upgrade Tech increases the rate of fire of the attack vehicle by 300%, but it fires in bursts and requires energy to recharge."
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(
@@ -37,7 +37,7 @@ define([
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "rate_of_fire",
           op: "multiply",
-          value: 3,
+          value: 4,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
@@ -49,19 +49,19 @@ define([
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_capacity",
           op: "replace",
-          value: 300,
+          value: 100,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_demand",
           op: "replace",
-          value: 150,
+          value: 50,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",
           path: "ammo_per_shot",
           op: "replace",
-          value: 100,
+          value: 25,
         },
         {
           file: "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json",

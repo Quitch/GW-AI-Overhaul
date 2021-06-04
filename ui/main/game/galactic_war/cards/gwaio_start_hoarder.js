@@ -37,7 +37,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
-          inventory.maxCards(1);
+          inventory.maxCards(inventory.maxCards() - 4);
           inventory.addUnits([
             "/pa/units/air/air_factory/air_factory.json",
             "/pa/units/air/air_factory_adv/air_factory_adv.json",

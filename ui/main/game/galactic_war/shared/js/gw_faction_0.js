@@ -216,7 +216,6 @@ define(function () {
             percent_orbital: 0,
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
-            energy_demand_check: 0.8,
             fabber_to_factory_ratio_advanced: 2,
             fabber_alone_on_planet_mod: 3,
             min_basic_fabbers: 3,
@@ -431,6 +430,8 @@ define(function () {
             [192, 192, 192],
           ],
           personality: {
+            energy_drain_check: 0.65,
+            metal_demand_check: 0.71,
             adv_eco_mod: 1.3,
           },
           commander:

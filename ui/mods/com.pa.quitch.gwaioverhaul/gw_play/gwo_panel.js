@@ -85,10 +85,10 @@ if (!gwaioWarInfoPanelLoaded) {
             },
           ];
 
-          var subCommanders = inventory.minions();
-          if (subCommanders.length > 0) {
+          var subcommanders = inventory.minions();
+          if (subcommanders.length > 0) {
             // eslint-disable-next-line lodash/prefer-map
-            _.forEach(subCommanders, function (subcommander) {
+            _.forEach(subcommanders, function (subcommander) {
               commanders.push(intelligence(subcommander));
             });
           }

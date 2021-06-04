@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 25%."
+      "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 100%."
     ),
     summarize: _.constant("!LOC:Spinner Upgrade Tech"),
     icon: _.constant(
@@ -37,7 +37,7 @@ define([
           file: "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_tool_weapon.json",
           path: "rate_of_fire",
           op: "multiply",
-          value: 1.25,
+          value: 2,
         },
       ]);
     },

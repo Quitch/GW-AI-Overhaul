@@ -40,16 +40,28 @@ define([
           value: 1.25,
         },
         {
+          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
+          path: "pitch_range",
+          op: "replace",
+          value: 89,
+        },
+        {
+          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
+          path: "arc_type",
+          op: "replace",
+          value: "ARC_high",
+        },
+        {
           file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_side.json",
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_stomp.json",
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
+          file: "/pa/units/land/titan_vehicle/titan_vehicle_ammo_side.json",
+          path: "max_velocity",
+          op: "replace",
+          value: 200,
         },
       ]);
     },

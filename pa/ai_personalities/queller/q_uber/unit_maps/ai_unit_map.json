@@ -24,6 +24,24 @@
     "UberCommander": {
       "unit_types": "Commander - Custom1 - Custom2 - Custom3 - Custom4"
     },
+    "UberSupportCommander": {
+      "spec_id": "/pa/units/land/bot_support_commander/bot_support_commander.json"
+    },
+    "Commander": {
+      "unit_types": "Commander"
+    },
+    "AnyBasicFactory": {
+      "unit_types": "Factory & Basic"
+    },
+    "AnyAdvancedFactory": {
+      "unit_types": "Factory & Advanced"
+    },
+    "AnyBasicFabber": {
+      "unit_types": "(Fabber & (Basic | Debug)) - Orbital"
+    },
+    "AnyAdvancedFabber": {
+      "unit_types": "(Fabber & (Advanced | Debug)) - Orbital"
+    },
     "BasicBotFabber": {
       "spec_id": "/pa/units/land/fabrication_bot/fabrication_bot.json"
     },

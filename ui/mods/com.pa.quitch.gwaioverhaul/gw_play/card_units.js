@@ -987,7 +987,7 @@ define({
       units: ["/pa/units/land/nuke_launcher/nuke_launcher.json"],
     },
     {
-      id: "gwaio_upgrade_skitter",
+      id: "gwaio_upgrade_firefly",
       units: ["/pa/units/air/air_scout/air_scout.json"],
     },
     {

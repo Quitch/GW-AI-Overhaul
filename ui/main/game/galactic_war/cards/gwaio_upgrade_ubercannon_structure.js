@@ -1,7 +1,7 @@
 define({
   visible: _.constant(true),
   describe: _.constant(
-    "!LOC:Commander Upgrade Tech increases the damage to enemy structures from the Uber Cannon by 300%."
+    "!LOC:Commander Upgrade Tech increases Uber Cannon damage to structures and commanders by 300%."
   ),
   summarize: _.constant("!LOC:Commander Upgrade Tech"),
   icon: _.constant(
@@ -25,6 +25,12 @@ define({
       {
         file: "/pa/ammo/cannon_uber/cannon_uber.json",
         path: "armor_damage_map.AT_Structure",
+        op: "multiply",
+        value: 4,
+      },
+      {
+        file: "/pa/ammo/cannon_uber/cannon_uber.json",
+        path: "armor_damage_map.AT_Commander",
         op: "multiply",
         value: 4,
       },
