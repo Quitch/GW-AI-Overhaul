@@ -2,6 +2,8 @@
 
 ## 5.5.0 - 2021-06-04
 
+### Change
+
 - Bosses more closely aligned to the faction personality
 
 ## v5.4.1 - 2021-06-03
