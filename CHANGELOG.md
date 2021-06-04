@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 5.5.0 - 2021-06-04
 
 - Bosses more closely aligned to the faction personality
 
