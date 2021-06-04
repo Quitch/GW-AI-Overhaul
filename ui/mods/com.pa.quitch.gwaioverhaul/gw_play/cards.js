@@ -177,7 +177,8 @@ if (!gwaioCardsLoaded) {
               _.times(2, function () {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
                 if (gwaioFunctions.quellerAIEnabled()) {
-                  subcommander.personality.ai_path = "/pa/ai/queller/q_gold";
+                  subcommander.personality.ai_path =
+                    "/pa/ai_personalities/q_gold";
                 }
                 inventory.cards().push({
                   id: "gwc_minion",
