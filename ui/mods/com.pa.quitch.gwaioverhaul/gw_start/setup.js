@@ -989,7 +989,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "5.4.1";
+              originSystem.gwaio.version = "5.5.0";
               originSystem.gwaio.difficulty =
                 model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
