@@ -589,9 +589,10 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
+            var hasAIModifyingCards = gwaioFunctions.hasAIModifyingCards();
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              if (gwaioFunctions.hasAIModifyingCards())
+              if (hasAIModifyingCards)
                 subcommander.personality.ai_path =
                   "/pa/ai_personalities/tech_user/";
 
