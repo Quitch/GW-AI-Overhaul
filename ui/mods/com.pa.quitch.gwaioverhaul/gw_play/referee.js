@@ -414,7 +414,7 @@ if (!gwaioRefereeChangesLoaded) {
                   if (gwaioFunctions.quellerAIEnabled()) {
                     var playerFilesClassic = _.assign(
                       {
-                        "/pa/ai_personalities/q_gold/unit_maps/ai_unit_map.json.player":
+                        "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
                           playerAIUnitMap,
                       },
                       playerSpecFiles
@@ -422,7 +422,27 @@ if (!gwaioRefereeChangesLoaded) {
                     var playerFilesX1 = titans
                       ? _.assign(
                           {
-                            "/pa/ai_personalities/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                            "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                              playerX1AIUnitMap,
+                          },
+                          playerSpecFiles
+                        )
+                      : {};
+                  } else if (
+                    gwaioFunctions.hasAIModifyingCards() &&
+                    ai.mirrorMode !== true
+                  ) {
+                    playerFilesClassic = _.assign(
+                      {
+                        "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
+                          playerAIUnitMap,
+                      },
+                      playerSpecFiles
+                    );
+                    playerFilesX1 = titans
+                      ? _.assign(
+                          {
+                            "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
                               playerX1AIUnitMap,
                           },
                           playerSpecFiles
@@ -469,99 +489,292 @@ if (!gwaioRefereeChangesLoaded) {
           };
 
           var generateAI = function () {
+            console.log("Generating AI");
             var self = this;
 
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
-            var aiTechPath = "/pa/ai_personalities/tech_user/";
+            var aiTechPath = "/pa/ai_tech/";
 
-            var parseFiles = function (path, promise, aiToModify) {
-              api.file.list(path, true).then(function (fileList) {
-                console.log(fileList);
+            var addTechToAI = function (json, mods, path) {
+              console.log("Checking", path);
+
+              var ops = {
+                add: function (json, depth, refId, refValue, idToMod, value) {
+                  if (json.build_list) var id = "build_list";
+                  else if (json.platoon_templates) id = "platoon_templates";
+                  else id = "unit_map";
+
+                  if (depth === 0) {
+                    if (_.isArray(json[id])) {
+                      json[id] = json[id].concat(value); // build_list or platoon_templates
+                    } else _.assign(json[id], value); // unit_map
+                  } else {
+                    // build or platoon
+                    _.forEach(json[id], function (build) {
+                      if (depth === 1) {
+                        if (build[refId] === refValue) {
+                          console.debug("Found", build[refId]);
+                          if (_.isArray(build[idToMod]))
+                            build[idToMod] = build[idToMod].concat(value);
+                          else build[idToMod] += value;
+                          console.debug("Added", build[idToMod]);
+                        }
+                      } else {
+                        if (build.build_conditions) id = "build_conditions";
+                        else id = "units";
+                        // build_condition or squad
+                        _.forEach(build[id], function (build_condition) {
+                          if (depth === 2) {
+                            if (build_condition[refId] === refValue) {
+                              console.debug("Found", build_condition[refId]);
+                              if (_.isArray(build_condition[idToMod]))
+                                build_condition[idToMod] =
+                                  build_condition[idToMod].concat(value);
+                              else build_condition[idToMod] += value;
+                              console.debug("Added", build_condition[idToMod]);
+                            }
+                          } else {
+                            // test
+                            _.forEach(build_condition, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found", build_condition[refId]);
+                                if (_.isArray(test[idToMod]))
+                                  test[idToMod] = test[idToMod].concat(value);
+                                else test[idToMod] += value;
+                                console.debug("Added", value);
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                },
+                replace: function (
+                  json,
+                  depth,
+                  refId,
+                  refValue,
+                  idToMod,
+                  value
+                ) {
+                  if (json.build_list) var id = "build_list";
+                  else if (json.platoon_templates) id = "platoon_templates";
+                  else id = "unit_map";
+
+                  if (depth === 0) json[id] = value;
+                  else {
+                    // build or platoon
+                    _.forEach(json[id], function (build) {
+                      if (depth === 1) {
+                        if (build[refId] === refValue) {
+                          console.debug("Found", build[refId]);
+                          build[idToMod] = value;
+                          console.debug("Replaced", value);
+                        }
+                      } else {
+                        if (build.build_conditions) id = "build_conditions";
+                        else id = "units";
+                        // build_condition or squad
+                        _.forEach(build[id], function (build_condition) {
+                          if (depth === 2) {
+                            if (build_condition[refId] === refValue) {
+                              console.debug("Found", build_condition[refId]);
+                              build_condition[idToMod] = value;
+                              console.debug("Replaced", value);
+                            }
+                          } else {
+                            // test
+                            _.forEach(build_condition, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found", test[refId]);
+                                test[idToMod] = value;
+                                console.debug("Replaced", value);
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                },
+              };
+
+              // eslint-disable-next-line lodash/prefer-filter
+              _.forEach(mods, function (mod) {
+                ops[mod.op](
+                  json,
+                  mod.depth,
+                  mod.refId,
+                  mod.refValue,
+                  mod.idToMod,
+                  mod.value
+                );
+              });
+            };
+
+            var parseFiles = function (aiPath, promise, aiToModify) {
+              api.file.list(aiPath, true).then(function (fileList) {
                 var configFiles = self.files();
                 var queue = [];
 
+                var galaxy = model.game().galaxy();
+                var originSystem = galaxy.stars()[galaxy.origin()].system();
+                var gwaioSettings = originSystem.gwaio;
+                if (gwaioSettings) var aiMods = gwaioSettings.aiMods;
+
+                console.log("AI to modify:", aiToModify);
+
+                if (aiToModify !== "None") {
+                  aiMods = _.partition(aiMods, { type: "load" });
+
+                  if (aiMods[0])
+                    // eslint-disable-next-line lodash/prefer-map
+                    _.forEach(aiMods[0], function (aiMod) {
+                      fileList.push(aiTechPath + aiMod.value);
+                      console.log("Add:", aiTechPath + aiMod.value);
+                    });
+                }
+
                 _.forEach(fileList, function (filePath) {
+                  console.log("Processing:", filePath);
                   if (
                     _.endsWith(filePath, ".json") &&
-                    !_.includes(filePath, "/neural_networks/")
+                    !_.includes(filePath, "/neural_networks/") &&
+                    !_.endsWith(filePath, "ai_config.json")
                   ) {
                     var deferred2 = $.Deferred();
+
+                    // Prep AI operations from the AI mods if applicable
+                    if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
+                      if (
+                        quellerEnabled &&
+                        aiToModify === "SubCommanders" &&
+                        _.includes(filePath, "/q_gold/")
+                      )
+                        var quellerSubCommander = true;
+
+                      if (
+                        !quellerEnabled ||
+                        quellerSubCommander ||
+                        aiToModify === "All"
+                      ) {
+                        // Only mods associated with the file's AI manager are loaded
+                        if (_.includes(filePath, "/fabber_builds/"))
+                          var aiOps = _.filter(aiMods[1], {
+                            type: "fabber",
+                          });
+                        else if (_.includes(filePath, "/factory_builds/"))
+                          aiOps = _.filter(aiMods[1], { type: "factory" });
+                        else if (_.includes(filePath, "/platoon_builds/"))
+                          aiOps = _.filter(aiMods[1], { type: "platoon" });
+                        else if (_.includes(filePath, "/platoon_templates/"))
+                          aiOps = _.filter(aiMods[1], { type: "template" });
+                        else aiOps = _.filter(aiMods[1], { type: "map" });
+                      }
+                    }
 
                     queue.push(deferred2);
 
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
                         if (aiToModify === "All") {
-                          console.log("MODIFY ALL AIS", filePath);
-                          // RUN SOME MODIFICATION FUNCTION
-                          configFiles[aiTechPath] = json;
-                        } else if (aiToModify === "SubCommanders") {
-                          console.log("MODIFY SUBCOMMANDERS", filePath);
-                          // Setup enemy AI first
+                          console.log("Loading:", filePath);
+                          if (_.startsWith(filePath, aiTechPath)) {
+                            console.debug("Caught an AI tech file");
+                            // Put "load" files where the AI expects them to be
+                            filePath =
+                              aiPath + filePath.slice(aiTechPath.length);
+                            console.log("New filepath:", filePath);
+                          }
+                          if (!_.isEmpty(aiOps))
+                            addTechToAI(json, aiOps, filePath);
                           configFiles[filePath] = json;
+                        } else if (aiToModify === "SubCommanders") {
+                          console.log("Loading:", filePath);
+                          // Setup enemy AI first
+                          if (!_.startsWith(filePath, aiTechPath))
+                            configFiles[filePath] = _.cloneDeep(json);
                           // Setup Sub Commanders
-                          // RUN SOME MODIFICATION FUNCTION
-                          configFiles[aiTechPath] = json;
+                          if (_.startsWith(filePath, aiTechPath)) {
+                            console.debug("Caught an AI tech file");
+                            // Put "load" files where the AI expects them to be
+                            filePath =
+                              aiPath + filePath.slice(aiTechPath.length);
+                            console.log("New filepath:", filePath);
+                          }
+                          if (!_.isEmpty(aiOps))
+                            addTechToAI(json, aiOps, filePath);
+                          if (quellerSubCommander) configFiles[filePath] = json;
+                          // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                          else {
+                            configFiles[
+                              aiTechPath + filePath.slice(aiPath.length)
+                            ] = json;
+                            console.log(
+                              "Tech Sub Com filepath:",
+                              aiTechPath + filePath.slice(aiPath.length)
+                            );
+                          }
                         } else {
-                          console.log("MODIFY NOTHING", filePath);
+                          console.log("Loading:", filePath);
                           configFiles[filePath] = json;
                         }
                       })
                       .always(function () {
+                        console.log("Completed:", filePath);
                         deferred2.resolve();
                       });
                   }
                 });
 
                 $.when.apply($, queue).then(function () {
-                  console.log("FILE PARSING COMPLETE");
                   self.files.valueHasMutated();
+                  console.log("Files parsed");
                   promise.resolve();
                 });
               });
             };
 
-            if (quellerEnabled) {
-              var aiFilePath = "/pa/ai_personalities/queller/q_uber/";
+            if (quellerEnabled && model.game().inventory().minions().length > 0)
+              var aiFilePath = "/pa/ai_personalities/queller/";
+            else if (quellerEnabled) {
+              aiFilePath = "/pa/ai_personalities/queller/q_uber/";
             } else {
               aiFilePath = "/pa/ai/";
             }
 
             if (gwaioFunctions.hasAIModifyingCards()) {
-              console.log("WE ARE HOLDING AI AFFECTING TECH");
+              console.log("We are holding AI affecting tech");
               var game = model.game();
               var ai = game.galaxy().stars()[game.currentStar()].ai();
               var subCommanders = game.inventory().minions();
               if (ai.mirrorMode === true) {
-                ai.personality.ai_path = aiTechPath;
-                _.forEach(ai.minions, function (minion) {
-                  minion.personality.ai_path = aiTechPath;
-                });
-                _.forEach(ai.foes, function (foe) {
-                  foe.personality.ai_path = aiTechPath;
-                });
-                console.log("PARSING FILES FOR ALL");
+                console.log("Parsing files for All");
                 parseFiles(aiFilePath, deferredAIFiles, "All");
               } else if (subCommanders.length > 0) {
-                console.log("PARSING FILES FOR SUB COMMANDERS");
-                _.forEach(subCommanders, function (subCommander) {
-                  subCommander.personality.ai_path = aiTechPath;
-                });
+                console.log("Parsing files for Sub Commanders");
+                if (!quellerEnabled) {
+                  _.forEach(subCommanders, function (subCommander) {
+                    // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                    subCommander.personality.ai_path = aiTechPath;
+                  });
+                }
                 parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
               } else {
-                console.log("PARSING FILES FOR NONE BECAUSE NO AI AFFECTED");
+                console.log("Parsing files for None because no AI");
                 parseFiles(aiFilePath, deferredAIFiles, "None");
               }
             } else {
-              console.log("PARSING FILES FOR NONE BECAUSE NO TECH");
+              console.log("Parsing files for None because no tech");
               parseFiles(aiFilePath, deferredAIFiles, "None");
             }
 
-            $.when.apply($, deferredAIFiles).then(function () {
-              console.log("AI GENERATED");
+            $.when(deferredAIFiles).then(function () {
+              console.log("AI generated");
               deferred.resolve();
             });
 
@@ -569,6 +782,7 @@ if (!gwaioRefereeChangesLoaded) {
           };
 
           var generateConfig = function () {
+            console.log("Generating config");
             var self = this;
 
             // Setup the player
@@ -589,12 +803,15 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var hasAIModifyingCards = gwaioFunctions.hasAIModifyingCards();
+            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              if (hasAIModifyingCards)
+              // Avoid breaking saves from GWO v5.5.0 and earlier
+              if (quellerEnabled)
                 subcommander.personality.ai_path =
-                  "/pa/ai_personalities/tech_user/";
+                  "/pa/ai_personalities/queller/q_gold";
+
+              console.log(JSON.stringify(subcommander.personality));
 
               armies.push({
                 slots: [
