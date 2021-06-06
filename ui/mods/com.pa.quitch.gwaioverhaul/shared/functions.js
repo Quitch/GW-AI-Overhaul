@@ -62,17 +62,17 @@ define([
       }
     },
     addAIMods: function (mods) {
-      if (model.game) var galaxy = model.game().galaxy();
-      else if (model.newGame) galaxy = model.newGame().galaxy();
-
-      if (galaxy) {
+      if (model.game) {
+        var galaxy = model.game().galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
+
         if (!originSystem.gwaio) {
           originSystem.gwaio = {};
           originSystem.gwaio.aiMods = [];
         } else if (!originSystem.gwaio.aiMods) {
           originSystem.gwaio.aiMods = [];
         }
+
         originSystem.gwaio.aiMods = originSystem.gwaio.aiMods.concat(mods);
       }
     },
