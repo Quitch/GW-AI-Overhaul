@@ -62,6 +62,7 @@ define([
       }
     },
     addAIMods: function (mods) {
+      // TO DO - make ths work on gw_start
       var galaxy = model.game().galaxy();
       var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (!originSystem.gwaio) {
