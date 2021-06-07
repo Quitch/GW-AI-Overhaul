@@ -5,6 +5,7 @@
 ### Fixed
 
 - Tooltips for planets with a water height but no water depth
+- Leviathan Upgrade Tech not applying its changes
 
 ## v5.5.0 - 2021-06-04
 

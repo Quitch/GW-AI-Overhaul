@@ -36,53 +36,53 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.0.spec_id",
           op: "replace",
           value:
             "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.1.spec_id",
           op: "replace",
           value:
             "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.1.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.2.spec_id",
           op: "replace",
           value:
             "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.2.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.3.spec_id",
           op: "replace",
           value:
             "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
         },
         {
-          file: "/pa/units/sea/battleship/battleship_tool_weapon.json",
+          file: "/pa/units/sea/battleship/battleship.json",
           path: "tools.3.projectiles_per_fire",
           op: "replace",
           value: 1,
