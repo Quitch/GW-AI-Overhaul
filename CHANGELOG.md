@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## 5.5.0 - 2021-06-04
+## v5.5.1 - 2021-06-07
+
+### Fixed
+
+- Tooltips for planets with a water height but no water depth
+- Leviathan Upgrade Tech not applying its changes
+
+## v5.5.0 - 2021-06-04
+
+### Change
 
 - Bosses more closely aligned to the faction personality
 
