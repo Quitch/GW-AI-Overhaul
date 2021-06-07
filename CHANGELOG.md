@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Tooltips for planets with a water height but no water depth
+
 ## v5.5.0 - 2021-06-04
 
 ### Change
