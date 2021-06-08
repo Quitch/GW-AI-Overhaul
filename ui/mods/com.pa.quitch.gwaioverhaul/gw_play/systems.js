@@ -125,7 +125,7 @@ if (!gwaioSystemChangesLoaded) {
 
           self.visible = ko.observable(true);
           self.star = ko.observable(-1);
-          self.system = ko.pureComputed(function () {
+          self.system = ko.computed(function () {
             return self.star() >= 0 ? galaxy.systems()[self.star()] : undefined;
           });
 
