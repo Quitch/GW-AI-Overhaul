@@ -270,24 +270,6 @@ if (!gwaioSystemChangesLoaded) {
                         " " +
                         Math.round(planet.generator.waterHeight)
                       );
-                    else if (planet.generator.waterDepth)
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalSpots +
-                        " " +
-                        planet.metal_spots.length +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
                     else
                       return (
                         radius +
@@ -305,6 +287,10 @@ if (!gwaioSystemChangesLoaded) {
                         temperature +
                         " " +
                         Math.round(planet.generator.temperature) +
+                        "<br>" +
+                        waterDepth +
+                        " " +
+                        Math.round(planet.generator.waterDepth) +
                         "<br>" +
                         waterHeight +
                         " " +
