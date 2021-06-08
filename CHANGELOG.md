@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Bug in tooltips preventing you moving to systems with a particular configuration
+
 ## v5.5.2 - 2021-06-08
 
 ### Fixed
