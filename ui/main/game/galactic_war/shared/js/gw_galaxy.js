@@ -14,7 +14,7 @@ define([
 
     // Map of node -> node list that share an edge, going both directions.
     // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
-    self.neighborsMap = ko.pureComputed(function () {
+    self.neighborsMap = ko.computed(function () {
       var edges = {};
       _.forEach(self.gates(), function (gate) {
         if (!_.has(edges, gate[0])) edges[gate[0]] = [];

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Issues with UI elements not correctly updating or displaying at all
+
 ## v5.5.1 - 2021-06-07
 
 ### Fixed

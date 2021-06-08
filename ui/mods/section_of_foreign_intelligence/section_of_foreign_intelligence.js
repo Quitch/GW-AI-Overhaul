@@ -82,7 +82,7 @@ if (!gwaioIntelligenceLoaded) {
             return Math.floor(number);
           }
         };
-        model.gwaioSystemSurfaceArea = ko.pureComputed(function () {
+        model.gwaioSystemSurfaceArea = ko.computed(function () {
           var area = 0;
           model.selection
             .system()
@@ -111,7 +111,7 @@ if (!gwaioIntelligenceLoaded) {
           else if (totalRate <= 20) return "!LOC:Impossible";
           else return "!LOC:Skynet";
         };
-        model.gwaioSystemThreat = ko.pureComputed(function () {
+        model.gwaioSystemThreat = ko.computed(function () {
           var primary = model.selection.system().star.ai();
           var commanders = [];
           if (primary) {
@@ -132,7 +132,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // Game Options
 
-        model.gwaioBountyMode = ko.pureComputed(function () {
+        model.gwaioBountyMode = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().bountyMode
@@ -140,7 +140,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioLandAnywhere = ko.pureComputed(function () {
+        model.gwaioLandAnywhere = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().landAnywhere
@@ -148,7 +148,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioSuddenDeath = ko.pureComputed(function () {
+        model.gwaioSuddenDeath = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().suddenDeath
@@ -156,7 +156,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioGameOptions = ko.pureComputed(function () {
+        model.gwaioGameOptions = ko.computed(function () {
           if (
             model.gwaioBountyMode() ||
             model.gwaioLandAnywhere() ||
@@ -167,7 +167,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // AI Buffs
 
-        model.gwaioTechBuild = ko.pureComputed(function () {
+        model.gwaioTechBuild = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -176,7 +176,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTechCost = ko.pureComputed(function () {
+        model.gwaioTechCost = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -185,7 +185,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTechDamage = ko.pureComputed(function () {
+        model.gwaioTechDamage = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -194,7 +194,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTechHealth = ko.pureComputed(function () {
+        model.gwaioTechHealth = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -203,7 +203,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTechSpeed = ko.pureComputed(function () {
+        model.gwaioTechSpeed = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -212,7 +212,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioEnhancedCommanders = ko.pureComputed(function () {
+        model.gwaioEnhancedCommanders = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
@@ -221,7 +221,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioTechMirror = ko.pureComputed(function () {
+        model.gwaioTechMirror = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().mirrorMode === true
@@ -229,7 +229,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
-        model.gwaioAiBuffs = ko.pureComputed(function () {
+        model.gwaioAiBuffs = ko.computed(function () {
           if (
             model.gwaioTechBuild() ||
             model.gwaioTechCost() ||

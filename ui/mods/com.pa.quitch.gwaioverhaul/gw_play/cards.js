@@ -12,14 +12,14 @@ if (!gwaioCardsLoaded) {
           var self = this;
 
           self.params = ko.observable(params);
-          self.id = ko.pureComputed(function () {
+          self.id = ko.computed(function () {
             var p = self.params();
             return _.isObject(p) ? p.id : p;
           });
 
           self.visible = ko.observable(false);
           self.desc = ko.observable();
-          self.locDesc = ko.pureComputed(function () {
+          self.locDesc = ko.computed(function () {
             return loc(self.desc());
           });
           self.summary = ko.observable();
@@ -27,11 +27,11 @@ if (!gwaioCardsLoaded) {
           self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
           self.audio = ko.observable();
 
-          self.isEmpty = ko.pureComputed(function () {
+          self.isEmpty = ko.computed(function () {
             return !self.id();
           });
           // GWAIO - recognise the mod's loadouts as loadouts
-          self.isLoadout = ko.pureComputed(function () {
+          self.isLoadout = ko.computed(function () {
             return (
               self.id() &&
               (self.id().startsWith("gwc_start") ||
