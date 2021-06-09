@@ -735,7 +735,7 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            var game = model.game();
+            var game = self.game();
             var inventory = game.inventory();
 
             if (quellerEnabled && inventory.minions().length > 0)
