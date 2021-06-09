@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.5.3 - 2021-06-08
+
+### Fixed
+
+- Bug in tooltips preventing you moving to systems with a particular configuration
+
+## v5.5.2 - 2021-06-08
+
+### Fixed
+
+- Issues with UI elements not correctly updating or displaying at all
+
 ## v5.5.1 - 2021-06-07
 
 ### Fixed
