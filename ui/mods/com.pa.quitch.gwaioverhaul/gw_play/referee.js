@@ -648,7 +648,6 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
-                    // Prep AI operations from the AI mods if applicable
                     if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
                       if (
                         quellerEnabled &&
