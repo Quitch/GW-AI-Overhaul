@@ -52,6 +52,10 @@ define(["require"], function (require) {
       });
       if (removeCount) self.units(units);
     },
+    addAIMods: function (aiMods) {
+      var self = this;
+      self.aiMods(self.aiMods().concat(aiMods));
+    },
     addMods: function (mods) {
       var self = this;
       self.mods(self.mods().concat(mods));
