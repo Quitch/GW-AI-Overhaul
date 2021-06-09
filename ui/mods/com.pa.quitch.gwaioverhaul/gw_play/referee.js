@@ -429,7 +429,7 @@ if (!gwaioRefereeChangesLoaded) {
                         )
                       : {};
                   } else if (
-                    gwaioFunctions.hasAIModifyingCards() &&
+                    !_.isEmpty(inventory.aiMods()) &&
                     ai.mirrorMode !== true
                   ) {
                     playerFilesClassic = _.assign(
@@ -621,10 +621,7 @@ if (!gwaioRefereeChangesLoaded) {
                 var configFiles = self.files();
                 var queue = [];
 
-                var galaxy = model.game().galaxy();
-                var originSystem = galaxy.stars()[galaxy.origin()].system();
-                var gwaioSettings = originSystem.gwaio;
-                if (gwaioSettings) var aiMods = gwaioSettings.aiMods;
+                var aiMods = game.inventory().aiMods();
 
                 console.log("AI to modify:", aiToModify);
 
@@ -738,7 +735,10 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            if (quellerEnabled && model.game().inventory().minions().length > 0)
+            var game = model.game();
+            var inventory = game.inventory();
+
+            if (quellerEnabled && inventory.minions().length > 0)
               var aiFilePath = "/pa/ai_personalities/queller/";
             else if (quellerEnabled) {
               aiFilePath = "/pa/ai_personalities/queller/q_uber/";
@@ -746,11 +746,10 @@ if (!gwaioRefereeChangesLoaded) {
               aiFilePath = "/pa/ai/";
             }
 
-            if (gwaioFunctions.hasAIModifyingCards()) {
+            if (!_.isEmpty(inventory.aiMods())) {
               console.log("We are holding AI affecting tech");
-              var game = model.game();
               var ai = game.galaxy().stars()[game.currentStar()].ai();
-              var subCommanders = game.inventory().minions();
+              var subCommanders = inventory.minions();
               if (ai.mirrorMode === true) {
                 console.log("Parsing files for All");
                 parseFiles(aiFilePath, deferredAIFiles, "All");

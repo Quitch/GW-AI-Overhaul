@@ -50,31 +50,5 @@ define([
         return true;
       }
     },
-    hasAIModifyingCards: function () {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (
-        originSystem.gwaio &&
-        originSystem.gwaio.aiMods &&
-        originSystem.gwaio.aiMods.length > 0
-      ) {
-        return true;
-      }
-    },
-    addAIMods: function (mods) {
-      if (model.game) {
-        var galaxy = model.game().galaxy();
-        var originSystem = galaxy.stars()[galaxy.origin()].system();
-
-        if (!originSystem.gwaio) {
-          originSystem.gwaio = {};
-          originSystem.gwaio.aiMods = [];
-        } else if (!originSystem.gwaio.aiMods) {
-          originSystem.gwaio.aiMods = [];
-        }
-
-        originSystem.gwaio.aiMods = originSystem.gwaio.aiMods.concat(mods);
-      }
-    },
   };
 });
