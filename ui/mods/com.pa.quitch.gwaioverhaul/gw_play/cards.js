@@ -484,6 +484,7 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
+            // ensure cheats use our deck
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
