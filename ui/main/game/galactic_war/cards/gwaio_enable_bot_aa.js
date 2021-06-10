@@ -49,7 +49,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(["/pa/units/land/bot_aa/bot_aa.json"]);
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_aa/bot_aa.json",
           path: "base_spec",
@@ -68,8 +68,7 @@ define([
           op: "replace",
           value: 9,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
     },
     dull: function () {},
   };
