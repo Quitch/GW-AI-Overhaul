@@ -8,6 +8,12 @@ if (!gwaioCardsLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
+        $("#test-give-card-id").replaceWith(
+          loadHtml(
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cheats.html"
+          )
+        );
+
         globals.CardViewModel = function (params) {
           var self = this;
 
@@ -477,7 +483,149 @@ if (!gwaioCardsLoaded) {
               });
               return result;
             };
+
+            var dealCard = function (params) {
+              console.log(params);
+              var result = $.Deferred();
+              loaded.then(function () {
+                var card = _.find(gwaioCardsToUnits.cards, { id: params.id });
+
+                // Simulate a deal
+                var context =
+                  card.getContext &&
+                  card.getContext(params.galaxy, params.inventory);
+
+                var deal = card.deal && card.deal(params.star, context);
+                var product = { id: params.id };
+                var cardParams = deal && deal.params;
+                if (cardParams && _.isObject(cardParams))
+                  _.assign(product, cardParams);
+                card.keep && card.keep(deal, context);
+                card.releaseContext && card.releaseContext(context);
+
+                result.resolve(product, deal);
+              });
+              return result;
+            };
             /* end of GWAIO implementation of GWDealer */
+
+            // we need cheats to deal from our deck
+            model.cheats = {
+              noFog: ko.observable(false),
+              jump: function (model, star) {
+                var game = model.game();
+                model.game().turnState("begin");
+                model.player.moveTo(star, function () {
+                  game.currentStar(star);
+                });
+              },
+              testCards: function (game) {
+                var star = game.galaxy().stars()[game.currentStar()];
+                _.forEach(gwaioCardsToUnits.cards, function (card) {
+                  api.debug.log("Dealing card", card.id);
+                  dealCard({
+                    id: card.id,
+                    galaxy: game.galaxy(),
+                    inventory: game.inventory(),
+                    star: star,
+                  }).then(function (product, deal) {
+                    if (product.id === "gwc_minion") {
+                      // Minions tend to break things.
+                      require(["shared/gw_factions"], function (GWFactions) {
+                        _.forEach(GWFactions, function (faction) {
+                          _.forEach(faction.minions, function (minion) {
+                            var minionStock = _.cloneDeep(product);
+                            minionStock.minion = minion;
+                            api.debug.log(
+                              " ",
+                              product.id,
+                              "%",
+                              deal && deal.chance,
+                              minionStock
+                            );
+                            game.inventory().cards.push(minionStock);
+                            game.inventory().cards.pop();
+                            if (!minionStock.minion.commander) {
+                              // This will use the player's commander
+                              return;
+                            }
+
+                            if (
+                              !CommanderUtility.bySpec.getObjectName(
+                                minionStock.minion.commander
+                              )
+                            ) {
+                              console.error(
+                                "Minion commander unitspec",
+                                minionStock.minion.commander,
+                                "invalid"
+                              );
+                            }
+                          });
+                        });
+                      });
+                    } else {
+                      api.debug.log(
+                        " ",
+                        product.id,
+                        "%",
+                        deal && deal.chance,
+                        product
+                      );
+                      game.inventory().cards.push(product);
+                      game.inventory().cards.pop();
+                    }
+                  });
+                });
+              },
+              giveCardId: ko.observable(""),
+              giveCard: function (game) {
+                var self = this;
+                var star = game.galaxy().stars()[game.currentStar()];
+                console.log(self.giveCardId());
+                console.log(gwaioCardsToUnits.cards);
+                var card = _.find(gwaioCardsToUnits.cards, {
+                  id: self.giveCardId(),
+                });
+                console.log(card);
+                dealCard({
+                  id: card.id,
+                  galaxy: game.galaxy(),
+                  inventory: game.inventory(),
+                  star: star,
+                }).then(function (product) {
+                  game.inventory().cards.push(product);
+                });
+              },
+              loadGameText: ko.observable(""),
+              loadGame: function (game) {
+                var self = this;
+                var newGameData;
+                try {
+                  newGameData = JSON.parse(self.loadGameText());
+                } catch (e) {
+                  // Load from server log
+                  var matched =
+                    /\] INFO Message from client [^\s-]* : ({.*"gw":.*})/
+                      .exec(self.loadGameText())
+                      .pop();
+                  var wrapper = JSON.parse(matched).payload;
+                  newGameData = wrapper.gw;
+                  if (newGameData) {
+                    var currentStar =
+                      newGameData.galaxy.stars[newGameData.currentStar];
+                    if (!currentStar.system)
+                      currentStar.system = wrapper.system;
+                  }
+                }
+                newGameData.id = game.id;
+                var newGame = new GW.Game();
+                newGame.load(newGameData);
+                GW.manifest.saveGame(newGame).then(function () {
+                  location.reload();
+                });
+              },
+            };
 
             // gw_play self.explore - we need to call our chooseCards function
             model.explore = function () {

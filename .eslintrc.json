@@ -26,7 +26,8 @@
     "Build": "readonly",
     "globals": "readonly",
     "app": "readonly",
-    "engine": "readonly"
+    "engine": "readonly",
+    "CommanderUtility": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
