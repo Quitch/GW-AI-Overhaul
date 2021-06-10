@@ -497,7 +497,7 @@ if (!gwaioCardsLoaded) {
                 card.keep && card.keep(deal, context);
                 card.releaseContext && card.releaseContext(context);
 
-                result.resolve(product, deal);
+                result.resolve(product);
               });
               return result;
             };
@@ -513,7 +513,7 @@ if (!gwaioCardsLoaded) {
                   galaxy: game.galaxy(),
                   inventory: game.inventory(),
                   star: star,
-                }).then(function (product, deal) {
+                }).then(function (product) {
                   if (product.id === "gwc_minion") {
                     // Minions tend to break things.
                     requireGW(["shared/gw_factions"], function (GWFactions) {
@@ -521,13 +521,7 @@ if (!gwaioCardsLoaded) {
                         _.forEach(faction.minions, function (minion) {
                           var minionStock = _.cloneDeep(product);
                           minionStock.minion = minion;
-                          api.debug.log(
-                            " ",
-                            product.id,
-                            "%",
-                            deal && deal.chance,
-                            minionStock
-                          );
+                          api.debug.log(" ", product.id, "%", minionStock);
                           game.inventory().cards.push(minionStock);
                           game.inventory().cards.pop();
                           if (!minionStock.minion.commander) {
@@ -535,10 +529,17 @@ if (!gwaioCardsLoaded) {
                             return;
                           }
 
+                          var clusterSecurity =
+                            "/pa/units/land/bot_support_commander/bot_support_commander.json";
+                          var clusterWorker =
+                            "/pa/units/air/support_platform/support_platform.json";
+
                           if (
                             !CommanderUtility.bySpec.getObjectName(
                               minionStock.minion.commander
-                            )
+                            ) &&
+                            minionStock.minion.commander !== clusterSecurity &&
+                            minionStock.minion.commander !== clusterWorker
                           ) {
                             console.error(
                               "Minion commander unitspec",
@@ -550,13 +551,6 @@ if (!gwaioCardsLoaded) {
                       });
                     });
                   } else {
-                    api.debug.log(
-                      " ",
-                      product.id,
-                      "%",
-                      deal && deal.chance,
-                      product
-                    );
                     game.inventory().cards.push(product);
                     game.inventory().cards.pop();
                   }
