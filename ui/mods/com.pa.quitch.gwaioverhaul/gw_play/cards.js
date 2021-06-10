@@ -485,7 +485,6 @@ if (!gwaioCardsLoaded) {
             };
 
             var dealCard = function (params) {
-              console.log(params);
               var result = $.Deferred();
               loaded.then(function () {
                 var card = _.find(gwaioCardsToUnits.cards, { id: params.id });
@@ -582,12 +581,9 @@ if (!gwaioCardsLoaded) {
               giveCard: function (game) {
                 var self = this;
                 var star = game.galaxy().stars()[game.currentStar()];
-                console.log(self.giveCardId());
-                console.log(gwaioCardsToUnits.cards);
                 var card = _.find(gwaioCardsToUnits.cards, {
                   id: self.giveCardId(),
                 });
-                console.log(card);
                 dealCard({
                   id: card.id,
                   galaxy: game.galaxy(),
