@@ -30,6 +30,12 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
+          file: "/pa/units/land/air_defense/air_defense.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_SurfaceDefense",
+        },
+        {
           file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
           path: "target_layers",
           op: "push",
