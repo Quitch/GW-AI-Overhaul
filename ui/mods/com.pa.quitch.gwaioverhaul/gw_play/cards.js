@@ -562,14 +562,20 @@ if (!gwaioCardsLoaded) {
               var card = _.find(gwaioCardsToUnits.cards, {
                 id: model.cheats.giveCardId(),
               });
-              dealCard({
-                id: card.id,
-                galaxy: game.galaxy(),
-                inventory: game.inventory(),
-                star: star,
-              }).then(function (product) {
-                game.inventory().cards.push(product);
-              });
+              if (_.isUndefined(card))
+                console.error(
+                  "Unable to find a card called",
+                  model.cheats.giveCardId()
+                );
+              else
+                dealCard({
+                  id: card.id,
+                  galaxy: game.galaxy(),
+                  inventory: game.inventory(),
+                  star: star,
+                }).then(function (product) {
+                  game.inventory().cards.push(product);
+                });
             };
 
             // gw_play self.explore - we need to call our chooseCards function
