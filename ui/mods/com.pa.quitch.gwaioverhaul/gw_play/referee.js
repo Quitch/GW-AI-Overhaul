@@ -670,7 +670,6 @@ if (!gwaioRefereeChangesLoaded) {
                         if (aiToModify === "All") {
                           console.log("Loading:", filePath);
                           if (_.startsWith(filePath, aiTechPath)) {
-                            console.debug("Caught an AI tech file");
                             // Put "load" files where the AI expects them to be
                             filePath =
                               aiPath + filePath.slice(aiTechPath.length);
@@ -684,15 +683,16 @@ if (!gwaioRefereeChangesLoaded) {
                           if (!_.startsWith(filePath, aiTechPath))
                             configFiles[filePath] = _.cloneDeep(json);
                           // Setup Sub Commanders
-                          if (_.startsWith(filePath, aiTechPath)) {
-                            console.debug("Caught an AI tech file");
-                            // Put "load" files where the AI expects them to be
-                            filePath =
-                              aiPath + filePath.slice(aiTechPath.length);
-                            console.log("New filepath:", filePath);
-                          }
                           if (!_.isEmpty(aiOps)) addTechToAI(json, aiOps);
-                          if (quellerSubCommander) configFiles[filePath] = json;
+                          if (quellerSubCommander) {
+                            if (_.startsWith(filePath, aiTechPath)) {
+                              // Put "load" files where Queller expects them to be
+                              filePath =
+                                aiPath + filePath.slice(aiTechPath.length);
+                              console.log("New filepath:", filePath);
+                            }
+                            configFiles[filePath] = json;
+                          }
                           // TITANS Sub Commanders share an ai_path with the enemy so need a new one
                           else {
                             configFiles[
