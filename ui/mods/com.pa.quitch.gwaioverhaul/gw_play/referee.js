@@ -626,13 +626,25 @@ if (!gwaioRefereeChangesLoaded) {
                 console.log("AI to modify:", aiToModify);
 
                 if (aiToModify !== "None") {
-                  aiMods = _.partition(aiMods, { type: "load" });
+                  aiMods = _.partition(aiMods, { op: "load" });
 
                   if (aiMods[0])
                     // eslint-disable-next-line lodash/prefer-map
                     _.forEach(aiMods[0], function (aiMod) {
-                      fileList.push(aiTechPath + aiMod.value);
-                      console.log("Add:", aiTechPath + aiMod.value);
+                      if (aiMod.type === "fabber")
+                        var managerPath = "fabber_builds/";
+                      else if (aiMod.type === "factory")
+                        managerPath = "factory_builds/";
+                      else if (aiMod.type === "platoon")
+                        managerPath = "platoon_builds/";
+                      else if (aiMod.type === "template")
+                        managerPath = "platoon_templates/";
+                      else console.error("Invalid op in", aiMod);
+                      fileList.push(aiTechPath + managerPath + aiMod.value);
+                      console.log(
+                        "Add:",
+                        aiTechPath + managerPath + aiMod.value
+                      );
                     });
                 }
 
