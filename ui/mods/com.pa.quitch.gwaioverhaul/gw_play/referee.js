@@ -432,6 +432,7 @@ if (!gwaioRefereeChangesLoaded) {
                     !_.isEmpty(inventory.aiMods()) &&
                     ai.mirrorMode !== true
                   ) {
+                    console.debug(JSON.stringify(playerX1AIUnitMap));
                     playerFilesClassic = _.assign(
                       {
                         "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
@@ -492,114 +493,91 @@ if (!gwaioRefereeChangesLoaded) {
             console.log("Generating AI");
             var self = this;
 
+            console.debug(JSON.stringify(self.files())); // the unit maps
+
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
             var aiTechPath = "/pa/ai_tech/";
 
-            var addTechToAI = function (json, mods, path) {
-              console.log("Checking", path);
+            var addTechToAI = function (json, mods) {
+              console.log("Checking", json);
 
               var ops = {
-                add: function (json, depth, refId, refValue, idToMod, value) {
+                add: function (json, refId, refValue, idToMod, value) {
                   if (json.build_list) var id = "build_list";
                   else if (json.platoon_templates) id = "platoon_templates";
                   else id = "unit_map";
 
-                  if (depth === 0) {
-                    if (_.isArray(json[id])) {
-                      json[id] = json[id].concat(value); // build_list or platoon_templates
-                    } else _.assign(json[id], value); // unit_map
-                  } else {
-                    // build or platoon
-                    _.forEach(json[id], function (build) {
-                      if (depth === 1) {
-                        if (build[refId] === refValue) {
-                          console.debug("Found", build[refId]);
-                          if (_.isArray(build[idToMod]))
-                            build[idToMod] = build[idToMod].concat(value);
-                          else build[idToMod] += value;
-                          console.debug("Added", build[idToMod]);
-                        }
-                      } else {
-                        if (build.build_conditions) id = "build_conditions";
-                        else id = "units";
-                        // build_condition or squad
-                        _.forEach(build[id], function (build_condition) {
-                          if (depth === 2) {
-                            if (build_condition[refId] === refValue) {
-                              console.debug("Found", build_condition[refId]);
-                              if (_.isArray(build_condition[idToMod]))
-                                build_condition[idToMod] =
-                                  build_condition[idToMod].concat(value);
-                              else build_condition[idToMod] += value;
-                              console.debug("Added", build_condition[idToMod]);
-                            }
-                          } else {
-                            // test
-                            _.forEach(build_condition, function (test) {
-                              if (test[refId] === refValue) {
-                                console.debug("Found", build_condition[refId]);
-                                if (_.isArray(test[idToMod]))
-                                  test[idToMod] = test[idToMod].concat(value);
-                                else test[idToMod] += value;
-                                console.debug("Added", value);
-                              }
-                            });
-                          }
-                        });
+                  if (_.isArray(json[id])) {
+                    json[id] = json[id].concat(value); // build_list or platoon_templates
+                  } else _.assign(json[id], value); // unit_map
+                  // build or platoon
+                  _.forEach(json[id], function (build) {
+                    if (build[refId] === refValue) {
+                      console.debug("Found", build[refId]);
+                      if (_.isArray(build[idToMod]))
+                        build[idToMod] = build[idToMod].concat(value);
+                      else build[idToMod] += value;
+                      console.debug("Added", build[idToMod]);
+                    }
+                    if (build.build_conditions) id = "build_conditions";
+                    else id = "units";
+                    // build_condition or squad
+                    _.forEach(build[id], function (build_condition) {
+                      if (build_condition[refId] === refValue) {
+                        console.debug("Found", build_condition[refId]);
+                        if (_.isArray(build_condition[idToMod]))
+                          build_condition[idToMod] =
+                            build_condition[idToMod].concat(value);
+                        else build_condition[idToMod] += value;
+                        console.debug("Added", build_condition[idToMod]);
                       }
+                      // test
+                      _.forEach(build_condition, function (test) {
+                        if (test[refId] === refValue) {
+                          console.debug("Found", build_condition[refId]);
+                          if (_.isArray(test[idToMod]))
+                            test[idToMod] = test[idToMod].concat(value);
+                          else test[idToMod] += value;
+                          console.debug("Added", value);
+                        }
+                      });
                     });
-                  }
+                  });
                 },
-                replace: function (
-                  json,
-                  depth,
-                  refId,
-                  refValue,
-                  idToMod,
-                  value
-                ) {
+                replace: function (json, refId, refValue, idToMod, value) {
                   if (json.build_list) var id = "build_list";
                   else if (json.platoon_templates) id = "platoon_templates";
                   else id = "unit_map";
 
-                  if (depth === 0) json[id] = value;
-                  else {
-                    // build or platoon
-                    _.forEach(json[id], function (build) {
-                      if (depth === 1) {
-                        if (build[refId] === refValue) {
-                          console.debug("Found", build[refId]);
-                          build[idToMod] = value;
+                  // build or platoon
+                  _.forEach(json[id], function (build) {
+                    if (build[refId] === refValue) {
+                      console.debug("Found", build[refId]);
+                      build[idToMod] = value;
+                      console.debug("Replaced", value);
+                    }
+                    if (build.build_conditions) id = "build_conditions";
+                    else id = "units";
+                    // build_condition or squad
+                    _.forEach(build[id], function (build_condition) {
+                      if (build_condition[refId] === refValue) {
+                        console.debug("Found", build_condition[refId]);
+                        build_condition[idToMod] = value;
+                        console.debug("Replaced", value);
+                      }
+                      // test
+                      _.forEach(build_condition, function (test) {
+                        if (test[refId] === refValue) {
+                          console.debug("Found", test[refId]);
+                          test[idToMod] = value;
                           console.debug("Replaced", value);
                         }
-                      } else {
-                        if (build.build_conditions) id = "build_conditions";
-                        else id = "units";
-                        // build_condition or squad
-                        _.forEach(build[id], function (build_condition) {
-                          if (depth === 2) {
-                            if (build_condition[refId] === refValue) {
-                              console.debug("Found", build_condition[refId]);
-                              build_condition[idToMod] = value;
-                              console.debug("Replaced", value);
-                            }
-                          } else {
-                            // test
-                            _.forEach(build_condition, function (test) {
-                              if (test[refId] === refValue) {
-                                console.debug("Found", test[refId]);
-                                test[idToMod] = value;
-                                console.debug("Replaced", value);
-                              }
-                            });
-                          }
-                        });
-                      }
+                      });
                     });
-                  }
+                  });
                 },
               };
 
@@ -698,8 +676,7 @@ if (!gwaioRefereeChangesLoaded) {
                               aiPath + filePath.slice(aiTechPath.length);
                             console.log("New filepath:", filePath);
                           }
-                          if (!_.isEmpty(aiOps))
-                            addTechToAI(json, aiOps, filePath);
+                          if (!_.isEmpty(aiOps)) addTechToAI(json, aiOps);
                           configFiles[filePath] = json;
                         } else if (aiToModify === "SubCommanders") {
                           console.log("Loading:", filePath);
@@ -714,8 +691,7 @@ if (!gwaioRefereeChangesLoaded) {
                               aiPath + filePath.slice(aiTechPath.length);
                             console.log("New filepath:", filePath);
                           }
-                          if (!_.isEmpty(aiOps))
-                            addTechToAI(json, aiOps, filePath);
+                          if (!_.isEmpty(aiOps)) addTechToAI(json, aiOps);
                           if (quellerSubCommander) configFiles[filePath] = json;
                           // TITANS Sub Commanders share an ai_path with the enemy so need a new one
                           else {
