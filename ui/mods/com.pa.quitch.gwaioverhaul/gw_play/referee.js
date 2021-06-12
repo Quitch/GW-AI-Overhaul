@@ -505,14 +505,11 @@ if (!gwaioRefereeChangesLoaded) {
               console.log("Checking", json);
 
               var ops = {
-                add: function (json, refId, refValue, idToMod, value) {
+                add: function (json, value, refId, refValue, idToMod) {
                   if (json.build_list) var id = "build_list";
                   else if (json.platoon_templates) id = "platoon_templates";
                   else id = "unit_map";
 
-                  if (_.isArray(json[id])) {
-                    json[id] = json[id].concat(value); // build_list or platoon_templates
-                  } else _.assign(json[id], value); // unit_map
                   // build or platoon
                   _.forEach(json[id], function (build) {
                     if (build[refId] === refValue) {
@@ -547,7 +544,7 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                   });
                 },
-                replace: function (json, refId, refValue, idToMod, value) {
+                replace: function (json, value, refId, refValue, idToMod) {
                   if (json.build_list) var id = "build_list";
                   else if (json.platoon_templates) id = "platoon_templates";
                   else id = "unit_map";
@@ -579,17 +576,20 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                   });
                 },
+                unit: function (json, value) {
+                  _.assign(json["unit_map"], value);
+                },
               };
 
               // eslint-disable-next-line lodash/prefer-filter
               _.forEach(mods, function (mod) {
                 ops[mod.op](
                   json,
+                  mod.value,
                   mod.depth,
                   mod.refId,
                   mod.refValue,
-                  mod.idToMod,
-                  mod.value
+                  mod.idToMod
                 );
               });
             };
