@@ -145,13 +145,6 @@ define([
         {
           type: "fabber",
           op: "add",
-          toBuild: "AdvancedAirFactory",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "add",
           toBuild: "TeslaGunship",
           idToMod: "builders",
           value: "BasicAirFabber",
