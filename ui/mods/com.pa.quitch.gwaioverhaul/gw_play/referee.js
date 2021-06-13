@@ -542,6 +542,49 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                prepend: function (
+                  json,
+                  toBuild,
+                  value,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      if (build[idToMod] && _.isArray(build[idToMod])) {
+                        build[idToMod] = value.concat(build[idToMod]);
+                        console.debug("Prepended", build[idToMod]);
+                      } else if (build[idToMod]) {
+                        build[idToMod] = value + build[idToMod];
+                        console.debug("Prepended", build[idToMod]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found", test[refId]);
+                                if (_.isArray(test[idToMod]))
+                                  test[idToMod] = value.concat(test[idToMod]);
+                                else if (test[idToMod]) {
+                                  test[idToMod] = value + test[idToMod];
+                                  console.debug("Prepended", value);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
+                    }
+                  });
+                },
                 replace: function (
                   json,
                   toBuild,
