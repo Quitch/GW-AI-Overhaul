@@ -37,6 +37,7 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
+
           inventory.addMods([
             {
               file: "/pa/units/air/air_factory/air_factory.json",
@@ -173,6 +174,14 @@ define([
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
+            },
+          ]);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "load",
+              value: "gwaio_start_rapid.json",
             },
           ]);
         } else {
