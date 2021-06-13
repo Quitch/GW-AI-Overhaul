@@ -495,9 +495,6 @@ if (!gwaioRefereeChangesLoaded) {
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
 
-            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
-            var aiTechPath = "/pa/ai_tech/";
-
             var addTechToAI = function (json, mods) {
               console.log("Checking", json);
 
@@ -585,6 +582,9 @@ if (!gwaioRefereeChangesLoaded) {
                 );
               });
             };
+
+            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            var aiTechPath = "/pa/ai_tech/";
 
             var parseFiles = function (aiPath, promise, aiToModify) {
               api.file.list(aiPath, true).then(function (fileList) {
