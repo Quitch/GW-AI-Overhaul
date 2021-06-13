@@ -37,11 +37,13 @@ define([
           GWCStart.buff(inventory);
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
+
           var units = [
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
             "/pa/units/land/unit_cannon/unit_cannon.json",
           ];
           inventory.addUnits(units);
+
           var mods = _.map(units, function (unit) {
             return {
               file: unit,
@@ -51,6 +53,14 @@ define([
             };
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "load",
+              value: "gwaio_start_paratrooper.json",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
