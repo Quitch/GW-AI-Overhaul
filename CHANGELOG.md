@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+## Change
+
+- Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
+
 ## v5.5.3 - 2021-06-08
 
 ### Fixed
