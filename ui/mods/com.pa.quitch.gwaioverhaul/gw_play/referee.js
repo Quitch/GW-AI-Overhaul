@@ -432,7 +432,6 @@ if (!gwaioRefereeChangesLoaded) {
                     !_.isEmpty(inventory.aiMods()) &&
                     ai.mirrorMode !== true
                   ) {
-                    console.debug(JSON.stringify(playerX1AIUnitMap));
                     playerFilesClassic = _.assign(
                       {
                         "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
@@ -492,8 +491,6 @@ if (!gwaioRefereeChangesLoaded) {
           var generateAI = function () {
             console.log("Generating AI");
             var self = this;
-
-            console.debug(JSON.stringify(self.files())); // the unit maps
 
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
