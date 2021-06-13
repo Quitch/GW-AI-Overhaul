@@ -647,14 +647,14 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         // Only mods associated with the file's AI manager are loaded
                         if (_.includes(filePath, "/fabber_builds/"))
-                          var aiOps = _.filter(aiMods[1], { type: "fabber" });
+                          var aiBuildOps = _.filter(aiMods[1], {
+                            type: "fabber",
+                          });
                         else if (_.includes(filePath, "/factory_builds/"))
-                          aiOps = _.filter(aiMods[1], { type: "factory" });
+                          aiBuildOps = _.filter(aiMods[1], { type: "factory" });
                         else if (_.includes(filePath, "/platoon_builds/"))
-                          aiOps = _.filter(aiMods[1], { type: "platoon" });
-                        else if (_.includes(filePath, "/platoon_templates/"))
-                          aiOps = _.filter(aiMods[1], { type: "template" });
-                        else aiOps = [];
+                          aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                        else aiBuildOps = [];
                       }
                     }
 
@@ -670,7 +670,8 @@ if (!gwaioRefereeChangesLoaded) {
                               aiPath + filePath.slice(aiTechPath.length);
                             console.log("New filepath:", filePath);
                           }
-                          if (!_.isEmpty(aiOps)) addTechToAI(json, aiOps);
+                          if (!_.isEmpty(aiBuildOps))
+                            addTechToAI(json, aiBuildOps);
                           configFiles[filePath] = json;
                         } else if (aiToModify === "SubCommanders") {
                           console.log("Loading:", filePath);
@@ -678,7 +679,8 @@ if (!gwaioRefereeChangesLoaded) {
                           if (!_.startsWith(filePath, aiTechPath))
                             configFiles[filePath] = _.cloneDeep(json);
                           // Setup Sub Commanders
-                          if (!_.isEmpty(aiOps)) addTechToAI(json, aiOps);
+                          if (!_.isEmpty(aiBuildOps))
+                            addTechToAI(json, aiBuildOps);
                           if (quellerSubCommander) {
                             if (_.startsWith(filePath, aiTechPath)) {
                               // Put "load" files where Queller expects them to be
