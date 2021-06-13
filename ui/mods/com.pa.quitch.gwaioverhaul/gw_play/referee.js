@@ -499,73 +499,78 @@ if (!gwaioRefereeChangesLoaded) {
               console.log("Checking", json);
 
               var ops = {
-                add: function (json, value, refId, refValue, idToMod) {
-                  if (json.build_list) var id = "build_list";
-                  else id = "platoon_templates";
-
-                  // build or platoon
-                  _.forEach(json[id], function (build) {
-                    if (build[refId] === refValue) {
-                      console.debug("Found", build[refId]);
-                      if (_.isArray(build[idToMod]))
+                add: function (json, toBuild, idToMod, value, refId, refValue) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      if (build[idToMod] && _.isArray(build[idToMod])) {
                         build[idToMod] = build[idToMod].concat(value);
-                      else build[idToMod] += value;
-                      console.debug("Added", build[idToMod]);
+                        console.debug("Added", build[idToMod]);
+                      } else if (build[idToMod]) {
+                        build[idToMod] += value;
+                        console.debug("Added", build[idToMod]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found", test[refId]);
+                                if (_.isArray(test[idToMod]))
+                                  test[idToMod] = test[idToMod].concat(value);
+                                else if (test[idToMod]) {
+                                  test[idToMod] += value;
+                                  console.debug("Added", value);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
                     }
-                    if (build.build_conditions) id = "build_conditions";
-                    else id = "units";
-                    // build_condition or squad
-                    _.forEach(build[id], function (build_condition) {
-                      if (build_condition[refId] === refValue) {
-                        console.debug("Found", build_condition[refId]);
-                        if (_.isArray(build_condition[idToMod]))
-                          build_condition[idToMod] =
-                            build_condition[idToMod].concat(value);
-                        else build_condition[idToMod] += value;
-                        console.debug("Added", build_condition[idToMod]);
-                      }
-                      // test
-                      _.forEach(build_condition, function (test) {
-                        if (test[refId] === refValue) {
-                          console.debug("Found", build_condition[refId]);
-                          if (_.isArray(test[idToMod]))
-                            test[idToMod] = test[idToMod].concat(value);
-                          else test[idToMod] += value;
-                          console.debug("Added", value);
-                        }
-                      });
-                    });
                   });
                 },
-                replace: function (json, value, refId, refValue, idToMod) {
-                  if (json.build_list) var id = "build_list";
-                  else id = "platoon_templates";
-
-                  // build or platoon
-                  _.forEach(json[id], function (build) {
-                    if (build[refId] === refValue) {
-                      console.debug("Found", build[refId]);
-                      build[idToMod] = value;
-                      console.debug("Replaced", value);
-                    }
-                    if (build.build_conditions) id = "build_conditions";
-                    else id = "units";
-                    // build_condition or squad
-                    _.forEach(build[id], function (build_condition) {
-                      if (build_condition[refId] === refValue) {
-                        console.debug("Found", build_condition[refId]);
-                        build_condition[idToMod] = value;
+                replace: function (
+                  json,
+                  toBuild,
+                  idToMod,
+                  value,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      if (build[idToMod]) {
+                        build[idToMod] = value;
                         console.debug("Replaced", value);
-                      }
-                      // test
-                      _.forEach(build_condition, function (test) {
-                        if (test[refId] === refValue) {
-                          console.debug("Found", test[refId]);
-                          test[idToMod] = value;
-                          console.debug("Replaced", value);
-                        }
-                      });
-                    });
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found", test[refId]);
+                                if (test[idToMod]) {
+                                  test[idToMod] = value;
+                                  console.debug("Replaced", value);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
+                    }
                   });
                 },
               };
@@ -574,11 +579,11 @@ if (!gwaioRefereeChangesLoaded) {
               _.forEach(mods, function (mod) {
                 ops[mod.op](
                   json,
+                  mod.toBuild,
+                  mod.idToMod,
                   mod.value,
-                  mod.depth,
                   mod.refId,
-                  mod.refValue,
-                  mod.idToMod
+                  mod.refValue
                 );
               });
             };
