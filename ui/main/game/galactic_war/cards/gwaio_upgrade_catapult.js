@@ -49,6 +49,12 @@ define([
             ],
           },
         },
+        {
+          file: "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_AirDefense",
+        },
       ]);
     },
     dull: function () {},
