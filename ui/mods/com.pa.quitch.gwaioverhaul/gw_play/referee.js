@@ -499,7 +499,7 @@ if (!gwaioRefereeChangesLoaded) {
               console.log("Checking", json);
 
               var ops = {
-                add: function (json, toBuild, idToMod, value, refId, refValue) {
+                add: function (json, toBuild, value, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -538,8 +538,8 @@ if (!gwaioRefereeChangesLoaded) {
                 replace: function (
                   json,
                   toBuild,
-                  idToMod,
                   value,
+                  idToMod,
                   refId,
                   refValue
                 ) {
@@ -573,6 +573,16 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                new: function (json, toBuild, value) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      build.build_conditions.push(value);
+                      console.debug("New", value);
+                    }
+                  });
+                },
               };
 
               // eslint-disable-next-line lodash/prefer-filter
@@ -580,8 +590,8 @@ if (!gwaioRefereeChangesLoaded) {
                 ops[mod.op](
                   json,
                   mod.toBuild,
-                  mod.idToMod,
                   mod.value,
+                  mod.idToMod,
                   mod.refId,
                   mod.refValue
                 );
