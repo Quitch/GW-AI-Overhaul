@@ -504,8 +504,7 @@ if (!gwaioRefereeChangesLoaded) {
               var ops = {
                 add: function (json, value, refId, refValue, idToMod) {
                   if (json.build_list) var id = "build_list";
-                  else if (json.platoon_templates) id = "platoon_templates";
-                  else id = "unit_map";
+                  else id = "platoon_templates";
 
                   // build or platoon
                   _.forEach(json[id], function (build) {
@@ -543,8 +542,7 @@ if (!gwaioRefereeChangesLoaded) {
                 },
                 replace: function (json, value, refId, refValue, idToMod) {
                   if (json.build_list) var id = "build_list";
-                  else if (json.platoon_templates) id = "platoon_templates";
-                  else id = "unit_map";
+                  else id = "platoon_templates";
 
                   // build or platoon
                   _.forEach(json[id], function (build) {
@@ -572,9 +570,6 @@ if (!gwaioRefereeChangesLoaded) {
                       });
                     });
                   });
-                },
-                unit: function (json, value) {
-                  _.assign(json["unit_map"], value);
                 },
               };
 
@@ -654,9 +649,7 @@ if (!gwaioRefereeChangesLoaded) {
                           aiOps = _.filter(aiMods[1], { type: "factory" });
                         else if (_.includes(filePath, "/platoon_builds/"))
                           aiOps = _.filter(aiMods[1], { type: "platoon" });
-                        else if (_.includes(filePath, "/platoon_templates/"))
-                          aiOps = _.filter(aiMods[1], { type: "template" });
-                        else aiOps = _.filter(aiMods[1], { type: "map" });
+                        else aiOps = _.filter(aiMods[1], { type: "template" });
                       }
                     }
 
