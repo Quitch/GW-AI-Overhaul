@@ -69,6 +69,13 @@ define([
           value: 9,
         },
       ]);
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "bot_aa.json",
+        },
+      ]);
     },
     dull: function () {},
   };
