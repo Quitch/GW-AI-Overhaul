@@ -98,6 +98,62 @@
           }
         ]
       ]
+    },
+    {
+      "name": "Solar Drone",
+      "to_build": "SolarDrone",
+      "instance_count": 1,
+      "max_num_assisters": 15,
+      "priority": 97,
+      "builders": ["BasicAirFactory"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "DesireEnergy"
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Commander",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "UnitCount",
+            "unit_type_string0": "EnergyProduction & Basic",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCount",
+            "unit_type_string0": "EnergyProduction & Advanced",
+            "compare0": "<",
+            "value0": 1
+          }
+        ],
+        [
+          {
+            "test_type": "DesireEnergy"
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Commander",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCount",
+            "unit_type_string0": "EnergyProduction & Advanced",
+            "compare0": "<",
+            "value0": 1
+          }
+        ]
+      ]
     }
   ]
 }
