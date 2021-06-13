@@ -73,7 +73,7 @@ define([
         {
           type: "factory",
           op: "load",
-          value: "bot_aa.json",
+          value: "gwaio_enable_bot_aa.json",
         },
       ]);
     },
