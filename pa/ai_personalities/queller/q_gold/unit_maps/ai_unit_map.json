@@ -1,5 +1,20 @@
 {
   "unit_map": {
+    "Commander": {
+      "unit_types": "Commander"
+    },
+    "AnyBasicFactory": {
+      "unit_types": "Factory & Basic"
+    },
+    "AnyAdvancedFactory": {
+      "unit_types": "Factory & Advanced"
+    },
+    "AnyBasicFabber": {
+      "unit_types": "(Fabber & (Basic | Debug)) - Orbital"
+    },
+    "AnyAdvancedFabber": {
+      "unit_types": "(Fabber & (Advanced | Debug)) - Orbital"
+    },
     "AnyUberAdvancedFabber": {
       "unit_types": "((Fabber & (Advanced | Debug)) - Orbital) - Custom1 - Custom2 - Custom3 - Custom4"
     },
