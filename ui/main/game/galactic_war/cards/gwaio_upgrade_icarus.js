@@ -36,6 +36,22 @@ define([
           value: 2,
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "new",
+          toBuild: "SolarDrone",
+          value: [
+            {
+              test_type: "DesireMetal",
+            },
+            {
+              test_type: "CanAffordBuildDemand",
+            },
+          ],
+        },
+      ]);
     },
     dull: function () {},
   };
