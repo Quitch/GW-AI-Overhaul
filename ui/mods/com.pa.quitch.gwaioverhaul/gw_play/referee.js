@@ -682,16 +682,14 @@ if (!gwaioRefereeChangesLoaded) {
                               console.log("New filepath:", filePath);
                             }
                             configFiles[filePath] = json;
-                          }
-                          // TITANS Sub Commanders share an ai_path with the enemy so need a new one
-                          else {
-                            configFiles[
-                              aiTechPath + filePath.slice(aiPath.length)
-                            ] = json;
-                            console.log(
-                              "Tech Sub Com filepath:",
-                              aiTechPath + filePath.slice(aiPath.length)
-                            );
+                          } else {
+                            if (_.startsWith(filePath, aiPath)) {
+                              // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                              filePath =
+                                aiTechPath + filePath.slice(aiPath.length);
+                            }
+                            configFiles[filePath] = json;
+                            console.log("Tech Sub Com filepath:", filePath);
                           }
                         } else {
                           console.log("Loading:", filePath);
