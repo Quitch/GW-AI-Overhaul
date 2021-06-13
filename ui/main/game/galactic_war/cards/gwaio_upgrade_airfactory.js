@@ -40,14 +40,14 @@ define([
       inventory.addAIMods([
         {
           type: "factory",
-          op: "add",
+          op: "append",
           toBuild: "AdvancedAirFabber",
           idToMod: "builders",
           value: "BasicAirFactory",
         },
         {
           type: "factory",
-          op: "add",
+          op: "append",
           refId: "to_build",
           refValue: "AdvancedBomber",
           idToMod: "builders",
@@ -55,21 +55,21 @@ define([
         },
         {
           type: "factory",
-          op: "add",
+          op: "append",
           toBuild: "AdvancedGunship",
           idToMod: "builders",
           value: "BasicAirFactory",
         },
         {
           type: "factory",
-          op: "add",
+          op: "append",
           toBuild: "AdvancedFighter",
           idToMod: "builders",
           value: "BasicAirFactory",
         },
         {
           type: "factory",
-          op: "add",
+          op: "append",
           toBuild: "Strafer",
           idToMod: "builders",
           value: "BasicAirFactory",

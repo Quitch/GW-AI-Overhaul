@@ -499,17 +499,24 @@ if (!gwaioRefereeChangesLoaded) {
               console.log("Checking", json);
 
               var ops = {
-                add: function (json, toBuild, value, idToMod, refId, refValue) {
+                append: function (
+                  json,
+                  toBuild,
+                  value,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       console.debug("Found", build.to_build);
                       if (build[idToMod] && _.isArray(build[idToMod])) {
                         build[idToMod] = build[idToMod].concat(value);
-                        console.debug("Added", build[idToMod]);
+                        console.debug("Appended", build[idToMod]);
                       } else if (build[idToMod]) {
                         build[idToMod] += value;
-                        console.debug("Added", build[idToMod]);
+                        console.debug("Appended", build[idToMod]);
                       } else
                         _.forEach(
                           build.build_conditions,
@@ -521,7 +528,7 @@ if (!gwaioRefereeChangesLoaded) {
                                   test[idToMod] = test[idToMod].concat(value);
                                 else if (test[idToMod]) {
                                   test[idToMod] += value;
-                                  console.debug("Added", value);
+                                  console.debug("Appended", value);
                                 } else
                                   console.error(
                                     test[idToMod],
