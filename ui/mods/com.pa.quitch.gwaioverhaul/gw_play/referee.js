@@ -642,14 +642,14 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         // Only mods associated with the file's AI manager are loaded
                         if (_.includes(filePath, "/fabber_builds/"))
-                          var aiOps = _.filter(aiMods[1], {
-                            type: "fabber",
-                          });
+                          var aiOps = _.filter(aiMods[1], { type: "fabber" });
                         else if (_.includes(filePath, "/factory_builds/"))
                           aiOps = _.filter(aiMods[1], { type: "factory" });
                         else if (_.includes(filePath, "/platoon_builds/"))
                           aiOps = _.filter(aiMods[1], { type: "platoon" });
-                        else aiOps = _.filter(aiMods[1], { type: "template" });
+                        else if (_.includes(filePath, "/platoon_templates/"))
+                          aiOps = _.filter(aiMods[1], { type: "template" });
+                        else aiOps = [];
                       }
                     }
 
