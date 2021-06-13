@@ -797,8 +797,6 @@ if (!gwaioRefereeChangesLoaded) {
                 subcommander.personality.ai_path =
                   "/pa/ai_personalities/queller/q_gold";
 
-              console.log(JSON.stringify(subcommander.personality));
-
               armies.push({
                 slots: [
                   {
