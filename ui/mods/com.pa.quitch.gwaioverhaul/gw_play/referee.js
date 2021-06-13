@@ -603,6 +603,7 @@ if (!gwaioRefereeChangesLoaded) {
                 if (aiToModify !== "None") {
                   aiMods = _.partition(aiMods, { op: "load" });
 
+                  // process ai load ops
                   if (aiMods[0])
                     // eslint-disable-next-line lodash/prefer-map
                     _.forEach(aiMods[0], function (aiMod) {
