@@ -558,10 +558,12 @@ if (!gwaioCardsLoaded) {
               });
             };
             model.cheats.giveCard = function (game) {
-              var star = game.galaxy().stars()[game.currentStar()];
+              var id = model.cheats.giveCardId();
               var card = _.find(gwaioCardsToUnits.cards, {
-                id: model.cheats.giveCardId(),
+                id: id,
               });
+              var galaxy = game.galaxy();
+
               if (_.isUndefined(card))
                 console.error(
                   "Unable to find a card called",
@@ -570,10 +572,24 @@ if (!gwaioCardsLoaded) {
               else
                 dealCard({
                   id: card.id,
-                  galaxy: game.galaxy(),
+                  galaxy: galaxy,
                   inventory: game.inventory(),
-                  star: star,
+                  star: galaxy.stars()[game.currentStar()],
                 }).then(function (product) {
+                  if (product.id === "gwc_minion") {
+                    requireGW(["shared/gw_factions"], function (GWFactions) {
+                      var playerFaction =
+                        game.inventory().getTag("global", "playerFaction") || 0;
+                      product.minion = _.sample(
+                        GWFactions[playerFaction].minions
+                      );
+                      product.unique = Math.random();
+                      if (gwaioFunctions.quellerAIEnabled()) {
+                        product.minion.personality.ai_path =
+                          "/pa/ai_personalities/q_gold";
+                      }
+                    });
+                  }
                   game.inventory().cards.push(product);
                 });
             };
