@@ -229,6 +229,12 @@ define([
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
+        {
+          file: "/pa/units/air/support_platform/support_platform.json",
+          path: "unit_types",
+          op: "push",
+          value: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
+        },
       ]);
     },
     dull: function () {},
