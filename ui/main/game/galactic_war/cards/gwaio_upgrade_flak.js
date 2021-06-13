@@ -45,6 +45,12 @@ define([
           op: "push",
           value: ["Mobile & (Land | Naval)"],
         },
+        {
+          file: "/pa/units/land/air_defense_adv/air_defense_adv.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_SurfaceDefense",
+        },
       ]);
     },
     dull: function () {},
