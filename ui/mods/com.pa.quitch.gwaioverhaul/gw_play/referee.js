@@ -626,6 +626,22 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                // fabber/factory/platoon only
+                new: function (json, toBuild, value) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      build.build_conditions.push(value);
+                      console.debug(
+                        "New",
+                        build.build_conditions[
+                          build.build_conditions.length - 1
+                        ]
+                      );
+                    }
+                  });
+                },
               };
 
               _.forEach(mods, function (mod) {
