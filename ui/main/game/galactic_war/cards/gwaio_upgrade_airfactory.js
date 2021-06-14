@@ -48,8 +48,7 @@ define([
         {
           type: "factory",
           op: "append",
-          refId: "to_build",
-          refValue: "AdvancedBomber",
+          toBuild: "AdvancedBomber",
           idToMod: "builders",
           value: "BasicAirFactory",
         },

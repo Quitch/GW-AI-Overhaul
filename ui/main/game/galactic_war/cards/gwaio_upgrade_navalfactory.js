@@ -50,8 +50,7 @@ define([
         {
           type: "factory",
           op: "append",
-          refId: "to_build",
-          refValue: "Battleship",
+          toBuild: "Battleship",
           idToMod: "builders",
           value: "BasicNavalFactory",
         },
