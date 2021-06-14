@@ -499,6 +499,7 @@ if (!gwaioRefereeChangesLoaded) {
               console.log("Checking", json);
 
               var ops = {
+                // fabber/factory/platoon only
                 append: function (
                   json,
                   toBuild,
@@ -542,6 +543,7 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                // fabber/factory/platoon only
                 prepend: function (
                   json,
                   toBuild,
@@ -571,7 +573,7 @@ if (!gwaioRefereeChangesLoaded) {
                                   test[idToMod] = value.concat(test[idToMod]);
                                 else if (test[idToMod]) {
                                   test[idToMod] = value + test[idToMod];
-                                  console.debug("Prepended", value);
+                                  console.debug("Prepended", test[idToMod]);
                                 } else
                                   console.error(
                                     test[idToMod],
@@ -585,6 +587,7 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                // fabber/factory/platoon only
                 replace: function (
                   json,
                   toBuild,
@@ -599,7 +602,7 @@ if (!gwaioRefereeChangesLoaded) {
                       console.debug("Found", build.to_build);
                       if (build[idToMod]) {
                         build[idToMod] = value;
-                        console.debug("Replaced", value);
+                        console.debug("Replaced", build[idToMod]);
                       } else
                         _.forEach(
                           build.build_conditions,
@@ -609,7 +612,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 console.debug("Found", test[refId]);
                                 if (test[idToMod]) {
                                   test[idToMod] = value;
-                                  console.debug("Replaced", value);
+                                  console.debug("Replaced", test[idToMod]);
                                 } else
                                   console.error(
                                     test[idToMod],
@@ -623,19 +626,8 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
-                new: function (json, toBuild, value) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
-                      build.build_conditions.push(value);
-                      console.debug("New", value);
-                    }
-                  });
-                },
               };
 
-              // eslint-disable-next-line lodash/prefer-filter
               _.forEach(mods, function (mod) {
                 ops[mod.op](
                   json,
