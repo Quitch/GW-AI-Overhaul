@@ -642,6 +642,19 @@ if (!gwaioRefereeChangesLoaded) {
                     }
                   });
                 },
+                // template only
+                squad: function (json, toBuild, value) {
+                  if (json.platoon_templates[toBuild]) {
+                    console.debug("Found", toBuild);
+                    json.platoon_templates[toBuild].units.push(value);
+                    console.debug(
+                      "Squad",
+                      json.platoon_templates[toBuild].units[
+                        json.platoon_templates[toBuild].units.length - 1
+                      ]
+                    );
+                  } else console.error(toBuild, "not found");
+                },
               };
 
               _.forEach(mods, function (mod) {
@@ -723,6 +736,10 @@ if (!gwaioRefereeChangesLoaded) {
                           aiBuildOps = _.filter(aiMods[1], { type: "factory" });
                         else if (_.includes(filePath, "/platoon_builds/"))
                           aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                        else if (_.includes(filePath, "/platoon_templates/"))
+                          aiBuildOps = _.filter(aiMods[1], {
+                            type: "template",
+                          });
                         else aiBuildOps = [];
                       }
                     }
