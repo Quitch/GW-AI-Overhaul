@@ -86,6 +86,59 @@ define([
               "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "factory",
+              op: "load",
+              value: "nem_start_planetary.json",
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "BasicMetalExtractor",
+              idToMod: "priority",
+              value: 0,
+              refId: "task_type",
+              refValue: "AreaBuild",
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "AdvancedMetalExtractor",
+              idToMod: "priority",
+              value: 0,
+              refId: "task_type",
+              refValue: "AreaBuild",
+            },
+            {
+              type: "fabber",
+              op: "remove",
+              toBuild: "BasicMetalExtractor",
+              idToMod: "CanFindMetalSpotToBuildBasic",
+            },
+            {
+              type: "fabber",
+              op: "remove",
+              toBuild: "AdvancedMetalExtractor",
+              idToMod: "CanFindMetalSpotToBuildBasic",
+              value: true,
+            },
+            {
+              type: "fabber",
+              op: "new",
+              toBuild: "BasicMetalExtractor",
+              idToMod: "CanFindMetalSpotToBuildBasic",
+              value: true,
+            },
+            {
+              type: "fabber",
+              op: "new",
+              toBuild: "AdvancedMetalExtractor",
+              idToMod: "CanFindMetalSpotToBuildBasic",
+              value: true,
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

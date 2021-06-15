@@ -128,8 +128,8 @@ define([
               type: "fabber",
               op: "append",
               toBuild: "NukeSilo",
-              value: "AnyBasicFabber",
               idToMod: "builders",
+              value: "AnyBasicFabber",
             },
           ]);
         } else {

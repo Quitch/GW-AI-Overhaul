@@ -59,29 +59,29 @@ define([
               type: "factory",
               op: "append",
               toBuild: "UnitCannon",
-              value: "Commander",
               idToMod: "builders",
+              value: "Commander",
             },
             {
               type: "factory",
               op: "append",
               toBuild: "UnitCannon",
-              value: "UberCommander",
               idToMod: "builders",
+              value: "UberCommander",
             },
             {
               type: "factory",
               op: "append",
               toBuild: "MiniUnitCannon",
+              idToMod: "builders",
               value: "Commander",
-              idToMod: "builders",
             },
             {
               type: "factory",
               op: "append",
               toBuild: "MiniUnitCannon",
-              value: "UberCommander",
               idToMod: "builders",
+              value: "UberCommander",
             },
           ]);
         } else {
