@@ -9,7 +9,7 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Defence Tech Commander"),
+    summarize: _.constant("!LOC:Defense Tech Commander"),
     icon: function () {
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
@@ -19,7 +19,7 @@ define([
     hint: function () {
       return {
         icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Defence Tech Commander",
+        description: "!LOC:Defense Tech Commander",
       };
     },
     deal: function () {
