@@ -502,8 +502,8 @@ if (!gwaioRefereeChangesLoaded) {
                 // fabber/factory/platoon only
                 append: function (
                   json,
-                  toBuild,
                   value,
+                  toBuild,
                   idToMod,
                   refId,
                   refValue
@@ -512,10 +512,17 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       console.debug("Found", build.name);
-                      if (build[idToMod] && _.isArray(build[idToMod])) {
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod] &&
+                        _.isArray(build[idToMod])
+                      ) {
                         build[idToMod] = build[idToMod].concat(value);
                         console.debug("Appended", build[idToMod]);
-                      } else if (build[idToMod]) {
+                      } else if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
                         build[idToMod] += value;
                         console.debug("Appended", build[idToMod]);
                       } else
@@ -546,8 +553,8 @@ if (!gwaioRefereeChangesLoaded) {
                 // fabber/factory/platoon only
                 prepend: function (
                   json,
-                  toBuild,
                   value,
+                  toBuild,
                   idToMod,
                   refId,
                   refValue
@@ -556,10 +563,17 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       console.debug("Found", build.name);
-                      if (build[idToMod] && _.isArray(build[idToMod])) {
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod] &&
+                        _.isArray(build[idToMod])
+                      ) {
                         build[idToMod] = value.concat(build[idToMod]);
                         console.debug("Prepended", build[idToMod]);
-                      } else if (build[idToMod]) {
+                      } else if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
                         build[idToMod] = value + build[idToMod];
                         console.debug("Prepended", build[idToMod]);
                       } else
@@ -590,8 +604,8 @@ if (!gwaioRefereeChangesLoaded) {
                 // fabber/factory/platoon only
                 replace: function (
                   json,
-                  toBuild,
                   value,
+                  toBuild,
                   idToMod,
                   refId,
                   refValue
@@ -600,7 +614,10 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       console.debug("Found", build.name);
-                      if (build[idToMod]) {
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
                         build[idToMod] = value;
                         console.debug("Replaced", build[idToMod]);
                       } else
@@ -627,43 +644,19 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                remove: function (
-                  json,
-                  toBuild,
-                  value,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                remove: function (json, value) {
                   // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build, i) {
-                    if (build.to_build === toBuild) {
-                      console.debug("Found", build.name);
-                      if (build[idToMod] === value) {
-                        console.debug("Removed", json.build_list[i]);
-                        _.pull(json.build_list, json.build_list[i]);
-                      } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test, i) {
-                              if (
-                                test[idToMod] === value &&
-                                (_.isUndefined(refId) ||
-                                  test[refId] === refValue)
-                              ) {
-                                console.debug("Found", test[idToMod]);
-                                console.debug("Removed", test_array[i]);
-                                _.pull(test_array, test_array[i]);
-                              }
-                            });
-                          }
-                        );
-                    }
+                  _.forEach(json, function (build_list) {
+                    _.remove(build_list, value);
+                    _.forEach(build_list, function (build) {
+                      _.forEach(build.build_conditions, function (test_array) {
+                        _.remove(test_array, value);
+                      });
+                    });
                   });
                 },
                 // fabber/factory/platoon only
-                new: function (json, toBuild, value, idToMod) {
+                new: function (json, value, toBuild, idToMod) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -691,7 +684,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // template only
-                squad: function (json, toBuild, value) {
+                squad: function (json, value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
                     console.debug("Found", toBuild);
                     json.platoon_templates[toBuild].units.push(value);
@@ -708,8 +701,8 @@ if (!gwaioRefereeChangesLoaded) {
               _.forEach(mods, function (mod) {
                 ops[mod.op](
                   json,
-                  mod.toBuild,
                   mod.value,
+                  mod.toBuild,
                   mod.idToMod,
                   mod.refId,
                   mod.refValue
