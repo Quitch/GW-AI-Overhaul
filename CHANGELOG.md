@@ -4,7 +4,7 @@
 
 ### Added
 
-- Sub Commanders and The Guardians now support every tech the AI engine is able to
+- Sub Commanders and The Guardians now support every tech and loadout the AI engine is able to
 
 ### Change
 
