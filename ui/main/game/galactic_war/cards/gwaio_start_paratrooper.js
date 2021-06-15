@@ -56,9 +56,32 @@ define([
 
           inventory.addAIMods([
             {
-              type: "fabber",
-              op: "load",
-              value: "gwaio_start_paratrooper.json",
+              type: "factory",
+              op: "append",
+              toBuild: "UnitCannon",
+              value: "Commander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "UnitCannon",
+              value: "UberCommander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "MiniUnitCannon",
+              value: "Commander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "MiniUnitCannon",
+              value: "UberCommander",
+              idToMod: "builders",
             },
           ]);
         } else {
