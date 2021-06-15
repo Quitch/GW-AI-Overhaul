@@ -52,7 +52,6 @@ define([
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-            "/pa/units/land/radar/radar.json",
           ];
           var mods = [];
           units.forEach(function (unit) {
