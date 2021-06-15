@@ -37,13 +37,16 @@ define([
     deal: function (system, context, inventory) {
       var chance = context.chance;
       if (
-        !gwaioFunctions.hasUnit(
+        (!gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
         ) &&
-        !gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/bot_factory.json"
-        ) &&
-        !gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json")
+          !gwaioFunctions.hasUnit(
+            "/pa/units/land/bot_factory/bot_factory.json"
+          ) &&
+          !gwaioFunctions.hasUnit(
+            "/pa/units/air/air_factory/air_factory.json"
+          )) ||
+        inventory.hasCard("nem_start_deepspace")
       )
         chance = 0;
       else if (inventory.minions)

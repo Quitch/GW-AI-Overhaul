@@ -2,10 +2,14 @@
 
 ## Unreleased
 
-## Change
+### Change
 
 - Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
 - Updated AI Bugfixes and Enhancements to v2.7.0
+
+### Fixed
+
+- Sub Commanders incorrectly being dealt if you used the Space Excavation Commander
 
 ## v5.5.3 - 2021-06-08
 
