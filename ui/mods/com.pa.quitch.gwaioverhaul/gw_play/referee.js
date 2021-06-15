@@ -645,7 +645,6 @@ if (!gwaioRefereeChangesLoaded) {
                 },
                 // fabber/factory/platoon only
                 remove: function (json, value) {
-                  // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json, function (build_list) {
                     _.remove(build_list, value);
                     _.forEach(build_list, function (build) {
