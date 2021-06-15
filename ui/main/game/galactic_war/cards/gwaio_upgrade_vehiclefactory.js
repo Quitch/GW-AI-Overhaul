@@ -40,6 +40,44 @@ define([
           value: "Tank & Mobile & FactoryBuild",
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedVehicleFabber",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedLaserTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedArmorTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedArtilleryVehicle",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "FlakTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+      ]);
     },
     dull: function () {},
   };
