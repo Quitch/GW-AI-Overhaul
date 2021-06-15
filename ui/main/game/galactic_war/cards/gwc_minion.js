@@ -36,18 +36,14 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
-      var quellerEnabled = gwaioFunctions.quellerAIEnabled();
       if (
-        (!gwaioFunctions.hasUnit(
+        !gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
         ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory/bot_factory.json"
-          ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          )) ||
-        (quellerEnabled && inventory.hasCard("gwaio_start_rapid"))
+        !gwaioFunctions.hasUnit(
+          "/pa/units/land/bot_factory/bot_factory.json"
+        ) &&
+        !gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json")
       )
         chance = 0;
       else if (inventory.minions)
