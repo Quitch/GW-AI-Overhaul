@@ -40,6 +40,44 @@ define([
           value: "Orbital & FactoryBuild",
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "SolarArray",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalDeathLaser",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedRadarSattelite",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalRailgun",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalBattleShip",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+      ]);
     },
     dull: function () {},
   };
