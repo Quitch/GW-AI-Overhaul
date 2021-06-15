@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Sub Commanders and The Guardians now support every tech the AI engine is able to
+
 ### Change
 
 - Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
