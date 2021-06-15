@@ -627,18 +627,30 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                new: function (json, toBuild, value) {
+                new: function (json, toBuild, value, idToMod) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       console.debug("Found", build.to_build);
-                      build.build_conditions.push(value);
-                      console.debug(
-                        "New",
-                        build.build_conditions[
-                          build.build_conditions.length - 1
-                        ]
-                      );
+                      if (_.isUndefined(idToMod)) {
+                        build.build_conditions.push(value);
+                        console.debug(
+                          "New",
+                          build.build_conditions[
+                            build.build_conditions.length - 1
+                          ]
+                        );
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            test_array.push(value);
+                            console.debug(
+                              "New",
+                              test_array[test_array.length - 1]
+                            );
+                          }
+                        );
                     }
                   });
                 },
