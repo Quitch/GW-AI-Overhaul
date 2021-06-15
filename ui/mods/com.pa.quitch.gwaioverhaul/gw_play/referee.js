@@ -511,7 +511,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
+                      console.debug("Found", build.name);
                       if (build[idToMod] && _.isArray(build[idToMod])) {
                         build[idToMod] = build[idToMod].concat(value);
                         console.debug("Appended", build[idToMod]);
@@ -555,7 +555,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
+                      console.debug("Found", build.name);
                       if (build[idToMod] && _.isArray(build[idToMod])) {
                         build[idToMod] = value.concat(build[idToMod]);
                         console.debug("Prepended", build[idToMod]);
@@ -599,7 +599,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
+                      console.debug("Found", build.name);
                       if (build[idToMod]) {
                         build[idToMod] = value;
                         console.debug("Replaced", build[idToMod]);
@@ -638,7 +638,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build, i) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
+                      console.debug("Found", build.name);
                       if (build[idToMod] === value) {
                         console.debug("Removed", json.build_list[i]);
                         _.pull(json.build_list, json.build_list[i]);
@@ -667,7 +667,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.to_build);
+                      console.debug("Found", build.name);
                       if (_.isUndefined(idToMod)) {
                         build.build_conditions.push(value);
                         console.debug(
