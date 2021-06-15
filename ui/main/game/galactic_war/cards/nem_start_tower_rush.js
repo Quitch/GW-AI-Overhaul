@@ -150,6 +150,107 @@ define([
             );
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
