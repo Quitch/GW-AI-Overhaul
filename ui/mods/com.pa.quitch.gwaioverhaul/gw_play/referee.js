@@ -511,7 +511,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.name);
+                      console.debug("Found (append)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod] &&
@@ -531,7 +531,7 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                console.debug("Found", test[refId]);
+                                console.debug("Found (append)", test[refId]);
                                 if (_.isArray(test[idToMod]))
                                   test[idToMod] = test[idToMod].concat(value);
                                 else if (test[idToMod]) {
@@ -562,7 +562,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.name);
+                      console.debug("Found (prepend)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod] &&
@@ -582,7 +582,7 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                console.debug("Found", test[refId]);
+                                console.debug("Found (prepend)", test[refId]);
                                 if (_.isArray(test[idToMod]))
                                   test[idToMod] = value.concat(test[idToMod]);
                                 else if (test[idToMod]) {
@@ -613,7 +613,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.name);
+                      console.debug("Found (replace)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod]
@@ -626,7 +626,7 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                console.debug("Found", test[refId]);
+                                console.debug("Found(replace)", test[refId]);
                                 if (test[idToMod]) {
                                   test[idToMod] = value;
                                   console.debug("Replaced", test[idToMod]);
@@ -644,14 +644,20 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                remove: function (json, value) {
-                  _.forEach(json, function (build_list) {
-                    _.remove(build_list, value);
-                    _.forEach(build_list, function (build) {
+                remove: function (json, value, toBuild) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (remove)", build.name);
                       _.forEach(build.build_conditions, function (test_array) {
-                        _.remove(test_array, value);
+                        _.remove(test_array, function (object) {
+                          if (_.isEqual(object, value)) {
+                            console.debug("Removed", object);
+                            return object;
+                          }
+                        });
                       });
-                    });
+                    }
                   });
                 },
                 // fabber/factory/platoon only
@@ -659,7 +665,7 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found", build.name);
+                      console.debug("Found (new)", build.name);
                       if (_.isUndefined(idToMod)) {
                         build.build_conditions.push(value);
                         console.debug(
@@ -685,7 +691,7 @@ if (!gwaioRefereeChangesLoaded) {
                 // template only
                 squad: function (json, value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
-                    console.debug("Found", toBuild);
+                    console.debug("Found (squad)", toBuild);
                     json.platoon_templates[toBuild].units.push(value);
                     console.debug(
                       "Squad",
