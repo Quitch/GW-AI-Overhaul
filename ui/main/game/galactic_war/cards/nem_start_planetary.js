@@ -89,11 +89,6 @@ define([
 
           inventory.addAIMods([
             {
-              type: "factory",
-              op: "load",
-              value: "nem_start_planetary.json",
-            },
-            {
               type: "fabber",
               op: "replace",
               toBuild: "BasicMetalExtractor",
@@ -115,28 +110,39 @@ define([
               type: "fabber",
               op: "remove",
               toBuild: "BasicMetalExtractor",
-              idToMod: "CanFindMetalSpotToBuildBasic",
+              value: {
+                test_type: "CanFindMetalSpotToBuildBasic",
+                boolean: true,
+              },
             },
             {
               type: "fabber",
               op: "remove",
               toBuild: "AdvancedMetalExtractor",
-              idToMod: "CanFindMetalSpotToBuildBasic",
-              value: true,
+              value: {
+                test_type: "CanFindMetalSpotToBuildAdvanced",
+                boolean: true,
+              },
             },
             {
               type: "fabber",
               op: "new",
               toBuild: "BasicMetalExtractor",
-              idToMod: "CanFindMetalSpotToBuildBasic",
-              value: true,
+              idToMod: "",
+              value: {
+                test_type: "CanFindPlaceToBuild",
+                string0: "BasicMetalExtractor",
+              },
             },
             {
               type: "fabber",
               op: "new",
               toBuild: "AdvancedMetalExtractor",
-              idToMod: "CanFindMetalSpotToBuildBasic",
-              value: true,
+              idToMod: "",
+              value: {
+                test_type: "CanFindPlaceToBuild",
+                string0: "AdvancedMetalExtractor",
+              },
             },
           ]);
         } else {
