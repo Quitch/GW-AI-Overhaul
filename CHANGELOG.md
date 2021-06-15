@@ -6,7 +6,7 @@
 
 - Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
 - Updated AI Bugfixes and Enhancements to v2.7.0
-- Defence Tech Commander no longer gives Radar to the commander
+- Defense Tech Commander no longer gives Radar to the commander
 
 ### Fixed
 
