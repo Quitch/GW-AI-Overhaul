@@ -627,6 +627,42 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
+                remove: function (
+                  json,
+                  toBuild,
+                  value,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build, i) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found", build.to_build);
+                      if (build[idToMod] === value) {
+                        console.debug("Removed", json.build_list[i]);
+                        _.pull(json.build_list, json.build_list[i]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test, i) {
+                              if (
+                                test[idToMod] === value &&
+                                (_.isUndefined(refId) ||
+                                  test[refId] === refValue)
+                              ) {
+                                console.debug("Found", test[idToMod]);
+                                console.debug("Removed", test_array[i]);
+                                _.pull(test_array, test_array[i]);
+                              }
+                            });
+                          }
+                        );
+                    }
+                  });
+                },
+                // fabber/factory/platoon only
                 new: function (json, toBuild, value, idToMod) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
