@@ -12,6 +12,7 @@
 - Updated AI Bugfixes and Enhancements to v2.7.0
 - Defense Tech Commander no longer gives Radar to the commander
 - TITANS AI only builds anti-air when the enemy has air
+- TITANS AI will build the Hermes Space Probe on single planet systems
 
 ### Fixed
 
