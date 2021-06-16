@@ -18,7 +18,6 @@
 
 - Sub Commanders incorrectly being dealt if you used the Space Excavation Commander
 - Orbital Fabrication Bot Upgrade Tech being deal if you used the Space Excavation Commander
-- Resolve AI issue building Colonels
 
 ## v5.5.3 - 2021-06-08
 
