@@ -745,7 +745,7 @@ if (!gwaioRefereeChangesLoaded) {
                       else console.error("Invalid op in", aiMod);
                       fileList.push(aiTechPath + managerPath + aiMod.value);
                       console.log(
-                        "Add:",
+                        "Load:",
                         aiTechPath + managerPath + aiMod.value
                       );
                     });
