@@ -867,6 +867,12 @@ if (!gwaioRefereeChangesLoaded) {
               var subCommanders = inventory.minions();
               if (ai.mirrorMode === true) {
                 console.log("Parsing files for All");
+                if (!quellerEnabled) {
+                  _.forEach(subCommanders, function (subCommander) {
+                    // Reset ai_path in case it's set to aiTechPath
+                    subCommander.personality.ai_path = aiFilePath;
+                  });
+                }
                 parseFiles(aiFilePath, deferredAIFiles, "All");
               } else if (subCommanders.length > 0) {
                 console.log("Parsing files for Sub Commanders");
