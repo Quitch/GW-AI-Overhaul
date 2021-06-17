@@ -828,7 +828,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 aiTechPath + filePath.slice(aiPath.length);
                             }
                             configFiles[filePath] = json;
-                            console.log("Tech Sub Com filepath:", filePath);
+                            console.log("New filepath:", filePath);
                           }
                         } else {
                           console.log("Loading:", filePath);
