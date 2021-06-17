@@ -73,6 +73,20 @@ define([
           idToMod: "builders",
           value: "BasicAirFactory",
         },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "BasicAirFabber",
+          idToMod: "priority",
+          value: 220,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "AirScout",
+          idToMod: "priority",
+          value: 210,
+        },
       ]);
     },
     dull: function () {},

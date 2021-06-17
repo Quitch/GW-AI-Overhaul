@@ -51,6 +51,8 @@ define([
           toBuild: "AdvancedAssaultBot",
           idToMod: "builders",
           value: "BasicBotFactory",
+          refId: "priority",
+          refValue: 199,
         },
         {
           type: "factory",
@@ -86,6 +88,15 @@ define([
           toBuild: "NanoSwarm",
           idToMod: "builders",
           value: "BasicBotFactory",
+          refId: "priority",
+          refValue: 199,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "BasicBotFabber",
+          idToMod: "priority",
+          value: 220,
         },
       ]);
     },

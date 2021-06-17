@@ -77,6 +77,20 @@ define([
           idToMod: "builders",
           value: "BasicVehicleFactory",
         },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "BasicVehicleFabber",
+          idToMod: "priority",
+          value: 220,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "LandScout",
+          idToMod: "priority",
+          value: 210,
+        },
       ]);
     },
     dull: function () {},
