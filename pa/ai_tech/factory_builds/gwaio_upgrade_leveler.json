@@ -10,19 +10,7 @@
       "build_conditions": [
         [
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "queller",
-            "boolean": false
-          },
-          {
             "test_type": "CanAffordBuildDemand"
-          }
-        ],
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "queller",
-            "boolean": true
           }
         ]
       ]
