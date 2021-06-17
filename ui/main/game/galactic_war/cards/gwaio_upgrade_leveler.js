@@ -45,6 +45,14 @@ define([
           value: "UNITTYPE_CannonBuildable",
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "gwaio_upgrade_leveler.json",
+        },
+      ]);
     },
     dull: function () {},
   };
