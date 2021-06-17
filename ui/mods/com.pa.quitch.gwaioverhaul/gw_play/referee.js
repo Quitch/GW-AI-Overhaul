@@ -795,7 +795,7 @@ if (!gwaioRefereeChangesLoaded) {
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
                         if (aiToModify === "All") {
-                          console.log("Loading:", filePath);
+                          console.log("Assigning:", filePath);
                           if (_.startsWith(filePath, aiTechPath)) {
                             // Put "load" files where the AI expects them to be
                             filePath =
@@ -806,7 +806,7 @@ if (!gwaioRefereeChangesLoaded) {
                             addTechToAI(json, aiBuildOps);
                           configFiles[filePath] = json;
                         } else if (aiToModify === "SubCommanders") {
-                          console.log("Loading:", filePath);
+                          console.log("Assigning:", filePath);
                           // Setup enemy AI first
                           if (!_.startsWith(filePath, aiTechPath))
                             configFiles[filePath] = _.cloneDeep(json);
@@ -831,7 +831,7 @@ if (!gwaioRefereeChangesLoaded) {
                             console.log("New filepath:", filePath);
                           }
                         } else {
-                          console.log("Loading:", filePath);
+                          console.log("Assigning:", filePath);
                           configFiles[filePath] = json;
                         }
                       })
