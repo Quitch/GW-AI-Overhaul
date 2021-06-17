@@ -90,6 +90,8 @@ define([
           toBuild: "LandScout",
           idToMod: "priority",
           value: 210,
+          refId: "priority",
+          refValue: 98,
         },
       ]);
     },
