@@ -21,6 +21,7 @@
 - Orbital Fabrication Bot Upgrade Tech being dealt if you used the Space Excavation Commander
 - Queller AI handling of Cluster Security
 - Assault Commander allowing you to regain the units it removes
+- Queller Sub Commanders for wars started prior to v5.3.0
 
 ## v5.5.3 - 2021-06-08
 
