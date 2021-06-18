@@ -178,7 +178,7 @@ if (!gwaioCardsLoaded) {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
                 if (gwaioFunctions.quellerAIEnabled()) {
                   subcommander.personality.ai_path =
-                    "/pa/ai_personalities/q_gold";
+                    "/pa/ai_personalities/queller/q_gold";
                 }
                 inventory.cards().push({
                   id: "gwc_minion",
@@ -586,7 +586,7 @@ if (!gwaioCardsLoaded) {
                       product.unique = Math.random();
                       if (gwaioFunctions.quellerAIEnabled()) {
                         product.minion.personality.ai_path =
-                          "/pa/ai_personalities/q_gold";
+                          "/pa/ai_personalities/queller/q_gold";
                       }
                     });
                   }
