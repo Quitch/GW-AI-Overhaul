@@ -40,7 +40,7 @@
       "unit_types": "Commander - Custom1 - Custom2 - Custom3 - Custom4"
     },
     "UberSupportCommander": {
-      "spec_id": "/pa/units/land/bot_support_commander/bot_support_commander.json"
+      "unit_types": "SupportCommander - Custom1 - Custom2 - Custom3 - Custom4"
     },
     "BasicBotFabber": {
       "spec_id": "/pa/units/land/fabrication_bot/fabrication_bot.json"
