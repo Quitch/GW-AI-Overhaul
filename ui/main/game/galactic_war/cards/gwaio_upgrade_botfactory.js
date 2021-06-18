@@ -85,6 +85,13 @@ define([
         {
           type: "factory",
           op: "append",
+          toBuild: "UberSupportCommander",
+          idToMod: "builders",
+          value: "BasicBotFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
           toBuild: "NanoSwarm",
           idToMod: "builders",
           value: "BasicBotFactory",
