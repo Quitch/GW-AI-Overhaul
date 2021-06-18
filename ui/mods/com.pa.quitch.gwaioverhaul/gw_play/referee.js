@@ -756,14 +756,17 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
-                    if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
-                      if (
-                        quellerEnabled &&
-                        aiToModify === "SubCommanders" &&
-                        _.includes(filePath, "/q_gold/")
-                      )
-                        var quellerSubCommander = true;
+                    var quellerAlly = "/pa/ai_personalities/queller/q_gold/";
 
+                    if (
+                      quellerEnabled &&
+                      inventory.minions().length > 0 &&
+                      (_.startsWith(filePath, quellerAlly) ||
+                        _.startsWith(filePath, aiTechPath))
+                    )
+                      var quellerSubCommander = true;
+
+                    if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
                       if (
                         !quellerEnabled ||
                         quellerSubCommander ||
@@ -790,17 +793,39 @@ if (!gwaioRefereeChangesLoaded) {
 
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
+                        var quellerEnemy =
+                          "/pa/ai_personalities/queller/q_uber/";
+
                         if (aiToModify === "All") {
                           console.log("Assigning (All):", filePath);
-                          if (_.startsWith(filePath, aiTechPath)) {
-                            // Put "load" files where the AI expects them to be
-                            filePath =
-                              aiPath + filePath.slice(aiTechPath.length);
-                            console.log("New filepath (All):", filePath);
-                          }
                           if (!_.isEmpty(aiBuildOps))
                             addTechToAI(json, aiBuildOps);
-                          configFiles[filePath] = json;
+                          if (_.startsWith(filePath, aiTechPath)) {
+                            // Put "load" files where the AI expects them to be
+                            if (quellerEnabled) {
+                              // Enemy
+                              filePath =
+                                quellerEnemy +
+                                filePath.slice(aiTechPath.length);
+                              console.log("New filepath (All):", filePath);
+                              configFiles[filePath] = json;
+                              if (quellerSubCommander) {
+                                // Sub Commanders
+                                filePath =
+                                  quellerAlly +
+                                  filePath.slice(quellerEnemy.length);
+                                configFiles[filePath] = json;
+                                console.log("New filepath (All):", filePath);
+                              }
+                            } else {
+                              filePath =
+                                aiPath + filePath.slice(aiTechPath.length);
+                              console.log("New filepath (All):", filePath);
+                              configFiles[filePath] = json;
+                            }
+                          } else {
+                            configFiles[filePath] = json;
+                          }
                         } else if (aiToModify === "SubCommanders") {
                           console.log("Assigning (SC):", filePath);
                           // Setup enemy AI first
@@ -813,19 +838,17 @@ if (!gwaioRefereeChangesLoaded) {
                             if (_.startsWith(filePath, aiTechPath)) {
                               // Put "load" files where Queller expects them to be
                               filePath =
-                                aiPath + filePath.slice(aiTechPath.length);
-                              console.log("New filepath (SC):", filePath);
+                                quellerAlly + filePath.slice(aiTechPath.length);
                             }
-                            configFiles[filePath] = json;
                           } else {
                             if (_.startsWith(filePath, aiPath)) {
                               // TITANS Sub Commanders share an ai_path with the enemy so need a new one
                               filePath =
                                 aiTechPath + filePath.slice(aiPath.length);
                             }
-                            configFiles[filePath] = json;
-                            console.log("New filepath (SC):", filePath);
                           }
+                          console.log("New filepath (SC):", filePath);
+                          configFiles[filePath] = json;
                         } else {
                           console.log("Assigning (None):", filePath);
                           configFiles[filePath] = json;
