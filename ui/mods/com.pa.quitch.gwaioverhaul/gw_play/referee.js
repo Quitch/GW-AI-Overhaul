@@ -756,12 +756,13 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
-                    var quellerAlly = "/pa/ai_personalities/queller/q_gold/";
+                    var quellerAllyPath =
+                      "/pa/ai_personalities/queller/q_gold/";
 
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
-                      (_.startsWith(filePath, quellerAlly) ||
+                      (_.startsWith(filePath, quellerAllyPath) ||
                         _.startsWith(filePath, aiTechPath))
                     )
                       var quellerSubCommander = true;
@@ -793,7 +794,7 @@ if (!gwaioRefereeChangesLoaded) {
 
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
-                        var quellerEnemy =
+                        var quellerEnemyPath =
                           "/pa/ai_personalities/queller/q_uber/";
 
                         if (aiToModify === "All") {
@@ -805,15 +806,15 @@ if (!gwaioRefereeChangesLoaded) {
                             if (quellerEnabled) {
                               // Enemy
                               filePath =
-                                quellerEnemy +
+                                quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
                               console.log("New filepath (All):", filePath);
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 // Sub Commanders
                                 filePath =
-                                  quellerAlly +
-                                  filePath.slice(quellerEnemy.length);
+                                  quellerAllyPath +
+                                  filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
                                 console.log("New filepath (All):", filePath);
                               }
@@ -838,7 +839,8 @@ if (!gwaioRefereeChangesLoaded) {
                             if (_.startsWith(filePath, aiTechPath)) {
                               // Put "load" files where Queller expects them to be
                               filePath =
-                                quellerAlly + filePath.slice(aiTechPath.length);
+                                quellerAllyPath +
+                                filePath.slice(aiTechPath.length);
                             }
                           } else {
                             if (_.startsWith(filePath, aiPath)) {
