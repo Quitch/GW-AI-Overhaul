@@ -386,11 +386,7 @@ if (!gwaioRefereeChangesLoaded) {
                           ? ai.inventory
                           : ai.foes[currentCount - 1].inventory;
                       if (ai.mirrorMode === true) {
-                        // Don't load mods that break the AI
-                        var usablePlayerInventory = _.reject(inventory.mods(), {
-                          path: "buildable_types",
-                        });
-                        aiInventory = aiInventory.concat(usablePlayerInventory);
+                        aiInventory = aiInventory.concat(inventory.mods());
                       }
                       modSpecs(aiFiles, aiInventory, aiTag[n]);
                     }
