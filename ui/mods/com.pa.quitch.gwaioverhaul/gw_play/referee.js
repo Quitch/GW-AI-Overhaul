@@ -795,18 +795,18 @@ if (!gwaioRefereeChangesLoaded) {
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
                         if (aiToModify === "All") {
-                          console.log("Assigning:", filePath);
+                          console.log("Assigning (All):", filePath);
                           if (_.startsWith(filePath, aiTechPath)) {
                             // Put "load" files where the AI expects them to be
                             filePath =
                               aiPath + filePath.slice(aiTechPath.length);
-                            console.log("New filepath:", filePath);
+                            console.log("New filepath (All):", filePath);
                           }
                           if (!_.isEmpty(aiBuildOps))
                             addTechToAI(json, aiBuildOps);
                           configFiles[filePath] = json;
                         } else if (aiToModify === "SubCommanders") {
-                          console.log("Assigning:", filePath);
+                          console.log("Assigning (SC):", filePath);
                           // Setup enemy AI first
                           if (!_.startsWith(filePath, aiTechPath))
                             configFiles[filePath] = _.cloneDeep(json);
@@ -818,7 +818,7 @@ if (!gwaioRefereeChangesLoaded) {
                               // Put "load" files where Queller expects them to be
                               filePath =
                                 aiPath + filePath.slice(aiTechPath.length);
-                              console.log("New filepath:", filePath);
+                              console.log("New filepath (SC):", filePath);
                             }
                             configFiles[filePath] = json;
                           } else {
@@ -828,10 +828,10 @@ if (!gwaioRefereeChangesLoaded) {
                                 aiTechPath + filePath.slice(aiPath.length);
                             }
                             configFiles[filePath] = json;
-                            console.log("New filepath:", filePath);
+                            console.log("New filepath (SC):", filePath);
                           }
                         } else {
-                          console.log("Assigning:", filePath);
+                          console.log("Assigning (None):", filePath);
                           configFiles[filePath] = json;
                         }
                       })
