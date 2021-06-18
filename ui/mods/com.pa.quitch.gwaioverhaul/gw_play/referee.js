@@ -794,9 +794,6 @@ if (!gwaioRefereeChangesLoaded) {
 
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
-                        var quellerEnemyPath =
-                          "/pa/ai_personalities/queller/q_uber/";
-
                         if (aiToModify === "All") {
                           console.log("Assigning (All):", filePath);
                           if (!_.isEmpty(aiBuildOps))
@@ -804,14 +801,15 @@ if (!gwaioRefereeChangesLoaded) {
                           if (_.startsWith(filePath, aiTechPath)) {
                             // Put "load" files where the AI expects them to be
                             if (quellerEnabled) {
-                              // Enemy
+                              // We don't know if the aiPath contains q_uber
+                              var quellerEnemyPath =
+                                "/pa/ai_personalities/queller/q_uber/";
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
                               console.log("New filepath (All):", filePath);
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
-                                // Sub Commanders
                                 filePath =
                                   quellerAllyPath +
                                   filePath.slice(quellerEnemyPath.length);
