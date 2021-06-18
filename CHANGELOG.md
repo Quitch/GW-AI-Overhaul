@@ -13,12 +13,12 @@
 - Defense Tech Commander no longer gives Radar to the commander
 - TITANS AI only builds anti-air when the enemy has air
 - TITANS AI will build the Hermes Space Probe on single planet systems
-- Vehicle Factory Upgrade Tech uses picture of vehicle factory
+- Vehicle Factory Upgrade Tech uses a picture of vehicle factory
 
 ### Fixed
 
 - Sub Commanders incorrectly being dealt if you used the Space Excavation Commander
-- Orbital Fabrication Bot Upgrade Tech being deal if you used the Space Excavation Commander
+- Orbital Fabrication Bot Upgrade Tech being dealt if you used the Space Excavation Commander
 - Queller AI handling of Cluster Security
 - Assault Commander allowing you to regain the units it removes
 
