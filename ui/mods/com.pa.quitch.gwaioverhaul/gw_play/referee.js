@@ -944,7 +944,7 @@ if (!gwaioRefereeChangesLoaded) {
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              // Avoid breaking saves from GWO v5.5.0 and earlier
+              // Avoid breaking saves from GWO v5.5.3 and earlier
               if (quellerEnabled)
                 subcommander.personality.ai_path =
                   "/pa/ai_personalities/queller/q_gold";
