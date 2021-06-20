@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Vehicle Factory Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle_factory.png"
     ),
     audio: function () {
       return {
@@ -38,6 +38,65 @@ define([
           path: "buildable_types",
           op: "replace",
           value: "Tank & Mobile & FactoryBuild",
+        },
+      ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedLaserTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedArmorTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedArtilleryVehicle",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "FlakTank",
+          idToMod: "builders",
+          value: "BasicVehicleFactory",
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "AdvancedLaserTank",
+          idToMod: "priority",
+          value: 97,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "AdvancedArmorTank",
+          idToMod: "priority",
+          value: 97,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "AdvancedArtilleryVehicle",
+          idToMod: "priority",
+          value: 97,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "FlakTank",
+          idToMod: "priority",
+          value: 97,
         },
       ]);
     },

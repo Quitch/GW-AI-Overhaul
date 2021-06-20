@@ -78,6 +78,12 @@ define([
             },
           },
         },
+        {
+          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Construction",
+        },
       ];
       // Reinstate the Nomad Commander loadout's structure movement
       if (inventory.hasCard("gwaio_start_nomad"))
@@ -88,6 +94,27 @@ define([
           value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
         });
       inventory.addMods(mods);
+
+      inventory.addAIMods([
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "value0",
+          value: 1,
+          refId: "unit_type_string0",
+          refValue: "Structure & Basic & SurfaceDefense",
+        },
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "unit_type_string0",
+          value: "Structure & Basic & Construction",
+          refId: "unit_type_string0",
+          refValue: "Structure & Basic & SurfaceDefense",
+        },
+      ]);
     },
     dull: function () {},
   };

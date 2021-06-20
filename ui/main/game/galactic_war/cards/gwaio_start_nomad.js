@@ -264,6 +264,19 @@ define([
           });
 
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "platoon",
+              op: "load",
+              value: "gwaio_start_nomad.json",
+            },
+            {
+              type: "template",
+              op: "load",
+              value: "gwaio_start_nomad.json",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

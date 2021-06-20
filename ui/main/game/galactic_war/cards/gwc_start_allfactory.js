@@ -58,14 +58,6 @@ define([
             "/pa/units/air/transport/transport.json",
             "/pa/units/air/solar_drone/solar_drone.json",
           ]);
-          inventory.removeUnits([
-            "/pa/units/land/land_barrier/land_barrier.json",
-            "/pa/units/land/air_defense/air_defense.json",
-            "/pa/units/land/laser_defense_single/laser_defense_single.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-          ]);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);
@@ -83,7 +75,14 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           // Perform dulls here
-
+          inventory.removeUnits([
+            "/pa/units/land/land_barrier/land_barrier.json",
+            "/pa/units/land/air_defense/air_defense.json",
+            "/pa/units/land/laser_defense_single/laser_defense_single.json",
+            "/pa/units/land/laser_defense/laser_defense.json",
+            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
+            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+          ]);
           inventory.setTag("", "buffCount", undefined);
         }
       }

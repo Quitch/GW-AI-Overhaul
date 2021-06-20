@@ -32,6 +32,12 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
+          file: "/pa/units/orbital/ion_defense/ion_defense.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_SurfaceDefense",
+        },
+        {
           file: "/pa/units/orbital/ion_defense/ion_defense_tool_weapon.json",
           path: "target_layers",
           op: "push",

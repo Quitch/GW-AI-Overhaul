@@ -73,6 +73,51 @@ define([
             });
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicRadar",
+              value: "Commander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicRadar",
+              value: "UberCommander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              value: "Commander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              value: "UberCommander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicArtillery",
+              value: "Commander",
+              idToMod: "builders",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicArtillery",
+              value: "UberCommander",
+              idToMod: "builders",
+            },
+          ]);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);

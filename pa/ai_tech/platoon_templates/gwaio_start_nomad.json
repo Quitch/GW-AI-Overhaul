@@ -1,0 +1,84 @@
+{
+  "platoon_templates": {
+    "land_defense_platoon": {
+      "units": [
+        {
+          "unit_types": "Defense & SurfaceDefense - Naval - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke",
+          "min_count": 0,
+          "max_count": -1,
+          "squad": "General"
+        },
+        {
+          "unit_types": "Defense & (Artillery | Tactical)",
+          "min_count": 0,
+          "percent": 0.35,
+          "squad": "Artillery"
+        },
+        {
+          "unit_types": "Defense & AirDefense",
+          "min_count": 0,
+          "percent": 0.25,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Defense & OrbitalDefense - Orbital",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Defense & Construction",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Radar & Land",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        }
+      ]
+    },
+    "naval_defense_platoon": {
+      "units": [
+        {
+          "unit_types": "Defense & Naval - SurfaceDefense - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke",
+          "min_count": 0,
+          "max_count": -1,
+          "squad": "General"
+        },
+        {
+          "unit_types": "Defense & (Artillery | Tactical)",
+          "min_count": 0,
+          "percent": 0.35,
+          "squad": "Artillery"
+        },
+        {
+          "unit_types": "Defense & AirDefense",
+          "min_count": 0,
+          "percent": 0.25,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Defense & OrbitalDefense - Orbital",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Defense & Construction",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        },
+        {
+          "unit_types": "Radar & Land",
+          "min_count": 0,
+          "percent": 0.1,
+          "squad": "Defense"
+        }
+      ]
+    }
+  }
+}

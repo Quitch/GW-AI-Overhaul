@@ -146,6 +146,13 @@ define([
           value: 55,
         },
       ]);
+      inventory.addAIMods([
+        {
+          type: "fabber",
+          op: "load",
+          value: "gwaio_enable_planetaryradar.json",
+        },
+      ]);
     },
     dull: function () {},
   };

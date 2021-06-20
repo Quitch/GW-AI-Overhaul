@@ -1,0 +1,19 @@
+{
+  "build_list": [
+    {
+      "name": "Advanced Laser Tank - UC",
+      "to_build": "AdvancedLaserTank",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
+    }
+  ]
+}

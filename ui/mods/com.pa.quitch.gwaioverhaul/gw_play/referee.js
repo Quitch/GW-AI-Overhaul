@@ -59,9 +59,9 @@ if (!gwaioRefereeChangesLoaded) {
 
               if (gwaioFunctions.quellerAIEnabled()) {
                 var aiUnitMapPath =
-                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map.json";
+                  "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
-                  "/pa/ai/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+                  "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
               } else {
                 aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
@@ -292,7 +292,7 @@ if (!gwaioRefereeChangesLoaded) {
                         mod
                       );
                     if (!Object.prototype.hasOwnProperty.call(ops, mod.op))
-                      return console.error("Invalid operation in mod", mod);
+                      return console.error("Invalid operation in mod " + mod);
 
                     var originalPath = (mod.path || "").split(".");
                     var path = originalPath.reverse();
@@ -386,11 +386,7 @@ if (!gwaioRefereeChangesLoaded) {
                           ? ai.inventory
                           : ai.foes[currentCount - 1].inventory;
                       if (ai.mirrorMode === true) {
-                        // Don't load mods that break the AI
-                        var usablePlayerInventory = _.reject(inventory.mods(), {
-                          path: "buildable_types",
-                        });
-                        aiInventory = aiInventory.concat(usablePlayerInventory);
+                        aiInventory = aiInventory.concat(inventory.mods());
                       }
                       modSpecs(aiFiles, aiInventory, aiTag[n]);
                     }
@@ -414,7 +410,7 @@ if (!gwaioRefereeChangesLoaded) {
                   if (gwaioFunctions.quellerAIEnabled()) {
                     var playerFilesClassic = _.assign(
                       {
-                        "/pa/ai/queller/q_gold/unit_maps/ai_unit_map.json.player":
+                        "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
                           playerAIUnitMap,
                       },
                       playerSpecFiles
@@ -422,7 +418,27 @@ if (!gwaioRefereeChangesLoaded) {
                     var playerFilesX1 = titans
                       ? _.assign(
                           {
-                            "/pa/ai/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                            "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                              playerX1AIUnitMap,
+                          },
+                          playerSpecFiles
+                        )
+                      : {};
+                  } else if (
+                    !_.isEmpty(inventory.aiMods()) &&
+                    ai.mirrorMode !== true
+                  ) {
+                    playerFilesClassic = _.assign(
+                      {
+                        "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
+                          playerAIUnitMap,
+                      },
+                      playerSpecFiles
+                    );
+                    playerFilesX1 = titans
+                      ? _.assign(
+                          {
+                            "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
                               playerX1AIUnitMap,
                           },
                           playerSpecFiles
@@ -469,50 +485,442 @@ if (!gwaioRefereeChangesLoaded) {
           };
 
           var generateAI = function () {
+            console.log("Generating AI");
             var self = this;
 
             var deferred = $.Deferred();
+            var deferredAIFiles = $.Deferred();
+
+            var addTechToAI = function (json, mods) {
+              console.log("Checking", json);
+
+              var ops = {
+                // fabber/factory/platoon only
+                append: function (
+                  json,
+                  value,
+                  toBuild,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (append)", build.name);
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod] &&
+                        _.isArray(build[idToMod])
+                      ) {
+                        build[idToMod] = build[idToMod].concat(value);
+                        console.debug("Appended", build[idToMod]);
+                      } else if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
+                        build[idToMod] += value;
+                        console.debug("Appended", build[idToMod]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found (append)", test[refId]);
+                                if (_.isArray(test[idToMod]))
+                                  test[idToMod] = test[idToMod].concat(value);
+                                else if (test[idToMod]) {
+                                  test[idToMod] += value;
+                                  console.debug("Appended", value);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
+                    }
+                  });
+                },
+                // fabber/factory/platoon only
+                prepend: function (
+                  json,
+                  value,
+                  toBuild,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (prepend)", build.name);
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod] &&
+                        _.isArray(build[idToMod])
+                      ) {
+                        build[idToMod] = value.concat(build[idToMod]);
+                        console.debug("Prepended", build[idToMod]);
+                      } else if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
+                        build[idToMod] = value + build[idToMod];
+                        console.debug("Prepended", build[idToMod]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found (prepend)", test[refId]);
+                                if (_.isArray(test[idToMod]))
+                                  test[idToMod] = value.concat(test[idToMod]);
+                                else if (test[idToMod]) {
+                                  test[idToMod] = value + test[idToMod];
+                                  console.debug("Prepended", test[idToMod]);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
+                    }
+                  });
+                },
+                // fabber/factory/platoon only
+                replace: function (
+                  json,
+                  value,
+                  toBuild,
+                  idToMod,
+                  refId,
+                  refValue
+                ) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (replace)", build.name);
+                      if (
+                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        build[idToMod]
+                      ) {
+                        build[idToMod] = value;
+                        console.debug("Replaced", build[idToMod]);
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            _.forEach(test_array, function (test) {
+                              if (test[refId] === refValue) {
+                                console.debug("Found(replace)", test[refId]);
+                                if (test[idToMod]) {
+                                  test[idToMod] = value;
+                                  console.debug("Replaced", test[idToMod]);
+                                } else
+                                  console.error(
+                                    test[idToMod],
+                                    "not found with",
+                                    test[refId]
+                                  );
+                              }
+                            });
+                          }
+                        );
+                    }
+                  });
+                },
+                // fabber/factory/platoon only
+                remove: function (json, value, toBuild) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (remove)", build.name);
+                      _.forEach(build.build_conditions, function (test_array) {
+                        _.remove(test_array, function (object) {
+                          if (_.isEqual(object, value)) {
+                            console.debug("Removed", object);
+                            return object;
+                          }
+                        });
+                      });
+                    }
+                  });
+                },
+                // fabber/factory/platoon only
+                new: function (json, value, toBuild, idToMod) {
+                  // eslint-disable-next-line lodash/prefer-filter
+                  _.forEach(json.build_list, function (build) {
+                    if (build.to_build === toBuild) {
+                      console.debug("Found (new)", build.name);
+                      if (_.isUndefined(idToMod)) {
+                        build.build_conditions.push(value);
+                        console.debug(
+                          "New",
+                          build.build_conditions[
+                            build.build_conditions.length - 1
+                          ]
+                        );
+                      } else
+                        _.forEach(
+                          build.build_conditions,
+                          function (test_array) {
+                            test_array.push(value);
+                            console.debug(
+                              "New",
+                              test_array[test_array.length - 1]
+                            );
+                          }
+                        );
+                    }
+                  });
+                },
+                // template only
+                squad: function (json, value, toBuild) {
+                  if (json.platoon_templates[toBuild]) {
+                    console.debug("Found (squad)", toBuild);
+                    json.platoon_templates[toBuild].units.push(value);
+                    console.debug(
+                      "Squad",
+                      json.platoon_templates[toBuild].units[
+                        json.platoon_templates[toBuild].units.length - 1
+                      ]
+                    );
+                  } else console.error(toBuild, "not found");
+                },
+              };
+
+              _.forEach(mods, function (mod) {
+                ops[mod.op](
+                  json,
+                  mod.value,
+                  mod.toBuild,
+                  mod.idToMod,
+                  mod.refId,
+                  mod.refValue
+                );
+              });
+            };
 
             var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            var aiTechPath = "/pa/ai_tech/";
 
-            if (quellerEnabled && model.game().inventory().minions().length > 0)
-              var aiFilePath = "/pa/ai/queller/";
-            else if (quellerEnabled) aiFilePath = "/pa/ai/queller/q_uber/";
-            else aiFilePath = "/pa/ai/bugfix/";
+            var parseFiles = function (aiPath, promise, aiToModify) {
+              api.file.list(aiPath, true).then(function (fileList) {
+                var configFiles = self.files();
+                var queue = [];
 
-            api.file.list(aiFilePath, true).then(function (files) {
-              var configFiles = self.files();
-              var queue = [];
+                var aiMods = game.inventory().aiMods();
 
-              _.forEach(files, function (file) {
-                if (_.endsWith(file, ".json")) {
-                  var deferred2 = $.Deferred();
+                console.log("AI to modify:", aiToModify);
 
-                  queue.push(deferred2);
+                if (aiToModify !== "None") {
+                  aiMods = _.partition(aiMods, { op: "load" });
 
-                  $.getJSON("coui:/" + file)
-                    .then(function (json) {
-                      if (quellerEnabled) configFiles[file] = json;
-                      else
-                        configFiles["/pa/ai/" + file.slice(aiFilePath.length)] =
-                          json;
-                    })
-                    .always(function () {
-                      deferred2.resolve();
+                  // process ai load ops
+                  if (aiMods[0])
+                    // eslint-disable-next-line lodash/prefer-map
+                    _.forEach(aiMods[0], function (aiMod) {
+                      if (aiMod.type === "fabber")
+                        var managerPath = "fabber_builds/";
+                      else if (aiMod.type === "factory")
+                        managerPath = "factory_builds/";
+                      else if (aiMod.type === "platoon")
+                        managerPath = "platoon_builds/";
+                      else if (aiMod.type === "template")
+                        managerPath = "platoon_templates/";
+                      else console.error("Invalid op in", aiMod);
+                      fileList.push(aiTechPath + managerPath + aiMod.value);
+                      console.log(
+                        "Load:",
+                        aiTechPath + managerPath + aiMod.value
+                      );
                     });
                 }
-              });
 
-              $.when.apply($, queue).then(function () {
-                self.files.valueHasMutated();
-                deferred.resolve();
+                _.forEach(fileList, function (filePath) {
+                  console.log("Processing:", filePath);
+                  if (
+                    _.endsWith(filePath, ".json") &&
+                    !_.includes(filePath, "/neural_networks/") &&
+                    !_.endsWith(filePath, "ai_config.json")
+                  ) {
+                    var deferred2 = $.Deferred();
+
+                    var quellerAllyPath =
+                      "/pa/ai_personalities/queller/q_gold/";
+
+                    if (
+                      quellerEnabled &&
+                      inventory.minions().length > 0 &&
+                      (_.startsWith(filePath, quellerAllyPath) ||
+                        _.startsWith(filePath, aiTechPath))
+                    )
+                      var quellerSubCommander = true;
+
+                    if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
+                      if (
+                        !quellerEnabled ||
+                        quellerSubCommander ||
+                        aiToModify === "All"
+                      ) {
+                        // Only mods associated with the file's AI manager are loaded
+                        if (_.includes(filePath, "/fabber_builds/"))
+                          var aiBuildOps = _.filter(aiMods[1], {
+                            type: "fabber",
+                          });
+                        else if (_.includes(filePath, "/factory_builds/"))
+                          aiBuildOps = _.filter(aiMods[1], { type: "factory" });
+                        else if (_.includes(filePath, "/platoon_builds/"))
+                          aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                        else if (_.includes(filePath, "/platoon_templates/"))
+                          aiBuildOps = _.filter(aiMods[1], {
+                            type: "template",
+                          });
+                        else aiBuildOps = [];
+                      }
+                    }
+
+                    queue.push(deferred2);
+
+                    $.getJSON("coui:/" + filePath)
+                      .then(function (json) {
+                        if (aiToModify === "All") {
+                          console.log("Assigning (All):", filePath);
+                          if (!_.isEmpty(aiBuildOps))
+                            addTechToAI(json, aiBuildOps);
+                          if (_.startsWith(filePath, aiTechPath)) {
+                            // Put "load" files where the AI expects them to be
+                            if (quellerEnabled) {
+                              // We don't know if the aiPath contains q_uber
+                              var quellerEnemyPath =
+                                "/pa/ai_personalities/queller/q_uber/";
+                              filePath =
+                                quellerEnemyPath +
+                                filePath.slice(aiTechPath.length);
+                              console.log("New filepath (All):", filePath);
+                              configFiles[filePath] = json;
+                              if (quellerSubCommander) {
+                                filePath =
+                                  quellerAllyPath +
+                                  filePath.slice(quellerEnemyPath.length);
+                                configFiles[filePath] = json;
+                                console.log("New filepath (All):", filePath);
+                              }
+                            } else {
+                              filePath =
+                                aiPath + filePath.slice(aiTechPath.length);
+                              console.log("New filepath (All):", filePath);
+                              configFiles[filePath] = json;
+                            }
+                          } else {
+                            configFiles[filePath] = json;
+                          }
+                        } else if (aiToModify === "SubCommanders") {
+                          console.log("Assigning (SC):", filePath);
+                          // Setup enemy AI first
+                          if (!_.startsWith(filePath, aiTechPath))
+                            configFiles[filePath] = _.cloneDeep(json);
+                          // Setup Sub Commanders
+                          if (!_.isEmpty(aiBuildOps))
+                            addTechToAI(json, aiBuildOps);
+                          if (quellerSubCommander) {
+                            if (_.startsWith(filePath, aiTechPath)) {
+                              // Put "load" files where Queller expects them to be
+                              filePath =
+                                quellerAllyPath +
+                                filePath.slice(aiTechPath.length);
+                            }
+                          } else {
+                            if (_.startsWith(filePath, aiPath)) {
+                              // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                              filePath =
+                                aiTechPath + filePath.slice(aiPath.length);
+                            }
+                          }
+                          console.log("New filepath (SC):", filePath);
+                          configFiles[filePath] = json;
+                        } else {
+                          console.log("Assigning (None):", filePath);
+                          configFiles[filePath] = json;
+                        }
+                      })
+                      .always(function () {
+                        console.log("Completed:", filePath);
+                        deferred2.resolve();
+                      });
+                  }
+                });
+
+                $.when.apply($, queue).then(function () {
+                  self.files.valueHasMutated();
+                  console.log("Files parsed");
+                  promise.resolve();
+                });
               });
+            };
+
+            var game = self.game();
+            var inventory = game.inventory();
+
+            if (quellerEnabled && inventory.minions().length > 0)
+              var aiFilePath = "/pa/ai_personalities/queller/";
+            else if (quellerEnabled) {
+              aiFilePath = "/pa/ai_personalities/queller/q_uber/";
+            } else {
+              aiFilePath = "/pa/ai/";
+            }
+
+            if (!_.isEmpty(inventory.aiMods())) {
+              console.log("We are holding AI affecting tech");
+              var ai = game.galaxy().stars()[game.currentStar()].ai();
+              var subCommanders = inventory.minions();
+              if (ai.mirrorMode === true) {
+                console.log("Parsing files for All");
+                if (!quellerEnabled) {
+                  _.forEach(subCommanders, function (subCommander) {
+                    // Reset ai_path in case it's set to aiTechPath
+                    subCommander.personality.ai_path = aiFilePath;
+                  });
+                }
+                parseFiles(aiFilePath, deferredAIFiles, "All");
+              } else if (subCommanders.length > 0) {
+                console.log("Parsing files for Sub Commanders");
+                if (!quellerEnabled) {
+                  _.forEach(subCommanders, function (subCommander) {
+                    // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                    subCommander.personality.ai_path = aiTechPath;
+                  });
+                }
+                parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
+              } else {
+                console.log("Parsing files for None because no AI");
+                parseFiles(aiFilePath, deferredAIFiles, "None");
+              }
+            } else {
+              console.log("Parsing files for None because no tech");
+              parseFiles(aiFilePath, deferredAIFiles, "None");
+            }
+
+            $.when(deferredAIFiles).then(function () {
+              console.log("AI generated");
+              deferred.resolve();
             });
 
             return deferred.promise();
           };
 
           var generateConfig = function () {
+            console.log("Generating config");
             var self = this;
 
             // Setup the player
@@ -533,8 +941,14 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
+            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
+              // Avoid breaking saves from GWO v5.5.3 and earlier
+              if (quellerEnabled)
+                subcommander.personality.ai_path =
+                  "/pa/ai_personalities/queller/q_gold";
+
               armies.push({
                 slots: [
                   {

@@ -9,7 +9,7 @@ define([
 
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Defence Tech Commander"),
+    summarize: _.constant("!LOC:Defense Tech Commander"),
     icon: function () {
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
@@ -19,7 +19,7 @@ define([
     hint: function () {
       return {
         icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Defence Tech Commander",
+        description: "!LOC:Defense Tech Commander",
       };
     },
     deal: function () {
@@ -52,7 +52,6 @@ define([
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-            "/pa/units/land/radar/radar.json",
           ];
           var mods = [];
           units.forEach(function (unit) {
@@ -151,6 +150,107 @@ define([
             );
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "BasicLandDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedAirDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedLandDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "TML",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "AdvancedNavalDefense",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

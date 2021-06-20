@@ -46,14 +46,14 @@ define([
           !gwaioFunctions.hasUnit(
             "/pa/units/air/air_factory/air_factory.json"
           )) ||
-        inventory.hasCard("gwaio_start_rapid")
+        inventory.hasCard("nem_start_deepspace")
       )
         chance = 0;
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
       if (gwaioFunctions.quellerAIEnabled()) {
-        minion.personality.ai_path = "/pa/ai/queller/q_gold";
+        minion.personality.ai_path = "/pa/ai_personalities/queller/q_gold";
       }
       return {
         params: {

@@ -20,7 +20,7 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
@@ -28,7 +28,8 @@ define([
         ) &&
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        )
+        ) &&
+        !inventory.hasCard("nem_start_deepspace")
       )
         chance = 60;
 
@@ -42,6 +43,107 @@ define([
           op: "replace",
           value:
             "Land & Structure & Basic | Factory & Basic | FabBuild | FabOrbBuild",
+        },
+      ]);
+
+      inventory.addAIMods([
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicAirFactory",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicAirDefense",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicLandDefense",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicArtillery",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "Wall",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "Umbrella",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicEnergyGenerator",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "EnergyStorage",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "MetalStorage",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicRadar",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicBotFactory",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "BasicVehicleFactory",
+          idToMod: "builders",
+          value: "OrbitalFabber",
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "OrbitalLauncher",
+          idToMod: "builders",
+          value: "OrbitalFabber",
         },
       ]);
     },

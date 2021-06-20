@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## v5.6.0 - 2021-06-20
+
+### Added
+
+- Sub Commanders and The Guardians now support every tech and loadout the AI engine is able to
+
+### Change
+
+- Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
+- Updated AI Bugfixes and Enhancements to v2.7.0
+- Defense Tech Commander no longer gives Radar to the commander
+- TITANS AI only builds anti-air when the enemy has air
+- TITANS AI will build the Hermes Space Probe on single planet systems
+- Vehicle Factory Upgrade Tech uses a picture of vehicle factory
+
+### Fixed
+
+- Sub Commanders incorrectly being dealt if you used the Space Excavation Commander
+- Orbital Fabrication Bot Upgrade Tech being dealt if you used the Space Excavation Commander
+- Queller AI handling of Cluster Security
+- Assault Commander allowing you to regain the units it removes
+- Queller Sub Commanders for wars started prior to v5.3.0
+
 ## v5.5.3 - 2021-06-08
 
 ### Fixed
@@ -111,6 +134,10 @@
 ### Fixed
 
 - Corrected tooltips for and about Planetary Radar
+
+### Known Issues
+
+- Queller AI from older version saves will no longer work
 
 ## v5.2.2 - 2021-05-25
 

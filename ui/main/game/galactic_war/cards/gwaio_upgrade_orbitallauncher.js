@@ -40,6 +40,79 @@ define([
           value: "Orbital & FactoryBuild",
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "SolarArray",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalDeathLaser",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedRadarSattelite",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalRailgun",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "OrbitalBattleShip",
+          idToMod: "builders",
+          value: "OrbitalLauncher",
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "SolarArray",
+          idToMod: "priority",
+          value: 100,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "OrbitalDeathLaser",
+          idToMod: "priority",
+          value: 100,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "AdvancedRadarSattelite",
+          idToMod: "priority",
+          value: 100,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "OrbitalRailgun",
+          idToMod: "priority",
+          value: 100,
+        },
+        {
+          type: "factory",
+          op: "replace",
+          toBuild: "OrbitalBattleShip",
+          idToMod: "priority",
+          value: 100,
+        },
+      ]);
     },
     dull: function () {},
   };

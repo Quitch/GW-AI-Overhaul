@@ -122,6 +122,16 @@ define([
             }
           );
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "NukeSilo",
+              idToMod: "builders",
+              value: "AnyBasicFabber",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

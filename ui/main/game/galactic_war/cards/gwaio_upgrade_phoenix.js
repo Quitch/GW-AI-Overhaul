@@ -41,6 +41,12 @@ define([
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
+        {
+          file: "/pa/units/air/fighter_adv/fighter_adv.json",
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Gunship",
+        },
       ]);
     },
     dull: function () {},

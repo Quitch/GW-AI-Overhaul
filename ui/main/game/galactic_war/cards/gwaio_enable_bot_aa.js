@@ -28,7 +28,14 @@ define([
         gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
         dist > 0
       )
-        if (context.totalSize <= GW.balance.numberOfSystems[0]) {
+        if (
+          !gwaioFunctions.hasUnit(
+            "/pa/units/land/vehicle_factory/vehicle_factory.json"
+          ) &&
+          gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json")
+        )
+          chance = 250;
+        else if (context.totalSize <= GW.balance.numberOfSystems[0]) {
           chance = 250;
           if (dist > 2) chance = 100;
         } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
@@ -49,7 +56,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(["/pa/units/land/bot_aa/bot_aa.json"]);
-      var mods = [
+      inventory.addMods([
         {
           file: "/pa/units/land/bot_aa/bot_aa.json",
           path: "base_spec",
@@ -68,8 +75,14 @@ define([
           op: "replace",
           value: 9,
         },
-      ];
-      inventory.addMods(mods);
+      ]);
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "gwaio_enable_bot_aa.json",
+        },
+      ]);
     },
     dull: function () {},
   };

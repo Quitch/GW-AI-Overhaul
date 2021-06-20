@@ -48,6 +48,72 @@ define([
           value: "ORDER_Use",
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "platoon",
+          op: "prepend",
+          toBuild: "Land_Attack_XLarge",
+          value: "(Naval & Hover & Advanced & Mobile) | ",
+          idToMod: "unit_type_string0",
+          refId: "test_type",
+          refValue: "UnitPoolCount",
+        },
+        {
+          type: "template",
+          op: "squad",
+          toBuild: "Land_Attack_XLarge",
+          value: {
+            unit_types:
+              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - Construction - Artillery - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            min_count: 0,
+            max_count: 40,
+            squad: "General",
+          },
+        },
+        {
+          type: "platoon",
+          op: "prepend",
+          toBuild: "Land_Attack_Max",
+          value: "(Naval & Hover & Advanced & Mobile) | ",
+          idToMod: "unit_type_string0",
+          refId: "test_type",
+          refValue: "UnitPoolCount",
+        },
+        {
+          type: "template",
+          op: "squad",
+          toBuild: "Land_Attack_Max",
+          value: {
+            unit_types:
+              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            min_count: 0,
+            max_count: -1,
+            squad: "General",
+          },
+        },
+        {
+          type: "platoon",
+          op: "prepend",
+          toBuild: "Teleporter_Attack_Queller",
+          value: "(Naval & Hover & Advanced & Mobile) | ",
+          idToMod: "unit_type_string0",
+          refId: "test_type",
+          refValue: "UnitPoolCount",
+        },
+        {
+          type: "template",
+          op: "squad",
+          toBuild: "Teleporter_Attack_Queller",
+          value: {
+            unit_types:
+              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            min_count: 0,
+            max_count: -1,
+            squad: "General",
+          },
+        },
+      ]);
     },
     dull: function () {},
   };

@@ -177,7 +177,8 @@ if (!gwaioCardsLoaded) {
               _.times(2, function () {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
                 if (gwaioFunctions.quellerAIEnabled()) {
-                  subcommander.personality.ai_path = "/pa/ai/queller/q_gold";
+                  subcommander.personality.ai_path =
+                    "/pa/ai_personalities/queller/q_gold";
                 }
                 inventory.cards().push({
                   id: "gwc_minion",
@@ -476,7 +477,122 @@ if (!gwaioCardsLoaded) {
               });
               return result;
             };
+
+            // ensure cheats use our deck
+            var dealCard = function (params) {
+              var result = $.Deferred();
+              loaded.then(function () {
+                var card = _.find(gwaioCardsToUnits.cards, { id: params.id });
+
+                // Simulate a deal
+                var context =
+                  card.getContext &&
+                  card.getContext(params.galaxy, params.inventory);
+
+                var deal = card.deal && card.deal(params.star, context);
+                var product = { id: params.id };
+                var cardParams = deal && deal.params;
+                if (cardParams && _.isObject(cardParams))
+                  _.assign(product, cardParams);
+                card.keep && card.keep(deal, context);
+                card.releaseContext && card.releaseContext(context);
+
+                result.resolve(product);
+              });
+              return result;
+            };
             /* end of GWAIO implementation of GWDealer */
+
+            // we need cheats to deal from our deck
+            model.cheats.testCards = function (game) {
+              var star = game.galaxy().stars()[game.currentStar()];
+              _.forEach(gwaioCardsToUnits.cards, function (card) {
+                api.debug.log("Dealing card", card.id);
+                dealCard({
+                  id: card.id,
+                  galaxy: game.galaxy(),
+                  inventory: game.inventory(),
+                  star: star,
+                }).then(function (product) {
+                  if (product.id === "gwc_minion") {
+                    // Minions tend to break things.
+                    requireGW(["shared/gw_factions"], function (GWFactions) {
+                      _.forEach(GWFactions, function (faction) {
+                        _.forEach(faction.minions, function (minion) {
+                          var minionStock = _.cloneDeep(product);
+                          minionStock.minion = minion;
+                          api.debug.log(" ", product.id, "%", minionStock);
+                          game.inventory().cards.push(minionStock);
+                          game.inventory().cards.pop();
+                          if (!minionStock.minion.commander) {
+                            // This will use the player's commander
+                            return;
+                          }
+
+                          var clusterSecurity =
+                            "/pa/units/land/bot_support_commander/bot_support_commander.json";
+                          var clusterWorker =
+                            "/pa/units/air/support_platform/support_platform.json";
+
+                          if (
+                            !CommanderUtility.bySpec.getObjectName(
+                              minionStock.minion.commander
+                            ) &&
+                            minionStock.minion.commander !== clusterSecurity &&
+                            minionStock.minion.commander !== clusterWorker
+                          ) {
+                            console.error(
+                              "Minion commander unitspec",
+                              minionStock.minion.commander,
+                              "invalid"
+                            );
+                          }
+                        });
+                      });
+                    });
+                  } else {
+                    game.inventory().cards.push(product);
+                    game.inventory().cards.pop();
+                  }
+                });
+              });
+            };
+            model.cheats.giveCard = function (game) {
+              var id = model.cheats.giveCardId();
+              var card = _.find(gwaioCardsToUnits.cards, {
+                id: id,
+              });
+              var galaxy = game.galaxy();
+
+              if (_.isUndefined(card))
+                console.error(
+                  "Unable to find a card called",
+                  model.cheats.giveCardId()
+                );
+              else
+                dealCard({
+                  id: card.id,
+                  galaxy: galaxy,
+                  inventory: game.inventory(),
+                  star: galaxy.stars()[game.currentStar()],
+                }).then(function (product) {
+                  if (product.id === "gwc_minion") {
+                    requireGW(["shared/gw_factions"], function (GWFactions) {
+                      var playerFaction =
+                        game.inventory().getTag("global", "playerFaction") || 0;
+                      product.minion = _.sample(
+                        GWFactions[playerFaction].minions
+                      );
+                      product.unique = Math.random();
+                      if (gwaioFunctions.quellerAIEnabled()) {
+                        product.minion.personality.ai_path =
+                          "/pa/ai_personalities/queller/q_gold";
+                      }
+                    });
+                  }
+                  game.inventory().cards.push(product);
+                });
+            };
 
             // gw_play self.explore - we need to call our chooseCards function
             model.explore = function () {

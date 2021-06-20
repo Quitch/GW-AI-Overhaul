@@ -1,0 +1,57 @@
+{
+  "build_list": [
+    {
+      "name": "gwaio_start_nomad - Land Defence Platoon",
+      "to_build": "land_defense_platoon",
+      "instance_count": -1,
+      "priority": 100,
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Defense - Naval - AirDefense - OrbitalDefense - Construction - NukeDefense - Nuke",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    },
+    {
+      "name": "gwaio_start_nomad - Naval Defence Platoon",
+      "to_build": "naval_defense_platoon",
+      "instance_count": -1,
+      "priority": 100,
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Defense - Land - AirDefense - OrbitalDefense - Construction - NukeDefense - Nuke",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnits",
+            "string0": "WL_AnySurface",
+            "boolean": true
+          }
+        ]
+      ],
+      "task_type": "NavalAttack"
+    }
+  ]
+}

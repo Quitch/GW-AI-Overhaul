@@ -86,6 +86,65 @@ define([
               "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
           });
           inventory.addMods(mods);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "BasicMetalExtractor",
+              idToMod: "priority",
+              value: 0,
+              refId: "task_type",
+              refValue: "AreaBuild",
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "AdvancedMetalExtractor",
+              idToMod: "priority",
+              value: 0,
+              refId: "task_type",
+              refValue: "AreaBuild",
+            },
+            {
+              type: "fabber",
+              op: "remove",
+              toBuild: "BasicMetalExtractor",
+              value: {
+                test_type: "CanFindMetalSpotToBuildBasic",
+                boolean: true,
+              },
+            },
+            {
+              type: "fabber",
+              op: "remove",
+              toBuild: "AdvancedMetalExtractor",
+              value: {
+                test_type: "CanFindMetalSpotToBuildAdvanced",
+                boolean: true,
+              },
+            },
+            {
+              type: "fabber",
+              op: "new",
+              toBuild: "BasicMetalExtractor",
+              idToMod: "",
+              value: {
+                test_type: "CanFindPlaceToBuild",
+                string0: "BasicMetalExtractor",
+              },
+            },
+            {
+              type: "fabber",
+              op: "new",
+              toBuild: "AdvancedMetalExtractor",
+              idToMod: "",
+              value: {
+                test_type: "CanFindPlaceToBuild",
+                string0: "AdvancedMetalExtractor",
+              },
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
