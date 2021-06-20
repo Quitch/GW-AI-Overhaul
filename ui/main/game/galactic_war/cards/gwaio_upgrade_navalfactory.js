@@ -43,13 +43,6 @@ define([
         {
           type: "factory",
           op: "append",
-          toBuild: "AdvancedNavalFabber",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
           toBuild: "Battleship",
           idToMod: "builders",
           value: "BasicNavalFactory",
@@ -81,20 +74,6 @@ define([
           toBuild: "DroneCarrier",
           idToMod: "builders",
           value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "BasicNavalFabber",
-          idToMod: "priority",
-          value: 200,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedNavalFabber",
-          idToMod: "priority",
-          value: 100,
         },
         {
           type: "factory",

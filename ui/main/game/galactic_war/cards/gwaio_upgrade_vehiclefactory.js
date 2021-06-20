@@ -45,13 +45,6 @@ define([
         {
           type: "factory",
           op: "append",
-          toBuild: "AdvancedVehicleFabber",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
           toBuild: "AdvancedLaserTank",
           idToMod: "builders",
           value: "BasicVehicleFactory",
@@ -76,20 +69,6 @@ define([
           toBuild: "FlakTank",
           idToMod: "builders",
           value: "BasicVehicleFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "BasicVehicleFabber",
-          idToMod: "priority",
-          value: 200,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedVehicleFabber",
-          idToMod: "priority",
-          value: 100,
         },
         {
           type: "factory",

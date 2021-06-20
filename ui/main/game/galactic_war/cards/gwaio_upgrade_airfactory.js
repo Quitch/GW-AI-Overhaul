@@ -41,13 +41,6 @@ define([
         {
           type: "factory",
           op: "append",
-          toBuild: "AdvancedAirFabber",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
           toBuild: "AdvancedBomber",
           idToMod: "builders",
           value: "BasicAirFactory",
@@ -72,20 +65,6 @@ define([
           toBuild: "Strafer",
           idToMod: "builders",
           value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "BasicAirFabber",
-          idToMod: "priority",
-          value: 200,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedAirFabber",
-          idToMod: "priority",
-          value: 100,
         },
         {
           type: "factory",

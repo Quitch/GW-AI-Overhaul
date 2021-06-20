@@ -41,13 +41,6 @@ define([
         {
           type: "factory",
           op: "append",
-          toBuild: "AdvancedBotFabber",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
           toBuild: "AdvancedAssaultBot",
           idToMod: "builders",
           value: "BasicBotFactory",
@@ -97,20 +90,6 @@ define([
           value: "BasicBotFactory",
           refId: "priority",
           refValue: 199,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "BasicBotFabber",
-          idToMod: "priority",
-          value: 200,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedBotFabber",
-          idToMod: "priority",
-          value: 100,
         },
         {
           type: "factory",
