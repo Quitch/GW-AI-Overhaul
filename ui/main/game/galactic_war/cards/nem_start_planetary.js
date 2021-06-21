@@ -128,7 +128,7 @@ define([
               type: "fabber",
               op: "new",
               toBuild: "BasicMetalExtractor",
-              idToMod: "",
+              idToMod: "", // add to every test array
               value: {
                 test_type: "CanFindPlaceToBuild",
                 string0: "BasicMetalExtractor",
@@ -138,7 +138,7 @@ define([
               type: "fabber",
               op: "new",
               toBuild: "AdvancedMetalExtractor",
-              idToMod: "",
+              idToMod: "", // add to every test array
               value: {
                 test_type: "CanFindPlaceToBuild",
                 string0: "AdvancedMetalExtractor",
