@@ -26,12 +26,13 @@ define(["shared/gw_common"], function (GW) {
         if (
           !(
             inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwc_enable_air_all")
+            inventory.hasCard("gwc_enable_air_all") ||
+            inventory.hasCard("gwaio_start_hoarder")
           )
         ) {
           chanceMod = 3;
         }
-        if (dist > 0) {
+        if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 25;
             if (dist > 2) chance = 200;

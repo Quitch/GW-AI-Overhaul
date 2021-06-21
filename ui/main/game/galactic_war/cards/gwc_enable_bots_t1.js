@@ -29,7 +29,7 @@ define(["shared/gw_common"], function (GW) {
         )
       ) {
         var dist = system.distance();
-        if (dist > 0) {
+        if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 250;
             if (dist > 2) chance = 100;

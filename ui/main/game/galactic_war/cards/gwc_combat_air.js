@@ -22,7 +22,8 @@ define({
     if (
       inventory.hasCard("gwc_enable_air_t1") ||
       inventory.hasCard("gwc_enable_air_all") ||
-      inventory.hasCard("gwc_start_air")
+      inventory.hasCard("gwc_start_air") ||
+      inventory.hasCard("gwaio_start_hoarder")
     )
       chance = 60;
     return { chance: chance };
