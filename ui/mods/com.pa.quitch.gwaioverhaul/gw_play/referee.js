@@ -527,10 +527,10 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                console.debug("Found (append)", test[refId]);
-                                if (_.isArray(test[idToMod]))
+                                if (_.isArray(test[idToMod])) {
                                   test[idToMod] = test[idToMod].concat(value);
-                                else if (test[idToMod]) {
+                                  console.debug("Appended", value);
+                                } else if (test[idToMod]) {
                                   test[idToMod] += value;
                                   console.debug("Appended", value);
                                 }
@@ -573,10 +573,10 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                console.debug("Found (prepend)", test[refId]);
-                                if (_.isArray(test[idToMod]))
+                                if (_.isArray(test[idToMod])) {
                                   test[idToMod] = value.concat(test[idToMod]);
-                                else if (test[idToMod]) {
+                                  console.debug("Prepended", test[idToMod]);
+                                } else if (test[idToMod]) {
                                   test[idToMod] = value + test[idToMod];
                                   console.debug("Prepended", test[idToMod]);
                                 }
@@ -611,12 +611,9 @@ if (!gwaioRefereeChangesLoaded) {
                           build.build_conditions,
                           function (test_array) {
                             _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                console.debug("Found(replace)", test[refId]);
-                                if (test[idToMod]) {
-                                  test[idToMod] = value;
-                                  console.debug("Replaced", test[idToMod]);
-                                }
+                              if (test[refId] === refValue && test[idToMod]) {
+                                test[idToMod] = value;
+                                console.debug("Replaced", test[idToMod]);
                               }
                             });
                           }
