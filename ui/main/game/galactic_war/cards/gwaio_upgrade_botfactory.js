@@ -45,7 +45,7 @@ define([
           idToMod: "builders",
           value: "BasicBotFactory",
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -68,7 +68,7 @@ define([
           idToMod: "builders",
           value: "BasicBotFactory",
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -77,7 +77,7 @@ define([
           idToMod: "priority",
           value: 97,
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -114,7 +114,7 @@ define([
           idToMod: "priority",
           value: 97,
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
       ]);
     },
