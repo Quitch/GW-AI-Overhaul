@@ -51,6 +51,30 @@ define([
 
       inventory.addAIMods([
         {
+          type: "factory",
+          op: "new",
+          toBuild: "HoverShip",
+          value: [
+            {
+              test_type: "AloneOnPlanet",
+              boolean: true,
+            },
+            {
+              test_type: "CanAffordBuildDemand",
+            },
+            {
+              test_type: "OtherPlanetCanReceiveLandUnitAssistance",
+              boolean: true,
+            },
+            {
+              test_type: "UnitCountOnPlanet",
+              unit_type_string0: "Structure & Teleporter",
+              compare0: ">",
+              value0: 0,
+            },
+          ],
+        },
+        {
           type: "platoon",
           op: "prepend",
           toBuild: "Land_Attack_XLarge",

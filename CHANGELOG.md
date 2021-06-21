@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- AI builds Kaiju when alone and player has Kaiju upgrade
+
 ### Fixed
 
 - Errors and inconsistencies in base game tech cards
