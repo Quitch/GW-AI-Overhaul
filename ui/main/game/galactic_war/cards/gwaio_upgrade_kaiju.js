@@ -56,8 +56,8 @@ define([
           toBuild: "Land_Attack_XLarge",
           value: "(Naval & Hover & Advanced & Mobile) | ",
           idToMod: "unit_type_string0",
-          refId: "OtherPlanetNeedsLandUnitAssistance",
-          refValue: true,
+          refId: "test_type",
+          refValue: "UnitPoolCount",
         },
         {
           type: "template",
@@ -77,8 +77,8 @@ define([
           toBuild: "Land_Attack_Max",
           value: "(Naval & Hover & Advanced & Mobile) | ",
           idToMod: "unit_type_string0",
-          refId: "OtherPlanetNeedsLandUnitAssistance",
-          refValue: true,
+          refId: "test_type",
+          refValue: "UnitPoolCount",
         },
         {
           type: "template",
@@ -98,8 +98,8 @@ define([
           toBuild: "Teleporter_Attack_Queller",
           value: "(Naval & Hover & Advanced & Mobile) | ",
           idToMod: "unit_type_string0",
-          refId: "OtherPlanetNeedsLandUnitAssistance",
-          refValue: true,
+          refId: "test_type",
+          refValue: "UnitPoolCount",
         },
         {
           type: "template",
