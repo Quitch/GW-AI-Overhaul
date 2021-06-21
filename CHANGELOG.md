@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Errors and inconsistencies in base game tech cards
+  - Advanced Defense Technology
+    - Correctly adds the Advanced Torpedo Launcher to the player's unit list
+
 ## v5.6.0 - 2021-06-20
 
 ### Added
