@@ -48,7 +48,7 @@ define([
           toBuild: "AdvancedLaserTank",
           idToMod: "builders",
           value: "BasicVehicleFactory",
-          refId: "priority", // avoid modifying with Leveler upgrade
+          refId: "priority", // avoid modifying Leveler upgrade
           refValue: 199,
         },
         {
@@ -78,6 +78,8 @@ define([
           toBuild: "AdvancedLaserTank",
           idToMod: "priority",
           value: 97,
+          refId: "priority", // avoid modifying Leveler upgrade
+          refValue: 199,
         },
         {
           type: "factory",
