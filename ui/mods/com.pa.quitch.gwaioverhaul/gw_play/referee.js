@@ -533,12 +533,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 else if (test[idToMod]) {
                                   test[idToMod] += value;
                                   console.debug("Appended", value);
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                                }
                               }
                             });
                           }
@@ -584,12 +579,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 else if (test[idToMod]) {
                                   test[idToMod] = value + test[idToMod];
                                   console.debug("Prepended", test[idToMod]);
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                                }
                               }
                             });
                           }
@@ -626,12 +616,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 if (test[idToMod]) {
                                   test[idToMod] = value;
                                   console.debug("Replaced", test[idToMod]);
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                                }
                               }
                             });
                           }
@@ -695,7 +680,7 @@ if (!gwaioRefereeChangesLoaded) {
                         json.platoon_templates[toBuild].units.length - 1
                       ]
                     );
-                  } else console.error(toBuild, "not found");
+                  }
                 },
               };
 
