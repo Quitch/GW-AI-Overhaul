@@ -16,6 +16,7 @@
 - Hoarder Commander not being offered upgrades it started with access to
 - Hoarder Commander being offered tech cards for things it already had
 - Minor clash in AI modifications between the Vehicle Factory upgrade and the Leveler upgrade
+- Queller AI support for Single Laser Defense Tower upgrade
 
 ## v5.6.0 - 2021-06-20
 

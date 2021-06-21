@@ -103,7 +103,7 @@ define([
           idToMod: "value0",
           value: 1,
           refId: "unit_type_string0",
-          refValue: "Structure & Basic & SurfaceDefense",
+          refValue: "Structure & Basic & SurfaceDefense", // TITANS
         },
         {
           type: "fabber",
@@ -112,7 +112,34 @@ define([
           idToMod: "unit_type_string0",
           value: "Structure & Basic & Construction",
           refId: "unit_type_string0",
-          refValue: "Structure & Basic & SurfaceDefense",
+          refValue: "Structure & Basic & SurfaceDefense", // TITANS
+        },
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "value0",
+          value: 1,
+          refId: "unit_type_string0",
+          refValue: "Structure & (SurfaceDefense | Tactical) - Shield", // Queller
+        },
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "unit_type_string0",
+          value: "Structure & Basic & Construction",
+          refId: "unit_type_string0",
+          refValue: "Structure & (SurfaceDefense | Tactical) - Shield", // Queller
+        },
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "BasicLandDefenseSingle",
+          idToMod: "priority",
+          value: 0, // Turn off for Queller Guardians
+          refId: "name",
+          refValue: "Single Laser Defense Tower - Snipe",
         },
       ]);
     },
