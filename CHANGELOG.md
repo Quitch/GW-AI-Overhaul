@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## v5.7.0 - 2021-06-22
+
+### Change
+
+- AI builds Kaiju when alone and the player has Kaiju upgrade
+- AI won't build Colonels or Mends from the basic Bot Factory when using the Bot Factory upgrade
+- AI won't use basic fabbers to build advanced economy even when it has upgrades that allow it to
+
+### Fixed
+
+- Errors and inconsistencies in base game tech cards
+  - Advanced Defense Technology
+    - Correctly adds the Advanced Torpedo Launcher to the player's unit list
+- Hoarder Commander not being offered upgrades for techs it started with access to
+- Hoarder Commander being offered tech cards for things it already had
+- Minor clash in AI modifications between the Vehicle Factory upgrade and the Leveler upgrade
+- Queller AI support for Single Laser Defense Tower upgrade
+- Planetary Radar Upgrade Tech being offered before you have the Planetary Radar
+- Radar upgrade correctly recognises that Defense Tech Commander no longer starts with Radar
+- Queller Guardians won't build T1 units from T2 factories when encountering T1 factory upgrade tech
+- Typo in Catapult upgrade description
+- Queller enemies from wars prior to v5.6.0 doing nothing after spawning
+
 ## v5.6.0 - 2021-06-20
 
 ### Added

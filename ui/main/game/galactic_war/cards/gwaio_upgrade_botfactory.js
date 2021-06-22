@@ -45,14 +45,7 @@ define([
           idToMod: "builders",
           value: "BasicBotFactory",
           refId: "priority",
-          refValue: 199,
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedBotCombatFabber",
-          idToMod: "builders",
-          value: "BasicBotFactory",
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -71,25 +64,11 @@ define([
         {
           type: "factory",
           op: "append",
-          toBuild: "SupportCommander",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "UberSupportCommander",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
           toBuild: "NanoSwarm",
           idToMod: "builders",
           value: "BasicBotFactory",
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -98,7 +77,7 @@ define([
           idToMod: "priority",
           value: 97,
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
         {
           type: "factory",
@@ -126,14 +105,7 @@ define([
           op: "replace",
           toBuild: "SupportCommander",
           idToMod: "priority",
-          value: 100,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "UberSupportCommander",
-          idToMod: "priority",
-          value: 100,
+          value: 97,
         },
         {
           type: "factory",
@@ -142,7 +114,7 @@ define([
           idToMod: "priority",
           value: 97,
           refId: "priority",
-          refValue: 199,
+          refValue: 199, // avoid Unit Cannon builds
         },
       ]);
     },

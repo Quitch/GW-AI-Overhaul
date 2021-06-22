@@ -36,8 +36,7 @@ define([
           gwaioFunctions.hasUnit(
             "/pa/units/land/vehicle_factory/vehicle_factory.json"
           ) ||
-          inventory.hasCard("gwc_start_artillery") ||
-          inventory.hasCard("nem_start_tower_rush"))
+          inventory.hasCard("gwc_start_artillery"))
       )
         chance = 60;
 

@@ -589,6 +589,9 @@ if (!gwaioCardsLoaded) {
                           "/pa/ai_personalities/queller/q_gold";
                       }
                     });
+                  } else if (product.id === "gwc_add_card_slot") {
+                    product.allowOverflow = true;
+                    product.unique = Math.random();
                   }
                   game.inventory().cards.push(product);
                 });

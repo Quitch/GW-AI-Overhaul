@@ -521,16 +521,11 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod]))
+                                if (_.isArray(test[idToMod])) {
                                   test[idToMod] = test[idToMod].concat(value);
-                                else if (test[idToMod]) {
+                                } else if (test[idToMod]) {
                                   test[idToMod] += value;
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                                }
                               }
                             });
                           }
@@ -567,16 +562,11 @@ if (!gwaioRefereeChangesLoaded) {
                           function (test_array) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod]))
+                                if (_.isArray(test[idToMod])) {
                                   test[idToMod] = value.concat(test[idToMod]);
-                                else if (test[idToMod]) {
+                                } else if (test[idToMod]) {
                                   test[idToMod] = value + test[idToMod];
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                                }
                               }
                             });
                           }
@@ -606,15 +596,8 @@ if (!gwaioRefereeChangesLoaded) {
                           build.build_conditions,
                           function (test_array) {
                             _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                if (test[idToMod]) {
-                                  test[idToMod] = value;
-                                } else
-                                  console.error(
-                                    test[idToMod],
-                                    "not found with",
-                                    test[refId]
-                                  );
+                              if (test[refId] === refValue && test[idToMod]) {
+                                test[idToMod] = value;
                               }
                             });
                           }
@@ -658,7 +641,7 @@ if (!gwaioRefereeChangesLoaded) {
                 squad: function (json, value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
                     json.platoon_templates[toBuild].units.push(value);
-                  } else console.error(toBuild, "not found");
+                  }
                 },
               };
 
@@ -920,6 +903,11 @@ if (!gwaioRefereeChangesLoaded) {
             // Setup AI System Owner
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
+
+            // Avoid breaking saves from GWO v5.5.3 and earlier
+            if (quellerEnabled)
+              ai.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+
             var slotsArray = [];
             _.times(
               ai.bossCommanders ||
@@ -947,6 +935,12 @@ if (!gwaioRefereeChangesLoaded) {
             _.forEach(ai.minions, function (minion) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
+
+              // Avoid breaking saves from GWO v5.5.3 and earlier
+              if (quellerEnabled)
+                minion.personality.ai_path =
+                  "/pa/ai_personalities/queller/q_uber";
+
               var slotsArrayMinions = [];
               _.times(
                 minion.commanderCount ||
@@ -974,11 +968,16 @@ if (!gwaioRefereeChangesLoaded) {
 
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              var slotsArrayFoes = [];
               foe.personality.adv_eco_mod =
                 foe.personality.adv_eco_mod * foe.econ_rate;
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
+
+              // Avoid breaking saves from GWO v5.5.3 and earlier
+              if (quellerEnabled)
+                foe.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+
+              var slotsArrayFoes = [];
               _.times(
                 foe.commanderCount ||
                   // legacy GWAIO support

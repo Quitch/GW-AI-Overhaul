@@ -77,20 +77,6 @@ define([
         {
           type: "fabber",
           op: "append",
-          toBuild: "AdvancedMetalExtractor",
-          idToMod: "builders",
-          value: "BasicNavalFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedEnergyGenerator",
-          idToMod: "builders",
-          value: "BasicNavalFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
           toBuild: "AdvancedRadar",
           idToMod: "builders",
           value: "BasicNavalFabber",
