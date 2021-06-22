@@ -3,37 +3,37 @@
     "land_defense_platoon": {
       "units": [
         {
-          "unit_types": "Defense & SurfaceDefense - Naval - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke",
+          "unit_types": "Defense & SurfaceDefense & Mobile - Naval - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke - Structure",
           "min_count": 0,
           "max_count": -1,
           "squad": "General"
         },
         {
-          "unit_types": "Defense & (Artillery | Tactical)",
+          "unit_types": "Defense & (Artillery | Tactical) & Mobile - Structure",
           "min_count": 0,
           "percent": 0.35,
           "squad": "Artillery"
         },
         {
-          "unit_types": "Defense & AirDefense",
+          "unit_types": "Defense & AirDefense & Mobile - Structure",
           "min_count": 0,
           "percent": 0.25,
           "squad": "Defense"
         },
         {
-          "unit_types": "Defense & OrbitalDefense - Orbital",
+          "unit_types": "Defense & OrbitalDefense & Mobile - Orbital - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
         },
         {
-          "unit_types": "Defense & Construction",
+          "unit_types": "Defense & Construction & Mobile - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
         },
         {
-          "unit_types": "Radar & Land",
+          "unit_types": "Radar & Land & Mobile - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
@@ -43,37 +43,37 @@
     "naval_defense_platoon": {
       "units": [
         {
-          "unit_types": "Defense & Naval - SurfaceDefense - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke",
+          "unit_types": "Defense & Naval & Mobile - SurfaceDefense - Artillery - Tactical - AirDefense - OrbitalDefense - NukeDefense - Nuke - Structure",
           "min_count": 0,
           "max_count": -1,
           "squad": "General"
         },
         {
-          "unit_types": "Defense & (Artillery | Tactical)",
+          "unit_types": "Defense & (Artillery | Tactical) & Mobile - Structure",
           "min_count": 0,
           "percent": 0.35,
           "squad": "Artillery"
         },
         {
-          "unit_types": "Defense & AirDefense",
+          "unit_types": "Defense & AirDefense & Mobile - Structure",
           "min_count": 0,
           "percent": 0.25,
           "squad": "Defense"
         },
         {
-          "unit_types": "Defense & OrbitalDefense - Orbital",
+          "unit_types": "Defense & OrbitalDefense & Mobile - Orbital - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
         },
         {
-          "unit_types": "Defense & Construction",
+          "unit_types": "Defense & Construction & Mobile - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
         },
         {
-          "unit_types": "Radar & Land",
+          "unit_types": "Radar & Land & Mobile - Structure",
           "min_count": 0,
           "percent": 0.1,
           "squad": "Defense"
