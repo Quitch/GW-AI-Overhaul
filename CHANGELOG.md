@@ -1,10 +1,16 @@
 # CHANGELOG
 
+## v5.7.1 - 2021-06-22
+
+### Fixed
+
+- Nomad Commander no longer prevents nuke launchers and anti-nuke launchers from building missiles
+
 ## v5.7.0 - 2021-06-22
 
 ### Change
 
-- AI builds Kaiju when alone and the player has Kaiju upgrade
+- AI builds Kaiju when alone and the player has the Kaiju upgrade
 - AI won't build Colonels or Mends from the basic Bot Factory when using the Bot Factory upgrade
 - AI won't use basic fabbers to build advanced economy even when it has upgrades that allow it to
 
