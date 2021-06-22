@@ -1,7 +1,4 @@
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
-  return {
+define({
     visible: _.constant(true),
     describe: _.constant(
       "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
@@ -23,25 +20,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/deep_space_radar/deep_space_radar.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
-          inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-          ) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory"))
+        inventory.hasCard(
+          "gwaio_enable_planetaryradar"
+        )
       )
         chance = 60;
 
@@ -64,5 +45,4 @@ define([
       ]);
     },
     dull: function () {},
-  };
 });

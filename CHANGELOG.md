@@ -17,6 +17,7 @@
 - Hoarder Commander being offered tech cards for things it already had
 - Minor clash in AI modifications between the Vehicle Factory upgrade and the Leveler upgrade
 - Queller AI support for Single Laser Defense Tower upgrade
+- Planetary Radar Upgrade Tech being offered before you have the Planetary Radar
 
 ## v5.6.0 - 2021-06-20
 
