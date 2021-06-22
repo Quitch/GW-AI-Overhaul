@@ -962,6 +962,11 @@ if (!gwaioRefereeChangesLoaded) {
             // Setup AI System Owner
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
+
+            // Avoid breaking saves from GWO v5.5.3 and earlier
+            if (quellerEnabled)
+              ai.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+
             var slotsArray = [];
             _.times(
               ai.bossCommanders ||
@@ -989,6 +994,12 @@ if (!gwaioRefereeChangesLoaded) {
             _.forEach(ai.minions, function (minion) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
+
+              // Avoid breaking saves from GWO v5.5.3 and earlier
+              if (quellerEnabled)
+                minion.personality.ai_path =
+                  "/pa/ai_personalities/queller/q_uber";
+
               var slotsArrayMinions = [];
               _.times(
                 minion.commanderCount ||
@@ -1016,11 +1027,16 @@ if (!gwaioRefereeChangesLoaded) {
 
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              var slotsArrayFoes = [];
               foe.personality.adv_eco_mod =
                 foe.personality.adv_eco_mod * foe.econ_rate;
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
+
+              // Avoid breaking saves from GWO v5.5.3 and earlier
+              if (quellerEnabled)
+                foe.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+
+              var slotsArrayFoes = [];
               _.times(
                 foe.commanderCount ||
                   // legacy GWAIO support

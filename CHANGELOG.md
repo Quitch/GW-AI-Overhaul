@@ -21,6 +21,7 @@
 - Radar upgrade correctly recognises that Defense Tech Commander no longer starts with Radar
 - Queller Guardians won't build T1 units from T2 factories when encountering T1 factory upgrade tech
 - Typo in Catapult upgrade description
+- Queller enemies from wars prior to v5.6.0 doing nothing after spawning
 
 ## v5.6.0 - 2021-06-20
 
