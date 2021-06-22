@@ -63,9 +63,7 @@ define([
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
           ];
           var largeStructures = [
-            "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json",
             "/pa/units/land/artillery_long/artillery_long.json",
-            "/pa/units/land/nuke_launcher/nuke_launcher.json",
             "/pa/units/land/radar_adv/radar_adv.json",
             "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
@@ -251,7 +249,6 @@ define([
             "/pa/units/orbital/ion_defense/ion_defense.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
             "/pa/units/land/artillery_long/artillery_long.json",
-            "/pa/units/land/nuke_launcher/nuke_launcher.json",
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
           ];
           offensiveStructures.forEach(function (unit) {

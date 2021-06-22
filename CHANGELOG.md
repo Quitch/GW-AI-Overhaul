@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Nomad Commander no longer prevents nuke launchers and anti-nuke launchers from building missiles
+
 ## v5.7.0 - 2021-06-22
 
 ### Change
