@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.7.0 - 2021-06-22
 
 ### Change
 
