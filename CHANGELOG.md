@@ -20,6 +20,7 @@
 - Planetary Radar Upgrade Tech being offered before you have the Planetary Radar
 - Radar upgrade correctly recognises that Defense Tech Commander no longer starts with Radar
 - Queller Guardians won't build T1 units from T2 factories when encountering T1 factory upgrade tech
+- Typo in Catapult upgrade
 
 ## v5.6.0 - 2021-06-20
 
