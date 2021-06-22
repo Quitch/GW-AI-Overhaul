@@ -4,7 +4,7 @@
 
 ### Change
 
-- AI builds Kaiju when alone and player has Kaiju upgrade
+- AI builds Kaiju when alone and the player has Kaiju upgrade
 - AI won't build Colonels or Mends from the basic Bot Factory when using the Bot Factory upgrade
 - AI won't use basic fabbers to build advanced economy even when it has upgrades that allow it to
 
