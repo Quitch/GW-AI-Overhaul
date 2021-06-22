@@ -18,6 +18,7 @@
 - Minor clash in AI modifications between the Vehicle Factory upgrade and the Leveler upgrade
 - Queller AI support for Single Laser Defense Tower upgrade
 - Planetary Radar Upgrade Tech being offered before you have the Planetary Radar
+- Radar upgrade correctly recognises that Defense Tech Commander no longer starts with Radar
 
 ## v5.6.0 - 2021-06-20
 
