@@ -6,7 +6,7 @@
       "instance_count": 1,
       "max_num_assisters": 10,
       "priority": 100,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
@@ -114,7 +114,7 @@
       "max_num_assisters": 10,
       "shared_instance_count": "LandScout",
       "priority": 98,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
@@ -194,7 +194,7 @@
       "instance_count": 1,
       "max_num_assisters": 10,
       "priority": 97,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
@@ -290,7 +290,7 @@
       "instance_count": -1,
       "max_num_assisters": 10,
       "priority": 97,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
@@ -347,7 +347,7 @@
       "instance_count": -1,
       "max_num_assisters": 10,
       "priority": 97,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
@@ -461,7 +461,7 @@
       "instance_count": -1,
       "max_num_assisters": 10,
       "priority": 97,
-      "builders": ["AnyUberVehicleFactory"],
+      "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
           {
