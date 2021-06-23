@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.8.0 - 2021-06-23
+
+### Change
+
+- Updated Queller AI to v5.15.0
+
 ## v5.7.1 - 2021-06-22
 
 ### Fixed
