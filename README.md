@@ -91,6 +91,7 @@ Each system will display the following information:
 
 - **Build**: AI has Improved Fabricator Build Arms.
 - **Commander**: AI has Commander Combat Tech, Improved Commander Build Arms, and commander mine vision.
+- **Combat**: AI has Combat Tech.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
