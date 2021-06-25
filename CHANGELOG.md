@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- All difficulty levels below Uber have AI Tech appear earlier in the galaxy
+
 ## v5.8.0 - 2021-06-23
 
 ### Change
