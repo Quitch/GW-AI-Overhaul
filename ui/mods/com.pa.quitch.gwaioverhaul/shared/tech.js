@@ -43,6 +43,7 @@ define([
     inventory.clusterUnits,
   ];
 
+  // 0 - Fabrication Tech
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][0] = faction.map(function (unit) {
       return {
@@ -54,6 +55,7 @@ define([
     });
   });
 
+  // 1 - Ammunition Tech
   var factionWeapons = [
     inventory.legonisWeapons,
     inventory.foundationWeapons,
@@ -117,6 +119,7 @@ define([
     );
   });
 
+  // 2 - Armour Tech
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][2] = faction.map(function (unit) {
       return {
@@ -128,6 +131,7 @@ define([
     });
   });
 
+  // 3 - Engine Tech
   var factionsTechAir = [foundationTech, clusterTech];
   var factionsTechNoAir = [
     legonisTech,
@@ -207,6 +211,7 @@ define([
     );
   });
 
+  // 4 - Efficiency Tech
   var factionBuildArms = [
     inventory.legonisBuildArms,
     inventory.foundationBuildArms,
@@ -235,6 +240,7 @@ define([
     );
   });
 
+  // 5 - Commander Combat Tech
   var factionCommanders = [
     inventory.commanderUnits, // Legonis Machina
     inventory.commanderUnits, // Foundation
@@ -337,9 +343,10 @@ define([
     );
   });
 
-  _.forEach(factionsTech, function(faction){
-    faction[6] = faction[1].concat(faction[2], faction[3])
-  })
+  // 6 - Combat Tech
+  _.forEach(factionsTech, function (faction) {
+    faction[6] = faction[1].concat(faction[2], faction[3]);
+  });
 
   // Cluster commander setup
   var clusterCommanderTech = [
