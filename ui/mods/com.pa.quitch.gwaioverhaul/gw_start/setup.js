@@ -737,7 +737,7 @@ if (!gwaioSetupLoaded) {
                     getRandomArbitrary(0.9, 1.1);
               };
 
-              var buffType = [0, 1, 2, 3, 4, 5]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders
+              var buffType = [0, 1, 2, 3, 4, 5, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders; 6 = combat
               var buffDelay =
                 model.gwaioDifficultySettings.factionTechHandicap();
               var aiInventory = [];

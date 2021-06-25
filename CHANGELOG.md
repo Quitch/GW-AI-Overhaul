@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Combat tech is now an AI Tech, increasing health, speed, and damage
+
 ### Change
 
 - All difficulty levels below Uber have AI Tech appear earlier in the galaxy

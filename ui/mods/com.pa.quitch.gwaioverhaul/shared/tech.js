@@ -337,6 +337,10 @@ define([
     );
   });
 
+  _.forEach(factionsTech, function(faction){
+    faction[6] = faction[1].concat(faction[2], faction[3])
+  })
+
   // Cluster commander setup
   var clusterCommanderTech = [
     {
