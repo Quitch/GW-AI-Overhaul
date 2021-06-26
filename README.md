@@ -90,7 +90,7 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
-- **Commander**: AI has Commander Combat Tech, Improved Commander Build Arms, and commander mine vision.
+- **Commander**: AI has Commander Combat Tech and Improved Commander Build Arms
 - **Combat**: AI has Combat Tech.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
@@ -99,11 +99,11 @@ Each system will display the following information:
 
 These buffs are applied on a per-faction basis:
 
-- **Legonis Machina**: land units and factory structures
-- **Foundation**: air and naval units and factory structures
-- **Synchronous**: non-factory structures
+- **Legonis Machina**: vehicle units and structures
+- **Foundation**: air and naval units and structures
+- **Synchronous**: bot units and structures
 - **Revenants**: orbital units and structures
-- **Cluster**: basic units
+- **Cluster**: structures
 
 ### Commander Threat Scale
 

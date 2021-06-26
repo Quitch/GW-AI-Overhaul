@@ -11,6 +11,7 @@ define([
       value: 2,
     });
   });
+
   var clusterCommanderArmourTech = [];
   inventory.clusterCommanders.forEach(function (commander) {
     clusterCommanderArmourTech.push({
@@ -35,11 +36,28 @@ define([
     clusterTech,
   ];
 
+  var legonisUnits = inventory.legonisUnitsMobile.concat(
+    inventory.legonisUnitsNotMobile
+  );
+  var foundationUnits = inventory.foundationUnitsMobileAir.concat(
+    inventory.foundationUnitsMobileNotAir,
+    inventory.foundationUnitsNotMobile
+  );
+  var synchronousUnits = inventory.synchronousUnitsMobile.concat(
+    inventory.synchronousUnitsNotMobile
+  );
+  var revenantsUnits = inventory.revenantsUnitsMobile.concat(
+    inventory.revenantsUnitsNotMobile
+  );
+  var clusterUnitsNotStructure = inventory.commanderUnits.concat(
+    inventory.clusterCommanders
+  );
+
   var factionUnits = [
-    inventory.legonisUnits,
-    inventory.foundationUnits,
-    inventory.synchronousUnits,
-    inventory.revenantsUnits,
+    legonisUnits,
+    foundationUnits,
+    synchronousUnits,
+    revenantsUnits,
     inventory.clusterUnits,
   ];
 
@@ -99,19 +117,19 @@ define([
               file: weapon,
               path: "ammo_capacity",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
             {
               file: weapon,
               path: "ammo_demand",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
             {
               file: weapon,
               path: "ammo_per_shot",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
           ];
         })
@@ -132,22 +150,21 @@ define([
   });
 
   // 3 - Engine Tech
-  var factionsTechAir = [foundationTech, clusterTech];
+  var factionsTechAir = [foundationTech];
   var factionsTechNoAir = [
     legonisTech,
+    foundationTech,
     synchronousTech,
     revenantsTech,
     clusterTech,
   ];
-  var factionUnitsAir = [
-    inventory.foundationUnitsMobile,
-    inventory.clusterUnitsAir,
-  ];
+  var factionUnitsAir = [inventory.foundationUnitsMobileAir];
   var factionUnitsNoAir = [
-    inventory.legonisUnits,
+    inventory.legonisUnitsMobile,
+    inventory.foundationUnitsMobileNotAir,
     inventory.synchronousUnitsMobile,
-    inventory.revenantsUnits,
-    inventory.clusterUnitsNoAirMobile,
+    inventory.revenantsUnitsMobile,
+    clusterUnitsNotStructure,
   ];
   factionUnitsAir.forEach(function (faction, i) {
     factionsTechAir[i][3] = _.flatten(

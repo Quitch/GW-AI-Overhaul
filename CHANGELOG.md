@@ -10,6 +10,11 @@
 
 - All difficulty levels below Uber have AI Tech appear earlier in the galaxy
 - Removed mine vision from AI's Commander Combat Tech
+- Rebalanced AI Tech
+  - Legonis Machina is now focused on tanks
+  - Synchronous is now focused on bots
+  - Cluster is now focused on structures
+  - All buffs include the faction's commanders in their scope
 
 ### Fixed
 
