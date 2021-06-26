@@ -139,12 +139,15 @@ define([
     revenantsTech,
     clusterTech,
   ];
-  var factionUnitsAir = [inventory.foundationUnits, inventory.clusterUnitsAir];
+  var factionUnitsAir = [
+    inventory.foundationUnitsMobile,
+    inventory.clusterUnitsAir,
+  ];
   var factionUnitsNoAir = [
     inventory.legonisUnits,
-    inventory.synchronousUnits,
+    inventory.synchronousUnitsMobile,
     inventory.revenantsUnits,
-    inventory.clusterUnitsNoAir,
+    inventory.clusterUnitsNoAirMobile,
   ];
   factionUnitsAir.forEach(function (faction, i) {
     factionsTechAir[i][3] = _.flatten(

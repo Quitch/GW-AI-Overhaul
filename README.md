@@ -187,10 +187,6 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
-**Q. Why are those turrets moving?**
-
-When the Synchronous have the speed bonus their defences will move to engage you when you get close.
-
 ## Known Issues
 
 None.

@@ -14,6 +14,7 @@
 ### Fixed
 
 - Rerolls being offered for new loadouts
+- AI speed tech being applied to structures
 
 ## v5.8.0 - 2021-06-23
 
