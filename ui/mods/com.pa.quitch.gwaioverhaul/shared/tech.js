@@ -289,17 +289,6 @@ define([
             op: "multiply",
             value: 3,
           },
-          {
-            file: commander,
-            path: "recon.observer.items",
-            op: "push",
-            value: {
-              layer: "mine",
-              channel: "sight",
-              shape: "capsule",
-              radius: 150,
-            },
-          },
         ];
       })
     );

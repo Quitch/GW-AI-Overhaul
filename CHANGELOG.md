@@ -9,6 +9,7 @@
 ### Change
 
 - All difficulty levels below Uber have AI Tech appear earlier in the galaxy
+- Removed mine vision from AI's Commander Combat Tech
 
 ### Fixed
 
