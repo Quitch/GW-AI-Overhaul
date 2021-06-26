@@ -117,7 +117,7 @@ if (!gwaioCardsLoaded) {
           );
           if (
             model.gwaioRerollsUsed() >= numCardsToOffer - 1 ||
-            self.isLoadout()
+            (self.isLoadout && self.isLoadout())
           ) {
             model.gwaioOfferRerolls(false);
           }
@@ -139,7 +139,7 @@ if (!gwaioCardsLoaded) {
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
           if (
             model.gwaioRerollsUsed() >= cardsOffered - 1 ||
-            self.isLoadout()
+            (self.isLoadout && self.isLoadout())
           ) {
             model.gwaioOfferRerolls(false);
           }
