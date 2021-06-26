@@ -805,7 +805,9 @@ if (!gwaioSetupLoaded) {
                       " | Commanders: " +
                       info.boss.bossCommanders +
                       " | Dist: " +
-                      maxDist
+                      maxDist +
+                      " | Buffs: " +
+                      numBuffs
                   );
                   if (info.boss.minions) {
                     _.times(info.boss.minions.length, function (n) {
@@ -943,7 +945,9 @@ if (!gwaioSetupLoaded) {
                       " | Commanders: " +
                       worker.ai.commanderCount +
                       " | Dist: " +
-                      dist
+                      dist +
+                      " | Buffs: " +
+                      numBuffs
                   );
                   if (worker.ai.minions) {
                     _.times(worker.ai.minions.length, function (n) {
