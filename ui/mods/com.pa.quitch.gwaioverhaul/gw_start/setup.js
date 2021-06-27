@@ -744,12 +744,11 @@ if (!gwaioSetupLoaded) {
               var clusterCommanderInventory = [];
 
               if (model.gwaioDifficultySettings.tougherCommanders()) {
-                aiInventory = aiInventory.concat(
-                  gwaioTech.tougherCommanders[0]
-                );
-                clusterCommanderInventory = clusterCommanderInventory.concat(
-                  gwaioTech.tougherCommanders[1]
-                );
+                aiInventory = gwaioTech.tougherCommanders[0];
+                clusterCommanderInventory =
+                  gwaioTech.tougherCommanders[0].concat(
+                    gwaioTech.tougherCommanders[1]
+                  );
               }
 
               _.forEach(teamInfo, function (info) {

@@ -21,6 +21,7 @@
 - Rerolls being offered for new loadouts
 - AI speed tech being applied to structures
 - ARKYD and Advanced Radar Sattelite being swapped in tooltips
+- Tougher Commanders not being applied to the Cluster boss
 
 ## v5.8.0 - 2021-06-23
 
