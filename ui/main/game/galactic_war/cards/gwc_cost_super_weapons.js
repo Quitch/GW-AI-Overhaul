@@ -30,9 +30,9 @@ define({
   },
   buff: function (inventory) {
     var units = [
-      "/pa/units/land/nuke_launcher/nuke_launcher.json",
       "/pa/units/land/control_module/control_module.json",
       "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
+      "/pa/units/land/nuke_launcher/nuke_launcher.json",
       "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
     ];
     var mods = [];

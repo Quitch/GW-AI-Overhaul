@@ -80,8 +80,8 @@ define(["shared/gw_common"], function (GW) {
         );
       });
       var ammos = [
-        "/pa/units/commanders/base_commander/base_commander_ammo.json",
         "/pa/ammo/cannon_uber/cannon_uber.json",
+        "/pa/units/commanders/base_commander/base_commander_ammo.json",
       ];
       ammos.forEach(function (ammo) {
         mods.push(

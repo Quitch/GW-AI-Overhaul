@@ -33,12 +33,12 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
             "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+            "/pa/units/land/attack_vehicle/attack_vehicle.json",
             "/pa/units/land/tank_armor/tank_armor.json",
             "/pa/units/land/tank_hover/tank_hover.json",
-            "/pa/units/land/attack_vehicle/attack_vehicle.json",
+            "/pa/units/land/tank_light_laser/tank_light_laser.json",
+            "/pa/units/land/vehicle_factory/vehicle_factory.json",
           ]);
         } else {
           // Don't clog up a slot.

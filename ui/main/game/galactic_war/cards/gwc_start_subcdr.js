@@ -44,8 +44,8 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
+            "/pa/units/land/vehicle_factory/vehicle_factory.json",
           ]);
           inventory.maxCards(inventory.maxCards() - 2);
         }

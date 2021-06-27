@@ -43,13 +43,13 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/land/metal_storage/metal_storage.json",
         "/pa/units/land/energy_storage/energy_storage.json",
+        "/pa/units/land/metal_storage/metal_storage.json",
       ]);
       var units = [
         "/pa/units/commanders/base_commander/base_commander.json",
-        "/pa/units/land/metal_storage/metal_storage.json",
         "/pa/units/land/energy_storage/energy_storage.json",
+        "/pa/units/land/metal_storage/metal_storage.json",
         "/pa/units/orbital/mining_platform/mining_platform.json",
       ];
       var mods = [];

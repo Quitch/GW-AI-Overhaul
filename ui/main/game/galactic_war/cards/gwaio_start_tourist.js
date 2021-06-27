@@ -60,8 +60,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.removeUnits([
-            "/pa/units/land/metal_extractor/metal_extractor.json",
             "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
+            "/pa/units/land/metal_extractor/metal_extractor.json",
           ]);
           inventory.setTag("", "buffCount", undefined);
         }

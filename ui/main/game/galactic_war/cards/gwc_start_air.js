@@ -43,8 +43,8 @@ define([
             "/pa/units/air/air_scout/air_scout.json",
             "/pa/units/air/bomber/bomber.json",
             "/pa/units/air/fighter/fighter.json",
-            "/pa/units/air/transport/transport.json",
             "/pa/units/air/solar_drone/solar_drone.json",
+            "/pa/units/air/transport/transport.json",
           ]);
         } else {
           // Don't clog up a slot.
