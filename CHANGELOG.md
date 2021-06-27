@@ -7,6 +7,10 @@
 - AI Tech "Combat tech" now listed as "Combat units enhanced"
 - Stinger now included by default in all tech and loadouts providing basic bot units
 
+### Fixed
+
+- Buff Commander and Swarm Commander not modifying the Stinger's damage
+
 ## v5.9.0 - 2021-06-27
 
 ### Added

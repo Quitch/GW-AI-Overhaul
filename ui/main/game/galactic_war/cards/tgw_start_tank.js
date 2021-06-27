@@ -175,6 +175,7 @@ define([
             "/pa/units/land/artillery_short/artillery_short_ammo.json",
             "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
             "/pa/units/land/assault_bot/assault_bot_ammo.json",
+            "/pa/units/land/bot_aa/bot_aa_ammo.json",
             "/pa/units/land/bot_bomb/bot_bomb_ammo.json",
             "/pa/units/land/bot_nanoswarm/bot_nanoswarm_ammo.json",
             "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
