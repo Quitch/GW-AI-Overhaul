@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- AI Tech "Combat tech" now listed as "Combat units enhanced"
+
 ## v5.9.0 - 2021-06-27
 
 ### Added
