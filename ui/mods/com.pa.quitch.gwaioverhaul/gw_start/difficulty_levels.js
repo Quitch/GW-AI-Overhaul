@@ -26,7 +26,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 25,
       bountyModeValue: 0.5,
-      factionTechHandicap: 4,
+      factionTechHandicap: 2,
     },
     {
       // Iron
@@ -54,7 +54,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 25,
       bountyModeValue: 0.45,
-      factionTechHandicap: 3,
+      factionTechHandicap: 1.5,
       starting_location_evaluation_radius: 100,
     },
     {
@@ -83,7 +83,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 20,
       bountyModeValue: 0.4,
-      factionTechHandicap: 2,
+      factionTechHandicap: 1,
       starting_location_evaluation_radius: 150,
     },
     {
@@ -112,7 +112,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 20,
       bountyModeValue: 0.35,
-      factionTechHandicap: 1.5,
+      factionTechHandicap: 0.5,
       starting_location_evaluation_radius: 200,
     },
     {
@@ -141,7 +141,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 15,
       bountyModeValue: 0.3,
-      factionTechHandicap: 1,
+      factionTechHandicap: 0,
       starting_location_evaluation_radius: 250,
     },
     {
@@ -170,7 +170,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 15,
       bountyModeValue: 0.25,
-      factionTechHandicap: 0.5,
+      factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 300,
     },
     {
@@ -199,7 +199,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 10,
       bountyModeValue: 0.2,
-      factionTechHandicap: 0,
+      factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 400,
     },
     {

@@ -290,11 +290,11 @@ define({
       path: "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
     },
     {
-      name: "ARKYD",
+      name: "!LOC:Advanced Radar Satellite",
       path: "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
     },
     {
-      name: "!LOC:Advanced Radar Satellite",
+      name: "ARKYD",
       path: "/pa/units/orbital/radar_satellite/radar_satellite.json",
     },
     {

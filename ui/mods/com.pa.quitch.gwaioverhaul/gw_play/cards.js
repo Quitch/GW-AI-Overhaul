@@ -115,7 +115,10 @@ if (!gwaioCardsLoaded) {
           model.gwaioRerollsUsed = ko.observable(
             numCardsToOffer - star.cardList().length
           );
-          if (model.gwaioRerollsUsed() >= numCardsToOffer - 1) {
+          if (
+            model.gwaioRerollsUsed() >= numCardsToOffer - 1 ||
+            (self.isLoadout && self.isLoadout())
+          ) {
             model.gwaioOfferRerolls(false);
           }
         }
@@ -134,7 +137,10 @@ if (!gwaioCardsLoaded) {
           }
           var star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
+          if (
+            model.gwaioRerollsUsed() >= cardsOffered - 1 ||
+            (self.isLoadout && self.isLoadout())
+          ) {
             model.gwaioOfferRerolls(false);
           }
           star.cardList([]);

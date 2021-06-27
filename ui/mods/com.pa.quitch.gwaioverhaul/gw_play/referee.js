@@ -736,8 +736,8 @@ if (!gwaioRefereeChangesLoaded) {
                         if (aiToModify === "All") {
                           if (!_.isEmpty(aiBuildOps))
                             addTechToAI(json, aiBuildOps);
+                          // Put "load" files where the AI expects them to be
                           if (_.startsWith(filePath, aiTechPath)) {
-                            // Put "load" files where the AI expects them to be
                             if (quellerEnabled) {
                               // We don't know if the aiPath contains q_uber
                               var quellerEnemyPath =
@@ -768,15 +768,15 @@ if (!gwaioRefereeChangesLoaded) {
                           if (!_.isEmpty(aiBuildOps))
                             addTechToAI(json, aiBuildOps);
                           if (quellerSubCommander) {
+                            // Put "load" files where Queller expects them to be
                             if (_.startsWith(filePath, aiTechPath)) {
-                              // Put "load" files where Queller expects them to be
                               filePath =
                                 quellerAllyPath +
                                 filePath.slice(aiTechPath.length);
                             }
                           } else {
+                            // TITANS Sub Commanders share an ai_path with the enemy so need a new one
                             if (_.startsWith(filePath, aiPath)) {
-                              // TITANS Sub Commanders share an ai_path with the enemy so need a new one
                               filePath =
                                 aiTechPath + filePath.slice(aiPath.length);
                             }

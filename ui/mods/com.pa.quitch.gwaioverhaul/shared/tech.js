@@ -11,6 +11,7 @@ define([
       value: 2,
     });
   });
+
   var clusterCommanderArmourTech = [];
   inventory.clusterCommanders.forEach(function (commander) {
     clusterCommanderArmourTech.push({
@@ -35,14 +36,32 @@ define([
     clusterTech,
   ];
 
+  var legonisUnits = inventory.legonisUnitsMobile.concat(
+    inventory.legonisUnitsNotMobile
+  );
+  var foundationUnits = inventory.foundationUnitsMobileAir.concat(
+    inventory.foundationUnitsMobileNotAir,
+    inventory.foundationUnitsNotMobile
+  );
+  var synchronousUnits = inventory.synchronousUnitsMobile.concat(
+    inventory.synchronousUnitsNotMobile
+  );
+  var revenantsUnits = inventory.revenantsUnitsMobile.concat(
+    inventory.revenantsUnitsNotMobile
+  );
+  var clusterUnitsNotStructure = inventory.commanderUnits.concat(
+    inventory.clusterCommanders
+  );
+
   var factionUnits = [
-    inventory.legonisUnits,
-    inventory.foundationUnits,
-    inventory.synchronousUnits,
-    inventory.revenantsUnits,
+    legonisUnits,
+    foundationUnits,
+    synchronousUnits,
+    revenantsUnits,
     inventory.clusterUnits,
   ];
 
+  // 0 - Fabrication Tech
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][0] = faction.map(function (unit) {
       return {
@@ -54,6 +73,7 @@ define([
     });
   });
 
+  // 1 - Ammunition Tech
   var factionWeapons = [
     inventory.legonisWeapons,
     inventory.foundationWeapons,
@@ -97,19 +117,19 @@ define([
               file: weapon,
               path: "ammo_capacity",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
             {
               file: weapon,
               path: "ammo_demand",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
             {
               file: weapon,
               path: "ammo_per_shot",
               op: "multiply",
-              value: 0.1,
+              value: 0.25,
             },
           ];
         })
@@ -117,6 +137,7 @@ define([
     );
   });
 
+  // 2 - Armour Tech
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][2] = faction.map(function (unit) {
       return {
@@ -128,19 +149,22 @@ define([
     });
   });
 
-  var factionsTechAir = [foundationTech, clusterTech];
+  // 3 - Engine Tech
+  var factionsTechAir = [foundationTech];
   var factionsTechNoAir = [
     legonisTech,
+    foundationTech,
     synchronousTech,
     revenantsTech,
     clusterTech,
   ];
-  var factionUnitsAir = [inventory.foundationUnits, inventory.clusterUnitsAir];
+  var factionUnitsAir = [inventory.foundationUnitsMobileAir];
   var factionUnitsNoAir = [
-    inventory.legonisUnits,
-    inventory.synchronousUnits,
-    inventory.revenantsUnits,
-    inventory.clusterUnitsNoAir,
+    inventory.legonisUnitsMobile,
+    inventory.foundationUnitsMobileNotAir,
+    inventory.synchronousUnitsMobile,
+    inventory.revenantsUnitsMobile,
+    clusterUnitsNotStructure,
   ];
   factionUnitsAir.forEach(function (faction, i) {
     factionsTechAir[i][3] = _.flatten(
@@ -207,6 +231,7 @@ define([
     );
   });
 
+  // 4 - Efficiency Tech
   var factionBuildArms = [
     inventory.legonisBuildArms,
     inventory.foundationBuildArms,
@@ -235,6 +260,7 @@ define([
     );
   });
 
+  // 5 - Commander Combat Tech
   var factionCommanders = [
     inventory.commanderUnits, // Legonis Machina
     inventory.commanderUnits, // Foundation
@@ -283,17 +309,6 @@ define([
             op: "multiply",
             value: 3,
           },
-          {
-            file: commander,
-            path: "recon.observer.items",
-            op: "push",
-            value: {
-              layer: "mine",
-              channel: "sight",
-              shape: "capsule",
-              radius: 150,
-            },
-          },
         ];
       })
     );
@@ -335,6 +350,11 @@ define([
         value: 1.5,
       }
     );
+  });
+
+  // 6 - Combat Tech
+  _.forEach(factionsTech, function (faction) {
+    faction[6] = faction[1].concat(faction[2], faction[3]);
   });
 
   // Cluster commander setup

@@ -735,19 +735,18 @@ if (!gwaioSetupLoaded) {
                     getRandomArbitrary(0.9, 1.1);
               };
 
-              var buffType = [0, 1, 2, 3, 4, 5]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders
+              var buffType = [0, 1, 2, 3, 4, 5, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 5 = commanders; 6 = combat
               var buffDelay =
                 model.gwaioDifficultySettings.factionTechHandicap();
               var aiInventory = [];
               var clusterCommanderInventory = [];
 
               if (model.gwaioDifficultySettings.tougherCommanders()) {
-                aiInventory = aiInventory.concat(
-                  gwaioTech.tougherCommanders[0]
-                );
-                clusterCommanderInventory = clusterCommanderInventory.concat(
-                  gwaioTech.tougherCommanders[1]
-                );
+                aiInventory = gwaioTech.tougherCommanders[0];
+                clusterCommanderInventory =
+                  gwaioTech.tougherCommanders[0].concat(
+                    gwaioTech.tougherCommanders[1]
+                  );
               }
 
               _.forEach(teamInfo, function (info) {
@@ -990,7 +989,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "5.8.0";
+              originSystem.gwaio.version = "5.9.0";
               originSystem.gwaio.difficulty =
                 model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [

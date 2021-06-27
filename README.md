@@ -90,7 +90,8 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
-- **Commander**: AI has Commander Combat Tech, Improved Commander Build Arms, and commander mine vision.
+- **Commander**: AI has Commander Combat Tech and Improved Commander Build Arms
+- **Combat**: AI has Combat Tech.
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
@@ -98,11 +99,11 @@ Each system will display the following information:
 
 These buffs are applied on a per-faction basis:
 
-- **Legonis Machina**: land units and factory structures
-- **Foundation**: air and naval units and factory structures
-- **Synchronous**: non-factory structures
+- **Legonis Machina**: vehicle units and structures
+- **Foundation**: air and naval units and structures
+- **Synchronous**: bot units and structures
 - **Revenants**: orbital units and structures
-- **Cluster**: basic units
+- **Cluster**: structures
 
 ### Commander Threat Scale
 
@@ -185,10 +186,6 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 **Q. Why aren't awarded bounties showing on the player list?**
 
 Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
-
-**Q. Why are those turrets moving?**
-
-When the Synchronous have the speed bonus their defences will move to engage you when you get close.
 
 ## Known Issues
 

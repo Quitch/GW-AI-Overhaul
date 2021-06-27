@@ -221,6 +221,15 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
+        model.gwaioTechCombat = ko.computed(function () {
+          if (
+            model.selection.system().star.ai() &&
+            model.selection.system().star.ai().typeOfBuffs &&
+            _.includes(model.selection.system().star.ai().typeOfBuffs, 6)
+          )
+            return true;
+        });
+
         model.gwaioTechMirror = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
@@ -232,6 +241,7 @@ if (!gwaioIntelligenceLoaded) {
         model.gwaioAiBuffs = ko.computed(function () {
           if (
             model.gwaioTechBuild() ||
+            model.gwaioTechCombat() ||
             model.gwaioTechCost() ||
             model.gwaioEnhancedCommanders() ||
             model.gwaioTechDamage() ||

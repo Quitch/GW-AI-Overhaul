@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## v5.9.0 - 2021-06-27
+
+### Added
+
+- Combat tech is now an AI Tech, increasing health, speed, and damage
+
+### Change
+
+- All difficulty levels below Uber have AI Tech appear earlier in the galaxy
+- Removed mine vision from AI's Commander Combat Tech
+- Rebalanced AI Tech
+  - Legonis Machina only buffs tank units and factories, not bots
+  - Synchronous buffs bot units and factories, not structures
+  - Cluster buffs structures, not basic units
+
+### Fixed
+
+- Rerolls being offered for new loadouts
+- AI speed tech being applied to structures
+- ARKYD and Advanced Radar Sattelite being swapped in tooltips
+- Tougher Commanders not being applied to the Cluster boss
+
 ## v5.8.0 - 2021-06-23
 
 ### Change

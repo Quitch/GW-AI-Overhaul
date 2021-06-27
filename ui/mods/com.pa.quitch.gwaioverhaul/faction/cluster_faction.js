@@ -326,8 +326,6 @@ define([
           ],
           isCluster: true,
           personality: {
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
             adv_eco_mod: 1.3,
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
@@ -592,8 +590,6 @@ define([
           ],
           isCluster: true,
           personality: {
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
             adv_eco_mod: 1.3,
             min_basic_fabbers: 2,
             min_advanced_fabbers: 3,
