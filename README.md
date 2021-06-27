@@ -90,8 +90,8 @@ Each system will display the following information:
 ### AI Buffs
 
 - **Build**: AI has Improved Fabricator Build Arms.
-- **Commander**: AI has Commander Combat Tech and Improved Commander Build Arms
 - **Combat**: AI has Combat Tech.
+- **Commander**: AI has Commander Combat Tech and Improved Commander Build Arms
 - **Cost**: AI has Fabrication Tech.
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
