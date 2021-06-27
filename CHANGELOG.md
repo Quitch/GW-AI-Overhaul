@@ -10,7 +10,7 @@
 
 - All difficulty levels below Uber have AI Tech appear earlier in the galaxy
 - Removed mine vision from AI's Commander Combat Tech
-- Rebalanced AI Tech
+- Rebalanced AI Tech:
   - Legonis Machina only buffs tank units and factories, not bots
   - Synchronous buffs bot units and factories, not structures
   - Cluster buffs structures, not basic units
