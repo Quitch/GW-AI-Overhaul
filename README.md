@@ -99,10 +99,10 @@ Each system will display the following information:
 
 These buffs are applied on a per-faction basis:
 
-- **Legonis Machina**: vehicle units and factory structures
-- **Foundation**: air and naval units and factory structures
-- **Synchronous**: bot units and factory structures
-- **Revenants**: orbital units and structures
+- **Legonis Machina**: vehicle units and factories
+- **Foundation**: air and naval units and factories
+- **Synchronous**: bot units and factories
+- **Revenants**: orbital units, orbital and superweapon structures
 - **Cluster**: all structures
 
 ### Commander Threat Scale
