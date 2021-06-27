@@ -10,6 +10,7 @@
 ### Fixed
 
 - Buff Commander and Swarm Commander not modifying the Stinger's damage
+- Removed Stinger files and modifications now included in the base game
 
 ## v5.9.0 - 2021-06-27
 
