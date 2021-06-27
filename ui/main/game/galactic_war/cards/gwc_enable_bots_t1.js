@@ -58,6 +58,7 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/bot_grenadier/bot_grenadier.json",
         "/pa/units/land/bot_bomb/bot_bomb.json",
         "/pa/units/land/bot_tesla/bot_tesla.json",
+        "/pa/units/land/bot_aa/bot_aa.json",
       ]);
     },
     dull: function () {},

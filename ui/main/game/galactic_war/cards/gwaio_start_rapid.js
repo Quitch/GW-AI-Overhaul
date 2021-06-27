@@ -184,12 +184,6 @@ define([
               value: "gwaio_start_rapid.json",
             },
           ];
-          if (inventory.hasCard("gwaio_enable_bot_aa"))
-            aiMods.push({
-              type: "fabber",
-              op: "load",
-              value: "gwaio_start_rapid_bot_aa.json",
-            });
           inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

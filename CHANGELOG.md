@@ -5,6 +5,7 @@
 ### Change
 
 - AI Tech "Combat tech" now listed as "Combat units enhanced"
+- Stinger now included by default in all tech and loadouts providing basic bot units
 
 ## v5.9.0 - 2021-06-27
 

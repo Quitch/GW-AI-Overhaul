@@ -53,6 +53,7 @@ define([
             "/pa/units/land/bot_grenadier/bot_grenadier.json",
             "/pa/units/land/bot_bomb/bot_bomb.json",
             "/pa/units/land/bot_tesla/bot_tesla.json",
+            "/pa/units/land/bot_aa/bot_aa.json",
             "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
             "/pa/units/orbital/radar_satellite/radar_satellite.json",
             "/pa/units/orbital/solar_array/solar_array.json",
