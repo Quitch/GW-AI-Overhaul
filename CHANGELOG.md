@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.10.0 - 2021-06-28
+
+### Change
+
+- AI Tech "Combat tech" now listed as "Combat units enhanced"
+- Stinger now included by default in all tech and loadouts providing basic bot units
+
+### Fixed
+
+- Buff Commander and Swarm Commander not modifying the Stinger's damage
+- Removed Stinger files and modifications now included in the base game
+
 ## v5.9.0 - 2021-06-27
 
 ### Added
@@ -10,7 +22,7 @@
 
 - All difficulty levels below Uber have AI Tech appear earlier in the galaxy
 - Removed mine vision from AI's Commander Combat Tech
-- Rebalanced AI Tech
+- Rebalanced AI Tech:
   - Legonis Machina only buffs tank units and factories, not bots
   - Synchronous buffs bot units and factories, not structures
   - Cluster buffs structures, not basic units

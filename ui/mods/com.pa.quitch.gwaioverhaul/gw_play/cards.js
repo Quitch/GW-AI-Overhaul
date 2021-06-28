@@ -202,7 +202,6 @@ if (!gwaioCardsLoaded) {
             /* Start of GWAIO implementation of GWDealer */
             if (!model.gwaioDeck) model.gwaioDeck = [];
             model.gwaioDeck.push(
-              "gwaio_enable_bot_aa",
               "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedbotfactory",

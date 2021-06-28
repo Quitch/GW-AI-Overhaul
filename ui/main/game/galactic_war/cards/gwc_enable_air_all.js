@@ -56,13 +56,13 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/air/air_factory/air_factory.json",
         "/pa/units/air/air_factory_adv/air_factory_adv.json",
+        "/pa/units/air/air_factory/air_factory.json",
         "/pa/units/air/air_scout/air_scout.json",
         "/pa/units/air/bomber/bomber.json",
         "/pa/units/air/fighter/fighter.json",
-        "/pa/units/air/transport/transport.json",
         "/pa/units/air/solar_drone/solar_drone.json",
+        "/pa/units/air/transport/transport.json",
       ]);
     },
     dull: function () {},

@@ -38,12 +38,12 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
             "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+            "/pa/units/land/attack_vehicle/attack_vehicle.json",
             "/pa/units/land/tank_armor/tank_armor.json",
             "/pa/units/land/tank_hover/tank_hover.json",
-            "/pa/units/land/attack_vehicle/attack_vehicle.json",
+            "/pa/units/land/tank_light_laser/tank_light_laser.json",
+            "/pa/units/land/vehicle_factory/vehicle_factory.json",
           ]);
           var mods = [];
           var units = [
@@ -175,6 +175,7 @@ define([
             "/pa/units/land/artillery_short/artillery_short_ammo.json",
             "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
             "/pa/units/land/assault_bot/assault_bot_ammo.json",
+            "/pa/units/land/bot_aa/bot_aa_ammo.json",
             "/pa/units/land/bot_bomb/bot_bomb_ammo.json",
             "/pa/units/land/bot_nanoswarm/bot_nanoswarm_ammo.json",
             "/pa/units/land/bot_sniper/bot_sniper_ammo.json",

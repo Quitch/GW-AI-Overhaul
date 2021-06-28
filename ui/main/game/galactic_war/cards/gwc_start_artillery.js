@@ -44,10 +44,10 @@ define([
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
           ]);
           var units = [
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_long/artillery_long.json",
+            "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+            "/pa/units/land/laser_defense/laser_defense.json",
             "/pa/units/land/radar/radar.json",
           ];
           var mods = [];
@@ -60,8 +60,8 @@ define([
             });
           });
           var costUnits = [
-            "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_long/artillery_long.json",
+            "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
           ];
           costUnits.forEach(function (unit) {

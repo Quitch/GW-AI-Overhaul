@@ -43,8 +43,8 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/sea/naval_factory/naval_factory.json",
         "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+        "/pa/units/sea/naval_factory/naval_factory.json",
       ]);
     },
     dull: function () {},

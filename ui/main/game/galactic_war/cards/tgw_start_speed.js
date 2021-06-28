@@ -38,12 +38,13 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
-            "/pa/units/land/bot_factory/bot_factory.json",
-            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
             "/pa/units/land/assault_bot/assault_bot.json",
-            "/pa/units/land/bot_grenadier/bot_grenadier.json",
+            "/pa/units/land/bot_aa/bot_aa.json",
             "/pa/units/land/bot_bomb/bot_bomb.json",
+            "/pa/units/land/bot_factory/bot_factory.json",
+            "/pa/units/land/bot_grenadier/bot_grenadier.json",
             "/pa/units/land/bot_tesla/bot_tesla.json",
+            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
           ]);
           var mods = [];
           var units = [
@@ -169,6 +170,7 @@ define([
             "/pa/units/land/artillery_short/artillery_short_ammo.json",
             "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
             "/pa/units/land/assault_bot/assault_bot_ammo.json",
+            "/pa/units/land/bot_aa/bot_aa_ammo.json",
             "/pa/units/land/bot_bomb/bot_bomb_ammo.json",
             "/pa/units/land/bot_nanoswarm/bot_nanoswarm_ammo.json",
             "/pa/units/land/bot_sniper/bot_sniper_ammo.json",

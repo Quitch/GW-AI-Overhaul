@@ -38,19 +38,19 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
+            "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/land/bot_factory/bot_factory.json",
             "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
             "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
             "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
           ]);
           var units = [
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
+            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
+            "/pa/units/land/laser_defense/laser_defense.json",
+            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
           ];
           var mods = [];
@@ -71,13 +71,13 @@ define([
             );
           });
           var costUnits = [
+            "/pa/units/land/air_defense_adv/air_defense_adv.json",
+            "/pa/units/land/air_defense/air_defense.json",
+            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
             "/pa/units/land/laser_defense_single/laser_defense_single.json",
             "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/air_defense/air_defense.json",
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
           ];
           costUnits.forEach(function (unit) {
             mods.push(
@@ -113,13 +113,13 @@ define([
             );
           });
           var units_with_splash = [
-            "/pa/units/land/air_defense/air_defense_tool_weapon.json",
             "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+            "/pa/units/land/air_defense/air_defense_tool_weapon.json",
+            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
             "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json",
             "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher_tool_weapon.json",
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+            "/pa/units/sea/torpedo_launcher/torpedo_launcher_tool_weapon.json",
           ];
           units_with_splash.forEach(function (unit) {
             mods.push(

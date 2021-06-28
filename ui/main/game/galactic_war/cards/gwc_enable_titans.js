@@ -35,11 +35,11 @@ define({
   },
   buff: function (inventory) {
     inventory.addUnits([
+      "/pa/units/air/titan_air/titan_air.json",
       "/pa/units/land/titan_bot/titan_bot.json",
+      "/pa/units/land/titan_structure/titan_structure.json",
       "/pa/units/land/titan_vehicle/titan_vehicle.json",
       "/pa/units/orbital/titan_orbital/titan_orbital.json",
-      "/pa/units/land/titan_structure/titan_structure.json",
-      "/pa/units/air/titan_air/titan_air.json",
     ]);
   },
   dull: function () {},

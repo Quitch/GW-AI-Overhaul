@@ -30,9 +30,9 @@ define({
   },
   buff: function (inventory) {
     inventory.addUnits([
+      "/pa/units/land/air_defense_adv/air_defense_adv.json",
       "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
       "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-      "/pa/units/land/air_defense_adv/air_defense_adv.json",
       "/pa/units/orbital/defense_satellite/defense_satellite.json",
       "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
     ]);

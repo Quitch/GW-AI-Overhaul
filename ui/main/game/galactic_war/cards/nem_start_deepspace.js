@@ -38,9 +38,9 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
+            "/pa/units/orbital/mining_platform/mining_platform.json",
             "/pa/units/orbital/orbital_factory/orbital_factory.json",
             "/pa/units/orbital/radar_satellite/radar_satellite.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
           inventory.addMods([
             {
@@ -209,12 +209,12 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.removeUnits([
-            "/pa/units/land/metal_extractor/metal_extractor.json",
+            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
+            "/pa/units/land/energy_plant/energy_plant.json",
             "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
+            "/pa/units/land/metal_extractor/metal_extractor.json",
             "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
             "/pa/units/orbital/solar_array/solar_array.json",
-            "/pa/units/land/energy_plant/energy_plant.json",
-            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
           ]);
           inventory.setTag("", "buffCount", undefined);
         }

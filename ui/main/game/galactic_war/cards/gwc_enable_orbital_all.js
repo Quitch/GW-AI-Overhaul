@@ -51,14 +51,14 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
+        "/pa/units/orbital/mining_platform/mining_platform.json",
+        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+        "/pa/units/orbital/orbital_factory/orbital_factory.json",
         "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
+        "/pa/units/orbital/orbital_laser/orbital_laser.json",
+        "/pa/units/orbital/orbital_probe/orbital_probe.json",
         "/pa/units/orbital/radar_satellite/radar_satellite.json",
         "/pa/units/orbital/solar_array/solar_array.json",
-        "/pa/units/orbital/orbital_factory/orbital_factory.json",
-        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser.json",
-        "/pa/units/orbital/mining_platform/mining_platform.json",
-        "/pa/units/orbital/orbital_probe/orbital_probe.json",
       ]);
     },
     dull: function () {},

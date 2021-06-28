@@ -39,18 +39,18 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addUnits([
+            "/pa/units/orbital/defense_satellite/defense_satellite.json",
+            "/pa/units/orbital/mining_platform/mining_platform.json",
+            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+            "/pa/units/orbital/orbital_factory/orbital_factory.json",
             "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
+            "/pa/units/orbital/orbital_laser/orbital_laser.json",
+            "/pa/units/orbital/orbital_probe/orbital_probe.json",
+            "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
+            "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
             "/pa/units/orbital/radar_satellite/radar_satellite.json",
             "/pa/units/orbital/solar_array/solar_array.json",
-            "/pa/units/orbital/orbital_factory/orbital_factory.json",
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/orbital_probe/orbital_probe.json",
-            "/pa/units/orbital/orbital_laser/orbital_laser.json",
-            "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-            "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
-            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
           ]);
           inventory.addMods([
             {
