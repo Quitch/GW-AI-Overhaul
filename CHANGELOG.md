@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Corrected name and description of Pelter Upgrade Tech
+
 ## v5.10.0 - 2021-06-28
 
 ### Change

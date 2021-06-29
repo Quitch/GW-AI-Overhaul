@@ -4,9 +4,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Holkins Upgrade Tech triples the number of shots fired per volley by the artillery while also tripling their deviation from target."
+      "!LOC:Pelter Upgrade Tech triples the number of shots fired per volley by the artillery while also tripling their deviation from target."
     ),
-    summarize: _.constant("!LOC:Holkins Upgrade Tech"),
+    summarize: _.constant("!LOC:Pelter Upgrade Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"
     ),
