@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Change to code to hopefully resolve any remaining issues with the navigation buttons on the galaxy map
+
 ## v5.10.1 - 2021-06-29
 
 ### Fixed
