@@ -22,8 +22,8 @@ define(["shared/gw_common"], function (GW) {
       var chance = 0;
       if (
         !(
-          inventory.hasCard("gwc_start_orbital") &&
-          inventory.hasCard("nem_start_deepspace") &&
+          inventory.hasCard("gwc_start_orbital") ||
+          inventory.hasCard("nem_start_deepspace") ||
           inventory.hasCard("gwaio_start_hoarder")
         )
       ) {
