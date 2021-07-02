@@ -5,9 +5,9 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
-      if (!game.isTutorial()) {
-        var game = model.game();
+      var game = model.game();
 
+      if (!game.isTutorial()) {
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";
