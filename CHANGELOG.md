@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Galactic Map code not working
+
 ## v5.10.2 - 2021-07-02
 
 ### Change
