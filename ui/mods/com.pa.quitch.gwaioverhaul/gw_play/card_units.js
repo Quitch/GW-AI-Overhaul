@@ -252,18 +252,12 @@ define({
     {
       id: "gwc_cost_intel",
       units: [
-        "/pa/units/air/air_scout/air_scout.json",
-        "/pa/units/land/land_scout/land_scout.json",
         "/pa/units/land/radar_adv/radar_adv.json",
         "/pa/units/land/radar/radar.json",
-        "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-        "/pa/units/land/teleporter/teleporter.json",
         "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
         "/pa/units/orbital/orbital_probe/orbital_probe.json",
         "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
         "/pa/units/orbital/radar_satellite/radar_satellite.json",
-        "/pa/units/sea/missile_ship/missile_ship.json",
-        "/pa/units/sea/sea_scout/sea_scout.json",
       ],
     },
     {

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Remove cards fixed by 115863
+
 ### Fixed
 
 - Change to code to hopefully resolve any remaining issues with the navigation buttons on the galaxy map
