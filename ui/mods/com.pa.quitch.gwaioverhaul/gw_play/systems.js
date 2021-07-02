@@ -5,31 +5,8 @@ if (!gwaioSystemChangesLoaded) {
 
   function gwaioSystemChanges() {
     try {
-      var game = model.game();
-
       if (!game.isTutorial()) {
-        requireGW(["shared/gw_factions"], function (GWFactions) {
-          _.forEach(model.galaxy.systems(), function (system) {
-            ko.computed(function () {
-              var ai = system.star.ai();
-              if (!ai) return;
-              else if (ai.treasurePlanet === true)
-                normalizedColor = [255, 255, 255];
-              else {
-                var faction = GWFactions[ai.faction];
-                // Ensures we assign faction colour, not minion colour, to each system
-                var normalizedColor = _.map(faction.color[0], function (c) {
-                  return c / 255;
-                });
-              }
-              system.ownerColor(normalizedColor.concat(3));
-              // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
-              system.connected();
-              model.cheats.noFog();
-              system.star.hasCard();
-            });
-          });
-        });
+        var game = model.game();
 
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
@@ -340,6 +317,29 @@ if (!gwaioSystemChangesLoaded) {
             !model.allowLoad() &&
             model.selection.star() === game.currentStar()
           );
+        });
+
+        requireGW(["shared/gw_factions"], function (GWFactions) {
+          _.forEach(model.galaxy.systems(), function (system) {
+            ko.computed(function () {
+              var ai = system.star.ai();
+              if (!ai) return;
+              else if (ai.treasurePlanet === true)
+                normalizedColor = [255, 255, 255];
+              else {
+                var faction = GWFactions[ai.faction];
+                // Ensures we assign faction colour, not minion colour, to each system
+                var normalizedColor = _.map(faction.color[0], function (c) {
+                  return c / 255;
+                });
+              }
+              system.ownerColor(normalizedColor.concat(3));
+              // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
+              system.connected();
+              model.cheats.noFog();
+              system.star.hasCard();
+            });
+          });
         });
       }
     } catch (e) {

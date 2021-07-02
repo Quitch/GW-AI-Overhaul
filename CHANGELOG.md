@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.10.2 - 2021-07-02
+
+### Change
+
+- Remove cards fixed by 115863
+
+### Fixed
+
+- Change to code to hopefully resolve any remaining issues with the navigation buttons on the galaxy map
+- Complete Orbital Tech being offered to Orbital, Hoarder, and Space Excavation Commanders
+
 ## v5.10.1 - 2021-06-29
 
 ### Fixed
