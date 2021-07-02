@@ -1,9 +1,6 @@
 define({
   cards: [
-    {
-      id: "gwaio_enable_bot_aa",
-      units: ["/pa/units/land/bot_aa/bot_aa.json"],
-    },
+    { id: "gwaio_enable_bot_aa" },
     { id: "gwc_add_card_slot" },
     {
       id: "gwc_bld_efficiency_cdr",
