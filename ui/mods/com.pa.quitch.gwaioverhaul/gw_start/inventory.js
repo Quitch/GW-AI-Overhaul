@@ -237,8 +237,6 @@ define({
     "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
   ],
   clusterUnits: [
-    "/pa/units/air/support_platform/support_platform.json",
-    "/pa/units/land/bot_support_commander/bot_support_commander.json",
     "/pa/units/air/air_factory_adv/air_factory_adv.json",
     "/pa/units/air/air_factory/air_factory.json",
     "/pa/units/land/air_defense_adv/air_defense_adv.json",
