@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Orbital Fabrication Bot upgrade not dealt if you're using the Orbital Commander loadout
+
 ## v5.10.3 - 2021-07-02
 
 ### Fixed
