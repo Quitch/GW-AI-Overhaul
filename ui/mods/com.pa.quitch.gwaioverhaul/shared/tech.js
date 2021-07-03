@@ -167,30 +167,7 @@ define([
   });
 
   // 2 - Armour Tech
-
-  var legonisUnitsAndCommanders = legonisUnits.concat(inventory.commanderUnits);
-  var foundationUnitsAndCommanders = foundationUnits.concat(
-    inventory.commanderUnits
-  );
-  var synchronousUnitsAndCommanders = synchronousUnits.concat(
-    inventory.commanderUnits
-  );
-  var revenantsUnitsAndCommanders = revenantsUnits.concat(
-    inventory.commanderUnits
-  );
-  var clusterUnitsAndCommanders = inventory.clusterUnits.concat(
-    inventory.commanderUnits,
-    inventory.clusterCommanders
-  );
-  var factionUnitsArmour = [
-    legonisUnitsAndCommanders,
-    foundationUnitsAndCommanders,
-    synchronousUnitsAndCommanders,
-    revenantsUnitsAndCommanders,
-    clusterUnitsAndCommanders,
-  ];
-
-  factionUnitsArmour.forEach(function (faction, i) {
+  factionUnits.forEach(function (faction, i) {
     factionsTech[i][2] = faction.map(function (unit) {
       return {
         file: unit,
