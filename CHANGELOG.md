@@ -5,7 +5,7 @@
 ### Change
 
 - AI Tech
-  - Increased damage includes Commander Ammunition Tech
+  - Damage increased includes Commander Ammunition Tech
 
 ### Fixed
 
