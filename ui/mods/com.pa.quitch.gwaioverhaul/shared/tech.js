@@ -251,35 +251,37 @@ define([
     );
   });
   factionUnitsNoAir.forEach(function (faction, i) {
-    factionsTechNoAir[i][3] = _.flatten(
-      faction.map(function (unit) {
-        return [
-          {
-            file: unit,
-            path: "navigation.move_speed",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.brake",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.acceleration",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.turn_speed",
-            op: "multiply",
-            value: 1.5,
-          },
-        ];
-      })
+    factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
+      _.flatten(
+        faction.map(function (unit) {
+          return [
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.5,
+            },
+          ];
+        })
+      )
     );
   });
 
