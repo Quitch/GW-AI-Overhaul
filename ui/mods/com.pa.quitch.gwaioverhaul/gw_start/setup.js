@@ -406,6 +406,8 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
+            var version = "5.x.x-dev";
+            console.log("Creating war using GWO version " + version);
             console.log(" ---- MAKING NEW GALAXY ----");
             model.newGame(undefined);
 
@@ -1055,7 +1057,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "5.x.x-dev";
+              originSystem.gwaio.version = version;
               originSystem.gwaio.difficulty =
                 model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
