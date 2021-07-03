@@ -75,6 +75,45 @@ define([
 
   // 1 - Ammunition Tech
 
+  var legonisAmmo = inventory.legonisAmmo.concat(inventory.commanderAmmo);
+  var foundationAmmo = inventory.foundationAmmo.concat(inventory.commanderAmmo);
+  var synchronousAmmo = inventory.synchronousAmmo.concat(
+    inventory.commanderAmmo
+  );
+  var revenantsAmmo = inventory.revenantsAmmo.concat(inventory.commanderAmmo);
+  var clusterAmmo = inventory.clusterAmmo.concat(
+    inventory.commanderAmmo,
+    inventory.clusterCommanderAmmo
+  );
+  var factionAmmo = [
+    legonisAmmo,
+    foundationAmmo,
+    synchronousAmmo,
+    revenantsAmmo,
+    clusterAmmo,
+  ];
+
+  factionAmmo.forEach(function (faction, i) {
+    factionsTech[i][1] = _.flatten(
+      faction.map(function (ammo) {
+        return [
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          },
+        ];
+      })
+    );
+  });
+
   var legonisWeapons = inventory.legonisWeapons.concat(
     inventory.commanderWeapons
   );
@@ -124,45 +163,6 @@ define([
           ];
         })
       )
-    );
-  });
-
-  var legonisAmmo = inventory.legonisAmmo.concat(inventory.commanderAmmo);
-  var foundationAmmo = inventory.foundationAmmo.concat(inventory.commanderAmmo);
-  var synchronousAmmo = inventory.synchronousAmmo.concat(
-    inventory.commanderAmmo
-  );
-  var revenantsAmmo = inventory.revenantsAmmo.concat(inventory.commanderAmmo);
-  var clusterAmmo = inventory.clusterAmmo.concat(
-    inventory.commanderAmmo,
-    inventory.clusterCommanderAmmo
-  );
-  var factionAmmo = [
-    legonisAmmo,
-    foundationAmmo,
-    synchronousAmmo,
-    revenantsAmmo,
-    clusterAmmo,
-  ];
-
-  factionAmmo.forEach(function (faction, i) {
-    factionsTech[i][1] = _.flatten(
-      faction.map(function (ammo) {
-        return [
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          },
-        ];
-      })
     );
   });
 
