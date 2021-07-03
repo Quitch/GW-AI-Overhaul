@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- AI commander torpedo and AA ammo not being buffed when enhanced commander tech present
+
 ## v5.11.0 - 2021-07-03
 
 ### Change
