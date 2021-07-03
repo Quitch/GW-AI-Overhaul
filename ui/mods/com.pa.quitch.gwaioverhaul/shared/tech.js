@@ -74,40 +74,30 @@ define([
   });
 
   // 1 - Ammunition Tech
+
+  var legonisWeapons = inventory.legonisWeapons.concat(
+    inventory.commanderWeapons
+  );
+  var foundationWeapons = inventory.foundationWeapons.concat(
+    inventory.commanderWeapons
+  );
+  var synchronousWeapons = inventory.synchronousWeapons.concat(
+    inventory.commanderWeapons
+  );
+  var revenantsWeapons = inventory.revenantsWeapons.concat(
+    inventory.commanderWeapons
+  );
+  var clusterWeapons = inventory.clusterWeapons.concat(
+    inventory.commanderWeapons
+  );
   var factionWeapons = [
-    inventory.legonisWeapons,
-    inventory.foundationWeapons,
-    inventory.synchronousWeapons,
-    inventory.revenantsWeapons,
-    inventory.clusterWeapons,
+    legonisWeapons,
+    foundationWeapons,
+    synchronousWeapons,
+    revenantsWeapons,
+    clusterWeapons,
   ];
-  var factionAmmo = [
-    inventory.legonisAmmo,
-    inventory.foundationAmmo,
-    inventory.synchronousAmmo,
-    inventory.revenantsAmmo,
-    inventory.clusterAmmo,
-  ];
-  factionAmmo.forEach(function (faction, i) {
-    factionsTech[i][1] = _.flatten(
-      faction.map(function (ammo) {
-        return [
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          },
-        ];
-      })
-    );
-  });
+
   factionWeapons.forEach(function (faction, i) {
     factionsTech[i][1] = factionsTech[i][1].concat(
       _.flatten(
@@ -134,6 +124,45 @@ define([
           ];
         })
       )
+    );
+  });
+
+  var legonisAmmo = inventory.legonisAmmo.concat(inventory.commanderAmmo);
+  var foundationAmmo = inventory.foundationAmmo.concat(inventory.commanderAmmo);
+  var synchronousAmmo = inventory.synchronousAmmo.concat(
+    inventory.commanderAmmo
+  );
+  var revenantsAmmo = inventory.revenantsAmmo.concat(inventory.commanderAmmo);
+  var clusterAmmo = inventory.clusterAmmo.concat(
+    inventory.commanderAmmo,
+    inventory.clusterCommanderAmmo
+  );
+  var factionAmmo = [
+    legonisAmmo,
+    foundationAmmo,
+    synchronousAmmo,
+    revenantsAmmo,
+    clusterAmmo,
+  ];
+
+  factionAmmo.forEach(function (faction, i) {
+    factionsTech[i][1] = _.flatten(
+      faction.map(function (ammo) {
+        return [
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          },
+        ];
+      })
     );
   });
 

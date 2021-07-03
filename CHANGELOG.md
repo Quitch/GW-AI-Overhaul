@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Change
+
+- AI Tech
+  - Increased damage includes Commander Ammunition Tech
+
 ### Fixed
 
 - AI commander torpedo and AA ammo not being buffed when enhanced commander tech present

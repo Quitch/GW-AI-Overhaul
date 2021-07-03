@@ -1,5 +1,6 @@
 define({
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
+  commanderWeapons: ["/pa/tools/uber_cannon/uber_cannon.json"],
   commanderAmmo: [
     "/pa/ammo/cannon_uber/cannon_uber.json",
     "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
@@ -27,7 +28,7 @@ define({
     "/pa/units/land/tank_nuke/tank_nuke.json",
     "/pa/units/land/titan_vehicle/titan_vehicle.json",
   ],
-  legonisWeapons: ["/pa/tools/uber_cannon/uber_cannon.json"],
+  legonisWeapons: [],
   legonisAmmo: [
     "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle_ammo.json",
     "/pa/units/land/land_scout/land_scout_ammo.json",
@@ -88,7 +89,6 @@ define({
     "/pa/units/sea/sea_scout/sea_scout.json",
   ],
   foundationWeapons: [
-    "/pa/tools/uber_cannon/uber_cannon.json",
     "/pa/units/air/bomber_adv/bomber_adv_tool_weapon.json",
     "/pa/units/air/bomber_heavy/bomber_heavy_tool_weapon.json",
     "/pa/units/air/bomber/bomber_tool_weapon.json",
@@ -159,12 +159,10 @@ define({
     "/pa/units/land/titan_bot/titan_bot.json",
   ],
   synchronousWeapons: [
-    "/pa/tools/uber_cannon/uber_cannon.json",
     "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
     "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
   ],
   synchronousAmmo: [
-    "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
     "/pa/units/land/assault_bot/assault_bot_ammo.json",
     "/pa/units/land/bot_aa/bot_aa_tool_weapon.json",
@@ -212,13 +210,11 @@ define({
     "/pa/units/orbital/titan_orbital/titan_orbital.json",
   ],
   revenantsWeapons: [
-    "/pa/tools/uber_cannon/uber_cannon.json",
     "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
     "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
     "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
   ],
   revenantsAmmo: [
-    "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/units/orbital/defense_satellite/defense_satellite_ammo_ground.json",
     "/pa/units/orbital/defense_satellite/defense_satellite_ammo_orbital.json",
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
@@ -281,14 +277,11 @@ define({
     "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   ],
   clusterWeapons: [
-    "/pa/tools/uber_cannon/uber_cannon.json",
     "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
     "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
     "/pa/units/land/titan_structure/titan_structure_tool_weapon.json",
   ],
   clusterAmmo: [
-    "/pa/units/commanders/base_commander/base_commander_ammo.json",
-    "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
     "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
     "/pa/units/land/air_defense_adv/air_defense_adv_ammo.json",
     "/pa/units/land/air_defense/air_defense_ammo.json",
