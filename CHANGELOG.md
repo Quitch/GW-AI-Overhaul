@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.11.0 - 2021-07-03
+
+### Change
+
+- Buffed the following upgrade techs:
+  - Omega
+
+### Fixed
+
+- Orbital Fabrication Bot upgrade not dealt if you're using the Orbital Commander loadout
+
 ## v5.10.3 - 2021-07-02
 
 ### Fixed

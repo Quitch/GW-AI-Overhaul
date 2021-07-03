@@ -8,6 +8,13 @@ if (!gwaioSystemChangesLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
+        if (game.galaxy().stars()[game.galaxy().origin()].system().gwaio)
+          console.log(
+            "War created using Galactic War Overhaul v" +
+              game.galaxy().stars()[game.galaxy().origin()].system().gwaio
+                .version
+          );
+
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
           if (!params.size) throw "No size specified";

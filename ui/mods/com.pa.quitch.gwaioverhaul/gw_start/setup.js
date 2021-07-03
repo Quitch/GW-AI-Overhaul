@@ -406,6 +406,9 @@ if (!gwaioSetupLoaded) {
 
           // gw_start.js
           model.makeGame = function () {
+            var version = "5.11.0";
+            console.log("War created using Galactic War Overhaul v" + version);
+
             model.newGame(undefined);
 
             var busyToken = {};
@@ -989,7 +992,7 @@ if (!gwaioSetupLoaded) {
                 .stars()
                 [game.galaxy().origin()].system();
               originSystem.gwaio = {};
-              originSystem.gwaio.version = "5.10.3";
+              originSystem.gwaio.version = version;
               originSystem.gwaio.difficulty =
                 model.gwaioDifficultySettings.difficultyName();
               originSystem.gwaio.galaxySize = [
