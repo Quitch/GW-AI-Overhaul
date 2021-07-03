@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Change
+
+- Buffed the following upgrade techs:
+  - Omega
+
 ### Fixed
 
 - Orbital Fabrication Bot upgrade not dealt if you're using the Orbital Commander loadout

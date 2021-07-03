@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Omega Upgrade Tech replaces the orbital battleship's anti-ground laser with an anti-ground drone launcher."
+      "!LOC:Omega Upgrade Tech allows all the orbital battleship's lasers to target the planet."
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
@@ -38,10 +38,21 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-          path: "tools.4.spec_id",
+          file: "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
+          path: "target_layers",
+          op: "push",
+          value: [
+            "WL_Air",
+            "WL_LandHorizontal",
+            "WL_WaterSurface",
+            "WL_SeaFloor",
+          ],
+        },
+        {
+          file: "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
+          path: "pitch_range",
           op: "replace",
-          value: "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
+          value: 180,
         },
       ]);
     },
