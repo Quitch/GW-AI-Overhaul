@@ -1,10 +1,10 @@
 define({
   commanderUnits: ["/pa/units/commanders/base_commander/base_commander.json"],
   commanderAmmo: [
-    "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
-    "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
     "/pa/ammo/cannon_uber/cannon_uber.json",
+    "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
+    "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
   ],
 
   legonisUnitsNotMobile: [
