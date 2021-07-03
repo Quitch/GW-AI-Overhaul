@@ -36,6 +36,8 @@ define([
     clusterTech,
   ];
 
+  // 0 - Fabrication Tech
+
   var legonisUnits = inventory.legonisUnitsMobile.concat(
     inventory.legonisUnitsNotMobile
   );
@@ -52,7 +54,6 @@ define([
   var clusterUnitsNotStructure = inventory.commanderUnits.concat(
     inventory.clusterCommanders
   );
-
   var factionUnits = [
     legonisUnits,
     foundationUnits,
@@ -61,7 +62,6 @@ define([
     inventory.clusterUnits,
   ];
 
-  // 0 - Fabrication Tech
   factionUnits.forEach(function (faction, i) {
     factionsTech[i][0] = faction.map(function (unit) {
       return {
