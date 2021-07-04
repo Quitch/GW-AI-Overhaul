@@ -173,7 +173,7 @@ If you are adding new tech cards to the game and want to be compatible, then you
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-## How to report a bug
+## How to Report a Bug
 
 Use the template below:
 
