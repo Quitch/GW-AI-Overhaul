@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Increased the amount of freedom procedural maps have in using water and lava
+
 ## v5.12.0 - 2021-07-04
 
 ### Change
