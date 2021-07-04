@@ -371,14 +371,6 @@ define([
   });
 
   // 5 - Commander Combat Tech - no longer used as a standalone tech
-  var factionCommanderAmmo = [
-    inventory.commanderAmmo, // Legonis Machina
-    inventory.commanderAmmo, // Foundation
-    inventory.commanderAmmo, // Synchronous
-    inventory.commanderAmmo, // Revenants
-    inventory.clusterCommanderAmmo,
-  ];
-
   factionCommanders.forEach(function (faction, i) {
     factionsTech[i][5] = _.flatten(
       faction.map(function (commander) {
@@ -417,6 +409,15 @@ define([
       })
     );
   });
+
+  var factionCommanderAmmo = [
+    inventory.commanderAmmo, // Legonis Machina
+    inventory.commanderAmmo, // Foundation
+    inventory.commanderAmmo, // Synchronous
+    inventory.commanderAmmo, // Revenants
+    inventory.clusterCommanderAmmo,
+  ];
+
   factionCommanderAmmo.forEach(function (faction, i) {
     factionsTech[i][5] = factionsTech[i][5].concat(
       _.flatten(
