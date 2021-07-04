@@ -370,7 +370,7 @@ define([
     );
   });
 
-  // 5 - Commander Combat Tech
+  // 5 - Commander Combat Tech - no longer used as a standalone tech
   var factionCommanderAmmo = [
     inventory.commanderAmmo, // Legonis Machina
     inventory.commanderAmmo, // Foundation
@@ -458,7 +458,7 @@ define([
 
   // 6 - Combat Tech
   _.forEach(factionsTech, function (faction) {
-    faction[6] = faction[1].concat(faction[2], faction[3]);
+    faction[6] = faction[1].concat(faction[2], faction[3], faction[5]);
   });
 
   // Cluster commander setup
