@@ -12,6 +12,7 @@
   - Enhanced combat units includes Commander Combat Tech
   - Enhanced commanders no longer dealt
   - Revenant tech bonuses applied to Catalysts
+- Legonis Machina and Synchronous put more emphasis on their preferred unit type
 
 ### Fixed
 
