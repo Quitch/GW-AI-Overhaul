@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v5.12.0 - 2021-07-04
+
+### Change
+
+- AI Tech
+  - Damage increased includes Commander Ammunition Tech
+  - Health increased includes Commander Armor Tech
+  - Speed increased includes Commander Engine Tech
+  - Builds faster includes Improved Commander Build Arms
+  - Enhanced combat units includes Commander Combat Tech
+  - Enhanced commanders no longer dealt
+  - Revenant tech bonuses applied to Catalysts
+- Legonis Machina and Synchronous put more emphasis on their preferred unit type
+- Uber, Platinum, and Gold personalities now adhere to the build preferences of the faction
+
+### Fixed
+
+- AI commander torpedo and AA ammo not being buffed when enhanced commander tech present
+- AI Tech speed increases not being applied to air units
+- Cluster boss commander not receiving combat tech damage bonuses
+
 ## v5.11.0 - 2021-07-03
 
 ### Change
