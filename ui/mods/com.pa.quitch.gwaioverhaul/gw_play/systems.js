@@ -14,6 +14,10 @@ if (!gwaioSystemChangesLoaded) {
               game.galaxy().stars()[game.galaxy().origin()].system().gwaio
                 .version
           );
+        else
+          console.log(
+            "War created using Galactic War Overhaul v4.12.1 or earlier"
+          );
 
         function createBitmap(params) {
           if (!params.url) throw "No URL specified";
