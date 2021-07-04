@@ -13,6 +13,7 @@
   - Enhanced commanders no longer dealt
   - Revenant tech bonuses applied to Catalysts
 - Legonis Machina and Synchronous put more emphasis on their preferred unit type
+- Uber, Platinum, and Gold personalities now adhere to the build preferences of the faction
 
 ### Fixed
 
