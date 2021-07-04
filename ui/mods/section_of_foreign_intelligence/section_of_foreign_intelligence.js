@@ -212,6 +212,7 @@ if (!gwaioIntelligenceLoaded) {
             return true;
         });
 
+        // v5.11.0 and earlier only
         model.gwaioEnhancedCommanders = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
