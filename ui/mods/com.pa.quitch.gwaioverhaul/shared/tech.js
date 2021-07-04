@@ -204,21 +204,8 @@ define([
 
   // 3 - Engine Tech
   var factionsTechAir = [foundationTech];
-  var factionsTechNoAir = [
-    legonisTech,
-    foundationTech,
-    synchronousTech,
-    revenantsTech,
-    clusterTech,
-  ];
   var factionUnitsAir = [inventory.foundationUnitsMobileAir];
-  var factionUnitsNoAir = [
-    inventory.legonisUnitsMobile,
-    inventory.foundationUnitsMobileNotAir,
-    inventory.synchronousUnitsMobile,
-    inventory.revenantsUnitsMobile,
-    clusterUnitsNotStructure,
-  ];
+
   factionUnitsAir.forEach(function (faction, i) {
     factionsTechAir[i][3] = _.flatten(
       faction.map(function (unit) {
@@ -251,6 +238,22 @@ define([
       })
     );
   });
+
+  var factionsTechNoAir = [
+    legonisTech,
+    foundationTech,
+    synchronousTech,
+    revenantsTech,
+    clusterTech,
+  ];
+  var factionUnitsNoAir = [
+    inventory.legonisUnitsMobile,
+    inventory.foundationUnitsMobileNotAir,
+    inventory.synchronousUnitsMobile,
+    inventory.revenantsUnitsMobile,
+    clusterUnitsNotStructure,
+  ];
+
   factionUnitsNoAir.forEach(function (faction, i) {
     if (_.isUndefined(factionsTechNoAir[i][3])) factionsTechNoAir[i][3] = [];
     factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
@@ -280,6 +283,41 @@ define([
               path: "navigation.turn_speed",
               op: "multiply",
               value: 1.5,
+            },
+          ];
+        })
+      )
+    );
+  });
+
+  factionCommanders.forEach(function (faction, i) {
+    factionsTech[i][3] = factionsTech[i][3].concat(
+      _.flatten(
+        faction.map(function (unit) {
+          return [
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 2,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 2,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 2,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 2,
             },
           ];
         })
