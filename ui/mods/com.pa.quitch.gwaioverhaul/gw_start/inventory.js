@@ -278,6 +278,7 @@ define({
   clusterWeapons: [
     "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
     "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
+    "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
     "/pa/units/land/titan_structure/titan_structure_tool_weapon.json",
   ],
   clusterAmmo: [
