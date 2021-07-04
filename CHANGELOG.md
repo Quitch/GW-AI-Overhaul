@@ -5,6 +5,7 @@
 ### Change
 
 - Increased the amount of freedom procedural maps have in using water and lava
+- Increased the range of metal density and clusters used by procedural generation
 
 ## v5.12.0 - 2021-07-04
 
