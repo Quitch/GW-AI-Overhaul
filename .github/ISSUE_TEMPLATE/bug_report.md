@@ -8,7 +8,9 @@ assignees: Quitch
 
 ## Attestation
 
-[ ] Check the box to confirm that you have verified this bug with all other mods disabled
+[ ] I have verified this bug with all other mods disabled
+
+[ ] I did not create this war while using one of the documented incompatible mods
 
 ## Describe the bug
 
