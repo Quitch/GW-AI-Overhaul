@@ -368,73 +368,70 @@ define([
     );
   });
 
-  // 5 - Commander Combat Tech - no longer used as a standalone tech
-  factionCommanders.forEach(function (faction, i) {
-    factionsTech[i][5] = _.flatten(
-      faction.map(function (commander) {
+  // 6 - Combat Tech
+  // we redo the speed tech because Combat Commander Tech uses different values
+  factionUnitsAir.forEach(function (faction, i) {
+    factionsTechAir[i][6] = _.flatten(
+      faction.map(function (unit) {
         return [
           {
-            file: commander,
+            file: unit,
             path: "navigation.move_speed",
             op: "multiply",
-            value: 3,
+            value: 1.25,
           },
           {
-            file: commander,
+            file: unit,
             path: "navigation.brake",
             op: "multiply",
-            value: 3,
+            value: 1.25,
           },
           {
-            file: commander,
+            file: unit,
             path: "navigation.acceleration",
             op: "multiply",
-            value: 3,
+            value: 1.25,
           },
           {
-            file: commander,
+            file: unit,
             path: "navigation.turn_speed",
             op: "multiply",
-            value: 3,
-          },
-          {
-            file: commander,
-            path: "max_health",
-            op: "multiply",
-            value: 2,
+            value: 1.25,
           },
         ];
       })
     );
   });
 
-  var clusterCommanderAmmo = inventory.commanderAmmo.concat(
-    inventory.clusterCommanderAmmo
-  );
-  var factionCommanderAmmo = [
-    inventory.commanderAmmo, // Legonis Machina
-    inventory.commanderAmmo, // Foundation
-    inventory.commanderAmmo, // Synchronous
-    inventory.commanderAmmo, // Revenants
-    clusterCommanderAmmo,
-  ];
-
-  factionCommanderAmmo.forEach(function (faction, i) {
-    factionsTech[i][5] = factionsTech[i][5].concat(
+  factionUnitsNoAir.forEach(function (faction, i) {
+    if (_.isUndefined(factionsTechNoAir[i][6])) factionsTechNoAir[i][6] = [];
+    factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
       _.flatten(
-        faction.map(function (ammo) {
+        faction.map(function (unit) {
           return [
             {
-              file: ammo,
-              path: "damage",
+              file: unit,
+              path: "navigation.move_speed",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
             },
             {
-              file: ammo,
-              path: "splash_damage",
+              file: unit,
+              path: "navigation.brake",
               op: "multiply",
-              value: 1.25,
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.5,
             },
           ];
         })
@@ -442,9 +439,43 @@ define([
     );
   });
 
-  // 6 - Combat Tech
+  factionCommanders.forEach(function (faction, i) {
+    factionsTech[i][6] = factionsTech[i][6].concat(
+      _.flatten(
+        faction.map(function (unit) {
+          return [
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 3,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 3,
+            },
+          ];
+        })
+      )
+    );
+  });
+
   _.forEach(factionsTech, function (faction) {
-    faction[6] = faction[1].concat(faction[2], faction[3], faction[5]);
+    faction[6] = faction[6].concat(faction[1], faction[2]);
   });
 
   // Cluster commander setup
