@@ -178,6 +178,30 @@ define([
     });
   });
 
+  var clusterCommanders = inventory.commanderUnits.concat(
+    inventory.clusterCommanders
+  );
+  var factionCommanders = [
+    inventory.commanderUnits, // Legonis Machina
+    inventory.commanderUnits, // Foundation
+    inventory.commanderUnits, // Synchronous
+    inventory.commanderUnits, // Revenants
+    clusterCommanders,
+  ];
+
+  factionCommanders.forEach(function (faction, i) {
+    factionsTech[i][2] = factionsTech[i][2].concat(
+      faction.map(function (unit) {
+        return {
+          file: unit,
+          path: "max_health",
+          op: "multiply",
+          value: 2,
+        };
+      })
+    );
+  });
+
   // 3 - Engine Tech
   var factionsTechAir = [foundationTech];
   var factionsTechNoAir = [
@@ -293,13 +317,6 @@ define([
   });
 
   // 5 - Commander Combat Tech
-  var factionCommanders = [
-    inventory.commanderUnits, // Legonis Machina
-    inventory.commanderUnits, // Foundation
-    inventory.commanderUnits, // Synchronous
-    inventory.commanderUnits, // Revenants
-    inventory.clusterCommanders,
-  ];
   var factionCommanderAmmo = [
     inventory.commanderAmmo, // Legonis Machina
     inventory.commanderAmmo, // Foundation
@@ -307,6 +324,7 @@ define([
     inventory.commanderAmmo, // Revenants
     inventory.clusterCommanderAmmo,
   ];
+
   factionCommanders.forEach(function (faction, i) {
     factionsTech[i][5] = _.flatten(
       faction.map(function (commander) {

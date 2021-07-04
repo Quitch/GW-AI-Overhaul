@@ -6,6 +6,7 @@
 
 - AI Tech
   - Damage increased includes Commander Ammunition Tech
+  - Health increased includes Commander Armor Tech
 
 ### Fixed
 
