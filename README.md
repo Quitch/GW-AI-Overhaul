@@ -96,7 +96,7 @@ Each system will display the following information:
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
 
-These buffs are applied on a per-faction basis:
+These buffs are applied to commanders and then on a per-faction basis:
 
 - **Legonis Machina**: vehicle units and factories
 - **Foundation**: air and naval units and factories
