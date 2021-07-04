@@ -385,12 +385,6 @@ define([
         return [
           {
             file: commander,
-            path: "max_health",
-            op: "multiply",
-            value: 2,
-          },
-          {
-            file: commander,
             path: "navigation.move_speed",
             op: "multiply",
             value: 3,
@@ -412,6 +406,12 @@ define([
             path: "navigation.turn_speed",
             op: "multiply",
             value: 3,
+          },
+          {
+            file: commander,
+            path: "max_health",
+            op: "multiply",
+            value: 2,
           },
         ];
       })
@@ -437,22 +437,6 @@ define([
           ];
         })
       )
-    );
-  });
-  factionsTech.forEach(function (faction) {
-    faction[5].push(
-      {
-        file: "/pa/tools/commander_build_arm/commander_build_arm.json",
-        path: "construction_demand.energy",
-        op: "multiply",
-        value: 0.5,
-      },
-      {
-        file: "/pa/tools/commander_build_arm/commander_build_arm.json",
-        path: "construction_demand.metal",
-        op: "multiply",
-        value: 1.5,
-      }
     );
   });
 
