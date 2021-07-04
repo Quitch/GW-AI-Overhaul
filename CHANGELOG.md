@@ -11,6 +11,7 @@
   - Builds faster includes Improved Commander Build Arms
   - Enhanced combat units includes Commander Combat Tech
   - Enhanced commanders no longer dealt
+  - Revenant tech bonuses applied to Catalysts
 
 ### Fixed
 

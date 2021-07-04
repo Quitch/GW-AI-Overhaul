@@ -186,6 +186,7 @@ define({
   ],
 
   revenantsUnitsNotMobile: [
+    "/pa/units/land/control_module/control_module.json",
     "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
     "/pa/units/land/nuke_launcher/nuke_launcher.json",
     "/pa/units/land/unit_cannon/unit_cannon.json",
