@@ -37,7 +37,6 @@ define([
   ];
 
   // 0 - Fabrication Tech
-
   var legonisUnits = inventory.legonisUnitsMobile.concat(
     inventory.legonisUnitsNotMobile
   );
@@ -74,7 +73,6 @@ define([
   });
 
   // 1 - Ammunition Tech
-
   var legonisAmmo = inventory.legonisAmmo.concat(inventory.commanderAmmo);
   var foundationAmmo = inventory.foundationAmmo.concat(inventory.commanderAmmo);
   var synchronousAmmo = inventory.synchronousAmmo.concat(
