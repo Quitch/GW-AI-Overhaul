@@ -16,6 +16,7 @@
 
 - AI commander torpedo and AA ammo not being buffed when enhanced commander tech present
 - AI Tech speed increases not being applied to air units
+- Cluster boss commander not receiving combat tech damage bonuses
 
 ## v5.11.0 - 2021-07-03
 

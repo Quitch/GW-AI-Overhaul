@@ -408,12 +408,15 @@ define([
     );
   });
 
+  var clusterCommanderAmmo = inventory.commanderAmmo.concat(
+    inventory.clusterCommanderAmmo
+  );
   var factionCommanderAmmo = [
     inventory.commanderAmmo, // Legonis Machina
     inventory.commanderAmmo, // Foundation
     inventory.commanderAmmo, // Synchronous
     inventory.commanderAmmo, // Revenants
-    inventory.clusterCommanderAmmo,
+    clusterCommanderAmmo,
   ];
 
   factionCommanderAmmo.forEach(function (faction, i) {
