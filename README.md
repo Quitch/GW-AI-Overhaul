@@ -237,7 +237,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 ## Known Issues
 
-None.
+1. Announcer states "Enemy SXX detected" when you first encounter Cluster Security.
 
 ## Recommended mods
 
