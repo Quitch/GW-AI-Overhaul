@@ -8,6 +8,7 @@
   - Damage increased includes Commander Ammunition Tech
   - Health increased includes Commander Armor Tech
   - Speed increased includes Commander Engine Tech
+  - Builds faster includes Improved Commander Build Arms
 
 ### Fixed
 

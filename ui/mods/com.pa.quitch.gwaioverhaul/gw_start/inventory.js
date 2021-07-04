@@ -7,6 +7,9 @@ define({
     "/pa/units/commanders/base_commander/base_commander_ammo.json",
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
   ],
+  commanderBuildArms: [
+    "/pa/tools/commander_build_arm/commander_build_arm.json",
+  ],
 
   legonisUnitsNotMobile: [
     "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",

@@ -326,13 +326,29 @@ define([
   });
 
   // 4 - Efficiency Tech
+  var legonisBuildArms = inventory.legonisBuildArms.concat(
+    inventory.commanderBuildArms
+  );
+  var foundationBuildArms = inventory.foundationBuildArms.concat(
+    inventory.commanderBuildArms
+  );
+  var synchronousBuildArms = inventory.synchronousBuildArms.concat(
+    inventory.commanderBuildArms
+  );
+  var revenantsBuildArms = inventory.revenantsBuildArms.concat(
+    inventory.commanderBuildArms
+  );
+  var clusterBuildArms = inventory.clusterBuildArms.concat(
+    inventory.commanderBuildArms
+  );
   var factionBuildArms = [
-    inventory.legonisBuildArms,
-    inventory.foundationBuildArms,
-    inventory.synchronousBuildArms,
-    inventory.revenantsBuildArms,
-    inventory.clusterBuildArms,
+    legonisBuildArms,
+    foundationBuildArms,
+    synchronousBuildArms,
+    revenantsBuildArms,
+    clusterBuildArms,
   ];
+
   factionBuildArms.forEach(function (faction, i) {
     factionsTech[i][4] = _.flatten(
       faction.map(function (buildArm) {
