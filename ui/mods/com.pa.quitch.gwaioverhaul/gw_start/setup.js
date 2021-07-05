@@ -54,7 +54,7 @@ if (!gwaioSetupLoaded) {
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
         tougherCommanders: ko.observable(false),
-        quellerAI: ko.observable(false),
+        ai: ko.observable(0).extend({ numeric: 0 }),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         customDifficulty: ko.observable(false),
         difficultyName: ko.observable(""),
@@ -163,7 +163,7 @@ if (!gwaioSetupLoaded) {
         model.gwaioDifficultySettings.systemScaling();
         model.gwaioDifficultySettings.easierStart();
         model.gwaioDifficultySettings.tougherCommanders();
-        model.gwaioDifficultySettings.quellerAI();
+        model.gwaioDifficultySettings.ai();
         model.gwaioDifficultySettings.paLore();
         model.gwaioDifficultySettings.newGalaxyNeeded(true);
       });
@@ -688,7 +688,7 @@ if (!gwaioSetupLoaded) {
                 faction
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
-                if (model.gwaioDifficultySettings.quellerAI()) {
+                if (model.gwaioDifficultySettings.ai() === 1) {
                   ai.personality.ai_path =
                     "/pa/ai_personalities/queller/q_uber";
                 }
@@ -1079,7 +1079,7 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.easierStart();
               originSystem.gwaio.tougherCommanders =
                 model.gwaioDifficultySettings.tougherCommanders();
-              if (model.gwaioDifficultySettings.quellerAI()) {
+              if (model.gwaioDifficultySettings.ai() === 1) {
                 originSystem.gwaio.ai = "Queller";
               } else {
                 originSystem.gwaio.ai = "Titans";
