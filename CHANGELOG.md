@@ -7,7 +7,7 @@
 - Increased the amount of freedom procedural maps have in using water and lava
 - Increased the range of metal density and clusters used by procedural generation
 - AI selection moved to a drop-down
-- Remove code now present in the base game
+- Removed code now present in the base game
 
 ## v5.12.0 - 2021-07-04
 
