@@ -9,6 +9,10 @@
 - AI selection moved to a drop-down
 - Removed code now present in the base game
 
+### Fixed
+
+- Rerolls being offered for loadouts
+
 ## v5.12.0 - 2021-07-04
 
 ### Change

@@ -634,6 +634,8 @@ if (!gwaioCardsLoaded) {
                 if (ok) star.cardList(result);
               });
               $.when(dealStarCards).then(function () {
+                if (model.currentSystemCardList()[0].isLoadout())
+                  model.gwaioOfferRerolls(false);
                 model.driveAccessInProgress(true);
                 GW.manifest.saveGame(game).then(function () {
                   model.driveAccessInProgress(false);
