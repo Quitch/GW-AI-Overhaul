@@ -137,10 +137,7 @@ if (!gwaioCardsLoaded) {
           }
           var star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (
-            model.gwaioRerollsUsed() >= cardsOffered - 1 ||
-            (self.isLoadout && self.isLoadout())
-          ) {
+          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
             model.gwaioOfferRerolls(false);
           }
           star.cardList([]);
