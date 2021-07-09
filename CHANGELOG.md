@@ -12,6 +12,7 @@
 ### Fixed
 
 - Rerolls being offered for loadouts
+- Assault Commander loadout missing the Stinger
 
 ## v5.12.0 - 2021-07-04
 
