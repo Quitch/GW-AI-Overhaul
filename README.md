@@ -1,5 +1,7 @@
 # Galactic War Overhaul Readme
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Quitch/GW-AI-Overhaul)
+
 This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
