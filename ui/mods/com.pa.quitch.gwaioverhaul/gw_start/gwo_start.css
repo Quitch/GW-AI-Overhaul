@@ -6,4 +6,5 @@
 
 #new-game-right .header + * {
   overflow-y: auto;
+  flex-grow: 1;
 }
