@@ -57,6 +57,8 @@ define([
         return "/pa/ai_personalities/queller/q_gold/";
       else if (type === "enemy" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/q_uber/";
+      else if (this.aiEnabled() === "Penchant")
+        return "/pa/ai_personalities/penchant/";
       else return "/pa/ai/";
     },
   };
