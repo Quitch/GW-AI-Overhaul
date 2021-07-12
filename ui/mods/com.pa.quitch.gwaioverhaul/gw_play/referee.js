@@ -57,7 +57,7 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              if (gwaioFunctions.quellerAIEnabled()) {
+              if (gwaioFunctions.aiEnabled() === "Queller") {
                 var aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
@@ -294,7 +294,7 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), ".player")
                   .then(function (playerSpecFiles) {
-                    if (gwaioFunctions.quellerAIEnabled()) {
+                    if (gwaioFunctions.aiEnabled() === "Queller") {
                       var playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
@@ -580,7 +580,8 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            if (gwaioFunctions.aiEnabled() === "Queller")
+              var quellerEnabled = true;
             var aiTechPath = "/pa/ai_tech/";
 
             var parseFiles = function (aiPath, promise, aiToModify) {
@@ -810,7 +811,8 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            if (gwaioFunctions.aiEnabled() === "Queller")
+              var quellerEnabled = true;
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking saves from GWO v5.5.3 and earlier

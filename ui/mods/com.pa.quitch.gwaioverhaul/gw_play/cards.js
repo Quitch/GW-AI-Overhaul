@@ -179,7 +179,7 @@ if (!gwaioCardsLoaded) {
               var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
-                if (gwaioFunctions.quellerAIEnabled()) {
+                if (gwaioFunctions.aiEnabled() === "Queller") {
                   subcommander.personality.ai_path =
                     "/pa/ai_personalities/queller/q_gold";
                 }
@@ -586,7 +586,7 @@ if (!gwaioCardsLoaded) {
                         GWFactions[playerFaction].minions
                       );
                       product.unique = Math.random();
-                      if (gwaioFunctions.quellerAIEnabled()) {
+                      if (gwaioFunctions.aiEnabled() === "Queller") {
                         product.minion.personality.ai_path =
                           "/pa/ai_personalities/queller/q_gold";
                       }
