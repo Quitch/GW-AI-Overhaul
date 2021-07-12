@@ -50,5 +50,14 @@ define([
         return originSystem.gwaio.ai;
       }
     },
+    aiPath: function (type) {
+      if (type === "all" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/";
+      else if (type === "ally" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/q_gold/";
+      else if (type === "enemy" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/q_uber/";
+      else return "/pa/ai/";
+    },
   };
 });

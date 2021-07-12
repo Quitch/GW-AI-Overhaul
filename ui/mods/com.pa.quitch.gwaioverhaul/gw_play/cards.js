@@ -179,10 +179,8 @@ if (!gwaioCardsLoaded) {
               var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
-                if (gwaioFunctions.aiEnabled() === "Queller") {
-                  subcommander.personality.ai_path =
-                    "/pa/ai_personalities/queller/q_gold";
-                }
+                subcommander.personality.ai_path =
+                  gwaioFunctions.aiPath("ally");
                 inventory.cards().push({
                   id: "gwc_minion",
                   minion: subcommander,
@@ -586,10 +584,8 @@ if (!gwaioCardsLoaded) {
                         GWFactions[playerFaction].minions
                       );
                       product.unique = Math.random();
-                      if (gwaioFunctions.aiEnabled() === "Queller") {
-                        product.minion.personality.ai_path =
-                          "/pa/ai_personalities/queller/q_gold";
-                      }
+                      product.minion.personality.ai_path =
+                        gwaioFunctions.aiPath("ally");
                     });
                   } else if (product.id === "gwc_add_card_slot") {
                     product.allowOverflow = true;

@@ -626,13 +626,12 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
-                    var quellerAllyPath =
-                      "/pa/ai_personalities/queller/q_gold/";
+                    var allyPath = gwaioFunctions.aiPath("ally");
 
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
-                      (_.startsWith(filePath, quellerAllyPath) ||
+                      (_.startsWith(filePath, allyPath) ||
                         _.startsWith(filePath, aiTechPath))
                     )
                       var quellerSubCommander = true;
@@ -673,7 +672,7 @@ if (!gwaioRefereeChangesLoaded) {
                             if (quellerEnabled) {
                               // We don't know if the aiPath contains q_uber
                               var quellerEnemyPath =
-                                "/pa/ai_personalities/queller/q_uber/";
+                                gwaioFunctions.aiPath("enemy");
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
@@ -681,7 +680,7 @@ if (!gwaioRefereeChangesLoaded) {
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 filePath =
-                                  quellerAllyPath +
+                                  allyPath +
                                   filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
                                 console.log("New filepath (All):", filePath);
@@ -707,8 +706,7 @@ if (!gwaioRefereeChangesLoaded) {
                             // Put "load" files where Queller expects them to be
                             if (_.startsWith(filePath, aiTechPath)) {
                               filePath =
-                                quellerAllyPath +
-                                filePath.slice(aiTechPath.length);
+                                allyPath + filePath.slice(aiTechPath.length);
                             }
                           } else {
                             // TITANS Sub Commanders share an ai_path with the enemy so need a new one
@@ -743,11 +741,9 @@ if (!gwaioRefereeChangesLoaded) {
             var inventory = game.inventory();
 
             if (quellerEnabled && inventory.minions().length > 0)
-              var aiFilePath = "/pa/ai_personalities/queller/";
-            else if (quellerEnabled) {
-              aiFilePath = "/pa/ai_personalities/queller/q_uber/";
-            } else {
-              aiFilePath = "/pa/ai/";
+              var aiFilePath = gwaioFunctions.aiPath("all");
+            else {
+              aiFilePath = gwaioFunctions.aiPath("enemy");
             }
 
             if (!_.isEmpty(inventory.aiMods())) {
@@ -816,9 +812,7 @@ if (!gwaioRefereeChangesLoaded) {
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                subcommander.personality.ai_path =
-                  "/pa/ai_personalities/queller/q_gold";
+              subcommander.personality.ai_path = gwaioFunctions.aiPath("ally");
 
               armies.push({
                 slots: [
