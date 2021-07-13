@@ -7,7 +7,7 @@
       "shared_instance_count": "BasicAirDefense",
       "priority": 261,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -17,6 +17,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "DistFromMainBase",
@@ -48,6 +54,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "DistFromNearestEnemyThreat",
@@ -106,7 +118,7 @@
       "shared_instance_count": "BasicLandDefense",
       "priority": 261,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -215,7 +227,7 @@
       "shared_instance_count": "BasicAirDefense",
       "priority": 85,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -225,6 +237,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "UnitCountInBase",
@@ -251,6 +269,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "UnitCountInBase",
@@ -298,7 +322,7 @@
       "shared_instance_count": "BasicAirDefense",
       "priority": 262,
       "base_sort": "FromPerimeter",
-      "builders": ["UberCommander", "AnyUberBasicFabber"],
+      "builders": ["Commander", "AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -367,7 +391,7 @@
       "shared_instance_count": "BasicLandDefense",
       "priority": 85,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -470,7 +494,7 @@
       "shared_instance_count": "BasicLandDefense",
       "priority": 262,
       "base_sort": "FromPerimeter",
-      "builders": ["UberCommander"],
+      "builders": ["Commander"],
       "build_conditions": [
         [
           {
@@ -543,7 +567,7 @@
       "instance_count": 1,
       "priority": 85,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -635,7 +659,7 @@
       "instance_count": 1,
       "priority": 262,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -704,7 +728,7 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "priority": 245,
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -772,7 +796,7 @@
       "instance_count": 1,
       "priority": 255,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -782,6 +806,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "HasPersonalityTag",
@@ -818,6 +848,12 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
           },
           {
             "test_type": "UnitCountInBase",
@@ -869,7 +905,7 @@
       "instance_count": 1,
       "priority": 379,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -942,7 +978,7 @@
       "instance_count": 1,
       "priority": 255,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -1034,7 +1070,7 @@
       "instance_count": 1,
       "priority": 379,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -1101,11 +1137,7 @@
       "to_build": "Umbrella",
       "instance_count": 1,
       "priority": 378,
-      "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber"
-      ],
+      "builders": ["Commander", "AnyBasicFabber", "AnyAdvancedFabber"],
       "build_conditions": [
         [
           {
@@ -1223,11 +1255,7 @@
       "to_build": "Umbrella",
       "instance_count": 1,
       "priority": 386,
-      "builders": [
-        "UberCommander",
-        "AnyUberBasicFabber",
-        "AnyUberAdvancedFabber"
-      ],
+      "builders": ["Commander", "AnyBasicFabber", "AnyAdvancedFabber"],
       "build_conditions": [
         [
           {
@@ -1346,7 +1374,7 @@
       "instance_count": 1,
       "shared_instance_count": "AntiNukeSilo",
       "priority": 380,
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -1462,7 +1490,7 @@
       "priority": 386,
       "min_num_assisters": 5,
       "max_num_assisters": 12,
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {

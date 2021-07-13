@@ -840,7 +840,7 @@
       "shared_instance_count": "BasicLandDefense",
       "priority": 461,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -968,7 +968,7 @@
       "instance_count": 1,
       "priority": 285,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber"],
+      "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -1039,7 +1039,7 @@
       "instance_count": 1,
       "priority": 462,
       "base_sort": "FromPerimeter",
-      "builders": ["UberCommander", "AnyUberBasicFabber"],
+      "builders": ["Commander", "AnyBasicFabber"],
       "build_conditions": [
         [
           {
@@ -2130,7 +2130,7 @@
       "instance_count": 1,
       "priority": 455,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber"],
+      "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
           {
@@ -2201,7 +2201,7 @@
       "instance_count": 1,
       "priority": 479,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber"],
+      "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
           {

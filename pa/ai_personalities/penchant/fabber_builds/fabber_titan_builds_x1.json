@@ -8,7 +8,7 @@
       "max_num_assisters": 15,
       "shared_instance_count": "Titan",
       "priority": 480,
-      "builders": ["AdvancedBotFabber", "UberSupportCommander"],
+      "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
           {
@@ -190,7 +190,7 @@
       "max_num_assisters": 15,
       "shared_instance_count": "Titan",
       "priority": 480,
-      "builders": ["AnyUberAdvancedFabber"],
+      "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
           {
