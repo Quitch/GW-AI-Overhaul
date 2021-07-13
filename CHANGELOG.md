@@ -13,9 +13,10 @@
 
 - Rerolls being offered for loadouts
 - Assault Commander loadout missing the Stinger
-- TITANS AI not building the Stinger from the Unit Cannon
+- Titans AI not building the Stinger from the Unit Cannon
 - Setup column being too tall for the screen causing the entire page to scroll instead of just the column - with thanks to burntcustard
 - Queller Sub Commanders not scouting on small planets when only vehicles were available
+- Titans AI not building torpedo launchers
 
 ## v5.12.0 - 2021-07-04
 
@@ -152,8 +153,8 @@
 - Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
 - Updated AI Bugfixes and Enhancements to v2.7.0
 - Defense Tech Commander no longer gives Radar to the commander
-- TITANS AI only builds anti-air when the enemy has air
-- TITANS AI will build the Hermes Space Probe on single planet systems
+- Titans AI only builds anti-air when the enemy has air
+- Titans AI will build the Hermes Space Probe on single planet systems
 - Vehicle Factory Upgrade Tech uses a picture of vehicle factory
 
 ### Fixed
