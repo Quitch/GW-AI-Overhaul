@@ -738,7 +738,7 @@ if (!gwaioSetupLoaded) {
                     "!LOC:Default",
                     "!LOC:Artillery",
                     "!LOC:Fortress",
-                    "!LOC:AllTerrain",
+                    "!LOC:All-terrain",
                     "!LOC:Assault",
                     "!LOC:Boomer",
                     "!LOC:Heavy",
