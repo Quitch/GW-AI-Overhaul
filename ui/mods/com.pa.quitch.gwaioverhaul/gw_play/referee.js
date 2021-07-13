@@ -62,6 +62,11 @@ if (!gwaioRefereeChangesLoaded) {
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+              } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                aiUnitMapPath =
+                  "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
+                aiUnitMapTitansPath =
+                  "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json";
               } else {
                 aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
