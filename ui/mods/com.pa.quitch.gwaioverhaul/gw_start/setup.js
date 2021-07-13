@@ -688,10 +688,6 @@ if (!gwaioSetupLoaded) {
                 faction
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
-                if (model.gwaioDifficultySettings.ai() === 1) {
-                  ai.personality.ai_path =
-                    "/pa/ai_personalities/queller/q_uber";
-                }
                 ai.personality.micro_type =
                   model.gwaioDifficultySettings.microTypeChosen();
                 ai.personality.go_for_the_kill =
