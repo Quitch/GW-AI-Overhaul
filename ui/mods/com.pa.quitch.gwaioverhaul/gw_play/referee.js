@@ -622,6 +622,8 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                 }
 
+                var allyPath = gwaioFunctions.aiPath("ally");
+
                 _.forEach(fileList, function (filePath) {
                   console.log("Processing:", filePath);
                   if (
@@ -630,8 +632,6 @@ if (!gwaioRefereeChangesLoaded) {
                     !_.endsWith(filePath, "ai_config.json")
                   ) {
                     var deferred2 = $.Deferred();
-
-                    var allyPath = gwaioFunctions.aiPath("ally");
 
                     if (
                       quellerEnabled &&
@@ -812,10 +812,11 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
+            var allyPath = gwaioFunctions.aiPath("ally");
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking saves from earlier versions
-              subcommander.personality.ai_path = gwaioFunctions.aiPath("ally");
+              subcommander.personality.ai_path = allyPath;
 
               armies.push({
                 slots: [
@@ -849,8 +850,10 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
+            var enemyAIPath = gwaioFunctions.aiPath("enemy");
+
             // Avoid breaking saves from earlier versions
-            ai.personality.ai_path = gwaioFunctions.aiPath("enemy");
+            ai.personality.ai_path = enemyAIPath;
 
             var slotsArray = [];
             _.times(
@@ -881,7 +884,7 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
               // Avoid breaking saves from earlier versions
-              minion.personality.ai_path = gwaioFunctions.aiPath("enemy");
+              minion.personality.ai_path = enemyAIPath;
 
               var slotsArrayMinions = [];
               _.times(
@@ -916,7 +919,7 @@ if (!gwaioRefereeChangesLoaded) {
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
 
               // Avoid breaking saves from earlier versions
-              foe.personality.ai_path = gwaioFunctions.aiPath("enemy");
+              foe.personality.ai_path = enemyAIPath;
 
               var slotsArrayFoes = [];
               _.times(
