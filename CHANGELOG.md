@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- New AI called Penchant
+  - Uses the Titans AI as a base
+  - Each enemy has a favoured style of play which is reflected in their unit choices
+  - This information is added to the enemy's personality in the intelligence panel
+  - Sub Commanders are unaffected
+
 ### Change
 
 - Increased the amount of freedom procedural maps have in using water and lava
