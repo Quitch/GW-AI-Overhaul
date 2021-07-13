@@ -11,6 +11,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
           },
@@ -45,6 +50,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
@@ -117,6 +127,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
           },
@@ -177,6 +192,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
           },
@@ -213,6 +233,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
@@ -281,6 +306,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
           },
@@ -341,6 +371,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true
           },
@@ -377,6 +412,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanDeployNavalFromBase",
             "boolean": true

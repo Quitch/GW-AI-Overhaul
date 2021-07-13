@@ -11,6 +11,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -36,6 +41,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -100,6 +110,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -130,6 +145,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -199,6 +219,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -219,6 +244,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -271,6 +301,11 @@
       "builders": ["UberCommander", "AnyUberBasicFabber"],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -336,6 +371,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -366,6 +406,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -428,6 +473,11 @@
       "builders": ["UberCommander"],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -497,6 +547,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -522,6 +577,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -578,6 +638,11 @@
       "builders": ["AnyUberBasicFabber"],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -643,6 +708,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -706,6 +776,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -736,6 +811,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -792,6 +872,11 @@
       "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -861,6 +946,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -886,6 +976,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -943,6 +1038,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -997,50 +1097,6 @@
       }
     },
     {
-      "name": "Wall",
-      "to_build": "Wall",
-      "instance_count": 1,
-      "priority": 0,
-      "base_sort": "FromPerimeter",
-      "builders": ["AnyUberBasicFabber", "AnyUberAdvancedFabber"],
-      "build_conditions": [
-        [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "UnitCountInBase",
-            "unit_type_string0": "Structure & Defense",
-            "compare0": ">=",
-            "value0": 1
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Wall"
-          }
-        ]
-      ],
-      "placement_rules": {
-        "placement_type": "FromMainBasePerimeter",
-        "unit_count_rules": [
-          {
-            "unit_type_string": "Structure & Defense - AirDefense",
-            "alliance": "Ally",
-            "compare_type": ">=",
-            "range": 8,
-            "count": 1
-          },
-          {
-            "unit_type_string": "Structure & Wall",
-            "alliance": "Ally",
-            "compare_type": "<",
-            "range": 20,
-            "count": 4
-          }
-        ]
-      }
-    },
-    {
       "name": "Umbrella",
       "to_build": "Umbrella",
       "instance_count": 1,
@@ -1052,6 +1108,11 @@
       ],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -1080,6 +1141,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -1106,6 +1172,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -1160,6 +1231,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -1187,6 +1263,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
@@ -1213,6 +1294,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
@@ -1264,6 +1350,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
           },
@@ -1287,6 +1378,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
           },
@@ -1309,6 +1405,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
@@ -1365,6 +1466,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
           },
@@ -1394,6 +1500,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
           },
@@ -1419,6 +1530,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
@@ -1448,6 +1564,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Defence",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AntiNukeSilo"
