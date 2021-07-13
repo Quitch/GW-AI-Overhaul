@@ -812,11 +812,9 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            if (gwaioFunctions.aiEnabled() === "Queller")
-              var quellerEnabled = true;
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              // Avoid breaking saves from GWO v5.5.3 and earlier
+              // Avoid breaking saves from earlier versions
               subcommander.personality.ai_path = gwaioFunctions.aiPath("ally");
 
               armies.push({
@@ -851,9 +849,8 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
-            // Avoid breaking saves from GWO v5.5.3 and earlier
-            if (quellerEnabled)
-              ai.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+            // Avoid breaking saves from earlier versions
+            ai.personality.ai_path = gwaioFunctions.aiPath("enemy");
 
             var slotsArray = [];
             _.times(
@@ -883,10 +880,8 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
-              // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                minion.personality.ai_path =
-                  "/pa/ai_personalities/queller/q_uber";
+              // Avoid breaking saves from earlier versions
+              minion.personality.ai_path = gwaioFunctions.aiPath("enemy");
 
               var slotsArrayMinions = [];
               _.times(
@@ -920,9 +915,8 @@ if (!gwaioRefereeChangesLoaded) {
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
 
-              // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                foe.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+              // Avoid breaking saves from earlier versions
+              foe.personality.ai_path = gwaioFunctions.aiPath("enemy");
 
               var slotsArrayFoes = [];
               _.times(
