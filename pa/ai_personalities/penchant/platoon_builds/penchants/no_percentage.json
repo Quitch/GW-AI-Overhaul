@@ -1,0 +1,234 @@
+{
+  "build_list": [
+    {
+      "name": "No Percentage - Land Transfer To Planet - Alone",
+      "to_build": "NoPercentage_Land_Attack_Max",
+      "instance_count": -1,
+      "shared_instance_count": "LandTransferToPlanet",
+      "priority": 167,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyPresenceOnPlanet",
+            "boolean": false
+          },
+          {
+            "test_type": "OtherPlanetNeedsLandUnitAssistance",
+            "boolean": true
+          },
+          {
+            "test_type": "CanProvideLandUnitAssistance",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "compare0": ">=",
+            "value0": 5
+          }
+        ]
+      ],
+      "task_type": "TeleportLandToPlanet"
+    },
+    {
+      "name": "No Percentage - Land Transfer To Planet",
+      "to_build": "NoPercentage_Land_Attack_XLarge",
+      "instance_count": 1,
+      "shared_instance_count": "LandTransferToPlanet",
+      "priority": 166,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "OtherPlanetNeedsLandUnitAssistance",
+            "boolean": true
+          },
+          {
+            "test_type": "CanProvideLandUnitAssistance",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "compare0": ">=",
+            "value0": 5
+          }
+        ]
+      ],
+      "task_type": "TeleportLandToPlanet"
+    },
+    {
+      "name": "No Percentage - Land Attack Platoon Small",
+      "to_build": "NoPercentage_Land_Attack_Small",
+      "instance_count": -1,
+      "priority": 154,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    },
+    {
+      "name": "No Percentage - Land Attack Platoon Medium",
+      "to_build": "NoPercentage_Land_Attack_Medium",
+      "instance_count": -1,
+      "priority": 153,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    },
+    {
+      "name": "No Percentage - Land Attack Platoon Large",
+      "to_build": "NoPercentage_Land_Attack_Large",
+      "instance_count": -1,
+      "priority": 152,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    },
+    {
+      "name": "No Percentage - Land Attack Platoon XLarge",
+      "to_build": "NoPercentage_Land_Attack_XLarge",
+      "instance_count": -1,
+      "priority": 151,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "compare0": ">=",
+            "value0": 20
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    },
+    {
+      "name": "No Percentage - Land Attack Platoon Max",
+      "to_build": "NoPercentage_Land_Attack_Max",
+      "instance_count": -1,
+      "priority": 150,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "NoPercentage",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "compare0": ">=",
+            "value0": 40
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsLand",
+            "string0": "WL_AnySurface",
+            "string1": "WL_AnySurface",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "LandAttack"
+    }
+  ]
+}
