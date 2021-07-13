@@ -157,7 +157,6 @@ if (!gwaioRefereeChangesLoaded) {
                     tag: function (attribute) {
                       return attribute + specTag;
                     },
-                    // New op to allow removal of an item from an array
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute))
                         attribute = _.isEmpty(attribute) ? [] : [attribute];
