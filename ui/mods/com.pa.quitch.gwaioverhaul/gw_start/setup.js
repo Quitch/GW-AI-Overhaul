@@ -719,6 +719,40 @@ if (!gwaioSetupLoaded) {
                 var getRandomArbitrary = function (min, max) {
                   return Math.random() * (max - min) + min;
                 };
+                // Penchant AI
+                if (model.gwaioDifficultySettings.ai() === 2) {
+                  var penchantTags = [
+                    "Vanilla",
+                    "Artillery",
+                    "Fortress",
+                    "AllTerrain",
+                    "Assault",
+                    "Boomer",
+                    "Heavy",
+                    "Infernodier",
+                    "Raider",
+                    "Ranked",
+                    "Sniper",
+                  ];
+                  var penchantNames = [
+                    "!LOC:Default",
+                    "!LOC:Artillery",
+                    "!LOC:Fortress",
+                    "!LOC:AllTerrain",
+                    "!LOC:Assault",
+                    "!LOC:Boomer",
+                    "!LOC:Heavy",
+                    "!LOC:Infernodier",
+                    "!LOC:Raider",
+                    "!LOC:Ranked",
+                    "!LOC:Sniper",
+                  ];
+                  var penchantTag = _.sample(penchantTags);
+                  ai.personality.personality_tags =
+                    ai.personality.personality_tags.concat(penchantTag);
+                  ai.penchantName =
+                    penchantNames[_.indexOf(penchantTags, penchantTag)];
+                }
                 if (isBossSystem) {
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
