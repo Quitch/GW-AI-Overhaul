@@ -1081,6 +1081,8 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.tougherCommanders();
               if (model.gwaioDifficultySettings.ai() === 1) {
                 originSystem.gwaio.ai = "Queller";
+              } else if (model.gwaioDifficultySettings.ai() === 2) {
+                originSystem.gwaio.ai = "Penchant";
               } else {
                 originSystem.gwaio.ai = "Titans";
               }
