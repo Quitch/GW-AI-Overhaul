@@ -82,6 +82,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -90,6 +95,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -109,6 +119,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
           {
             "test_type": "BaseThreatened",
             "boolean": false
@@ -131,6 +146,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
           {
             "test_type": "BaseThreatened",
             "boolean": false
@@ -164,6 +184,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -188,6 +213,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -230,6 +260,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -250,6 +285,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": true
           },
@@ -259,71 +299,6 @@
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & SelfDestruct",
-            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
-            "compare0": "<",
-            "value0": 0.1
-          },
-          {
-            "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "Structure & Teleporter",
-            "compare0": ">",
-            "value0": 0
-          }
-        ]
-      ]
-    },
-    {
-      "name": "Basic Combat Fabber Bot",
-      "to_build": "BasicBotCombatFabber",
-      "instance_count": 1,
-      "priority": 97,
-      "builders": ["BasicBotFactory"],
-      "build_conditions": [
-        [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitRatioOnPlanet",
-            "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",
-            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
-            "compare0": "<",
-            "value0": 0.1
-          }
-        ],
-        [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitRatioOnPlanet",
-            "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",
             "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
             "compare0": "<",
             "value0": 0.1
@@ -413,6 +388,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -432,6 +412,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -469,6 +454,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -481,6 +471,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -511,6 +506,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -535,6 +535,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -745,6 +750,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -753,6 +763,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -782,6 +797,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -801,6 +821,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -838,6 +863,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -857,6 +887,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -894,6 +929,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -913,6 +953,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Bot",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -950,6 +995,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -962,6 +1012,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -992,6 +1047,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -1011,6 +1071,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -1048,6 +1113,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -1067,6 +1137,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true

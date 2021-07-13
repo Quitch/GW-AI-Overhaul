@@ -10,8 +10,8 @@
       "build_conditions": [
         [
           {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -32,6 +32,12 @@
             "test_type": "CanAffordBuildDemand"
           },
           {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Air & Fighter",
             "compare0": "<",
@@ -40,8 +46,8 @@
         ],
         [
           {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -75,6 +81,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Air",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -83,6 +94,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT2Air",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true

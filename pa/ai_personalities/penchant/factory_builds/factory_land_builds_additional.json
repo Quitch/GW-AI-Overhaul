@@ -10,6 +10,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           }
         ]
@@ -25,6 +30,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -37,6 +47,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true
@@ -56,6 +71,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "BaseThreatened",
             "boolean": false
@@ -78,6 +98,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantT1Vehicle",
+            "boolean": false
+          },
           {
             "test_type": "BaseThreatened",
             "boolean": false
