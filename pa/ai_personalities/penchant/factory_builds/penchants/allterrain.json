@@ -287,6 +287,70 @@
           }
         ]
       ]
+    },
+    {
+      "build_list": [
+        {
+          "name": "All-terrain - Basic Assault Bot - UC",
+          "to_build": "BasicAssaultBot",
+          "instance_count": -1,
+          "max_num_assisters": 10,
+          "priority": 100,
+          "builders": ["UnitCannon"],
+          "build_conditions": [
+            [
+              {
+                "test_type": "HasPersonalityTag",
+                "string0": "AllTerrain",
+                "boolean": false
+              },
+              {
+                "test_type": "CanAffordBuildDemand"
+              }
+            ]
+          ]
+        },
+        {
+          "name": "All-terrain - Advanced Assault Bot - UC",
+          "to_build": "AdvancedAssaultBot",
+          "instance_count": -1,
+          "max_num_assisters": 10,
+          "priority": 100,
+          "builders": ["UnitCannon"],
+          "build_conditions": [
+            [
+              {
+                "test_type": "HasPersonalityTag",
+                "string0": "AllTerrain",
+                "boolean": false
+              },
+              {
+                "test_type": "CanAffordBuildDemand"
+              }
+            ]
+          ]
+        },
+        {
+          "name": "All-terrain - NanoSwarm - UC",
+          "to_build": "NanoSwarm",
+          "instance_count": -1,
+          "max_num_assisters": 10,
+          "priority": 100,
+          "builders": ["UnitCannon"],
+          "build_conditions": [
+            [
+              {
+                "test_type": "HasPersonalityTag",
+                "string0": "AllTerrain",
+                "boolean": false
+              },
+              {
+                "test_type": "CanAffordBuildDemand"
+              }
+            ]
+          ]
+        }
+      ]
     }
   ]
 }
