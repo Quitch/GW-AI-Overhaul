@@ -522,6 +522,86 @@
           }
         ]
       ]
+    },
+    {
+      "name": "Raider - Basic Assault Bot - UC",
+      "to_build": "BasicAssaultBot",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Raider",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Raider - Boom Bot - UC",
+      "to_build": "BoomBot",
+      "instance_count": 1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Raider",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Raider - Advanced Assault Bot - UC",
+      "to_build": "AdvancedAssaultBot",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Raider",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Raider - NanoSwarm - UC",
+      "to_build": "NanoSwarm",
+      "instance_count": 1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Raider",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
     }
   ]
 }
