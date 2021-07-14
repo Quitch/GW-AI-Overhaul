@@ -315,6 +315,23 @@ if (!gwaioRefereeChangesLoaded) {
                             playerSpecFiles
                           )
                         : {};
+                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
                     } else if (
                       !_.isEmpty(inventory.aiMods()) &&
                       ai.mirrorMode !== true
