@@ -25,6 +25,7 @@
 - Setup column being too tall for the screen causing the entire page to scroll instead of just the column - with thanks to burntcustard
 - Queller Sub Commanders not scouting on small planets when only vehicles were available
 - Titans AI not building torpedo launchers
+- AI uses Stitches again
 
 ## v5.12.0 - 2021-07-04
 
