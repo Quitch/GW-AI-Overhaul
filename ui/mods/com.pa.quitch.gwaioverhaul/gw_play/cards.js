@@ -158,15 +158,13 @@ if (!gwaioCardsLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
           ],
           function (
             GW,
             GWFactions,
             gwaioBank,
             gwaioCardsToUnits,
-            gwaioUnitsToNames,
-            gwaioFunctions
+            gwaioUnitsToNames
           ) {
             var inventory = game.inventory();
 
