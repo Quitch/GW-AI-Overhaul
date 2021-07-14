@@ -238,6 +238,12 @@ if (!gwaioSetupLoaded) {
         )
       );
 
+      $("#game-difficulty-label").before(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
+        )
+      );
+
       $("#game-difficulty-label").append(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"

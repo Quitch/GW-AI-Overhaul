@@ -1,0 +1,17 @@
+<div class="form-group" id="difficulty-ai">
+  <label id="game-ai-label" for="game-ai"><loc>AI:</loc></label>
+  <span
+    class="info_tip"
+    data-bind="tooltip: 'TITANS: base game AI<br>QUELLER: greater challenge at the cost of personality and performance<BR>PENCHANT: increased personality'"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="game-ai"
+    data-bind="selectPicker: gwaioDifficultySettings.ai"
+  >
+    <option value="0">TITANS</option>
+    <option value="1">QUELLER</option>
+    <option value="2">PENCHANT</option>
+  </select>
+</div>
