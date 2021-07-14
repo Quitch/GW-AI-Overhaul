@@ -719,6 +719,21 @@ if (!gwaioSetupLoaded) {
                 var getRandomArbitrary = function (min, max) {
                   return Math.random() * (max - min) + min;
                 };
+                if (isBossSystem) {
+                  ai.econ_rate =
+                    (model.gwaioDifficultySettings.econBase() +
+                      maxDist *
+                        model.gwaioDifficultySettings.econRatePerDist()) *
+                    getRandomArbitrary(0.9, 1.1);
+                  if (isBoss)
+                    ai.bossCommanders =
+                      model.gwaioDifficultySettings.bossCommanders();
+                } else
+                  ai.econ_rate =
+                    (model.gwaioDifficultySettings.econBase() +
+                      dist * model.gwaioDifficultySettings.econRatePerDist()) *
+                    getRandomArbitrary(0.9, 1.1);
+
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
                   var penchantTags = [
@@ -734,6 +749,73 @@ if (!gwaioSetupLoaded) {
                     "Ranked",
                     "Sniper",
                   ];
+                  var penchantExclusions = [
+                    [], // Vanilla
+                    [], // Artillery
+                    ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
+                    [
+                      // AllTerrain
+                      "PenchantT1Bot",
+                      "PenchantT2Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Naval",
+                    ],
+                    [
+                      // Assault
+                      "PenchantT2Air",
+                      "PenchantT1Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Vehicle",
+                      "PenchantT1Naval",
+                      "PenchantT2Naval",
+                    ],
+                    ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
+                    [
+                      // Heavy
+                      "PenchantT2Air",
+                      "PenchantT1Bot",
+                      "PenchantT2Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Vehicle",
+                      "PenchantT1Naval",
+                      "PenchantT2Naval",
+                    ],
+                    [
+                      // Infernodier
+                      "PenchantT1Bot",
+                      "PenchantT2Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Vehicle",
+                    ],
+                    [
+                      // Raider
+                      "PenchantT2Air",
+                      "PenchantT1Bot",
+                      "PenchantT2Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT1Naval",
+                      "PenchantT2Naval",
+                    ],
+                    [
+                      // Ranked
+                      "PenchantT2Air",
+                      "PenchantT1Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Vehicle",
+                      "PenchantT1Naval",
+                      "PenchantT2Naval",
+                    ],
+                    [
+                      // Sniper
+                      "PenchantT2Air",
+                      "PenchantT1Bot",
+                      "PenchantT2Bot",
+                      "PenchantT1Vehicle",
+                      "PenchantT2Vehicle",
+                      "PenchantT1Naval",
+                      "PenchantT2Naval",
+                    ],
+                  ];
                   var penchantNames = [
                     "!LOC:Default",
                     "!LOC:Artillery",
@@ -748,25 +830,14 @@ if (!gwaioSetupLoaded) {
                     "!LOC:Sniper",
                   ];
                   var penchantTag = _.sample(penchantTags);
+                  var penchantIndex = _.indexOf(penchantTags, penchantTag);
                   ai.personality.personality_tags =
-                    ai.personality.personality_tags.concat(penchantTag);
-                  ai.penchantName =
-                    penchantNames[_.indexOf(penchantTags, penchantTag)];
+                    ai.personality.personality_tags.concat(
+                      penchantTag,
+                      penchantExclusions[penchantIndex]
+                    );
+                  ai.penchantName = penchantNames[penchantIndex];
                 }
-                if (isBossSystem) {
-                  ai.econ_rate =
-                    (model.gwaioDifficultySettings.econBase() +
-                      maxDist *
-                        model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
-                  if (isBoss)
-                    ai.bossCommanders =
-                      model.gwaioDifficultySettings.bossCommanders();
-                } else
-                  ai.econ_rate =
-                    (model.gwaioDifficultySettings.econBase() +
-                      dist * model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
               };
 
               var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
