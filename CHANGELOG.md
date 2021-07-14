@@ -26,6 +26,7 @@
 - Queller Sub Commanders not scouting on small planets when only vehicles were available
 - Titans AI not building torpedo launchers
 - AI uses Stitches again
+- Upgraded Umbrellas shooting the ground on small planets
 
 ## v5.12.0 - 2021-07-04
 

@@ -43,6 +43,12 @@ define([
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
+        {
+          file: "/pa/units/orbital/ion_defense/ion_defense_ammo.json",
+          path: "turn_rate",
+          op: "replace",
+          value: 1000,
+        },
       ]);
     },
     dull: function () {},
