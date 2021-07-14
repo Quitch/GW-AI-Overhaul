@@ -435,6 +435,46 @@
           }
         ]
       ]
+    },
+    {
+      "name": "Assault - Basic Assault Bot - UC",
+      "to_build": "BasicAssaultBot",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Assault",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Assault - Light Laser Tank - UC",
+      "to_build": "LightLaserTank",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Assault",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
     }
   ]
 }
