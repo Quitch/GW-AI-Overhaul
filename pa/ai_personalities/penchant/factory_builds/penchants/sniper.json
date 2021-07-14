@@ -421,6 +421,26 @@
           }
         ]
       ]
+    },
+    {
+      "name": "Sniper - Basic Artillery Bot - UC",
+      "to_build": "BasicArtilleryBot",
+      "instance_count": -1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Sniper",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
     }
   ]
 }
