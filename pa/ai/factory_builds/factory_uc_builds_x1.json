@@ -29,6 +29,21 @@
           }
         ]
       ]
+    },
+    {
+      "name": "Basic AA Bot - UC",
+      "to_build": "BasicAABot",
+      "instance_count": 1,
+      "max_num_assisters": 10,
+      "priority": 100,
+      "builders": ["UnitCannon"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          }
+        ]
+      ]
     }
   ]
 }
