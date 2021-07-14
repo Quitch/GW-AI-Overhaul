@@ -90,6 +90,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Raider",
+            "boolean": false
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           }
         ]
