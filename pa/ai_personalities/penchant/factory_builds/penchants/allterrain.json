@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "All Terrain - Basic Assault Bot",
+      "name": "All-terrain - Basic Assault Bot",
       "to_build": "BasicAssaultBot",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "name": "All Terrain - Hover Tank",
+      "name": "All-terrain - Hover Tank",
       "to_build": "HoverTank",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -151,7 +151,7 @@
       ]
     },
     {
-      "name": "All Terrain - Advanced Assault Bot",
+      "name": "All-terrain - Advanced Assault Bot",
       "to_build": "AdvancedAssaultBot",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -199,7 +199,7 @@
       ]
     },
     {
-      "name": "All Terrain - Hover Ship",
+      "name": "All-terrain - Hover Ship",
       "to_build": "HoverShip",
       "instance_count": -1,
       "max_num_assisters": 15,
