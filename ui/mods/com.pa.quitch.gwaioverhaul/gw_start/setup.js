@@ -748,6 +748,7 @@ if (!gwaioSetupLoaded) {
                     "Raider",
                     "Ranked",
                     "Sniper",
+                    "Nuker",
                   ];
                   var penchantExclusions = [
                     [], // Vanilla
@@ -815,6 +816,7 @@ if (!gwaioSetupLoaded) {
                       "PenchantT1Naval",
                       "PenchantT2Naval",
                     ],
+                    [], // Nuker
                   ];
                   var penchantNames = [
                     "",
@@ -828,6 +830,7 @@ if (!gwaioSetupLoaded) {
                     "!LOC:Raider",
                     "!LOC:Ranked",
                     "!LOC:Sniper",
+                    "!LOC:Nuker",
                   ];
                   var penchantTag = _.sample(penchantTags);
                   var penchantIndex = _.indexOf(penchantTags, penchantTag);
