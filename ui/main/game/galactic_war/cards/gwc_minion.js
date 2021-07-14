@@ -52,7 +52,6 @@ define([
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
-      minion.personality.ai_path = gwaioFunctions.aiPath("ally");
       return {
         params: {
           minion: minion,
