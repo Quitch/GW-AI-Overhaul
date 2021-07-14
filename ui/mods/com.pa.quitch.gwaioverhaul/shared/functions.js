@@ -51,6 +51,10 @@ define([
       }
     },
     aiPath: function (type) {
+      var game = model.game();
+      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var inventory = game.inventory();
+
       if (type === "all" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/";
       else if (type === "ally" && this.aiEnabled() === "Queller")
@@ -59,6 +63,12 @@ define([
         return "/pa/ai_personalities/queller/q_uber/";
       else if (this.aiEnabled() === "Penchant")
         return "/pa/ai_personalities/penchant/";
+      else if (
+        type === "ally" &&
+        !_.isEmpty(inventory.aiMods()) &&
+        ai.mirrorMode !== true
+      )
+        return "/pa/ai_tech/";
       else return "/pa/ai/";
     },
   };
