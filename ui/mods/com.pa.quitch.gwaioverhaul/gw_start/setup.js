@@ -817,7 +817,7 @@ if (!gwaioSetupLoaded) {
                     ],
                   ];
                   var penchantNames = [
-                    "!LOC:Default",
+                    "",
                     "!LOC:Artillery",
                     "!LOC:Fortress",
                     "!LOC:All-terrain",
