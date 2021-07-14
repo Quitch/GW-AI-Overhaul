@@ -779,6 +779,7 @@ if (!gwaioSetupLoaded) {
                     ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
                     [
                       // Heavy
+                      "NoPercentage",
                       "PenchantT2Air",
                       "PenchantT1Bot",
                       "PenchantT2Bot",
@@ -789,6 +790,7 @@ if (!gwaioSetupLoaded) {
                     ],
                     [
                       // Infernodier
+                      "NoPercentage",
                       "PenchantT1Bot",
                       "PenchantT2Bot",
                       "PenchantT1Vehicle",
@@ -805,6 +807,7 @@ if (!gwaioSetupLoaded) {
                     ],
                     [
                       // Meta
+                      "NoPercentage",
                       "PenchantT2Air",
                       "PenchantT1Bot",
                       "PenchantT1Vehicle",
@@ -814,6 +817,7 @@ if (!gwaioSetupLoaded) {
                     ],
                     [
                       // Sniper
+                      "NoPercentage",
                       "PenchantT2Air",
                       "PenchantT1Bot",
                       "PenchantT2Bot",
