@@ -887,7 +887,7 @@ if (!gwaioSetupLoaded) {
                   if (numMinions > 0) {
                     info.boss.minions = [];
                     if (info.boss.isCluster === true) {
-                      var bossMinion = _.clone(
+                      var bossMinion = _.cloneDeep(
                         _.sample(
                           _.filter(GWFactions[info.faction].minions, {
                             name: "Security",
@@ -899,7 +899,7 @@ if (!gwaioSetupLoaded) {
                       info.boss.minions.push(bossMinion);
                     } else
                       _.times(numMinions, function () {
-                        bossMinion = _.clone(
+                        bossMinion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
                         );
                         setAIData(bossMinion, maxDist, true, false);
@@ -982,7 +982,7 @@ if (!gwaioSetupLoaded) {
                   if (numMinions > 0) {
                     worker.ai.minions = [];
                     if (worker.ai.name === "Security") {
-                      var minion = _.clone(
+                      var minion = _.cloneDeep(
                         _.sample(
                           _.filter(GWFactions[info.faction].minions, {
                             name: "Worker",
@@ -1004,7 +1004,7 @@ if (!gwaioSetupLoaded) {
                         );
                     else {
                       _.times(numMinions, function () {
-                        minion = _.clone(
+                        minion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
                         );
                         setAIData(minion, dist, false, false);
@@ -1026,7 +1026,7 @@ if (!gwaioSetupLoaded) {
                       if (worker.ai.foes === undefined) worker.ai.foes = [];
                       availableFactions = _.shuffle(availableFactions);
                       var foeFaction = availableFactions.splice(0, 1);
-                      var foeCommander = _.clone(
+                      var foeCommander = _.cloneDeep(
                         _.sample(GWFactions[foeFaction].minions)
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
