@@ -580,7 +580,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Heavy",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -600,7 +600,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Heavy",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"

@@ -535,7 +535,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Raider",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -555,7 +555,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Raider",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -575,7 +575,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Raider",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
@@ -595,7 +595,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "Raider",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "CanAffordBuildDemand"
