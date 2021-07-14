@@ -752,7 +752,7 @@ if (!gwaioSetupLoaded) {
                     "Heavy",
                     "Infernodier",
                     "Raider",
-                    "Ranked",
+                    "Meta",
                     "Sniper",
                     "Nuker",
                   ];
@@ -804,7 +804,7 @@ if (!gwaioSetupLoaded) {
                       "PenchantT2Naval",
                     ],
                     [
-                      // Ranked
+                      // Meta
                       "PenchantT2Air",
                       "PenchantT1Bot",
                       "PenchantT1Vehicle",
@@ -834,7 +834,7 @@ if (!gwaioSetupLoaded) {
                     "!LOC:Heavy",
                     "!LOC:Infernodier",
                     "!LOC:Raider",
-                    "!LOC:Ranked",
+                    "!LOC:Meta",
                     "!LOC:Sniper",
                     "!LOC:Nuker",
                   ];
