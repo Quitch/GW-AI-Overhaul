@@ -57,18 +57,19 @@ define([
 
       if (type === "all" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/";
-      else if (type === "ally" && this.aiEnabled() === "Queller")
-        return "/pa/ai_personalities/queller/q_gold/";
       else if (type === "enemy" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/q_uber/";
-      else if (this.aiEnabled() === "Penchant")
-        return "/pa/ai_personalities/penchant/";
+      // the order of path assignments must match/be matched with .player unit_map assignments in referee.js
+      else if (type === "ally" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/q_gold/";
       else if (
         type === "ally" &&
         !_.isEmpty(inventory.aiMods()) &&
         ai.mirrorMode !== true
       )
         return "/pa/ai_tech/";
+      else if (this.aiEnabled() === "Penchant")
+        return "/pa/ai_personalities/penchant/";
       else return "/pa/ai/";
     },
   };
