@@ -298,6 +298,7 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), ".player")
                   .then(function (playerSpecFiles) {
+                    // the order of unit_map assignments must match/be matched with aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
                       var playerFilesClassic = _.assign(
                         {
@@ -310,23 +311,6 @@ if (!gwaioRefereeChangesLoaded) {
                         ? _.assign(
                             {
                               "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
-                                playerX1AIUnitMap,
-                            },
-                            playerSpecFiles
-                          )
-                        : {};
-                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
-                      playerFilesClassic = _.assign(
-                        {
-                          "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
-                            playerAIUnitMap,
-                        },
-                        playerSpecFiles
-                      );
-                      playerFilesX1 = titans
-                        ? _.assign(
-                            {
-                              "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json.player":
                                 playerX1AIUnitMap,
                             },
                             playerSpecFiles
@@ -347,6 +331,23 @@ if (!gwaioRefereeChangesLoaded) {
                         ? _.assign(
                             {
                               "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json.player":
                                 playerX1AIUnitMap,
                             },
                             playerSpecFiles
@@ -730,7 +731,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 allyPath + filePath.slice(aiTechPath.length);
                             }
                           } else {
-                            // TITANS Sub Commanders share an ai_path with the enemy so need a new one
+                            // TITANS/PENCHANT Sub Commanders share an ai_path with the enemy so need a new one
                             if (_.startsWith(filePath, aiPath)) {
                               filePath =
                                 aiTechPath + filePath.slice(aiPath.length);
@@ -761,7 +762,7 @@ if (!gwaioRefereeChangesLoaded) {
             var game = self.game();
             var inventory = game.inventory();
 
-            if (quellerEnabled && inventory.minions().length > 0)
+            if (inventory.minions().length > 0)
               var aiFilePath = gwaioFunctions.aiPath("all");
             else {
               aiFilePath = gwaioFunctions.aiPath("enemy");
@@ -773,21 +774,9 @@ if (!gwaioRefereeChangesLoaded) {
               var subCommanders = inventory.minions();
               if (ai.mirrorMode === true) {
                 console.log("Parsing files for All");
-                if (!quellerEnabled) {
-                  _.forEach(subCommanders, function (subCommander) {
-                    // Reset ai_path in case it's set to aiTechPath
-                    subCommander.personality.ai_path = aiFilePath;
-                  });
-                }
                 parseFiles(aiFilePath, deferredAIFiles, "All");
               } else if (subCommanders.length > 0) {
                 console.log("Parsing files for Sub Commanders");
-                if (!quellerEnabled) {
-                  _.forEach(subCommanders, function (subCommander) {
-                    // TITANS Sub Commanders share an ai_path with the enemy so need a new one
-                    subCommander.personality.ai_path = aiTechPath;
-                  });
-                }
                 parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
               } else {
                 console.log("Parsing files for None because no AI");

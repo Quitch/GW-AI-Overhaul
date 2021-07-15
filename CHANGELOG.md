@@ -5,6 +5,7 @@
 ### Fixed
 
 - Rapid Deployment Sub Commanders not building Stingers
+- Sub Commanders not utilising player tech fully if the Penchant AI was in use
 
 ## v5.13.1 - 2021-07-15
 
