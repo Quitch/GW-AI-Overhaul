@@ -771,11 +771,10 @@ if (!gwaioRefereeChangesLoaded) {
             if (!_.isEmpty(inventory.aiMods())) {
               console.log("We are holding AI affecting tech");
               var ai = game.galaxy().stars()[game.currentStar()].ai();
-              var subCommanders = inventory.minions();
               if (ai.mirrorMode === true) {
                 console.log("Parsing files for All");
                 parseFiles(aiFilePath, deferredAIFiles, "All");
-              } else if (subCommanders.length > 0) {
+              } else if (inventory.minions().length > 0) {
                 console.log("Parsing files for Sub Commanders");
                 parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
               } else {
