@@ -40,7 +40,6 @@
 - Titans AI not building torpedo launchers
 - AI uses Stitches again
 - Upgraded Umbrellas shooting the ground on small planets
-- Titans AI not building Stingers in Unit Cannons
 
 ## v5.12.0 - 2021-07-04
 
