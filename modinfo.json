@@ -4,9 +4,9 @@
   "display_name": "Galactic War Overhaul",
   "description": "Make Galactic War more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and smarter AI. Start a new war to enjoy all the new features and check out the new war tooltips for more information and difficulty recommendations.",
   "author": "Quitch",
-  "version": "5.12.0",
-  "build": "115902",
-  "date": "2021-07-04",
+  "version": "5.13.0",
+  "build": "115923",
+  "date": "2021-07-15",
   "signature": " ",
   "forum": "https://forums.planetaryannihilation.com/threads/client-galactic-war-overhaul.72360/",
   "category": [
@@ -25,7 +25,10 @@
   ],
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
-    "gw_start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"],
+    "gw_start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"
+    ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",

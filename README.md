@@ -1,5 +1,7 @@
 # Galactic War Overhaul Readme
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Quitch/GW-AI-Overhaul)
+
 This mod works with Planetary Annihilation: TITANS only. It changes the following elements of Galactic War:
 
 - Restore faction personalities:
@@ -33,7 +35,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Adds a new faction
 - Fixes all the errors in the tech cards
 - 109 new tech cards
-- Enhanced AI through AI Bugfixes and Enhancements and Queller AI
+- Multiple AI opponents to choose from
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 

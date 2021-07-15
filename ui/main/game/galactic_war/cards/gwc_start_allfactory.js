@@ -48,6 +48,7 @@ define([
             "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
             "/pa/units/land/assault_bot/assault_bot.json",
             "/pa/units/land/attack_vehicle/attack_vehicle.json",
+            "/pa/units/land/bot_aa/bot_aa.json",
             "/pa/units/land/bot_bomb/bot_bomb.json",
             "/pa/units/land/bot_factory/bot_factory.json",
             "/pa/units/land/bot_grenadier/bot_grenadier.json",

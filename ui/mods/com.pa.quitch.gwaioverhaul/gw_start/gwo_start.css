@@ -1,0 +1,10 @@
+#new-game-right.col {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+#new-game-right .header + * {
+  overflow-y: auto;
+  flex-grow: 1;
+}

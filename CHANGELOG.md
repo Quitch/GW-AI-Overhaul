@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## v5.13.0 - 2021-07-15
+
+### Added
+
+- New AI called Penchant
+  - Uses the Titans AI as a base
+  - Each enemy has a favoured style of play which is reflected in their unit choices
+  - This information is added to the enemy's personality in the intelligence panel
+  - Sub Commanders are unaffected
+
+### Change
+
+- Increased the amount of freedom procedural maps have in using water and lava
+- Increased the range of metal density and clusters used by procedural generation
+- AI selection moved to a drop-down
+- Removed code now present in the base game
+
+### Fixed
+
+- Rerolls being offered for loadouts
+- Assault Commander loadout missing the Stinger
+- Titans AI not building the Stinger from the Unit Cannon
+- Setup column being too tall for the screen causing the entire page to scroll instead of just the column - with thanks to burntcustard
+- Queller Sub Commanders not scouting on small planets when only vehicles were available
+- Titans AI not building torpedo launchers
+- AI uses Stitches again
+- Upgraded Umbrellas shooting the ground on small planets
+- Titans AI not building Stingers in Unit Cannons
+
 ## v5.12.0 - 2021-07-04
 
 ### Change
@@ -17,7 +46,7 @@
 
 ### Fixed
 
-- AI commander torpedo and AA ammo not being buffed when enhanced commander tech present
+- AI commander torpedo and AA ammo not being included in commander damage buffs
 - AI Tech speed increases not being applied to air units
 - Cluster boss commander not receiving combat tech damage bonuses
 
@@ -135,8 +164,8 @@
 - Chance of being dealt Bot Anti-Air Tech is higher if you don't have other forms of mobile anti-air
 - Updated AI Bugfixes and Enhancements to v2.7.0
 - Defense Tech Commander no longer gives Radar to the commander
-- TITANS AI only builds anti-air when the enemy has air
-- TITANS AI will build the Hermes Space Probe on single planet systems
+- Titans AI only builds anti-air when the enemy has air
+- Titans AI will build the Hermes Space Probe on single planet systems
 - Vehicle Factory Upgrade Tech uses a picture of vehicle factory
 
 ### Fixed

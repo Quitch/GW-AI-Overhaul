@@ -57,11 +57,16 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              if (gwaioFunctions.quellerAIEnabled()) {
+              if (gwaioFunctions.aiEnabled() === "Queller") {
                 var aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+              } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                aiUnitMapPath =
+                  "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
+                aiUnitMapTitansPath =
+                  "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json";
               } else {
                 aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
@@ -78,121 +83,6 @@ if (!gwaioRefereeChangesLoaded) {
                 aiX1MapGet
               ) {
                 /* start of gw_spec.js replacements */
-                var tagSpec = function (specId, tag, spec) {
-                  var moreWork = [];
-                  if (!_.isObject(spec)) return moreWork;
-                  var applyTag = function (obj, key) {
-                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                      if (_.isString(obj[key])) {
-                        moreWork.push(obj[key]);
-                        obj[key] = obj[key] + tag;
-                      } else if (_.isArray(obj[key])) {
-                        obj[key] = _.map(obj[key], function (value) {
-                          moreWork.push(value);
-                          return value + tag;
-                        });
-                      }
-                    }
-                  };
-                  // Units
-                  applyTag(spec, "base_spec");
-                  if (spec.tools) {
-                    _.forEach(spec.tools, function (tool) {
-                      applyTag(tool, "spec_id");
-                    });
-                  }
-                  applyTag(spec, "replaceable_units");
-                  applyTag(spec, "buildable_projectiles");
-                  if (
-                    spec.factory &&
-                    _.isString(spec.factory.initial_build_spec)
-                  ) {
-                    applyTag(spec.factory, "initial_build_spec");
-                  }
-                  // Tools
-                  if (spec.ammo_id) {
-                    if (_.isString(spec.ammo_id)) {
-                      applyTag(spec, "ammo_id");
-                    } else {
-                      _.forEach(spec.ammo_id, function (ammo) {
-                        applyTag(ammo, "id");
-                      });
-                    }
-                  }
-                  // Add support for death_weapon specs
-                  if (spec.death_weapon) {
-                    if (_.isString(spec.death_weapon.ground_ammo_spec))
-                      applyTag(spec.death_weapon, "ground_ammo_spec");
-
-                    if (_.isString(spec.death_weapon.air_ammo_spec))
-                      applyTag(spec.death_weapon, "air_ammo_spec");
-                  }
-                  return moreWork;
-                };
-
-                // replace GW.specs.genUnitSpecs() to call our own tagSpec()
-                var genUnitSpecs = function (units, tag) {
-                  if (!tag) return;
-                  var result = $.Deferred();
-                  var results = {};
-                  var work = units.slice(0);
-                  var step = function () {
-                    var item;
-                    var pending = 0;
-                    var fetch = function (item) {
-                      $.ajax({
-                        url: "coui:/" + item,
-                        success: function (data) {
-                          try {
-                            data = JSON.parse(data);
-                          } catch (e) {
-                            /* empty */
-                          }
-                          var newWork = tagSpec(item, tag, data);
-                          work = work.concat(newWork);
-                          results[item + tag] = data;
-                        },
-                        error: function (request, status, error) {
-                          console.log(
-                            "error loading spec:",
-                            item,
-                            request,
-                            status,
-                            error
-                          );
-                        },
-                        complete: function () {
-                          --pending;
-                          if (!pending) _.delay(step);
-                        },
-                      });
-                    };
-                    while (work.length) {
-                      item = work.pop();
-                      if (
-                        Object.prototype.hasOwnProperty.call(
-                          results,
-                          item + tag
-                        )
-                      )
-                        continue;
-                      ++pending;
-                      fetch(item);
-                    }
-                    if (!pending) _.delay(finish);
-                  };
-                  var finish = _.once(function () {
-                    results["/pa/units/unit_list.json" + tag] = {
-                      units: _.map(units, function (unit) {
-                        return unit + tag;
-                      }),
-                    };
-                    result.resolve(results);
-                  });
-                  step();
-                  return result;
-                };
-
                 var flattenBaseSpecs = function (spec, specs, tag) {
                   if (!Object.prototype.hasOwnProperty.call(spec, "base_spec"))
                     return spec;
@@ -267,7 +157,6 @@ if (!gwaioRefereeChangesLoaded) {
                     tag: function (attribute) {
                       return attribute + specTag;
                     },
-                    // New op to allow removal of an item from an array
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute))
                         attribute = _.isEmpty(attribute) ? [] : [attribute];
@@ -363,35 +252,37 @@ if (!gwaioRefereeChangesLoaded) {
                     aiTag[n]
                   );
 
-                  genUnitSpecs(units, aiTag[n]).then(function (aiSpecFiles) {
-                    var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
-                    var enemyAIUnitMapPair = {};
-                    enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                    var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
-                    var enemyX1AIUnitMapPair = {};
-                    enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
-                      enemyX1AIUnitMap;
-                    var aiFilesClassic = _.assign(
-                      enemyAIUnitMapPair,
-                      aiSpecFiles
-                    );
-                    var aiFilesX1 = titans
-                      ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
-                      : {};
-                    var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-                    if (ai.inventory) {
-                      var aiInventory = [];
-                      aiInventory =
-                        currentCount === 0
-                          ? ai.inventory
-                          : ai.foes[currentCount - 1].inventory;
-                      if (ai.mirrorMode === true) {
-                        aiInventory = aiInventory.concat(inventory.mods());
+                  GW.specs
+                    .genUnitSpecs(units, aiTag[n])
+                    .then(function (aiSpecFiles) {
+                      var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
+                      var enemyAIUnitMapPair = {};
+                      enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+                      var enemyX1AIUnitMapFile = aiUnitMapTitansPath + aiTag[n];
+                      var enemyX1AIUnitMapPair = {};
+                      enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] =
+                        enemyX1AIUnitMap;
+                      var aiFilesClassic = _.assign(
+                        enemyAIUnitMapPair,
+                        aiSpecFiles
+                      );
+                      var aiFilesX1 = titans
+                        ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
+                        : {};
+                      var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+                      if (ai.inventory) {
+                        var aiInventory = [];
+                        aiInventory =
+                          currentCount === 0
+                            ? ai.inventory
+                            : ai.foes[currentCount - 1].inventory;
+                        if (ai.mirrorMode === true) {
+                          aiInventory = aiInventory.concat(inventory.mods());
+                        }
+                        modSpecs(aiFiles, aiInventory, aiTag[n]);
                       }
-                      modSpecs(aiFiles, aiInventory, aiTag[n]);
-                    }
-                    aiFactions[currentCount].resolve(aiFiles);
-                  });
+                      aiFactions[currentCount].resolve(aiFiles);
+                    });
                 });
 
                 var playerAIUnitMap = GW.specs.genAIUnitMap(
@@ -404,72 +295,89 @@ if (!gwaioRefereeChangesLoaded) {
 
                 var inventory = self.game().inventory();
 
-                genUnitSpecs(inventory.units(), ".player").then(function (
-                  playerSpecFiles
-                ) {
-                  if (gwaioFunctions.quellerAIEnabled()) {
-                    var playerFilesClassic = _.assign(
-                      {
-                        "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
-                          playerAIUnitMap,
-                      },
-                      playerSpecFiles
+                GW.specs
+                  .genUnitSpecs(inventory.units(), ".player")
+                  .then(function (playerSpecFiles) {
+                    if (gwaioFunctions.aiEnabled() === "Queller") {
+                      var playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      var playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else if (
+                      !_.isEmpty(inventory.aiMods()) &&
+                      ai.mirrorMode !== true
+                    ) {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    }
+                    var playerFiles = _.assign(
+                      {},
+                      playerFilesClassic,
+                      playerFilesX1
                     );
-                    var playerFilesX1 = titans
-                      ? _.assign(
-                          {
-                            "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
-                              playerX1AIUnitMap,
-                          },
-                          playerSpecFiles
-                        )
-                      : {};
-                  } else if (
-                    !_.isEmpty(inventory.aiMods()) &&
-                    ai.mirrorMode !== true
-                  ) {
-                    playerFilesClassic = _.assign(
-                      {
-                        "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
-                          playerAIUnitMap,
-                      },
-                      playerSpecFiles
-                    );
-                    playerFilesX1 = titans
-                      ? _.assign(
-                          {
-                            "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
-                              playerX1AIUnitMap,
-                          },
-                          playerSpecFiles
-                        )
-                      : {};
-                  } else {
-                    playerFilesClassic = _.assign(
-                      {
-                        "/pa/ai/unit_maps/ai_unit_map.json.player":
-                          playerAIUnitMap,
-                      },
-                      playerSpecFiles
-                    );
-                    playerFilesX1 = titans
-                      ? _.assign(
-                          {
-                            "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                              playerX1AIUnitMap,
-                          },
-                          playerSpecFiles
-                        )
-                      : {};
-                  }
-                  var playerFiles = _.assign(
-                    {},
-                    playerFilesClassic,
-                    playerFilesX1
-                  );
-                  modSpecs(playerFiles, inventory.mods(), ".player");
-                  playerFileGen.resolve(playerFiles);
-                });
+                    modSpecs(playerFiles, inventory.mods(), ".player");
+                    playerFileGen.resolve(playerFiles);
+                  });
               });
 
               _.times(aiFactionCount, function (n) {
@@ -657,7 +565,8 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            if (gwaioFunctions.aiEnabled() === "Queller")
+              var quellerEnabled = true;
             var aiTechPath = "/pa/ai_tech/";
 
             var parseFiles = function (aiPath, promise, aiToModify) {
@@ -687,6 +596,8 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                 }
 
+                var allyPath = gwaioFunctions.aiPath("ally");
+
                 _.forEach(fileList, function (filePath) {
                   if (
                     _.endsWith(filePath, ".json") &&
@@ -695,13 +606,10 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
-                    var quellerAllyPath =
-                      "/pa/ai_personalities/queller/q_gold/";
-
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
-                      (_.startsWith(filePath, quellerAllyPath) ||
+                      (_.startsWith(filePath, allyPath) ||
                         _.startsWith(filePath, aiTechPath))
                     )
                       var quellerSubCommander = true;
@@ -741,14 +649,14 @@ if (!gwaioRefereeChangesLoaded) {
                             if (quellerEnabled) {
                               // We don't know if the aiPath contains q_uber
                               var quellerEnemyPath =
-                                "/pa/ai_personalities/queller/q_uber/";
+                                gwaioFunctions.aiPath("enemy");
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 filePath =
-                                  quellerAllyPath +
+                                  allyPath +
                                   filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
                               }
@@ -771,8 +679,7 @@ if (!gwaioRefereeChangesLoaded) {
                             // Put "load" files where Queller expects them to be
                             if (_.startsWith(filePath, aiTechPath)) {
                               filePath =
-                                quellerAllyPath +
-                                filePath.slice(aiTechPath.length);
+                                allyPath + filePath.slice(aiTechPath.length);
                             }
                           } else {
                             // TITANS Sub Commanders share an ai_path with the enemy so need a new one
@@ -803,11 +710,9 @@ if (!gwaioRefereeChangesLoaded) {
             var inventory = game.inventory();
 
             if (quellerEnabled && inventory.minions().length > 0)
-              var aiFilePath = "/pa/ai_personalities/queller/";
-            else if (quellerEnabled) {
-              aiFilePath = "/pa/ai_personalities/queller/q_uber/";
-            } else {
-              aiFilePath = "/pa/ai/";
+              var aiFilePath = gwaioFunctions.aiPath("all");
+            else {
+              aiFilePath = gwaioFunctions.aiPath("enemy");
             }
 
             if (!_.isEmpty(inventory.aiMods())) {
@@ -864,13 +769,11 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var quellerEnabled = gwaioFunctions.quellerAIEnabled();
+            var allyPath = gwaioFunctions.aiPath("ally");
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
-              // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                subcommander.personality.ai_path =
-                  "/pa/ai_personalities/queller/q_gold";
+              // Avoid breaking saves from earlier versions
+              subcommander.personality.ai_path = allyPath;
 
               armies.push({
                 slots: [
@@ -904,9 +807,10 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
-            // Avoid breaking saves from GWO v5.5.3 and earlier
-            if (quellerEnabled)
-              ai.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+            var enemyAIPath = gwaioFunctions.aiPath("enemy");
+
+            // Avoid breaking saves from earlier versions
+            ai.personality.ai_path = enemyAIPath;
 
             var slotsArray = [];
             _.times(
@@ -936,10 +840,8 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
-              // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                minion.personality.ai_path =
-                  "/pa/ai_personalities/queller/q_uber";
+              // Avoid breaking saves from earlier versions
+              minion.personality.ai_path = enemyAIPath;
 
               var slotsArrayMinions = [];
               _.times(
@@ -973,9 +875,8 @@ if (!gwaioRefereeChangesLoaded) {
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
 
-              // Avoid breaking saves from GWO v5.5.3 and earlier
-              if (quellerEnabled)
-                foe.personality.ai_path = "/pa/ai_personalities/queller/q_uber";
+              // Avoid breaking saves from earlier versions
+              foe.personality.ai_path = enemyAIPath;
 
               var slotsArrayFoes = [];
               _.times(

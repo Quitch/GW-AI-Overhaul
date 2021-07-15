@@ -43,12 +43,33 @@ define([
       } else
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
-    quellerAIEnabled: function () {
+    aiEnabled: function () {
       var galaxy = model.game().galaxy();
       var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (originSystem.gwaio && originSystem.gwaio.ai === "Queller") {
-        return true;
+      if (originSystem.gwaio) {
+        return originSystem.gwaio.ai;
       }
+    },
+    aiPath: function (type) {
+      var game = model.game();
+      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var inventory = game.inventory();
+
+      if (type === "all" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/";
+      else if (type === "ally" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/q_gold/";
+      else if (type === "enemy" && this.aiEnabled() === "Queller")
+        return "/pa/ai_personalities/queller/q_uber/";
+      else if (this.aiEnabled() === "Penchant")
+        return "/pa/ai_personalities/penchant/";
+      else if (
+        type === "ally" &&
+        !_.isEmpty(inventory.aiMods()) &&
+        ai.mirrorMode !== true
+      )
+        return "/pa/ai_tech/";
+      else return "/pa/ai/";
     },
   };
 });

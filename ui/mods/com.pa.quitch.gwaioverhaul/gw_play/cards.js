@@ -137,10 +137,7 @@ if (!gwaioCardsLoaded) {
           }
           var star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (
-            model.gwaioRerollsUsed() >= cardsOffered - 1 ||
-            (self.isLoadout && self.isLoadout())
-          ) {
+          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
             model.gwaioOfferRerolls(false);
           }
           star.cardList([]);
@@ -161,15 +158,13 @@ if (!gwaioCardsLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
           ],
           function (
             GW,
             GWFactions,
             gwaioBank,
             gwaioCardsToUnits,
-            gwaioUnitsToNames,
-            gwaioFunctions
+            gwaioUnitsToNames
           ) {
             var inventory = game.inventory();
 
@@ -182,10 +177,6 @@ if (!gwaioCardsLoaded) {
               var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
-                if (gwaioFunctions.quellerAIEnabled()) {
-                  subcommander.personality.ai_path =
-                    "/pa/ai_personalities/queller/q_gold";
-                }
                 inventory.cards().push({
                   id: "gwc_minion",
                   minion: subcommander,
@@ -589,10 +580,6 @@ if (!gwaioCardsLoaded) {
                         GWFactions[playerFaction].minions
                       );
                       product.unique = Math.random();
-                      if (gwaioFunctions.quellerAIEnabled()) {
-                        product.minion.personality.ai_path =
-                          "/pa/ai_personalities/queller/q_gold";
-                      }
                     });
                   } else if (product.id === "gwc_add_card_slot") {
                     product.allowOverflow = true;
@@ -637,6 +624,8 @@ if (!gwaioCardsLoaded) {
                 if (ok) star.cardList(result);
               });
               $.when(dealStarCards).then(function () {
+                if (model.currentSystemCardList()[0].isLoadout())
+                  model.gwaioOfferRerolls(false);
                 model.driveAccessInProgress(true);
                 GW.manifest.saveGame(game).then(function () {
                   model.driveAccessInProgress(false);
