@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Rapid Deployment Sub Commanders not building Stingers
+
 ## v5.13.1 - 2021-07-15
 
 ### Fixed
