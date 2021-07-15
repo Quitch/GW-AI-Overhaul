@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.13.1 - 2021-07-15
+
+### Fixed
+
+- AI tooltip not marked for translation.
+
 ## v5.13.0 - 2021-07-15
 
 ### Added
