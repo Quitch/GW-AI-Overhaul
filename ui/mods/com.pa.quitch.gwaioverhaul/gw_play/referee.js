@@ -639,7 +639,7 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                 }
 
-                var allyPath = gwaioFunctions.aiPath("ally");
+                var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
 
                 _.forEach(fileList, function (filePath) {
                   console.log("Processing:", filePath);
@@ -653,7 +653,7 @@ if (!gwaioRefereeChangesLoaded) {
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
-                      (_.startsWith(filePath, allyPath) ||
+                      (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
                     )
                       var quellerSubCommander = true;
@@ -702,7 +702,7 @@ if (!gwaioRefereeChangesLoaded) {
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 filePath =
-                                  allyPath +
+                                  subcommanderAIPath +
                                   filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
                                 console.log("New filepath (All):", filePath);
@@ -728,7 +728,8 @@ if (!gwaioRefereeChangesLoaded) {
                             // Put "load" files where Queller expects them to be
                             if (_.startsWith(filePath, aiTechPath)) {
                               filePath =
-                                allyPath + filePath.slice(aiTechPath.length);
+                                subcommanderAIPath +
+                                filePath.slice(aiTechPath.length);
                             }
                           } else {
                             // TITANS/PENCHANT Sub Commanders share an ai_path with the enemy so need a new one
@@ -815,11 +816,11 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var allyPath = gwaioFunctions.aiPath("ally");
+            var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
             // eslint-disable-next-line lodash/prefer-map
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking saves from earlier versions
-              subcommander.personality.ai_path = allyPath;
+              subcommander.personality.ai_path = subcommanderAIPath;
 
               armies.push({
                 slots: [
