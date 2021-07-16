@@ -761,8 +761,9 @@ if (!gwaioRefereeChangesLoaded) {
 
             var game = self.game();
             var inventory = game.inventory();
+            var subcommanders = inventory.minions();
 
-            if (inventory.minions().length > 0)
+            if (subcommanders.length > 0)
               var aiFilePath = gwaioFunctions.aiPath("all");
             else {
               aiFilePath = gwaioFunctions.aiPath("enemy");
@@ -776,7 +777,7 @@ if (!gwaioRefereeChangesLoaded) {
             } else if (ai.mirrorMode === true) {
               console.log("Parsing files for All");
               parseFiles(aiFilePath, deferredAIFiles, "All");
-            } else if (inventory.minions().length > 0) {
+            } else if (subcommanders.length > 0) {
               console.log("Parsing files for Sub Commanders");
               parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
             } else {
