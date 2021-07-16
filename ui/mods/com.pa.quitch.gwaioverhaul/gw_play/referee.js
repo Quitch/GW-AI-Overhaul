@@ -768,21 +768,19 @@ if (!gwaioRefereeChangesLoaded) {
               aiFilePath = gwaioFunctions.aiPath("enemy");
             }
 
-            if (!_.isEmpty(inventory.aiMods())) {
-              console.log("We are holding AI affecting tech");
-              var ai = game.galaxy().stars()[game.currentStar()].ai();
-              if (ai.mirrorMode === true) {
-                console.log("Parsing files for All");
-                parseFiles(aiFilePath, deferredAIFiles, "All");
-              } else if (inventory.minions().length > 0) {
-                console.log("Parsing files for Sub Commanders");
-                parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
-              } else {
-                console.log("Parsing files for None because no AI");
-                parseFiles(aiFilePath, deferredAIFiles, "None");
-              }
-            } else {
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
+
+            if (_.isEmpty(inventory.aiMods())) {
               console.log("Parsing files for None because no tech");
+              parseFiles(aiFilePath, deferredAIFiles, "None");
+            } else if (ai.mirrorMode === true) {
+              console.log("Parsing files for All");
+              parseFiles(aiFilePath, deferredAIFiles, "All");
+            } else if (inventory.minions().length > 0) {
+              console.log("Parsing files for Sub Commanders");
+              parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
+            } else {
+              console.log("Parsing files for None because no affected AI");
               parseFiles(aiFilePath, deferredAIFiles, "None");
             }
 
