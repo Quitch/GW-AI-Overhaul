@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- The Guardians won't tell you their Penchant personality
+
 ## v5.13.2 - 2021-07-15
 
 ### Fixed
