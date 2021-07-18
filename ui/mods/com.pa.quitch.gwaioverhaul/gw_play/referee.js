@@ -163,7 +163,6 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isArray(value))
                         var args = [attribute].concat(value);
                       else args = [attribute, value];
-
                       return _.pull.apply(this, args);
                     },
                     // New op to remove text in a string
