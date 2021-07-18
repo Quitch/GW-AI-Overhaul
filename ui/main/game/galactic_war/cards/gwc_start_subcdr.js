@@ -54,7 +54,6 @@ define([
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
         ) {
-          // eslint-disable-next-line lodash/prefer-map
           context.minions.forEach(function (minion) {
             inventory.minions.push(minion);
           });

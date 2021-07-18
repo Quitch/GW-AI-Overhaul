@@ -818,9 +818,9 @@ if (!gwaioRefereeChangesLoaded) {
               "no_restriction",
             ];
             var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
-            // eslint-disable-next-line lodash/prefer-map
+
             _.forEach(inventory.minions(), function (subcommander) {
-              // Avoid breaking saves from earlier versions
+              // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
               armies.push({
@@ -851,13 +851,14 @@ if (!gwaioRefereeChangesLoaded) {
               aiNewTag = aiNewTag + n;
               aiTag.push(aiNewTag);
             });
+
             // Setup AI System Owner
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
             var enemyAIPath = gwaioFunctions.aiPath("enemy");
 
-            // Avoid breaking saves from earlier versions
+            // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
 
             var slotsArray = [];
@@ -888,7 +889,7 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
-              // Avoid breaking saves from earlier versions
+              // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = enemyAIPath;
 
               var slotsArrayMinions = [];
@@ -923,7 +924,7 @@ if (!gwaioRefereeChangesLoaded) {
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
 
-              // Avoid breaking saves from earlier versions
+              // Avoid breaking enemies from earlier versions
               foe.personality.ai_path = enemyAIPath;
 
               var slotsArrayFoes = [];
