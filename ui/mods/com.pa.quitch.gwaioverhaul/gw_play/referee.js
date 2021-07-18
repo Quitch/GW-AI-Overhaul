@@ -103,11 +103,11 @@ if (!gwaioRefereeChangesLoaded) {
 
                 var modSpecs = function (specs, mods, specTag) {
                   var load = function (specId) {
-                    taggedId = specId;
+                    var taggedId = specId;
                     if (
                       !Object.prototype.hasOwnProperty.call(specs, taggedId)
                     ) {
-                      var taggedId = specId + specTag;
+                      taggedId = specId + specTag;
                       if (
                         !Object.prototype.hasOwnProperty.call(specs, taggedId)
                       )
