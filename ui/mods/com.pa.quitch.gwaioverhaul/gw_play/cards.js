@@ -32,7 +32,7 @@ if (!gwaioCardsLoaded) {
           });
           // GWAIO - recognise the mod's loadouts as loadouts
           self.isLoadout = ko.computed(function () {
-            return self.id() && _.includes(self.id(), "_start_");
+            return _.includes(self.id(), "_start_");
           });
 
           var loaded = $.Deferred();
