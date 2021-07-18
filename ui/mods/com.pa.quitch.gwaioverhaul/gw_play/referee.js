@@ -732,7 +732,7 @@ if (!gwaioRefereeChangesLoaded) {
                                 filePath.slice(aiTechPath.length);
                             }
                           } else {
-                            // TITANS/PENCHANT Sub Commanders share an ai_path with the enemy so need a new one
+                            // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                             if (_.startsWith(filePath, aiPath)) {
                               filePath =
                                 aiTechPath + filePath.slice(aiPath.length);
