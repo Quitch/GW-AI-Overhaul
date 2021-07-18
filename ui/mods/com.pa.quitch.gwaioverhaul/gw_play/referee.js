@@ -974,8 +974,6 @@ if (!gwaioRefereeChangesLoaded) {
               });
             });
             config.player.commander += playerTag;
-            // Store the game in the config for diagnostic purposes.
-            config.gw = game.save();
             self.config(config);
           };
 
