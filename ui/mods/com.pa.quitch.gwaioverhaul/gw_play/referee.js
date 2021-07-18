@@ -285,18 +285,20 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                 });
 
+                var playerTag = ".player";
+
                 var playerAIUnitMap = GW.specs.genAIUnitMap(
                   aiUnitMap,
-                  ".player"
+                  playerTag
                 );
                 var playerX1AIUnitMap = titans
-                  ? GW.specs.genAIUnitMap(aiX1UnitMap, ".player")
+                  ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
 
                 var inventory = self.game().inventory();
 
                 GW.specs
-                  .genUnitSpecs(inventory.units(), ".player")
+                  .genUnitSpecs(inventory.units(), playerTag)
                   .then(function (playerSpecFiles) {
                     // the order of unit_map assignments must match/be matched with aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
@@ -376,7 +378,7 @@ if (!gwaioRefereeChangesLoaded) {
                       playerFilesClassic,
                       playerFilesX1
                     );
-                    modSpecs(playerFiles, inventory.mods(), ".player");
+                    modSpecs(playerFiles, inventory.mods(), playerTag);
                     playerFileGen.resolve(playerFiles);
                   });
               });
@@ -802,12 +804,13 @@ if (!gwaioRefereeChangesLoaded) {
             var game = self.game();
             var inventory = game.inventory();
             var playerName = ko.observable().extend({ session: "displayName" });
+            var playerTag = ".player";
             var armies = [
               {
                 slots: [{ name: playerName() || "Player" }],
                 color: inventory.getTag("global", "playerColor"),
                 econ_rate: 1,
-                spec_tag: ".player",
+                spec_tag: playerTag,
                 alliance_group: 1,
               },
             ];
@@ -834,7 +837,7 @@ if (!gwaioRefereeChangesLoaded) {
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,
-                spec_tag: ".player",
+                spec_tag: playerTag,
                 alliance_group: 1,
               });
             });
@@ -966,12 +969,12 @@ if (!gwaioRefereeChangesLoaded) {
               // eslint-disable-next-line lodash/prefer-filter
               _.forEach(army.slots, function (slot) {
                 if (slot.ai) {
-                  if (army.alliance_group === 1) slot.commander += ".player";
+                  if (army.alliance_group === 1) slot.commander += playerTag;
                   else slot.commander += aiTag[army.alliance_group - 2];
                 }
               });
             });
-            config.player.commander += ".player";
+            config.player.commander += playerTag;
             // Store the game in the config for diagnostic purposes.
             config.gw = game.save();
             self.config(config);
