@@ -621,7 +621,6 @@ if (!gwaioRefereeChangesLoaded) {
                   aiMods = _.partition(aiMods, { op: "load" });
 
                   // process ai load ops
-                  // eslint-disable-next-line lodash/prefer-map
                   _.forEach(aiMods[0], function (aiMod) {
                     if (aiMod.type === "fabber")
                       var managerPath = "fabber_builds/";
