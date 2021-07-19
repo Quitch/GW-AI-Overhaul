@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Advanced Air Fighter",
+      "name": "gwaio_start_rapid - Advanced Air Fighter",
       "to_build": "AdvancedFighter",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -66,7 +66,7 @@
       ]
     },
     {
-      "name": "Advanced Strafer",
+      "name": "gwaio_start_rapid - Advanced Strafer",
       "to_build": "Strafer",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -100,7 +100,7 @@
       ]
     },
     {
-      "name": "Advanced Air Bomber",
+      "name": "gwaio_start_rapid - Advanced Air Bomber",
       "to_build": "HeavyBomber",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -134,7 +134,7 @@
       ]
     },
     {
-      "name": "Support Platform",
+      "name": "gwaio_start_rapid - Support Platform",
       "to_build": "SupportPlatform",
       "instance_count": 1,
       "max_num_assisters": 10,
@@ -160,7 +160,7 @@
       ]
     },
     {
-      "name": "Basic Air Fabber",
+      "name": "gwaio_start_rapid - Basic Air Fabber",
       "to_build": "BasicAirFabber",
       "instance_count": 1,
       "max_num_assisters": 10,
@@ -196,7 +196,7 @@
       ]
     },
     {
-      "name": "Air Scout",
+      "name": "gwaio_start_rapid - Air Scout",
       "to_build": "AirScout",
       "instance_count": 1,
       "priority": 98,
@@ -257,7 +257,7 @@
       ]
     },
     {
-      "name": "Basic Air Fighter",
+      "name": "gwaio_start_rapid - Basic Air Fighter",
       "to_build": "BasicFighter",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -322,7 +322,7 @@
       ]
     },
     {
-      "name": "Basic Air Bomber",
+      "name": "gwaio_start_rapid - Basic Air Bomber",
       "to_build": "BasicBomber",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -356,7 +356,7 @@
       ]
     },
     {
-      "name": "Advanced Air Fabber",
+      "name": "gwaio_start_rapid - Advanced Air Fabber",
       "to_build": "AdvancedAirFabber",
       "instance_count": 1,
       "max_num_assisters": 15,
@@ -394,7 +394,7 @@
       ]
     },
     {
-      "name": "Advanced Air Bomber",
+      "name": "gwaio_start_rapid - Advanced Air Bomber",
       "to_build": "AdvancedBomber",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -428,7 +428,7 @@
       ]
     },
     {
-      "name": "Advanced Gunship",
+      "name": "gwaio_start_rapid - Advanced Gunship",
       "to_build": "AdvancedGunship",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -462,7 +462,7 @@
       ]
     },
     {
-      "name": "Attack Vehicle",
+      "name": "gwaio_start_rapid - Attack Vehicle",
       "to_build": "AttackVehicle",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -548,7 +548,7 @@
       ]
     },
     {
-      "name": "Tesla Bot",
+      "name": "gwaio_start_rapid - Tesla Bot",
       "to_build": "TeslaBot",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -614,7 +614,7 @@
       ]
     },
     {
-      "name": "Hover Tank",
+      "name": "gwaio_start_rapid - Hover Tank",
       "to_build": "HoverTank",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -693,7 +693,7 @@
       ]
     },
     {
-      "name": "Support Commander",
+      "name": "gwaio_start_rapid - Support Commander",
       "to_build": "SupportCommander",
       "instance_count": 1,
       "max_num_assisters": 15,
@@ -722,7 +722,7 @@
       ]
     },
     {
-      "name": "Nano Swarm",
+      "name": "gwaio_start_rapid - Nano Swarm",
       "to_build": "NanoSwarm",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -788,7 +788,7 @@
       ]
     },
     {
-      "name": "Advanced AA Vehicle",
+      "name": "gwaio_start_rapid - Advanced AA Vehicle",
       "to_build": "FlakTank",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -886,7 +886,7 @@
       ]
     },
     {
-      "name": "Basic Bot Fabber",
+      "name": "gwaio_start_rapid - Basic Bot Fabber",
       "to_build": "BasicBotFabber",
       "instance_count": 1,
       "max_num_assisters": 10,
@@ -922,7 +922,7 @@
       ]
     },
     {
-      "name": "Basic Vehicle Fabber",
+      "name": "gwaio_start_rapid - Basic Vehicle Fabber",
       "to_build": "BasicVehicleFabber",
       "instance_count": 1,
       "max_num_assisters": 10,
@@ -958,7 +958,7 @@
       ]
     },
     {
-      "name": "Basic Assault Bot",
+      "name": "gwaio_start_rapid - Basic Assault Bot",
       "to_build": "BasicAssaultBot",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -1040,7 +1040,7 @@
       ]
     },
     {
-      "name": "Basic Artillery Bot",
+      "name": "gwaio_start_rapid - Basic Artillery Bot",
       "to_build": "BasicArtilleryBot",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -1106,7 +1106,7 @@
       ]
     },
     {
-      "name": "Boom Bot",
+      "name": "gwaio_start_rapid - Boom Bot",
       "to_build": "BoomBot",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -1162,7 +1162,7 @@
       ]
     },
     {
-      "name": "Basic AA Bot",
+      "name": "gwaio_start_rapid - Basic AA Bot",
       "to_build": "BasicAABot",
       "instance_count": 1,
       "priority": 97,
@@ -1259,7 +1259,7 @@
       ]
     },
     {
-      "name": "Land Scout - Intel",
+      "name": "gwaio_start_rapid - Land Scout - Intel",
       "to_build": "LandScout",
       "instance_count": 1,
       "shared_instance_count": "LandScout",
@@ -1321,7 +1321,7 @@
       ]
     },
     {
-      "name": "Land Scout",
+      "name": "gwaio_start_rapid - Land Scout",
       "to_build": "LandScout",
       "instance_count": 1,
       "shared_instance_count": "LandScout",
@@ -1377,7 +1377,7 @@
       ]
     },
     {
-      "name": "Light Laser Tank",
+      "name": "gwaio_start_rapid - Light Laser Tank",
       "to_build": "LightLaserTank",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -1419,7 +1419,7 @@
       ]
     },
     {
-      "name": "Basic Armor Tank",
+      "name": "gwaio_start_rapid - Basic Armor Tank",
       "to_build": "BasicArmorTank",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -1480,7 +1480,7 @@
       ]
     },
     {
-      "name": "Basic AA Vehicle",
+      "name": "gwaio_start_rapid - Basic AA Vehicle",
       "to_build": "BasicAAVehicle",
       "instance_count": 1,
       "priority": 97,
@@ -1577,7 +1577,7 @@
       ]
     },
     {
-      "name": "Advanced Bot Fabber",
+      "name": "gwaio_start_rapid - Advanced Bot Fabber",
       "to_build": "AdvancedBotFabber",
       "instance_count": 1,
       "max_num_assisters": 15,
@@ -1615,7 +1615,7 @@
       ]
     },
     {
-      "name": "Advanced Vehicle Fabber",
+      "name": "gwaio_start_rapid - Advanced Vehicle Fabber",
       "to_build": "AdvancedVehicleFabber",
       "instance_count": 1,
       "max_num_assisters": 15,
@@ -1653,7 +1653,7 @@
       ]
     },
     {
-      "name": "Advanced Assault Bot",
+      "name": "gwaio_start_rapid - Advanced Assault Bot",
       "to_build": "AdvancedAssaultBot",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -1691,7 +1691,7 @@
       ]
     },
     {
-      "name": "Advanced Combat Fabber Bot",
+      "name": "gwaio_start_rapid - Advanced Combat Fabber Bot",
       "to_build": "AdvancedBotCombatFabber",
       "instance_count": 1,
       "priority": 199,
@@ -1746,7 +1746,7 @@
       ]
     },
     {
-      "name": "Advanced Artillery Bot",
+      "name": "gwaio_start_rapid - Advanced Artillery Bot",
       "to_build": "AdvancedArtilleryBot",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -1802,7 +1802,7 @@
       ]
     },
     {
-      "name": "Advanced Tactical Bot",
+      "name": "gwaio_start_rapid - Advanced Tactical Bot",
       "to_build": "TMLBot",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -1858,7 +1858,7 @@
       ]
     },
     {
-      "name": "Advanced Laser Tank",
+      "name": "gwaio_start_rapid - Advanced Laser Tank",
       "to_build": "AdvancedLaserTank",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -1900,7 +1900,7 @@
       ]
     },
     {
-      "name": "Advanced Armor Tank",
+      "name": "gwaio_start_rapid - Advanced Armor Tank",
       "to_build": "AdvancedArmorTank",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -1956,7 +1956,7 @@
       ]
     },
     {
-      "name": "Advanced Artillery Vehicle",
+      "name": "gwaio_start_rapid - Advanced Artillery Vehicle",
       "to_build": "AdvancedArtilleryVehicle",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2012,7 +2012,7 @@
       ]
     },
     {
-      "name": "Gunboat - Intel",
+      "name": "gwaio_start_rapid - Gunboat - Intel",
       "to_build": "Gunboat",
       "instance_count": 1,
       "shared_instance_count": "NavalScout",
@@ -2074,7 +2074,7 @@
       ]
     },
     {
-      "name": "Gunboat",
+      "name": "gwaio_start_rapid - Gunboat",
       "to_build": "Gunboat",
       "instance_count": -1,
       "shared_instance_count": "NavalScout",
@@ -2098,7 +2098,7 @@
       ]
     },
     {
-      "name": "Fabrication Barge",
+      "name": "gwaio_start_rapid - Fabrication Barge",
       "to_build": "SupportBarge",
       "instance_count": 1,
       "priority": 97,
@@ -2127,7 +2127,7 @@
       ]
     },
     {
-      "name": "Hover Ship",
+      "name": "gwaio_start_rapid - Hover Ship",
       "to_build": "HoverShip",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2146,7 +2146,7 @@
       ]
     },
     {
-      "name": "Drone Carrier",
+      "name": "gwaio_start_rapid - Drone Carrier",
       "to_build": "DroneCarrier",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2169,7 +2169,7 @@
       ]
     },
     {
-      "name": "Basic Naval Fabber",
+      "name": "gwaio_start_rapid - Basic Naval Fabber",
       "to_build": "BasicNavalFabber",
       "instance_count": 1,
       "max_num_assisters": 10,
@@ -2198,7 +2198,7 @@
       ]
     },
     {
-      "name": "Destroyer",
+      "name": "gwaio_start_rapid - Destroyer",
       "to_build": "Destroyer",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -2221,7 +2221,7 @@
       ]
     },
     {
-      "name": "Attack Sub",
+      "name": "gwaio_start_rapid - Attack Sub",
       "to_build": "Sub",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -2257,7 +2257,7 @@
       ]
     },
     {
-      "name": "Frigate",
+      "name": "gwaio_start_rapid - Frigate",
       "to_build": "Frigate",
       "instance_count": -1,
       "max_num_assisters": 10,
@@ -2280,7 +2280,7 @@
       ]
     },
     {
-      "name": "Advanced Naval Fabber",
+      "name": "gwaio_start_rapid - Advanced Naval Fabber",
       "to_build": "AdvancedNavalFabber",
       "instance_count": 1,
       "max_num_assisters": 15,
@@ -2309,7 +2309,7 @@
       ]
     },
     {
-      "name": "Battleship",
+      "name": "gwaio_start_rapid - Battleship",
       "to_build": "Battleship",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2332,7 +2332,7 @@
       ]
     },
     {
-      "name": "MissleShip",
+      "name": "gwaio_start_rapid - MissleShip",
       "to_build": "MissleShip",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2355,7 +2355,7 @@
       ]
     },
     {
-      "name": "Missile Sub",
+      "name": "gwaio_start_rapid - Missile Sub",
       "to_build": "MissileSub",
       "instance_count": -1,
       "max_num_assisters": 15,
@@ -2391,7 +2391,7 @@
       ]
     },
     {
-      "name": "Probe - Other planet",
+      "name": "gwaio_start_rapid - Probe - Other planet",
       "to_build": "OrbitalProbe",
       "instance_count": 1,
       "shared_instance_count": "ReconAssistance",
@@ -2421,7 +2421,7 @@
       ]
     },
     {
-      "name": "Orbital Railgun",
+      "name": "gwaio_start_rapid - Orbital Railgun",
       "to_build": "OrbitalRailgun",
       "instance_count": 1,
       "max_num_assisters": 5,
@@ -2448,7 +2448,7 @@
       ]
     },
     {
-      "name": "Orbital Railgun - Threat",
+      "name": "gwaio_start_rapid - Orbital Railgun - Threat",
       "to_build": "OrbitalRailgun",
       "instance_count": 1,
       "min_num_assisters": 2,
@@ -2505,7 +2505,7 @@
       ]
     },
     {
-      "name": "Orbital Battleship",
+      "name": "gwaio_start_rapid - Orbital Battleship",
       "to_build": "OrbitalBattleShip",
       "instance_count": 1,
       "max_num_assisters": 5,
@@ -2533,7 +2533,7 @@
       ]
     },
     {
-      "name": "Orbital Fabber",
+      "name": "gwaio_start_rapid - Orbital Fabber",
       "to_build": "OrbitalFabber",
       "instance_count": 1,
       "max_num_assisters": 5,
@@ -2638,7 +2638,7 @@
       ]
     },
     {
-      "name": "Basic Radar Sattelite",
+      "name": "gwaio_start_rapid - Basic Radar Sattelite",
       "to_build": "BasicRadarSattelite",
       "instance_count": 1,
       "priority": 100,
@@ -2672,7 +2672,7 @@
       ]
     },
     {
-      "name": "Basic Radar Sattelite - Pri",
+      "name": "gwaio_start_rapid - Basic Radar Sattelite - Pri",
       "to_build": "BasicRadarSattelite",
       "instance_count": 1,
       "priority": 102,
@@ -2700,7 +2700,7 @@
       ]
     },
     {
-      "name": "Basic Radar Sattelite - Other planet",
+      "name": "gwaio_start_rapid - Basic Radar Sattelite - Other planet",
       "to_build": "BasicRadarSattelite",
       "instance_count": 1,
       "shared_instance_count": "ReconAssistance",
@@ -2730,7 +2730,7 @@
       ]
     },
     {
-      "name": "Orbital Fighter",
+      "name": "gwaio_start_rapid - Orbital Fighter",
       "to_build": "OrbitalFighter",
       "instance_count": 1,
       "max_num_assisters": 5,
@@ -2757,7 +2757,7 @@
       ]
     },
     {
-      "name": "Orbital Fighter - Threat",
+      "name": "gwaio_start_rapid - Orbital Fighter - Threat",
       "to_build": "OrbitalFighter",
       "instance_count": 1,
       "min_num_assisters": 2,
@@ -2814,7 +2814,7 @@
       ]
     },
     {
-      "name": "Orbital Lander",
+      "name": "gwaio_start_rapid - Orbital Lander",
       "to_build": "OrbitalLander",
       "instance_count": 1,
       "max_num_assisters": 5,
@@ -2839,7 +2839,7 @@
       ]
     },
     {
-      "name": "Solar Array",
+      "name": "gwaio_start_rapid - Solar Array",
       "to_build": "SolarArray",
       "instance_count": 1,
       "priority": 195,
@@ -2866,7 +2866,7 @@
       ]
     },
     {
-      "name": "Orbital Death Laser",
+      "name": "gwaio_start_rapid - Orbital Death Laser",
       "to_build": "OrbitalDeathLaser",
       "instance_count": 1,
       "priority": 195,
@@ -2894,7 +2894,7 @@
       ]
     },
     {
-      "name": "Advanced Radar Sattelite",
+      "name": "gwaio_start_rapid - Advanced Radar Sattelite",
       "to_build": "AdvancedRadarSattelite",
       "instance_count": 1,
       "shared_instance_count": "ReconAssistance",

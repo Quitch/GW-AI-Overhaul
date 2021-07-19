@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Phoenix - Advanced Air Fighter",
+      "name": "gwaio_upgrade_phoenix - Advanced Air Fighter",
       "to_build": "AdvancedFighter",
       "instance_count": -1,
       "max_num_assisters": 15,
