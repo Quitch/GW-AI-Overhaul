@@ -6,6 +6,7 @@
 
 - The Guardians won't tell you their Penchant personality
 - AI has added logic for handling the Phoenix upgrade
+- Tailor Queller's handling of the Leveler upgrade
 
 ### Fixed
 
