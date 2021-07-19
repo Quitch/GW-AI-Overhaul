@@ -10,6 +10,7 @@
 ### Fixed
 
 - Phoenixes not damaging structures following upgrade
+- Close a couple of gaps in the AI's air logic
 
 ## v5.13.2 - 2021-07-15
 
