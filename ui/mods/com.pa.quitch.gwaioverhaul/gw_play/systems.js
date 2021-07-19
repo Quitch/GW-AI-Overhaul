@@ -8,11 +8,13 @@ if (!gwaioSystemChangesLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
-        if (game.galaxy().stars()[game.galaxy().origin()].system().gwaio)
+        var gwaioSettings = game
+          .galaxy()
+          .stars()
+          [game.galaxy().origin()].system().gwaio;
+        if (gwaioSettings)
           console.log(
-            "War created using Galactic War Overhaul v" +
-              game.galaxy().stars()[game.galaxy().origin()].system().gwaio
-                .version
+            "War created using Galactic War Overhaul v" + gwaioSettings.version
           );
         else
           console.log(

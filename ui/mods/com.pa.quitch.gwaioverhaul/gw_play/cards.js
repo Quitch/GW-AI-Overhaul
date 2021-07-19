@@ -32,13 +32,7 @@ if (!gwaioCardsLoaded) {
           });
           // GWAIO - recognise the mod's loadouts as loadouts
           self.isLoadout = ko.computed(function () {
-            return (
-              self.id() &&
-              (self.id().startsWith("gwc_start") ||
-                self.id().startsWith("gwaio_start") ||
-                self.id().startsWith("nem_start") ||
-                self.id().startsWith("tgw_start"))
-            );
+            return _.includes(self.id(), "_start_");
           });
 
           var loaded = $.Deferred();

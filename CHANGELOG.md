@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.14.0 - 2021-07-19
+
+### Change
+
+- The Guardians won't tell you their Penchant personality
+- AI has added logic for handling the Phoenix upgrade
+- Tailor Queller's handling of the Leveler upgrade
+
+### Fixed
+
+- Phoenixes not damaging structures following upgrade
+- Closed a couple of gaps in the AI's air logic
+
 ## v5.13.2 - 2021-07-15
 
 ### Fixed
@@ -40,7 +53,6 @@
 - Titans AI not building torpedo launchers
 - AI uses Stitches again
 - Upgraded Umbrellas shooting the ground on small planets
-- Titans AI not building Stingers in Unit Cannons
 
 ## v5.12.0 - 2021-07-04
 

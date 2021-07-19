@@ -103,11 +103,11 @@ if (!gwaioRefereeChangesLoaded) {
 
                 var modSpecs = function (specs, mods, specTag) {
                   var load = function (specId) {
-                    taggedId = specId;
+                    var taggedId = specId;
                     if (
                       !Object.prototype.hasOwnProperty.call(specs, taggedId)
                     ) {
-                      var taggedId = specId + specTag;
+                      taggedId = specId + specTag;
                       if (
                         !Object.prototype.hasOwnProperty.call(specs, taggedId)
                       )
@@ -163,7 +163,6 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isArray(value))
                         var args = [attribute].concat(value);
                       else args = [attribute, value];
-
                       return _.pull.apply(this, args);
                     },
                     // New op to remove text in a string
@@ -285,18 +284,20 @@ if (!gwaioRefereeChangesLoaded) {
                     });
                 });
 
+                var playerTag = ".player";
+
                 var playerAIUnitMap = GW.specs.genAIUnitMap(
                   aiUnitMap,
-                  ".player"
+                  playerTag
                 );
                 var playerX1AIUnitMap = titans
-                  ? GW.specs.genAIUnitMap(aiX1UnitMap, ".player")
+                  ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
 
                 var inventory = self.game().inventory();
 
                 GW.specs
-                  .genUnitSpecs(inventory.units(), ".player")
+                  .genUnitSpecs(inventory.units(), playerTag)
                   .then(function (playerSpecFiles) {
                     // the order of unit_map assignments must match/be matched with aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
@@ -376,7 +377,7 @@ if (!gwaioRefereeChangesLoaded) {
                       playerFilesClassic,
                       playerFilesX1
                     );
-                    modSpecs(playerFiles, inventory.mods(), ".player");
+                    modSpecs(playerFiles, inventory.mods(), playerTag);
                     playerFileGen.resolve(playerFiles);
                   });
               });
@@ -581,23 +582,21 @@ if (!gwaioRefereeChangesLoaded) {
                   aiMods = _.partition(aiMods, { op: "load" });
 
                   // process ai load ops
-                  if (aiMods[0])
-                    // eslint-disable-next-line lodash/prefer-map
-                    _.forEach(aiMods[0], function (aiMod) {
-                      if (aiMod.type === "fabber")
-                        var managerPath = "fabber_builds/";
-                      else if (aiMod.type === "factory")
-                        managerPath = "factory_builds/";
-                      else if (aiMod.type === "platoon")
-                        managerPath = "platoon_builds/";
-                      else if (aiMod.type === "template")
-                        managerPath = "platoon_templates/";
-                      else console.error("Invalid op in", aiMod);
-                      fileList.push(aiTechPath + managerPath + aiMod.value);
-                    });
+                  _.forEach(aiMods[0], function (aiMod) {
+                    if (aiMod.type === "fabber")
+                      var managerPath = "fabber_builds/";
+                    else if (aiMod.type === "factory")
+                      managerPath = "factory_builds/";
+                    else if (aiMod.type === "platoon")
+                      managerPath = "platoon_builds/";
+                    else if (aiMod.type === "template")
+                      managerPath = "platoon_templates/";
+                    else console.error("Invalid op in", aiMod);
+                    fileList.push(aiTechPath + managerPath + aiMod.value);
+                  });
                 }
 
-                var allyPath = gwaioFunctions.aiPath("ally");
+                var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -610,7 +609,7 @@ if (!gwaioRefereeChangesLoaded) {
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
-                      (_.startsWith(filePath, allyPath) ||
+                      (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
                     )
                       var quellerSubCommander = true;
@@ -657,7 +656,7 @@ if (!gwaioRefereeChangesLoaded) {
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 filePath =
-                                  allyPath +
+                                  subcommanderAIPath +
                                   filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
                               }
@@ -680,10 +679,11 @@ if (!gwaioRefereeChangesLoaded) {
                             // Put "load" files where Queller expects them to be
                             if (_.startsWith(filePath, aiTechPath)) {
                               filePath =
-                                allyPath + filePath.slice(aiTechPath.length);
+                                subcommanderAIPath +
+                                filePath.slice(aiTechPath.length);
                             }
                           } else {
-                            // TITANS/PENCHANT Sub Commanders share an ai_path with the enemy so need a new one
+                            // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                             if (_.startsWith(filePath, aiPath)) {
                               filePath =
                                 aiTechPath + filePath.slice(aiPath.length);
@@ -709,22 +709,22 @@ if (!gwaioRefereeChangesLoaded) {
 
             var game = self.game();
             var inventory = game.inventory();
+            var subcommanders = inventory.minions();
 
-            if (inventory.minions().length > 0)
+            if (subcommanders.length > 0)
               var aiFilePath = gwaioFunctions.aiPath("all");
             else {
               aiFilePath = gwaioFunctions.aiPath("enemy");
             }
 
-            if (!_.isEmpty(inventory.aiMods())) {
-              var ai = game.galaxy().stars()[game.currentStar()].ai();
-              if (ai.mirrorMode === true) {
-                parseFiles(aiFilePath, deferredAIFiles, "All");
-              } else if (inventory.minions().length > 0) {
-                parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
-              } else {
-                parseFiles(aiFilePath, deferredAIFiles, "None");
-              }
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
+
+            if (_.isEmpty(inventory.aiMods())) {
+              parseFiles(aiFilePath, deferredAIFiles, "None");
+            } else if (ai.mirrorMode === true) {
+              parseFiles(aiFilePath, deferredAIFiles, "All");
+            } else if (subcommanders.length > 0) {
+              parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
             } else {
               parseFiles(aiFilePath, deferredAIFiles, "None");
             }
@@ -743,12 +743,13 @@ if (!gwaioRefereeChangesLoaded) {
             var game = self.game();
             var inventory = game.inventory();
             var playerName = ko.observable().extend({ session: "displayName" });
+            var playerTag = ".player";
             var armies = [
               {
                 slots: [{ name: playerName() || "Player" }],
                 color: inventory.getTag("global", "playerColor"),
                 econ_rate: 1,
-                spec_tag: ".player",
+                spec_tag: playerTag,
                 alliance_group: 1,
               },
             ];
@@ -757,11 +758,11 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var allyPath = gwaioFunctions.aiPath("ally");
-            // eslint-disable-next-line lodash/prefer-map
+            var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+
             _.forEach(inventory.minions(), function (subcommander) {
-              // Avoid breaking saves from earlier versions
-              subcommander.personality.ai_path = allyPath;
+              // Avoid breaking Sub Commanders from earlier versions
+              subcommander.personality.ai_path = subcommanderAIPath;
 
               armies.push({
                 slots: [
@@ -775,7 +776,7 @@ if (!gwaioRefereeChangesLoaded) {
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,
-                spec_tag: ".player",
+                spec_tag: playerTag,
                 alliance_group: 1,
               });
             });
@@ -791,13 +792,14 @@ if (!gwaioRefereeChangesLoaded) {
               aiNewTag = aiNewTag + n;
               aiTag.push(aiNewTag);
             });
+
             // Setup AI System Owner
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
             var enemyAIPath = gwaioFunctions.aiPath("enemy");
 
-            // Avoid breaking saves from earlier versions
+            // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
 
             var slotsArray = [];
@@ -828,7 +830,7 @@ if (!gwaioRefereeChangesLoaded) {
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
-              // Avoid breaking saves from earlier versions
+              // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = enemyAIPath;
 
               var slotsArrayMinions = [];
@@ -863,7 +865,7 @@ if (!gwaioRefereeChangesLoaded) {
               foe.personality.adv_eco_mod_alone =
                 foe.personality.adv_eco_mod_alone * foe.econ_rate;
 
-              // Avoid breaking saves from earlier versions
+              // Avoid breaking enemies from earlier versions
               foe.personality.ai_path = enemyAIPath;
 
               var slotsArrayFoes = [];
@@ -907,12 +909,12 @@ if (!gwaioRefereeChangesLoaded) {
               // eslint-disable-next-line lodash/prefer-filter
               _.forEach(army.slots, function (slot) {
                 if (slot.ai) {
-                  if (army.alliance_group === 1) slot.commander += ".player";
+                  if (army.alliance_group === 1) slot.commander += playerTag;
                   else slot.commander += aiTag[army.alliance_group - 2];
                 }
               });
             });
-            config.player.commander += ".player";
+            config.player.commander += playerTag;
             // Store the game in the config for diagnostic purposes.
             config.gw = game.save();
             self.config(config);

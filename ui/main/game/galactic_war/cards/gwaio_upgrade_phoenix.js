@@ -47,6 +47,20 @@ define([
           op: "push",
           value: "UNITTYPE_Gunship",
         },
+        {
+          file: "/pa/units/air/fighter_adv/fighter_adv_ammo.json",
+          path: "armor_damage_map.AT_Structure",
+          op: "replace",
+          value: 1,
+        },
+      ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "gwaio_upgrade_phoenix.json",
+        },
       ]);
     },
     dull: function () {},

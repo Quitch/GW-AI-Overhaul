@@ -1067,6 +1067,7 @@ if (!gwaioSetupLoaded) {
                       delete ai.minions;
                       delete ai.foes;
                       delete ai.team;
+                      delete ai.penchantName;
                       ai.icon =
                         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
                       ai.boss = true; // otherwise they don't display an icon

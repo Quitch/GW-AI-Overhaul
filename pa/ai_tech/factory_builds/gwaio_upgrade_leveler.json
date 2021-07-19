@@ -1,13 +1,20 @@
 {
   "build_list": [
     {
-      "name": "Advanced Laser Tank - UC",
+      "name": "gwaio_upgrade_leveler - Advanced Laser Tank - UC",
       "to_build": "AdvancedLaserTank",
       "instance_count": -1,
-      "max_num_assisters": 10,
+      "max_num_assisters": 15,
       "priority": 100,
       "builders": ["UnitCannon"],
       "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "queller",
+            "boolean": true
+          }
+        ],
         [
           {
             "test_type": "CanAffordBuildDemand"
