@@ -6,6 +6,10 @@
 
 - The Guardians won't tell you their Penchant personality
 
+### Fixed
+
+- Phoenixes not damaging structures following upgrade
+
 ## v5.13.2 - 2021-07-15
 
 ### Fixed
