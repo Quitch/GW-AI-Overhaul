@@ -5,6 +5,7 @@
 ### Change
 
 - The Guardians won't tell you their Penchant personality
+- AI has added logic for handling the Phoenix upgrade
 
 ### Fixed
 

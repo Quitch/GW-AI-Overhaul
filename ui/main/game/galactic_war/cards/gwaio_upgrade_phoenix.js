@@ -54,6 +54,14 @@ define([
           value: 1,
         },
       ]);
+
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "gwaio_upgrade_phoenix.json",
+        },
+      ]);
     },
     dull: function () {},
   };
