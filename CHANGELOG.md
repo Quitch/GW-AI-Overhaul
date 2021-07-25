@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Rapid Deployment Commander not being able to build Kestrels
+
 ## v5.14.1 - 2021-07-25
 
 ### Change
