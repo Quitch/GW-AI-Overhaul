@@ -38,7 +38,7 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
 
-          inventory.addMods([
+          var mods = [
             {
               file: "/pa/units/air/air_factory/air_factory.json",
               path: "buildable_types",
@@ -169,13 +169,28 @@ define([
               value:
                 "Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory",
             },
-            {
+          ];
+
+          // control orbital T1/T2 access
+          if (
+            inventory.hasCard("gwc_enable_orbital_all") ||
+            inventory.hasCard("gwc_enable_orbital_t2")
+          )
+            mods.push({
               file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
-            },
-          ]);
+            });
+          else
+            mods.push({
+              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              path: "buildable_types",
+              op: "replace",
+              value: "Orbital & FactoryBuild & Basic | FabOrbBuild - Factory",
+            });
+
+          inventory.addMods(mods);
 
           var aiMods = [
             {

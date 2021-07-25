@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Rapid Deployment Commander no longer has immediate access to T2 orbital
+
 ## v5.14.0 - 2021-07-19
 
 ### Change
