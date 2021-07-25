@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Squall Upgrade Tech uses an air picture
+
 ### Fixed
 
 - Rapid Deployment Commander no longer has immediate access to T2 orbital
