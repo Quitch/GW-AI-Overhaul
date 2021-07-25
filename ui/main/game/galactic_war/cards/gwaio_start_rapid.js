@@ -169,6 +169,19 @@ define([
               value:
                 "Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory",
             },
+            // fix player being unable to place subs in the underwater layer
+            {
+              file: "/pa/units/sea/attack_sub/attack_sub.json",
+              path: "spawn_layers",
+              op: "replace",
+              value: "WL_DeepWater",
+            },
+            {
+              file: "/pa/units/sea/nuclear_sub/nuclear_sub.json",
+              path: "spawn_layers",
+              op: "replace",
+              value: "WL_DeepWater",
+            },
           ];
 
           // control orbital T1/T2 access
