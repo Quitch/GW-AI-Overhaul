@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.14.1 - 2021-07-25
+
+### Change
+
+- Squall Upgrade Tech uses an air picture
+
+### Fixed
+
+- Rapid Deployment Commander no longer has immediate access to T2 orbital
+- Rapid Deployment Commander not being able to build subs
+
 ## v5.14.0 - 2021-07-19
 
 ### Change
