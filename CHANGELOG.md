@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.14.2 - 2021-07-25
+
+### Fixed
+
+- Rapid Deployment Commander not being able to build Kestrels
+- Rapid Deployment Commander building some orbital units on the ground
+
 ## v5.14.1 - 2021-07-25
 
 ### Change

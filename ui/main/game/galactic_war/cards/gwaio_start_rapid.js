@@ -169,7 +169,7 @@ define([
               value:
                 "Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory",
             },
-            // fix player being unable to place subs in the underwater layer
+            // fix placement issues
             {
               file: "/pa/units/sea/attack_sub/attack_sub.json",
               path: "spawn_layers",
@@ -181,6 +181,18 @@ define([
               path: "spawn_layers",
               op: "replace",
               value: "WL_DeepWater",
+            },
+            {
+              file: "/pa/units/air/gunship/gunship.json",
+              path: "spawn_layers",
+              op: "replace",
+              value: "WL_LandHorizontal",
+            },
+            {
+              file: "/pa/units/orbital/base_orbital/base_orbital.json",
+              path: "spawn_layers",
+              op: "replace",
+              value: "WL_Orbital",
             },
           ];
 
