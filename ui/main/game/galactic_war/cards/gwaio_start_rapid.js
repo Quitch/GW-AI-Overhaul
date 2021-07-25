@@ -173,7 +173,7 @@ define([
 
           // control orbital T1/T2 access
           if (
-            inventory.hasCard("gwc_enable_orbital_all") ||
+            inventory.hasCard("gwc_enable_orbital_t2") ||
             inventory.hasCard("gwc_enable_orbital_all") ||
             inventory.hasCard("gwaio_upgrade_orbitallauncher")
           )
