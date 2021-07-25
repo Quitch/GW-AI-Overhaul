@@ -188,6 +188,12 @@ define([
               op: "replace",
               value: "WL_LandHorizontal",
             },
+            {
+              file: "/pa/units/orbital/base_orbital/base_orbital.json",
+              path: "spawn_layers",
+              op: "replace",
+              value: "WL_Orbital",
+            },
           ];
 
           // control orbital T1/T2 access
