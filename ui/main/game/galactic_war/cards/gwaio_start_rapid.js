@@ -174,7 +174,8 @@ define([
           // control orbital T1/T2 access
           if (
             inventory.hasCard("gwc_enable_orbital_all") ||
-            inventory.hasCard("gwc_enable_orbital_t2")
+            inventory.hasCard("gwc_enable_orbital_all") ||
+            inventory.hasCard("gwaio_upgrade_orbitallauncher")
           )
             mods.push({
               file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
