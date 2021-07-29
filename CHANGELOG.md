@@ -9,6 +9,7 @@
 ### Fixed
 
 - Sub Commanders building too many factories when using Rapid Deployment Commander loadout
+- Basic factory upgrades being dealt to Rapid Deployment Commander
 
 ## v5.14.2 - 2021-07-25
 
