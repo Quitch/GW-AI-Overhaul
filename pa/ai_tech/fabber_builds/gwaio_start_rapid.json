@@ -2738,6 +2738,68 @@
       ]
     },
     {
+      "name": "gwaio_start_rapid - Probe",
+      "to_build": "OrbitalProbe",
+      "instance_count": 1,
+      "priority": 100,
+      "builders": ["OrbitalFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "PlanetIsGasGiant",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalProbe"
+          },
+          {
+            "test_type": "UnitCountPerPlanetRadius",
+            "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
+            "compare0": "<",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & (Recon | Scout) & Advanced - Structure",
+            "compare0": "<",
+            "value0": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "gwaio_start_rapid - Probe - Pri",
+      "to_build": "OrbitalProbe",
+      "instance_count": 1,
+      "priority": 102,
+      "builders": ["OrbitalFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "PlanetIsGasGiant",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalProbe"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
+            "compare0": "<",
+            "value0": 1
+          }
+        ]
+      ]
+    },
+    {
       "name": "gwaio_start_rapid - Probe - Other planet",
       "to_build": "OrbitalProbe",
       "instance_count": 1,

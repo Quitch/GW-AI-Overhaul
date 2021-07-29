@@ -6,6 +6,10 @@
 
 - Galaxy setup won't make planets larger than 800 radius
 
+### Fixed
+
+- Sub Commanders not building Hermes on single planet systems when using the Rapid Deployment Commander
+
 ## v5.14.3 - 2021-07-29
 
 ### Change
