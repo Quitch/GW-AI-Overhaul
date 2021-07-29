@@ -9,6 +9,7 @@
 ### Fixed
 
 - Sub Commanders not building Hermes on single planet systems when using the Rapid Deployment Commander
+- Sub Commanders not building Orbital Fabbers when using the Rapid Deployment Commander
 
 ## v5.14.3 - 2021-07-29
 
