@@ -541,9 +541,6 @@
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "NeedBasicAirFabber"
-          },
-          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicAirFabber"
           }
@@ -735,9 +732,6 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "NeedAdvancedAirFabber"
           },
           {
             "test_type": "CanAffordPotentialDrain",
@@ -1267,9 +1261,6 @@
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "NeedBasicBotFabber"
-          },
-          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFabber"
           }
@@ -1301,9 +1292,6 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "NeedBasicVehicleFabber"
           },
           {
             "test_type": "CanAffordPotentialDrain",
@@ -1958,9 +1946,6 @@
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "NeedAdvancedBotFabber"
-          },
-          {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedBotFabber"
           }
@@ -1994,9 +1979,6 @@
           },
           {
             "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "NeedAdvancedVehicleFabber"
           },
           {
             "test_type": "CanAffordPotentialDrain",
