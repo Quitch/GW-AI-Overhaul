@@ -20,10 +20,13 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/sea/naval_factory/naval_factory.json")
+        gwaioFunctions.hasUnit(
+          "/pa/units/sea/naval_factory/naval_factory.json"
+        ) &&
+        !inventory.hasCard("gwaio_start_rapid")
       )
         chance = 30;
 

@@ -20,12 +20,13 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        )
+        ) &&
+        !inventory.hasCard("gwaio_start_rapid")
       )
         chance = 60;
 
