@@ -225,6 +225,11 @@ define([
               value: "gwaio_start_rapid.json",
             },
             {
+              type: "factory",
+              op: "load",
+              value: "gwaio_start_rapid.json",
+            },
+            {
               type: "fabber",
               op: "replace",
               toBuild: "BasicAirFactory",
