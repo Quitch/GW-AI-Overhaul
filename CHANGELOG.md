@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Galaxy setup won't make planets larger than 800 radius
+
 ## v5.14.3 - 2021-07-29
 
 ### Change
