@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Better description for the Storage Commander
+
 ## v5.14.2 - 2021-07-25
 
 ### Fixed
