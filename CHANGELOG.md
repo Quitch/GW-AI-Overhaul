@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.15.0 - 2021-07-30
+
+### Change
+
+- Galaxy setup won't make planets larger than 800 radius
+
+### Fixed
+
+- Rapid Deployment Sub Commanders not building Hermes on single planet systems
+- Rapid Deployment Sub Commanders not building their initial Orbital Fabber
+- Rapid Deployment Sub Commanders never teching to advanced tech
+- Rapid Deployment Sub Commanders taking too long to go orbital
+
 ## v5.14.3 - 2021-07-29
 
 ### Change

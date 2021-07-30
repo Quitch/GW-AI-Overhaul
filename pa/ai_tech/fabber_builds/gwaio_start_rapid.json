@@ -182,6 +182,195 @@
       }
     },
     {
+      "name": "gwaio_start_rapid - Orbital Launcher",
+      "to_build": "OrbitalLauncher",
+      "instance_count": 1,
+      "shared_instance_count": "OrbitalLauncher",
+      "priority": 483,
+      "max_num_assisters": 3,
+      "builders": [
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
+      ],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalLauncher"
+          },
+          {
+            "test_type": "WantCommanderOffPlanet",
+            "boolean": false
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "(Factory & Advanced) - Orbital - Nuke - NukeDefense - SelfDestruct",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & Factory & Land",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "OrbitalLauncher"
+          }
+        ],
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalLauncher"
+          },
+          {
+            "test_type": "PlanetWithoutPresence",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & Factory & Land",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "OrbitalLauncher"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 5
+      }
+    },
+    {
+      "name": "gwaio_start_rapid - Orbital Launcher - Rush",
+      "to_build": "OrbitalLauncher",
+      "instance_count": 1,
+      "shared_instance_count": "OrbitalLauncher",
+      "min_num_assisters": 3,
+      "max_num_assisters": 5,
+      "priority": 484,
+      "builders": [
+        "Commander",
+        "AnyBasicFabber",
+        "AnyAdvancedFabber",
+        "SupportCommander"
+      ],
+      "build_conditions": [
+        [
+          {
+            "test_type": "WantCommanderOffPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Fabber - (Naval & Orbital)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & Factory & Land",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "OrbitalLauncher"
+          }
+        ],
+        [
+          {
+            "test_type": "UnableToExpand",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetWithoutPresence",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Fabber",
+            "compare0": ">=",
+            "value0": 2
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & Factory & Land",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "OrbitalLauncher"
+          }
+        ],
+        [
+          {
+            "test_type": "AloneOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetWithoutPresence",
+            "boolean": true
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Fabber",
+            "compare0": ">=",
+            "value0": 2
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & Factory & Land",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "OrbitalLauncher"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 5
+      }
+    },
+    {
       "name": "gwaio_start_rapid - Advanced Air Factory",
       "to_build": "AdvancedAirFactory",
       "instance_count": 1,
@@ -229,7 +418,7 @@
       "to_build": "AdvancedBotFactory",
       "instance_count": 1,
       "shared_instance_count": "AdvancedFactory",
-      "priority": 477,
+      "priority": 476,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
       "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
@@ -276,7 +465,7 @@
       "to_build": "AdvancedVehicleFactory",
       "instance_count": 1,
       "shared_instance_count": "AdvancedFactory",
-      "priority": 477,
+      "priority": 476,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
       "builders": ["BasicVehicleFabber", "AdvancedVehicleFabber"],
@@ -323,7 +512,7 @@
       "to_build": "AdvancedNavalFactory",
       "instance_count": 1,
       "shared_instance_count": "AdvancedFactory",
-      "priority": 477,
+      "priority": 476,
       "min_num_assisters": 3,
       "max_num_assisters": 5,
       "builders": ["BasicNavalFabber", "AdvancedNavalFabber"],
@@ -2738,6 +2927,68 @@
       ]
     },
     {
+      "name": "gwaio_start_rapid - Probe",
+      "to_build": "OrbitalProbe",
+      "instance_count": 1,
+      "priority": 100,
+      "builders": ["OrbitalFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "PlanetIsGasGiant",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalProbe"
+          },
+          {
+            "test_type": "UnitCountPerPlanetRadius",
+            "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
+            "compare0": "<",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & (Recon | Scout) & Advanced - Structure",
+            "compare0": "<",
+            "value0": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "gwaio_start_rapid - Probe - Pri",
+      "to_build": "OrbitalProbe",
+      "instance_count": 1,
+      "priority": 102,
+      "builders": ["OrbitalFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "PlanetIsGasGiant",
+            "boolean": false
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalProbe"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
+            "compare0": "<",
+            "value0": 1
+          }
+        ]
+      ]
+    },
+    {
       "name": "gwaio_start_rapid - Probe - Other planet",
       "to_build": "OrbitalProbe",
       "instance_count": 1,
@@ -3169,6 +3420,10 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
+          {
+            "test_type": "PlanetIsGasGiant",
+            "boolean": false
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },

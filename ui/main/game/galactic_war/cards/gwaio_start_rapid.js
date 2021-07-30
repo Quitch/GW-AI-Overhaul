@@ -225,6 +225,11 @@ define([
               value: "gwaio_start_rapid.json",
             },
             {
+              type: "factory",
+              op: "load",
+              value: "gwaio_start_rapid.json",
+            },
+            {
               type: "fabber",
               op: "replace",
               toBuild: "BasicAirFactory",
@@ -263,6 +268,15 @@ define([
             {
               type: "fabber",
               op: "replace",
+              toBuild: "OrbitalLauncher",
+              idToMod: "priority",
+              value: 0,
+              refId: "priority",
+              refValue: 485,
+            },
+            {
+              type: "fabber",
+              op: "replace",
               toBuild: "BasicAirFactory",
               idToMod: "priority",
               value: 0,
@@ -295,6 +309,15 @@ define([
               value: 0,
               refId: "priority",
               refValue: 515,
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "OrbitalLauncher",
+              idToMod: "priority",
+              value: 0,
+              refId: "priority",
+              refValue: 486,
             },
             {
               type: "fabber",

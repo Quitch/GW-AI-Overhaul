@@ -1,0 +1,29 @@
+{
+  "build_list": [
+    {
+      "name": "Orbital Fabber",
+      "to_build": "OrbitalFabber",
+      "instance_count": 1,
+      "max_num_assisters": 5,
+      "priority": 199,
+      "builders": ["OrbitalLauncher"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Fabber & Orbital",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "OrbitalFabber"
+          }
+        ]
+      ]
+    }
+  ]
+}
