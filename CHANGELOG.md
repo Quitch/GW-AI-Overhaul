@@ -8,8 +8,8 @@
 
 ### Fixed
 
-- Sub Commanders not building Hermes on single planet systems when using the Rapid Deployment Commander
-- Sub Commanders not building their initial Orbital Fabber when using the Rapid Deployment Commander
+- Rapid Deployment Sub Commanders not building Hermes on single planet systems
+- Rapid Deployment Sub Commanders not building their initial Orbital Fabber
 - Rapid Deployment Sub Commanders never teching to advanced tech
 - Rapid Deployment Sub Commanders taking too long to go orbital
 
