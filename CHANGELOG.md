@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Factions at Casual difficulty never have more than one commander in a system
+- Iron through Gold introduce additional commanders later
+- Platinum has increases its commander numbers slightly slower
+
 ## v5.16.0 - 2021-08-02
 
 ### Change
