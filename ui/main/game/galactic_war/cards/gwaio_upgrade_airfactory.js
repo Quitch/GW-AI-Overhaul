@@ -43,6 +43,28 @@ define([
       inventory.addAIMods([
         {
           type: "factory",
+          op: "load",
+          value: "gwaio_upgrade_airfactory.json",
+        },
+        {
+          type: "factory",
+          op: "append",
+          toBuild: "AdvancedAirFabber",
+          idToMod: "builders",
+          value: "BasicAirFactory",
+        },
+        {
+          type: "factory",
+          op: "new",
+          toBuild: "AdvancedAirFabber",
+          idToMod: "", // add to every test array
+          value: {
+            test_type: "HaveEcoForAdvanced",
+            boolean: true,
+          },
+        },
+        {
+          type: "factory",
           op: "append",
           toBuild: "AdvancedBomber",
           idToMod: "builders",

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Sub Commanders with basic factory upgrades will build advanced fabbers when they can afford them
+
 ## v5.15.0 - 2021-07-30
 
 ### Change
