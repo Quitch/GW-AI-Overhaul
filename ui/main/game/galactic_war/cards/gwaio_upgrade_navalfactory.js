@@ -46,6 +46,23 @@ define([
         {
           type: "factory",
           op: "append",
+          toBuild: "AdvancedNavalFabber",
+          idToMod: "builders",
+          value: "BasicNavalFactory",
+        },
+        {
+          type: "factory",
+          op: "new",
+          toBuild: "AdvancedNavalFabber",
+          idToMod: "", // add to every test array
+          value: {
+            test_type: "HaveEcoForAdvanced",
+            boolean: true,
+          },
+        },
+        {
+          type: "factory",
+          op: "append",
           toBuild: "Battleship",
           idToMod: "builders",
           value: "BasicNavalFactory",

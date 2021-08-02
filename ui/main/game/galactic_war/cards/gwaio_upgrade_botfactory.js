@@ -44,6 +44,23 @@ define([
         {
           type: "factory",
           op: "append",
+          toBuild: "AdvancedBotFabber",
+          idToMod: "builders",
+          value: "BasicBotFactory",
+        },
+        {
+          type: "factory",
+          op: "new",
+          toBuild: "AdvancedBotFabber",
+          idToMod: "", // add to every test array
+          value: {
+            test_type: "HaveEcoForAdvanced",
+            boolean: true,
+          },
+        },
+        {
+          type: "factory",
+          op: "append",
           toBuild: "AdvancedAssaultBot",
           idToMod: "builders",
           value: "BasicBotFactory",
