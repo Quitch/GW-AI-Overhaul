@@ -7,6 +7,7 @@
 - Factions at Casual difficulty never have more than one commander in a system
 - Iron through Gold introduce additional commanders later
 - Platinum has increases its commander numbers slightly slower
+- The primary system faction (excluding bosses) does not gain both an eco boost and an additional commander at the same time
 
 ## v5.16.0 - 2021-08-02
 

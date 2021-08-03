@@ -691,7 +691,8 @@ if (!gwaioSetupLoaded) {
                 dist,
                 isBossSystem,
                 isBoss,
-                faction
+                faction,
+                minionCount
               ) {
                 if (ai.faction === undefined) ai.faction = faction;
                 ai.personality.micro_type =
@@ -739,6 +740,12 @@ if (!gwaioSetupLoaded) {
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
+                // Primary system faction gains eco or minion not both
+                if (minionCount)
+                  ai.econ_rate =
+                    ai.econ_rate -
+                    minionCount *
+                      model.gwaioDifficultySettings.econRatePerDist();
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
@@ -947,7 +954,12 @@ if (!gwaioSetupLoaded) {
                 // Setup non-boss AI system
                 _.forEach(info.workers, function (worker) {
                   var dist = worker.star.distance();
-                  setAIData(worker.ai, dist, false, false);
+                  var numMinions = Math.floor(
+                    model.gwaioDifficultySettings.mandatoryMinions() +
+                      worker.star.distance() *
+                        model.gwaioDifficultySettings.minionMod()
+                  );
+                  setAIData(worker.ai, dist, false, false, _, numMinions);
                   if (
                     Math.random() * 100 <=
                     model.gwaioDifficultySettings.landAnywhereChance()
@@ -978,11 +990,6 @@ if (!gwaioSetupLoaded) {
                       gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
                     );
                   });
-                  var numMinions = Math.floor(
-                    model.gwaioDifficultySettings.mandatoryMinions() +
-                      worker.star.distance() *
-                        model.gwaioDifficultySettings.minionMod()
-                  );
                   if (numMinions > 0) {
                     worker.ai.minions = [];
                     if (worker.ai.name === "Security") {
@@ -993,7 +1000,7 @@ if (!gwaioSetupLoaded) {
                           })
                         )
                       );
-                      setAIData(minion, dist, false, false);
+                      setAIData(minion, dist, false, false, _, numMinions);
                       minion.commanderCount =
                         numMinions +
                         Math.floor(
@@ -1011,7 +1018,7 @@ if (!gwaioSetupLoaded) {
                         minion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
                         );
-                        setAIData(minion, dist, false, false);
+                        setAIData(minion, dist, false, false, _, numMinions);
                         worker.ai.minions.push(minion);
                       });
                     }
