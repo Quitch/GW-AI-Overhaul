@@ -9,8 +9,7 @@
 - Platinum has increases its commander numbers slightly slower
 - The primary system faction (excluding bosses) does not gain both an eco boost and an additional commander at the same time
 - Slightly higher chance of a FFA
-- Higher chance of land anywhere being enabled
-- Reduced the number of boss commanders from Iron upwards
+- Higher chance of land anywhere being enabled through Diamond
 
 ## v5.16.0 - 2021-08-02
 
