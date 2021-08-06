@@ -11,6 +11,8 @@
 - Slightly higher chance of an FFA
 - Higher chance of land anywhere being enabled
 - Reduced the number of boss commanders for Iron through Diamond
+- Penchant AI uses the Stitch to build mines
+- Penchant Heavy no longer builds Stitches
 
 ## v5.16.0 - 2021-08-02
 
