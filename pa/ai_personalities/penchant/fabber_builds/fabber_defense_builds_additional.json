@@ -37,7 +37,7 @@
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Structure & Factory - Artillery",
+            "unit_type_string0": "Structure & (Factory | Teleporter) - Artillery",
             "compare0": "<",
             "value0": 1
           },
