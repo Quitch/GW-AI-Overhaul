@@ -435,11 +435,6 @@
       "build_conditions": [
         [
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Vehicle",
-            "boolean": false
-          },
-          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -459,11 +454,6 @@
           }
         ],
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Vehicle",
-            "boolean": false
-          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true

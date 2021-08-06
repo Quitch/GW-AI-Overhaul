@@ -13,6 +13,7 @@
 - Reduced the number of boss commanders for Iron through Diamond
 - Penchant AI uses the Stitch to build mines
 - Penchant Heavy no longer builds Stitches
+- All Penchants now build Skitters as part of their armies again so as to have mine vision
 
 ## v5.16.0 - 2021-08-02
 
