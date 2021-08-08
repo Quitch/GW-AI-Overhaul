@@ -46,7 +46,7 @@ define([
         {
           file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "anti_entity_targets",
-          op: "replace",
+          op: "push",
           value: [
             "/pa/units/air/air_factory_adv/air_factory_adv.json",
             "/pa/units/air/air_factory/air_factory.json",
