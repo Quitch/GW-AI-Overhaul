@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Angel Upgrade Tech targeting replaces missile defence rather than adding to it
+
 ## v5.17.1 - 2021-08-08
 
 ### Fixed
