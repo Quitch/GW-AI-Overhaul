@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.17.1 - 2021-08-08
+
+### Fixed
+
+- Slammer Upgrade Tech not being applied
+- Swarm Commander correctly recognised by bot techs
+
 ## v5.17.0 - 2021-08-06
 
 ### Change

@@ -38,13 +38,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
+          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],

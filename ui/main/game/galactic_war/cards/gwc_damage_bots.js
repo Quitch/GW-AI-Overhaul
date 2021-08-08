@@ -23,7 +23,8 @@ define({
       inventory.hasCard("gwc_enable_bots_t1") ||
       inventory.hasCard("gwc_enable_bots_all") ||
       inventory.hasCard("gwc_start_bot") ||
-      inventory.hasCard("gwaio_start_hoarder")
+      inventory.hasCard("gwaio_start_hoarder") ||
+      inventory.hasCard("tgw_start_speed")
     )
       chance = 70;
 
