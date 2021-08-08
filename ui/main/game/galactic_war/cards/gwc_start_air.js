@@ -16,12 +16,6 @@ define([
     describe: _.constant(
       "!LOC:The Air Commander loadout contains basic air factories."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Air Commander",
-      };
-    },
     deal: function () {
       return {
         params: {

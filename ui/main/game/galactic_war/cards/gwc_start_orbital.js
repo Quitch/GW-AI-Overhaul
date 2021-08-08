@@ -16,12 +16,6 @@ define([
     describe: _.constant(
       "!LOC:The Orbital Commander loadout contains all orbital units and factories."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Orbital Commander",
-      };
-    },
     deal: function () {
       return {
         params: {

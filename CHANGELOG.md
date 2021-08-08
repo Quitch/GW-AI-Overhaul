@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Air Commander is unlocked by default
+- Bot Commander is unlocked by default
+- Orbital Commander is unlocked by default
+
 ## v5.17.1 - 2021-08-08
 
 ### Fixed

@@ -301,9 +301,6 @@ if (!gwaioSetupLoaded) {
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
           model.gwaioTreasureCards.push(
             { id: "gwc_start_storage" },
-            { id: "gwc_start_air" },
-            { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" },
             { id: "gwc_start_artillery" },
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
@@ -325,7 +322,6 @@ if (!gwaioSetupLoaded) {
 
           if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
           model.gwaioNewStartCards.push(
-            { id: "gwc_start_storage" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -340,16 +336,32 @@ if (!gwaioSetupLoaded) {
             { id: "gwaio_start_backpacker" },
             { id: "gwaio_start_hoarder" }
           );
-          _.forEach(model.gwaioNewStartCards, function (cardData) {
+          var startingCards = [
+            { id: "gwc_start_vehicle" },
+            { id: "gwc_start_air" },
+            { id: "gwc_start_orbital" },
+            { id: "gwc_start_bot" },
+          ];
+          var lockedBaseCards = [
+            { id: "gwc_start_artillery" },
+            { id: "gwc_start_subcdr" },
+            { id: "gwc_start_combatcdr" },
+            { id: "gwc_start_allfactory" },
+            { id: "gwc_start_storage" },
+          ];
+          var allCards = startingCards.concat(
+            lockedBaseCards,
+            model.gwaioNewStartCards
+          );
+          model.startCards([]);
+          _.forEach(allCards, function (cardData) {
             if (
-              (cardData.id != "gwc_start_storage" &&
-                !gwaioBank.hasStartCard(cardData)) ||
-              (cardData.id === "gwc_start_storage" &&
-                !GW.bank.hasStartCard(cardData))
+              _.includes(startingCards, cardData) ||
+              GW.bank.hasStartCard(cardData) ||
+              gwaioBank.hasStartCard(cardData)
             )
-              model.startCards().push(model.makeUnknown(cardData));
-            else if (cardData.id != "gwc_start_storage")
               model.startCards().push(model.makeKnown(cardData));
+            else model.startCards().push(model.makeUnknown(cardData));
           });
           model.startCards.valueHasMutated();
 
