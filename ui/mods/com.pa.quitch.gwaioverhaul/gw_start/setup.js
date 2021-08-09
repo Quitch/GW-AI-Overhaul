@@ -1125,20 +1125,7 @@ if (!gwaioSetupLoaded) {
               });
 
               // Replacement for GWDealer.dealBossCards
-              var lockedStartCards = _.filter(
-                model.gwaioTreasureCards,
-                function (card) {
-                  return (
-                    !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card)
-                  );
-                }
-              );
-              if (lockedStartCards) {
-                var treasurePlanetCard = _.sample(lockedStartCards);
-                _.assign(treasurePlanetCard, { allowOverflow: true });
-                var treasurePlanetSetup = false;
-              } else treasurePlanetSetup = true;
-
+              var treasurePlanetSetup = false;
               var n = 0;
               var m = 0;
               _.forEach(game.galaxy().stars(), function (star) {
@@ -1187,7 +1174,20 @@ if (!gwaioSetupLoaded) {
                         "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
                       system.description =
                         "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-                      star.cardList().push(treasurePlanetCard);
+                      var lockedStartCards = _.filter(
+                        model.gwaioTreasureCards,
+                        function (card) {
+                          return (
+                            !GW.bank.hasStartCard(card) &&
+                            !gwaioBank.hasStartCard(card)
+                          );
+                        }
+                      );
+                      if (!_.isEmpty(lockedStartCards)) {
+                        var treasurePlanetCard = _.sample(lockedStartCards);
+                        _.assign(treasurePlanetCard, { allowOverflow: true });
+                        star.cardList().push(treasurePlanetCard);
+                      }
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
                       gwaioLore.aiSystems[m]
@@ -1235,6 +1235,8 @@ if (!gwaioSetupLoaded) {
                 originSystem.gwaio.ai = "Titans";
               }
               originSystem.gwaio.aiMods = [];
+              // We don't need to apply the hotfix for v5.17.1 and earlier
+              originSystem.treasurePlanetFixed = true;
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;

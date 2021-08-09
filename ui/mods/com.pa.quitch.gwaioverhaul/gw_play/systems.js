@@ -332,28 +332,48 @@ if (!gwaioSystemChangesLoaded) {
           );
         });
 
-        requireGW(["shared/gw_factions"], function (GWFactions) {
-          _.forEach(model.galaxy.systems(), function (system) {
-            ko.computed(function () {
-              var ai = system.star.ai();
-              if (!ai) return;
-              else if (ai.treasurePlanet === true)
-                normalizedColor = [255, 255, 255];
-              else {
-                var faction = GWFactions[ai.faction];
-                // Ensures we assign faction colour, not minion colour, to each system
-                var normalizedColor = _.map(faction.color[0], function (c) {
-                  return c / 255;
-                });
+        requireGW(
+          ["shared/gw_common", "shared/gw_factions"],
+          function (GW, GWFactions) {
+            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+            if (_.isUndefined(gwaioSettings.treasurePlanetFixed)) {
+              var galaxy = game.galaxy();
+              for (var i = 0; i < galaxy.stars().length; i++) {
+                if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
+                  galaxy.stars()[i].cardList([]);
+                  gwaioSettings.treasurePlanetFixed = true;
+                  game.saved(false);
+                  model.driveAccessInProgress(true);
+                  GW.manifest.saveGame(game).then(function () {
+                    model.driveAccessInProgress(false);
+                  });
+                  break;
+                }
               }
-              system.ownerColor(normalizedColor.concat(3));
-              // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
-              system.connected();
-              model.cheats.noFog();
-              system.star.hasCard();
+            }
+
+            _.forEach(model.galaxy.systems(), function (system) {
+              ko.computed(function () {
+                var ai = system.star.ai();
+                if (!ai) return;
+                else if (ai.treasurePlanet === true)
+                  normalizedColor = [255, 255, 255];
+                else {
+                  var faction = GWFactions[ai.faction];
+                  // Ensures we assign faction colour, not minion colour, to each system
+                  var normalizedColor = _.map(faction.color[0], function (c) {
+                    return c / 255;
+                  });
+                }
+                system.ownerColor(normalizedColor.concat(3));
+                // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
+                system.connected();
+                model.cheats.noFog();
+                system.star.hasCard();
+              });
             });
-          });
-        });
+          }
+        );
       }
     } catch (e) {
       console.error(e);

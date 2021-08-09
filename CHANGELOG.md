@@ -8,6 +8,10 @@
 - Bot Commander is unlocked by default
 - Orbital Commander is unlocked by default
 
+### Fixed
+
+- Game hanging when scanning a treasure planet and all loadouts are already unlocked
+
 ## v5.17.1 - 2021-08-08
 
 ### Fixed
