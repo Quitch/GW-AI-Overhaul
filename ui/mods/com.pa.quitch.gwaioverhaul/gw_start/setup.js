@@ -1172,8 +1172,6 @@ if (!gwaioSetupLoaded) {
                       ];
                       ai.commander =
                         "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-                      system.description =
-                        "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
                       var lockedStartCards = _.filter(
                         model.gwaioTreasureCards,
                         function (card) {
@@ -1187,6 +1185,8 @@ if (!gwaioSetupLoaded) {
                         var treasurePlanetCard = _.sample(lockedStartCards);
                         _.assign(treasurePlanetCard, { allowOverflow: true });
                         star.cardList().push(treasurePlanetCard);
+                        system.description =
+                          "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
                       }
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
