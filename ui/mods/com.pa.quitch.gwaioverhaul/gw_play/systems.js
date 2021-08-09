@@ -341,7 +341,6 @@ if (!gwaioSystemChangesLoaded) {
               for (var i = 0; i < galaxy.stars().length; i++) {
                 if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
                   galaxy.stars()[i].cardList([]);
-                  gwaioSettings.treasurePlanetFixed = true;
                   game.saved(false);
                   model.driveAccessInProgress(true);
                   GW.manifest.saveGame(game).then(function () {
@@ -350,6 +349,7 @@ if (!gwaioSystemChangesLoaded) {
                   break;
                 }
               }
+              gwaioSettings.treasurePlanetFixed = true;
             }
 
             _.forEach(model.galaxy.systems(), function (system) {
