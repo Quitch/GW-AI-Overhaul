@@ -341,15 +341,16 @@ if (!gwaioSystemChangesLoaded) {
               for (var i = 0; i < galaxy.stars().length; i++) {
                 if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
                   galaxy.stars()[i].cardList([]);
-                  game.saved(false);
-                  model.driveAccessInProgress(true);
-                  GW.manifest.saveGame(game).then(function () {
-                    model.driveAccessInProgress(false);
-                  });
                   break;
                 }
               }
+
               gwaioSettings.treasurePlanetFixed = true;
+              game.saved(false);
+              model.driveAccessInProgress(true);
+              GW.manifest.saveGame(game).then(function () {
+                model.driveAccessInProgress(false);
+              });
             }
 
             _.forEach(model.galaxy.systems(), function (system) {
