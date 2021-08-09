@@ -1235,7 +1235,7 @@ if (!gwaioSetupLoaded) {
                 originSystem.gwaio.ai = "Titans";
               }
               originSystem.gwaio.aiMods = [];
-              // We don't need to apply the hotfix for v5.17.1 and earlier
+              // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.treasurePlanetFixed = true;
 
               if (model.creditsMode()) {
