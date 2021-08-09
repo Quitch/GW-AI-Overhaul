@@ -335,23 +335,6 @@ if (!gwaioSystemChangesLoaded) {
         requireGW(
           ["shared/gw_common", "shared/gw_factions"],
           function (GW, GWFactions) {
-            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-            if (_.isUndefined(gwaioSettings.treasurePlanetFixed)) {
-              var galaxy = game.galaxy();
-              for (var i = 0; i < galaxy.stars().length; i++) {
-                if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
-                  galaxy.stars()[i].cardList([]);
-                  break;
-                }
-              }
-              gwaioSettings.treasurePlanetFixed = true;
-              game.saved(false);
-              model.driveAccessInProgress(true);
-              GW.manifest.saveGame(game).then(function () {
-                model.driveAccessInProgress(false);
-              });
-            }
-
             _.forEach(model.galaxy.systems(), function (system) {
               ko.computed(function () {
                 var ai = system.star.ai();
@@ -372,6 +355,23 @@ if (!gwaioSystemChangesLoaded) {
                 system.star.hasCard();
               });
             });
+
+            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+            if (_.isUndefined(gwaioSettings.treasurePlanetFixed)) {
+              var galaxy = game.galaxy();
+              for (var i = 0; i < galaxy.stars().length; i++) {
+                if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
+                  galaxy.stars()[i].cardList([]);
+                  break;
+                }
+              }
+              gwaioSettings.treasurePlanetFixed = true;
+              game.saved(false);
+              model.driveAccessInProgress(true);
+              GW.manifest.saveGame(game).then(function () {
+                model.driveAccessInProgress(false);
+              });
+            }
           }
         );
       }
