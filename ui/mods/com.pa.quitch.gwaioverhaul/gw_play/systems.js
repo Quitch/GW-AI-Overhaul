@@ -344,7 +344,6 @@ if (!gwaioSystemChangesLoaded) {
                   break;
                 }
               }
-
               gwaioSettings.treasurePlanetFixed = true;
               game.saved(false);
               model.driveAccessInProgress(true);
