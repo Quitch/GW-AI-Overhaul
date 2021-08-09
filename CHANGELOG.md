@@ -11,6 +11,7 @@
 ### Fixed
 
 - Game hanging when scanning a treasure planet and all loadouts are already unlocked
+- Angel Upgrade not working
 
 ## v5.17.1 - 2021-08-08
 
