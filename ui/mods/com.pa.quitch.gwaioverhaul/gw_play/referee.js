@@ -169,7 +169,8 @@ if (!gwaioRefereeChangesLoaded) {
                     wipe: function (attribute, value) {
                       if (!_.isString(attribute))
                         attribute = attribute.toString();
-                      return attribute.replace(value, "");
+                      if (!_.isArray(value)) value = [value, ""];
+                      return attribute.replace(value[0], value[1]);
                     },
                   };
                   var applyMod = function (mod) {

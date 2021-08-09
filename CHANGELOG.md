@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.18.0 - 2021-08-09
+
+### Change
+
+- Air Commander is unlocked by default
+- Bot Commander is unlocked by default
+- Orbital Commander is unlocked by default
+
+### Fixed
+
+- Game hanging when scanning a treasure planet and all loadouts are already unlocked
+- Angel Upgrade not working
+
 ## v5.17.1 - 2021-08-08
 
 ### Fixed

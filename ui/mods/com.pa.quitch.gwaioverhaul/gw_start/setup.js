@@ -301,9 +301,6 @@ if (!gwaioSetupLoaded) {
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
           model.gwaioTreasureCards.push(
             { id: "gwc_start_storage" },
-            { id: "gwc_start_air" },
-            { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" },
             { id: "gwc_start_artillery" },
             { id: "gwc_start_subcdr" },
             { id: "gwc_start_combatcdr" },
@@ -325,7 +322,6 @@ if (!gwaioSetupLoaded) {
 
           if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
           model.gwaioNewStartCards.push(
-            { id: "gwc_start_storage" },
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -340,16 +336,32 @@ if (!gwaioSetupLoaded) {
             { id: "gwaio_start_backpacker" },
             { id: "gwaio_start_hoarder" }
           );
-          _.forEach(model.gwaioNewStartCards, function (cardData) {
+          var startingCards = [
+            { id: "gwc_start_vehicle" },
+            { id: "gwc_start_air" },
+            { id: "gwc_start_orbital" },
+            { id: "gwc_start_bot" },
+          ];
+          var lockedBaseCards = [
+            { id: "gwc_start_artillery" },
+            { id: "gwc_start_subcdr" },
+            { id: "gwc_start_combatcdr" },
+            { id: "gwc_start_allfactory" },
+            { id: "gwc_start_storage" },
+          ];
+          var allCards = startingCards.concat(
+            lockedBaseCards,
+            model.gwaioNewStartCards
+          );
+          model.startCards([]);
+          _.forEach(allCards, function (cardData) {
             if (
-              (cardData.id != "gwc_start_storage" &&
-                !gwaioBank.hasStartCard(cardData)) ||
-              (cardData.id === "gwc_start_storage" &&
-                !GW.bank.hasStartCard(cardData))
+              _.includes(startingCards, cardData) ||
+              GW.bank.hasStartCard(cardData) ||
+              gwaioBank.hasStartCard(cardData)
             )
-              model.startCards().push(model.makeUnknown(cardData));
-            else if (cardData.id != "gwc_start_storage")
               model.startCards().push(model.makeKnown(cardData));
+            else model.startCards().push(model.makeUnknown(cardData));
           });
           model.startCards.valueHasMutated();
 
@@ -1034,20 +1046,7 @@ if (!gwaioSetupLoaded) {
               });
 
               // Replacement for GWDealer.dealBossCards
-              var lockedStartCards = _.filter(
-                model.gwaioTreasureCards,
-                function (card) {
-                  return (
-                    !GW.bank.hasStartCard(card) && !gwaioBank.hasStartCard(card)
-                  );
-                }
-              );
-              if (lockedStartCards) {
-                var treasurePlanetCard = _.sample(lockedStartCards);
-                _.assign(treasurePlanetCard, { allowOverflow: true });
-                var treasurePlanetSetup = false;
-              } else treasurePlanetSetup = true;
-
+              var treasurePlanetSetup = false;
               var n = 0;
               var m = 0;
               _.forEach(game.galaxy().stars(), function (star) {
@@ -1094,9 +1093,22 @@ if (!gwaioSetupLoaded) {
                       ];
                       ai.commander =
                         "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-                      system.description =
-                        "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-                      star.cardList().push(treasurePlanetCard);
+                      var lockedStartCards = _.filter(
+                        model.gwaioTreasureCards,
+                        function (card) {
+                          return (
+                            !GW.bank.hasStartCard(card) &&
+                            !gwaioBank.hasStartCard(card)
+                          );
+                        }
+                      );
+                      if (!_.isEmpty(lockedStartCards)) {
+                        var treasurePlanetCard = _.sample(lockedStartCards);
+                        _.assign(treasurePlanetCard, { allowOverflow: true });
+                        star.cardList().push(treasurePlanetCard);
+                        system.description =
+                          "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
+                      }
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
                       gwaioLore.aiSystems[m]
@@ -1144,6 +1156,8 @@ if (!gwaioSetupLoaded) {
                 originSystem.gwaio.ai = "Titans";
               }
               originSystem.gwaio.aiMods = [];
+              // We don't need to apply the hotfix as it's for v5.17.1 and earlier
+              originSystem.treasurePlanetFixed = true;
 
               if (model.creditsMode()) {
                 originSystem.name = GWCredits.startSystem.name;
