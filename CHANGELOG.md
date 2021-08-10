@@ -4,7 +4,7 @@
 
 ### Change
 
-- Small reduction to the maximum amount of allowed water/lava on a planet
+- Reduction to the maximum amount of allowed water/lava on a planet to avoid edge-case lava planets
 
 ## v5.18.0 - 2021-08-09
 
