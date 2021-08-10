@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Small reduction to the maximum amount of allowed water/lava on a planet
+
 ## v5.18.0 - 2021-08-09
 
 ### Change
