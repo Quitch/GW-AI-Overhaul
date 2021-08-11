@@ -6,6 +6,10 @@
 
 - Reduction to the maximum amount of allowed water/lava on a planet to avoid edge-case lava planets
 
+### Fixed
+
+- Angel shooting orbital after being upgraded
+
 ## v5.18.0 - 2021-08-09
 
 ### Change
