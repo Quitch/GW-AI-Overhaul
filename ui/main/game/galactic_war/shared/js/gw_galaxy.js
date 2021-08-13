@@ -32,20 +32,57 @@ define([
       if (_.has(neighbors, a)) return _.includes(neighbors[a], b);
     };
 
+    // Naive BFS search because we have tiny graphs.
+    // self.pathBetween = function(from, to) {
+    //     var worklist = [[from]];
+    //     while (worklist.length > 0) {
+    //         var path = worklist.shift();
+    //         var node = path[path.length - 1];
+    //         var nodeNeighbors = self.neighborsMap()[node];
+    //         for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
+    //             var other = nodeNeighbors[neighbor];
+    //             // Don't allow loops.
+    //             if (_.contains(path, other))
+    //                 continue;
+
+    //             if (other === to) {
+    //                 path.push(other);
+    //                 return path;
+    //             }
+
+    //             var visited = self.stars()[other].history().length > 0;
+    //             if (visited) {
+    //                 var newPath = _.cloneDeep(path);
+    //                 newPath.push(other);
+    //                 worklist.push(newPath);
+    //             }
+    //         }
+    //     }
+
+    //     return null;
+    // };
+
     self.pathBetween = function (from, to, noFog) {
       var toExplored = self.stars()[to].explored();
 
+      var neighborsMap = self.neighborsMap();
+
+      var checked = {};
+
       var worklist = [[from]];
+
       while (worklist.length > 0) {
         var path = worklist.shift();
+
         var node = path[path.length - 1];
-        var nodeNeighbors = self.neighborsMap()[node];
+        var nodeNeighbors = neighborsMap[node];
+
+        checked[node] = true;
 
         for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
           var other = nodeNeighbors[neighbor];
 
-          // Don't allow loops.
-          if (_.includes(path, other)) continue;
+          if (checked[other]) continue; // ignore loop
 
           if (other === to) {
             var previous = _.last(path);
@@ -69,6 +106,7 @@ define([
           if (valid) {
             var newPath = _.cloneDeep(path);
             newPath.push(other);
+
             worklist.push(newPath);
           }
         }
@@ -214,6 +252,7 @@ define([
         config.useEasierSystemTemplate
       );
 
+      // Generate the planets, increasing the size based on the distance from the start.
       var starGenerators = _.map(self.stars(), function (star) {
         if (
           model.gwaioDifficultySettings &&
