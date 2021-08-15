@@ -10,6 +10,7 @@
 ### Fixed
 
 - Angel shooting orbital after being upgraded
+- Newly introduced incompatibility with Shared Systems for Galactic War
 
 ## v5.18.0 - 2021-08-09
 
