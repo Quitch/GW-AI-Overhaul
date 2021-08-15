@@ -353,17 +353,18 @@ if (!gwaioSetupLoaded) {
             lockedBaseCards,
             model.gwaioNewStartCards
           );
-          model.startCards([]);
-          _.forEach(allCards, function (cardData) {
+          var startCards = _.map(allCards, function (cardData) {
             if (
               _.includes(startingCards, cardData) ||
               GW.bank.hasStartCard(cardData) ||
               gwaioBank.hasStartCard(cardData)
-            )
-              model.startCards().push(model.makeKnown(cardData));
-            else model.startCards().push(model.makeUnknown(cardData));
+            ) {
+              return model.makeKnown(cardData);
+            } else {
+              return model.makeUnknown(cardData);
+            }
           });
-          model.startCards.valueHasMutated();
+          model.startCards(startCards);
 
           if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
           model.gwaioAllStartCards.push(

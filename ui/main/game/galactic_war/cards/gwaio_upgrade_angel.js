@@ -52,6 +52,12 @@ define([
         {
           file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
           path: "target_layers",
+          op: "pull",
+          value: ["WL_Orbital"],
+        },
+        {
+          file: "/pa/units/air/support_platform/support_platform_tool_interception.json",
+          path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },

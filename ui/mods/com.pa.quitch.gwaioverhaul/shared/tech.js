@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/inventory.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
 ], function (inventory) {
   // Tougher Commanders
   var commanderArmourTech = [];

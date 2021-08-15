@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.18.1 - 2021-08-15
+
+### Change
+
+- Updated file shadows
+
+### Fixed
+
+- Reduction to the maximum amount of allowed water/lava on a planet to avoid edge-case lava planets
+- Angel shooting orbital after being upgraded
+- Newly introduced incompatibility with Shared Systems for Galactic War
+
 ## v5.18.0 - 2021-08-09
 
 ### Change
