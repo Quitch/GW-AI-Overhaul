@@ -4,11 +4,11 @@
 
 ### Change
 
-- Reduction to the maximum amount of allowed water/lava on a planet to avoid edge-case lava planets
 - Updated file shadows
 
 ### Fixed
 
+- Reduction to the maximum amount of allowed water/lava on a planet to avoid edge-case lava planets
 - Angel shooting orbital after being upgraded
 - Newly introduced incompatibility with Shared Systems for Galactic War
 
