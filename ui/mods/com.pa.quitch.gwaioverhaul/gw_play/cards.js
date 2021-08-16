@@ -505,7 +505,6 @@ if (!gwaioCardsLoaded) {
                   star: star,
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    // Minions tend to break things.
                     requireGW(["shared/gw_factions"], function (GWFactions) {
                       _.forEach(GWFactions, function (faction) {
                         _.forEach(faction.minions, function (minion) {
