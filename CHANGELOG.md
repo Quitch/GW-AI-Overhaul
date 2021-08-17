@@ -8,8 +8,8 @@
 
 ### Fixed
 
-- Buff Commander does not apply speed bonuses to the Lob
-- Swarm Commander does not apply speed bonuses to the Lob
+- Buff Commander applying speed bonuses to the Lob
+- Swarm Commander applying speed bonuses to the Lob
 
 ## v5.18.1 - 2021-08-15
 
