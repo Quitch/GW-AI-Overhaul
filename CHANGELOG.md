@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Space Excavation Commander's Jigs no longer extend their arms so as to avoid visual clutter at the ground layer
+
 ### Fixed
 
 - Buff Commander does not apply speed bonuses to the Lob
