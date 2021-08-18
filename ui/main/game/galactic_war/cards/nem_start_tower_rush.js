@@ -113,7 +113,7 @@ define([
               }
             );
           });
-          var units_with_splash = [
+          var weapons = [
             "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
             "/pa/units/land/air_defense/air_defense_tool_weapon.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
@@ -128,7 +128,7 @@ define([
             "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
             "/pa/units/sea/torpedo_launcher/torpedo_launcher_tool_weapon.json",
           ];
-          units_with_splash.forEach(function (unit) {
+          weapons.forEach(function (unit) {
             mods.push(
               {
                 file: unit,
