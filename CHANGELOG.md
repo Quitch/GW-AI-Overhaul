@@ -5,6 +5,7 @@
 ### Change
 
 - Space Excavation Commander's Jigs no longer extend their arms so as to avoid visual clutter at the ground layer
+- Defense Tech Commander no longer starts with the bot factory
 
 ### Fixed
 
