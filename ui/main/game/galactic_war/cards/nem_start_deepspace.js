@@ -81,6 +81,12 @@ define([
                 "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
             },
             {
+              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              path: "model.animations",
+              op: "replace",
+              value: {},
+            },
+            {
               file: "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
               path: "damage",
               op: "multiply",

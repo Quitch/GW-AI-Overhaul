@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.19.0 - 2021-08-19
+
+### Change
+
+- Space Excavation Commander's Jigs no longer extend their arms, so as to avoid visual clutter at the ground layer
+- Defense Tech Commander no longer starts with the bot factory
+- Defense Tech Commander modifiers are now applied to Catapults, Umbrellas, and Anchors for the purpose of consistency
+
+### Fixed
+
+- Buff Commander applying speed bonuses to the Lob
+- Swarm Commander applying speed bonuses to the Lob
+
 ## v5.18.1 - 2021-08-15
 
 ### Change
