@@ -61,17 +61,6 @@ define([
               op: "push",
               value: "ORDER_FireSecondaryWeapon",
             },
-            {
-              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
-              path: "tools",
-              op: "push",
-              value: {
-                spec_id: "/pa/tools/uber_cannon/uber_cannon.json",
-                aim_bone: "bone_turret",
-                muzzle_bone: "socket_rightMuzzle",
-                secondary_weapon: true,
-              },
-            },
           ]);
 
           inventory.addAIMods([
