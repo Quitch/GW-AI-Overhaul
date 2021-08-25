@@ -5,6 +5,7 @@
 ### Change
 
 - Inferno Upgrade Tech has been changed due to passive self-healing being broken.
+- Vanguard Upgrade Tech is now an improved version of Inferno Upgrade Tech
 
 ## v5.19.0 - 2021-08-19
 
