@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Inferno Upgrade Tech has been changed due to passive self-healing being broken.
+
 ## v5.19.0 - 2021-08-19
 
 ### Change
