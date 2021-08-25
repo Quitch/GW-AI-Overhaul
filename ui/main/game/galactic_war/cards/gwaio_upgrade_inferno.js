@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Inferno Upgrade Tech adds the Stich repair arm to the flame tank. They will not repair when given attack orders."
+      "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders."
     ),
     summarize: _.constant("!LOC:Inferno Upgrade Tech"),
     icon: _.constant(

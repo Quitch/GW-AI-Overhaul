@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Spelling
+
 ## v5.20.0 - 2021-08-25
 
 ### Change
