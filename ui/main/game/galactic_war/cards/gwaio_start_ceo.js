@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Enjoy an immediate buff to your basic economy structures, but short-term thinking means you can never access the advanced economy. Win the war while the quarterly returns still look hot."
+      "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons."
     ),
     hint: function () {
       return {
@@ -39,16 +39,46 @@ define([
             inventory.addMods(gwaioTech.clusterCommanders);
           inventory.addMods([
             {
-              file: "/pa/units/land/energy_plant/energy_plant.json",
-              path: "production.energy",
-              op: "multiply",
-              value: 1.25,
+              file: "/pa/units/commanders/base_commander/base_commander.json",
+              path: "buildable_types",
+              op: "replace",
+              value: "CmdBuild | SupportCommander",
             },
             {
-              file: "/pa/units/land/metal_extractor/metal_extractor.json",
-              path: "production.metal",
-              op: "multiply",
-              value: 1.25,
+              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              path: "tools",
+              op: "push",
+              value: {
+                spec_id: "/pa/tools/uber_cannon/uber_cannon.json",
+                aim_bone: "bone_turret",
+                muzzle_bone: "socket_rightMuzzle",
+                secondary_weapon: true,
+              },
+            },
+            {
+              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              path: "command_caps",
+              op: "push",
+              value: "ORDER_FireSecondaryWeapon",
+            },
+            {
+              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              path: "tools",
+              op: "push",
+              value: {
+                spec_id: "/pa/tools/uber_cannon/uber_cannon.json",
+                aim_bone: "bone_turret",
+                muzzle_bone: "socket_rightMuzzle",
+                secondary_weapon: true,
+              },
+            },
+          ]);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "load",
+              value: "gwaio_start_ceo.json",
             },
           ]);
         } else {
@@ -65,11 +95,6 @@ define([
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
-          inventory.removeUnits([
-            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
-            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-          ]);
           inventory.setTag("", "buffCount", undefined);
         }
       }

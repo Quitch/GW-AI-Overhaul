@@ -6,6 +6,7 @@
 
 - Inferno Upgrade Tech has been changed due to passive self-healing being broken.
 - Vanguard Upgrade Tech is now an improved version of Inferno Upgrade Tech
+- CEO Commander has been completely overhauled to better differentiate it from the Storage Commander
 
 ## v5.19.0 - 2021-08-19
 
