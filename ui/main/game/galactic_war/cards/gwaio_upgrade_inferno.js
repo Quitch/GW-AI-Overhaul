@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Inferno Upgrade Tech allows the flame tank to heal itself."
+      "!LOC:Inferno Upgrade Tech adds the Stich repair arm to the flame tank. They will not repair when given attack orders."
     ),
     summarize: _.constant("!LOC:Inferno Upgrade Tech"),
     icon: _.constant(
@@ -31,9 +31,45 @@ define([
       inventory.addMods([
         {
           file: "/pa/units/land/tank_armor/tank_armor.json",
-          path: "passive_health_regen",
+          path: "tools",
+          op: "push",
+          value: {
+            spec_id:
+              "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+            aim_bone: "bone_turret",
+            muzzle_bone: "socket_muzzle",
+          },
+        },
+        {
+          file: "/pa/units/land/tank_armor/tank_armor.json",
+          path: "command_caps",
+          op: "push",
+          value: ["ORDER_Repair"],
+        },
+        {
+          file: "/pa/units/land/tank_armor/tank_armor.json",
+          path: "audio.loops.build",
           op: "replace",
-          value: 15,
+          value: {
+            cue: "/SE/Construction/Fab_contruction_beam_loop",
+            flag: "build_target_changed",
+            should_start_func: "has_build_target",
+            should_stop_func: "no_build_target",
+          },
+        },
+        {
+          file: "/pa/units/land/tank_armor/tank_armor.json",
+          path: "fx_offsets",
+          op: "replace",
+          value: [
+            {
+              type: "build",
+              filename: "/pa/effects/specs/fab_combat_spray.pfx",
+              bone: "socket_muzzle",
+              offset: [0, 0, 0],
+              orientation: [0, 0, 0],
+            },
+          ],
         },
       ]);
     },

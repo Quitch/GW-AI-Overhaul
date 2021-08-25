@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Vanguard Upgrade Tech makes the heavy tank amphibious."
+      "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
     ),
     summarize: _.constant("!LOC:Vanguard Upgrade Tech"),
     icon: _.constant(
@@ -39,15 +39,45 @@ define([
       inventory.addMods([
         {
           file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "unit_types",
+          path: "tools",
           op: "push",
-          value: "UNITTYPE_Amphibious",
+          value: {
+            spec_id:
+              "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+            aim_bone: "bone_turret",
+            muzzle_bone: "socket_muzzle",
+          },
         },
         {
           file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          path: "navigation.type",
+          path: "command_caps",
+          op: "push",
+          value: ["ORDER_Repair"],
+        },
+        {
+          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          path: "audio.loops.build",
           op: "replace",
-          value: "amphibious",
+          value: {
+            cue: "/SE/Construction/Fab_contruction_beam_loop",
+            flag: "build_target_changed",
+            should_start_func: "has_build_target",
+            should_stop_func: "no_build_target",
+          },
+        },
+        {
+          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          path: "fx_offsets",
+          op: "replace",
+          value: [
+            {
+              type: "build",
+              filename: "/pa/effects/specs/fab_combat_spray.pfx",
+              bone: "socket_muzzle",
+              offset: [0, 0, 0],
+              orientation: [0, 0, 0],
+            },
+          ],
         },
       ]);
     },
