@@ -38,11 +38,11 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
 
-          var units = [
+          var unitCannons = [
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
             "/pa/units/land/unit_cannon/unit_cannon.json",
           ];
-          var UnitCannonUnits = [
+          var unitCannonUnits = [
             "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
             "/pa/units/land/assault_bot/assault_bot.json",
             "/pa/units/land/attack_vehicle/attack_vehicle.json",
@@ -53,10 +53,10 @@ define([
             "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
           ];
-          var allUnits = units.concat(UnitCannonUnits);
-          inventory.addUnits(allUnits);
+          var units = unitCannons.concat(unitCannonUnits);
+          inventory.addUnits(units);
 
-          var mods = _.map(units, function (unit) {
+          var mods = _.map(unitCannons, function (unit) {
             return {
               file: unit,
               path: "unit_types",
