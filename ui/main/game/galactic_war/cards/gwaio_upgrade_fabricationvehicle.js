@@ -39,9 +39,8 @@ define([
         {
           file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
           path: "buildable_types",
-          op: "replace",
-          value:
-            "Structure & Land & Advanced - Factory | Factory & Land & Tank & Advanced | FabAdvBuild | FabBuild",
+          op: "add",
+          value: " | Structure & Land & Advanced - Factory | FabAdvBuild",
         },
       ]);
 

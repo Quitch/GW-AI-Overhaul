@@ -37,9 +37,8 @@ define([
         {
           file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
           path: "buildable_types",
-          op: "replace",
-          value:
-            "Land & Structure & Advanced - Factory | Factory & Advanced & Air | FabAdvBuild | FabBuild",
+          op: "add",
+          value: " | Land & Structure & Advanced - Factory | FabAdvBuild",
         },
       ]);
 

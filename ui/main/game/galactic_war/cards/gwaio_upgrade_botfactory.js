@@ -35,8 +35,8 @@ define([
         {
           file: "/pa/units/land/bot_factory/bot_factory.json",
           path: "buildable_types",
-          op: "replace",
-          value: "Bot & Mobile & FactoryBuild",
+          op: "add",
+          value: " | (Bot & Mobile & FactoryBuild)",
         },
       ]);
 

@@ -35,8 +35,8 @@ define([
         {
           file: "/pa/units/air/air_factory/air_factory.json",
           path: "buildable_types",
-          op: "replace",
-          value: "Air & Mobile & FactoryBuild",
+          op: "add",
+          value: " | (Air & Mobile & FactoryBuild)",
         },
       ]);
 

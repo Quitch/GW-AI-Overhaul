@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.21.0 - 2021-08-27
+
+### Change
+
+- Improved compatibility of cards which modify buildable_types
+- Paratrooper Commander starts with all units buildable by the Unit Cannon unlocked and upgradable
+
+### Fixed
+
+- Dox upgrades correctly offered to Paratrooper and Artillery Commanders
+
 ## v5.20.1 - 2021-08-25
 
 ### Fixed

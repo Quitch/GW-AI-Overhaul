@@ -38,13 +38,25 @@ define([
           if (inventory.getTag("global", "playerFaction") === 4)
             inventory.addMods(gwaioTech.clusterCommanders);
 
-          var units = [
+          var unitCannons = [
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
             "/pa/units/land/unit_cannon/unit_cannon.json",
           ];
+          var unitCannonUnits = [
+            "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
+            "/pa/units/land/assault_bot/assault_bot.json",
+            "/pa/units/land/attack_vehicle/attack_vehicle.json",
+            "/pa/units/land/bot_aa/bot_aa.json",
+            "/pa/units/land/bot_bomb/bot_bomb.json",
+            "/pa/units/land/bot_grenadier/bot_grenadier.json",
+            "/pa/units/land/bot_tesla/bot_tesla.json",
+            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+            "/pa/units/land/tank_light_laser/tank_light_laser.json",
+          ];
+          var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
 
-          var mods = _.map(units, function (unit) {
+          var mods = _.map(unitCannons, function (unit) {
             return {
               file: unit,
               path: "unit_types",
@@ -72,14 +84,14 @@ define([
             {
               type: "factory",
               op: "append",
-              toBuild: "MiniUnitCannon",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "Commander",
             },
             {
               type: "factory",
               op: "append",
-              toBuild: "MiniUnitCannon",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "UberCommander",
             },
