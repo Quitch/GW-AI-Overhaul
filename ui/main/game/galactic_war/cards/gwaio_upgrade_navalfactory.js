@@ -37,8 +37,8 @@ define([
         {
           file: "/pa/units/sea/naval_factory/naval_factory.json",
           path: "buildable_types",
-          op: "replace",
-          value: "Naval & Mobile & FactoryBuild",
+          op: "add",
+          value: " | (Naval & Mobile & FactoryBuild)",
         },
       ]);
 

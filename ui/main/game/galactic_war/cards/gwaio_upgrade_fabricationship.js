@@ -39,9 +39,8 @@ define([
         {
           file: "/pa/units/sea/fabrication_ship/fabrication_ship.json",
           path: "buildable_types",
-          op: "replace",
-          value:
-            "Naval & Structure & Advanced | Naval & Factory & Advanced | FabAdvBuild | FabBuild",
+          op: "add",
+          value: " | Naval & Structure & Advanced | FabAdvBuild",
         },
       ]);
 

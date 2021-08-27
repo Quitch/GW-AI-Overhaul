@@ -37,9 +37,8 @@ define([
         {
           file: "/pa/units/land/fabrication_bot/fabrication_bot.json",
           path: "buildable_types",
-          op: "replace",
-          value:
-            "Land & Structure & Advanced - Factory | Factory & Advanced & Bot & Land | FabAdvBuild | FabBuild",
+          op: "add",
+          value: " | Land & Structure & Advanced - Factory | FabAdvBuild",
         },
       ]);
 

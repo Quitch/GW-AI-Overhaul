@@ -37,8 +37,8 @@ define([
         {
           file: "/pa/units/land/vehicle_factory/vehicle_factory.json",
           path: "buildable_types",
-          op: "replace",
-          value: "Tank & Mobile & FactoryBuild",
+          op: "add",
+          value: " | (Tank & Mobile & FactoryBuild)",
         },
       ]);
 

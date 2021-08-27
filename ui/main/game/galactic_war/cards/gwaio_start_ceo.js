@@ -41,8 +41,8 @@ define([
             {
               file: "/pa/units/commanders/base_commander/base_commander.json",
               path: "buildable_types",
-              op: "replace",
-              value: "CmdBuild | SupportCommander",
+              op: "add",
+              value: " | SupportCommander",
             },
             {
               file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
