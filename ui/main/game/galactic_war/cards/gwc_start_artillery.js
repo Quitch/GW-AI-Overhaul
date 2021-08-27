@@ -42,6 +42,7 @@ define([
             "/pa/units/land/artillery_long/artillery_long.json",
             "/pa/units/land/artillery_short/artillery_short.json",
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
+            "/pa/units/land/assault_bot/assault_bot.json",
           ]);
           var units = [
             "/pa/units/land/artillery_long/artillery_long.json",

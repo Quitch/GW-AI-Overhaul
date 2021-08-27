@@ -42,7 +42,10 @@ define([
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
             "/pa/units/land/unit_cannon/unit_cannon.json",
           ];
-          inventory.addUnits(units);
+          var allUnits = units.concat(
+            "/pa/units/land/assault_bot/assault_bot.json"
+          );
+          inventory.addUnits(allUnits);
 
           var mods = _.map(units, function (unit) {
             return {

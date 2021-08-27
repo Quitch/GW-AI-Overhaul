@@ -6,6 +6,10 @@
 
 - Improved compatibility of cards which modify buildable_types
 
+### Fixed
+
+- Dox upgrades correctly offered to Paratrooper and Artillery Commanders
+
 ## v5.20.1 - 2021-08-25
 
 ### Fixed
