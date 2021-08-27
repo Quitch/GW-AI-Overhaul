@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.21.1 - 2021-08-27
+
+### Fixed
+
+- Scans failing to complete due to Quitch being a pillock
+
 ## v5.21.0 - 2021-08-27
 
 ### Change
