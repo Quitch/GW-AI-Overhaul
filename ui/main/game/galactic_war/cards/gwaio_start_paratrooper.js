@@ -72,14 +72,14 @@ define([
             {
               type: "factory",
               op: "append",
-              toBuild: "MiniUnitCannon",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "Commander",
             },
             {
               type: "factory",
               op: "append",
-              toBuild: "MiniUnitCannon",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "UberCommander",
             },
