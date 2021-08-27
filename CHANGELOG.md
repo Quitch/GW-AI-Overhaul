@@ -5,7 +5,7 @@
 ### Change
 
 - Improved compatibility of cards which modify buildable_types
-- Paratrooper Commander starts with all units buildable by the Unit Cannon unlocked
+- Paratrooper Commander starts with all units buildable by the Unit Cannon unlocked and upgradable
 
 ### Fixed
 
