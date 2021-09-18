@@ -56,8 +56,9 @@ define([
           var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
 
-          var mods = _.map(unitCannons, function (unit) {
-            return [
+          var mods = [];
+          _.forEach(unitCannons, function (unit) {
+            mods.push(
               {
                 file: unit,
                 path: "unit_types",
@@ -69,8 +70,8 @@ define([
                 path: "build_metal_cost",
                 op: "multiply",
                 value: 0.5,
-              },
-            ];
+              }
+            );
           });
 
           var unitCannonUnitsAdditional = [];
