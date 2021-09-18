@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
+      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both."
     ),
     hint: function () {
       return {
@@ -57,12 +57,20 @@ define([
           inventory.addUnits(units);
 
           var mods = _.map(unitCannons, function (unit) {
-            return {
-              file: unit,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            };
+            return [
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_CmdBuild",
+              },
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 0.5,
+              },
+            ];
           });
           inventory.addMods(mods);
 

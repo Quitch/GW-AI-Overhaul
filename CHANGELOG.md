@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Paratrooper Commander halves the cost of its starting factories
+
 ## v5.21.1 - 2021-08-27
 
 ### Fixed
