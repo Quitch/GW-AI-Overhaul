@@ -7,7 +7,7 @@
       "shared_instance_count": "AdvancedFactory",
       "min_num_assisters": 3,
       "max_num_assisters": 12,
-      "priority": 477,
+      "priority": 478,
       "builders": ["UberCommander", "AnyUberAdvancedFabber"],
       "build_conditions": [
         [

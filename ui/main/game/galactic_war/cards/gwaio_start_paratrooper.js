@@ -121,7 +121,7 @@ define([
               op: "replace",
               toBuild: "UnitCannon",
               idToMod: "priority",
-              value: 477,
+              value: 478,
               refId: "priority",
               refValue: 360, // TITANS AI
             },
