@@ -117,6 +117,20 @@ define([
 
           inventory.addAIMods([
             {
+              type: "fabber",
+              op: "replace",
+              toBuild: "UnitCannon",
+              idToMod: "priority",
+              value: 477,
+              refId: "priority",
+              refValue: 360, // TITANS AI
+            },
+            {
+              type: "fabber",
+              op: "load",
+              value: "gwaio_start_paratrooper.json", // Queller AI
+            },
+            {
               type: "factory",
               op: "append",
               toBuild: "UnitCannon",
