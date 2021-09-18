@@ -57,7 +57,7 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var aiEnabled = gwaioFunctions.aiEnabled()
+              var aiEnabled = gwaioFunctions.aiEnabled();
 
               if (aiEnabled === "Queller") {
                 var aiUnitMapPath =
@@ -398,15 +398,12 @@ if (!gwaioRefereeChangesLoaded) {
           };
 
           var generateAI = function () {
-            console.log("Generating AI");
             var self = this;
 
             var deferred = $.Deferred();
             var deferredAIFiles = $.Deferred();
 
             var addTechToAI = function (json, mods) {
-              console.log("Checking", json);
-
               var ops = {
                 // fabber/factory/platoon only
                 append: function (
@@ -420,20 +417,17 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found (append)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = build[idToMod].concat(value);
-                        console.debug("Appended", build[idToMod]);
                       } else if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod]
                       ) {
                         build[idToMod] += value;
-                        console.debug("Appended", build[idToMod]);
                       } else
                         _.forEach(
                           build.build_conditions,
@@ -442,10 +436,8 @@ if (!gwaioRefereeChangesLoaded) {
                               if (test[refId] === refValue) {
                                 if (_.isArray(test[idToMod])) {
                                   test[idToMod] = test[idToMod].concat(value);
-                                  console.debug("Appended", value);
                                 } else if (test[idToMod]) {
                                   test[idToMod] += value;
-                                  console.debug("Appended", value);
                                 }
                               }
                             });
@@ -466,20 +458,17 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found (prepend)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = value.concat(build[idToMod]);
-                        console.debug("Prepended", build[idToMod]);
                       } else if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value + build[idToMod];
-                        console.debug("Prepended", build[idToMod]);
                       } else
                         _.forEach(
                           build.build_conditions,
@@ -488,10 +477,8 @@ if (!gwaioRefereeChangesLoaded) {
                               if (test[refId] === refValue) {
                                 if (_.isArray(test[idToMod])) {
                                   test[idToMod] = value.concat(test[idToMod]);
-                                  console.debug("Prepended", test[idToMod]);
                                 } else if (test[idToMod]) {
                                   test[idToMod] = value + test[idToMod];
-                                  console.debug("Prepended", test[idToMod]);
                                 }
                               }
                             });
@@ -512,13 +499,11 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found (replace)", build.name);
                       if (
                         (_.isUndefined(refId) || build[refId] === refValue) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value;
-                        console.debug("Replaced", build[idToMod]);
                       } else
                         _.forEach(
                           build.build_conditions,
@@ -526,7 +511,6 @@ if (!gwaioRefereeChangesLoaded) {
                             _.forEach(test_array, function (test) {
                               if (test[refId] === refValue && test[idToMod]) {
                                 test[idToMod] = value;
-                                console.debug("Replaced", test[idToMod]);
                               }
                             });
                           }
@@ -539,11 +523,9 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found (remove)", build.name);
                       _.forEach(build.build_conditions, function (test_array) {
                         _.remove(test_array, function (object) {
                           if (_.isEqual(object, value)) {
-                            console.debug("Removed", object);
                             return object;
                           }
                         });
@@ -556,24 +538,13 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      console.debug("Found (new)", build.name);
                       if (_.isUndefined(idToMod)) {
                         build.build_conditions.push(value);
-                        console.debug(
-                          "New",
-                          build.build_conditions[
-                            build.build_conditions.length - 1
-                          ]
-                        );
                       } else
                         _.forEach(
                           build.build_conditions,
                           function (test_array) {
                             test_array.push(value);
-                            console.debug(
-                              "New",
-                              test_array[test_array.length - 1]
-                            );
                           }
                         );
                     }
@@ -582,14 +553,7 @@ if (!gwaioRefereeChangesLoaded) {
                 // template only
                 squad: function (json, value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
-                    console.debug("Found (squad)", toBuild);
                     json.platoon_templates[toBuild].units.push(value);
-                    console.debug(
-                      "Squad",
-                      json.platoon_templates[toBuild].units[
-                        json.platoon_templates[toBuild].units.length - 1
-                      ]
-                    );
                   }
                 },
               };
@@ -617,8 +581,6 @@ if (!gwaioRefereeChangesLoaded) {
 
                 var aiMods = game.inventory().aiMods();
 
-                console.log("AI to modify:", aiToModify);
-
                 if (aiToModify !== "None") {
                   aiMods = _.partition(aiMods, { op: "load" });
 
@@ -634,17 +596,12 @@ if (!gwaioRefereeChangesLoaded) {
                       managerPath = "platoon_templates/";
                     else console.error("Invalid op in", aiMod);
                     fileList.push(aiTechPath + managerPath + aiMod.value);
-                    console.log(
-                      "Load:",
-                      aiTechPath + managerPath + aiMod.value
-                    );
                   });
                 }
 
                 var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
 
                 _.forEach(fileList, function (filePath) {
-                  console.log("Processing:", filePath);
                   if (
                     _.endsWith(filePath, ".json") &&
                     !_.includes(filePath, "/neural_networks/") &&
@@ -688,7 +645,6 @@ if (!gwaioRefereeChangesLoaded) {
                     $.getJSON("coui:/" + filePath)
                       .then(function (json) {
                         if (aiToModify === "All") {
-                          console.log("Assigning (All):", filePath);
                           if (!_.isEmpty(aiBuildOps))
                             addTechToAI(json, aiBuildOps);
                           // Put "load" files where the AI expects them to be
@@ -700,26 +656,22 @@ if (!gwaioRefereeChangesLoaded) {
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
-                              console.log("New filepath (All):", filePath);
                               configFiles[filePath] = json;
                               if (quellerSubCommander) {
                                 filePath =
                                   subcommanderAIPath +
                                   filePath.slice(quellerEnemyPath.length);
                                 configFiles[filePath] = json;
-                                console.log("New filepath (All):", filePath);
                               }
                             } else {
                               filePath =
                                 aiPath + filePath.slice(aiTechPath.length);
-                              console.log("New filepath (All):", filePath);
                               configFiles[filePath] = json;
                             }
                           } else {
                             configFiles[filePath] = json;
                           }
                         } else if (aiToModify === "SubCommanders") {
-                          console.log("Assigning (SC):", filePath);
                           // Setup enemy AI first
                           if (!_.startsWith(filePath, aiTechPath))
                             configFiles[filePath] = _.cloneDeep(json);
@@ -740,15 +692,12 @@ if (!gwaioRefereeChangesLoaded) {
                                 aiTechPath + filePath.slice(aiPath.length);
                             }
                           }
-                          console.log("New filepath (SC):", filePath);
                           configFiles[filePath] = json;
                         } else {
-                          console.log("Assigning (None):", filePath);
                           configFiles[filePath] = json;
                         }
                       })
                       .always(function () {
-                        console.log("Completed:", filePath);
                         deferred2.resolve();
                       });
                   }
@@ -756,7 +705,6 @@ if (!gwaioRefereeChangesLoaded) {
 
                 $.when.apply($, queue).then(function () {
                   self.files.valueHasMutated();
-                  console.log("Files parsed");
                   promise.resolve();
                 });
               });
@@ -775,21 +723,16 @@ if (!gwaioRefereeChangesLoaded) {
             var ai = game.galaxy().stars()[game.currentStar()].ai();
 
             if (_.isEmpty(inventory.aiMods())) {
-              console.log("Parsing files for None because no tech");
               parseFiles(aiFilePath, deferredAIFiles, "None");
             } else if (ai.mirrorMode === true) {
-              console.log("Parsing files for All");
               parseFiles(aiFilePath, deferredAIFiles, "All");
             } else if (subcommanders.length > 0) {
-              console.log("Parsing files for Sub Commanders");
               parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
             } else {
-              console.log("Parsing files for None because no affected AI");
               parseFiles(aiFilePath, deferredAIFiles, "None");
             }
 
             $.when(deferredAIFiles).then(function () {
-              console.log("AI generated");
               deferred.resolve();
             });
 
@@ -797,7 +740,6 @@ if (!gwaioRefereeChangesLoaded) {
           };
 
           var generateConfig = function () {
-            console.log("Generating config");
             var self = this;
 
             // Setup the player
