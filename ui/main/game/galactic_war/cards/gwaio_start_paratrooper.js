@@ -102,7 +102,6 @@ define([
             unitCannonUnitsAdditional.push(
               "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
               "/pa/units/land/bot_sniper/bot_sniper.json",
-              "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
               "/pa/units/land/bot_support_commander/bot_support_commander.json"
             );
           _.forEach(unitCannonUnitsAdditional, function (unit) {
