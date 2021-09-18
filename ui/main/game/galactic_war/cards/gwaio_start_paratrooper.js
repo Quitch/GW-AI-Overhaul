@@ -144,6 +144,67 @@ define([
               idToMod: "builders",
               value: "UberCommander",
             },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicArmorTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "HoverTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "LandScout",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "load",
+              value: "gwaio_upgrade_leveler.json",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArmorTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArtilleryVehicle",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "FlakTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "NukeTank", // No AI uses this currently
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArtilleryBot",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
           ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
