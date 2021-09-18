@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both."
+      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
     ),
     hint: function () {
       return {
@@ -72,6 +72,51 @@ define([
               },
             ];
           });
+
+          var unitCannonUnitsAdditional = [];
+          if (
+            gwaioFunctions.hasUnit(
+              "/pa/units/land/vehicle_factory/vehicle_factory.json"
+            )
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/tank_armor/tank_armor.json",
+              "/pa/units/land/tank_hover/tank_hover.json",
+              "/pa/units/land/land_scout/land_scout.json"
+            );
+          if (
+            gwaioFunctions.hasUnit(
+              "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
+            )
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
+              "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+              "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
+              "/pa/units/land/tank_flak/tank_flak.json",
+              "/pa/units/land/tank_nuke/tank_nuke.json"
+            );
+          if (
+            gwaioFunctions.hasUnit(
+              "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
+            )
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
+              "/pa/units/land/bot_sniper/bot_sniper.json",
+              "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
+              "/pa/units/land/bot_support_commander/bot_support_commander.json"
+            );
+
+          _.forEach(unitCannonUnitsAdditional, function (unit) {
+            mods.push({
+              file: unit,
+              path: "unit_types",
+              op: "push",
+              value: "UNITTYPE_CannonBuildable",
+            });
+          });
+
           inventory.addMods(mods);
 
           inventory.addAIMods([
