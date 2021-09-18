@@ -87,7 +87,8 @@ define([
           if (
             gwaioFunctions.hasUnit(
               "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-            )
+            ) ||
+            inventory.hasCard("gwaio_upgrade_vehiclefactory")
           )
             unitCannonUnitsAdditional.push(
               "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
@@ -99,7 +100,8 @@ define([
           if (
             gwaioFunctions.hasUnit(
               "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-            )
+            ) ||
+            inventory.hasCard("gwaio_upgrade_botfactory")
           )
             unitCannonUnitsAdditional.push(
               "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
