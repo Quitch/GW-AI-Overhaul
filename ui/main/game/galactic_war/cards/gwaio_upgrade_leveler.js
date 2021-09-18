@@ -30,7 +30,8 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/tank_laser_adv/tank_laser_adv.json"
         ) &&
-        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json")
+        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json") &&
+        !inventory.hasCard("gwaio_start_paratrooper")
       )
         chance = 60;
 
