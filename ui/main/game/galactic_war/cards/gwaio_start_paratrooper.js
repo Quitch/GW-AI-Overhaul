@@ -14,7 +14,7 @@ define([
       return gwaioFunctions.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
+      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
     ),
     hint: function () {
       return {
@@ -56,44 +56,168 @@ define([
           var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
 
-          var mods = _.map(unitCannons, function (unit) {
-            return {
+          var mods = [];
+          _.forEach(unitCannons, function (unit) {
+            mods.push(
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_CmdBuild",
+              },
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 0.5,
+              }
+            );
+          });
+
+          var unitCannonUnitsAdditional = [];
+          if (
+            inventory.hasCard("gwc_enable_vehicles_all") ||
+            inventory.hasCard("gwc_enable_vehicles_t1")
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/tank_armor/tank_armor.json",
+              "/pa/units/land/tank_hover/tank_hover.json",
+              "/pa/units/land/land_scout/land_scout.json"
+            );
+          if (
+            inventory.hasCard("gwc_enable_vehicles_all") ||
+            inventory.hasCard("gwaio_upgrade_vehiclefactory")
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
+              "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+              "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
+              "/pa/units/land/tank_flak/tank_flak.json",
+              "/pa/units/land/tank_nuke/tank_nuke.json"
+            );
+          if (
+            inventory.hasCard("gwc_enable_bots_all") ||
+            inventory.hasCard("gwaio_upgrade_botfactory")
+          )
+            unitCannonUnitsAdditional.push(
+              "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
+              "/pa/units/land/bot_sniper/bot_sniper.json",
+              "/pa/units/land/bot_support_commander/bot_support_commander.json"
+            );
+          _.forEach(unitCannonUnitsAdditional, function (unit) {
+            mods.push({
               file: unit,
               path: "unit_types",
               op: "push",
-              value: "UNITTYPE_CmdBuild",
-            };
+              value: "UNITTYPE_CannonBuildable",
+            });
           });
+
           inventory.addMods(mods);
 
           inventory.addAIMods([
             {
-              type: "factory",
+              type: "fabber",
               op: "append",
               toBuild: "UnitCannon",
               idToMod: "builders",
               value: "Commander",
             },
             {
-              type: "factory",
+              type: "fabber",
               op: "append",
               toBuild: "UnitCannon",
               idToMod: "builders",
               value: "UberCommander",
             },
             {
-              type: "factory",
+              type: "fabber",
               op: "append",
               toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "Commander",
             },
             {
-              type: "factory",
+              type: "fabber",
               op: "append",
               toBuild: "MiniUnitCannon", // No AI uses this currently
               idToMod: "builders",
               value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "UnitCannon",
+              idToMod: "priority",
+              value: 478,
+              refId: "priority",
+              refValue: 360, // TITANS AI
+            },
+            {
+              type: "fabber",
+              op: "load",
+              value: "gwaio_start_paratrooper.json", // Queller AI
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "BasicArmorTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "HoverTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "LandScout",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "load",
+              value: "gwaio_upgrade_leveler.json",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArmorTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArtilleryVehicle",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "FlakTank",
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "NukeTank", // No AI uses this currently
+              idToMod: "builders",
+              value: "UnitCannon",
+            },
+            {
+              type: "factory",
+              op: "append",
+              toBuild: "AdvancedArtilleryBot",
+              idToMod: "builders",
+              value: "UnitCannon",
             },
           ]);
         } else {

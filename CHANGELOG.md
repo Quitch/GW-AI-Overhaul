@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.22.0 - 2021-09-18
+
+### Change
+
+- Paratrooper Commander halves the cost of its starting factories
+- Paratrooper Commander adds unlocked units to the Unit Cannon
+- Paratrooper Commander Sub Commanders give higher priority to Unit Cannons
+
+### Fixed
+
+- Paratrooper Commander Sub Commanders not building Unit Cannons with their commanders
+
 ## v5.21.1 - 2021-08-27
 
 ### Fixed
