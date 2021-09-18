@@ -75,9 +75,8 @@ define([
 
           var unitCannonUnitsAdditional = [];
           if (
-            gwaioFunctions.hasUnit(
-              "/pa/units/land/vehicle_factory/vehicle_factory.json"
-            )
+            inventory.hasCard("gwc_enable_vehicles_all") ||
+            inventory.hasCard("gwc_enable_vehicles_t1")
           )
             unitCannonUnitsAdditional.push(
               "/pa/units/land/tank_armor/tank_armor.json",
@@ -85,9 +84,7 @@ define([
               "/pa/units/land/land_scout/land_scout.json"
             );
           if (
-            gwaioFunctions.hasUnit(
-              "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-            ) ||
+            inventory.hasCard("gwc_enable_vehicles_all") ||
             inventory.hasCard("gwaio_upgrade_vehiclefactory")
           )
             unitCannonUnitsAdditional.push(
@@ -98,9 +95,7 @@ define([
               "/pa/units/land/tank_nuke/tank_nuke.json"
             );
           if (
-            gwaioFunctions.hasUnit(
-              "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-            ) ||
+            inventory.hasCard("gwc_enable_bots_all") ||
             inventory.hasCard("gwaio_upgrade_botfactory")
           )
             unitCannonUnitsAdditional.push(
@@ -109,7 +104,6 @@ define([
               "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
               "/pa/units/land/bot_support_commander/bot_support_commander.json"
             );
-
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
               file: unit,
