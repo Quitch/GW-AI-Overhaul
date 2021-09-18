@@ -118,6 +118,34 @@ define([
           inventory.addAIMods([
             {
               type: "fabber",
+              op: "append",
+              toBuild: "UnitCannon",
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "UnitCannon",
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
+              idToMod: "builders",
+              value: "Commander",
+            },
+            {
+              type: "fabber",
+              op: "append",
+              toBuild: "MiniUnitCannon", // No AI uses this currently
+              idToMod: "builders",
+              value: "UberCommander",
+            },
+            {
+              type: "fabber",
               op: "replace",
               toBuild: "UnitCannon",
               idToMod: "priority",
@@ -129,34 +157,6 @@ define([
               type: "fabber",
               op: "load",
               value: "gwaio_start_paratrooper.json", // Queller AI
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "UberCommander",
             },
             {
               type: "factory",
