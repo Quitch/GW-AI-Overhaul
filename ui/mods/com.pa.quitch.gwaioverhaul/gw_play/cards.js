@@ -509,7 +509,6 @@ if (!gwaioCardsLoaded) {
                         _.forEach(faction.minions, function (minion) {
                           var minionStock = _.cloneDeep(product);
                           minionStock.minion = minion;
-                          api.debug.log(" ", product.id, "%", minionStock);
                           game.inventory().cards.push(minionStock);
                           game.inventory().cards.pop();
                           if (!minionStock.minion.commander) {
