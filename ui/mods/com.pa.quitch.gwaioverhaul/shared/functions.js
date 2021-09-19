@@ -54,12 +54,11 @@ define([
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
       var inventory = game.inventory();
-
       if (type === "all" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/";
       else if (type === "enemy" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/q_uber/";
-      // the order of path assignments must match/be matched with .player unit_map assignments in referee.js
+      // the order of path assignments must match .player unit_map assignments in referee.js
       else if (type === "subcommander" && this.aiEnabled() === "Queller")
         return "/pa/ai_personalities/queller/q_gold/";
       else if (

@@ -302,7 +302,7 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), playerTag)
                   .then(function (playerSpecFiles) {
-                    // the order of unit_map assignments must match/be matched with aiPath() in function.js
+                    // the order of unit_map assignments must match aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
                       var playerFilesClassic = _.assign(
                         {
