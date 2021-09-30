@@ -253,6 +253,7 @@ None.
 - Unique Commander Loadouts
 - Galactic War Unique Loadouts
 - Combat Fabricator Group Deselect
+- Aurora Artillery
 
 ## Thanks to
 
