@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Commanders will always open with their favourite factory type due to flaws uncovered in the percent*open* implementation
+
 ## v5.22.0 - 2021-09-18
 
 ### Change
