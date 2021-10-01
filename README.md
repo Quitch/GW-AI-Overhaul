@@ -252,6 +252,8 @@ None.
 - Section of Foreign Intelligence for galactic war
 - Unique Commander Loadouts
 - Galactic War Unique Loadouts
+- Combat Fabricator Group Deselect
+- Aurora Artillery
 
 ## Thanks to
 

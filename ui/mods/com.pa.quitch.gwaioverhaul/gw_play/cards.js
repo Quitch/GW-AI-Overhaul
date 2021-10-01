@@ -497,7 +497,6 @@ if (!gwaioCardsLoaded) {
             model.cheats.testCards = function (game) {
               var star = game.galaxy().stars()[game.currentStar()];
               _.forEach(gwaioCardsToUnits.cards, function (card) {
-                api.debug.log("Dealing card", card.id);
                 dealCard({
                   id: card.id,
                   galaxy: game.galaxy(),
@@ -510,7 +509,6 @@ if (!gwaioCardsLoaded) {
                         _.forEach(faction.minions, function (minion) {
                           var minionStock = _.cloneDeep(product);
                           minionStock.minion = minion;
-                          api.debug.log(" ", product.id, "%", minionStock);
                           game.inventory().cards.push(minionStock);
                           game.inventory().cards.pop();
                           if (!minionStock.minion.commander) {
@@ -654,6 +652,7 @@ if (!gwaioCardsLoaded) {
                 var units = model.gwaioCardsToUnits[index].units;
                 if (units) {
                   var affectedUnits = [];
+                  // TODO: replace with $.getJSON() to get this info from the source?
                   _.forEach(units, function (unit) {
                     index = _.findIndex(gwaioUnitsToNames.units, {
                       path: unit,

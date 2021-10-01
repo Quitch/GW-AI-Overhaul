@@ -57,12 +57,14 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              if (gwaioFunctions.aiEnabled() === "Queller") {
+              var aiEnabled = gwaioFunctions.aiEnabled();
+
+              if (aiEnabled === "Queller") {
                 var aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 var aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
-              } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+              } else if (aiEnabled === "Penchant") {
                 aiUnitMapPath =
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
@@ -300,7 +302,7 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), playerTag)
                   .then(function (playerSpecFiles) {
-                    // the order of unit_map assignments must match/be matched with aiPath() in function.js
+                    // the order of unit_map assignments must match aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
                       var playerFilesClassic = _.assign(
                         {
