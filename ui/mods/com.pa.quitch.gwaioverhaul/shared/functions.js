@@ -18,28 +18,28 @@ define([
         .observable()
         .extend({ local: "gwaio_victory_" + loadoutId });
       if (highestDifficultyDefeated() === 0) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/0_casual.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
       }
       if (highestDifficultyDefeated() === 1) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/1_iron.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png";
       }
       if (highestDifficultyDefeated() === 2) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/2_bronze.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png";
       }
       if (highestDifficultyDefeated() === 3) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/3_silver.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png";
       }
       if (highestDifficultyDefeated() === 4) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/4_gold.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png";
       }
       if (highestDifficultyDefeated() === 5) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/5_platinum.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png";
       }
       if (highestDifficultyDefeated() === 6) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/6_diamond.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png";
       }
       if (highestDifficultyDefeated() === 7) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/7_uber.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
       } else
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
