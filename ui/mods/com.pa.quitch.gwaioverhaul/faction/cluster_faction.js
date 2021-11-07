@@ -106,15 +106,125 @@ define([
         },
       },
     ],
+    minion_colors: [
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+    ],
     minions: _.map(
       [
         {
           name: "Worker",
           character: "!LOC:Uber",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.72,
@@ -127,10 +237,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Platinum",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.77,
@@ -147,10 +253,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Gold",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.77,
@@ -165,10 +267,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Defender",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.71,
@@ -182,10 +280,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Luddite",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             basic_to_advanced_factory_ratio: 10,
@@ -195,10 +289,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Technologist",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             adv_eco_mod: 0.5,
@@ -212,10 +302,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Cautious",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 0.75,
@@ -226,10 +312,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Aggressive",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 2,
@@ -240,10 +322,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Rush",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 1.5,
@@ -255,10 +333,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Turtle",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 0.5,
@@ -275,10 +349,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Absurd",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             adv_eco_mod: 1.3,
@@ -290,10 +360,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Relentless",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.44,
@@ -311,10 +377,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Swarm",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_demand_check: 0.99,
@@ -325,10 +387,6 @@ define([
         {
           name: "Worker",
           character: "!LOC:Economist",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.71,
@@ -342,10 +400,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Uber",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.72,
@@ -358,10 +412,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Platinum",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.77,
@@ -378,10 +428,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Gold",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             energy_drain_check: 0.77,
@@ -396,10 +442,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Defender",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.71,
@@ -413,10 +455,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Luddite",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             basic_to_advanced_factory_ratio: 10,
@@ -426,10 +464,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Technologist",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             adv_eco_mod: 0.5,
@@ -442,10 +476,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Cautious",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 0.75,
@@ -456,10 +486,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Aggressive",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 2,
@@ -469,10 +495,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Rush",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 1.5,
@@ -484,10 +506,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Turtle",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             neural_data_mod: 0.5,
@@ -504,10 +522,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Absurd",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             adv_eco_mod: 1.3,
@@ -519,10 +533,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Relentless",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.44,
@@ -540,10 +550,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Swarm",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_demand_check: 0.99,
@@ -554,10 +560,6 @@ define([
         {
           name: "Security",
           character: "!LOC:Economist",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
           isCluster: true,
           personality: {
             metal_drain_check: 0.71,

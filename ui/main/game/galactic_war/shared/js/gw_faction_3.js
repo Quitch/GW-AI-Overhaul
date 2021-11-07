@@ -159,15 +159,81 @@ define(function () {
         },
       },
     ],
+    minion_colors: [
+      [
+        [255, 204, 204],
+        [192, 192, 192],
+      ],
+      [
+        [255, 153, 153],
+        [192, 192, 192],
+      ],
+      [
+        [255, 102, 102],
+        [192, 192, 192],
+      ],
+      [
+        [255, 0, 0],
+        [192, 192, 192],
+      ],
+      [
+        [204, 0, 0],
+        [192, 192, 192],
+      ],
+      [
+        [153, 0, 0],
+        [192, 192, 192],
+      ],
+      [
+        [255, 204, 153],
+        [192, 192, 192],
+      ],
+      [
+        [255, 178, 102],
+        [192, 192, 192],
+      ],
+      [
+        [255, 153, 51],
+        [192, 192, 192],
+      ],
+      [
+        [255, 128, 0],
+        [192, 192, 192],
+      ],
+      [
+        [204, 102, 0],
+        [192, 192, 192],
+      ],
+      [
+        [255, 255, 204],
+        [192, 192, 192],
+      ],
+      [
+        [255, 255, 153],
+        [192, 192, 192],
+      ],
+      [
+        [255, 255, 102],
+        [192, 192, 192],
+      ],
+      [
+        [255, 255, 0],
+        [192, 192, 192],
+      ],
+      [
+        [204, 204, 0],
+        [192, 192, 192],
+      ],
+      [
+        [153, 153, 0],
+        [192, 192, 192],
+      ],
+    ],
     minions: _.map(
       [
         {
           name: "Betadyne",
           character: "!LOC:Space Invader",
-          color: [
-            [255, 204, 204],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0,
             percent_bot: 0,
@@ -181,10 +247,6 @@ define(function () {
         {
           name: "Centurion",
           character: "!LOC:Astronaut",
-          color: [
-            [255, 153, 153],
-            [192, 192, 192],
-          ],
           personality: {
             percent_land: 0,
             percent_air: 0.5,
@@ -197,10 +259,6 @@ define(function () {
         {
           name: "Diremachine",
           character: "!LOC:Uber",
-          color: [
-            [255, 102, 102],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
@@ -216,10 +274,6 @@ define(function () {
         {
           name: "Enderstryke71",
           character: "!LOC:Platinum",
-          color: [
-            [255, 0, 0],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -236,10 +290,6 @@ define(function () {
         {
           name: "Iwmiked",
           character: "!LOC:Gold",
-          color: [
-            [204, 0, 0],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -255,10 +305,6 @@ define(function () {
         {
           name: "Majuju",
           character: "!LOC:Defender",
-          color: [
-            [153, 0, 0],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
@@ -272,10 +318,6 @@ define(function () {
         {
           name: "Nefelpitou",
           character: "!LOC:Luddite",
-          color: [
-            [255, 204, 153],
-            [192, 192, 192],
-          ],
           personality: {
             basic_to_advanced_factory_ratio: 10,
           },
@@ -285,10 +327,6 @@ define(function () {
         {
           name: "Invictus",
           character: "!LOC:Technologist",
-          color: [
-            [255, 178, 102],
-            [192, 192, 192],
-          ],
           personality: {
             adv_eco_mod: 0.5,
             adv_eco_mod_alone: 0.5,
@@ -302,10 +340,6 @@ define(function () {
         {
           name: "Rallus",
           character: "!LOC:Cautious",
-          color: [
-            [255, 153, 51],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
@@ -315,10 +349,6 @@ define(function () {
         {
           name: "Stickman9000",
           character: "!LOC:Aggressive",
-          color: [
-            [255, 128, 0],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 2,
             min_advanced_fabbers: 1,
@@ -329,10 +359,6 @@ define(function () {
         {
           name: "Zaazzaa",
           character: "!LOC:Rush",
-          color: [
-            [204, 102, 0],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 1.5,
             adv_eco_mod: 2,
@@ -343,10 +369,6 @@ define(function () {
         {
           name: "Aeson",
           character: "!LOC:Turtle",
-          color: [
-            [255, 255, 204],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.5,
             adv_eco_mod: 0.5,
@@ -362,10 +384,6 @@ define(function () {
         {
           name: "Banditks",
           character: "!LOC:Original",
-          color: [
-            [255, 255, 153],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0.075,
             percent_bot: 0.075,
@@ -380,10 +398,6 @@ define(function () {
         {
           name: "SPZ58624",
           character: "!LOC:Absurd",
-          color: [
-            [255, 255, 102],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.65,
             metal_demand_check: 0.71,
@@ -394,10 +408,6 @@ define(function () {
         {
           name: "XOV",
           character: "!LOC:Relentless",
-          color: [
-            [255, 255, 0],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.44,
             energy_drain_check: 0.55,
@@ -412,10 +422,6 @@ define(function () {
         {
           name: "Reaver",
           character: "!LOC:Swarm",
-          color: [
-            [204, 204, 0],
-            [192, 192, 192],
-          ],
           personality: {
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
@@ -427,10 +433,6 @@ define(function () {
         {
           name: "Sadiga",
           character: "!LOC:Economist",
-          color: [
-            [153, 153, 0],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,

@@ -52,6 +52,9 @@ define([
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.sample(GWFactions[context.faction].minions);
+      // Select colour based on the amount of minions currently in the inventory.
+      // This ensures the best colours are picked first to avoid similar coloured commanders.
+      minion["color"] = GWFactions[context.faction].minion_colors[inventory.minions().length];
       return {
         params: {
           minion: minion,

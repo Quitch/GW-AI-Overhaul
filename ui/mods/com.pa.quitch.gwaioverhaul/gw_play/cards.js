@@ -169,14 +169,15 @@ if (!gwaioCardsLoaded) {
               !inventory.cards()[0].minions
             ) {
               var playerFaction = inventory.getTag("global", "playerFaction");
-              _.times(2, function () {
+              for(var i = 0; i < 2; i++) {
                 var subcommander = _.sample(GWFactions[playerFaction].minions);
+                subcommander["color"] = GWFactions[playerFaction].minion_colors[i];
                 inventory.cards().push({
                   id: "gwc_minion",
                   minion: subcommander,
                   unique: Math.random(),
                 });
-              });
+              }
               inventory.applyCards();
               model.driveAccessInProgress(true);
               GW.manifest.saveGame(game).then(function () {
@@ -570,6 +571,7 @@ if (!gwaioCardsLoaded) {
                       product.minion = _.sample(
                         GWFactions[playerFaction].minions
                       );
+                      product.minion["color"] = GWFactions[playerFaction].minion_colors[game.inventory().cards()[0].minions];
                       product.unique = Math.random();
                     });
                   } else if (product.id === "gwc_add_card_slot") {

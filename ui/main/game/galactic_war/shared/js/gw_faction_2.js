@@ -159,15 +159,81 @@ define(function () {
         },
       },
     ],
+    minion_colors: [
+      [
+        [229, 255, 204],
+        [192, 192, 192],
+      ],
+      [
+        [204, 255, 153],
+        [192, 192, 192],
+      ],
+      [
+        [178, 255, 102],
+        [192, 192, 192],
+      ],
+      [
+        [153, 255, 51],
+        [192, 192, 192],
+      ],
+      [
+        [128, 255, 0],
+        [192, 192, 192],
+      ],
+      [
+        [102, 204, 0],
+        [192, 192, 192],
+      ],
+      [
+        [76, 153, 0],
+        [192, 192, 192],
+      ],
+      [
+        [204, 255, 204],
+        [192, 192, 192],
+      ],
+      [
+        [153, 255, 153],
+        [192, 192, 192],
+      ],
+      [
+        [102, 255, 102],
+        [192, 192, 192],
+      ],
+      [
+        [0, 255, 0],
+        [192, 192, 192],
+      ],
+      [
+        [0, 204, 0],
+        [192, 192, 192],
+      ],
+      [
+        [0, 153, 0],
+        [192, 192, 192],
+      ],
+      [
+        [0, 102, 0],
+        [192, 192, 192],
+      ],
+      [
+        [0, 153, 76],
+        [192, 192, 192],
+      ],
+      [
+        [0, 204, 102],
+        [192, 192, 192],
+      ],
+      [
+        [0, 255, 128],
+        [192, 192, 192],
+      ],
+    ],
     minions: _.map(
       [
         {
           name: "Potbelly79",
           character: "!LOC:Grunt",
-          color: [
-            [229, 255, 204],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0.4,
             percent_bot: 0.3,
@@ -181,10 +247,6 @@ define(function () {
         {
           name: "Raventhornn",
           character: "!LOC:Dragoon",
-          color: [
-            [204, 255, 153],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0,
             percent_bot: 0.2,
@@ -198,10 +260,6 @@ define(function () {
         {
           name: "SacrificialLamb",
           character: "!LOC:Uber",
-          color: [
-            [178, 255, 102],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
@@ -217,10 +275,6 @@ define(function () {
         {
           name: "Shadowdaemon",
           character: "!LOC:Platinum",
-          color: [
-            [153, 255, 51],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -237,10 +291,6 @@ define(function () {
         {
           name: "Spartandano",
           character: "!LOC:Gold",
-          color: [
-            [128, 255, 0],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -257,10 +307,6 @@ define(function () {
         {
           name: "Xenosentry",
           character: "!LOC:Defender",
-          color: [
-            [102, 204, 0],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
@@ -275,10 +321,6 @@ define(function () {
         {
           name: "TheFlax",
           character: "!LOC:Luddite",
-          color: [
-            [76, 153, 0],
-            [192, 192, 192],
-          ],
           personality: {
             basic_to_advanced_factory_ratio: 10,
           },
@@ -287,10 +329,6 @@ define(function () {
         {
           name: "Tokamaktech",
           character: "!LOC:Technologist",
-          color: [
-            [204, 255, 204],
-            [192, 192, 192],
-          ],
           personality: {
             adv_eco_mod: 0.5,
             adv_eco_mod_alone: 0.5,
@@ -304,10 +342,6 @@ define(function () {
         {
           name: "Twoboots",
           character: "!LOC:Cautious",
-          color: [
-            [153, 255, 153],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
@@ -317,10 +351,6 @@ define(function () {
         {
           name: "XenosentryPrime",
           character: "!LOC:Aggressive",
-          color: [
-            [102, 255, 102],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 2,
             min_advanced_fabbers: 1,
@@ -331,10 +361,6 @@ define(function () {
         {
           name: "Xinthar",
           character: "!LOC:Rush",
-          color: [
-            [0, 255, 0],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 1.5,
             adv_eco_mod: 2,
@@ -345,10 +371,6 @@ define(function () {
         {
           name: "Beast",
           character: "!LOC:Turtle",
-          color: [
-            [0, 204, 0],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.5,
             adv_eco_mod: 0.5,
@@ -364,10 +386,6 @@ define(function () {
         {
           name: "Beniesk",
           character: "!LOC:Original",
-          color: [
-            [0, 153, 0],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0.15,
             percent_bot: 0.15,
@@ -381,10 +399,6 @@ define(function () {
         {
           name: "Locust",
           character: "!LOC:Absurd",
-          color: [
-            [0, 102, 0],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.65,
             metal_demand_check: 0.71,
@@ -394,10 +408,6 @@ define(function () {
         {
           name: "Zancrowe",
           character: "!LOC:Relentless",
-          color: [
-            [0, 153, 76],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.44,
             energy_drain_check: 0.55,
@@ -412,10 +422,6 @@ define(function () {
         {
           name: "Damubbster",
           character: "!LOC:Swarm",
-          color: [
-            [0, 204, 102],
-            [192, 192, 192],
-          ],
           personality: {
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
@@ -428,10 +434,6 @@ define(function () {
         {
           name: "Raizell",
           character: "!LOC:Economist",
-          color: [
-            [0, 255, 128],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,

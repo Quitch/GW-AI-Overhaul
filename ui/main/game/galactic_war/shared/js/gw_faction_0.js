@@ -143,15 +143,81 @@ define(function () {
         },
       },
     ],
+    minion_colors: [
+      [
+        [204, 255, 255],
+        [192, 192, 192],
+      ],
+      [
+        [153, 255, 255],
+        [192, 192, 192],
+      ],
+      [
+        [102, 255, 255],
+        [192, 192, 192],
+      ],
+      [
+        [0, 255, 255],
+        [192, 192, 192],
+      ],
+      [
+        [0, 204, 204],
+        [192, 192, 192],
+      ],
+      [
+        [0, 153, 153],
+        [192, 192, 192],
+      ],
+      [
+        [153, 204, 255],
+        [192, 192, 192],
+      ],
+      [
+        [102, 178, 255],
+        [192, 192, 192],
+      ],
+      [
+        [51, 153, 255],
+        [192, 192, 192],
+      ],
+      [
+        [0, 128, 255],
+        [192, 192, 192],
+      ],
+      [
+        [0, 102, 204],
+        [192, 192, 192],
+      ],
+      [
+        [0, 76, 153],
+        [192, 192, 192],
+      ],
+      [
+        [0, 0, 153],
+        [192, 192, 192],
+      ],
+      [
+        [0, 0, 204],
+        [192, 192, 192],
+      ],
+      [
+        [0, 0, 225],
+        [192, 192, 192],
+      ],
+      [
+        [51, 51, 255],
+        [192, 192, 192],
+      ],
+      [
+        [204, 229, 255],
+        [192, 192, 192],
+      ],
+    ],
     minions: _.map(
       [
         {
           name: "Able",
           character: "!LOC:Armor",
-          color: [
-            [204, 255, 255],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 1,
             percent_bot: 0,
@@ -164,10 +230,6 @@ define(function () {
         {
           name: "AceAI",
           character: "!LOC:Roboticist",
-          color: [
-            [153, 255, 255],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0,
             percent_bot: 1,
@@ -179,10 +241,6 @@ define(function () {
         {
           name: "Alpha",
           character: "!LOC:Uber",
-          color: [
-            [102, 255, 255],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.72,
             metal_demand_check: 0.8,
@@ -196,10 +254,6 @@ define(function () {
         {
           name: "Aryst0krat",
           character: "!LOC:Platinum",
-          color: [
-            [0, 255, 255],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -215,10 +269,6 @@ define(function () {
         {
           name: "Chronoblip",
           character: "!LOC:Gold",
-          color: [
-            [0, 204, 204],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.77,
             metal_demand_check: 0.85,
@@ -234,10 +284,6 @@ define(function () {
         {
           name: "Mjon",
           character: "!LOC:Defender",
-          color: [
-            [0, 153, 153],
-            [192, 192, 192],
-          ],
           econ_rate: 1,
           personality: {
             metal_drain_check: 0.71,
@@ -251,10 +297,6 @@ define(function () {
         {
           name: "Delta",
           character: "!LOC:Luddite",
-          color: [
-            [153, 204, 255],
-            [192, 192, 192],
-          ],
           personality: {
             basic_to_advanced_factory_ratio: 10,
           },
@@ -263,10 +305,6 @@ define(function () {
         {
           name: "Enzomatrix",
           character: "!LOC:Technologist",
-          color: [
-            [102, 178, 255],
-            [192, 192, 192],
-          ],
           personality: {
             adv_eco_mod: 0.5,
             adv_eco_mod_alone: 0.5,
@@ -280,10 +318,6 @@ define(function () {
         {
           name: "Fiveleafclover",
           character: "!LOC:Cautious",
-          color: [
-            [51, 153, 255],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.75,
             min_basic_fabbers: 4,
@@ -294,10 +328,6 @@ define(function () {
         {
           name: "Gamma",
           character: "!LOC:Aggressive",
-          color: [
-            [0, 128, 255],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 2,
             min_advanced_fabbers: 1,
@@ -307,10 +337,6 @@ define(function () {
         {
           name: "Gnugfur",
           character: "!LOC:Rush",
-          color: [
-            [0, 102, 204],
-            [192, 192, 192],
-          ],
           econ_rate: 1,
           personality: {
             neural_data_mod: 1.5,
@@ -323,10 +349,6 @@ define(function () {
         {
           name: "Nemicus",
           character: "!LOC:Turtle",
-          color: [
-            [0, 76, 153],
-            [192, 192, 192],
-          ],
           personality: {
             neural_data_mod: 0.5,
             adv_eco_mod: 0.5,
@@ -342,10 +364,6 @@ define(function () {
         {
           name: "Kapowaz",
           character: "!LOC:Original",
-          color: [
-            [0, 0, 153],
-            [192, 192, 192],
-          ],
           personality: {
             percent_vehicle: 0.275,
             percent_bot: 0.275,
@@ -365,10 +383,6 @@ define(function () {
         {
           name: "JT100010117",
           character: "!LOC:Absurd",
-          color: [
-            [0, 0, 204],
-            [192, 192, 192],
-          ],
           personality: {
             energy_drain_check: 0.65,
             metal_demand_check: 0.71,
@@ -380,10 +394,6 @@ define(function () {
         {
           name: "Kevin4001",
           character: "!LOC:Relentless",
-          color: [
-            [0, 0, 225],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.44,
             energy_drain_check: 0.55,
@@ -399,10 +409,6 @@ define(function () {
         {
           name: "Mostlikely",
           character: "!LOC:Swarm",
-          color: [
-            [51, 51, 255],
-            [192, 192, 192],
-          ],
           personality: {
             metal_demand_check: 0.99,
             energy_demand_check: 0.99,
@@ -415,10 +421,6 @@ define(function () {
         {
           name: "Nagasher",
           character: "!LOC:Economist",
-          color: [
-            [204, 229, 255],
-            [192, 192, 192],
-          ],
           personality: {
             metal_drain_check: 0.71,
             energy_drain_check: 0.8,
