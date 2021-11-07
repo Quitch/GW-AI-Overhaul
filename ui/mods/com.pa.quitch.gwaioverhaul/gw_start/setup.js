@@ -824,7 +824,7 @@ if (!gwaioSetupLoaded) {
                     [], // Nuker
                   ];
                   var penchantNames = [
-                    "",
+                    "", // Vanilla - no modifications
                     "!LOC:Artillery",
                     "!LOC:Fortress",
                     "!LOC:All-terrain",
