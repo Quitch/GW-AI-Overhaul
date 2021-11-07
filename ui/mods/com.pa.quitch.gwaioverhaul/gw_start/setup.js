@@ -366,35 +366,10 @@ if (!gwaioSetupLoaded) {
           });
           model.startCards(startCards);
 
-          if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
-          model.gwaioAllStartCards.push(
-            "gwc_start_vehicle",
-            "gwc_start_air",
-            "gwc_start_bot",
-            "gwc_start_orbital",
-            "gwc_start_artillery",
-            "gwc_start_subcdr",
-            "gwc_start_combatcdr",
-            "gwc_start_allfactory",
-            "gwc_start_storage",
-            "gwaio_start_ceo",
-            "gwaio_start_paratrooper",
-            "nem_start_deepspace",
-            "nem_start_nuke",
-            "nem_start_planetary",
-            "nem_start_tower_rush",
-            "gwaio_start_tourist",
-            "gwaio_start_rapid",
-            "tgw_start_speed",
-            "tgw_start_tank",
-            "gwaio_start_nomad",
-            "gwaio_start_backpacker",
-            "gwaio_start_hoarder"
-          );
           var processedStartCards = {};
-          var loadCount = model.gwaioAllStartCards.length;
+          var loadCount = allCards.length;
           var loaded = $.Deferred();
-          _.forEach(model.gwaioAllStartCards, function (cardId) {
+          _.forEach(allCards, function (cardId) {
             require(["cards/" + cardId], function (card) {
               card.id = cardId;
               processedStartCards[cardId] = card;
