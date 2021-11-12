@@ -422,7 +422,7 @@
 
 ### Added
 
-- New "wipe" op that cards can use to remove text from a string
+- New "wipe" op that cards can be used to remove text from a string
 
 ### Change
 
