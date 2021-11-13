@@ -51,7 +51,63 @@ define([
         chance = 0;
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
-      var minion = _.sample(GWFactions[context.faction].minions);
+      var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      if (originSystem.gwaio.ai === "Penchant") {
+        var penchantTags = [
+          "Vanilla",
+          "Artillery",
+          "Fortress",
+          "AllTerrain",
+          "Assault",
+          "Boomer",
+          "Heavy",
+          "Infernodier",
+          "Raider",
+          "Meta",
+          "Sniper",
+          "Nuker",
+        ];
+        var penchantExclusions = [
+          [], // Vanilla
+          [], // Artillery
+          [], // Fortress
+          [], // AllTerrain
+          [], // Assault
+          [], // Boomer
+          ["NoPercentage"], // Heavy
+          ["NoPercentage"], // Infernodier
+          [], // Raider
+          ["NoPercentage"], // Meta
+          ["NoPercentage"], // Sniper
+          [], // Nuker
+        ];
+        var penchantNames = [
+          "", // Vanilla - no modifications
+          "!LOC:Artillery",
+          "!LOC:Fortress",
+          "!LOC:All-terrain",
+          "!LOC:Assault",
+          "!LOC:Boomer",
+          "!LOC:Heavy",
+          "!LOC:Infernodier",
+          "!LOC:Raider",
+          "!LOC:Meta",
+          "!LOC:Sniper",
+          "!LOC:Nuker",
+        ];
+        var penchantTag = _.sample(penchantTags);
+        var penchantIndex = _.indexOf(penchantTags, penchantTag);
+        minion.personality.personality_tags =
+          minion.personality.personality_tags.concat(
+            penchantTag,
+            penchantExclusions[penchantIndex]
+          );
+        minion.character = minion.character.concat(
+          " " + loc(penchantNames[penchantIndex])
+        );
+      }
       return {
         params: {
           minion: minion,

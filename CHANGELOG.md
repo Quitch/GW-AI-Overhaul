@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Sub Commanders will have a personality penchant when the Penchant AI is in use
+
 ## v5.22.1 - 2021-10-01
 
 ### Fixed
