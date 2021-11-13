@@ -59,7 +59,8 @@ define([
         var penchantValues = gwaioFunctions.penchants(true);
         minion.character =
           minion.character + (" " + loc(penchantValues.penchantName));
-        minion.personality.personality_tags.push(penchantValues.penchants);
+        minion.personality.personality_tags =
+          minion.personality.personality_tags.concat(penchantValues.penchants);
       }
       return {
         params: {

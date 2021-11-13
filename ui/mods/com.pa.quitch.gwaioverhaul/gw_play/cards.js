@@ -182,9 +182,10 @@ if (!gwaioCardsLoaded) {
                   subcommander.character =
                     subcommander.character +
                     (" " + loc(penchantValues.penchantName));
-                  subcommander.personality.personality_tags.push(
-                    penchantValues.penchants
-                  );
+                  subcommander.personality.personality_tags =
+                    subcommander.personality.personality_tags.concat(
+                      penchantValues.penchants
+                    );
                 }
                 inventory.cards().push({
                   id: "gwc_minion",
@@ -592,9 +593,10 @@ if (!gwaioCardsLoaded) {
                         minion.character =
                           minion.character +
                           (" " + loc(penchantValues.penchantName));
-                        minion.personality.personality_tags.push(
-                          penchantValues.penchants
-                        );
+                        minion.personality.personality_tags =
+                          minion.personality.personality_tags.concat(
+                            penchantValues.penchants
+                          );
                       }
                       product.minion = minion;
                       product.unique = Math.random();
