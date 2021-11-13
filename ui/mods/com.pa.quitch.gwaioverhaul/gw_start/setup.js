@@ -634,11 +634,28 @@ if (!gwaioSetupLoaded) {
                   );
                 },
                 spread: function (star, ai) {
+                  // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
+                  var makeWorker = function (star, ai, team) {
+                    if (team.workers) {
+                      _.assign(ai, _.cloneDeep(_.sample(team.workers)));
+                    } else if (team.remainingMinions) {
+                      var minion = _.sample(
+                        team.remainingMinions.length
+                          ? team.remainingMinions
+                          : team.faction.minions
+                      );
+                      _.assign(ai, _.cloneDeep(minion));
+                      _.remove(team.remainingMinions, { name: ai.name });
+                    }
+                    return $.when(ai);
+                  };
+
                   var team = teams[ai.team];
-                  return GWTeams.makeWorker(star, ai, team).then(function () {
+                  return makeWorker(star, ai, team).then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
+                    console.debug(ai);
                     teamInfo[ai.team].workers.push({
                       ai: ai,
                       star: star,

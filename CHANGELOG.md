@@ -6,6 +6,10 @@
 
 - Sub Commanders will have a personality penchant when the Penchant AI is in use
 
+### Fixed
+
+- A system's primary faction Penchant AI sometimes behaving according to a different penchant than intelligence shows
+
 ## v5.22.1 - 2021-10-01
 
 ### Fixed
