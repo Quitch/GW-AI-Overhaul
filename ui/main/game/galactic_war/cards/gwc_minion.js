@@ -15,6 +15,7 @@ define([
         result.push("<br>");
         result.push("!LOC:Personality:");
         result.push(" " + loc(minion.character));
+        if (minion.penchant) result.push(" " + loc(minion.penchant));
       }
       return result;
     },
@@ -104,9 +105,7 @@ define([
             penchantTag,
             penchantExclusions[penchantIndex]
           );
-        minion.character = minion.character.concat(
-          " " + loc(penchantNames[penchantIndex])
-        );
+        minion.penchant = penchantNames[penchantIndex];
       }
       return {
         params: {

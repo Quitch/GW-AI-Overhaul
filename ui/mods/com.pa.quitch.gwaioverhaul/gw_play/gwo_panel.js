@@ -64,12 +64,15 @@ if (!gwaioWarInfoPanelLoaded) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
         var intelligence = function (subcommander) {
+          var personality = loc(subcommander.character);
+          if (subcommander.penchant)
+            personality = personality + " " + loc(subcommander.penchant);
           return {
             name: subcommander.name,
             color: rgb(
               (subcommander.color && subcommander.color[0]) || [255, 255, 255]
             ),
-            character: loc(subcommander.character),
+            character: personality,
           };
         };
         model.gwaioPlayer = ko.computed(function () {
