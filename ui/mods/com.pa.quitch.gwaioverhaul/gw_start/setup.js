@@ -1091,10 +1091,8 @@ if (!gwaioSetupLoaded) {
               });
 
               // Hacky way to store war information
-              var originSystem = game
-                .galaxy()
-                .stars()
-                [game.galaxy().origin()].system();
+              var galaxy = game.galaxy();
+              var originSystem = galaxy.stars()[galaxy.origin()].system();
               originSystem.gwaio = {};
               originSystem.gwaio.version = version;
               originSystem.gwaio.difficulty =
