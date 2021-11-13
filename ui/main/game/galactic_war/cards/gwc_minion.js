@@ -9,8 +9,8 @@ define([
       var result = [];
       result.push("!LOC:Adds a Sub Commander that will join you in battles.");
       result.push("<br>");
-      result.push("!LOC:Name: ");
-      result.push(minion.name);
+      result.push("!LOC:Name:");
+      result.push(" " + minion.name);
       if (minion.character) {
         result.push("<br>");
         result.push("!LOC:Personality:");
