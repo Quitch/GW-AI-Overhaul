@@ -190,9 +190,8 @@ define([
       ];
       var penchantTag = _.sample(penchantTags);
       var penchantIndex = _.indexOf(penchantTags, penchantTag);
-      var personalityTags = penchantTag.concat(
-        penchantExclusions[penchantIndex]
-      );
+      var personalityTags =
+        penchantExclusions[penchantIndex].concat(penchantTag);
       var penchantName = loc(penchantNames[penchantIndex]);
       return {
         penchants: personalityTags,
