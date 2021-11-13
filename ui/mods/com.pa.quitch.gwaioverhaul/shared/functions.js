@@ -71,7 +71,7 @@ define([
         return "/pa/ai_personalities/penchant/";
       else return "/pa/ai/";
     },
-    penchants: function (subCommander) {
+    penchants: function (subcommander) {
       var penchantTags = [
         "Vanilla",
         "Artillery",
@@ -86,7 +86,7 @@ define([
         "Sniper",
         "Nuker",
       ];
-      if (subCommander === true)
+      if (subcommander === true)
         var penchantExclusions = [
           [], // Vanilla
           [], // Artillery
