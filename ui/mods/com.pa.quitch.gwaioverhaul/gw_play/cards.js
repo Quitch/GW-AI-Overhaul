@@ -172,7 +172,18 @@ if (!gwaioCardsLoaded) {
             ) {
               var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
-                var subcommander = _.sample(GWFactions[playerFaction].minions);
+                var subcommander = _.cloneDeep(
+                  _.sample(GWFactions[playerFaction].minions)
+                );
+                var penchantValues = gwaioFunctions.penchants(true);
+                if (penchantValues) {
+                  subcommander.character =
+                    subcommander.character +
+                    (" " + loc(penchantValues.penchantName));
+                  subcommander.personality.personality_tags.push(
+                    penchantValues.penchants
+                  );
+                }
                 inventory.cards().push({
                   id: "gwc_minion",
                   minion: subcommander,
