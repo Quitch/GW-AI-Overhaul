@@ -53,8 +53,10 @@ define([
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
-      var penchantValues = gwaioFunctions.penchants(true);
-      if (penchantValues) {
+      var galaxy = model.game().galaxy();
+      var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+      if (ai === "Penchant") {
+        var penchantValues = gwaioFunctions.penchants(true);
         minion.character =
           minion.character + (" " + loc(penchantValues.penchantName));
         minion.personality.personality_tags.push(penchantValues.penchants);

@@ -72,10 +72,6 @@ define([
       else return "/pa/ai/";
     },
     penchants: function (subCommander) {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (originSystem.gwaio.ai !== "Penchant") return;
-
       var penchantTags = [
         "Vanilla",
         "Artillery",
