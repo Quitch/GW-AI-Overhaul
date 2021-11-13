@@ -282,6 +282,7 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
         ],
         function (
           require,
@@ -295,7 +296,8 @@ if (!gwaioSetupLoaded) {
           gwaioTech,
           gwaioBank,
           gwaioLore,
-          gwaioDifficulty
+          gwaioDifficulty,
+          gwaioFunctions
         ) {
           /* Start of GWAIO implementation of GWDealer */
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
@@ -736,114 +738,12 @@ if (!gwaioSetupLoaded) {
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
-                  var penchantTags = [
-                    "Vanilla",
-                    "Artillery",
-                    "Fortress",
-                    "AllTerrain",
-                    "Assault",
-                    "Boomer",
-                    "Heavy",
-                    "Infernodier",
-                    "Raider",
-                    "Meta",
-                    "Sniper",
-                    "Nuker",
-                  ];
-                  var penchantExclusions = [
-                    [], // Vanilla
-                    [], // Artillery
-                    ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
-                    [
-                      // AllTerrain
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Assault
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
-                    [
-                      // Heavy
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Infernodier
-                      "NoPercentage",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                    ],
-                    [
-                      // Raider
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Meta
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Sniper
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [], // Nuker
-                  ];
-                  var penchantNames = [
-                    "", // Vanilla - no modifications
-                    "!LOC:Artillery",
-                    "!LOC:Fortress",
-                    "!LOC:All-terrain",
-                    "!LOC:Assault",
-                    "!LOC:Boomer",
-                    "!LOC:Heavy",
-                    "!LOC:Infernodier",
-                    "!LOC:Raider",
-                    "!LOC:Meta",
-                    "!LOC:Sniper",
-                    "!LOC:Nuker",
-                  ];
-                  var penchantTag = _.sample(penchantTags);
-                  var penchantIndex = _.indexOf(penchantTags, penchantTag);
+                  var penchantValues = gwaioFunctions.penchants(false);
                   ai.personality.personality_tags =
-                    ai.personality.personality_tags.concat(
-                      penchantTag,
-                      penchantExclusions[penchantIndex]
+                    ai.personality.personality_tags.push(
+                      penchantValues.penchants
                     );
-                  ai.penchantName = penchantNames[penchantIndex];
+                  ai.penchantName = penchantValues.penchantName;
                 }
               };
 
