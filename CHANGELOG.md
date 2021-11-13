@@ -1,10 +1,20 @@
 # CHANGELOG
 
+## v5.23.0 - 2021-11-13
+
+### Change
+
+- Sub Commanders will have a personality penchant when the Penchant AI is in use
+
+### Fixed
+
+- A system's primary faction Penchant AI sometimes behaving according to a different penchant than intelligence shows
+
 ## v5.22.1 - 2021-10-01
 
 ### Fixed
 
-- Commanders will always open with their favourite factory type due to flaws uncovered in the percent*open* implementation
+- Commanders will always open with their favourite factory type due to flaws uncovered in the percent_open implementation
 
 ## v5.22.0 - 2021-09-18
 
@@ -422,7 +432,7 @@
 
 ### Added
 
-- New "wipe" op that cards can use to remove text from a string
+- New "wipe" op that cards can be used to remove text from a string
 
 ### Change
 

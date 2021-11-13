@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Orbital Fabber",
+      "name": "gwaio_start_rapid - Orbital Fabber",
       "to_build": "OrbitalFabber",
       "instance_count": 1,
       "max_num_assisters": 5,

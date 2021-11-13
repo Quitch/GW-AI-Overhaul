@@ -152,13 +152,15 @@ if (!gwaioCardsLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
           ],
           function (
             GW,
             GWFactions,
             gwaioBank,
             gwaioCardsToUnits,
-            gwaioUnitsToNames
+            gwaioUnitsToNames,
+            gwaioFunctions
           ) {
             var inventory = game.inventory();
 
@@ -170,7 +172,21 @@ if (!gwaioCardsLoaded) {
             ) {
               var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
-                var subcommander = _.sample(GWFactions[playerFaction].minions);
+                var subcommander = _.cloneDeep(
+                  _.sample(GWFactions[playerFaction].minions)
+                );
+                var galaxy = game.galaxy();
+                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                if (ai === "Penchant") {
+                  var penchantValues = gwaioFunctions.penchants(true);
+                  subcommander.character =
+                    subcommander.character +
+                    (" " + loc(penchantValues.penchantName));
+                  subcommander.personality.personality_tags =
+                    subcommander.personality.personality_tags.concat(
+                      penchantValues.penchants
+                    );
+                }
                 inventory.cards().push({
                   id: "gwc_minion",
                   minion: subcommander,
@@ -567,9 +583,22 @@ if (!gwaioCardsLoaded) {
                     requireGW(["shared/gw_factions"], function (GWFactions) {
                       var playerFaction =
                         game.inventory().getTag("global", "playerFaction") || 0;
-                      product.minion = _.sample(
-                        GWFactions[playerFaction].minions
+                      var minion = _.cloneDeep(
+                        _.sample(GWFactions[playerFaction].minions)
                       );
+                      var ai = galaxy.stars()[galaxy.origin()].system()
+                        .gwaio.ai;
+                      if (ai === "Penchant") {
+                        var penchantValues = gwaioFunctions.penchants(true);
+                        minion.character =
+                          minion.character +
+                          (" " + loc(penchantValues.penchantName));
+                        minion.personality.personality_tags =
+                          minion.personality.personality_tags.concat(
+                            penchantValues.penchants
+                          );
+                      }
+                      product.minion = minion;
                       product.unique = Math.random();
                     });
                   } else if (product.id === "gwc_add_card_slot") {

@@ -282,6 +282,7 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
         ],
         function (
           require,
@@ -295,7 +296,8 @@ if (!gwaioSetupLoaded) {
           gwaioTech,
           gwaioBank,
           gwaioLore,
-          gwaioDifficulty
+          gwaioDifficulty,
+          gwaioFunctions
         ) {
           /* Start of GWAIO implementation of GWDealer */
           if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
@@ -366,38 +368,12 @@ if (!gwaioSetupLoaded) {
           });
           model.startCards(startCards);
 
-          if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
-          model.gwaioAllStartCards.push(
-            "gwc_start_vehicle",
-            "gwc_start_air",
-            "gwc_start_bot",
-            "gwc_start_orbital",
-            "gwc_start_artillery",
-            "gwc_start_subcdr",
-            "gwc_start_combatcdr",
-            "gwc_start_allfactory",
-            "gwc_start_storage",
-            "gwaio_start_ceo",
-            "gwaio_start_paratrooper",
-            "nem_start_deepspace",
-            "nem_start_nuke",
-            "nem_start_planetary",
-            "nem_start_tower_rush",
-            "gwaio_start_tourist",
-            "gwaio_start_rapid",
-            "tgw_start_speed",
-            "tgw_start_tank",
-            "gwaio_start_nomad",
-            "gwaio_start_backpacker",
-            "gwaio_start_hoarder"
-          );
           var processedStartCards = {};
-          var loadCount = model.gwaioAllStartCards.length;
+          var loadCount = allCards.length;
           var loaded = $.Deferred();
-          _.forEach(model.gwaioAllStartCards, function (cardId) {
-            require(["cards/" + cardId], function (card) {
-              card.id = cardId;
-              processedStartCards[cardId] = card;
+          _.forEach(allCards, function (card) {
+            require(["cards/" + card.id], function (cardFile) {
+              processedStartCards[card.id] = cardFile;
               if (--loadCount === 0) loaded.resolve();
             });
           });
@@ -658,11 +634,28 @@ if (!gwaioSetupLoaded) {
                   );
                 },
                 spread: function (star, ai) {
+                  // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
+                  var makeWorker = function (star, ai, team) {
+                    if (team.workers) {
+                      _.assign(ai, _.cloneDeep(_.sample(team.workers)));
+                    } else if (team.remainingMinions) {
+                      var minion = _.sample(
+                        team.remainingMinions.length
+                          ? team.remainingMinions
+                          : team.faction.minions
+                      );
+                      _.assign(ai, _.cloneDeep(minion));
+                      _.remove(team.remainingMinions, { name: ai.name });
+                    }
+                    return $.when(ai);
+                  };
+
                   var team = teams[ai.team];
-                  return GWTeams.makeWorker(star, ai, team).then(function () {
+                  return makeWorker(star, ai, team).then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
+                    console.debug(ai);
                     teamInfo[ai.team].workers.push({
                       ai: ai,
                       star: star,
@@ -761,114 +754,12 @@ if (!gwaioSetupLoaded) {
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
-                  var penchantTags = [
-                    "Vanilla",
-                    "Artillery",
-                    "Fortress",
-                    "AllTerrain",
-                    "Assault",
-                    "Boomer",
-                    "Heavy",
-                    "Infernodier",
-                    "Raider",
-                    "Meta",
-                    "Sniper",
-                    "Nuker",
-                  ];
-                  var penchantExclusions = [
-                    [], // Vanilla
-                    [], // Artillery
-                    ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
-                    [
-                      // AllTerrain
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Assault
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
-                    [
-                      // Heavy
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Infernodier
-                      "NoPercentage",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                    ],
-                    [
-                      // Raider
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Meta
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [
-                      // Sniper
-                      "NoPercentage",
-                      "PenchantT2Air",
-                      "PenchantT1Bot",
-                      "PenchantT2Bot",
-                      "PenchantT1Vehicle",
-                      "PenchantT2Vehicle",
-                      "PenchantT1Naval",
-                      "PenchantT2Naval",
-                    ],
-                    [], // Nuker
-                  ];
-                  var penchantNames = [
-                    "",
-                    "!LOC:Artillery",
-                    "!LOC:Fortress",
-                    "!LOC:All-terrain",
-                    "!LOC:Assault",
-                    "!LOC:Boomer",
-                    "!LOC:Heavy",
-                    "!LOC:Infernodier",
-                    "!LOC:Raider",
-                    "!LOC:Meta",
-                    "!LOC:Sniper",
-                    "!LOC:Nuker",
-                  ];
-                  var penchantTag = _.sample(penchantTags);
-                  var penchantIndex = _.indexOf(penchantTags, penchantTag);
+                  var penchantValues = gwaioFunctions.penchants(false);
                   ai.personality.personality_tags =
                     ai.personality.personality_tags.concat(
-                      penchantTag,
-                      penchantExclusions[penchantIndex]
+                      penchantValues.penchants
                     );
-                  ai.penchantName = penchantNames[penchantIndex];
+                  ai.penchantName = penchantValues.penchantName;
                 }
               };
 

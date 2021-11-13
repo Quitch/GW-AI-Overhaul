@@ -18,28 +18,28 @@ define([
         .observable()
         .extend({ local: "gwaio_victory_" + loadoutId });
       if (highestDifficultyDefeated() === 0) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/0_casual.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
       }
       if (highestDifficultyDefeated() === 1) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/1_iron.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png";
       }
       if (highestDifficultyDefeated() === 2) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/2_bronze.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png";
       }
       if (highestDifficultyDefeated() === 3) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/3_silver.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png";
       }
       if (highestDifficultyDefeated() === 4) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/4_gold.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png";
       }
       if (highestDifficultyDefeated() === 5) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/5_platinum.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png";
       }
       if (highestDifficultyDefeated() === 6) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/6_diamond.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png";
       }
       if (highestDifficultyDefeated() === 7) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/images/7_uber.png";
+        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
       } else
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
@@ -70,6 +70,133 @@ define([
       else if (this.aiEnabled() === "Penchant")
         return "/pa/ai_personalities/penchant/";
       else return "/pa/ai/";
+    },
+    penchants: function (subcommander) {
+      var penchantTags = [
+        "Vanilla",
+        "Artillery",
+        "Fortress",
+        "AllTerrain",
+        "Assault",
+        "Boomer",
+        "Heavy",
+        "Infernodier",
+        "Raider",
+        "Meta",
+        "Sniper",
+        "Nuker",
+      ];
+      if (subcommander === true)
+        var penchantExclusions = [
+          [], // Vanilla
+          [], // Artillery
+          [], // Fortress
+          [], // AllTerrain
+          [], // Assault
+          [], // Boomer
+          ["NoPercentage"], // Heavy
+          ["NoPercentage"], // Infernodier
+          [], // Raider
+          ["NoPercentage"], // Meta
+          ["NoPercentage"], // Sniper
+          [], // Nuker
+        ];
+      else
+        penchantExclusions = [
+          [], // Vanilla
+          [], // Artillery
+          ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
+          [
+            // AllTerrain
+            "PenchantT1Bot",
+            "PenchantT2Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Naval",
+          ],
+          [
+            // Assault
+            "PenchantT2Air",
+            "PenchantT1Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Vehicle",
+            "PenchantT1Naval",
+            "PenchantT2Naval",
+          ],
+          ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
+          [
+            // Heavy
+            "NoPercentage",
+            "PenchantT2Air",
+            "PenchantT1Bot",
+            "PenchantT2Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Vehicle",
+            "PenchantT1Naval",
+            "PenchantT2Naval",
+          ],
+          [
+            // Infernodier
+            "NoPercentage",
+            "PenchantT1Bot",
+            "PenchantT2Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Vehicle",
+          ],
+          [
+            // Raider
+            "PenchantT2Air",
+            "PenchantT1Bot",
+            "PenchantT2Bot",
+            "PenchantT1Vehicle",
+            "PenchantT1Naval",
+            "PenchantT2Naval",
+          ],
+          [
+            // Meta
+            "NoPercentage",
+            "PenchantT2Air",
+            "PenchantT1Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Vehicle",
+            "PenchantT1Naval",
+            "PenchantT2Naval",
+          ],
+          [
+            // Sniper
+            "NoPercentage",
+            "PenchantT2Air",
+            "PenchantT1Bot",
+            "PenchantT2Bot",
+            "PenchantT1Vehicle",
+            "PenchantT2Vehicle",
+            "PenchantT1Naval",
+            "PenchantT2Naval",
+          ],
+          [], // Nuker
+        ];
+      var penchantNames = [
+        "", // Vanilla - no modifications
+        "!LOC:Artillery",
+        "!LOC:Fortress",
+        "!LOC:All-terrain",
+        "!LOC:Assault",
+        "!LOC:Boomer",
+        "!LOC:Heavy",
+        "!LOC:Infernodier",
+        "!LOC:Raider",
+        "!LOC:Meta",
+        "!LOC:Sniper",
+        "!LOC:Nuker",
+      ];
+      var penchantTag = _.sample(penchantTags);
+      var penchantIndex = _.indexOf(penchantTags, penchantTag);
+      var personalityTags =
+        penchantExclusions[penchantIndex].concat(penchantTag);
+      var penchantName = loc(penchantNames[penchantIndex]);
+      return {
+        penchants: personalityTags,
+        penchantName: penchantName,
+      };
     },
   };
 });

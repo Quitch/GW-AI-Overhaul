@@ -9,12 +9,13 @@ define([
       var result = [];
       result.push("!LOC:Adds a Sub Commander that will join you in battles.");
       result.push("<br>");
-      result.push("!LOC:Name: ");
-      result.push(minion.name);
+      result.push("!LOC:Name:");
+      result.push(" " + minion.name);
       if (minion.character) {
         result.push("<br>");
         result.push("!LOC:Personality:");
         result.push(" " + loc(minion.character));
+        if (minion.penchant) result.push(" " + loc(minion.penchant));
       }
       return result;
     },
@@ -51,7 +52,16 @@ define([
         chance = 0;
       else if (inventory.minions)
         chance = chance / (inventory.minions().length + 1);
-      var minion = _.sample(GWFactions[context.faction].minions);
+      var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
+      var galaxy = model.game().galaxy();
+      var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+      if (ai === "Penchant") {
+        var penchantValues = gwaioFunctions.penchants(true);
+        minion.character =
+          minion.character + (" " + loc(penchantValues.penchantName));
+        minion.personality.personality_tags =
+          minion.personality.personality_tags.concat(penchantValues.penchants);
+      }
       return {
         params: {
           minion: minion,

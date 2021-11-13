@@ -51,23 +51,23 @@ Install this mod via the Planetary Annihilation: TITANS in-game Community Mod ma
 
 Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/0_casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
+![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
 
-![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/1_iron.png) **Iron**: for when you've some PA experience under your belt.
+![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png) **Iron**: for when you've some PA experience under your belt.
 
-![Bronze badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/2_bronze.png) **Bronze**: you've beaten vanilla Galactic War.
+![Bronze badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 
-![Silver badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/3_silver.png) **Silver**: you can beat the skirmish AI.
+![Silver badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png) **Silver**: you can beat the skirmish AI.
 
-![Gold badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/4_gold.png) **Gold**: you can beat the Queller AI.
+![Gold badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png) **Gold**: you can beat the Queller AI.
 
-![Platinum badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/5_platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
+![Platinum badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
 
-![Diamond badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/6_diamond.png) **Diamond**: for when your loadouts become too powerful.
+![Diamond badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png) **Diamond**: for when your loadouts become too powerful.
 
-![Uber badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/7_uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+![Uber badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
 
-![Custom badge](./ui/mods/com.pa.quitch.gwaioverhaul/images/8_custom.png) **Custom**: for when you want to create your own challenge.
+![Custom badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/8_custom.png) **Custom**: for when you want to create your own challenge.
 
 ### Difficulty Options
 
@@ -137,10 +137,8 @@ If you are adding new loadouts to the game and want to be compatible, then you w
 
    ```javascript
    if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
-   if (!model.gwaioAllStartCards) model.gwaioAllStartCards = [];
    if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
    model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
-   model.gwaioAllStartCards.push("YOUR_LOADOUT_ID");
    model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
    ```
 
