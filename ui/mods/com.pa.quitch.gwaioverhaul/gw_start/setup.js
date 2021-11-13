@@ -655,7 +655,6 @@ if (!gwaioSetupLoaded) {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
-                    console.debug(ai);
                     teamInfo[ai.team].workers.push({
                       ai: ai,
                       star: star,
