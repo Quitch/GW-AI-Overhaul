@@ -588,9 +588,10 @@ if (!gwaioSetupLoaded) {
             });
             var moveIn = dealStartCard.then(function () {
               if (model.makeGameBusy() !== busyToken) return;
-              game.move(game.galaxy().origin());
+              var galaxy = game.galaxy();
+              game.move(galaxy.origin());
 
-              var star = game.galaxy().stars()[game.currentStar()];
+              var star = galaxy.stars()[game.currentStar()];
               star.explored(true);
 
               game.gameState(GW.Game.gameStates.active);

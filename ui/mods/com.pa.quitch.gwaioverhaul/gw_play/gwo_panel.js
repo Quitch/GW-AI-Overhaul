@@ -9,10 +9,8 @@ if (!gwaioWarInfoPanelLoaded) {
 
       if (!game.isTutorial()) {
         // War Information
-        var originSystem = game
-          .galaxy()
-          .stars()
-          [game.galaxy().origin()].system();
+        var galaxy = game.galaxy();
+        var originSystem = galaxy.stars()[galaxy.origin()].system();
 
         model.gwaioSettings = originSystem.gwaio;
 

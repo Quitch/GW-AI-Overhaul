@@ -21,10 +21,9 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
             "!LOC:Uber",
           ],
           function (difficulty) {
-            var warDifficulty = game
-              .galaxy()
-              .stars()
-              [game.galaxy().origin()].system().gwaio.difficulty;
+            var galaxy = game.galaxy();
+            var warDifficulty = galaxy.stars()[galaxy.origin()].system()
+              .gwaio.difficulty;
             return difficulty === warDifficulty;
           }
         );
