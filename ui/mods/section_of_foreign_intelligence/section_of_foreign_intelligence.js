@@ -59,10 +59,9 @@ if (!gwaioIntelligenceLoaded) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
+          var character = loc(commander.character);
           if (commander.penchantName)
-            var character =
-              loc(commander.character) + " " + loc(commander.penchantName);
-          else character = loc(commander.character);
+            character = character + " " + loc(commander.penchantName);
           return {
             name: name,
             threat: loc(threat(eco)),
