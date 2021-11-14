@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Change
+
+- Sub Commanders now have the full penchant effect applied to them
+
 ## v5.23.0 - 2021-11-13
 
 ### Change

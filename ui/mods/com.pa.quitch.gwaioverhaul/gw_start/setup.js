@@ -755,7 +755,7 @@ if (!gwaioSetupLoaded) {
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
-                  var penchantValues = gwaioFunctions.penchants(false);
+                  var penchantValues = gwaioFunctions.penchants();
                   ai.personality.personality_tags =
                     ai.personality.personality_tags.concat(
                       penchantValues.penchants
