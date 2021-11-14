@@ -6,6 +6,10 @@
 
 - Sub Commanders now have the full penchant effect applied to them
 
+### Fixed
+
+- More graceful handling of really old save games
+
 ## v5.23.0 - 2021-11-13
 
 ### Change
