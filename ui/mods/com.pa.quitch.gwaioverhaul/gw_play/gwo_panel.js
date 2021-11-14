@@ -62,7 +62,9 @@ if (!gwaioWarInfoPanelLoaded) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
         var intelligence = function (subcommander) {
-          var personality = loc(subcommander.character);
+          var personality = subcommander.character
+            ? loc(subcommander.character)
+            : loc("!LOC:None");
           if (subcommander.penchant)
             personality = personality + " " + loc(subcommander.penchant);
           return {
