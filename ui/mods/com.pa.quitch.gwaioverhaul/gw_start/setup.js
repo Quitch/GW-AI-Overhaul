@@ -588,9 +588,10 @@ if (!gwaioSetupLoaded) {
             });
             var moveIn = dealStartCard.then(function () {
               if (model.makeGameBusy() !== busyToken) return;
-              game.move(game.galaxy().origin());
+              var galaxy = game.galaxy();
+              game.move(galaxy.origin());
 
-              var star = game.galaxy().stars()[game.currentStar()];
+              var star = galaxy.stars()[game.currentStar()];
               star.explored(true);
 
               game.gameState(GW.Game.gameStates.active);
@@ -753,7 +754,7 @@ if (!gwaioSetupLoaded) {
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
-                  var penchantValues = gwaioFunctions.penchants(false);
+                  var penchantValues = gwaioFunctions.penchants();
                   ai.personality.personality_tags =
                     ai.personality.personality_tags.concat(
                       penchantValues.penchants
@@ -1012,10 +1013,8 @@ if (!gwaioSetupLoaded) {
               });
 
               // Hacky way to store war information
-              var originSystem = game
-                .galaxy()
-                .stars()
-                [game.galaxy().origin()].system();
+              var galaxy = game.galaxy();
+              var originSystem = galaxy.stars()[galaxy.origin()].system();
               originSystem.gwaio = {};
               originSystem.gwaio.version = version;
               originSystem.gwaio.difficulty =

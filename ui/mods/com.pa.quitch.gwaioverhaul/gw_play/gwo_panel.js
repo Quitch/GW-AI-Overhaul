@@ -9,10 +9,8 @@ if (!gwaioWarInfoPanelLoaded) {
 
       if (!game.isTutorial()) {
         // War Information
-        var originSystem = game
-          .galaxy()
-          .stars()
-          [game.galaxy().origin()].system();
+        var galaxy = game.galaxy();
+        var originSystem = galaxy.stars()[galaxy.origin()].system();
 
         model.gwaioSettings = originSystem.gwaio;
 
@@ -64,7 +62,9 @@ if (!gwaioWarInfoPanelLoaded) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
         var intelligence = function (subcommander) {
-          var personality = loc(subcommander.character);
+          var personality = subcommander.character
+            ? loc(subcommander.character)
+            : loc("!LOC:None");
           if (subcommander.penchant)
             personality = personality + " " + loc(subcommander.penchant);
           return {

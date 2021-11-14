@@ -178,7 +178,7 @@ if (!gwaioCardsLoaded) {
                 var galaxy = game.galaxy();
                 var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                 if (ai === "Penchant") {
-                  var penchantValues = gwaioFunctions.penchants(true);
+                  var penchantValues = gwaioFunctions.penchants();
                   subcommander.character =
                     subcommander.character +
                     (" " + loc(penchantValues.penchantName));
@@ -589,7 +589,7 @@ if (!gwaioCardsLoaded) {
                       var ai = galaxy.stars()[galaxy.origin()].system()
                         .gwaio.ai;
                       if (ai === "Penchant") {
-                        var penchantValues = gwaioFunctions.penchants(true);
+                        var penchantValues = gwaioFunctions.penchants();
                         minion.character =
                           minion.character +
                           (" " + loc(penchantValues.penchantName));

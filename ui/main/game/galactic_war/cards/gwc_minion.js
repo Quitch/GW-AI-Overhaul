@@ -56,7 +56,7 @@ define([
       var galaxy = model.game().galaxy();
       var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
       if (ai === "Penchant") {
-        var penchantValues = gwaioFunctions.penchants(true);
+        var penchantValues = gwaioFunctions.penchants();
         minion.character =
           minion.character + (" " + loc(penchantValues.penchantName));
         minion.personality.personality_tags =

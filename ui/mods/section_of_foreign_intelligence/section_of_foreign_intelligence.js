@@ -59,7 +59,9 @@ if (!gwaioIntelligenceLoaded) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
-          var character = loc(commander.character);
+          var character = commander.character
+            ? loc(commander.character)
+            : loc("!LOC:None");
           if (commander.penchantName)
             character = character + " " + loc(commander.penchantName);
           return {
