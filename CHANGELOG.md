@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Explore causing a lock-up on wars from before v4.13.0
+
 ## v5.24.0 - 2021-11-14
 
 ### Change
