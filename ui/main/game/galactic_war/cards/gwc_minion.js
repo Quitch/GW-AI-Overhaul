@@ -54,13 +54,18 @@ define([
         chance = chance / (inventory.minions().length + 1);
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
-      var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
-      if (ai === "Penchant") {
-        var penchantValues = gwaioFunctions.penchants();
-        minion.character =
-          minion.character + (" " + loc(penchantValues.penchantName));
-        minion.personality.personality_tags =
-          minion.personality.personality_tags.concat(penchantValues.penchants);
+      var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      if (gwaioSettings) {
+        var ai = gwaioSettings.ai;
+        if (ai === "Penchant") {
+          var penchantValues = gwaioFunctions.penchants();
+          minion.character =
+            minion.character + (" " + loc(penchantValues.penchantName));
+          minion.personality.personality_tags =
+            minion.personality.personality_tags.concat(
+              penchantValues.penchants
+            );
+        }
       }
       return {
         params: {
