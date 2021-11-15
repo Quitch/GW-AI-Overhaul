@@ -7,8 +7,10 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
   function gwaioWarOverLoadoutStats() {
     try {
       var game = model.game();
+      var galaxy = game.galaxy();
+      var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
-      if (game.gameState() === "won") {
+      if (gwaioSettings && game.gameState() === "won") {
         var difficultyLevelAsInt = _.findIndex(
           [
             "!LOC:Casual",
@@ -21,9 +23,7 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
             "!LOC:Uber",
           ],
           function (difficulty) {
-            var galaxy = game.galaxy();
-            var warDifficulty = galaxy.stars()[galaxy.origin()].system()
-              .gwaio.difficulty;
+            var warDifficulty = gwaioSettings.difficulty;
             return difficulty === warDifficulty;
           }
         );
