@@ -373,6 +373,7 @@ if (!gwaioSetupLoaded) {
           var loaded = $.Deferred();
           _.forEach(allCards, function (card) {
             require(["cards/" + card.id], function (cardFile) {
+              cardFile.id = card.id;
               processedStartCards[card.id] = cardFile;
               if (--loadCount === 0) loaded.resolve();
             });

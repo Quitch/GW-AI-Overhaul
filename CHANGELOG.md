@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Selecting a loadout added by GWO prevents you from starting a new war
+
 ## v5.24.1 - 2021-11-15
 
 ### Fixed
