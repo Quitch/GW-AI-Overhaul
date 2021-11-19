@@ -384,6 +384,8 @@ if (!gwaioSetupLoaded) {
             var result = $.Deferred();
             loaded.then(function () {
               var card = _.find(processedStartCards, { id: params.id });
+              if (_.isUndefined(card))
+                console.error("No matching start card ID found");
               var context =
                 card.getContext &&
                 card.getContext(params.galaxy, params.inventory);
