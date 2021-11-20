@@ -768,6 +768,16 @@ if (!gwaioRefereeChangesLoaded) {
               subcommander.personality.ai_path = subcommanderAIPath;
 
               var slotsArray = [];
+              // Sub Commander Fabber Tech
+              if (
+                _.find(model.game().inventory().cards(), {
+                  id: "gwaio_upgrade_subcommander_fabber",
+                })
+              ) {
+                subcommander.personality.max_basic_fabbers *= 2;
+                subcommander.personality.max_advanced_fabbers *= 2;
+              }
+              // Sub Commander Duplication Tech
               var subcommanderCommanders = _.find(
                 model.game().inventory().cards(),
                 {
@@ -776,6 +786,7 @@ if (!gwaioRefereeChangesLoaded) {
               )
                 ? 2
                 : 1;
+
               _.times(subcommanderCommanders, function () {
                 slotsArray.push({
                   ai: true,

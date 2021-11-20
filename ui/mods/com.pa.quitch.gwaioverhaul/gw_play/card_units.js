@@ -1400,5 +1400,8 @@ define({
     {
       id: "gwaio_upgrade_subcommander_duplication",
     },
+    {
+      id: "gwaio_upgrade_subcommander_fabber",
+    },
   ],
 });
