@@ -672,7 +672,7 @@ if (!gwaioCardsLoaded) {
 
             var makeCardTooltip = function (card, i) {
               if (card.isLoadout()) return;
-              if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
+              if (i === undefined) i = 4; // ugly hack to ensure inventory hovers work at the same time as the new tech display
               var cardId = card.id();
               var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
               if (index === -1)

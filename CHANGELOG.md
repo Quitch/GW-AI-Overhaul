@@ -9,6 +9,10 @@
   - Sub Commander Fabber Tech
   - Sub Commander Tactics Tech
 
+### Fixed
+
+- Inventory tooltips clashing with system tooltips when four techs were displayed
+
 ## v5.24.2 - 2021-11-19
 
 ### Fixed
