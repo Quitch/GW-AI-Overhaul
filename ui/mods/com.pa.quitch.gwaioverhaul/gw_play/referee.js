@@ -769,7 +769,7 @@ if (!gwaioRefereeChangesLoaded) {
 
               // Sub Commander Tactics Tech
               if (
-                _.find(model.game().inventory().cards(), {
+                _.some(model.game().inventory().cards(), {
                   id: "gwaio_upgrade_subcommander_tactics",
                 })
               ) {
@@ -785,7 +785,7 @@ if (!gwaioRefereeChangesLoaded) {
 
               // Sub Commander Fabber Tech
               if (
-                _.find(model.game().inventory().cards(), {
+                _.some(model.game().inventory().cards(), {
                   id: "gwaio_upgrade_subcommander_fabber",
                 })
               ) {
@@ -794,7 +794,7 @@ if (!gwaioRefereeChangesLoaded) {
               }
 
               // Sub Commander Duplication Tech
-              var subcommanderCommanders = _.find(
+              var subcommanderCommanders = _.some(
                 model.game().inventory().cards(),
                 {
                   id: "gwaio_upgrade_subcommander_duplication",
