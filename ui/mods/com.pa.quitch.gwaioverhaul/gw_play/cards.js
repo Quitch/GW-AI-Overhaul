@@ -712,7 +712,7 @@ if (!gwaioCardsLoaded) {
                       else return unit;
                     }
                   );
-                }
+                } else model.gwaioTechCardTooltip()[i] = undefined;
               }
             };
 
