@@ -1403,5 +1403,8 @@ define({
     {
       id: "gwaio_upgrade_subcommander_fabber",
     },
+    {
+      id: "gwaio_upgrade_subcommander_tactics",
+    },
   ],
 });

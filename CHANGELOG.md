@@ -7,6 +7,7 @@
 - New tech cards:
   - Sub Commander Duplication Tech
   - Sub Commander Fabber Tech
+  - Sub Commander Tactics Tech
 
 ## v5.24.2 - 2021-11-19
 

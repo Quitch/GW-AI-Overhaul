@@ -304,6 +304,7 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_stryker",
               "gwaio_upgrade_subcommander_duplication",
               "gwaio_upgrade_subcommander_fabber",
+              "gwaio_upgrade_subcommander_tactics",
               "gwaio_upgrade_sxx",
               "gwaio_upgrade_teleporter",
               "gwaio_upgrade_torpedolauncher",

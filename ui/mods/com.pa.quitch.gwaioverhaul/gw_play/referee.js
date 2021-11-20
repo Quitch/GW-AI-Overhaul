@@ -767,7 +767,22 @@ if (!gwaioRefereeChangesLoaded) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
-              var slotsArray = [];
+              // Sub Commander Tactics Tech
+              if (
+                _.find(model.game().inventory().cards(), {
+                  id: "gwaio_upgrade_subcommander_tactics",
+                })
+              ) {
+                subcommander.personality.micro_type = 2;
+                subcommander.personality.go_for_the_kill = true;
+                subcommander.personality.priority_scout_metal_spots = true;
+                subcommander.personality.enable_commander_danger_responses = true;
+                _.pull(
+                  subcommander.personality.personality_tags,
+                  "SlowerExpansion"
+                );
+              }
+
               // Sub Commander Fabber Tech
               if (
                 _.find(model.game().inventory().cards(), {
@@ -777,6 +792,7 @@ if (!gwaioRefereeChangesLoaded) {
                 subcommander.personality.max_basic_fabbers *= 2;
                 subcommander.personality.max_advanced_fabbers *= 2;
               }
+
               // Sub Commander Duplication Tech
               var subcommanderCommanders = _.find(
                 model.game().inventory().cards(),
@@ -787,6 +803,7 @@ if (!gwaioRefereeChangesLoaded) {
                 ? 2
                 : 1;
 
+              var slotsArray = [];
               _.times(subcommanderCommanders, function () {
                 slotsArray.push({
                   ai: true,
