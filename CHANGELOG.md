@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- New tech cards:
+  - Sub Commander Duplication Tech
+
 ## v5.24.2 - 2021-11-19
 
 ### Fixed

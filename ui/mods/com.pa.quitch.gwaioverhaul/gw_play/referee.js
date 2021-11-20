@@ -767,15 +767,25 @@ if (!gwaioRefereeChangesLoaded) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
+              var slotsArray = [];
+              var subcommanderCommanders = _.find(
+                model.game().inventory().cards(),
+                {
+                  id: "gwaio_upgrade_subcommander_duplication",
+                }
+              )
+                ? 2
+                : 1;
+              _.times(subcommanderCommanders, function () {
+                slotsArray.push({
+                  ai: true,
+                  name: subcommander.name,
+                  commander: subcommander.commander,
+                  landing_policy: _.sample(aiLandingOptions),
+                });
+              });
               armies.push({
-                slots: [
-                  {
-                    ai: true,
-                    name: subcommander.name,
-                    commander: subcommander.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  },
-                ],
+                slots: slotsArray,
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,
