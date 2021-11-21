@@ -264,7 +264,7 @@ if (!gwaioSetupLoaded) {
       model.gwaioFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
-      model.customSystemsLoaded = false;
+      var customSystemsLoaded = false;
 
       api.mods.getMounted("client", true).then(function (mods) {
         var modMounted = function (modIdentifier) {
@@ -273,7 +273,7 @@ if (!gwaioSetupLoaded) {
 
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
-          model.customSystemsLoaded = true;
+          customSystemsLoaded = true;
           $("#system-scaling").remove();
         }
       });
@@ -1051,7 +1051,7 @@ if (!gwaioSetupLoaded) {
                     // Add more water to Foundation worlds
                     var waterBiomes = ["earth", "desert", "tropical"];
                     if (
-                      !model.customSystemsLoaded &&
+                      !customSystemsLoaded &&
                       ai.faction === 1 &&
                       !ai.bossCommanders &&
                       _.includes(waterBiomes, environment.biome)
