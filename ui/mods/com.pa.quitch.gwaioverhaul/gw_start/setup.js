@@ -408,6 +408,7 @@ if (!gwaioSetupLoaded) {
             if (modMounted("com.wondible.pa.gw_shared_systems")) {
               customSystemsLoaded = true;
               $("#system-scaling").remove();
+              model.gwaioDifficultySettings.systemScaling(false);
             }
 
             // gw_start.js
