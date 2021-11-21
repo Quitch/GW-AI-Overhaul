@@ -1,7 +1,7 @@
 define({
   visible: _.constant(true),
   describe: _.constant(
-    "!LOC:Sub Commander Duplication Tech adds an extra Commander to every Sub Commanders' army."
+    "!LOC:Sub Commander Duplication Tech adds an extra Commander to every Sub Commander's army."
   ),
   summarize: _.constant("!LOC:Sub Commander Duplication Tech"),
   icon: _.constant(
