@@ -1,7 +1,7 @@
 define({
   visible: _.constant(true),
   describe: _.constant(
-    "!LOC:Sub Commander Fabber Tech doubles the number of fabbers each Sub Commander may use."
+    "!LOC:Sub Commander Fabber Tech increases the number of fabbers each Sub Commander may use by 50%."
   ),
   summarize: _.constant("!LOC:Sub Commander Fabber Tech"),
   icon: _.constant(
