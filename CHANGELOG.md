@@ -9,10 +9,6 @@
   - Sub Commander Fabber Tech
   - Sub Commander Tactics Tech
 
-### Change
-
-- Foundation worlds feature a lot more water
-
 ### Fixed
 
 - Inventory tooltips clashing with system tooltips when four techs were displayed
