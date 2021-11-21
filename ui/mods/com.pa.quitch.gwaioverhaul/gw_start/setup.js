@@ -5,6 +5,18 @@ if (!gwaioSetupLoaded) {
 
   function gwaioSetup() {
     try {
+      var customSystemsLoaded = false;
+
+      api.mods.getMounted("client", true).then(function (mods) {
+        var modMounted = function (modIdentifier) {
+          return _.some(mods, { identifier: modIdentifier });
+        };
+
+        // Shared Systems for Galactic War
+        if (modMounted("com.wondible.pa.gw_shared_systems"))
+          customSystemsLoaded = true;
+      });
+
       ko.extenders.decimals = function (target, decimals) {
         // create a writable computed observable to intercept writes to our observable
         var result = ko
@@ -155,7 +167,7 @@ if (!gwaioSetupLoaded) {
       };
 
       // Scaling isn't applied if Shared Systems for Galactic War is present
-      if (model.systemSources)
+      if (customSystemsLoaded === true)
         model.gwaioDifficultySettings.systemScaling(false);
 
       ko.computed(function () {
@@ -1041,7 +1053,7 @@ if (!gwaioSetupLoaded) {
                     // Add more water to Foundation worlds
                     var waterBiomes = ["earth", "desert", "tropical"];
                     if (
-                      !model.sources &&
+                      customSystemsLoaded === false &&
                       ai.faction === 1 &&
                       !ai.bossCommanders &&
                       _.includes(waterBiomes, environment.biome)
