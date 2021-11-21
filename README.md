@@ -34,7 +34,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
 - Fixes all the errors in the tech cards
-- 109 new tech cards
+- 112 new tech cards
 - Multiple AI opponents to choose from
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
