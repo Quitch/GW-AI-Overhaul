@@ -1055,9 +1055,8 @@ if (!gwaioSetupLoaded) {
                       ai.faction === 1 &&
                       !ai.bossCommanders &&
                       _.includes(waterBiomes, environment.biome)
-                    ) {
+                    )
                       environment.waterHeight = 60;
-                    }
                   });
                   if (!ai.bossCommanders) {
                     if (treasurePlanetSetup === false) {
