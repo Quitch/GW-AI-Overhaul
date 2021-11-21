@@ -264,8 +264,6 @@ if (!gwaioSetupLoaded) {
       model.gwaioFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
-      // var customSystemsLoaded = false;
-
       api.mods.getMounted("client", true).then(function (mods) {
         var modMounted = function (modIdentifier) {
           return _.some(mods, { identifier: modIdentifier });
@@ -273,7 +271,6 @@ if (!gwaioSetupLoaded) {
 
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
-          // customSystemsLoaded = true;
           $("#system-scaling").remove();
           model.gwaioDifficultySettings.systemScaling(false);
         }
@@ -1047,20 +1044,7 @@ if (!gwaioSetupLoaded) {
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(star.system().planets, function (planet) {
-                    var environment = planet.generator;
-                    environment.shuffleLandingZones = true;
-
-                    // Add more water to Foundation worlds
-                    /* Removed due to AI performance issues on islands
-                      var waterBiomes = ["earth", "desert", "tropical"];
-                      if (
-                        !customSystemsLoaded &&
-                        ai.faction === 1 &&
-                        !ai.bossCommanders &&
-                        _.includes(waterBiomes, environment.biome)
-                      )
-                        environment.waterHeight = 60;
-                      */
+                    planet.generator.shuffleLandingZones = true;
                   });
                   if (!ai.bossCommanders) {
                     if (treasurePlanetSetup === false) {
