@@ -1041,6 +1041,7 @@ if (!gwaioSetupLoaded) {
                     // Add more water to Foundation worlds
                     var waterBiomes = ["earth", "desert", "tropical"];
                     if (
+                      !model.sources &&
                       ai.faction === 1 &&
                       !ai.bossCommanders &&
                       _.includes(waterBiomes, environment.biome)
