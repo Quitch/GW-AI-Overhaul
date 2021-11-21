@@ -767,15 +767,57 @@ if (!gwaioRefereeChangesLoaded) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
+              // Sub Commander Tactics Tech
+              if (
+                _.some(model.game().inventory().cards(), {
+                  id: "gwaio_upgrade_subcommander_tactics",
+                })
+              ) {
+                subcommander.personality.micro_type = 2;
+                subcommander.personality.go_for_the_kill = true;
+                subcommander.personality.priority_scout_metal_spots = true;
+                subcommander.personality.enable_commander_danger_responses = true;
+                _.pull(
+                  subcommander.personality.personality_tags,
+                  "SlowerExpansion"
+                );
+              }
+
+              // Sub Commander Fabber Tech
+              if (
+                _.some(model.game().inventory().cards(), {
+                  id: "gwaio_upgrade_subcommander_fabber",
+                })
+              ) {
+                subcommander.personality.max_basic_fabbers = Math.round(
+                  (subcommander.personality.max_basic_fabbers *= 1.5)
+                );
+                subcommander.personality.max_advanced_fabbers = Math.round(
+                  (subcommander.personality.max_advanced_fabbers *= 1.5)
+                );
+              }
+
+              // Sub Commander Duplication Tech
+              var subcommanderCommanders = _.some(
+                model.game().inventory().cards(),
+                {
+                  id: "gwaio_upgrade_subcommander_duplication",
+                }
+              )
+                ? 2
+                : 1;
+
+              var slotsArray = [];
+              _.times(subcommanderCommanders, function () {
+                slotsArray.push({
+                  ai: true,
+                  name: subcommander.name,
+                  commander: subcommander.commander,
+                  landing_policy: _.sample(aiLandingOptions),
+                });
+              });
               armies.push({
-                slots: [
-                  {
-                    ai: true,
-                    name: subcommander.name,
-                    commander: subcommander.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  },
-                ],
+                slots: slotsArray,
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,

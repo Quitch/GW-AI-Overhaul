@@ -67,8 +67,15 @@ if (!gwaioWarInfoPanelLoaded) {
             : loc("!LOC:None");
           if (subcommander.penchant)
             personality = personality + " " + loc(subcommander.penchant);
+          var subcommanderName = subcommander.name;
+          if (
+            _.some(model.game().inventory().cards(), {
+              id: "gwaio_upgrade_subcommander_duplication",
+            })
+          )
+            subcommanderName = subcommanderName.concat(" x2");
           return {
-            name: subcommander.name,
+            name: subcommanderName,
             color: rgb(
               (subcommander.color && subcommander.color[0]) || [255, 255, 255]
             ),

@@ -1397,5 +1397,14 @@ define({
       id: "gwaio_upgrade_planetaryradar",
       units: ["/pa/units/orbital/deep_space_radar/deep_space_radar.json"],
     },
+    {
+      id: "gwaio_upgrade_subcommander_duplication",
+    },
+    {
+      id: "gwaio_upgrade_subcommander_fabber",
+    },
+    {
+      id: "gwaio_upgrade_subcommander_tactics",
+    },
   ],
 });

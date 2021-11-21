@@ -228,12 +228,12 @@ define([
           model.gwaioDifficultySettings &&
           !model.gwaioDifficultySettings.systemScaling()
         ) {
-          var players = Math.floor(Math.random() * 10 + 1);
+          var systemSize = Math.floor(Math.random() * 10 + 1);
         } else {
-          players = star.distance();
+          systemSize = star.distance();
         }
         return StarSystemTemplates.generate({
-          players: players,
+          players: systemSize,
           seed: rng() * rng(),
         }).then(function (system) {
           star.system(system);

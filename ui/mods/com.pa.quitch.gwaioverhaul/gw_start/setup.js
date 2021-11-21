@@ -154,10 +154,6 @@ if (!gwaioSetupLoaded) {
         }),
       };
 
-      // Scaling isn't applied if Shared Systems for Galactic War is present
-      if (model.systemSources)
-        model.gwaioDifficultySettings.systemScaling(false);
-
       ko.computed(function () {
         model.gwaioDifficultySettings.factionScaling();
         model.gwaioDifficultySettings.systemScaling();
@@ -267,6 +263,21 @@ if (!gwaioSetupLoaded) {
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwaioFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
+
+      // var customSystemsLoaded = false;
+
+      api.mods.getMounted("client", true).then(function (mods) {
+        var modMounted = function (modIdentifier) {
+          return _.some(mods, { identifier: modIdentifier });
+        };
+
+        // Shared Systems for Galactic War
+        if (modMounted("com.wondible.pa.gw_shared_systems")) {
+          // customSystemsLoaded = true;
+          $("#system-scaling").remove();
+          model.gwaioDifficultySettings.systemScaling(false);
+        }
+      });
 
       requireGW(
         [
@@ -384,6 +395,8 @@ if (!gwaioSetupLoaded) {
             var result = $.Deferred();
             loaded.then(function () {
               var card = _.find(processedStartCards, { id: params.id });
+              if (_.isUndefined(card))
+                console.error("No matching start card ID found");
               var context =
                 card.getContext &&
                 card.getContext(params.galaxy, params.inventory);
@@ -954,10 +967,21 @@ if (!gwaioSetupLoaded) {
                   }
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(star.system().planets, function (world) {
-                    if (world.starting_planet === true)
-                      if (world.planet) world.planet.shuffleLandingZones = true;
-                      else world.generator.shuffleLandingZones = true;
+                  _.forEach(star.system().planets, function (planet) {
+                    var environment = planet.generator;
+                    environment.shuffleLandingZones = true;
+
+                    // Add more water to Foundation worlds
+                    /* Removed due to AI performance issues on islands
+                      var waterBiomes = ["earth", "desert", "tropical"];
+                      if (
+                        !customSystemsLoaded &&
+                        ai.faction === 1 &&
+                        !ai.bossCommanders &&
+                        _.includes(waterBiomes, environment.biome)
+                      )
+                        environment.waterHeight = 60;
+                      */
                   });
                   if (!ai.bossCommanders) {
                     if (treasurePlanetSetup === false) {

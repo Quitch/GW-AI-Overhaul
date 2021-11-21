@@ -302,6 +302,9 @@ if (!gwaioCardsLoaded) {
               "gwaio_upgrade_stitch",
               "gwaio_upgrade_storm",
               "gwaio_upgrade_stryker",
+              "gwaio_upgrade_subcommander_duplication",
+              "gwaio_upgrade_subcommander_fabber",
+              "gwaio_upgrade_subcommander_tactics",
               "gwaio_upgrade_sxx",
               "gwaio_upgrade_teleporter",
               "gwaio_upgrade_torpedolauncher",
@@ -488,7 +491,9 @@ if (!gwaioCardsLoaded) {
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
-                var card = _.find(gwaioCardsToUnits.cards, { id: params.id });
+                var card = _.find(model.gwaioDeck, function (cardId) {
+                  return cardId === params.id;
+                });
 
                 // Simulate a deal
                 var context =
@@ -562,19 +567,19 @@ if (!gwaioCardsLoaded) {
             };
             model.cheats.giveCard = function (game) {
               var id = model.cheats.giveCardId();
-              var card = _.find(gwaioCardsToUnits.cards, {
-                id: id,
+              var cardId = _.find(model.gwaioDeck, function (card) {
+                return card === id;
               });
               var galaxy = game.galaxy();
 
-              if (_.isUndefined(card))
+              if (_.isUndefined(cardId))
                 console.error(
                   "Unable to find a card called",
                   model.cheats.giveCardId()
                 );
               else
                 dealCard({
-                  id: card.id,
+                  id: cardId,
                   galaxy: galaxy,
                   inventory: game.inventory(),
                   star: galaxy.stars()[game.currentStar()],
@@ -667,7 +672,7 @@ if (!gwaioCardsLoaded) {
 
             var makeCardTooltip = function (card, i) {
               if (card.isLoadout()) return;
-              if (i === undefined) i = 3; // ensure inventory hovers work at the same time as the new tech display
+              if (i === undefined) i = 4; // ugly hack to ensure inventory hovers work at the same time as the new tech display
               var cardId = card.id();
               var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
               if (index === -1)
@@ -707,7 +712,7 @@ if (!gwaioCardsLoaded) {
                       else return unit;
                     }
                   );
-                }
+                } else model.gwaioTechCardTooltip()[i] = undefined;
               }
             };
 
