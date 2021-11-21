@@ -23,6 +23,6 @@ define({
 
     return { chance: chance };
   },
-  buff: function () {},
+  buff: function () {}, // performed in referee.js
   dull: function () {},
 });
