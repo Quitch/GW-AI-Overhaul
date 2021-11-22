@@ -43,7 +43,7 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 You should download and install this mod via the Planetary Annihilation: TITANS in-game [Community Mods](https://steamcommunity.com/sharedfiles/filedetails/?id=1417396826).
 
-If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the latest release from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
+If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the mod from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 
 ## In Action
 
