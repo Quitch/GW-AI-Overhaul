@@ -1029,17 +1029,17 @@ if (!gwaioSetupLoaded) {
 
               // Replacement for GWDealer.dealBossCards
               var treasurePlanetSetup = false;
-              var n = 0;
-              var m = 0;
+              var loreEntry = 0;
+              var optionalLoreEntry = 0;
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
-                  if (gwaioLore.neutralSystems[n]) {
-                    system.name = gwaioLore.neutralSystems[n].name;
+                  if (gwaioLore.neutralSystems[loreEntry]) {
+                    system.name = gwaioLore.neutralSystems[loreEntry].name;
                     system.description =
-                      gwaioLore.neutralSystems[n].description;
-                    n += 1;
+                      gwaioLore.neutralSystems[loreEntry].description;
+                    loreEntry += 1;
                   }
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
@@ -1091,10 +1091,11 @@ if (!gwaioSetupLoaded) {
                       }
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
-                      gwaioLore.aiSystems[m]
+                      gwaioLore.aiSystems[optionalLoreEntry]
                     ) {
-                      system.description = gwaioLore.aiSystems[m];
-                      m += 1;
+                      system.description =
+                        gwaioLore.aiSystems[optionalLoreEntry];
+                      optionalLoreEntry += 1;
                     }
                   }
                 }
