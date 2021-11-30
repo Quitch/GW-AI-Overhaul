@@ -41,6 +41,8 @@ if (!gwaioWarInfoPanelLoaded) {
           }
         }
 
+        var inventory = game.inventory();
+
         // Player Information
         var factions = [
           "Legonis Machina",
@@ -49,10 +51,10 @@ if (!gwaioWarInfoPanelLoaded) {
           "Revenants",
           "Cluster",
         ];
-        var factionIndex = game.inventory().getTag("global", "playerFaction");
+        var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwaioFactionName = factions[factionIndex];
 
-        var loadoutId = game.inventory().cards()[0].id;
+        var loadoutId = inventory.cards()[0].id;
         model.gwaioLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
           model.gwaioLoadout(loc(card.summarize()));
@@ -69,7 +71,7 @@ if (!gwaioWarInfoPanelLoaded) {
             personality = personality + " " + loc(subcommander.penchant);
           var subcommanderName = subcommander.name;
           if (
-            _.some(model.game().inventory().cards(), {
+            _.some(inventory.cards(), {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           )
@@ -83,7 +85,6 @@ if (!gwaioWarInfoPanelLoaded) {
           };
         };
         model.gwaioPlayer = ko.computed(function () {
-          var inventory = game.inventory();
           var playerName = ko.observable().extend({ session: "displayName" });
           var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
 
