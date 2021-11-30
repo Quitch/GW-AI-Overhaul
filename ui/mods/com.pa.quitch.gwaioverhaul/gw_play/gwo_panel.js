@@ -53,7 +53,9 @@ if (!gwaioWarInfoPanelLoaded) {
         var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwaioFactionName = factions[factionIndex];
 
-        var loadoutId = inventory.cards()[0].id;
+        var cards = inventory.cards();
+
+        var loadoutId = cards[0].id;
         model.gwaioLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
           model.gwaioLoadout(loc(card.summarize()));
@@ -71,7 +73,7 @@ if (!gwaioWarInfoPanelLoaded) {
             personality = personality + " " + loc(subcommander.penchant);
           var subcommanderName = subcommander.name;
           if (
-            _.some(inventory.cards(), {
+            _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           )
