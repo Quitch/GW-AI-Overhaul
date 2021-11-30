@@ -767,7 +767,7 @@ if (!gwaioRefereeChangesLoaded) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
-              var cards = model.game().inventory().cards();
+              var cards = inventory.cards();
 
               // Sub Commander Tactics Tech
               if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
