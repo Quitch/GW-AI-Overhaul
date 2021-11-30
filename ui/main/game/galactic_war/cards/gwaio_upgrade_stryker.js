@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
     ),
     audio: function () {
       return {

@@ -5,7 +5,7 @@ define({
   ),
   summarize: _.constant("!LOC:Sub Commander Tactics Tech"),
   icon: _.constant(
-    "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_commander_upgrade.png"
   ),
   audio: function () {
     return {

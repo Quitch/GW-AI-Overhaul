@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Icons for upgrade cards to differentiate them from other cards
+
 ## v5.25.0 - 2021-11-21
 
 ### Added
