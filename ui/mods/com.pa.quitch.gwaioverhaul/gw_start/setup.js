@@ -414,7 +414,6 @@ if (!gwaioSetupLoaded) {
           model.makeGame = function () {
             var version = "5.x.x-dev";
             console.log("War created using Galactic War Overhaul v" + version);
-            console.log(" ---- MAKING NEW GALAXY ----");
             model.newGame(undefined);
 
             var busyToken = {};
@@ -701,7 +700,6 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
-              console.log("Max distance: " + maxDist);
 
               var setAIData = function (
                 ai,
@@ -832,38 +830,6 @@ if (!gwaioSetupLoaded) {
                         info.boss.minions.push(bossMinion);
                       });
                   }
-                  console.log(
-                    "BOSS: " +
-                      info.boss.name +
-                      " | Faction: " +
-                      info.boss.faction +
-                      " | Eco: " +
-                      info.boss.econ_rate.toPrecision(3) +
-                      " | Commanders: " +
-                      info.boss.bossCommanders +
-                      " | Dist: " +
-                      maxDist +
-                      " | Buffs: " +
-                      numBuffs +
-                      " | Penchant: " +
-                      info.boss.penchantName +
-                      " | Personality: " +
-                      info.boss.personality.personality_tags
-                  );
-                  _.forEach(info.boss.minions, function (bossMinion) {
-                    console.log(
-                      "\tMinion: " +
-                        bossMinion.name +
-                        " | Eco: " +
-                        bossMinion.econ_rate.toPrecision(3) +
-                        " | Commanders: " +
-                        bossMinion.commanderCount +
-                        " | Penchant: " +
-                        bossMinion.penchantName +
-                        " | Personality: " +
-                        bossMinion.personality.personality_tags
-                    );
-                  });
                 }
 
                 // Setup non-boss AI system
@@ -977,52 +943,6 @@ if (!gwaioSetupLoaded) {
                       foeCommander.commanderCount = numFoes;
                       worker.ai.foes.push(foeCommander);
                     }
-                  });
-                  console.log(
-                    "WORKER: " +
-                      worker.ai.name +
-                      " | Faction: " +
-                      worker.ai.faction +
-                      " | Eco: " +
-                      worker.ai.econ_rate.toPrecision(3) +
-                      " | Commanders: " +
-                      worker.ai.commanderCount +
-                      " | Dist: " +
-                      dist +
-                      " | Buffs: " +
-                      numBuffs +
-                      " | Penchant: " +
-                      worker.ai.penchantName +
-                      " | Personality: " +
-                      worker.ai.personality.personality_tags
-                  );
-                  _.forEach(worker.ai.minions, function (minion) {
-                    console.log(
-                      "\tMinion: " +
-                        minion.name +
-                        " | Eco: " +
-                        minion.econ_rate.toPrecision(3) +
-                        " | Commanders: " +
-                        minion.commanderCount +
-                        " | Penchant: " +
-                        minion.penchantName +
-                        " | Personality: " +
-                        minion.personality.personality_tags
-                    );
-                  });
-                  _.forEach(worker.ai.foes, function (foe) {
-                    console.log(
-                      "\tFoe: " +
-                        foe.name +
-                        " | Eco: " +
-                        foe.econ_rate.toPrecision(3) +
-                        " | Commanders: " +
-                        foe.commanderCount +
-                        " | Penchant: " +
-                        foe.penchantName +
-                        " | Personality: " +
-                        foe.personality.personality_tags
-                    );
                   });
                 });
               });
