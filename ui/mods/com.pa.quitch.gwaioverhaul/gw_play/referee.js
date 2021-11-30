@@ -767,12 +767,10 @@ if (!gwaioRefereeChangesLoaded) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
+              var cards = model.game().inventory().cards();
+
               // Sub Commander Tactics Tech
-              if (
-                _.some(model.game().inventory().cards(), {
-                  id: "gwaio_upgrade_subcommander_tactics",
-                })
-              ) {
+              if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
                 subcommander.personality.micro_type = 2;
                 subcommander.personality.go_for_the_kill = true;
                 subcommander.personality.priority_scout_metal_spots = true;
@@ -784,11 +782,7 @@ if (!gwaioRefereeChangesLoaded) {
               }
 
               // Sub Commander Fabber Tech
-              if (
-                _.some(model.game().inventory().cards(), {
-                  id: "gwaio_upgrade_subcommander_fabber",
-                })
-              ) {
+              if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
                 subcommander.personality.max_basic_fabbers = Math.round(
                   (subcommander.personality.max_basic_fabbers *= 1.5)
                 );
@@ -798,12 +792,9 @@ if (!gwaioRefereeChangesLoaded) {
               }
 
               // Sub Commander Duplication Tech
-              var subcommanderCommanders = _.some(
-                model.game().inventory().cards(),
-                {
-                  id: "gwaio_upgrade_subcommander_duplication",
-                }
-              )
+              var subcommanderCommanders = _.some(cards, {
+                id: "gwaio_upgrade_subcommander_duplication",
+              })
                 ? 2
                 : 1;
 
