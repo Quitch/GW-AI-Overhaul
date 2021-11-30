@@ -11,7 +11,6 @@ if (!gwaioWarInfoPanelLoaded) {
         // War Information
         var galaxy = game.galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
-
         model.gwaioSettings = originSystem.gwaio;
 
         if (model.gwaioSettings) {
@@ -41,9 +40,9 @@ if (!gwaioWarInfoPanelLoaded) {
           }
         }
 
+        // Player Information
         var inventory = game.inventory();
 
-        // Player Information
         var factions = [
           "Legonis Machina",
           "Foundation",
@@ -63,6 +62,7 @@ if (!gwaioWarInfoPanelLoaded) {
         var rgb = function (color) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
+
         var intelligence = function (subcommander) {
           var personality = subcommander.character
             ? loc(subcommander.character)
@@ -84,6 +84,7 @@ if (!gwaioWarInfoPanelLoaded) {
             character: personality,
           };
         };
+
         model.gwaioPlayer = ko.computed(function () {
           var playerName = ko.observable().extend({ session: "displayName" });
           var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
