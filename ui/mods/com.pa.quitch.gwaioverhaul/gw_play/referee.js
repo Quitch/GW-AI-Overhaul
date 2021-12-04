@@ -224,11 +224,18 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isString(spec[level])) {
                         var newSpec = load(spec[level]);
                         if (!newSpec) {
-                          return reportError("Undefined mod spec encountered,");
+                          return reportError(
+                            "Undefined mod spec encountered,",
+                            path
+                          );
                         }
                         spec = newSpec;
                       } else if (_.isObject(spec[level])) spec = spec[level];
-                      else return reportError("Invalid attribute encountered,");
+                      else
+                        return reportError(
+                          "Invalid attribute encountered,",
+                          path
+                        );
                     }
 
                     if (path.length && path[0]) {
