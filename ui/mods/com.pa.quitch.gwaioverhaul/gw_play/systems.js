@@ -338,11 +338,11 @@ if (!gwaioSystemChangesLoaded) {
                 var ai = system.star.ai();
                 if (!ai) return;
                 else if (ai.treasurePlanet === true)
-                  normalizedColor = [255, 255, 255];
+                  var normalizedColor = [255, 255, 255];
                 else {
                   var faction = GWFactions[ai.faction];
                   // Ensures we assign faction colour, not minion colour, to each system
-                  var normalizedColor = _.map(faction.color[0], function (c) {
+                  normalizedColor = _.map(faction.color[0], function (c) {
                     return c / 255;
                   });
                 }
