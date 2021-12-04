@@ -626,9 +626,9 @@ if (!gwaioSetupLoaded) {
                 };
               });
 
-              if (model.creditsMode()) neutralStars = 0;
+              if (model.creditsMode()) var neutralStars = 0;
               else if (model.gwaioDifficultySettings.easierStart())
-                var neutralStars = 4;
+                neutralStars = 4;
               else neutralStars = 2;
 
               return GWBreeder.populate({
