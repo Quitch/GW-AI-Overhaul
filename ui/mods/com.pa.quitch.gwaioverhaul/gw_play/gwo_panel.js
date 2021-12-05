@@ -11,7 +11,6 @@ if (!gwaioWarInfoPanelLoaded) {
         // War Information
         var galaxy = game.galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
-
         model.gwaioSettings = originSystem.gwaio;
 
         if (model.gwaioSettings) {
@@ -42,6 +41,8 @@ if (!gwaioWarInfoPanelLoaded) {
         }
 
         // Player Information
+        var inventory = game.inventory();
+
         var factions = [
           "Legonis Machina",
           "Foundation",
@@ -49,10 +50,12 @@ if (!gwaioWarInfoPanelLoaded) {
           "Revenants",
           "Cluster",
         ];
-        var factionIndex = game.inventory().getTag("global", "playerFaction");
+        var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwaioFactionName = factions[factionIndex];
 
-        var loadoutId = game.inventory().cards()[0].id;
+        var cards = inventory.cards();
+
+        var loadoutId = cards[0].id;
         model.gwaioLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
           model.gwaioLoadout(loc(card.summarize()));
@@ -61,6 +64,7 @@ if (!gwaioWarInfoPanelLoaded) {
         var rgb = function (color) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
+
         var intelligence = function (subcommander) {
           var personality = subcommander.character
             ? loc(subcommander.character)
@@ -69,7 +73,7 @@ if (!gwaioWarInfoPanelLoaded) {
             personality = personality + " " + loc(subcommander.penchant);
           var subcommanderName = subcommander.name;
           if (
-            _.some(model.game().inventory().cards(), {
+            _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           )
@@ -82,8 +86,8 @@ if (!gwaioWarInfoPanelLoaded) {
             character: personality,
           };
         };
+
         model.gwaioPlayer = ko.computed(function () {
-          var inventory = game.inventory();
           var playerName = ko.observable().extend({ session: "displayName" });
           var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
 

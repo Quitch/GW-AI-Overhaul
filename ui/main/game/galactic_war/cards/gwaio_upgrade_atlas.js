@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Atlas Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_enable_titans_upgrade.png"
     ),
     audio: function () {
       return {

@@ -34,14 +34,16 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
 - Fixes all the errors in the tech cards
-- 109 new tech cards
+- Over 100 new tech cards
 - Multiple AI opponents to choose from
 
 Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
 
 ## Installation
 
-Install this mod via the Planetary Annihilation: TITANS in-game Community Mod manager.
+You should download and install this mod via the Planetary Annihilation: TITANS in-game [Community Mods](https://steamcommunity.com/sharedfiles/filedetails/?id=1417396826).
+
+If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the mod from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 
 ## In Action
 

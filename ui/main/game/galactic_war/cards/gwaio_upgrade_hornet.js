@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Hornet Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png"
     ),
     audio: function () {
       return {

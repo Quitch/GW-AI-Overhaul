@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:SXX-1304 Laser Platform Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital_fighter.png"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png"
     ),
     audio: function () {
       return {

@@ -4,7 +4,7 @@ This project welcomes any changes which aim to improve upon existing features or
 
 ## Tooling
 
-You will need the following to ensure your submissions follow the requirements and format of this project:
+You will need the following to ensure your submissions adhere to the requirements and formatting of this project:
 
 - eslint
 - eslint-config-prettier

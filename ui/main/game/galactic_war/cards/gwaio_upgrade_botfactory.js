@@ -8,7 +8,7 @@ define([
     ),
     summarize: _.constant("!LOC:Bot Factory Upgrade Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_factory.png"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_factory_upgrade.png"
     ),
     audio: function () {
       return {

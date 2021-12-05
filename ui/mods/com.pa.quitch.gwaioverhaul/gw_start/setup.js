@@ -264,8 +264,6 @@ if (!gwaioSetupLoaded) {
       model.gwaioFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
-      // var customSystemsLoaded = false;
-
       api.mods.getMounted("client", true).then(function (mods) {
         var modMounted = function (modIdentifier) {
           return _.some(mods, { identifier: modIdentifier });
@@ -273,7 +271,6 @@ if (!gwaioSetupLoaded) {
 
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
-          // customSystemsLoaded = true;
           $("#system-scaling").remove();
           model.gwaioDifficultySettings.systemScaling(false);
         }
@@ -417,7 +414,6 @@ if (!gwaioSetupLoaded) {
           model.makeGame = function () {
             var version = "5.25.0";
             console.log("War created using Galactic War Overhaul v" + version);
-
             model.newGame(undefined);
 
             var busyToken = {};
@@ -630,9 +626,9 @@ if (!gwaioSetupLoaded) {
                 };
               });
 
-              if (model.creditsMode()) neutralStars = 0;
+              if (model.creditsMode()) var neutralStars = 0;
               else if (model.gwaioDifficultySettings.easierStart())
-                var neutralStars = 4;
+                neutralStars = 4;
               else neutralStars = 2;
 
               return GWBreeder.populate({
@@ -650,7 +646,7 @@ if (!gwaioSetupLoaded) {
                 },
                 spread: function (star, ai) {
                   // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
-                  var makeWorker = function (star, ai, team) {
+                  var makeWorker = function (ai, team) {
                     if (team.workers) {
                       _.assign(ai, _.cloneDeep(_.sample(team.workers)));
                     } else if (team.remainingMinions) {
@@ -666,7 +662,7 @@ if (!gwaioSetupLoaded) {
                   };
 
                   var team = teams[ai.team];
-                  return makeWorker(star, ai, team).then(function () {
+                  return makeWorker(ai, team).then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
@@ -953,35 +949,22 @@ if (!gwaioSetupLoaded) {
 
               // Replacement for GWDealer.dealBossCards
               var treasurePlanetSetup = false;
-              var n = 0;
-              var m = 0;
+              var loreEntry = 0;
+              var optionalLoreEntry = 0;
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
-                  if (gwaioLore.neutralSystems[n]) {
-                    system.name = gwaioLore.neutralSystems[n].name;
+                  if (gwaioLore.neutralSystems[loreEntry]) {
+                    system.name = gwaioLore.neutralSystems[loreEntry].name;
                     system.description =
-                      gwaioLore.neutralSystems[n].description;
-                    n += 1;
+                      gwaioLore.neutralSystems[loreEntry].description;
+                    loreEntry += 1;
                   }
                 } else {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(star.system().planets, function (planet) {
-                    var environment = planet.generator;
-                    environment.shuffleLandingZones = true;
-
-                    // Add more water to Foundation worlds
-                    /* Removed due to AI performance issues on islands
-                      var waterBiomes = ["earth", "desert", "tropical"];
-                      if (
-                        !customSystemsLoaded &&
-                        ai.faction === 1 &&
-                        !ai.bossCommanders &&
-                        _.includes(waterBiomes, environment.biome)
-                      )
-                        environment.waterHeight = 60;
-                      */
+                    planet.generator.shuffleLandingZones = true;
                   });
                   if (!ai.bossCommanders) {
                     if (treasurePlanetSetup === false) {
@@ -1028,10 +1011,11 @@ if (!gwaioSetupLoaded) {
                       }
                     } else if (
                       model.gwaioDifficultySettings.paLore() &&
-                      gwaioLore.aiSystems[m]
+                      gwaioLore.aiSystems[optionalLoreEntry]
                     ) {
-                      system.description = gwaioLore.aiSystems[m];
-                      m += 1;
+                      system.description =
+                        gwaioLore.aiSystems[optionalLoreEntry];
+                      optionalLoreEntry += 1;
                     }
                   }
                 }
