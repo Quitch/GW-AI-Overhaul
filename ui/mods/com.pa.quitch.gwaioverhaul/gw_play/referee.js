@@ -436,20 +436,17 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] += value;
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod])) {
-                                  test[idToMod] = test[idToMod].concat(value);
-                                } else if (test[idToMod]) {
-                                  test[idToMod] += value;
-                                }
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue) {
+                              if (_.isArray(test[idToMod])) {
+                                test[idToMod] = test[idToMod].concat(value);
+                              } else if (test[idToMod]) {
+                                test[idToMod] += value;
                               }
-                            });
-                          }
-                        );
+                            }
+                          });
+                        });
                     }
                   });
                 },
@@ -477,20 +474,17 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] = value + build[idToMod];
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod])) {
-                                  test[idToMod] = value.concat(test[idToMod]);
-                                } else if (test[idToMod]) {
-                                  test[idToMod] = value + test[idToMod];
-                                }
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue) {
+                              if (_.isArray(test[idToMod])) {
+                                test[idToMod] = value.concat(test[idToMod]);
+                              } else if (test[idToMod]) {
+                                test[idToMod] = value + test[idToMod];
                               }
-                            });
-                          }
-                        );
+                            }
+                          });
+                        });
                     }
                   });
                 },
@@ -512,16 +506,13 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] = value;
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue && test[idToMod]) {
-                                test[idToMod] = value;
-                              }
-                            });
-                          }
-                        );
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue && test[idToMod]) {
+                              test[idToMod] = value;
+                            }
+                          });
+                        });
                     }
                   });
                 },
@@ -530,8 +521,8 @@ if (!gwaioRefereeChangesLoaded) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      _.forEach(build.build_conditions, function (test_array) {
-                        _.remove(test_array, function (object) {
+                      _.forEach(build.build_conditions, function (testArray) {
+                        _.remove(testArray, function (object) {
                           if (_.isEqual(object, value)) {
                             return object;
                           }
@@ -548,12 +539,9 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isUndefined(idToMod)) {
                         build.build_conditions.push(value);
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            test_array.push(value);
-                          }
-                        );
+                        _.forEach(build.build_conditions, function (testArray) {
+                          testArray.push(value);
+                        });
                     }
                   });
                 },
