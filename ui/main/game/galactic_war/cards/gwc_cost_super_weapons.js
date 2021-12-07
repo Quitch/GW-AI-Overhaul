@@ -47,5 +47,7 @@ define({
     _.forEach(units, modUnit);
     inventory.addMods(mods);
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });

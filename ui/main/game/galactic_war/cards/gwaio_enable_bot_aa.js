@@ -10,5 +10,7 @@ define({
   buff: function (inventory) {
     inventory.maxCards(inventory.maxCards() + 1); // avoid taking up a slot
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });

@@ -83,7 +83,9 @@ define([
       inventory.minions.push(minion);
       if (minion.commander) inventory.addUnits([minion.commander]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
     keep: function (params, context) {
       context.chance = 50;
     },

@@ -100,6 +100,8 @@ define(["shared/gw_common"], function (GW) {
       });
       inventory.addMods(mods);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

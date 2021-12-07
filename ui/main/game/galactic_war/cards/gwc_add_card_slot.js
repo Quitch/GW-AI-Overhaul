@@ -31,7 +31,9 @@ define({
   buff: function (inventory) {
     inventory.maxCards(inventory.maxCards() + 2); // Note: One for us, and one for an extra.
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
   keep: function (params, context) {
     context.chance = 100;
   },

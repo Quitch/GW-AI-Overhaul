@@ -61,6 +61,8 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/orbital/solar_array/solar_array.json",
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

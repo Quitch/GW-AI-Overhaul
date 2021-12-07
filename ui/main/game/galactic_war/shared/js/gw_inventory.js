@@ -22,7 +22,9 @@ define(["require"], function (require) {
       self.aiMods(config.aiMods || []);
       self.maxCards(config.maxCards !== undefined ? config.maxCards : 0);
 
-      self.applyCards = function () {};
+      self.applyCards = function () {
+        //empty
+      };
       self.cards(config.cards || []);
       delete self.applyCards;
 

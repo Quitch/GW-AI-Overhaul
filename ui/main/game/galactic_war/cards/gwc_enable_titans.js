@@ -42,5 +42,7 @@ define({
       "/pa/units/orbital/titan_orbital/titan_orbital.json",
     ]);
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });

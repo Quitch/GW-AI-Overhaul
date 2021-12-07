@@ -66,6 +66,8 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/vehicle_factory/vehicle_factory.json",
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

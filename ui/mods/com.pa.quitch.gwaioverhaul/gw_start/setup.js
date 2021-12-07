@@ -636,7 +636,9 @@ if (!gwaioSetupLoaded) {
                 teams: teams,
                 neutralStars: neutralStars,
                 orderedSpawn: model.creditsMode(),
-                spawn: function () {},
+                spawn: function () {
+                  //empty
+                },
                 canSpread: function (star, ai) {
                   return (
                     !model.creditsMode() ||

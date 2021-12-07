@@ -102,5 +102,7 @@ define({
     _.forEach(ammos, modAmmo);
     inventory.addMods(mods);
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });

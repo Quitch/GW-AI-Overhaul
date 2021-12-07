@@ -58,5 +58,7 @@ define({
     });
     inventory.addMods(mods);
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });
