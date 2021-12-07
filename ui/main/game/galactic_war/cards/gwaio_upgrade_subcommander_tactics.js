@@ -24,8 +24,8 @@ define({
     return { chance: chance };
   },
   buff: function () {
-    //empty
-  }, // performed in referee.js
+    // performed in referee.js
+  },
   dull: function () {
     //empty
   },
