@@ -646,7 +646,7 @@ if (!gwaioSetupLoaded) {
                 },
                 spread: function (star, ai) {
                   // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
-                  var makeWorker = function (ai, team) {
+                  var makeWorker = function () {
                     if (team.workers) {
                       _.assign(ai, _.cloneDeep(_.sample(team.workers)));
                     } else if (team.remainingMinions) {
@@ -662,7 +662,7 @@ if (!gwaioSetupLoaded) {
                   };
 
                   var team = teams[ai.team];
-                  return makeWorker(ai, team).then(function () {
+                  return makeWorker().then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
