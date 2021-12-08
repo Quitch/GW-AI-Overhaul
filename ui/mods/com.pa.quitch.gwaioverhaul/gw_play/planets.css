@@ -1,7 +1,6 @@
 #system-detail .all-planets {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
 }
 
 #system-detail .div-planet {
