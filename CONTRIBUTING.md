@@ -1,6 +1,6 @@
 # Submissions
 
-This project welcomes any changes which aim to improve upon existing features or simply improve current implementations.
+This project welcomes any changes which aim to build upon existing features or simply improve current implementations.
 
 ## Tooling
 
