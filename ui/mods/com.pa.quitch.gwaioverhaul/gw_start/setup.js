@@ -890,13 +890,13 @@ if (!gwaioSetupLoaded) {
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
                       worker.ai.minions.push(minion);
-                    } else if (worker.ai.name === "Worker")
+                    } else if (worker.ai.name === "Worker") {
                       worker.ai.commanderCount =
                         numMinions +
                         Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
-                    else {
+                    } else {
                       _.times(numMinions, function () {
                         minion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
