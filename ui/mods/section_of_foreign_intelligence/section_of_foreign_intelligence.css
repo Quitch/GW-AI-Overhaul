@@ -32,7 +32,7 @@
   opacity: 1;
 }
 
-.player_masked {
+.player-masked {
   height: 16px;
   width: 16px;
   -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
