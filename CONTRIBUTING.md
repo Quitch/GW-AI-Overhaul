@@ -11,6 +11,7 @@ You will need the following to ensure your submissions adhere to the requirement
 - eslint-plugin-lodash
 - markdownlint
 - prettier
+- sonarlint
 - styleint
 - stylelint-config-prettier
 - stylelint-config-standard
