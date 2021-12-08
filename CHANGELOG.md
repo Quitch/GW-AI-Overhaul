@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Foundation AI buffs treating naval factories as mobile units
+
 ## v5.26.0 - 2021-12-05
 
 ### Added
