@@ -35,11 +35,9 @@ if (!gwaioSystemChangesLoaded) {
             result.scaleY = scale;
           }
 
-          var color = params.color;
-          result.color = ko.observable();
-          if (color) {
+          result.color = ko.observable(params.color);
+          if (result && result.color) {
             if (params.noCache) throw "noCache incompatible with color";
-            result.color(color);
             var updateFilters = function () {
               var color = result.color();
               result.filters = [];
@@ -93,7 +91,7 @@ if (!gwaioSystemChangesLoaded) {
         function SelectionViewModel(config) {
           var self = this;
 
-          var galaxy = config.galaxy;
+          var galaxyView = config.galaxy;
           var hover = !!config.hover;
           var iconUrl = config.iconUrl;
           var color = config.color;
@@ -114,7 +112,9 @@ if (!gwaioSystemChangesLoaded) {
           self.visible = ko.observable(true);
           self.star = ko.observable(-1);
           self.system = ko.computed(function () {
-            return self.star() >= 0 ? galaxy.systems()[self.star()] : undefined;
+            return self.star() >= 0
+              ? galaxyView.systems()[self.star()]
+              : undefined;
           });
 
           var extractor = function (field) {
@@ -305,7 +305,6 @@ if (!gwaioSystemChangesLoaded) {
         model.canMove = ko.computed(function () {
           if (model.player.moving()) return false;
 
-          var galaxy = game.galaxy();
           var from = game.currentStar();
           var to = model.selection.star();
 
@@ -359,7 +358,6 @@ if (!gwaioSystemChangesLoaded) {
               gwaioSettings &&
               _.isUndefined(gwaioSettings.treasurePlanetFixed)
             ) {
-              var galaxy = game.galaxy();
               for (var i = 0; i < galaxy.stars().length; i++) {
                 if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
                   galaxy.stars()[i].cardList([]);

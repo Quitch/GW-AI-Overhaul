@@ -837,7 +837,7 @@ if (!gwaioSetupLoaded) {
                 // Setup non-boss AI system
                 _.forEach(info.workers, function (worker) {
                   var dist = worker.star.distance();
-                  var numMinions = Math.floor(
+                  numMinions = Math.floor(
                     model.gwaioDifficultySettings.mandatoryMinions() +
                       worker.star.distance() *
                         model.gwaioDifficultySettings.minionMod()
@@ -865,8 +865,8 @@ if (!gwaioSetupLoaded) {
                       clusterCommanderInventory
                     );
                   else worker.ai.inventory = aiInventory;
-                  var numBuffs = Math.floor(dist / 2 - buffDelay);
-                  var typeOfBuffs = _.sample(buffType, numBuffs);
+                  numBuffs = Math.floor(dist / 2 - buffDelay);
+                  typeOfBuffs = _.sample(buffType, numBuffs);
                   worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
                   _.times(typeOfBuffs.length, function (n) {
                     worker.ai.inventory = worker.ai.inventory.concat(

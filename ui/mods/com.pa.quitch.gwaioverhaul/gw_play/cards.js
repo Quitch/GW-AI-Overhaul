@@ -129,7 +129,7 @@ if (!gwaioCardsLoaded) {
           } else {
             cardsOffered = numCardsToOffer;
           }
-          var star = game.galaxy().stars()[game.currentStar()];
+          star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
           if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
             model.gwaioOfferRerolls(false);
@@ -396,10 +396,10 @@ if (!gwaioCardsLoaded) {
 
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
-              var inventory = params.inventory;
+              inventory = params.inventory;
               var rng = params.rng || new Math.seedrandom();
               var count = params.count;
-              var star = params.star;
+              star = params.star;
               var galaxy = params.galaxy;
 
               var result = $.Deferred();
@@ -422,15 +422,15 @@ if (!gwaioCardsLoaded) {
                       inventory.hasCard(card.id) ||
                       _.some(list, { id: card.id });
 
-                    var result =
+                    var cardChance =
                       card.deal && card.deal(star, context, inventory);
-                    if (match) result.chance = 0;
+                    if (match) cardChance.chance = 0;
 
-                    return result;
+                    return cardChance;
                   });
 
-                  fullHand = _.map(fullHand, function (deal, index) {
-                    deal.index = index;
+                  fullHand = _.map(fullHand, function (deal, i) {
+                    deal.index = i;
                     return deal;
                   });
 
@@ -461,21 +461,18 @@ if (!gwaioCardsLoaded) {
                     ) {
                       roll -= hand[index].chance;
                     }
-                    if (index < hand.length) {
-                      var result = hand[index];
-                      resultIndex = result.index;
-                    }
+                    if (index < hand.length) resultIndex = hand[index].index;
 
                     if (resultIndex !== undefined) {
                       var resultDeal = fullHand[resultIndex];
-                      var params = resultDeal && resultDeal.params;
+                      var cardParams = resultDeal && resultDeal.params;
                       var cardId = deck[resultIndex];
                       var systemCard = {
                         id: cardId,
                       };
 
-                      if (params && _.isObject(params))
-                        _.assign(systemCard, params);
+                      if (cardParams && _.isObject(cardParams))
+                        _.assign(systemCard, cardParams);
 
                       list.push(systemCard);
                     }
@@ -515,8 +512,8 @@ if (!gwaioCardsLoaded) {
             /* end of GWAIO implementation of GWDealer */
 
             // we need cheats to deal from our deck
-            model.cheats.testCards = function (game) {
-              var star = game.galaxy().stars()[game.currentStar()];
+            model.cheats.testCards = function () {
+              star = game.galaxy().stars()[game.currentStar()];
               _.forEach(gwaioCardsToUnits.cards, function (card) {
                 dealCard({
                   id: card.id,
@@ -525,37 +522,35 @@ if (!gwaioCardsLoaded) {
                   star: star,
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    requireGW(["shared/gw_factions"], function (GWFactions) {
-                      _.forEach(GWFactions, function (faction) {
-                        _.forEach(faction.minions, function (minion) {
-                          var minionStock = _.cloneDeep(product);
-                          minionStock.minion = minion;
-                          game.inventory().cards.push(minionStock);
-                          game.inventory().cards.pop();
-                          if (!minionStock.minion.commander) {
-                            // This will use the player's commander
-                            return;
-                          }
+                    _.forEach(GWFactions, function (faction) {
+                      _.forEach(faction.minions, function (minion) {
+                        var minionStock = _.cloneDeep(product);
+                        minionStock.minion = minion;
+                        game.inventory().cards.push(minionStock);
+                        game.inventory().cards.pop();
+                        if (!minionStock.minion.commander) {
+                          // This will use the player's commander
+                          return;
+                        }
 
-                          var clusterSecurity =
-                            "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                          var clusterWorker =
-                            "/pa/units/air/support_platform/support_platform.json";
+                        var clusterSecurity =
+                          "/pa/units/land/bot_support_commander/bot_support_commander.json";
+                        var clusterWorker =
+                          "/pa/units/air/support_platform/support_platform.json";
 
-                          if (
-                            !CommanderUtility.bySpec.getObjectName(
-                              minionStock.minion.commander
-                            ) &&
-                            minionStock.minion.commander !== clusterSecurity &&
-                            minionStock.minion.commander !== clusterWorker
-                          ) {
-                            console.error(
-                              "Minion commander unitspec",
-                              minionStock.minion.commander,
-                              "invalid"
-                            );
-                          }
-                        });
+                        if (
+                          !CommanderUtility.bySpec.getObjectName(
+                            minionStock.minion.commander
+                          ) &&
+                          minionStock.minion.commander !== clusterSecurity &&
+                          minionStock.minion.commander !== clusterWorker
+                        ) {
+                          console.error(
+                            "Minion commander unitspec",
+                            minionStock.minion.commander,
+                            "invalid"
+                          );
+                        }
                       });
                     });
                   } else {
@@ -565,7 +560,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
             };
-            model.cheats.giveCard = function (game) {
+            model.cheats.giveCard = function () {
               var id = model.cheats.giveCardId();
               var cardId = _.find(model.gwaioDeck, function (card) {
                 return card === id;
@@ -585,27 +580,24 @@ if (!gwaioCardsLoaded) {
                   star: galaxy.stars()[game.currentStar()],
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    requireGW(["shared/gw_factions"], function (GWFactions) {
-                      var playerFaction =
-                        game.inventory().getTag("global", "playerFaction") || 0;
-                      var minion = _.cloneDeep(
-                        _.sample(GWFactions[playerFaction].minions)
-                      );
-                      var ai = galaxy.stars()[galaxy.origin()].system()
-                        .gwaio.ai;
-                      if (ai === "Penchant") {
-                        var penchantValues = gwaioFunctions.penchants();
-                        minion.character =
-                          minion.character +
-                          (" " + loc(penchantValues.penchantName));
-                        minion.personality.personality_tags =
-                          minion.personality.personality_tags.concat(
-                            penchantValues.penchants
-                          );
-                      }
-                      product.minion = minion;
-                      product.unique = Math.random();
-                    });
+                    playerFaction =
+                      game.inventory().getTag("global", "playerFaction") || 0;
+                    var minion = _.cloneDeep(
+                      _.sample(GWFactions[playerFaction].minions)
+                    );
+                    var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                    if (ai === "Penchant") {
+                      var penchantValues = gwaioFunctions.penchants();
+                      minion.character =
+                        minion.character +
+                        (" " + loc(penchantValues.penchantName));
+                      minion.personality.personality_tags =
+                        minion.personality.personality_tags.concat(
+                          penchantValues.penchants
+                        );
+                    }
+                    product.minion = minion;
+                    product.unique = Math.random();
                   } else if (product.id === "gwc_add_card_slot") {
                     product.allowOverflow = true;
                     product.unique = Math.random();
@@ -622,14 +614,14 @@ if (!gwaioCardsLoaded) {
 
               api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-              var inventory = game.inventory();
+              inventory = game.inventory();
 
               if (inventory.handIsFull()) {
                 var cardsOffered = numCardsToOffer + 1;
               } else {
                 cardsOffered = numCardsToOffer;
               }
-              var star = game.galaxy().stars()[game.currentStar()];
+              star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
                 inventory: inventory,
                 count: cardsOffered - model.gwaioRerollsUsed(),
@@ -704,7 +696,7 @@ if (!gwaioCardsLoaded) {
                   affectedUnits = affectedUnits.sort();
                   model.gwaioTechCardTooltip()[i] = _.map(
                     affectedUnits,
-                    function (unit, i) {
+                    function (unit) {
                       if (affectedUnits.length < 13) return unit.concat("<br>");
                       else if (i < affectedUnits.length - 1)
                         return unit.concat("; ");

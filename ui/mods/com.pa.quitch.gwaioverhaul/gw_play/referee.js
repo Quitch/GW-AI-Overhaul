@@ -188,7 +188,7 @@ if (!gwaioRefereeChangesLoaded) {
                     var originalPath = (mod.path || "").split(".");
                     var path = originalPath.reverse();
 
-                    var reportError = function (error, path) {
+                    var reportError = function (error) {
                       console.error(
                         error,
                         spec[level],
@@ -224,18 +224,11 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isString(spec[level])) {
                         var newSpec = load(spec[level]);
                         if (!newSpec) {
-                          return reportError(
-                            "Undefined mod spec encountered,",
-                            path
-                          );
+                          return reportError("Undefined mod spec encountered,");
                         }
                         spec = newSpec;
                       } else if (_.isObject(spec[level])) spec = spec[level];
-                      else
-                        return reportError(
-                          "Invalid attribute encountered,",
-                          path
-                        );
+                      else return reportError("Invalid attribute encountered,");
                     }
 
                     if (path.length && path[0]) {
@@ -413,14 +406,7 @@ if (!gwaioRefereeChangesLoaded) {
             var addTechToAI = function (json, mods) {
               var ops = {
                 // fabber/factory/platoon only
-                append: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                append: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -451,14 +437,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                prepend: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                prepend: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -489,14 +468,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                replace: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                replace: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -517,7 +489,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                remove: function (json, value, toBuild) {
+                remove: function (value, toBuild) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -532,7 +504,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                new: function (json, value, toBuild, idToMod) {
+                new: function (value, toBuild, idToMod) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -546,7 +518,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // template only
-                squad: function (json, value, toBuild) {
+                squad: function (value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
                     json.platoon_templates[toBuild].units.push(value);
                   }
@@ -555,7 +527,6 @@ if (!gwaioRefereeChangesLoaded) {
 
               _.forEach(mods, function (mod) {
                 ops[mod.op](
-                  json,
                   mod.value,
                   mod.toBuild,
                   mod.idToMod,
@@ -793,7 +764,7 @@ if (!gwaioRefereeChangesLoaded) {
                 ? 2
                 : 1;
 
-              var slotsArray = [];
+              slotsArray = [];
               _.times(subcommanderCommanders, function () {
                 slotsArray.push({
                   ai: true,
