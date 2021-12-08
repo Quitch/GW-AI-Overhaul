@@ -201,9 +201,6 @@ define([
   });
 
   // 3 - Engine Tech
-  var factionsTechAir = [foundationTech];
-  var factionUnitsAir = [inventory.foundationUnitsMobileAir];
-
   var airSpeedBoost = function (unit) {
     return [
       {
@@ -233,13 +230,11 @@ define([
     ];
   };
 
-  factionUnitsAir.forEach(function (faction, i) {
-    factionsTechAir[i][3] = _.flatten(
-      faction.map(function (unit) {
-        return airSpeedBoost(unit);
-      })
-    );
-  });
+  foundationTech[3] = _.flatten(
+    inventory.foundationUnitsMobileAir.map(function (unit) {
+      return airSpeedBoost(unit);
+    })
+  );
 
   var factionsTechNoAir = [
     legonisTech,
@@ -378,13 +373,11 @@ define([
 
   // 6 - Combat Tech
   // we redo the speed tech because Combat Commander Tech uses different values
-  factionUnitsAir.forEach(function (faction, i) {
-    factionsTechAir[i][6] = _.flatten(
-      faction.map(function (unit) {
-        return airSpeedBoost(unit);
-      })
-    );
-  });
+  foundationTech[6] = _.flatten(
+    inventory.foundationUnitsMobileAir.map(function (unit) {
+      return airSpeedBoost(unit);
+    })
+  );
 
   factionUnitsNoAir.forEach(function (faction, i) {
     if (_.isUndefined(factionsTechNoAir[i][6])) factionsTechNoAir[i][6] = [];
