@@ -1,7 +1,7 @@
 <div class="all-planets" data-bind="foreach: selection.system().planets()">
   <!-- ko if: $index() <= 3 || ($index() > 8 && $index() <= 12) -->
   <div
-    class="div_planet"
+    class="div-planet"
     data-placement="right"
     data-bind="tooltip: $root.gwaioPlanetData[$index()]"
   >
@@ -11,22 +11,22 @@
     />
     <div class="start" data-bind="visible: $data.starting_planet">
       <img
-        class="img_start"
+        class="img-start"
         src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
       />
       <img
         data-bind="visible: $data.required_thrust_to_move > 0"
-        class="thruster_count"
+        class="thruster-count"
         src="coui://ui/main/game/server_browser/img/icon_thruster.png"
       />
     </div>
     <!-- Different classes for image alignment purposes - there must be a better way -->
     <div
-      class="no_start"
+      class="no-start"
       data-bind="visible: !$data.starting_planet && $data.required_thrust_to_move > 0"
     >
       <img
-        class="thruster_count"
+        class="thruster-count"
         src="coui://ui/main/game/server_browser/img/icon_thruster.png"
       />
     </div>
@@ -34,7 +34,7 @@
   <!-- /ko -->
   <!-- ko if: ($index() > 3 && $index() <= 8) || $index() > 12 -->
   <div
-    class="div_planet"
+    class="div-planet"
     data-placement="left"
     data-bind="tooltip: $root.gwaioPlanetData[$index()]"
   >
@@ -44,22 +44,22 @@
     />
     <div class="start" data-bind="visible: $data.starting_planet">
       <img
-        class="img_start"
+        class="img-start"
         src="coui://ui/main/game/live_game/img/planet_list_panel/icon_planet_start.png"
       />
       <img
         data-bind="visible: $data.required_thrust_to_move > 0"
-        class="thruster_count"
+        class="thruster-count"
         src="coui://ui/main/game/server_browser/img/icon_thruster.png"
       />
     </div>
     <!-- Different classes for image alignment purposes - there must be a better way -->
     <div
-      class="no_start"
+      class="no-start"
       data-bind="visible: !$data.starting_planet && $data.required_thrust_to_move > 0"
     >
       <img
-        class="thruster_count"
+        class="thruster-count"
         src="coui://ui/main/game/server_browser/img/icon_thruster.png"
       />
     </div>
