@@ -37,5 +37,7 @@ define({
       "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
     ]);
   },
-  dull: function () {},
+  dull: function () {
+    //empty
+  },
 });

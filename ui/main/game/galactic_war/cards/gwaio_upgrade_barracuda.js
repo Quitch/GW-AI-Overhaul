@@ -78,6 +78,8 @@ define([
         },
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

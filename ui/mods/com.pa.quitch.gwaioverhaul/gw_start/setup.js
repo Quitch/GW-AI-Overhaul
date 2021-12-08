@@ -308,28 +308,6 @@ if (!gwaioSetupLoaded) {
           gwaioFunctions
         ) {
           /* Start of GWAIO implementation of GWDealer */
-          if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
-          model.gwaioTreasureCards.push(
-            { id: "gwc_start_storage" },
-            { id: "gwc_start_artillery" },
-            { id: "gwc_start_subcdr" },
-            { id: "gwc_start_combatcdr" },
-            { id: "gwc_start_allfactory" },
-            { id: "gwaio_start_ceo" },
-            { id: "gwaio_start_paratrooper" },
-            { id: "nem_start_deepspace" },
-            { id: "nem_start_nuke" },
-            { id: "nem_start_planetary" },
-            { id: "nem_start_tower_rush" },
-            { id: "gwaio_start_tourist" },
-            { id: "gwaio_start_rapid" },
-            { id: "tgw_start_speed" },
-            { id: "tgw_start_tank" },
-            { id: "gwaio_start_nomad" },
-            { id: "gwaio_start_backpacker" },
-            { id: "gwaio_start_hoarder" }
-          );
-
           if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
           model.gwaioNewStartCards.push(
             { id: "gwaio_start_ceo" },
@@ -636,7 +614,9 @@ if (!gwaioSetupLoaded) {
                 teams: teams,
                 neutralStars: neutralStars,
                 orderedSpawn: model.creditsMode(),
-                spawn: function () {},
+                spawn: function () {
+                  //empty
+                },
                 canSpread: function (star, ai) {
                   return (
                     !model.creditsMode() ||
@@ -646,7 +626,7 @@ if (!gwaioSetupLoaded) {
                 },
                 spread: function (star, ai) {
                   // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
-                  var makeWorker = function (ai, team) {
+                  var makeWorker = function () {
                     if (team.workers) {
                       _.assign(ai, _.cloneDeep(_.sample(team.workers)));
                     } else if (team.remainingMinions) {
@@ -662,7 +642,7 @@ if (!gwaioSetupLoaded) {
                   };
 
                   var team = teams[ai.team];
-                  return makeWorker(ai, team).then(function () {
+                  return makeWorker().then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
                     ai.faction = teamInfo[ai.team].faction;
@@ -835,7 +815,7 @@ if (!gwaioSetupLoaded) {
                 // Setup non-boss AI system
                 _.forEach(info.workers, function (worker) {
                   var dist = worker.star.distance();
-                  var numMinions = Math.floor(
+                  numMinions = Math.floor(
                     model.gwaioDifficultySettings.mandatoryMinions() +
                       worker.star.distance() *
                         model.gwaioDifficultySettings.minionMod()
@@ -863,8 +843,8 @@ if (!gwaioSetupLoaded) {
                       clusterCommanderInventory
                     );
                   else worker.ai.inventory = aiInventory;
-                  var numBuffs = Math.floor(dist / 2 - buffDelay);
-                  var typeOfBuffs = _.sample(buffType, numBuffs);
+                  numBuffs = Math.floor(dist / 2 - buffDelay);
+                  typeOfBuffs = _.sample(buffType, numBuffs);
                   worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
                   _.times(typeOfBuffs.length, function (n) {
                     worker.ai.inventory = worker.ai.inventory.concat(
@@ -888,13 +868,13 @@ if (!gwaioSetupLoaded) {
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
                       worker.ai.minions.push(minion);
-                    } else if (worker.ai.name === "Worker")
+                    } else if (worker.ai.name === "Worker") {
                       worker.ai.commanderCount =
                         numMinions +
                         Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
-                    else {
+                    } else {
                       _.times(numMinions, function () {
                         minion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
@@ -951,6 +931,9 @@ if (!gwaioSetupLoaded) {
               var treasurePlanetSetup = false;
               var loreEntry = 0;
               var optionalLoreEntry = 0;
+              var treasureCards = lockedBaseCards.concat(
+                model.gwaioNewStartCards
+              );
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
@@ -994,7 +977,7 @@ if (!gwaioSetupLoaded) {
                       ai.commander =
                         "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
                       var lockedStartCards = _.filter(
-                        model.gwaioTreasureCards,
+                        treasureCards,
                         function (card) {
                           return (
                             !GW.bank.hasStartCard(card) &&

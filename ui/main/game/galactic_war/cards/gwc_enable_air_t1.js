@@ -60,6 +60,8 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/air/transport/transport.json",
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

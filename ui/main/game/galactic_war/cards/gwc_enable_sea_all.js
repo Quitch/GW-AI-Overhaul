@@ -47,6 +47,8 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/sea/naval_factory/naval_factory.json",
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

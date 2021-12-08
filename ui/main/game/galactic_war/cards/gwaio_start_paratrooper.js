@@ -56,23 +56,24 @@ define([
           var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
 
-          var mods = [];
-          _.forEach(unitCannons, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_CmdBuild",
-              },
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.5,
-              }
-            );
-          });
+          var mods = _.flatten(
+            _.map(unitCannons, function (unit) {
+              return [
+                {
+                  file: unit,
+                  path: "unit_types",
+                  op: "push",
+                  value: "UNITTYPE_CmdBuild",
+                },
+                {
+                  file: unit,
+                  path: "build_metal_cost",
+                  op: "multiply",
+                  value: 0.5,
+                },
+              ];
+            })
+          );
 
           var unitCannonUnitsAdditional = [];
           if (
@@ -104,6 +105,7 @@ define([
               "/pa/units/land/bot_sniper/bot_sniper.json",
               "/pa/units/land/bot_support_commander/bot_support_commander.json"
             );
+          // eslint-disable-next-line lodash/prefer-map
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
               file: unit,

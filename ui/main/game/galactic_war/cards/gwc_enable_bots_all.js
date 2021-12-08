@@ -66,6 +66,8 @@ define(["shared/gw_common"], function (GW) {
         "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
       ]);
     },
-    dull: function () {},
+    dull: function () {
+      //empty
+    },
   };
 });

@@ -27,6 +27,12 @@ if (!gwaioMenuLoaded) {
               ? "!LOC:Abandon War"
               : "!LOC:Surrender";
 
+            function getMenuAction() {
+              if (model.gameOver() || model.defeated())
+                return "menuReturnToWar";
+              return hardcore() ? "menuAbandonWar" : "menuSurrender";
+            }
+
             var list = [
               {
                 label: "!LOC:Pause Game",
@@ -58,12 +64,7 @@ if (!gwaioMenuLoaded) {
                   model.gameOver() || model.defeated()
                     ? over_string
                     : exit_string,
-                action:
-                  model.gameOver() || model.defeated()
-                    ? "menuReturnToWar"
-                    : hardcore()
-                    ? "menuAbandonWar"
-                    : "menuSurrender",
+                action: getMenuAction(),
                 game_over: over_string,
               },
               {

@@ -55,6 +55,8 @@ define({
   foundationUnitsNotMobile: [
     "/pa/units/air/air_factory_adv/air_factory_adv.json",
     "/pa/units/air/air_factory/air_factory.json",
+    "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+    "/pa/units/sea/naval_factory/naval_factory.json",
   ],
   foundationUnitsMobileAir: [
     "/pa/units/air/air_scout/air_scout.json",
@@ -84,8 +86,6 @@ define({
     "/pa/units/sea/frigate/frigate.json",
     "/pa/units/sea/hover_ship/hover_ship.json",
     "/pa/units/sea/missile_ship/missile_ship.json",
-    "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
-    "/pa/units/sea/naval_factory/naval_factory.json",
     "/pa/units/sea/nuclear_sub/nuclear_sub.json",
     "/pa/units/sea/sea_scout/sea_scout.json",
   ],

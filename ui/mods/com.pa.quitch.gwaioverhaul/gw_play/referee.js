@@ -188,7 +188,7 @@ if (!gwaioRefereeChangesLoaded) {
                     var originalPath = (mod.path || "").split(".");
                     var path = originalPath.reverse();
 
-                    var reportError = function (error, path) {
+                    var reportError = function (error) {
                       console.error(
                         error,
                         spec[level],
@@ -224,18 +224,11 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isString(spec[level])) {
                         var newSpec = load(spec[level]);
                         if (!newSpec) {
-                          return reportError(
-                            "Undefined mod spec encountered,",
-                            path
-                          );
+                          return reportError("Undefined mod spec encountered,");
                         }
                         spec = newSpec;
                       } else if (_.isObject(spec[level])) spec = spec[level];
-                      else
-                        return reportError(
-                          "Invalid attribute encountered,",
-                          path
-                        );
+                      else return reportError("Invalid attribute encountered,");
                     }
 
                     if (path.length && path[0]) {
@@ -413,14 +406,7 @@ if (!gwaioRefereeChangesLoaded) {
             var addTechToAI = function (json, mods) {
               var ops = {
                 // fabber/factory/platoon only
-                append: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                append: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -436,32 +422,22 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] += value;
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod])) {
-                                  test[idToMod] = test[idToMod].concat(value);
-                                } else if (test[idToMod]) {
-                                  test[idToMod] += value;
-                                }
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue) {
+                              if (_.isArray(test[idToMod])) {
+                                test[idToMod] = test[idToMod].concat(value);
+                              } else if (test[idToMod]) {
+                                test[idToMod] += value;
                               }
-                            });
-                          }
-                        );
+                            }
+                          });
+                        });
                     }
                   });
                 },
                 // fabber/factory/platoon only
-                prepend: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                prepend: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -477,32 +453,22 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] = value + build[idToMod];
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue) {
-                                if (_.isArray(test[idToMod])) {
-                                  test[idToMod] = value.concat(test[idToMod]);
-                                } else if (test[idToMod]) {
-                                  test[idToMod] = value + test[idToMod];
-                                }
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue) {
+                              if (_.isArray(test[idToMod])) {
+                                test[idToMod] = value.concat(test[idToMod]);
+                              } else if (test[idToMod]) {
+                                test[idToMod] = value + test[idToMod];
                               }
-                            });
-                          }
-                        );
+                            }
+                          });
+                        });
                     }
                   });
                 },
                 // fabber/factory/platoon only
-                replace: function (
-                  json,
-                  value,
-                  toBuild,
-                  idToMod,
-                  refId,
-                  refValue
-                ) {
+                replace: function (value, toBuild, idToMod, refId, refValue) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
@@ -512,26 +478,23 @@ if (!gwaioRefereeChangesLoaded) {
                       ) {
                         build[idToMod] = value;
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            _.forEach(test_array, function (test) {
-                              if (test[refId] === refValue && test[idToMod]) {
-                                test[idToMod] = value;
-                              }
-                            });
-                          }
-                        );
+                        _.forEach(build.build_conditions, function (testArray) {
+                          _.forEach(testArray, function (test) {
+                            if (test[refId] === refValue && test[idToMod]) {
+                              test[idToMod] = value;
+                            }
+                          });
+                        });
                     }
                   });
                 },
                 // fabber/factory/platoon only
-                remove: function (json, value, toBuild) {
+                remove: function (value, toBuild) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
-                      _.forEach(build.build_conditions, function (test_array) {
-                        _.remove(test_array, function (object) {
+                      _.forEach(build.build_conditions, function (testArray) {
+                        _.remove(testArray, function (object) {
                           if (_.isEqual(object, value)) {
                             return object;
                           }
@@ -541,24 +504,21 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 },
                 // fabber/factory/platoon only
-                new: function (json, value, toBuild, idToMod) {
+                new: function (value, toBuild, idToMod) {
                   // eslint-disable-next-line lodash/prefer-filter
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (_.isUndefined(idToMod)) {
                         build.build_conditions.push(value);
                       } else
-                        _.forEach(
-                          build.build_conditions,
-                          function (test_array) {
-                            test_array.push(value);
-                          }
-                        );
+                        _.forEach(build.build_conditions, function (testArray) {
+                          testArray.push(value);
+                        });
                     }
                   });
                 },
                 // template only
-                squad: function (json, value, toBuild) {
+                squad: function (value, toBuild) {
                   if (json.platoon_templates[toBuild]) {
                     json.platoon_templates[toBuild].units.push(value);
                   }
@@ -567,7 +527,6 @@ if (!gwaioRefereeChangesLoaded) {
 
               _.forEach(mods, function (mod) {
                 ops[mod.op](
-                  json,
                   mod.value,
                   mod.toBuild,
                   mod.idToMod,
@@ -791,10 +750,10 @@ if (!gwaioRefereeChangesLoaded) {
               // Sub Commander Fabber Tech
               if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
                 subcommander.personality.max_basic_fabbers = Math.round(
-                  (subcommander.personality.max_basic_fabbers *= 1.5)
+                  subcommander.personality.max_basic_fabbers * 1.5
                 );
                 subcommander.personality.max_advanced_fabbers = Math.round(
-                  (subcommander.personality.max_advanced_fabbers *= 1.5)
+                  subcommander.personality.max_advanced_fabbers * 1.5
                 );
               }
 
@@ -805,7 +764,7 @@ if (!gwaioRefereeChangesLoaded) {
                 ? 2
                 : 1;
 
-              var slotsArray = [];
+              slotsArray = [];
               _.times(subcommanderCommanders, function () {
                 slotsArray.push({
                   ai: true,

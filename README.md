@@ -139,9 +139,7 @@ If you are adding new loadouts to the game and want to be compatible, then you w
 
    ```javascript
    if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
-   if (!model.gwaioTreasureCards) model.gwaioTreasureCards = [];
    model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
-   model.gwaioTreasureCards.push({ id: "YOUR_LOADOUT_ID" });
    ```
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
