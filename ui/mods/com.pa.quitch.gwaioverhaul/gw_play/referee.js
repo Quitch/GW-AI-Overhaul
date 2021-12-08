@@ -750,10 +750,10 @@ if (!gwaioRefereeChangesLoaded) {
               // Sub Commander Fabber Tech
               if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
                 subcommander.personality.max_basic_fabbers = Math.round(
-                  (subcommander.personality.max_basic_fabbers *= 1.5)
+                  subcommander.personality.max_basic_fabbers * 1.5
                 );
                 subcommander.personality.max_advanced_fabbers = Math.round(
-                  (subcommander.personality.max_advanced_fabbers *= 1.5)
+                  subcommander.personality.max_advanced_fabbers * 1.5
                 );
               }
 
