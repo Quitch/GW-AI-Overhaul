@@ -36,7 +36,7 @@ if (!gwaioSystemChangesLoaded) {
           }
 
           result.color = ko.observable(params.color);
-          if (result && result.color) {
+          if (result.color) {
             if (params.noCache)
               throw new Error("noCache incompatible with color");
             var updateFilters = function () {
