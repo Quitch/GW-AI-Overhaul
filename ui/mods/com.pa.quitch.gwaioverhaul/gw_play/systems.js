@@ -20,8 +20,8 @@ if (!gwaioSystemChangesLoaded) {
           );
 
         function createBitmap(params) {
-          if (!params.url) throw "No URL specified";
-          if (!params.size) throw "No size specified";
+          if (!params.url) throw new Error("No URL specified");
+          if (!params.size) throw new Error("No size specified");
 
           var result = new createjs.Bitmap(params.url);
           result.x = 0;
@@ -37,7 +37,8 @@ if (!gwaioSystemChangesLoaded) {
 
           result.color = ko.observable(params.color);
           if (result && result.color) {
-            if (params.noCache) throw "noCache incompatible with color";
+            if (params.noCache)
+              throw new Error("noCache incompatible with color");
             var updateFilters = function () {
               var color = result.color();
               result.filters = [];
