@@ -280,7 +280,6 @@ if (!gwaioSetupLoaded) {
         [
           "require",
           "shared/gw_common",
-          "shared/gw_credits",
           "shared/gw_factions",
           "pages/gw_start/gw_breeder",
           "pages/gw_start/gw_teams",
@@ -295,7 +294,6 @@ if (!gwaioSetupLoaded) {
         function (
           require,
           GW,
-          GWCredits,
           GWFactions,
           GWBreeder,
           GWTeams,
@@ -524,22 +522,6 @@ if (!gwaioSetupLoaded) {
               aiFactions = _.sample(aiFactions, numFactions);
             }
 
-            if (model.creditsMode())
-              size = _.reduce(
-                GWFactions,
-                function (factionSum, faction) {
-                  return _.reduce(
-                    faction.teams,
-                    function (teamSum, team) {
-                      return teamSum + (team.workers || []).length;
-                    },
-                    factionSum,
-                    1
-                  );
-                },
-                0
-              );
-
             model.updateCommander();
             game
               .inventory()
@@ -588,13 +570,8 @@ if (!gwaioSetupLoaded) {
               if (model.makeGameBusy() !== busyToken) return;
 
               // Scatter some AIs
-              if (!model.creditsMode()) aiFactions = _.shuffle(aiFactions);
+              aiFactions = _.shuffle(aiFactions);
               var teams = _.map(aiFactions, GWTeams.getTeam);
-              if (model.creditsMode())
-                // Duplicate the workers so we can keep them unique
-                _.forEach(teams, function (team) {
-                  team.workers = (team.workers || []).slice(0);
-                });
 
               var teamInfo = _.map(teams, function (team, teamIndex) {
                 return {
@@ -604,26 +581,19 @@ if (!gwaioSetupLoaded) {
                 };
               });
 
-              if (model.creditsMode()) var neutralStars = 0;
-              else if (model.gwaioDifficultySettings.easierStart())
-                neutralStars = 4;
+              if (model.gwaioDifficultySettings.easierStart())
+                var neutralStars = 4;
               else neutralStars = 2;
 
               return GWBreeder.populate({
                 galaxy: game.galaxy(),
                 teams: teams,
                 neutralStars: neutralStars,
-                orderedSpawn: model.creditsMode(),
+                orderedSpawn: false,
                 spawn: function () {
                   //empty
                 },
-                canSpread: function (star, ai) {
-                  return (
-                    !model.creditsMode() ||
-                    !ai ||
-                    !!teams[ai.team].workers.length
-                  );
-                },
+                canSpread: _.constant(true),
                 spread: function (star, ai) {
                   // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
                   var makeWorker = function () {
@@ -1040,11 +1010,6 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio.aiMods = [];
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.treasurePlanetFixed = true;
-
-              if (model.creditsMode()) {
-                originSystem.name = GWCredits.startSystem.name;
-                originSystem.description = GWCredits.startSystem.description;
-              }
             });
 
             finishAis.then(function () {
@@ -1057,7 +1022,7 @@ if (!gwaioSetupLoaded) {
             });
           };
 
-          model.makeGameOrRunCredits();
+          model.makeGame();
         }
       );
     } catch (e) {
