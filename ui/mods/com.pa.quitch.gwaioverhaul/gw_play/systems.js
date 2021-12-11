@@ -293,6 +293,9 @@ if (!gwaioSystemChangesLoaded) {
           }
         }
 
+        // turn off the icon before replacing model.selection()
+        model.selection.visible(false);
+
         model.selection = new SelectionViewModel({
           galaxy: model.galaxy,
           hover: false,

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Selection icon not being removed from the system the player started at
+
 ## v5.26.1 - 2021-12-08
 
 ### Fixed
