@@ -284,6 +284,8 @@ if (!gwaioRefereeChangesLoaded) {
                 };
                 /* end of gw_spec.js replacements */
 
+                var inventory = self.game().inventory();
+
                 var units = parse(unitsGet[0]).units;
                 var aiUnitMap = parse(aiMapGet[0]);
                 var aiX1UnitMap = parse(aiX1MapGet[0]);
@@ -340,8 +342,6 @@ if (!gwaioRefereeChangesLoaded) {
                 var playerX1AIUnitMap = titans
                   ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
-
-                var inventory = self.game().inventory();
 
                 GW.specs
                   .genUnitSpecs(inventory.units(), playerTag)
