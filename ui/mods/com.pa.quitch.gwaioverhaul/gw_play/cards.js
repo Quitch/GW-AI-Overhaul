@@ -396,7 +396,8 @@ if (!gwaioCardsLoaded) {
                 card.id = cardId;
                 cards.push(card);
                 deck.push(cardId);
-                if (--loadCount === 0) {
+                --loadCount;
+                if (loadCount === 0) {
                   loaded.resolve();
                 }
               });
