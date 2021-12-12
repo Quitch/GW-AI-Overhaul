@@ -30,8 +30,9 @@ define([
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
         ) ||
           inventory.hasCard("gwaio_upgrade_orbitallauncher"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

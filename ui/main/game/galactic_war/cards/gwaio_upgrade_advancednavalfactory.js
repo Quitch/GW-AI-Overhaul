@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

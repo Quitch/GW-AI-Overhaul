@@ -30,8 +30,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
           inventory.addUnits([
             "/pa/units/air/air_factory/air_factory.json",
             "/pa/units/air/air_scout/air_scout.json",

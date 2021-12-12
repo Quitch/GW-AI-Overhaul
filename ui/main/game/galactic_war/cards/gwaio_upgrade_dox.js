@@ -22,8 +22,11 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/assault_bot/assault_bot.json"))
+      if (
+        gwaioFunctions.hasUnit("/pa/units/land/assault_bot/assault_bot.json")
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

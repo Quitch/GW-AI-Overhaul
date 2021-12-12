@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/radar_satellite/radar_satellite.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

@@ -33,8 +33,9 @@ define([
           inventory.hasCard("nem_start_deepspace") ||
           inventory.hasCard("gwc_start_orbital")
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

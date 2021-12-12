@@ -19,7 +19,9 @@ define({
   },
   deal: function () {
     var chance = 0;
-    if (model.game().inventory().minions().length > 0) chance = 30;
+    if (model.game().inventory().minions().length > 0) {
+      chance = 30;
+    }
 
     return { chance: chance };
   },

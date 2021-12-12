@@ -24,8 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/energy_plant/energy_plant.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

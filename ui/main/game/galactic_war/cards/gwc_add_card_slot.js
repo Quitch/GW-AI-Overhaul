@@ -18,7 +18,9 @@ define({
   },
   deal: function (system, context, inventory) {
     var chance = system.distance() > 0 ? context.chance : 0;
-    if (inventory.handIsFull()) chance = 100000;
+    if (inventory.handIsFull()) {
+      chance = 100000;
+    }
 
     return {
       params: {

@@ -27,8 +27,9 @@ define([
           "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
         ) &&
         !inventory.hasCard("gwaio_start_rapid")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

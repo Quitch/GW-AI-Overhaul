@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json"
         )
-      )
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },

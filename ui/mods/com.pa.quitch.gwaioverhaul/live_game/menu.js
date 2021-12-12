@@ -28,8 +28,9 @@ if (!gwaioMenuLoaded) {
               : "!LOC:Surrender";
 
             function getMenuAction() {
-              if (model.gameOver() || model.defeated())
+              if (model.gameOver() || model.defeated()) {
                 return "menuReturnToWar";
+              }
               return hardcore() ? "menuAbandonWar" : "menuSurrender";
             }
 
@@ -73,11 +74,12 @@ if (!gwaioMenuLoaded) {
               },
             ];
 
-            if (model.canSave())
+            if (model.canSave()) {
               list.splice(6, 0, {
                 label: "Save Game ",
                 action: "menuSaveWar",
               });
+            }
 
             list = _.map(list, function (entry) {
               return {

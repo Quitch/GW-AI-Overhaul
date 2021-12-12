@@ -306,7 +306,9 @@ if (!gwaioSetupLoaded) {
           gwaioFunctions
         ) {
           /* Start of GWAIO implementation of GWDealer */
-          if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
+          if (!model.gwaioNewStartCards) {
+            model.gwaioNewStartCards = [];
+          }
           model.gwaioNewStartCards.push(
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
@@ -359,7 +361,9 @@ if (!gwaioSetupLoaded) {
             require(["cards/" + card.id], function (cardFile) {
               cardFile.id = card.id;
               processedStartCards[card.id] = cardFile;
-              if (--loadCount === 0) loaded.resolve();
+              if (--loadCount === 0) {
+                loaded.resolve();
+              }
             });
           });
 
@@ -368,16 +372,18 @@ if (!gwaioSetupLoaded) {
             var result = $.Deferred();
             loaded.then(function () {
               var card = _.find(processedStartCards, { id: params.id });
-              if (_.isUndefined(card))
+              if (_.isUndefined(card)) {
                 console.error("No matching start card ID found");
+              }
               var context =
                 card.getContext &&
                 card.getContext(params.galaxy, params.inventory);
               var deal = card.deal && card.deal(params.star, context);
               var product = { id: params.id };
               var cardParams = deal && deal.params;
-              if (cardParams && _.isObject(cardParams))
+              if (cardParams && _.isObject(cardParams)) {
                 _.assign(product, cardParams);
+              }
               card.keep && card.keep(deal, context);
               card.releaseContext && card.releaseContext(context);
               result.resolve(product, deal);
@@ -542,7 +548,9 @@ if (!gwaioSetupLoaded) {
               minimumDistanceBonus: 8,
             });
             var dealStartCard = buildGalaxy.then(function (galaxy) {
-              if (model.makeGameBusy() !== busyToken) return;
+              if (model.makeGameBusy() !== busyToken) {
+                return;
+              }
               return gwaioDealStartCard({
                 id: model.activeStartCard().id(),
                 inventory: game.inventory(),
@@ -557,7 +565,9 @@ if (!gwaioSetupLoaded) {
               });
             });
             var moveIn = dealStartCard.then(function () {
-              if (model.makeGameBusy() !== busyToken) return;
+              if (model.makeGameBusy() !== busyToken) {
+                return;
+              }
               var galaxy = game.galaxy();
               game.move(galaxy.origin());
 
@@ -567,7 +577,9 @@ if (!gwaioSetupLoaded) {
               game.gameState(GW.Game.gameStates.active);
             });
             var populate = moveIn.then(function () {
-              if (model.makeGameBusy() !== busyToken) return;
+              if (model.makeGameBusy() !== busyToken) {
+                return;
+              }
 
               // Scatter some AIs
               aiFactions = _.shuffle(aiFactions);
@@ -581,9 +593,11 @@ if (!gwaioSetupLoaded) {
                 };
               });
 
-              if (model.gwaioDifficultySettings.easierStart())
+              if (model.gwaioDifficultySettings.easierStart()) {
                 var neutralStars = 4;
-              else neutralStars = 2;
+              } else {
+                neutralStars = 2;
+              }
 
               return GWBreeder.populate({
                 galaxy: game.galaxy(),
@@ -614,7 +628,9 @@ if (!gwaioSetupLoaded) {
                   };
 
                   return makeWorker().then(function () {
-                    if (team.workers) _.remove(team.workers, { name: ai.name });
+                    if (team.workers) {
+                      _.remove(team.workers, { name: ai.name });
+                    }
 
                     ai.faction = teamInfo[ai.team].faction;
                     teamInfo[ai.team].workers.push({
@@ -641,7 +657,9 @@ if (!gwaioSetupLoaded) {
             });
 
             var finishAis = populate.then(function (teamInfo) {
-              if (model.makeGameBusy() !== busyToken) return;
+              if (model.makeGameBusy() !== busyToken) {
+                return;
+              }
 
               // DIFFICULTY RAMPING CODE
               var maxDist = _.reduce(
@@ -660,7 +678,9 @@ if (!gwaioSetupLoaded) {
                 faction,
                 minionCount
               ) {
-                if (ai.faction === undefined) ai.faction = faction;
+                if (ai.faction === undefined) {
+                  ai.faction = faction;
+                }
                 ai.personality.micro_type =
                   model.gwaioDifficultySettings.microTypeChosen();
                 ai.personality.go_for_the_kill =
@@ -686,9 +706,10 @@ if (!gwaioSetupLoaded) {
                 if (
                   model.gwaioDifficultySettings.startingLocationEvaluationRadius() >
                   0
-                )
+                ) {
                   ai.personality.starting_location_evaluation_radius =
                     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+                }
                 var getRandomArbitrary = function (min, max) {
                   return Math.random() * (max - min) + min;
                 };
@@ -698,20 +719,23 @@ if (!gwaioSetupLoaded) {
                       maxDist *
                         model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
-                  if (isBoss)
+                  if (isBoss) {
                     ai.bossCommanders =
                       model.gwaioDifficultySettings.bossCommanders();
-                } else
+                  }
+                } else {
                   ai.econ_rate =
                     (model.gwaioDifficultySettings.econBase() +
                       dist * model.gwaioDifficultySettings.econRatePerDist()) *
                     getRandomArbitrary(0.9, 1.1);
+                }
                 // Primary system faction gains eco or minion not both
-                if (minionCount)
+                if (minionCount) {
                   ai.econ_rate =
                     ai.econ_rate -
                     minionCount *
                       model.gwaioDifficultySettings.econRatePerDist();
+                }
 
                 // Penchant AI
                 if (model.gwaioDifficultySettings.ai() === 2) {
@@ -742,11 +766,13 @@ if (!gwaioSetupLoaded) {
                 // Setup boss system
                 if (info.boss) {
                   setAIData(info.boss, maxDist, true, true);
-                  if (info.boss.isCluster === true)
+                  if (info.boss.isCluster === true) {
                     info.boss.inventory = gwaioTech.clusterCommanders.concat(
                       clusterCommanderInventory
                     );
-                  else info.boss.inventory = aiInventory;
+                  } else {
+                    info.boss.inventory = aiInventory;
+                  }
                   var numBuffs = Math.floor(maxDist / 2 - buffDelay);
                   var typeOfBuffs = _.sample(buffType, numBuffs);
                   info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -772,7 +798,7 @@ if (!gwaioSetupLoaded) {
                       setAIData(bossMinion, maxDist, true, false);
                       bossMinion.commanderCount = numMinions;
                       info.boss.minions.push(bossMinion);
-                    } else
+                    } else {
                       _.times(numMinions, function () {
                         bossMinion = _.cloneDeep(
                           _.sample(GWFactions[info.faction].minions)
@@ -780,6 +806,7 @@ if (!gwaioSetupLoaded) {
                         setAIData(bossMinion, maxDist, true, false);
                         info.boss.minions.push(bossMinion);
                       });
+                    }
                   }
                 }
 
@@ -795,25 +822,30 @@ if (!gwaioSetupLoaded) {
                   if (
                     Math.random() * 100 <=
                     model.gwaioDifficultySettings.landAnywhereChance()
-                  )
+                  ) {
                     worker.ai.landAnywhere = true;
+                  }
                   if (
                     Math.random() * 100 <=
                     model.gwaioDifficultySettings.suddenDeathChance()
-                  )
+                  ) {
                     worker.ai.suddenDeath = true;
+                  }
                   if (
                     Math.random() * 100 <=
                     model.gwaioDifficultySettings.bountyModeChance()
-                  )
+                  ) {
                     worker.ai.bountyMode = true;
+                  }
                   worker.ai.bountyModeValue =
                     model.gwaioDifficultySettings.bountyModeValue();
-                  if (worker.ai.isCluster === true)
+                  if (worker.ai.isCluster === true) {
                     worker.ai.inventory = gwaioTech.clusterCommanders.concat(
                       clusterCommanderInventory
                     );
-                  else worker.ai.inventory = aiInventory;
+                  } else {
+                    worker.ai.inventory = aiInventory;
+                  }
                   numBuffs = Math.floor(dist / 2 - buffDelay);
                   typeOfBuffs = _.sample(buffType, numBuffs);
                   worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
@@ -866,7 +898,9 @@ if (!gwaioSetupLoaded) {
                       Math.random() * 100 <=
                       model.gwaioDifficultySettings.ffaChance()
                     ) {
-                      if (worker.ai.foes === undefined) worker.ai.foes = [];
+                      if (worker.ai.foes === undefined) {
+                        worker.ai.foes = [];
+                      }
                       availableFactions = _.shuffle(availableFactions);
                       var foeFaction = availableFactions.splice(0, 1);
                       var foeCommander = _.cloneDeep(
@@ -880,12 +914,14 @@ if (!gwaioSetupLoaded) {
                       }
                       setAIData(foeCommander, dist, false, false, foeFaction);
                       foeCommander.inventory = [];
-                      if (foeCommander.isCluster === true)
+                      if (foeCommander.isCluster === true) {
                         foeCommander.inventory =
                           gwaioTech.clusterCommanders.concat(
                             clusterCommanderInventory
                           );
-                      else foeCommander.inventory = aiInventory;
+                      } else {
+                        foeCommander.inventory = aiInventory;
+                      }
                       _.times(typeOfBuffs.length, function (n) {
                         foeCommander.inventory = foeCommander.inventory.concat(
                           gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
@@ -1014,7 +1050,9 @@ if (!gwaioSetupLoaded) {
             });
 
             finishAis.then(function () {
-              if (model.makeGameBusy() !== busyToken) return;
+              if (model.makeGameBusy() !== busyToken) {
+                return;
+              }
 
               model.makeGameBusy(false);
               model.newGame(game);

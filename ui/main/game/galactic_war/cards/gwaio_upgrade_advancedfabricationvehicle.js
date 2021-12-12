@@ -30,8 +30,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

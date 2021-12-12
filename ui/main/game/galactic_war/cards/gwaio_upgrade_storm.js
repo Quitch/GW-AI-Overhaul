@@ -28,8 +28,9 @@ define([
         ) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
         gwaioFunctions.hasUnit("/pa/units/land/tank_flak/tank_flak.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

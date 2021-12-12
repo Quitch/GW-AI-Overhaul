@@ -35,8 +35,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
           inventory.addUnits([
             "/pa/units/orbital/mining_platform/mining_platform.json",
             "/pa/units/orbital/orbital_factory/orbital_factory.json",

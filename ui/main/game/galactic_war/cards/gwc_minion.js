@@ -15,7 +15,9 @@ define([
         result.push("<br>");
         result.push("!LOC:Personality:");
         result.push(" " + loc(minion.character));
-        if (minion.penchant) result.push(" " + loc(minion.penchant));
+        if (minion.penchant) {
+          result.push(" " + loc(minion.penchant));
+        }
       }
       return result;
     },
@@ -48,10 +50,11 @@ define([
             "/pa/units/air/air_factory/air_factory.json"
           )) ||
         inventory.hasCard("nem_start_deepspace")
-      )
+      ) {
         chance = 0;
-      else if (inventory.minions)
+      } else if (inventory.minions) {
         chance = chance / (inventory.minions().length + 1);
+      }
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
       var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
@@ -81,7 +84,9 @@ define([
       // minion parameters will be updated.
       var minion = params.minion;
       inventory.minions.push(minion);
-      if (minion.commander) inventory.addUnits([minion.commander]);
+      if (minion.commander) {
+        inventory.addUnits([minion.commander]);
+      }
     },
     dull: function () {
       //empty

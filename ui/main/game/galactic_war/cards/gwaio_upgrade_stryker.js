@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/attack_vehicle/attack_vehicle.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

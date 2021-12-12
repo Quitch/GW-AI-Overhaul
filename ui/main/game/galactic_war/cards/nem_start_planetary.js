@@ -35,8 +35,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
           inventory.addUnits([
             "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
             "/pa/units/land/tank_armor/tank_armor.json",

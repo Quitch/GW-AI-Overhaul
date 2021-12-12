@@ -35,8 +35,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
 
           var mods = [
             {
@@ -201,20 +202,21 @@ define([
             inventory.hasCard("gwc_enable_orbital_t2") ||
             inventory.hasCard("gwc_enable_orbital_all") ||
             inventory.hasCard("gwaio_upgrade_orbitallauncher")
-          )
+          ) {
             mods.push({
               file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
             });
-          else
+          } else {
             mods.push({
               file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild & Basic | FabOrbBuild - Factory",
             });
+          }
 
           inventory.addMods(mods);
 

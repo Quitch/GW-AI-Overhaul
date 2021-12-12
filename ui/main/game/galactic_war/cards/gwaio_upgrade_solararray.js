@@ -24,8 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/orbital/solar_array/solar_array.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

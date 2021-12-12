@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/laser_defense_single/laser_defense_single.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
@@ -86,13 +87,14 @@ define([
         },
       ];
       // Reinstate the Nomad Commander loadout's structure movement
-      if (inventory.hasCard("gwaio_start_nomad"))
+      if (inventory.hasCard("gwaio_start_nomad")) {
         mods.push({
           file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
           path: "command_caps",
           op: "push",
           value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
         });
+      }
       inventory.addMods(mods);
 
       inventory.addAIMods([

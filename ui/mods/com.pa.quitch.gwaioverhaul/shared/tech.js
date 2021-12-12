@@ -281,7 +281,9 @@ define([
   };
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    if (_.isUndefined(factionsTechNoAir[i][3])) factionsTechNoAir[i][3] = [];
+    if (_.isUndefined(factionsTechNoAir[i][3])) {
+      factionsTechNoAir[i][3] = [];
+    }
     factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
       _.flatten(
         faction.map(function (unit) {
@@ -380,7 +382,9 @@ define([
   );
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    if (_.isUndefined(factionsTechNoAir[i][6])) factionsTechNoAir[i][6] = [];
+    if (_.isUndefined(factionsTechNoAir[i][6])) {
+      factionsTechNoAir[i][6] = [];
+    }
     factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
       _.flatten(
         faction.map(function (unit) {

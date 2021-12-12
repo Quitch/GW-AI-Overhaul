@@ -22,8 +22,11 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/air_defense/air_defense.json"))
+      if (
+        gwaioFunctions.hasUnit("/pa/units/land/air_defense/air_defense.json")
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

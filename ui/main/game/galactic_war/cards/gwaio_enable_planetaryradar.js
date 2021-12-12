@@ -39,8 +39,9 @@ define([
           "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
         ) ||
         inventory.hasCard("gwaio_upgrade_vehiclefactory")
-      )
+      ) {
         chance = 100;
+      }
 
       return { chance: chance };
     },

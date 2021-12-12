@@ -22,8 +22,9 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/air/transport/transport.json"))
+      if (gwaioFunctions.hasUnit("/pa/units/air/transport/transport.json")) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

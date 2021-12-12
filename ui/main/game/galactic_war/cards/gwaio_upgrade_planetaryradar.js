@@ -19,7 +19,9 @@ define({
   },
   deal: function (system, context, inventory) {
     var chance = 0;
-    if (inventory.hasCard("gwaio_enable_planetaryradar")) chance = 60;
+    if (inventory.hasCard("gwaio_enable_planetaryradar")) {
+      chance = 60;
+    }
 
     return { chance: chance };
   },

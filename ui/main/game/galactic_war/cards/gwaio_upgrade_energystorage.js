@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/energy_storage/energy_storage.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

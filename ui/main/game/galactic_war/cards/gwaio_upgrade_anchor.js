@@ -32,8 +32,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/defense_satellite/defense_satellite.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

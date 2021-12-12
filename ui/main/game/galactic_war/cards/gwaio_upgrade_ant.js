@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/tank_light_laser/tank_light_laser.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

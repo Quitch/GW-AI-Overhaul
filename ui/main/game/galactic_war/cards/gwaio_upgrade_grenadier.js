@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/bot_grenadier/bot_grenadier.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

@@ -28,13 +28,19 @@ define(["shared/gw_common"], function (GW) {
           chance = 14;
         } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
           chance = 28;
-          if (dist > 6) chance = 142;
+          if (dist > 6) {
+            chance = 142;
+          }
         } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
           chance = 28;
-          if (dist > 9) chance = 142;
+          if (dist > 9) {
+            chance = 142;
+          }
         } else {
           chance = 28;
-          if (dist > 12) chance = 142;
+          if (dist > 12) {
+            chance = 142;
+          }
         }
       }
       return { chance: chance };

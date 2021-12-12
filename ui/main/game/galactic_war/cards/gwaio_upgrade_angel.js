@@ -30,8 +30,9 @@ define([
           "/pa/units/air/air_factory_adv/air_factory_adv.json"
         ) ||
           inventory.hasCard("gwaio_upgrade_airfactory"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

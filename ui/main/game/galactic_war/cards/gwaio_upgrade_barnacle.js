@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/sea/fabrication_barge/fabrication_barge.json"
         )
-      )
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },

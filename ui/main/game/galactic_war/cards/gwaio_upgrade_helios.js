@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/titan_orbital/titan_orbital.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

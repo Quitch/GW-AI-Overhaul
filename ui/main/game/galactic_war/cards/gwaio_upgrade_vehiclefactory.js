@@ -27,8 +27,9 @@ define([
           "/pa/units/land/vehicle_factory/vehicle_factory.json"
         ) &&
         !inventory.hasCard("gwaio_start_rapid")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

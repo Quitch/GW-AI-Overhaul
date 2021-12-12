@@ -25,8 +25,9 @@ define([
       if (
         gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
         !inventory.hasCard("gwaio_start_rapid")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

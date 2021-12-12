@@ -10,18 +10,23 @@ if (!gwaioSystemChangesLoaded) {
       if (!game.isTutorial()) {
         var galaxy = game.galaxy();
         var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-        if (gwaioSettings)
+        if (gwaioSettings) {
           console.log(
             "War created using Galactic War Overhaul v" + gwaioSettings.version
           );
-        else
+        } else {
           console.log(
             "War created using Galactic War Overhaul v4.12.1 or earlier"
           );
+        }
 
         function createBitmap(params) {
-          if (!params.url) throw new Error("No URL specified");
-          if (!params.size) throw new Error("No size specified");
+          if (!params.url) {
+            throw new Error("No URL specified");
+          }
+          if (!params.size) {
+            throw new Error("No size specified");
+          }
 
           var result = new createjs.Bitmap(params.url);
           result.x = 0;
@@ -37,12 +42,13 @@ if (!gwaioSystemChangesLoaded) {
 
           result.color = ko.observable(params.color);
           if (result.color) {
-            if (params.noCache)
+            if (params.noCache) {
               throw new Error("noCache incompatible with color");
+            }
             var updateFilters = function () {
               var color = result.color();
               result.filters = [];
-              if (color)
+              if (color) {
                 result.filters.push(
                   new createjs.ColorFilter(
                     color[0],
@@ -51,6 +57,7 @@ if (!gwaioSystemChangesLoaded) {
                     color.length >= 4 ? color[3] : 1
                   )
                 );
+              }
             };
             updateFilters();
             result.color.subscribe(function () {
@@ -59,7 +66,9 @@ if (!gwaioSystemChangesLoaded) {
             });
           }
 
-          if (params.alpha !== undefined) result.alpha = params.alpha;
+          if (params.alpha !== undefined) {
+            result.alpha = params.alpha;
+          }
 
           if (!params.noCache) {
             // Note: Extra pixel compensates for bad filtering on the edges
@@ -74,7 +83,9 @@ if (!gwaioSystemChangesLoaded) {
         function sortContainer(container) {
           container.sortChildren(function (a, b) {
             if (a.z === undefined) {
-              if (b.z === undefined) return 0;
+              if (b.z === undefined) {
+                return 0;
+              }
               return -1;
             } else if (b.z === undefined) {
               return 1;
@@ -98,16 +109,20 @@ if (!gwaioSystemChangesLoaded) {
           var color = config.color;
 
           if (!iconUrl) {
-            if (hover)
+            if (hover) {
               iconUrl = "coui://ui/main/game/galactic_war/shared/img/hover.png";
-            else
+            } else {
               iconUrl =
                 "coui://ui/main/game/galactic_war/shared/img/selection.png";
+            }
           }
 
           if (!color) {
-            if (hover) color = [0.5, 0.9, 1];
-            else color = [0, 0.8, 1];
+            if (hover) {
+              color = [0.5, 0.9, 1];
+            } else {
+              color = [0, 0.8, 1];
+            }
           }
 
           self.visible = ko.observable(true);
@@ -147,15 +162,18 @@ if (!gwaioSystemChangesLoaded) {
           ko.computed(function () {
             var system = self.system();
             var visible = !!system && self.visible();
-            if (hover && visible)
+            if (hover && visible) {
               visible = system.mouseOver() !== system.mouseOut();
+            }
             self.icon.visible = visible;
             if (self.icon.visible) {
               var container = system.systemDisplay;
               container.addChild(self.scale);
               sortContainer(container);
             } else {
-              if (self.scale.parent) self.scale.parent.removeChild(self.scale);
+              if (self.scale.parent) {
+                self.scale.parent.removeChild(self.scale);
+              }
             }
           });
 
@@ -166,7 +184,9 @@ if (!gwaioSystemChangesLoaded) {
 
             self.system.subscribe(
               function (oldSystem) {
-                if (oldSystem) oldSystem.selected(false);
+                if (oldSystem) {
+                  oldSystem.selected(false);
+                }
               },
               null,
               "beforeChange"
@@ -189,14 +209,14 @@ if (!gwaioSystemChangesLoaded) {
                 model.gwaioPlanetData = _.map(
                   self.system().planets(),
                   function (planet) {
-                    if (planet.generator.biome === "gas")
+                    if (planet.generator.biome === "gas") {
                       return radius + " " + planet.generator.radius;
-                    else if (
+                    } else if (
                       planet.generator.biome === "metal" ||
                       planet.generator.biome === "metal_boss" ||
                       planet.generator.biome === "moon"
-                    )
-                      if (planet.metal_spots)
+                    ) {
+                      if (planet.metal_spots) {
                         return (
                           radius +
                           " " +
@@ -206,7 +226,7 @@ if (!gwaioSystemChangesLoaded) {
                           " " +
                           planet.metal_spots.length
                         );
-                      else
+                      } else {
                         return (
                           radius +
                           " " +
@@ -220,7 +240,11 @@ if (!gwaioSystemChangesLoaded) {
                           " " +
                           Math.round(planet.generator.metalDensity)
                         );
-                    else if (planet.metal_spots && planet.generator.waterDepth)
+                      }
+                    } else if (
+                      planet.metal_spots &&
+                      planet.generator.waterDepth
+                    ) {
                       return (
                         radius +
                         " " +
@@ -242,7 +266,7 @@ if (!gwaioSystemChangesLoaded) {
                         " " +
                         Math.round(planet.generator.waterHeight)
                       );
-                    else if (planet.metal_spots)
+                    } else if (planet.metal_spots) {
                       return (
                         radius +
                         " " +
@@ -260,7 +284,7 @@ if (!gwaioSystemChangesLoaded) {
                         " " +
                         Math.round(planet.generator.waterHeight)
                       );
-                    else
+                    } else {
                       return (
                         radius +
                         " " +
@@ -286,6 +310,7 @@ if (!gwaioSystemChangesLoaded) {
                         " " +
                         Math.round(planet.generator.waterHeight)
                       );
+                    }
                   }
                 );
               }
@@ -308,16 +333,24 @@ if (!gwaioSystemChangesLoaded) {
         });
 
         model.canMove = ko.computed(function () {
-          if (model.player.moving()) return false;
+          if (model.player.moving()) {
+            return false;
+          }
 
           var from = game.currentStar();
           var to = model.selection.star();
 
-          if (to < 0 || to > galaxy.stars().length) return false;
+          if (to < 0 || to > galaxy.stars().length) {
+            return false;
+          }
 
-          if (!model.canSelectOrMovePrefix()) return false;
+          if (!model.canSelectOrMovePrefix()) {
+            return false;
+          }
 
-          if (from === to) return false;
+          if (from === to) {
+            return false;
+          }
 
           return galaxy.pathBetween(from, to, model.cheats.noFog());
         });
@@ -338,10 +371,11 @@ if (!gwaioSystemChangesLoaded) {
           _.forEach(model.galaxy.systems(), function (system) {
             ko.computed(function () {
               var ai = system.star.ai();
-              if (!ai) return;
-              else if (ai.treasurePlanet === true)
+              if (!ai) {
+                return;
+              } else if (ai.treasurePlanet === true) {
                 var normalizedColor = [255, 255, 255];
-              else {
+              } else {
                 var faction = GWFactions[ai.faction];
                 // Ensures we assign faction colour, not minion colour, to each system
                 normalizedColor = _.map(faction.color[0], function (c) {

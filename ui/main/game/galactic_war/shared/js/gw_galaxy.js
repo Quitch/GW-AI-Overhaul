@@ -17,8 +17,12 @@ define([
     self.neighborsMap = ko.computed(function () {
       var edges = {};
       _.forEach(self.gates(), function (gate) {
-        if (!_.has(edges, gate[0])) edges[gate[0]] = [];
-        if (!_.has(edges, gate[1])) edges[gate[1]] = [];
+        if (!_.has(edges, gate[0])) {
+          edges[gate[0]] = [];
+        }
+        if (!_.has(edges, gate[1])) {
+          edges[gate[1]] = [];
+        }
 
         edges[gate[0]].push(gate[1]);
         edges[gate[1]].push(gate[0]);
@@ -29,7 +33,9 @@ define([
 
     self.areNeighbors = function (a, b) {
       var neighbors = self.neighborsMap();
-      if (_.has(neighbors, a)) return _.includes(neighbors[a], b);
+      if (_.has(neighbors, a)) {
+        return _.includes(neighbors[a], b);
+      }
     };
 
     self.pathBetween = function (from, to, noFog) {
@@ -52,7 +58,9 @@ define([
         for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
           var other = nodeNeighbors[neighbor];
 
-          if (checked[other]) continue; // ignore loop
+          if (checked[other]) {
+            continue;
+          } // ignore loop
 
           if (other === to) {
             var previous = _.last(path);
@@ -61,7 +69,9 @@ define([
 
             var explored = self.stars()[previous].explored() || toExplored;
 
-            if (!explored && !noFog) continue;
+            if (!explored && !noFog) {
+              continue;
+            }
 
             path.push(other);
 
@@ -96,7 +106,9 @@ define([
   GWGalaxy.saveSystems = function (config) {
     var stars = _.map(config.stars, GWStar.saveSystem);
     // If we have already been saved, throw away the results.
-    if (config.saved) return {};
+    if (config.saved) {
+      return {};
+    }
     return {
       stars: stars,
     };
@@ -213,7 +225,9 @@ define([
       var maxDist = 0;
       builder.reducedGraph.calcDistance(self.origin(), function (s, distance) {
         self.stars()[s].distance(distance);
-        if (maxDist < distance) maxDist = distance;
+        if (maxDist < distance) {
+          maxDist = distance;
+        }
       });
 
       self.difficultyIndex = config.difficultyIndex;

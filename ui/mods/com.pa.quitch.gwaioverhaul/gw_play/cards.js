@@ -72,10 +72,14 @@ if (!gwaioCardsLoaded) {
             var cardId = self.id();
             if (cardId) {
               requireGW(["cards/" + cardId], function (card) {
-                if (loadToken !== myToken) return;
+                if (loadToken !== myToken) {
+                  return;
+                }
                 loadCard(card, data);
               });
-            } else loadCard({}, data);
+            } else {
+              loadCard({}, data);
+            }
           });
         };
 
@@ -201,7 +205,9 @@ if (!gwaioCardsLoaded) {
             }
 
             /* Start of GWAIO implementation of GWDealer */
-            if (!model.gwaioDeck) model.gwaioDeck = [];
+            if (!model.gwaioDeck) {
+              model.gwaioDeck = [];
+            }
             model.gwaioDeck.push(
               "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
@@ -390,7 +396,9 @@ if (!gwaioCardsLoaded) {
                 card.id = cardId;
                 cards.push(card);
                 deck.push(cardId);
-                if (--loadCount === 0) loaded.resolve();
+                if (--loadCount === 0) {
+                  loaded.resolve();
+                }
               });
             });
 
@@ -405,8 +413,9 @@ if (!gwaioCardsLoaded) {
               var result = $.Deferred();
               loaded.then(function () {
                 _.forEach(cards, function (card) {
-                  if (card.getContext && !cardContexts[card.id])
+                  if (card.getContext && !cardContexts[card.id]) {
                     cardContexts[card.id] = card.getContext(galaxy, inventory);
+                  }
                 });
 
                 var list = [];
@@ -424,7 +433,9 @@ if (!gwaioCardsLoaded) {
 
                     var cardChance =
                       card.deal && card.deal(star, context, inventory);
-                    if (match) cardChance.chance = 0;
+                    if (match) {
+                      cardChance.chance = 0;
+                    }
 
                     return cardChance;
                   });
@@ -435,9 +446,13 @@ if (!gwaioCardsLoaded) {
                   });
 
                   hand = _.filter(fullHand, function (deal) {
-                    if (!deal) return false;
+                    if (!deal) {
+                      return false;
+                    }
 
-                    if (!deal.chance) return false;
+                    if (!deal.chance) {
+                      return false;
+                    }
 
                     return true;
                   });
@@ -461,7 +476,9 @@ if (!gwaioCardsLoaded) {
                     ) {
                       roll -= hand[index].chance;
                     }
-                    if (index < hand.length) resultIndex = hand[index].index;
+                    if (index < hand.length) {
+                      resultIndex = hand[index].index;
+                    }
 
                     if (resultIndex !== undefined) {
                       var resultDeal = fullHand[resultIndex];
@@ -471,8 +488,9 @@ if (!gwaioCardsLoaded) {
                         id: cardId,
                       };
 
-                      if (cardParams && _.isObject(cardParams))
+                      if (cardParams && _.isObject(cardParams)) {
                         _.assign(systemCard, cardParams);
+                      }
 
                       list.push(systemCard);
                     }
@@ -500,8 +518,9 @@ if (!gwaioCardsLoaded) {
                 var deal = card.deal && card.deal(params.star, context);
                 var product = { id: params.id };
                 var cardParams = deal && deal.params;
-                if (cardParams && _.isObject(cardParams))
+                if (cardParams && _.isObject(cardParams)) {
                   _.assign(product, cardParams);
+                }
                 card.keep && card.keep(deal, context);
                 card.releaseContext && card.releaseContext(context);
 
@@ -567,12 +586,12 @@ if (!gwaioCardsLoaded) {
               });
               var galaxy = game.galaxy();
 
-              if (_.isUndefined(cardId))
+              if (_.isUndefined(cardId)) {
                 console.error(
                   "Unable to find a card called",
                   model.cheats.giveCardId()
                 );
-              else
+              } else {
                 dealCard({
                   id: cardId,
                   galaxy: galaxy,
@@ -604,11 +623,14 @@ if (!gwaioCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                 });
+              }
             };
 
             // gw_play self.explore - we need to call our chooseCards function
             model.explore = function () {
-              if (!game || !game.explore()) return;
+              if (!game || !game.explore()) {
+                return;
+              }
 
               model.scanning(true);
 
@@ -634,15 +656,19 @@ if (!gwaioCardsLoaded) {
                   if (
                     !GW.bank.hasStartCard(card) &&
                     !gwaioBank.hasStartCard(card)
-                  )
+                  ) {
                     ok = false;
+                  }
                 });
 
-                if (ok) star.cardList(result);
+                if (ok) {
+                  star.cardList(result);
+                }
               });
               $.when(dealStarCards).then(function () {
-                if (model.currentSystemCardList()[0].isLoadout())
+                if (model.currentSystemCardList()[0].isLoadout()) {
                   model.gwaioOfferRerolls(false);
+                }
                 model.driveAccessInProgress(true);
                 GW.manifest.saveGame(game).then(function () {
                   model.driveAccessInProgress(false);
@@ -654,27 +680,35 @@ if (!gwaioCardsLoaded) {
               });
             };
 
-            if (model.gwaioCardsToUnits)
+            if (model.gwaioCardsToUnits) {
               model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
                 gwaioCardsToUnits.cards
               );
-            else model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+            } else {
+              model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+            }
 
             model.gwaioTechCardTooltip = ko.observableArray([]);
 
             var makeCardTooltip = function (card, i) {
-              if (card.isLoadout()) return;
-              if (i === undefined) i = 4; // ugly hack to ensure inventory hovers work at the same time as the new tech display
+              if (card.isLoadout()) {
+                return;
+              }
+              if (i === undefined) {
+                i = 4;
+              } // ugly hack to ensure inventory hovers work at the same time as the new tech display
               var cardId = card.id();
               var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-              if (index === -1)
-                if (cardId === undefined) return;
-                else
+              if (index === -1) {
+                if (cardId === undefined) {
+                  return;
+                } else {
                   console.warn(
                     cardId,
                     "is invalid or missing from model.gwaioCardsToUnits"
                   );
-              else {
+                }
+              } else {
                 var units = model.gwaioCardsToUnits[index].units;
                 if (units) {
                   var affectedUnits = [];
@@ -683,12 +717,12 @@ if (!gwaioCardsLoaded) {
                     index = _.findIndex(gwaioUnitsToNames.units, {
                       path: unit,
                     });
-                    if (index === -1)
+                    if (index === -1) {
                       console.warn(
                         unit,
                         "is invalid or missing from GWO unit_names.js"
                       );
-                    else {
+                    } else {
                       var name = loc(gwaioUnitsToNames.units[index].name);
                       affectedUnits = affectedUnits.concat(name);
                     }
@@ -697,41 +731,56 @@ if (!gwaioCardsLoaded) {
                   model.gwaioTechCardTooltip()[i] = _.map(
                     affectedUnits,
                     function (unit) {
-                      if (affectedUnits.length < 13) return unit.concat("<br>");
-                      else if (i < affectedUnits.length - 1)
+                      if (affectedUnits.length < 13) {
+                        return unit.concat("<br>");
+                      } else if (i < affectedUnits.length - 1) {
                         return unit.concat("; ");
-                      else return unit;
+                      } else {
+                        return unit;
+                      }
                     }
                   );
-                } else model.gwaioTechCardTooltip()[i] = undefined;
+                } else {
+                  model.gwaioTechCardTooltip()[i] = undefined;
+                }
               }
             };
 
             model.showSystemCard.subscribe(function () {
-              if (model.showSystemCard())
+              if (model.showSystemCard()) {
                 model.currentSystemCardList().forEach(makeCardTooltip);
+              }
             });
             // Ensure the tooltip is shown even if the UI is refreshed
-            if (model.showSystemCard())
+            if (model.showSystemCard()) {
               model.currentSystemCardList().forEach(makeCardTooltip);
+            }
 
             var hoverCount = 0;
             model.setHoverCard = function (card, hoverEvent) {
-              if (card === model.hoverCard()) card = undefined;
+              if (card === model.hoverCard()) {
+                card = undefined;
+              }
               ++hoverCount;
 
               if (!card) {
                 // Delay clears for a bit to avoid flashing
                 var oldCount = hoverCount;
                 _.delay(function () {
-                  if (oldCount !== hoverCount) return;
+                  if (oldCount !== hoverCount) {
+                    return;
+                  }
                   model.hoverCard(undefined);
                 }, 300);
                 return;
-              } else makeCardTooltip(card);
+              } else {
+                makeCardTooltip(card);
+              }
 
               var $block = $(hoverEvent.target);
-              if (!$block.is(".one-card")) $block = $block.parent(".one-card");
+              if (!$block.is(".one-card")) {
+                $block = $block.parent(".one-card");
+              }
               var left = $block.offset().left + $block.width() / 2;
               model.hoverOffset(left.toString() + "px");
               model.hoverCard(card);

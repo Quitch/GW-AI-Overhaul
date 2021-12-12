@@ -25,8 +25,9 @@ define([
       if (
         gwaioFunctions.hasUnit("/pa/units/air/bomber/bomber.json") &&
         gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

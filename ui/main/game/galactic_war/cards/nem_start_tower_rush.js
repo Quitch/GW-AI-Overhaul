@@ -35,8 +35,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
           inventory.addUnits([
             "/pa/units/land/air_defense_adv/air_defense_adv.json",
             "/pa/units/land/laser_defense_adv/laser_defense_adv.json",

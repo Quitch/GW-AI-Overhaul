@@ -22,8 +22,11 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/air/solar_drone/solar_drone.json"))
+      if (
+        gwaioFunctions.hasUnit("/pa/units/air/solar_drone/solar_drone.json")
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

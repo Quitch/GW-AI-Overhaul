@@ -31,8 +31,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

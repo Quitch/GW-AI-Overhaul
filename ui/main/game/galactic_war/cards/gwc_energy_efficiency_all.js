@@ -24,24 +24,39 @@ define(["shared/gw_common"], function (GW) {
       if (dist > 0) {
         if (context.totalSize <= GW.balance.numberOfSystems[0]) {
           chance = 33;
-          if (dist > 4) chance = 166;
-          else if (dist > 2) chance = 333;
+          if (dist > 4) {
+            chance = 166;
+          } else if (dist > 2) {
+            chance = 333;
+          }
         } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
           chance = 33;
-          if (dist > 6) chance = 166;
-          else if (dist > 3) chance = 333;
+          if (dist > 6) {
+            chance = 166;
+          } else if (dist > 3) {
+            chance = 333;
+          }
         } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
           chance = 33;
-          if (dist > 9) chance = 166;
-          else if (dist > 5) chance = 333;
+          if (dist > 9) {
+            chance = 166;
+          } else if (dist > 5) {
+            chance = 333;
+          }
         } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
           chance = 33;
-          if (dist > 10) chance = 166;
-          else if (dist > 6) chance = 333;
+          if (dist > 10) {
+            chance = 166;
+          } else if (dist > 6) {
+            chance = 333;
+          }
         } else {
           chance = 33;
-          if (dist > 12) chance = 166;
-          else if (dist > 7) chance = 333;
+          if (dist > 12) {
+            chance = 166;
+          } else if (dist > 7) {
+            chance = 333;
+          }
         }
       }
       return { chance: chance };

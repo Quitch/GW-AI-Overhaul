@@ -29,8 +29,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_laser/orbital_laser.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

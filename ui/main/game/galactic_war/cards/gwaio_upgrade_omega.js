@@ -30,8 +30,9 @@ define([
           "/pa/units/orbital/orbital_battleship/orbital_battleship.json"
         ) &&
         gwaioFunctions.hasUnit("/pa/units/sea/drone_carrier/drone/drone.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

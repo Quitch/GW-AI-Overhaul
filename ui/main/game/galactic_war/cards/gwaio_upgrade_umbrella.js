@@ -24,8 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/orbital/ion_defense/ion_defense.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

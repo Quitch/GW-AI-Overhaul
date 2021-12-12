@@ -32,8 +32,9 @@ define([
         ) &&
         gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json") &&
         !inventory.hasCard("gwaio_start_paratrooper")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

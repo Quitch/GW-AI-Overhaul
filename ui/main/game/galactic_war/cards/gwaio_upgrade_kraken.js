@@ -28,8 +28,9 @@ define([
         ) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
         gwaioFunctions.hasUnit("/pa/units/sea/nuclear_sub/nuclear_sub.json")
-      )
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },

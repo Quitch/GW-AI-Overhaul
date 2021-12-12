@@ -28,8 +28,9 @@ define([
         ) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
         gwaioFunctions.hasUnit("/pa/units/air/bomber_adv/bomber_adv.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

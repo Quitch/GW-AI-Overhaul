@@ -27,8 +27,9 @@ define([
           "/pa/units/sea/naval_factory/naval_factory.json"
         ) &&
         !inventory.hasCard("gwaio_start_rapid")
-      )
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },

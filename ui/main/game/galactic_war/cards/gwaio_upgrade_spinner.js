@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

@@ -24,8 +24,9 @@ define({
       inventory.hasCard("gwc_enable_air_all") ||
       inventory.hasCard("gwc_start_air") ||
       inventory.hasCard("gwaio_start_hoarder")
-    )
+    ) {
       chance = 60;
+    }
     return { chance: chance };
   },
   buff: function (inventory) {

@@ -24,8 +24,9 @@ define({
       inventory.hasCard("gwc_enable_vehicles_all") ||
       inventory.hasCard("gwc_start_vehicle") ||
       inventory.hasCard("gwaio_start_hoarder")
-    )
+    ) {
       chance = 70;
+    }
 
     return { chance: chance };
   },

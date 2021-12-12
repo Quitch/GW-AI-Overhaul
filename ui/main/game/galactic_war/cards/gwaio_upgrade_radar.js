@@ -37,8 +37,9 @@ define([
             "/pa/units/land/vehicle_factory/vehicle_factory.json"
           ) ||
           inventory.hasCard("gwc_start_artillery"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

@@ -22,8 +22,9 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/teleporter/teleporter.json"))
+      if (gwaioFunctions.hasUnit("/pa/units/land/teleporter/teleporter.json")) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

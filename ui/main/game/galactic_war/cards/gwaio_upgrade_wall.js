@@ -24,8 +24,9 @@ define([
       var chance = 0;
       if (
         gwaioFunctions.hasUnit("/pa/units/land/land_barrier/land_barrier.json")
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

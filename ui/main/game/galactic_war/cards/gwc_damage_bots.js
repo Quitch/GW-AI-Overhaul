@@ -25,8 +25,9 @@ define({
       inventory.hasCard("gwc_start_bot") ||
       inventory.hasCard("gwaio_start_hoarder") ||
       inventory.hasCard("tgw_start_speed")
-    )
+    ) {
       chance = 70;
+    }
 
     return { chance: chance };
   },

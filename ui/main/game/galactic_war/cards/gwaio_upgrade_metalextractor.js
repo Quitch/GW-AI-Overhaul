@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/metal_extractor/metal_extractor.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

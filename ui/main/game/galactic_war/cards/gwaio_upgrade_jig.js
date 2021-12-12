@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/mining_platform/mining_platform.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

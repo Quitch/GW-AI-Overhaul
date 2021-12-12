@@ -26,8 +26,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/land/artillery_short/artillery_short.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

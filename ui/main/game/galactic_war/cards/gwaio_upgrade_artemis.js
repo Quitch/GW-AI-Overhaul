@@ -29,8 +29,9 @@ define([
         gwaioFunctions.hasUnit(
           "/pa/units/orbital/orbital_railgun/orbital_railgun.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },

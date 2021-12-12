@@ -16,11 +16,14 @@ define(function () {
 
       var unlocked = value.length;
 
-      if (!unlocked) return;
+      if (!unlocked) {
+        return;
+      }
 
       api.tally.getStatInt("gw_unlocked_loadouts").then(function (stat) {
-        if (stat < unlocked)
+        if (stat < unlocked) {
           api.tally.setStatInt("gw_unlocked_loadouts", unlocked);
+        }
       });
     });
 
@@ -43,12 +46,16 @@ define(function () {
     },
 
     save: function () {
-      if (loading) return;
+      if (loading) {
+        return;
+      }
       localStorage.setItem(LS_KEY, ko.toJSON(self));
     },
 
     addStartCard: function (card) {
-      if (self.hasStartCard(card)) return false;
+      if (self.hasStartCard(card)) {
+        return false;
+      }
       self.startCards.push(card);
       return true;
     },

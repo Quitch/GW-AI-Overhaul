@@ -35,8 +35,9 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
+          if (inventory.getTag("global", "playerFaction") === 4) {
             inventory.addMods(gwaioTech.clusterCommanders);
+          }
 
           var unitCannons = [
             "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
@@ -79,16 +80,17 @@ define([
           if (
             inventory.hasCard("gwc_enable_vehicles_all") ||
             inventory.hasCard("gwc_enable_vehicles_t1")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
               "/pa/units/land/tank_armor/tank_armor.json",
               "/pa/units/land/tank_hover/tank_hover.json",
               "/pa/units/land/land_scout/land_scout.json"
             );
+          }
           if (
             inventory.hasCard("gwc_enable_vehicles_all") ||
             inventory.hasCard("gwaio_upgrade_vehiclefactory")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
               "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
               "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
@@ -96,15 +98,17 @@ define([
               "/pa/units/land/tank_flak/tank_flak.json",
               "/pa/units/land/tank_nuke/tank_nuke.json"
             );
+          }
           if (
             inventory.hasCard("gwc_enable_bots_all") ||
             inventory.hasCard("gwaio_upgrade_botfactory")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
               "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
               "/pa/units/land/bot_sniper/bot_sniper.json",
               "/pa/units/land/bot_support_commander/bot_support_commander.json"
             );
+          }
           // eslint-disable-next-line lodash/prefer-map
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({

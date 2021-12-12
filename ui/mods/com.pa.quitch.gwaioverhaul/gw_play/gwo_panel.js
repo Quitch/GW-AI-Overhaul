@@ -19,7 +19,9 @@ if (!gwaioWarInfoPanelLoaded) {
 
           if (model.gwaioSettings.ai) {
             model.gwaioAI = model.gwaioSettings.ai;
-          } else model.gwaioAI = "Titans";
+          } else {
+            model.gwaioAI = "Titans";
+          }
 
           model.gwaioOptions = ko.observableArray([]);
 
@@ -69,15 +71,17 @@ if (!gwaioWarInfoPanelLoaded) {
           var personality = subcommander.character
             ? loc(subcommander.character)
             : loc("!LOC:None");
-          if (subcommander.penchant)
+          if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
+          }
           var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
-          )
+          ) {
             subcommanderName = subcommanderName.concat(" x2");
+          }
           return {
             name: subcommanderName,
             color: rgb(
