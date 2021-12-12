@@ -769,9 +769,10 @@ if (!gwaioRefereeChangesLoaded) {
             };
 
             var subcommanders = inventory.minions();
+            var aiFilePath = "";
 
             if (subcommanders.length > 0) {
-              var aiFilePath = gwaioFunctions.aiPath("all");
+              aiFilePath = gwaioFunctions.aiPath("all");
             } else {
               aiFilePath = gwaioFunctions.aiPath("enemy");
             }
