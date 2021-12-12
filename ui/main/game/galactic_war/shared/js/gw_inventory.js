@@ -126,15 +126,15 @@ define(["require"], function (require) {
       var resetCardCount = function () {
         cardCount = cards.length;
       };
-      var applyBuffs = function () {
-        resetCardCount();
-        finishPhase = applyDulls;
-        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
-      };
       var applyDulls = function () {
         resetCardCount();
         finishPhase = finishApplyCards;
         _.forEach(cards, _.bind(applyCardOp, self, "dull"));
+      };
+      var applyBuffs = function () {
+        resetCardCount();
+        finishPhase = applyDulls;
+        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
       };
 
       self.units([]);
