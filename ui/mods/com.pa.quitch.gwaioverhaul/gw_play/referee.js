@@ -694,17 +694,6 @@ if (!gwaioRefereeChangesLoaded) {
             return deferred.promise();
           };
 
-          GWReferee.hire = function (game) {
-            // call our own gw_referee implementation
-            var ref = new gwaioReferee(game);
-            return _.bind(generateGameFiles, ref)()
-              .then(_.bind(generateAI, ref))
-              .then(_.bind(generateConfig, ref))
-              .then(function () {
-                return ref;
-              });
-          };
-
           var generateConfig = function () {
             var self = this;
 
@@ -920,6 +909,17 @@ if (!gwaioRefereeChangesLoaded) {
             // Store the game in the config for diagnostic purposes.
             config.gw = game.save();
             self.config(config);
+          };
+
+          GWReferee.hire = function (game) {
+            // call our own gw_referee implementation
+            var ref = new gwaioReferee(game);
+            return _.bind(generateGameFiles, ref)()
+              .then(_.bind(generateAI, ref))
+              .then(_.bind(generateConfig, ref))
+              .then(function () {
+                return ref;
+              });
           };
 
           gwaioReferee.prototype.stripSystems = function () {
