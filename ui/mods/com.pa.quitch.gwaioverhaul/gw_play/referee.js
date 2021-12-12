@@ -12,6 +12,16 @@ if (!gwaioRefereeChangesLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
         ],
         function (GW, GWReferee, gwaioFunctions) {
+          var gwaioReferee = function (game) {
+            var self = this;
+
+            self.game = ko.observable(game);
+
+            self.files = ko.observable();
+            self.localFiles = ko.observable();
+            self.config = ko.observable();
+          };
+
           GWReferee.hire = function (game) {
             // call our own gw_referee implementation
             var ref = new gwaioReferee(game);
@@ -21,16 +31,6 @@ if (!gwaioRefereeChangesLoaded) {
               .then(function () {
                 return ref;
               });
-          };
-
-          var gwaioReferee = function (game) {
-            var self = this;
-
-            self.game = ko.observable(game);
-
-            self.files = ko.observable();
-            self.localFiles = ko.observable();
-            self.config = ko.observable();
           };
 
           var generateGameFiles = function () {
