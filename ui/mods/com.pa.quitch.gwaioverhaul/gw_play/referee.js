@@ -225,10 +225,10 @@ if (!gwaioRefereeChangesLoaded) {
                     var originalPath = (mod.path || "").split(".");
                     var path = originalPath.reverse();
 
-                    var reportError = function (error) {
+                    var reportError = function (error, step) {
                       console.error(
                         error,
-                        spec[level],
+                        spec[step],
                         "spec",
                         spec,
                         "mod",
@@ -261,11 +261,18 @@ if (!gwaioRefereeChangesLoaded) {
                       if (_.isString(spec[level])) {
                         var newSpec = load(spec[level]);
                         if (!newSpec) {
-                          return reportError("Undefined mod spec encountered,");
+                          return reportError(
+                            "Undefined mod spec encountered,",
+                            level
+                          );
                         }
                         spec = newSpec;
                       } else if (_.isObject(spec[level])) spec = spec[level];
-                      else return reportError("Invalid attribute encountered,");
+                      else
+                        return reportError(
+                          "Invalid attribute encountered,",
+                          level
+                        );
                     }
 
                     if (path.length && path[0]) {
