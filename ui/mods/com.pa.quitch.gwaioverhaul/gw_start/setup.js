@@ -361,7 +361,8 @@ if (!gwaioSetupLoaded) {
             require(["cards/" + card.id], function (cardFile) {
               cardFile.id = card.id;
               processedStartCards[card.id] = cardFile;
-              if (--loadCount === 0) {
+              --loadCount;
+              if (loadCount === 0) {
                 loaded.resolve();
               }
             });
