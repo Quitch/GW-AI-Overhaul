@@ -268,11 +268,12 @@ if (!gwaioRefereeChangesLoaded) {
                         }
                         spec = newSpec;
                       } else if (_.isObject(spec[level])) spec = spec[level];
-                      else
+                      else {
                         return reportError(
                           "Invalid attribute encountered,",
                           level
                         );
+                      }
                     }
 
                     if (path.length && path[0]) {
