@@ -216,8 +216,9 @@ if (!gwaioRefereeChangesLoaded) {
                       if (!_.isArray(attribute)) {
                         attribute = _.isEmpty(attribute) ? [] : [attribute];
                       }
+                      var args = [];
                       if (_.isArray(value)) {
-                        var args = [attribute].concat(value);
+                        args = [attribute].concat(value);
                       } else {
                         args = [attribute, value];
                       }
