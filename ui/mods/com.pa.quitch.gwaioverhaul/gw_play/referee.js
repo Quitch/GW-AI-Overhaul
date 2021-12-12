@@ -634,8 +634,9 @@ if (!gwaioRefereeChangesLoaded) {
 
                   // process ai load ops
                   _.forEach(aiMods[0], function (aiMod) {
+                    var managerPath = "";
                     if (aiMod.type === "fabber") {
-                      var managerPath = "fabber_builds/";
+                      managerPath = "fabber_builds/";
                     } else if (aiMod.type === "factory") {
                       managerPath = "factory_builds/";
                     } else if (aiMod.type === "platoon") {
