@@ -567,7 +567,7 @@ if (!gwaioSetupLoaded) {
             });
             var moveIn = dealStartCard.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
               var galaxy = game.galaxy();
               game.move(galaxy.origin());
@@ -659,7 +659,7 @@ if (!gwaioSetupLoaded) {
 
             var finishAis = populate.then(function (teamInfo) {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
 
               // DIFFICULTY RAMPING CODE
