@@ -585,6 +585,7 @@ if (!gwaioRefereeChangesLoaded) {
             var aiTechPath = "/pa/ai_tech/";
 
             var game = self.game();
+            var inventory = game.inventory();
 
             var parseFiles = function (aiPath, promise, aiToModify) {
               api.file.list(aiPath, true).then(function (fileList) {
@@ -722,7 +723,6 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            var inventory = game.inventory();
             var subcommanders = inventory.minions();
 
             if (subcommanders.length > 0)
