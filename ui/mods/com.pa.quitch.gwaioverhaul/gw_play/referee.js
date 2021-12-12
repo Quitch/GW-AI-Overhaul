@@ -659,13 +659,15 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
+                    var quellerSubCommander = false;
+
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
                       (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
                     ) {
-                      var quellerSubCommander = true;
+                      quellerSubCommander = true;
                     }
 
                     if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
