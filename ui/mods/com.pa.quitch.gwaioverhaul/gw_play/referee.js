@@ -670,30 +670,28 @@ if (!gwaioRefereeChangesLoaded) {
                       quellerSubCommander = true;
                     }
 
-                    if (aiToModify !== "None" && !_.isEmpty(aiMods[1])) {
-                      if (
-                        !quellerEnabled ||
+                    if (
+                      aiToModify !== "None" &&
+                      !_.isEmpty(aiMods[1]) &&
+                      (!quellerEnabled ||
                         quellerSubCommander ||
-                        aiToModify === "All"
-                      ) {
-                        // Only mods associated with the file's AI manager are loaded
-                        if (_.includes(filePath, "/fabber_builds/")) {
-                          var aiBuildOps = _.filter(aiMods[1], {
-                            type: "fabber",
-                          });
-                        } else if (_.includes(filePath, "/factory_builds/")) {
-                          aiBuildOps = _.filter(aiMods[1], { type: "factory" });
-                        } else if (_.includes(filePath, "/platoon_builds/")) {
-                          aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
-                        } else if (
-                          _.includes(filePath, "/platoon_templates/")
-                        ) {
-                          aiBuildOps = _.filter(aiMods[1], {
-                            type: "template",
-                          });
-                        } else {
-                          aiBuildOps = [];
-                        }
+                        aiToModify === "All")
+                    ) {
+                      // Only mods associated with the file's AI manager are loaded
+                      if (_.includes(filePath, "/fabber_builds/")) {
+                        var aiBuildOps = _.filter(aiMods[1], {
+                          type: "fabber",
+                        });
+                      } else if (_.includes(filePath, "/factory_builds/")) {
+                        aiBuildOps = _.filter(aiMods[1], { type: "factory" });
+                      } else if (_.includes(filePath, "/platoon_builds/")) {
+                        aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                      } else if (_.includes(filePath, "/platoon_templates/")) {
+                        aiBuildOps = _.filter(aiMods[1], {
+                          type: "template",
+                        });
+                      } else {
+                        aiBuildOps = [];
                       }
                     }
 
