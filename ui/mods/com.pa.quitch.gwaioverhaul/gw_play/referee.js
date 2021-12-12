@@ -158,7 +158,7 @@ if (!gwaioRefereeChangesLoaded) {
                       if (
                         !Object.prototype.hasOwnProperty.call(specs, taggedId)
                       ) {
-                        return;
+                        return null;
                       }
                     }
                     var result = specs[taggedId];
@@ -576,6 +576,7 @@ if (!gwaioRefereeChangesLoaded) {
                           if (_.isEqual(object, value)) {
                             return object;
                           }
+                          return null;
                         });
                       });
                     }

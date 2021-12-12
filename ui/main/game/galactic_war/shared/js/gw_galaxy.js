@@ -36,6 +36,7 @@ define([
       if (_.has(neighbors, a)) {
         return _.includes(neighbors[a], b);
       }
+      return null;
     };
 
     self.pathBetween = function (from, to, noFog) {

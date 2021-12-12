@@ -206,14 +206,14 @@ define(["require"], function (require) {
       var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
         if (_.isUndefined(def)) {
-          return;
+          return null;
         }
         tags[context] = {};
       }
       var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
         if (_.isUndefined(def)) {
-          return;
+          return null;
         }
         tagContext[name] = def;
       }

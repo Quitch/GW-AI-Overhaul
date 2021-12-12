@@ -180,6 +180,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioLandAnywhere = ko.computed(function () {
@@ -189,6 +190,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioSuddenDeath = ko.computed(function () {
@@ -198,6 +200,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioGameOptions = ko.computed(function () {
@@ -208,6 +211,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         // AI Buffs
@@ -220,6 +224,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechCost = ko.computed(function () {
@@ -230,6 +235,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechDamage = ko.computed(function () {
@@ -240,6 +246,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechHealth = ko.computed(function () {
@@ -250,6 +257,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechSpeed = ko.computed(function () {
@@ -260,6 +268,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         // v5.11.0 and earlier only
@@ -271,6 +280,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechCombat = ko.computed(function () {
@@ -281,6 +291,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioTechMirror = ko.computed(function () {
@@ -290,6 +301,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         model.gwaioAiBuffs = ko.computed(function () {
@@ -305,6 +317,7 @@ if (!gwaioIntelligenceLoaded) {
           ) {
             return true;
           }
+          return false;
         });
 
         // System Faction

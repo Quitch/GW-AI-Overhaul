@@ -51,6 +51,7 @@ define([
       if (originSystem.gwaio) {
         return originSystem.gwaio.ai;
       }
+      return null;
     },
     aiPath: function (type) {
       var game = model.game();

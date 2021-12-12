@@ -550,7 +550,7 @@ if (!gwaioSetupLoaded) {
             });
             var dealStartCard = buildGalaxy.then(function (galaxy) {
               if (model.makeGameBusy() !== busyToken) {
-                return;
+                return null;
               }
               return gwaioDealStartCard({
                 id: model.activeStartCard().id(),
@@ -567,7 +567,7 @@ if (!gwaioSetupLoaded) {
             });
             var moveIn = dealStartCard.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return;
+                return null;
               }
               var galaxy = game.galaxy();
               game.move(galaxy.origin());
@@ -579,7 +579,7 @@ if (!gwaioSetupLoaded) {
             });
             var populate = moveIn.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return;
+                return null;
               }
 
               // Scatter some AIs
@@ -659,7 +659,7 @@ if (!gwaioSetupLoaded) {
 
             var finishAis = populate.then(function (teamInfo) {
               if (model.makeGameBusy() !== busyToken) {
-                return;
+                return null;
               }
 
               // DIFFICULTY RAMPING CODE
@@ -1052,7 +1052,7 @@ if (!gwaioSetupLoaded) {
 
             finishAis.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return;
+                return null;
               }
 
               model.makeGameBusy(false);
