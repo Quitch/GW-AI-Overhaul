@@ -614,8 +614,10 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
+            var quellerEnabled = false;
+
             if (gwaioFunctions.aiEnabled() === "Queller") {
-              var quellerEnabled = true;
+              quellerEnabled = true;
             }
             var aiTechPath = "/pa/ai_tech/";
 
