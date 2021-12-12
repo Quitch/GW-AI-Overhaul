@@ -381,7 +381,6 @@ if (!gwaioSystemChangesLoaded) {
                   return c / 255;
                 });
               }
-              console.debug(normalizedColor);
               system.ownerColor(normalizedColor.concat(3));
               // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
               system.connected();
