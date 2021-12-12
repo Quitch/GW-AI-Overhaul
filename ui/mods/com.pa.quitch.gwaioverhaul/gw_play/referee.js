@@ -22,6 +22,54 @@ if (!gwaioRefereeChangesLoaded) {
             self.config = ko.observable();
           };
 
+          gwaioReferee.prototype.stripSystems = function () {
+            var self = this;
+
+            // remove the systems from the galaxy
+            var gw = self.config().gw;
+            GW.Game.saveSystems(gw);
+          };
+
+          gwaioReferee.prototype.mountFiles = function () {
+            var self = this;
+
+            var deferred = $.Deferred();
+
+            var allFiles = _.cloneDeep(self.files());
+            // The player unit list needs to be the superset of units for proper UI behavior
+            var playerUnits = allFiles["/pa/units/unit_list.json.player"];
+            var aiUnits = allFiles["/pa/units/unit_list.json.ai"];
+            if (playerUnits) {
+              var allUnits = _.cloneDeep(playerUnits);
+              if (aiUnits && allUnits.units) {
+                allUnits.units = allUnits.units.concat(aiUnits.units);
+              }
+              allFiles["/pa/units/unit_list.json"] = allUnits;
+            }
+
+            if (self.localFiles()) {
+              _.assign(allFiles, self.localFiles());
+            }
+
+            var cookedFiles = _.mapValues(allFiles, function (value) {
+              if (!_.isString(value)) return JSON.stringify(value);
+              else return value;
+            });
+
+            // community mods will hook unmountAllMemoryFiles to remount client mods
+            api.file.unmountAllMemoryFiles().always(function () {
+              api.file.mountMemoryFiles(cookedFiles).then(function () {
+                deferred.resolve();
+              });
+            });
+
+            return deferred.promise();
+          };
+
+          gwaioReferee.prototype.tagGame = function () {
+            api.game.setUnitSpecTag(".player");
+          };
+
           var generateGameFiles = function () {
             var self = this;
 
@@ -920,54 +968,6 @@ if (!gwaioRefereeChangesLoaded) {
               .then(function () {
                 return ref;
               });
-          };
-
-          gwaioReferee.prototype.stripSystems = function () {
-            var self = this;
-
-            // remove the systems from the galaxy
-            var gw = self.config().gw;
-            GW.Game.saveSystems(gw);
-          };
-
-          gwaioReferee.prototype.mountFiles = function () {
-            var self = this;
-
-            var deferred = $.Deferred();
-
-            var allFiles = _.cloneDeep(self.files());
-            // The player unit list needs to be the superset of units for proper UI behavior
-            var playerUnits = allFiles["/pa/units/unit_list.json.player"];
-            var aiUnits = allFiles["/pa/units/unit_list.json.ai"];
-            if (playerUnits) {
-              var allUnits = _.cloneDeep(playerUnits);
-              if (aiUnits && allUnits.units) {
-                allUnits.units = allUnits.units.concat(aiUnits.units);
-              }
-              allFiles["/pa/units/unit_list.json"] = allUnits;
-            }
-
-            if (self.localFiles()) {
-              _.assign(allFiles, self.localFiles());
-            }
-
-            var cookedFiles = _.mapValues(allFiles, function (value) {
-              if (!_.isString(value)) return JSON.stringify(value);
-              else return value;
-            });
-
-            // community mods will hook unmountAllMemoryFiles to remount client mods
-            api.file.unmountAllMemoryFiles().always(function () {
-              api.file.mountMemoryFiles(cookedFiles).then(function () {
-                deferred.resolve();
-              });
-            });
-
-            return deferred.promise();
-          };
-
-          gwaioReferee.prototype.tagGame = function () {
-            api.game.setUnitSpecTag(".player");
           };
         }
       );
