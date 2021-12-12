@@ -773,6 +773,7 @@ if (!gwaioRefereeChangesLoaded) {
               "no_restriction",
             ];
             var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+            var slotsArray = [];
 
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking Sub Commanders from earlier versions
@@ -849,7 +850,6 @@ if (!gwaioRefereeChangesLoaded) {
             // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
 
-            var slotsArray = [];
             _.times(
               ai.bossCommanders ||
                 ai.commanderCount ||
