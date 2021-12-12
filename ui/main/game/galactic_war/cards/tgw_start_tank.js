@@ -156,7 +156,7 @@ define([
               }
             );
           });
-          var ammo = [
+          var ammos = [
             "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
             "/pa/units/air/bomber_adv/bomber_adv_ammo.json",
             "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
@@ -228,7 +228,7 @@ define([
             "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_water.json",
             "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
           ];
-          ammo.forEach(function (ammo) {
+          ammos.forEach(function (ammo) {
             mods.push(
               {
                 file: ammo,
