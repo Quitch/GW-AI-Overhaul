@@ -371,17 +371,17 @@ if (!gwaioSystemChangesLoaded) {
           _.forEach(model.galaxy.systems(), function (system) {
             ko.computed(function () {
               var ai = system.star.ai();
+              var normalizedColor = [];
               if (!ai) {
                 return;
-              } else if (ai.treasurePlanet === true) {
-                var normalizedColor = [255, 255, 255];
-              } else {
+              } else if (ai.treasurePlanet !== true) {
                 var faction = GWFactions[ai.faction];
                 // Ensures we assign faction colour, not minion colour, to each system
                 normalizedColor = _.map(faction.color[0], function (c) {
                   return c / 255;
                 });
               }
+              console.debug(normalizedColor);
               system.ownerColor(normalizedColor.concat(3));
               // Dependencies. These will cause the base code that updates color to rerun, so we have to run under the same conditions, and pray we run later than that code.
               system.connected();
