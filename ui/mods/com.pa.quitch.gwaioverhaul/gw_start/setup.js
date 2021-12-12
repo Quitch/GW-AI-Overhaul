@@ -595,6 +595,8 @@ if (!gwaioSetupLoaded) {
                 },
                 canSpread: _.constant(true),
                 spread: function (star, ai) {
+                  var team = teams[ai.team];
+
                   // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
                   var makeWorker = function () {
                     if (team.workers) {
@@ -611,7 +613,6 @@ if (!gwaioSetupLoaded) {
                     return $.when(ai);
                   };
 
-                  var team = teams[ai.team];
                   return makeWorker().then(function () {
                     if (team.workers) _.remove(team.workers, { name: ai.name });
 
