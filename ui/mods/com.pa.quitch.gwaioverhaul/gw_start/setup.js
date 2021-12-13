@@ -326,7 +326,8 @@ if (!gwaioSetupLoaded) {
           };
           /* end of GWAIO implementation of GWDealer */
 
-          // replaces model.makeGame() and only generates the galaxy once the play clicks Go To War
+          // replicates the functionality of model.makeGame() but
+          // only generates the galaxy once the player clicks Go To War
           model.navToNewGame = function () {
             var version = "5.x.x-dev";
             console.log("War created using Galactic War Overhaul v" + version);
