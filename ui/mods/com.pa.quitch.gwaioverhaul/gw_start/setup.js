@@ -594,10 +594,9 @@ if (!gwaioSetupLoaded) {
                 };
               });
 
+              var neutralStars = 2;
               if (model.gwaioDifficultySettings.easierStart()) {
-                var neutralStars = 4;
-              } else {
-                neutralStars = 2;
+                neutralStars = 4;
               }
 
               return GWBreeder.populate({
@@ -764,6 +763,10 @@ if (!gwaioSetupLoaded) {
               }
 
               _.forEach(teamInfo, function (info) {
+                var numBuffs = 0;
+                var typeOfBuffs = [];
+                var numMinions = 0;
+
                 // Setup boss system
                 if (info.boss) {
                   setAIData(info.boss, maxDist, true, true);
@@ -774,22 +777,23 @@ if (!gwaioSetupLoaded) {
                   } else {
                     info.boss.inventory = aiInventory;
                   }
-                  var numBuffs = Math.floor(maxDist / 2 - buffDelay);
-                  var typeOfBuffs = _.sample(buffType, numBuffs);
+                  numBuffs = Math.floor(maxDist / 2 - buffDelay);
+                  typeOfBuffs = _.sample(buffType, numBuffs);
                   info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
                   _.times(typeOfBuffs.length, function (n) {
                     info.boss.inventory = info.boss.inventory.concat(
                       gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
                     );
                   });
-                  var numMinions = Math.floor(
+                  numMinions = Math.floor(
                     model.gwaioDifficultySettings.mandatoryMinions() +
                       maxDist * model.gwaioDifficultySettings.minionMod()
                   );
                   if (numMinions > 0) {
                     info.boss.minions = [];
+                    var bossMinion = {};
                     if (info.boss.isCluster === true) {
-                      var bossMinion = _.cloneDeep(
+                      bossMinion = _.cloneDeep(
                         _.sample(
                           _.filter(GWFactions[info.faction].minions, {
                             name: "Security",
@@ -857,8 +861,9 @@ if (!gwaioSetupLoaded) {
                   });
                   if (numMinions > 0) {
                     worker.ai.minions = [];
+                    var minion = {};
                     if (worker.ai.name === "Security") {
-                      var minion = _.cloneDeep(
+                      minion = _.cloneDeep(
                         _.sample(
                           _.filter(GWFactions[info.faction].minions, {
                             name: "Worker",

@@ -103,13 +103,14 @@ if (!gwaioCardsLoaded) {
         model.gwaioRerollsUsed = ko
           .observable(0)
           .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
+        var star = {};
         // clean start for new games in a single session
         if (game.turnState() === "begin") {
           model.gwaioRerollsUsed(0);
         }
         // avoid incorrect rerolls when loading an exploration save game
         else if (game.turnState() === "explore") {
-          var star = game.galaxy().stars()[game.currentStar()];
+          star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed = ko.observable(
             numCardsToOffer - star.cardList().length
           );
@@ -128,8 +129,9 @@ if (!gwaioCardsLoaded) {
           }
         });
         model.rerollTech = function () {
+          var cardsOffered = 0;
           if (game.inventory().handIsFull()) {
-            var cardsOffered = numCardsToOffer + 1;
+            cardsOffered = numCardsToOffer + 1;
           } else {
             cardsOffered = numCardsToOffer;
           }
@@ -167,6 +169,7 @@ if (!gwaioCardsLoaded) {
             gwaioFunctions
           ) {
             var inventory = game.inventory();
+            var playerFaction = 0;
 
             // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
             if (
@@ -174,8 +177,8 @@ if (!gwaioCardsLoaded) {
               inventory.cards()[0].id === "gwc_start_subcdr" &&
               !inventory.cards()[0].minions
             ) {
-              var playerFaction = inventory.getTag("global", "playerFaction");
               _.times(2, function () {
+                playerFaction = inventory.getTag("global", "playerFaction");
                 var subcommander = _.cloneDeep(
                   _.sample(GWFactions[playerFaction].minions)
                 );
@@ -600,8 +603,6 @@ if (!gwaioCardsLoaded) {
                   star: galaxy.stars()[game.currentStar()],
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    playerFaction =
-                      game.inventory().getTag("global", "playerFaction") || 0;
                     var minion = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
@@ -639,8 +640,9 @@ if (!gwaioCardsLoaded) {
 
               inventory = game.inventory();
 
+              var cardsOffered = 0;
               if (inventory.handIsFull()) {
-                var cardsOffered = numCardsToOffer + 1;
+                cardsOffered = numCardsToOffer + 1;
               } else {
                 cardsOffered = numCardsToOffer;
               }

@@ -240,11 +240,12 @@ define([
 
       // Generate the planets, increasing the size based on the distance from the start.
       var starGenerators = _.map(self.stars(), function (star) {
+        var systemSize = 0;
         if (
           model.gwaioDifficultySettings &&
           !model.gwaioDifficultySettings.systemScaling()
         ) {
-          var systemSize = Math.floor(Math.random() * 10 + 1);
+          systemSize = Math.floor(Math.random() * 10 + 1);
         } else {
           systemSize = star.distance();
         }

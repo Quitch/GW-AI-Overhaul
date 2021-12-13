@@ -98,11 +98,13 @@ if (!gwaioRefereeChangesLoaded) {
               var filesToProcess = [playerFileGen];
 
               var aiEnabled = gwaioFunctions.aiEnabled();
+              var aiUnitMapPath = "";
+              var aiUnitMapTitansPath = "";
 
               if (aiEnabled === "Queller") {
-                var aiUnitMapPath =
+                aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
-                var aiUnitMapTitansPath =
+                aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
               } else if (aiEnabled === "Penchant") {
                 aiUnitMapPath =
@@ -377,16 +379,18 @@ if (!gwaioRefereeChangesLoaded) {
                 GW.specs
                   .genUnitSpecs(inventory.units(), playerTag)
                   .then(function (playerSpecFiles) {
+                    var playerFilesClassic = {};
+                    var playerFilesX1 = {};
                     // the order of unit_map assignments must match aiPath() in function.js
                     if (gwaioFunctions.aiEnabled() === "Queller") {
-                      var playerFilesClassic = _.assign(
+                      playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
                             playerAIUnitMap,
                         },
                         playerSpecFiles
                       );
-                      var playerFilesX1 = titans
+                      playerFilesX1 = titans
                         ? _.assign(
                             {
                               "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
@@ -675,6 +679,8 @@ if (!gwaioRefereeChangesLoaded) {
                       quellerSubCommander = true;
                     }
 
+                    var aiBuildOps = [];
+
                     if (
                       aiToModify !== "None" &&
                       !_.isEmpty(aiMods[1]) &&
@@ -684,7 +690,7 @@ if (!gwaioRefereeChangesLoaded) {
                     ) {
                       // Only mods associated with the file's AI manager are loaded
                       if (_.includes(filePath, "/fabber_builds/")) {
-                        var aiBuildOps = _.filter(aiMods[1], {
+                        aiBuildOps = _.filter(aiMods[1], {
                           type: "fabber",
                         });
                       } else if (_.includes(filePath, "/factory_builds/")) {
@@ -695,8 +701,6 @@ if (!gwaioRefereeChangesLoaded) {
                         aiBuildOps = _.filter(aiMods[1], {
                           type: "template",
                         });
-                      } else {
-                        aiBuildOps = [];
                       }
                     }
 

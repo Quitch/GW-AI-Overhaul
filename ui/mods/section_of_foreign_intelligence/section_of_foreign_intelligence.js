@@ -71,8 +71,9 @@ if (!gwaioIntelligenceLoaded) {
           var name = commander.name;
           var eco = commander.econ_rate;
           var faction = factionNames[commander.faction];
+          var numCommanders = 0;
           if (commander.bossCommanders > 1) {
-            var numCommanders = commander.bossCommanders;
+            numCommanders = commander.bossCommanders;
           } else if (commander.commanderCount > 1) {
             numCommanders = commander.commanderCount;
           }
