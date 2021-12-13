@@ -148,79 +148,7 @@ if (!gwaioSetupLoaded) {
         factionTechHandicap: ko.observable(0).extend({
           decimals: 2,
         }),
-        unsavedChanges: ko.observable(false),
-        newGalaxyNeeded: ko.observable(false).extend({
-          notify: "always",
-        }),
       };
-
-      ko.computed(function () {
-        model.gwaioDifficultySettings.factionScaling();
-        model.gwaioDifficultySettings.systemScaling();
-        model.gwaioDifficultySettings.easierStart();
-        model.gwaioDifficultySettings.tougherCommanders();
-        model.gwaioDifficultySettings.ai();
-        model.gwaioDifficultySettings.paLore();
-        model.gwaioDifficultySettings.newGalaxyNeeded(true);
-      });
-
-      model.gwaioDifficultySettings.newGalaxyNeeded.subscribe(function () {
-        if (model.gwaioDifficultySettings.newGalaxyNeeded()) {
-          model.gwaioDifficultySettings.newGalaxyNeeded(false);
-          model.makeGame();
-        }
-      });
-
-      ko.computed(function () {
-        if (model.gwaioDifficultySettings.customDifficulty()) {
-          model.gwaioDifficultySettings.bossCommanders();
-          model.gwaioDifficultySettings.bountyModeChance();
-          model.gwaioDifficultySettings.bountyModeValue();
-          model.gwaioDifficultySettings.econBase();
-          model.gwaioDifficultySettings.econRatePerDist();
-          model.gwaioDifficultySettings.enableCommanderDangerResponses();
-          model.gwaioDifficultySettings.factionTechHandicap();
-          model.gwaioDifficultySettings.factoryBuildDelayMax();
-          model.gwaioDifficultySettings.factoryBuildDelayMin();
-          model.gwaioDifficultySettings.ffaChance();
-          model.gwaioDifficultySettings.goForKill();
-          model.gwaioDifficultySettings.landAnywhereChance();
-          model.gwaioDifficultySettings.mandatoryMinions();
-          model.gwaioDifficultySettings.maxAdvancedFabbers();
-          model.gwaioDifficultySettings.maxBasicFabbers();
-          model.gwaioDifficultySettings.microTypeChosen();
-          model.gwaioDifficultySettings.minionMod();
-          model.gwaioDifficultySettings.perExpansionDelay();
-          model.gwaioDifficultySettings.personalityTagsChosen();
-          model.gwaioDifficultySettings.priorityScoutMetalSpots();
-          model.gwaioDifficultySettings.startingLocationEvaluationRadius();
-          model.gwaioDifficultySettings.suddenDeathChance();
-          model.gwaioDifficultySettings.unableToExpandDelay();
-          model.gwaioDifficultySettings.useEasierSystemTemplate();
-          model.gwaioDifficultySettings.unsavedChanges(true);
-        }
-      });
-
-      /* Prevent simply switching to CUSTOM difficulty causing unsaved changes to become true
-      Ensure switching away from CUSTOM with unsaved changes doesn't stop you starting a war */
-      model.gwaioDifficultySettings.customDifficulty.subscribe(function () {
-        model.gwaioDifficultySettings.unsavedChanges(false);
-      });
-
-      // eslint-disable-next-line no-unused-vars
-      model.gwaioSaveDifficultySettings = function () {
-        model.gwaioDifficultySettings.unsavedChanges(false);
-        model.makeGame();
-      };
-
-      // Don't let the player go to war with unsaved custom difficulty changes
-      model.ready = ko.computed(function () {
-        return (
-          !!model.newGame() &&
-          !!model.activeStartCard() &&
-          !model.gwaioDifficultySettings.unsavedChanges()
-        );
-      });
 
       $("#faction-select").before(
         loadHtml(
@@ -275,6 +203,11 @@ if (!gwaioSetupLoaded) {
           model.gwaioDifficultySettings.systemScaling(false);
         }
       });
+
+      // Prevent changes to settings creating new galaxies
+      model.makeGame = function () {
+        //empty
+      };
 
       requireGW(
         [
@@ -393,8 +326,8 @@ if (!gwaioSetupLoaded) {
           };
           /* end of GWAIO implementation of GWDealer */
 
-          // gw_start.js
-          model.makeGame = function () {
+          // replaces model.makeGame() and only generates the galaxy once the play clicks Go To War
+          model.navToNewGame = function () {
             var version = "5.x.x-dev";
             console.log("War created using Galactic War Overhaul v" + version);
             model.newGame(undefined);
@@ -1055,7 +988,7 @@ if (!gwaioSetupLoaded) {
               originSystem.treasurePlanetFixed = true;
             });
 
-            finishAis.then(function () {
+            var returnGame = finishAis.then(function () {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
               }
@@ -1065,9 +998,24 @@ if (!gwaioSetupLoaded) {
               model.updateCommander();
               return game;
             });
-          };
 
-          model.makeGame();
+            // the original model.navToNewGame()
+            returnGame.then(function () {
+              if (!model.ready()) {
+                return;
+              }
+
+              var save = GW.manifest.saveGame(model.newGame());
+              model.activeGameId(model.newGame().id);
+              save.then(function () {
+                model.lastSceneUrl(
+                  "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+                );
+                window.location.href =
+                  "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+              });
+            });
+          };
         }
       );
     } catch (e) {

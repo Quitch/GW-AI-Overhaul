@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Galactic War setup is much more responsive as the galaxy is now only generated once you click "Go To War" and not every time you change a setting
+
 ### Fixed
 
 - Selection icon not being removed from the system the player started at
