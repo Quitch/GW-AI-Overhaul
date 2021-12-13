@@ -828,7 +828,6 @@ if (!gwaioRefereeChangesLoaded) {
               "no_restriction",
             ];
             var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
-            var slotsArray = [];
 
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking Sub Commanders from earlier versions
@@ -865,9 +864,9 @@ if (!gwaioRefereeChangesLoaded) {
                 ? 2
                 : 1;
 
-              slotsArray = [];
+              var slotsArraySubCommander = [];
               _.times(subcommanderCommanders, function () {
-                slotsArray.push({
+                slotsArraySubCommander.push({
                   ai: true,
                   name: subcommander.name,
                   commander: subcommander.commander,
@@ -875,7 +874,7 @@ if (!gwaioRefereeChangesLoaded) {
                 });
               });
               armies.push({
-                slots: slotsArray,
+                slots: slotsArraySubCommander,
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,
@@ -905,6 +904,7 @@ if (!gwaioRefereeChangesLoaded) {
             // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
 
+            var slotsArrayAI = [];
             _.times(
               ai.bossCommanders ||
                 ai.commanderCount ||
@@ -912,7 +912,7 @@ if (!gwaioRefereeChangesLoaded) {
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
               function () {
-                slotsArray.push({
+                slotsArrayAI.push({
                   ai: true,
                   name: ai.name,
                   commander: ai.commander,
@@ -921,7 +921,7 @@ if (!gwaioRefereeChangesLoaded) {
               }
             );
             armies.push({
-              slots: slotsArray,
+              slots: slotsArrayAI,
               color: ai.color,
               econ_rate: ai.econ_rate,
               personality: ai.personality,
