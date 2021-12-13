@@ -20,12 +20,10 @@ if (!gwaioMenuLoaded) {
           });
 
           model.menuConfigGenerator = ko.observable(function () {
-            var over_string = tutorial()
+            var overString = tutorial()
               ? "!LOC:Continue Tutorial"
               : "!LOC:Continue War";
-            var exit_string = hardcore()
-              ? "!LOC:Abandon War"
-              : "!LOC:Surrender";
+            var exitString = hardcore() ? "!LOC:Abandon War" : "!LOC:Surrender";
 
             function getMenuAction() {
               if (model.gameOver() || model.defeated()) {
@@ -63,10 +61,10 @@ if (!gwaioMenuLoaded) {
                 // patch Surrender and Continue War buttons to handle more than two teams
                 label:
                   model.gameOver() || model.defeated()
-                    ? over_string
-                    : exit_string,
+                    ? overString
+                    : exitString,
                 action: getMenuAction(),
-                game_over: over_string,
+                game_over: overString,
               },
               {
                 label: "!LOC:Quit",

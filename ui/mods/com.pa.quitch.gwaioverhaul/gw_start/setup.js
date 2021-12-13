@@ -297,8 +297,8 @@ if (!gwaioSetupLoaded) {
           GWFactions,
           GWBreeder,
           GWTeams,
-          normal_system_templates, // window.star_system_templates is set instead
-          easy_system_templates,
+          normalSystemTemplates, // window.star_system_templates is set instead
+          easySystemTemplates,
           gwaioTech,
           gwaioBank,
           gwaioLore,
@@ -517,7 +517,7 @@ if (!gwaioSetupLoaded) {
               gwaioDifficulty.difficulties[selectedDifficulty]
                 .useEasierSystemTemplate;
             var systemTemplates = useEasySystems
-              ? easy_system_templates
+              ? easySystemTemplates
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;

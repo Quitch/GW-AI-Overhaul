@@ -73,13 +73,13 @@ define(["require"], function (require) {
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
       var curCard = "";
-      var _proto_getTag = _.bind(self.getTag, self);
+      var protoGetTag = _.bind(self.getTag, self);
       self.getTag = function (context, name, def) {
-        return _proto_getTag(context || curCard, name, def);
+        return protoGetTag(context || curCard, name, def);
       };
-      var _proto_setTag = _.bind(self.setTag, self);
+      var protoSetTag = _.bind(self.setTag, self);
       self.setTag = function (context, name, value) {
-        return _proto_setTag(context || curCard, name, value);
+        return protoSetTag(context || curCard, name, value);
       };
       var dirty = false;
       // Clean-up function that gets called when everything is done.
