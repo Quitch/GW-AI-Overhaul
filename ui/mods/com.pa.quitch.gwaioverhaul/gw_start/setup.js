@@ -238,6 +238,18 @@ if (!gwaioSetupLoaded) {
           gwaioDifficulty,
           gwaioFunctions
         ) {
+          ko.computed(function () {
+            model.newGameDifficultyIndex();
+            if (
+              gwaioDifficulty.difficulties[model.newGameDifficultyIndex()]
+                .customDifficulty
+            ) {
+              model.gwaioDifficultySettings.customDifficulty(true);
+            } else {
+              model.gwaioDifficultySettings.customDifficulty(false);
+            }
+          });
+
           /* Start of GWAIO implementation of GWDealer */
           if (!model.gwaioNewStartCards) {
             model.gwaioNewStartCards = [];
@@ -343,20 +355,14 @@ if (!gwaioSetupLoaded) {
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
-            var selectedDifficulty = model.newGameDifficultyIndex() || 0;
+            var selectedDifficulty = model.newGameDifficultyIndex();
 
             model.gwaioDifficultySettings.difficultyName(
               gwaioDifficulty.difficulties[selectedDifficulty].difficultyName
             );
             if (
-              gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
-            ) {
-              model.gwaioDifficultySettings.customDifficulty(true);
-            }
-            if (
               !gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
             ) {
-              model.gwaioDifficultySettings.customDifficulty(false);
               model.gwaioDifficultySettings.goForKill(
                 gwaioDifficulty.difficulties[selectedDifficulty].goForKill
               );
