@@ -391,8 +391,8 @@ if (!gwaioSystemChangesLoaded) {
           });
         });
 
+        // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
         requireGW(["shared/gw_common"], function (GW) {
-          // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
           if (
             gwaioSettings &&
             _.isUndefined(gwaioSettings.treasurePlanetFixed)
