@@ -245,8 +245,7 @@ if (!gwaioSetupLoaded) {
             selectedDifficulty = model.newGameDifficultyIndex();
 
             if (
-              gwaioDifficulty.difficulties[model.newGameDifficultyIndex()]
-                .customDifficulty
+              gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
             ) {
               model.gwaioDifficultySettings.customDifficulty(true);
             } else {
