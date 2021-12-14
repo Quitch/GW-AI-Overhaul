@@ -439,12 +439,13 @@ if (!gwaioSetupLoaded) {
             if (!model.ready()) {
               return;
             }
-            var version = "5.x.x-dev";
-            console.log("War created using Galactic War Overhaul v" + version);
             model.newGame(undefined);
 
             var busyToken = {};
             model.makeGameBusy(busyToken);
+
+            var version = "5.x.x-dev";
+            console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
 
