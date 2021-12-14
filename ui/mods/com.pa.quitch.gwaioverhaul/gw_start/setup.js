@@ -1011,10 +1011,6 @@ if (!gwaioSetupLoaded) {
 
             // the original model.navToNewGame()
             finishSetup.then(function () {
-              if (!model.ready()) {
-                return;
-              }
-
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);
               save.then(function () {
