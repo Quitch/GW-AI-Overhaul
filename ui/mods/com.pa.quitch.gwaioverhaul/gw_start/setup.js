@@ -436,6 +436,9 @@ if (!gwaioSetupLoaded) {
           // replicates the functionality of model.makeGame() but
           // only generates the galaxy once the player clicks Go To War
           model.navToNewGame = function () {
+            if (!model.ready()) {
+              return;
+            }
             var version = "5.x.x-dev";
             console.log("War created using Galactic War Overhaul v" + version);
             model.newGame(undefined);
