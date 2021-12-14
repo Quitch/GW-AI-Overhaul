@@ -4,7 +4,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Catalyst Upgrade Tech increases the health of the Catalyst by 75%, enough to survive a nuclear blast."
+      "!LOC:Catalyst Upgrade Tech increases the health of the Catalyst by 75% and halves its cost."
     ),
     summarize: _.constant("!LOC:Catalyst Upgrade Tech"),
     icon: _.constant(
@@ -55,6 +55,12 @@ define([
           path: "max_health",
           op: "multiply",
           value: 1.75,
+        },
+        {
+          file: "/pa/units/land/control_module/control_module.json",
+          path: "build_metal_cost",
+          op: "multiply",
+          value: 0.5,
         },
       ]);
     },
