@@ -56,9 +56,8 @@ define([
 
         checked[node] = true;
 
-        // supported in PA despite eslint warning
-        for (var neighbor of nodeNeighbors) {
-          var other = neighbor;
+        for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
+          var other = nodeNeighbors[neighbor];
 
           if (checked[other]) {
             continue;

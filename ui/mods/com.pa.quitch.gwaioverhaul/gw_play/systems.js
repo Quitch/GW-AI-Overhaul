@@ -397,10 +397,9 @@ if (!gwaioSystemChangesLoaded) {
             gwaioSettings &&
             _.isUndefined(gwaioSettings.treasurePlanetFixed)
           ) {
-            // supported in PA despite eslint warning
-            for (var star of galaxy.stars()) {
-              if (_.includes(star.cardList(), undefined)) {
-                star.cardList([]);
+            for (var i = 0; i < galaxy.stars().length; i++) {
+              if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
+                galaxy.stars()[i].cardList([]);
                 break;
               }
             }
