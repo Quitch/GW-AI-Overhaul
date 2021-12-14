@@ -41,9 +41,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4) {
-            inventory.addMods(gwaioTech.clusterCommanders);
-          }
+          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
             "/pa/units/land/tank_light_laser/tank_light_laser.json",
             "/pa/units/land/vehicle_factory/vehicle_factory.json",

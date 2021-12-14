@@ -35,9 +35,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4) {
-            inventory.addMods(gwaioTech.clusterCommanders);
-          }
+          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
             "/pa/units/land/assault_bot/assault_bot.json",
             "/pa/units/land/bot_factory/bot_factory.json",

@@ -35,10 +35,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-
-          if (inventory.getTag("global", "playerFaction") === 4) {
-            inventory.addMods(gwaioTech.clusterCommanders);
-          }
+          gwaioFunctions.setupCluster(inventory);
 
           var mods = [];
 

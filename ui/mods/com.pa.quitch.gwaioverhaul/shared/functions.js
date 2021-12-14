@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-], function (gwaioUnitsToNames) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
+], function (gwaioUnitsToNames, gwaioTech) {
   return {
     validatePaths: function (path) {
       var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
@@ -187,6 +188,11 @@ define([
         penchants: personalityTags,
         penchantName: penchantName,
       };
+    },
+    setupCluster: function (inventory) {
+      if (inventory.getTag("global", "playerFaction") === 4) {
+        inventory.addMods(gwaioTech.clusterCommanders);
+      }
     },
   };
 });
