@@ -242,8 +242,6 @@ if (!gwaioSetupLoaded) {
 
           // Track difficulty settings so GW-CUSTOM fields appear and display correct values
           ko.computed(function () {
-            model.newGameDifficultyIndex();
-
             selectedDifficulty = model.newGameDifficultyIndex();
 
             if (
