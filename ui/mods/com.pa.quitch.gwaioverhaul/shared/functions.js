@@ -194,5 +194,14 @@ define([
         inventory.addMods(gwaioTech.clusterCommanders);
       }
     },
+    applyDulls: function (card, inventory, units) {
+      if (inventory.lookupCard(card) === 0) {
+        var buffCount = inventory.getTag("", "buffCount", 0);
+        if (buffCount) {
+          inventory.removeUnits(units);
+          inventory.setTag("", "buffCount", undefined);
+        }
+      }
+    },
   };
 });

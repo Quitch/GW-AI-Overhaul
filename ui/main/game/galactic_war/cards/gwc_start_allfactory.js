@@ -2,9 +2,8 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
+], function (module, GW, GWCStart, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -71,21 +70,15 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          // Perform dulls here
-          inventory.removeUnits([
-            "/pa/units/land/air_defense/air_defense.json",
-            "/pa/units/land/land_barrier/land_barrier.json",
-            "/pa/units/land/laser_defense_single/laser_defense_single.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
-          ]);
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      var units = [
+        "/pa/units/land/air_defense/air_defense.json",
+        "/pa/units/land/land_barrier/land_barrier.json",
+        "/pa/units/land/laser_defense_single/laser_defense_single.json",
+        "/pa/units/land/laser_defense/laser_defense.json",
+        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+        "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
+      ];
+      gwaioFunctions.applyDulls(CARD, inventory, units);
     },
   };
 });

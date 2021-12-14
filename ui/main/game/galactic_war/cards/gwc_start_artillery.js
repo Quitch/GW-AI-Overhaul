@@ -2,9 +2,8 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
+], function (module, GW, GWCStart, gwaioFunctions) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -131,14 +130,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          // Perform dulls here
-
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });
