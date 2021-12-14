@@ -998,7 +998,7 @@ if (!gwaioSetupLoaded) {
               originSystem.treasurePlanetFixed = true;
             });
 
-            var returnGame = finishAis.then(function () {
+            var finishSetup = finishAis.then(function () {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
               }
@@ -1010,7 +1010,7 @@ if (!gwaioSetupLoaded) {
             });
 
             // the original model.navToNewGame()
-            returnGame.then(function () {
+            finishSetup.then(function () {
               if (!model.ready()) {
                 return;
               }
