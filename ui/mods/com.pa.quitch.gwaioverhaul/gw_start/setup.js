@@ -161,26 +161,28 @@ if (!gwaioSetupLoaded) {
         )
       );
 
-      $("#game-difficulty-label").before(
+      var gameDifficultyLabelId = "#game-difficulty-label";
+      $(gameDifficultyLabelId).before(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
         )
       );
 
-      $("#game-difficulty-label").append(
+      $(gameDifficultyLabelId).append(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
         )
       );
 
-      $("#game-difficulty").replaceWith(
+      var gameDifficultyId = "#game-difficulty";
+      $(gameDifficultyId).replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
         )
       );
-      locTree($("#game-difficulty"));
+      locTree($(gameDifficultyId));
 
-      $("#game-difficulty").after(
+      $(gameDifficultyId).after(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
         )

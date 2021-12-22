@@ -45,6 +45,10 @@ define([
         },
       ]);
 
+      var unitTypePrepend = "(Naval & Hover & Advanced & Mobile) | ";
+      var unitTypes =
+        "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan";
+
       inventory.addAIMods([
         {
           type: "factory",
@@ -74,7 +78,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Land_Attack_XLarge",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -84,8 +88,7 @@ define([
           op: "squad",
           toBuild: "Land_Attack_XLarge",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - Construction - Artillery - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: 40,
             squad: "General",
@@ -95,7 +98,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Land_Attack_Max",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -105,8 +108,7 @@ define([
           op: "squad",
           toBuild: "Land_Attack_Max",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: -1,
             squad: "General",
@@ -116,7 +118,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Teleporter_Attack_Queller",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -126,8 +128,7 @@ define([
           op: "squad",
           toBuild: "Teleporter_Attack_Queller",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: -1,
             squad: "General",
