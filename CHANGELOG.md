@@ -11,6 +11,8 @@
 ### Fixed
 
 - Selection icon not being removed from the system the player started at
+- Structure Armor Tech not including the Halley in its tooltip
+- Orbital Engine Tech tooltip including structures
 
 ## v5.26.1 - 2021-12-08
 
