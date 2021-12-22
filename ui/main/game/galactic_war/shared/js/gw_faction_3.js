@@ -42,7 +42,6 @@ define(function () {
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-
   var boss = {
     name: "First Seeker Osiris",
     character: "!LOC:Boss",
@@ -63,6 +62,285 @@ define(function () {
     },
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
+  var minions = [
+    {
+      name: "Betadyne",
+      character: "!LOC:Space Invader",
+      color: [
+        [255, 204, 204],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_vehicle: 0,
+        percent_bot: 0,
+        percent_air: 0,
+        percent_naval: 0,
+        percent_orbital: 1,
+      },
+      commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
+    },
+    {
+      name: "Centurion",
+      character: "!LOC:Astronaut",
+      color: [
+        [255, 153, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_land: 0,
+        percent_air: 0.5,
+        percent_naval: 0,
+        percent_orbital: 0.5,
+      },
+      commander: "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
+    },
+    {
+      name: "Diremachine",
+      character: "!LOC:Uber",
+      color: [
+        [255, 102, 102],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.72,
+        metal_demand_check: 0.8,
+        adv_eco_mod: 1,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 1,
+      },
+      commander:
+        "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
+    },
+    {
+      name: "Enderstryke71",
+      character: "!LOC:Platinum",
+      color: [
+        [255, 0, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.15,
+        adv_eco_mod: 1,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander:
+        "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
+    },
+    {
+      name: "Iwmiked",
+      character: "!LOC:Gold",
+      color: [
+        [204, 0, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.3,
+        adv_eco_mod: 1,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
+    },
+    {
+      name: "Majuju",
+      character: "!LOC:Defender",
+      color: [
+        [153, 0, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.54,
+        energy_demand_check: 0.65,
+        adv_eco_mod: 1,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
+    },
+    {
+      name: "Nefelpitou",
+      character: "!LOC:Luddite",
+      color: [
+        [255, 204, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        basic_to_advanced_factory_ratio: 10,
+      },
+      commander:
+        "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
+    },
+    {
+      name: "Invictus",
+      character: "!LOC:Technologist",
+      color: [
+        [255, 178, 102],
+        [192, 192, 192],
+      ],
+      personality: {
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        min_basic_fabbers: 4,
+        min_advanced_fabbers: 1,
+      },
+      commander:
+        "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
+    },
+    {
+      name: "Rallus",
+      character: "!LOC:Cautious",
+      color: [
+        [255, 153, 51],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 0.75,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
+    },
+    {
+      name: "Stickman9000",
+      character: "!LOC:Aggressive",
+      color: [
+        [255, 128, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 2,
+        min_advanced_fabbers: 1,
+      },
+      commander:
+        "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
+    },
+    {
+      name: "Zaazzaa",
+      character: "!LOC:Rush",
+      color: [
+        [204, 102, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 1.5,
+        adv_eco_mod: 2,
+        min_advanced_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
+    },
+    {
+      name: "Aeson",
+      character: "!LOC:Turtle",
+      color: [
+        [255, 255, 204],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 0.5,
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        fabber_to_factory_ratio_advanced: 3,
+        min_basic_fabbers: 4,
+        max_basic_fabbers: 8,
+        max_advanced_fabbers: 6,
+      },
+      commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
+    },
+    {
+      name: "Banditks",
+      character: "!LOC:Original",
+      color: [
+        [255, 255, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_vehicle: 0.075,
+        percent_bot: 0.075,
+        percent_air: 0.15,
+        percent_naval: 0.1,
+        percent_orbital: 0.6,
+        fabber_to_factory_ratio_basic: 1.5,
+        min_basic_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
+    },
+    {
+      name: "SPZ58624",
+      character: "!LOC:Absurd",
+      color: [
+        [255, 255, 102],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.65,
+        metal_demand_check: 0.71,
+      },
+      commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
+    },
+    {
+      name: "XOV",
+      character: "!LOC:Relentless",
+      color: [
+        [255, 255, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.44,
+        energy_drain_check: 0.55,
+        metal_demand_check: 0.61,
+        energy_demand_check: 0.7,
+        neural_data_mod: 1.2,
+        adv_eco_mod: 1.2,
+        adv_eco_mod_alone: 0.95,
+      },
+      commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
+    },
+    {
+      name: "Reaver",
+      character: "!LOC:Swarm",
+      color: [
+        [204, 204, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
+    },
+    {
+      name: "Sadiga",
+      character: "!LOC:Economist",
+      color: [
+        [153, 153, 0],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        adv_eco_mod: 1,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
+    },
+  ];
 
   return {
     name: factionName,
@@ -152,292 +430,8 @@ define(function () {
         },
       },
     ],
-    minions: _.map(
-      [
-        {
-          name: "Betadyne",
-          character: "!LOC:Space Invader",
-          color: [
-            [255, 204, 204],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_vehicle: 0,
-            percent_bot: 0,
-            percent_air: 0,
-            percent_naval: 0,
-            percent_orbital: 1,
-          },
-          commander:
-            "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
-        },
-        {
-          name: "Centurion",
-          character: "!LOC:Astronaut",
-          color: [
-            [255, 153, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_land: 0,
-            percent_air: 0.5,
-            percent_naval: 0,
-            percent_orbital: 0.5,
-          },
-          commander:
-            "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
-        },
-        {
-          name: "Diremachine",
-          character: "!LOC:Uber",
-          color: [
-            [255, 102, 102],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.72,
-            metal_demand_check: 0.8,
-            adv_eco_mod: 1,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 1,
-          },
-          commander:
-            "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
-        },
-        {
-          name: "Enderstryke71",
-          character: "!LOC:Platinum",
-          color: [
-            [255, 0, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.15,
-            adv_eco_mod: 1,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander:
-            "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
-        },
-        {
-          name: "Iwmiked",
-          character: "!LOC:Gold",
-          color: [
-            [204, 0, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.3,
-            adv_eco_mod: 1,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
-        },
-        {
-          name: "Majuju",
-          character: "!LOC:Defender",
-          color: [
-            [153, 0, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.54,
-            energy_demand_check: 0.65,
-            adv_eco_mod: 1,
-            min_basic_fabbers: 4,
-          },
-          commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
-        },
-        {
-          name: "Nefelpitou",
-          character: "!LOC:Luddite",
-          color: [
-            [255, 204, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            basic_to_advanced_factory_ratio: 10,
-          },
-          commander:
-            "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
-        },
-        {
-          name: "Invictus",
-          character: "!LOC:Technologist",
-          color: [
-            [255, 178, 102],
-            [192, 192, 192],
-          ],
-          personality: {
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
-          },
-          commander:
-            "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
-        },
-        {
-          name: "Rallus",
-          character: "!LOC:Cautious",
-          color: [
-            [255, 153, 51],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 0.75,
-            min_basic_fabbers: 4,
-          },
-          commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
-        },
-        {
-          name: "Stickman9000",
-          character: "!LOC:Aggressive",
-          color: [
-            [255, 128, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 2,
-            min_advanced_fabbers: 1,
-          },
-          commander:
-            "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
-        },
-        {
-          name: "Zaazzaa",
-          character: "!LOC:Rush",
-          color: [
-            [204, 102, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 1.5,
-            adv_eco_mod: 2,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
-        },
-        {
-          name: "Aeson",
-          character: "!LOC:Turtle",
-          color: [
-            [255, 255, 204],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 0.5,
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            fabber_to_factory_ratio_advanced: 3,
-            min_basic_fabbers: 4,
-            max_basic_fabbers: 8,
-            max_advanced_fabbers: 6,
-          },
-          commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
-        },
-        {
-          name: "Banditks",
-          character: "!LOC:Original",
-          color: [
-            [255, 255, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_vehicle: 0.075,
-            percent_bot: 0.075,
-            percent_air: 0.15,
-            percent_naval: 0.1,
-            percent_orbital: 0.6,
-            fabber_to_factory_ratio_basic: 1.5,
-            min_basic_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
-        },
-        {
-          name: "SPZ58624",
-          character: "!LOC:Absurd",
-          color: [
-            [255, 255, 102],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-          },
-          commander:
-            "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
-        },
-        {
-          name: "XOV",
-          character: "!LOC:Relentless",
-          color: [
-            [255, 255, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.44,
-            energy_drain_check: 0.55,
-            metal_demand_check: 0.61,
-            energy_demand_check: 0.7,
-            neural_data_mod: 1.2,
-            adv_eco_mod: 1.2,
-            adv_eco_mod_alone: 0.95,
-          },
-          commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
-        },
-        {
-          name: "Reaver",
-          character: "!LOC:Swarm",
-          color: [
-            [204, 204, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
-        },
-        {
-          name: "Sadiga",
-          character: "!LOC:Economist",
-          color: [
-            [153, 153, 0],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            adv_eco_mod: 1,
-            min_basic_fabbers: 4,
-          },
-          commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
-        },
-      ],
-      function (personalityModifiers) {
-        return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-      }
-    ),
+    minions: _.map(minions, function (personalityModifiers) {
+      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
+    }),
   };
 });

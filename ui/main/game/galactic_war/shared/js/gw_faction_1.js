@@ -42,7 +42,6 @@ define(function () {
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-
   var boss = {
     name: "Inquisitor Nemicus",
     character: "!LOC:Boss",
@@ -59,6 +58,289 @@ define(function () {
     },
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
+  var minions = [
+    {
+      name: "Progenitor",
+      character: "!LOC:Air Force",
+      color: [
+        [229, 204, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_land: 0,
+        percent_air: 1,
+        percent_naval: 0,
+        percent_orbital: 0,
+      },
+      commander:
+        "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
+    },
+    {
+      name: "Sangudo",
+      character: "!LOC:Navy",
+      color: [
+        [204, 153, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_land: 0,
+        percent_air: 0,
+        percent_naval: 1,
+        percent_orbital: 0,
+      },
+      commander: "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
+    },
+    {
+      name: "Seniorhelix",
+      character: "!LOC:Uber",
+      color: [
+        [178, 102, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.72,
+        metal_demand_check: 0.8,
+        adv_eco_mod: 1,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 1,
+      },
+      commander:
+        "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
+    },
+    {
+      name: "Stelarch",
+      character: "!LOC:Platinum",
+      color: [
+        [153, 51, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.15,
+        adv_eco_mod: 1,
+        fabber_alone_on_planet_mod: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander:
+        "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
+    },
+    {
+      name: "TheChessKnight",
+      character: "!LOC:Gold",
+      color: [
+        [127, 0, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.3,
+        adv_eco_mod: 1,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander:
+        "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
+    },
+    {
+      name: "Theta",
+      character: "!LOC:Defender",
+      color: [
+        [102, 0, 204],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.54,
+        energy_demand_check: 0.65,
+        adv_eco_mod: 1,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
+    },
+    {
+      name: "ToddFather",
+      character: "!LOC:Luddite",
+      color: [
+        [76, 0, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        basic_to_advanced_factory_ratio: 10,
+      },
+      commander:
+        "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
+    },
+    {
+      name: "Ajax",
+      character: "!LOC:Technologist",
+      color: [
+        [255, 204, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        min_basic_fabbers: 4,
+        min_advanced_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
+    },
+    {
+      name: "Armalisk",
+      character: "!LOC:Cautious",
+      color: [
+        [255, 153, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 0.75,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
+    },
+    {
+      name: "Calyx",
+      character: "!LOC:Aggressive",
+      color: [
+        [255, 102, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 2,
+        min_advanced_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
+    },
+    {
+      name: "Gambitdfa",
+      character: "!LOC:Rush",
+      color: [
+        [255, 0, 255],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 1.5,
+        adv_eco_mod: 2,
+        min_advanced_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
+    },
+    {
+      name: "Berlinetta",
+      character: "!LOC:Turtle",
+      color: [
+        [204, 0, 204],
+        [192, 192, 192],
+      ],
+      personality: {
+        neural_data_mod: 0.5,
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        fabber_to_factory_ratio_advanced: 3,
+        min_basic_fabbers: 4,
+        max_basic_fabbers: 8,
+        max_advanced_fabbers: 6,
+      },
+      commander:
+        "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
+    },
+    {
+      name: "Osiris",
+      character: "!LOC:Original",
+      color: [
+        [153, 0, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        percent_vehicle: 0.025,
+        percent_bot: 0.025,
+        percent_air: 0.55,
+        percent_naval: 0.35,
+        percent_orbital: 0.05,
+        metal_drain_check: 0.75,
+        energy_drain_check: 0.85,
+        metal_demand_check: 0.75,
+        energy_demand_check: 0.85,
+        fabber_to_factory_ratio_basic: 1.5,
+        min_basic_fabbers: 1,
+      },
+      commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
+    },
+    {
+      name: "Tykus24",
+      character: "!LOC:Absurd",
+      color: [
+        [255, 204, 229],
+        [192, 192, 192],
+      ],
+      personality: {
+        energy_drain_check: 0.65,
+        metal_demand_check: 0.71,
+      },
+      commander: "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
+    },
+    {
+      name: "Vidicarus",
+      character: "!LOC:Relentless",
+      color: [
+        [255, 153, 204],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.44,
+        energy_drain_check: 0.55,
+        metal_demand_check: 0.61,
+        energy_demand_check: 0.7,
+        neural_data_mod: 1.2,
+        adv_eco_mod: 1.2,
+        adv_eco_mod_alone: 0.95,
+      },
+      commander:
+        "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
+    },
+    {
+      name: "Visionik",
+      character: "!LOC:Swarm",
+      color: [
+        [255, 102, 178],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        min_basic_fabbers: 3,
+        min_advanced_fabbers: 1,
+      },
+      commander:
+        "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
+    },
+    {
+      name: "Commandonut",
+      character: "!LOC:Economist",
+      color: [
+        [255, 51, 153],
+        [192, 192, 192],
+      ],
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        adv_eco_mod: 1,
+        min_basic_fabbers: 4,
+      },
+      commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
+    },
+  ];
 
   return {
     name: factionName,
@@ -148,296 +430,8 @@ define(function () {
         },
       },
     ],
-    minions: _.map(
-      [
-        {
-          name: "Progenitor",
-          character: "!LOC:Air Force",
-          color: [
-            [229, 204, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_land: 0,
-            percent_air: 1,
-            percent_naval: 0,
-            percent_orbital: 0,
-          },
-          commander:
-            "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
-        },
-        {
-          name: "Sangudo",
-          character: "!LOC:Navy",
-          color: [
-            [204, 153, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_land: 0,
-            percent_air: 0,
-            percent_naval: 1,
-            percent_orbital: 0,
-          },
-          commander:
-            "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
-        },
-        {
-          name: "Seniorhelix",
-          character: "!LOC:Uber",
-          color: [
-            [178, 102, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.72,
-            metal_demand_check: 0.8,
-            adv_eco_mod: 1,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 1,
-          },
-          commander:
-            "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
-        },
-        {
-          name: "Stelarch",
-          character: "!LOC:Platinum",
-          color: [
-            [153, 51, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.15,
-            adv_eco_mod: 1,
-            fabber_alone_on_planet_mod: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander:
-            "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
-        },
-        {
-          name: "TheChessKnight",
-          character: "!LOC:Gold",
-          color: [
-            [127, 0, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.3,
-            adv_eco_mod: 1,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander:
-            "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
-        },
-        {
-          name: "Theta",
-          character: "!LOC:Defender",
-          color: [
-            [102, 0, 204],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.54,
-            energy_demand_check: 0.65,
-            adv_eco_mod: 1,
-            min_basic_fabbers: 4,
-          },
-          commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
-        },
-        {
-          name: "ToddFather",
-          character: "!LOC:Luddite",
-          color: [
-            [76, 0, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            basic_to_advanced_factory_ratio: 10,
-          },
-          commander:
-            "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
-        },
-        {
-          name: "Ajax",
-          character: "!LOC:Technologist",
-          color: [
-            [255, 204, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
-        },
-        {
-          name: "Armalisk",
-          character: "!LOC:Cautious",
-          color: [
-            [255, 153, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 0.75,
-            min_basic_fabbers: 4,
-          },
-          commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
-        },
-        {
-          name: "Calyx",
-          character: "!LOC:Aggressive",
-          color: [
-            [255, 102, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 2,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
-        },
-        {
-          name: "Gambitdfa",
-          character: "!LOC:Rush",
-          color: [
-            [255, 0, 255],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 1.5,
-            adv_eco_mod: 2,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
-        },
-        {
-          name: "Berlinetta",
-          character: "!LOC:Turtle",
-          color: [
-            [204, 0, 204],
-            [192, 192, 192],
-          ],
-          personality: {
-            neural_data_mod: 0.5,
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            fabber_to_factory_ratio_advanced: 3,
-            min_basic_fabbers: 4,
-            max_basic_fabbers: 8,
-            max_advanced_fabbers: 6,
-          },
-          commander:
-            "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
-        },
-        {
-          name: "Osiris",
-          character: "!LOC:Original",
-          color: [
-            [153, 0, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            percent_vehicle: 0.025,
-            percent_bot: 0.025,
-            percent_air: 0.55,
-            percent_naval: 0.35,
-            percent_orbital: 0.05,
-            metal_drain_check: 0.75,
-            energy_drain_check: 0.85,
-            metal_demand_check: 0.75,
-            energy_demand_check: 0.85,
-            fabber_to_factory_ratio_basic: 1.5,
-            min_basic_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
-        },
-        {
-          name: "Tykus24",
-          character: "!LOC:Absurd",
-          color: [
-            [255, 204, 229],
-            [192, 192, 192],
-          ],
-          personality: {
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-          },
-          commander:
-            "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
-        },
-        {
-          name: "Vidicarus",
-          character: "!LOC:Relentless",
-          color: [
-            [255, 153, 204],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.44,
-            energy_drain_check: 0.55,
-            metal_demand_check: 0.61,
-            energy_demand_check: 0.7,
-            neural_data_mod: 1.2,
-            adv_eco_mod: 1.2,
-            adv_eco_mod_alone: 0.95,
-          },
-          commander:
-            "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
-        },
-        {
-          name: "Visionik",
-          character: "!LOC:Swarm",
-          color: [
-            [255, 102, 178],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 1,
-          },
-          commander:
-            "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
-        },
-        {
-          name: "Commandonut",
-          character: "!LOC:Economist",
-          color: [
-            [255, 51, 153],
-            [192, 192, 192],
-          ],
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            adv_eco_mod: 1,
-            min_basic_fabbers: 4,
-          },
-          commander:
-            "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
-        },
-      ],
-      function (personalityModifiers) {
-        return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-      }
-    ),
+    minions: _.map(minions, function (personalityModifiers) {
+      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
+    }),
   };
 });
