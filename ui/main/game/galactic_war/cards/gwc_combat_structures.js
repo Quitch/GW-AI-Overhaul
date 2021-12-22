@@ -2,7 +2,8 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioFunctions, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -53,49 +54,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.airFactoryAdvanced,
-        gwaioUnits.airFactory,
-        gwaioUnits.flak,
-        gwaioUnits.galata,
-        gwaioUnits.antiNukeLauncher,
-        gwaioUnits.holkins,
-        gwaioUnits.pelter,
-        gwaioUnits.lob,
-        gwaioUnits.botFactoryAdvanced,
-        gwaioUnits.botFactory,
-        gwaioUnits.catalyst,
-        gwaioUnits.energyPlantAdvanced,
-        gwaioUnits.energyPlant,
-        gwaioUnits.energyStorage,
-        gwaioUnits.wall,
-        gwaioUnits.landMine,
-        gwaioUnits.laserDefenseTowerAdvanced,
-        gwaioUnits.singleLaserDefenseTower,
-        gwaioUnits.laserDefenseTower,
-        gwaioUnits.metalExtractorAdvanced,
-        gwaioUnits.metalExtractor,
-        gwaioUnits.metalStorage,
-        gwaioUnits.nukeLauncher,
-        gwaioUnits.radarAdvanced,
-        gwaioUnits.radar,
-        gwaioUnits.catapult,
-        gwaioUnits.teleporter,
-        gwaioUnits.unitCannon,
-        gwaioUnits.vehicleFactoryAdvanced,
-        gwaioUnits.vehicleFactory,
-        gwaioUnits.deepSpaceOrbitalRadar,
-        gwaioUnits.anchor,
-        gwaioUnits.halley,
-        gwaioUnits.umbrella,
-        gwaioUnits.jig,
-        gwaioUnits.orbitalFactory,
-        gwaioUnits.orbitalLauncher,
-        gwaioUnits.navalFactoryAdvanced,
-        gwaioUnits.navalFactory,
-        gwaioUnits.torpedoLauncherAdvanced,
-        gwaioUnits.torpedoLauncher,
-      ];
+      var units = gwaioGroups.structures;
       var mods = [];
       units.forEach(function (unit) {
         mods.push({

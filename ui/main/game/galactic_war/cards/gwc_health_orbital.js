@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioFunctions, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -46,18 +46,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.omega,
-        gwaioUnits.orbitalFabber,
-        gwaioUnits.avenger,
-        gwaioUnits.astraeus,
-        gwaioUnits.sxx,
-        gwaioUnits.hermes,
-        gwaioUnits.artemis,
-        gwaioUnits.radarSatelliteAdvanced,
-        gwaioUnits.arkyd,
-        gwaioUnits.solarArray,
-      ];
+      var units = gwaioGroups.mobileOrbital;
       var mods = [];
       units.forEach(function (unit) {
         mods.push({

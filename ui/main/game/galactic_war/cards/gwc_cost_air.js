@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioFunctions, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -30,21 +30,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.airFabber,
-        gwaioUnits.firefly,
-        gwaioUnits.bumblebee,
-        gwaioUnits.hummingbird,
-        gwaioUnits.airFabberAdvanced,
-        gwaioUnits.hornet,
-        gwaioUnits.phoenix,
-        gwaioUnits.kestrel,
-        gwaioUnits.pelican,
-        gwaioUnits.icarus,
-        gwaioUnits.wyrm,
-        gwaioUnits.angel,
-        gwaioUnits.horsefly,
-      ];
+      var units = gwaioGroups.mobileAir;
       var mods = [];
       var modUnit = function (unit) {
         mods.push({

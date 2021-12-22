@@ -13,6 +13,7 @@
 - Selection icon not being removed from the system the player started at
 - Structure Armor Tech not including the Halley in its tooltip
 - Orbital Engine Tech tooltip including structures
+- Bot Combat Tech health and speed bonuses not being applied to the Gil-E
 
 ## v5.26.1 - 2021-12-08
 

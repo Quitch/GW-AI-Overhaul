@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioFunctions, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -31,21 +32,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.spinner,
-        gwaioUnits.stryker,
-        gwaioUnits.vehicleFabberAdvanced,
-        gwaioUnits.vehicleFabber,
-        gwaioUnits.skitter,
-        gwaioUnits.inferno,
-        gwaioUnits.storm,
-        gwaioUnits.vanguard,
-        gwaioUnits.sheller,
-        gwaioUnits.drifter,
-        gwaioUnits.leveler,
-        gwaioUnits.ant,
-        gwaioUnits.manhattan,
-      ];
+      var units = gwaioGroups.mobileVehicles;
       var mods = [];
       units.forEach(function (unit) {
         mods.push(
