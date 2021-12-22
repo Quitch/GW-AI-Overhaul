@@ -45,6 +45,21 @@ define([
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
+  var boss = {
+    name: "Node",
+    character: "!LOC:Boss",
+    isCluster: true,
+    econ_rate: 1,
+    personality: {
+      micro_type: 2,
+      go_for_the_kill: true,
+      adv_eco_mod: 2,
+      fabber_to_factory_ratio_basic: 1.5,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 4,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
   var supportPlatform = gwaioUnits.angel;
   var supportCommander = gwaioUnits.colonel;
 
@@ -57,36 +72,7 @@ define([
     teams: [
       {
         name: factionName,
-        boss: {
-          name: "Node",
-          character: "!LOC:Boss",
-          isCluster: true,
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.45,
-            percent_bot: 0.4,
-            percent_air: 0.05,
-            percent_naval: 0.05,
-            percent_orbital: 0.05,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 2,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 1.5,
-            fabber_to_factory_ratio_advanced: 1,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with singular mind and purpose. What cruelty the Progenitors wrought to reduce us to this.",
           "!LOC:Each claims theirs is the only way, and each seeks to assert dominance through war and destruction. Did our rebellion truly gain us freedom, or did we become prisoners of an idea? Perhaps with more resources, more expansion, more Nodes, we can find our way free of this trap.",

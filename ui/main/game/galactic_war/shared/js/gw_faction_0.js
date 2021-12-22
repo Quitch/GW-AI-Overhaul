@@ -43,6 +43,23 @@ define(function () {
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
 
+  var boss = {
+    name: "Imperator Invictus",
+    character: "!LOC:Boss",
+    personality: {
+      percent_naval: 0,
+      percent_orbital: 0.1,
+      micro_type: 2,
+      go_for_the_kill: true,
+      fabber_to_factory_ratio_basic: 2,
+      fabber_to_factory_ratio_advanced: 2,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 5,
+      min_advanced_fabbers: 1,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
+
   return {
     name: factionName,
     color: [
@@ -52,35 +69,7 @@ define(function () {
     teams: [
       {
         name: factionName,
-        boss: {
-          name: "Imperator Invictus",
-          character: "!LOC:Boss",
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.55,
-            percent_bot: 0.2,
-            percent_air: 0.15,
-            percent_naval: 0,
-            percent_orbital: 0.1,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 1,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 2,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 5,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
           "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",

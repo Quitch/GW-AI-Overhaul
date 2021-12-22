@@ -43,6 +43,25 @@ define(function () {
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
 
+  var boss = {
+    name: "Metrarch the Machinist",
+    character: "!LOC:Boss",
+    econ_rate: 1,
+    personality: {
+      percent_naval: 0,
+      percent_orbital: 0.1,
+      micro_type: 2,
+      go_for_the_kill: true,
+      adv_eco_mod: 1,
+      fabber_to_factory_ratio_basic: 2,
+      fabber_to_factory_ratio_advanced: 2,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 5,
+      min_advanced_fabbers: 1,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
+
   return {
     name: factionName,
     color: [
@@ -52,35 +71,7 @@ define(function () {
     teams: [
       {
         name: factionName,
-        boss: {
-          name: "Metrarch the Machinist",
-          character: "!LOC:Boss",
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.2,
-            percent_bot: 0.55,
-            percent_air: 0.15,
-            percent_naval: 0,
-            percent_orbital: 0.1,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 1,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 2,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 5,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
           "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",

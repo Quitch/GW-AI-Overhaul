@@ -43,6 +43,23 @@ define(function () {
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
 
+  var boss = {
+    name: "Inquisitor Nemicus",
+    character: "!LOC:Boss",
+    econ_rate: 1,
+    personality: {
+      micro_type: 2,
+      go_for_the_kill: true,
+      adv_eco_mod: 1,
+      fabber_to_factory_ratio_basic: 2,
+      fabber_to_factory_ratio_advanced: 2,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 3,
+      min_advanced_fabbers: 1,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
+
   return {
     name: factionName,
     color: [
@@ -52,35 +69,7 @@ define(function () {
     teams: [
       {
         name: factionName,
-        boss: {
-          name: "Inquisitor Nemicus",
-          character: "!LOC:Boss",
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.2,
-            percent_bot: 0.05,
-            percent_air: 0.25,
-            percent_naval: 0.45,
-            percent_orbital: 0.05,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 1,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 2,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 3,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
           "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",

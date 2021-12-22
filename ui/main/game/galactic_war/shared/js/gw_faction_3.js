@@ -43,6 +43,27 @@ define(function () {
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
 
+  var boss = {
+    name: "First Seeker Osiris",
+    character: "!LOC:Boss",
+    econ_rate: 1,
+    personality: {
+      metal_drain_check: 0.54,
+      energy_drain_check: 0.57,
+      metal_demand_check: 0.85,
+      energy_demand_check: 0.82,
+      micro_type: 2,
+      go_for_the_kill: true,
+      adv_eco_mod: 1,
+      fabber_to_factory_ratio_basic: 2,
+      fabber_to_factory_ratio_advanced: 2,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 5,
+      min_advanced_fabbers: 1,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
+
   return {
     name: factionName,
     color: [
@@ -52,35 +73,7 @@ define(function () {
     teams: [
       {
         name: factionName,
-        boss: {
-          name: "First Seeker Osiris",
-          character: "!LOC:Boss",
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.25,
-            percent_bot: 0.2,
-            percent_air: 0.05,
-            percent_naval: 0.05,
-            percent_orbital: 0.45,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.57,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.82,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 1,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 2,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 5,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
           "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
