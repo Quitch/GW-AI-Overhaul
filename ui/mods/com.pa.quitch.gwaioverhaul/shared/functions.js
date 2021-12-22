@@ -208,5 +208,13 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
+    startCard: function () {
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: 0,
+      };
+    },
   };
 });

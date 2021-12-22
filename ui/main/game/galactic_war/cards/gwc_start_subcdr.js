@@ -27,14 +27,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory, context) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once

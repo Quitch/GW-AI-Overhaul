@@ -22,14 +22,7 @@ define([
         description: "!LOC:Buff Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);

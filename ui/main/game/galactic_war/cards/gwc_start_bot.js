@@ -16,14 +16,7 @@ define([
     describe: _.constant(
       "!LOC:The Bot Commander loadout contains basic bot factories."
     ),
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
