@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
-], function (inventory) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (inventory, gwaioUnits) {
   // Tougher Commanders
   var commanderArmourTech = [];
   inventory.commanderUnits.forEach(function (commander) {

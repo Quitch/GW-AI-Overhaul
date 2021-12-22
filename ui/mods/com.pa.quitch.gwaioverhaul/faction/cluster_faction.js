@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
-], function (planets) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (planets, gwaioUnits) {
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
