@@ -2,27 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (inventory, gwaioUnits) {
-  // Tougher Commanders
-  var commanderArmourTech = [];
-  inventory.commanderUnits.forEach(function (commander) {
-    commanderArmourTech.push({
-      file: commander,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-
-  var clusterCommanderArmourTech = [];
-  inventory.clusterCommanders.forEach(function (commander) {
-    clusterCommanderArmourTech.push({
-      file: commander,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
@@ -571,7 +550,6 @@ define([
   });
 
   return {
-    tougherCommanders: [commanderArmourTech, clusterCommanderArmourTech],
     factionTechs: [
       legonisTech,
       foundationTech,

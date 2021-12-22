@@ -6,6 +6,7 @@
 
 - Galactic War setup is much more responsive as the galaxy is now only generated once you click "Go To War" and not every time you change a setting
 - Buffed Catalyst Upgrade Tech
+- Removed Tougher Commanders option from setup as this is now integrated into the AI buffs system
 
 ### Fixed
 

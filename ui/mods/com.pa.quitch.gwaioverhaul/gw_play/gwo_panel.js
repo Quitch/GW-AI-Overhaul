@@ -34,6 +34,7 @@ if (!gwaioWarInfoPanelLoaded) {
           if (model.gwaioSettings.easierStart) {
             model.gwaioOptions.push(loc("!LOC:Easier start"));
           }
+          // No longer used - for v5.26.1 and earlier saves only
           if (model.gwaioSettings.tougherCommanders) {
             model.gwaioOptions.push(loc("!LOC:Tougher commanders"));
           }

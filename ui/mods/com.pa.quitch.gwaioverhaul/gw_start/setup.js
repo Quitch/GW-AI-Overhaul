@@ -53,7 +53,6 @@ if (!gwaioSetupLoaded) {
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
-        tougherCommanders: ko.observable(false),
         ai: ko.observable(0).extend({ numeric: 0 }),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         customDifficulty: ko.observable(false),
@@ -698,14 +697,6 @@ if (!gwaioSetupLoaded) {
               var aiInventory = [];
               var clusterCommanderInventory = [];
 
-              if (model.gwaioDifficultySettings.tougherCommanders()) {
-                aiInventory = gwaioTech.tougherCommanders[0];
-                clusterCommanderInventory =
-                  gwaioTech.tougherCommanders[0].concat(
-                    gwaioTech.tougherCommanders[1]
-                  );
-              }
-
               _.forEach(teamInfo, function (info) {
                 var numBuffs = 0;
                 var typeOfBuffs = [];
@@ -985,8 +976,6 @@ if (!gwaioSetupLoaded) {
                 model.gwaioDifficultySettings.systemScaling();
               originSystem.gwaio.easierStart =
                 model.gwaioDifficultySettings.easierStart();
-              originSystem.gwaio.tougherCommanders =
-                model.gwaioDifficultySettings.tougherCommanders();
               if (model.gwaioDifficultySettings.ai() === 1) {
                 originSystem.gwaio.ai = "Queller";
               } else if (model.gwaioDifficultySettings.ai() === 2) {
