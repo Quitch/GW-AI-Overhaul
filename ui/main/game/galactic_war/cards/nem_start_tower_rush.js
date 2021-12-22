@@ -119,7 +119,7 @@ define([
             gwaioUnits.singleLaserDefenseTowerWeapon,
             gwaioUnits.laserDefenseTowerWeapon,
             gwaioUnits.catapultWeapon,
-            gwaioUnits.catapultBeam
+            gwaioUnits.catapultBeam,
             gwaioUnits.anchorWeaponAG,
             gwaioUnits.anchorWeaponAO,
             gwaioUnits.umbrellaBeam,
