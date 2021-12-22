@@ -203,5 +203,10 @@ define([
         }
       }
     },
+    getContext: function (galaxy) {
+      return {
+        totalSize: galaxy.stars().length,
+      };
+    },
   };
 });

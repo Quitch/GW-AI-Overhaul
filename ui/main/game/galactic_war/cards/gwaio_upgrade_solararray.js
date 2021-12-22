@@ -16,11 +16,7 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (gwaioFunctions.hasUnit(gwaioUnits.solarArray)) {
