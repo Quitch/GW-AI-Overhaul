@@ -60,8 +60,8 @@ define([
     },
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var supportPlatform = gwaioUnits.angel;
-  var supportCommander = gwaioUnits.colonel;
+  var workerCommander = gwaioUnits.angel;
+  var securityCommander = gwaioUnits.colonel;
   var minions = [
     {
       name: "Worker",
@@ -77,7 +77,7 @@ define([
         fabber_to_factory_ratio_advanced: 2,
         fabber_alone_on_planet_mod: 3,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -97,7 +97,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 2,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -115,7 +115,7 @@ define([
         fabber_alone_on_planet_mod: 3,
         min_advanced_fabbers: 2,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -132,7 +132,7 @@ define([
         energy_demand_check: 0.65,
         min_basic_fabbers: 4,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -145,7 +145,7 @@ define([
       personality: {
         basic_to_advanced_factory_ratio: 10,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -162,7 +162,7 @@ define([
         min_basic_fabbers: 4,
         min_advanced_fabbers: 1,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -176,7 +176,7 @@ define([
         neural_data_mod: 0.75,
         min_basic_fabbers: 4,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -190,7 +190,7 @@ define([
         neural_data_mod: 2,
         min_basic_fabbers: 2,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -205,7 +205,7 @@ define([
         adv_eco_mod: 2,
         min_basic_fabbers: 2,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -225,7 +225,7 @@ define([
         max_basic_fabbers: 8,
         max_advanced_fabbers: 6,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -240,7 +240,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 3,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -261,7 +261,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 3,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -275,7 +275,7 @@ define([
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Worker",
@@ -292,7 +292,7 @@ define([
         energy_demand_check: 0.99,
         min_basic_fabbers: 4,
       },
-      commander: supportPlatform,
+      commander: workerCommander,
     },
     {
       name: "Security",
@@ -308,7 +308,7 @@ define([
         fabber_to_factory_ratio_advanced: 2,
         fabber_alone_on_planet_mod: 3,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -328,7 +328,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 2,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -346,7 +346,7 @@ define([
         fabber_alone_on_planet_mod: 3,
         min_advanced_fabbers: 2,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -363,7 +363,7 @@ define([
         energy_demand_check: 0.65,
         min_basic_fabbers: 4,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -376,7 +376,7 @@ define([
       personality: {
         basic_to_advanced_factory_ratio: 10,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -392,7 +392,7 @@ define([
         fabber_to_factory_ratio_basic: 3,
         min_basic_fabbers: 4,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -406,7 +406,7 @@ define([
         neural_data_mod: 0.75,
         min_basic_fabbers: 4,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -419,7 +419,7 @@ define([
       personality: {
         neural_data_mod: 2,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -434,7 +434,7 @@ define([
         adv_eco_mod: 2,
         min_basic_fabbers: 2,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -454,7 +454,7 @@ define([
         max_basic_fabbers: 8,
         max_advanced_fabbers: 6,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -469,7 +469,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 3,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -490,7 +490,7 @@ define([
         min_basic_fabbers: 2,
         min_advanced_fabbers: 3,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -504,7 +504,7 @@ define([
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
     {
       name: "Security",
@@ -521,7 +521,7 @@ define([
         energy_demand_check: 0.99,
         min_basic_fabbers: 4,
       },
-      commander: supportCommander,
+      commander: securityCommander,
     },
   ];
 
