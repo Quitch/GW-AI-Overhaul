@@ -1,7 +1,6 @@
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
+  gwaioUnits
+) {
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
