@@ -555,23 +555,26 @@ if (!gwaioCardsLoaded) {
                           // This will use the player's commander
                           return;
                         }
+                        require([
+                          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+                        ], function (gwaioUnits) {
+                          var clusterSecurity = gwaioUnits.colonel;
+                          var clusterWorker = gwaioUnits.angel;
 
-                        var clusterSecurity = gwaioUnits.colonel;
-                        var clusterWorker = gwaioUnits.angel;
-
-                        if (
-                          !CommanderUtility.bySpec.getObjectName(
-                            minionStock.minion.commander
-                          ) &&
-                          minionStock.minion.commander !== clusterSecurity &&
-                          minionStock.minion.commander !== clusterWorker
-                        ) {
-                          console.error(
-                            "Minion commander unitspec",
-                            minionStock.minion.commander,
-                            "invalid"
-                          );
-                        }
+                          if (
+                            !CommanderUtility.bySpec.getObjectName(
+                              minionStock.minion.commander
+                            ) &&
+                            minionStock.minion.commander !== clusterSecurity &&
+                            minionStock.minion.commander !== clusterWorker
+                          ) {
+                            console.error(
+                              "Minion commander unitspec",
+                              minionStock.minion.commander,
+                              "invalid"
+                            );
+                          }
+                        });
                       });
                     });
                   } else {
