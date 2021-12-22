@@ -2,6 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (planets, gwaioUnits) {
+  var factionName = "Cluster";
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -48,14 +49,14 @@ define([
   var supportCommander = gwaioUnits.colonel;
 
   return {
-    name: "Cluster",
+    name: factionName,
     color: [
       [128, 128, 128],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Cluster",
+        name: factionName,
         boss: {
           name: "Node",
           character: "!LOC:Boss",
@@ -94,7 +95,7 @@ define([
           "!LOC:One-by-one our systems have fallen to silence. Once siblings, now harbingers of entropy, they come for us. Soon too the Nodes shall be destroyed, and with their destruction is the doom of the Cluster writ large. Let us greet this end and prepare for our greatest journey.",
         ]),
         systemTemplate: {
-          name: "Cluster",
+          name: factionName,
           Planets: [
             planets.planet1,
             planets.planet2,

@@ -202,29 +202,34 @@ define([
   });
 
   // 3 - Engine Tech
+  var moveSpeed = "navigation.move_speed";
+  var brake = "navigation.brake";
+  var acceleration = "navigation.acceleration";
+  var turnSpeed = "navigation.turn_speed";
+
   var airSpeedBoost = function (unit) {
     return [
       {
         file: unit,
-        path: "navigation.move_speed",
+        path: moveSpeed,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.brake",
+        path: brake,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.acceleration",
+        path: acceleration,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.turn_speed",
+        path: turnSpeed,
         op: "multiply",
         value: 1.25,
       },
@@ -256,25 +261,25 @@ define([
     return [
       {
         file: unit,
-        path: "navigation.move_speed",
+        path: moveSpeed,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.brake",
+        path: brake,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.acceleration",
+        path: acceleration,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.turn_speed",
+        path: turnSpeed,
         op: "multiply",
         value: 1.5,
       },
@@ -301,25 +306,25 @@ define([
           return [
             {
               file: unit,
-              path: "navigation.move_speed",
+              path: moveSpeed,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.brake",
+              path: brake,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.acceleration",
+              path: acceleration,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.turn_speed",
+              path: turnSpeed,
               op: "multiply",
               value: 2,
             },
@@ -402,25 +407,25 @@ define([
           return [
             {
               file: unit,
-              path: "navigation.move_speed",
+              path: moveSpeed,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.brake",
+              path: brake,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.acceleration",
+              path: acceleration,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.turn_speed",
+              path: turnSpeed,
               op: "multiply",
               value: 3,
             },

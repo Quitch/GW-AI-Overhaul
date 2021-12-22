@@ -1,5 +1,5 @@
-// Legonis Machina
 define(function () {
+  var factionName = "Legonis Machina";
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -44,14 +44,14 @@ define(function () {
   };
 
   return {
-    name: "Legonis Machina",
+    name: factionName,
     color: [
       [0, 176, 255],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Legonis Machina",
+        name: factionName,
         boss: {
           name: "Imperator Invictus",
           character: "!LOC:Boss",
@@ -89,7 +89,7 @@ define(function () {
           "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
         ]),
         systemTemplate: {
-          name: "Legonis Machina",
+          name: factionName,
           Planets: [
             {
               name: "Kohr",

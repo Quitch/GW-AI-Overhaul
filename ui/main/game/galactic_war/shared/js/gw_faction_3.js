@@ -1,5 +1,5 @@
-// Revenants
 define(function () {
+  var factionName = "Revenants";
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -44,14 +44,14 @@ define(function () {
   };
 
   return {
-    name: "Revenants",
+    name: factionName,
     color: [
       [236, 34, 35],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Revenants",
+        name: factionName,
         boss: {
           name: "First Seeker Osiris",
           character: "!LOC:Boss",
@@ -89,7 +89,7 @@ define(function () {
           "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
         ]),
         systemTemplate: {
-          name: "Revenants",
+          name: factionName,
           Planets: [
             {
               name: "Alenquer",

@@ -1,5 +1,5 @@
-// Foundation
 define(function () {
+  var factionName = "Foundation";
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -44,14 +44,14 @@ define(function () {
   };
 
   return {
-    name: "Foundation",
+    name: factionName,
     color: [
       [145, 87, 199],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Foundation",
+        name: factionName,
         boss: {
           name: "Inquisitor Nemicus",
           character: "!LOC:Boss",
@@ -89,7 +89,7 @@ define(function () {
           "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
         ]),
         systemTemplate: {
-          name: "Foundation",
+          name: factionName,
           Planets: [
             {
               name: "Atlas",

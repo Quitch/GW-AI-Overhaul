@@ -1,5 +1,5 @@
-// Synchronous
 define(function () {
+  var factionName = "Synchronous";
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
@@ -44,14 +44,14 @@ define(function () {
   };
 
   return {
-    name: "Synchronous",
+    name: factionName,
     color: [
       [126, 226, 101],
       [192, 192, 192],
     ],
     teams: [
       {
-        name: "Synchronous",
+        name: factionName,
         boss: {
           name: "Metrarch the Machinist",
           character: "!LOC:Boss",
@@ -89,7 +89,7 @@ define(function () {
           "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
         ]),
         systemTemplate: {
-          name: "Synchronous",
+          name: factionName,
           Planets: [
             {
               name: "Cupru",
