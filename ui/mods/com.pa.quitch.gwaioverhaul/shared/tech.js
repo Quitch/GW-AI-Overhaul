@@ -506,7 +506,7 @@ define([
         "UNITTYPE_Commander",
         "UNITTYPE_Construction",
         "UNITTYPE_Mobile",
-        "UNITTYPE_Land", // if you don't have Land then the AI won't work right
+        "UNITTYPE_Land", // without this the AI won't work right
         "UNITTYPE_Air",
         "UNITTYPE_NoBuild",
       ],
