@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,9 +24,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory/naval_factory.json"
-        ) &&
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
         !inventory.hasCard("gwaio_start_rapid")
       ) {
         chance = 30;
@@ -36,7 +35,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/naval_factory/naval_factory.json",
+          file: gwaioUnits.navalFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Naval & Mobile & FactoryBuild)",

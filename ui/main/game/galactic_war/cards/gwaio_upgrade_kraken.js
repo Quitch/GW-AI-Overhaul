@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,11 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/nuclear_sub/nuclear_sub.json")
+        gwaioFunctions.hasUnit(gwaioUnits.kraken)
       ) {
         chance = 30;
       }
@@ -37,7 +36,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/nuclear_sub/nuclear_sub_tool_weapon_missile.json",
+          file: gwaioUnits.krakenMissile,
           path: "max_range",
           op: "multiply",
           value: 2,

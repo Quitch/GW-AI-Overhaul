@@ -1,4 +1,5 @@
-define({
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+], function (gwaioUnits) {
   visible: _.constant(true),
   describe: _.constant(
     "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
@@ -28,13 +29,13 @@ define({
   buff: function (inventory) {
     inventory.addMods([
       {
-        file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+        file: gwaioUnits.deepSpaceOrbitalRadar,
         path: "recon.observer.items.0.radius",
         op: "multiply",
         value: 33.33,
       },
       {
-        file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+        file: gwaioUnits.deepSpaceOrbitalRadar,
         path: "recon.observer.items.2.radius",
         op: "multiply",
         value: 8.3325,

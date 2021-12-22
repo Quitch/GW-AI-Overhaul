@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,10 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/air/air_factory/air_factory.json") &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.airFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.airFabber)
       ) {
         chance = 60;
       }
@@ -36,7 +35,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+          file: gwaioUnits.airFabber,
           path: "buildable_types",
           op: "add",
           value: " | Land & Structure & Advanced - Factory | FabAdvBuild",

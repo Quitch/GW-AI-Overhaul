@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,14 +24,10 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/tank_laser_adv/tank_laser_adv.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json") &&
+        gwaioFunctions.hasUnit(gwaioUnits.leveler) &&
+        gwaioFunctions.hasUnit(gwaioUnits.unitCannon) &&
         !inventory.hasCard("gwaio_start_paratrooper")
       ) {
         chance = 60;
@@ -41,7 +38,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
+          file: gwaioUnits.leveler,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_CannonBuildable",

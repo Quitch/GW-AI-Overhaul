@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -53,8 +56,8 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
-        "/pa/units/sea/naval_factory/naval_factory.json",
+        gwaioUnits.navalFactoryAdvanced,
+        gwaioUnits.navalFactory,
       ]);
     },
     dull: function () {

@@ -556,10 +556,8 @@ if (!gwaioCardsLoaded) {
                           return;
                         }
 
-                        var clusterSecurity =
-                          "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                        var clusterWorker =
-                          "/pa/units/air/support_platform/support_platform.json";
+                        var clusterSecurity = gwaioUnits.colonel;
+                        var clusterWorker = gwaioUnits.angel;
 
                         if (
                           !CommanderUtility.bySpec.getObjectName(

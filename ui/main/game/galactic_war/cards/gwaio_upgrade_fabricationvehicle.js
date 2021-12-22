@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,12 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.vehicleFabber)
       ) {
         chance = 60;
       }
@@ -38,7 +35,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
+          file: gwaioUnits.vehicleFabber,
           path: "buildable_types",
           op: "add",
           value: " | Structure & Land & Advanced - Factory | FabAdvBuild",

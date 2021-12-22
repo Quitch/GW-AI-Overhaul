@@ -43,9 +43,8 @@ define([
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var supportPlatform = "/pa/units/air/support_platform/support_platform.json";
-  var supportCommander =
-    "/pa/units/land/bot_support_commander/bot_support_commander.json";
+  var supportPlatform = gwaioUnits.angel;
+  var supportCommander = gwaioUnits.colonel;
 
   return {
     name: "Cluster",

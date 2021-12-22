@@ -3,7 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -36,18 +37,18 @@ define([
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+            gwaioUnits.flak,
+            gwaioUnits.laserDefenseTowerAdvanced,
+            gwaioUnits.catapult,
+            gwaioUnits.anchor,
+            gwaioUnits.torpedoLauncherAdvanced,
           ]);
           var units = [
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
+            gwaioUnits.flak,
+            gwaioUnits.laserDefenseTowerAdvanced,
+            gwaioUnits.laserDefenseTower,
+            gwaioUnits.catapult,
+            gwaioUnits.torpedoLauncherAdvanced,
           ];
           var mods = [];
           units.forEach(function (unit) {
@@ -67,16 +68,16 @@ define([
             );
           });
           var costUnits = [
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/land/air_defense/air_defense.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/laser_defense_single/laser_defense_single.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/ion_defense/ion_defense_ammo.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
+            gwaioUnits.flak,
+            gwaioUnits.galata,
+            gwaioUnits.laserDefenseTowerAdvanced,
+            gwaioUnits.singleLaserDefenseTower,
+            gwaioUnits.laserDefenseTower,
+            gwaioUnits.catapult,
+            gwaioUnits.anchor,
+            gwaioUnits.umbrellaAmmo,
+            gwaioUnits.torpedoLauncherAdvanced,
+            gwaioUnits.torpedoLauncher,
           ];
           costUnits.forEach(function (unit) {
             mods.push(
@@ -94,7 +95,7 @@ define([
               }
             );
           });
-          var buildUnits = ["/pa/units/land/land_barrier/land_barrier.json"];
+          var buildUnits = [gwaioUnits.wall];
           buildUnits.forEach(function (unit) {
             mods.push(
               {
@@ -112,19 +113,19 @@ define([
             );
           });
           var weapons = [
-            "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
-            "/pa/units/land/air_defense/air_defense_tool_weapon.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv_tool_weapon.json",
-            "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json",
-            "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher_tool_weapon.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_tool_antidrop.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite_tool_ground.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite_tool_orbital.json",
-            "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
-            "/pa/units/orbital/ion_defense/ion_defense_tool_weapon.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
-            "/pa/units/sea/torpedo_launcher/torpedo_launcher_tool_weapon.json",
+            gwaioUnits.flakWeapon,
+            gwaioUnits.galataWeapon,
+            gwaioUnits.laserDefenseTowerAdvancedWeapon,
+            gwaioUnits.singleLaserDefenseTowerWeapon,
+            gwaioUnits.laserDefenseTowerWeapon,
+            gwaioUnits.catapultWeapon,
+            gwaioUnits.catapultBeam
+            gwaioUnits.anchorWeaponAG,
+            gwaioUnits.anchorWeaponAO,
+            gwaioUnits.umbrellaBeam,
+            gwaioUnits.umbrellaWeapon,
+            gwaioUnits.torpedoLauncherAdvancedWeapon,
+            gwaioUnits.torpedoLauncherWeapon,
           ];
           weapons.forEach(function (unit) {
             mods.push(

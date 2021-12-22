@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/fabrication_barge/fabrication_barge.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.barnacle)) {
         chance = 30;
       }
 
@@ -35,7 +32,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/fabrication_barge/fabrication_barge_build_arm.json",
+          file: gwaioUnits.barnacleBuildArm,
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,

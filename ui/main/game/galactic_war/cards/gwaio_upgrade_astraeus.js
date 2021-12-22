@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,12 +24,8 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_lander/orbital_lander.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.astraeus) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.orbitalLauncher) ||
           inventory.hasCard("gwaio_upgrade_orbitallauncher"))
       ) {
         chance = 60;
@@ -39,13 +36,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_lander/orbital_lander.json",
+          file: gwaioUnits.astraeus,
           path: "system_velocity_multiplier",
           op: "multiply",
           value: 3,
         },
         {
-          file: "/pa/units/orbital/orbital_lander/orbital_lander.json",
+          file: gwaioUnits.astraeus,
           path: "gravwell_velocity_multiplier",
           op: "multiply",
           value: 3,

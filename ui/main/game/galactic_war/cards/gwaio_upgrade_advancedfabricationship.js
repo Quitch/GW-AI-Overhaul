@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,12 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) &&
+        gwaioFunctions.hasUnit(gwaioUnits.navalFabberAdvanced)
       ) {
         chance = 30;
       }
@@ -38,13 +35,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json",
+          file: gwaioUnits.navalFabberAdvanced,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Hover",
         },
         {
-          file: "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json",
+          file: gwaioUnits.navalFabberAdvanced,
           path: "navigation.type",
           op: "replace",
           value: "hover",

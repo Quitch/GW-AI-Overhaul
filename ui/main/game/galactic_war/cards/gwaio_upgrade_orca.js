@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,10 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory/naval_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/destroyer/destroyer.json")
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.orca)
       ) {
         chance = 30;
       }
@@ -36,19 +35,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/destroyer/destroyer.json",
+          file: gwaioUnits.orca,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_WaterHover",
         },
         {
-          file: "/pa/units/sea/destroyer/destroyer.json",
+          file: gwaioUnits.orca,
           path: "navigation.type",
           op: "replace",
           value: "water-hover",
         },
         {
-          spec_id: "/pa/units/sea/destroyer/destroyer_tool_weapon.json",
+          spec_id: gwaioUnits.orcaWeapon,
           path: "max_range",
           op: "multiply",
           value: 1.5,

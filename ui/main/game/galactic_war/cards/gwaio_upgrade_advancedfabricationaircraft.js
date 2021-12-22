@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,13 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.airFabberAdvanced)
       ) {
         chance = 60;
       }
@@ -39,12 +36,11 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+          file: gwaioUnits.airFabberAdvanced,
           path: "tools",
           op: "push",
           value: {
-            spec_id:
-              "/pa/units/air/support_platform/support_platform_tool_interception.json",
+            spec_id: gwaioUnits.angelBeam,
             aim_bone: "bone_turret",
             record_index: 0,
             muzzle_bone: "socket_muzzle",

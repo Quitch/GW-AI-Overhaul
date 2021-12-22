@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,13 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.vanguard)
       ) {
         chance = 60;
       }
@@ -39,24 +36,23 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          file: gwaioUnits.vanguard,
           path: "tools",
           op: "push",
           value: {
-            spec_id:
-              "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+            spec_id: gwaioUnits.mendBuildArm,
             aim_bone: "bone_turret",
             muzzle_bone: "socket_muzzle",
           },
         },
         {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          file: gwaioUnits.vanguard,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Repair"],
         },
         {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          file: gwaioUnits.vanguard,
           path: "audio.loops.build",
           op: "replace",
           value: {
@@ -67,7 +63,7 @@ define([
           },
         },
         {
-          file: "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
+          file: gwaioUnits.vanguard,
           path: "fx_offsets",
           op: "replace",
           value: [

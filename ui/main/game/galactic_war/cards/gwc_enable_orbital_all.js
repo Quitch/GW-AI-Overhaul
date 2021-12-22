@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -61,14 +64,14 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/orbital/mining_platform/mining_platform.json",
-        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-        "/pa/units/orbital/orbital_factory/orbital_factory.json",
-        "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser.json",
-        "/pa/units/orbital/orbital_probe/orbital_probe.json",
-        "/pa/units/orbital/radar_satellite/radar_satellite.json",
-        "/pa/units/orbital/solar_array/solar_array.json",
+        gwaioUnits.jig,
+        gwaioUnits.orbitalFabber,
+        gwaioUnits.orbitalFactory,
+        gwaioUnits.avenger,
+        gwaioUnits.sxx,
+        gwaioUnits.hermes,
+        gwaioUnits.arkyd,
+        gwaioUnits.solarArray,
       ]);
     },
     dull: function () {

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,10 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory/naval_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/sea_scout/sea_scout.json")
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.piranha)
       ) {
         chance = 30;
       }
@@ -36,13 +35,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/sea_scout/sea_scout.json",
+          file: gwaioUnits.piranha,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Hover",
         },
         {
-          file: "/pa/units/sea/sea_scout/sea_scout.json",
+          file: gwaioUnits.piranha,
           path: "navigation.type",
           op: "replace",
           value: "hover",

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.torpedoLauncherAdvanced)) {
         chance = 30;
       }
 
@@ -35,61 +32,61 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWeapon,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWeapon,
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal"],
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWeapon,
           path: "exclude_unit_types",
           op: "replace",
           value: "",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
+          file: gwaioUnits.torpedoLauncherAdvancedLandAmmo,
           path: "flight_layer",
           op: "replace",
           value: "Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
+          file: gwaioUnits.torpedoLauncherAdvancedLandAmmo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
+          file: gwaioUnits.torpedoLauncherAdvancedLandAmmo,
           path: "cruise_height",
           op: "replace",
           value: 75,
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
           path: "flight_layer",
           op: "replace",
           value: "Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
           path: "cruise_height",
           op: "replace",
           value: 75,
         },
         {
-          file: "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
+          file: gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
           path: "initial_velocity",
           op: "replace",
           value: 100,

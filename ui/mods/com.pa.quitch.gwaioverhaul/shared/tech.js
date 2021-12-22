@@ -436,13 +436,13 @@ define([
   // Cluster commander setup
   var clusterCommanderTech = [
     {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      file: gwaioUnits.colonel,
       path: "tools.0.spec_id",
       op: "replace",
-      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
+      value: gwaioUnits.commanderBuildArm,
     },
     {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      file: gwaioUnits.colonel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -455,13 +455,13 @@ define([
       ],
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "buildable_types",
       op: "replace",
       value: "CmdBuild",
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "command_caps",
       op: "replace",
       value: [
@@ -475,25 +475,25 @@ define([
       ],
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "max_health",
       op: "multiply",
       value: 5,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "tools.1.spec_id",
       op: "replace",
-      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
+      value: gwaioUnits.commanderBuildArm,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "transportable.size",
       op: "replace",
       value: 1,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "unit_types",
       op: "replace",
       value: [

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.lob)) {
         chance = 60;
       }
 
@@ -35,13 +32,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          file: gwaioUnits.lobWeapon,
           path: "max_range",
           op: "multiply",
           value: 2.5,
         },
         {
-          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_tool_weapon.json",
+          file: gwaioUnits.lobWeapon,
           path: "max_firing_velocity",
           op: "multiply",
           value: 2.5,

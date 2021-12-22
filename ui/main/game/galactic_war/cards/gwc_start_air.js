@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -31,12 +32,12 @@ define([
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/air/air_factory/air_factory.json",
-            "/pa/units/air/air_scout/air_scout.json",
-            "/pa/units/air/bomber/bomber.json",
-            "/pa/units/air/fighter/fighter.json",
-            "/pa/units/air/solar_drone/solar_drone.json",
-            "/pa/units/air/transport/transport.json",
+            gwaioUnits.airFactory,
+            gwaioUnits.firefly,
+            gwaioUnits.bumblebee,
+            gwaioUnits.hummingbird,
+            gwaioUnits.icarus,
+            gwaioUnits.pelican,
           ]);
         } else {
           // Don't clog up a slot.

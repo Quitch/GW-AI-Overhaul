@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -62,12 +65,12 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/air/air_factory/air_factory.json",
-        "/pa/units/air/air_scout/air_scout.json",
-        "/pa/units/air/bomber/bomber.json",
-        "/pa/units/air/fighter/fighter.json",
-        "/pa/units/air/solar_drone/solar_drone.json",
-        "/pa/units/air/transport/transport.json",
+        gwaioUnits.airFactory,
+        gwaioUnits.firefly,
+        gwaioUnits.bumblebee,
+        gwaioUnits.hummingbird,
+        gwaioUnits.icarus,
+        gwaioUnits.pelican,
       ]);
     },
     dull: function () {

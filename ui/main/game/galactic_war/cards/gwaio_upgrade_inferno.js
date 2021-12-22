@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,7 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/tank_armor/tank_armor.json")) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.inferno)) {
         chance = 60;
       }
 
@@ -31,24 +32,23 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_armor/tank_armor.json",
+          file: gwaioUnits.inferno,
           path: "tools",
           op: "push",
           value: {
-            spec_id:
-              "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+            spec_id: gwaioUnits.stitchBuildArm,
             aim_bone: "bone_turret",
             muzzle_bone: "socket_muzzle",
           },
         },
         {
-          file: "/pa/units/land/tank_armor/tank_armor.json",
+          file: gwaioUnits.inferno,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Repair"],
         },
         {
-          file: "/pa/units/land/tank_armor/tank_armor.json",
+          file: gwaioUnits.inferno,
           path: "audio.loops.build",
           op: "replace",
           value: {
@@ -59,7 +59,7 @@ define([
           },
         },
         {
-          file: "/pa/units/land/tank_armor/tank_armor.json",
+          file: gwaioUnits.inferno,
           path: "fx_offsets",
           op: "replace",
           value: [

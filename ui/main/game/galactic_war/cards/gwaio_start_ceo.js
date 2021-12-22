@@ -3,7 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -37,24 +38,24 @@ define([
           gwaioFunctions.setupCluster(inventory);
           inventory.addMods([
             {
-              file: "/pa/units/commanders/base_commander/base_commander.json",
+              file: gwaioUnits.commander,
               path: "buildable_types",
               op: "add",
               value: " | SupportCommander",
             },
             {
-              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              file: gwaioUnits.colonel,
               path: "tools",
               op: "push",
               value: {
-                spec_id: "/pa/tools/uber_cannon/uber_cannon.json",
+                spec_id: gwaioUnits.commanderSecondary,
                 aim_bone: "bone_turret",
                 muzzle_bone: "socket_rightMuzzle",
                 secondary_weapon: true,
               },
             },
             {
-              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              file: gwaioUnits.colonel,
               path: "command_caps",
               op: "push",
               value: "ORDER_FireSecondaryWeapon",

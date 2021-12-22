@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,12 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_factory/orbital_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_laser/orbital_laser.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.orbitalFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.sxx)
       ) {
         chance = 60;
       }
@@ -38,7 +35,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_laser/orbital_laser.json",
+          file: gwaioUnits.sxx,
           path: "planetary_arrival_cooldown_time",
           op: "replace",
           value: 0,

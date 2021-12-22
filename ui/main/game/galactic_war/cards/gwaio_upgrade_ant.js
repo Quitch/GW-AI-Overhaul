@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -35,25 +36,25 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "splash_damage",
           op: "replace",
           value: 63,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "splash_radius",
           op: "replace",
           value: 10,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "events",
           op: "replace",
           value: {

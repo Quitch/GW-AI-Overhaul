@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,16 +24,10 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json") &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/sea/fabrication_barge/fabrication_barge.json"
-        ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ))
+        gwaioFunctions.hasUnit(gwaioUnits.landMine) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.barnacle) ||
+          gwaioFunctions.hasUnit(gwaioUnits.stitch) ||
+          gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced))
       ) {
         chance = 60;
       }
@@ -42,7 +37,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/land_mine/land_mine_tool_weapon.json",
+          file: gwaioUnits.landMineWeapon,
           path: "self_destruct",
           op: "replace",
           value: false,

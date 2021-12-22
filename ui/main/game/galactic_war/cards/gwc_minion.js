@@ -1,7 +1,8 @@
 define([
   "shared/gw_factions",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (GWFactions, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GWFactions, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -40,15 +41,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = context.chance;
       if (
-        (!gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory/bot_factory.json"
-          ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          )) ||
+        (!gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
+          !gwaioFunctions.hasUnit(gwaioUnits.botFactory) &&
+          !gwaioFunctions.hasUnit(gwaioUnits.airFactory)) ||
         inventory.hasCard("nem_start_deepspace")
       ) {
         chance = 0;

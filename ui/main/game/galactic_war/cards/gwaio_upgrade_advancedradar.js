@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,22 +24,14 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/radar_adv/radar_adv.json") &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.radarAdvanced) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory"))
       ) {
         chance = 60;
@@ -49,31 +42,31 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
+          file: gwaioUnits.radarAdvanced,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
+          file: gwaioUnits.radarAdvanced,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
+          file: gwaioUnits.radarAdvanced,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
+          file: gwaioUnits.radarAdvanced,
           path: "recon.observer.items.3.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar_adv/radar_adv.json",
+          file: gwaioUnits.radarAdvanced,
           path: "recon.observer.items.4.radius",
           op: "multiply",
           value: 1.5,

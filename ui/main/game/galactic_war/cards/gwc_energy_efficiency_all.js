@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -63,11 +66,11 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
-        "/pa/units/orbital/radar_satellite/radar_satellite.json",
-        "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-        "/pa/units/land/radar/radar.json",
-        "/pa/units/land/radar_adv/radar_adv.json",
+        gwaioUnits.deepSpaceOrbitalRadar,
+        gwaioUnits.arkyd,
+        gwaioUnits.radarSatelliteAdvanced,
+        gwaioUnits.radar,
+        gwaioUnits.radarAdvanced,
       ];
       var mods = [];
       units.forEach(function (unit) {
@@ -79,17 +82,17 @@ define(["shared/gw_common"], function (GW) {
         });
       });
       var weapons = [
-        "/pa/tools/uber_cannon/uber_cannon.json",
-        "/pa/units/air/bomber_heavy/bomber_heavy_tool_weapon.json",
-        "/pa/units/air/bomber/bomber_tool_weapon.json",
-        "/pa/units/air/solar_drone/solar_drone_tool_weapon.json",
-        "/pa/units/air/titan_air/titan_air_tool_weapon.json",
-        "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
-        "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
-        "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
-        "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
-        "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
+        gwaioUnits.commanderSecondary,
+        gwaioUnits.wyrmWeapon,
+        gwaioUnits.bumblebeeWeapon,
+        gwaioUnits.icarusWeapon,
+        gwaioUnits.zeusWeapon,
+        gwaioUnits.holkinsWeapon,
+        gwaioUnits.pelterWeapon,
+        gwaioUnits.sparkWeapon,
+        gwaioUnits.sxxWeapon,
+        gwaioUnits.artemisWeapon,
+        gwaioUnits.heliosWeaponAG,
       ];
       weapons.forEach(function (weapon) {
         mods.push(

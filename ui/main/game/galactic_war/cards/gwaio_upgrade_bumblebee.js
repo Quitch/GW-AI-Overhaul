@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,8 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/air/bomber/bomber.json") &&
-        gwaioFunctions.hasUnit("/pa/units/land/land_mine/land_mine.json")
+        gwaioFunctions.hasUnit(gwaioUnits.bumblebee) &&
+        gwaioFunctions.hasUnit(gwaioUnits.landMine)
       ) {
         chance = 60;
       }
@@ -34,37 +35,37 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/bomber/bomber_ammo.json",
+          file: gwaioUnits.bumblebeeAmmo,
           path: "damage",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/air/bomber/bomber_ammo.json",
+          file: gwaioUnits.bumblebeeAmmo,
           path: "splash_damage",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/air/bomber/bomber_ammo.json",
+          file: gwaioUnits.bumblebeeAmmo,
           path: "splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/air/bomber/bomber_ammo.json",
+          file: gwaioUnits.bumblebeeAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/air/bomber/bomber_ammo.json",
+          file: gwaioUnits.bumblebeeAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: "/pa/units/land/land_mine/land_mine.json",
+          value: gwaioUnits.landMine,
         },
         {
-          file: "/pa/units/air/bomber/bomber_tool_weapon.json",
+          file: gwaioUnits.bumblebeeWeapon,
           path: "ammo_per_shot",
           op: "replace",
           value: 425,

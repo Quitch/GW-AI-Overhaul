@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -31,28 +32,28 @@ define([
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-            "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-            "/pa/units/orbital/orbital_factory/orbital_factory.json",
-            "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
-            "/pa/units/orbital/orbital_laser/orbital_laser.json",
-            "/pa/units/orbital/orbital_probe/orbital_probe.json",
-            "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
-            "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-            "/pa/units/orbital/radar_satellite/radar_satellite.json",
-            "/pa/units/orbital/solar_array/solar_array.json",
+            gwaioUnits.anchor,
+            gwaioUnits.jig,
+            gwaioUnits.omega,
+            gwaioUnits.orbitalFabber,
+            gwaioUnits.orbitalFactory,
+            gwaioUnits.avenger,
+            gwaioUnits.sxx,
+            gwaioUnits.hermes,
+            gwaioUnits.artemis,
+            gwaioUnits.radarSatelliteAdvanced,
+            gwaioUnits.arkyd,
+            gwaioUnits.solarArray,
           ]);
           inventory.addMods([
             {
-              file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+              file: gwaioUnits.deepSpaceOrbitalRadar,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_CmdBuild",
             },
             {
-              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              file: gwaioUnits.orbitalFabber,
               path: "buildable_types",
               op: "add",
               value: " | FabBuild",

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/air_defense_adv/air_defense_adv.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.flak)) {
         chance = 60;
       }
 
@@ -35,19 +32,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+          file: gwaioUnits.flakWeapon,
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+          file: gwaioUnits.flakWeapon,
           path: "target_priorities",
           op: "push",
           value: ["Mobile & (Land | Naval)"],
         },
         {
-          file: "/pa/units/land/air_defense_adv/air_defense_adv.json",
+          file: gwaioUnits.flak,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_SurfaceDefense",

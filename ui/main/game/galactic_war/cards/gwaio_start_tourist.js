@@ -3,7 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -37,7 +38,7 @@ define([
           gwaioFunctions.setupCluster(inventory);
           inventory.addMods([
             {
-              file: "/pa/units/commanders/base_commander/base_commander.json",
+              file: gwaioUnits.commander,
               path: "storage.metal",
               op: "multiply",
               value: 200,
@@ -55,8 +56,8 @@ define([
     },
     dull: function (inventory) {
       var units = [
-        "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
-        "/pa/units/land/metal_extractor/metal_extractor.json",
+        gwaioUnits.metalExtractorAdvanced,
+        gwaioUnits.metalExtractor,
       ];
       gwaioFunctions.applyDulls(CARD, inventory, units);
     },

@@ -4,7 +4,8 @@ define([
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, GWCStorage, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, GWCStorage, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -51,10 +52,7 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [
-        "/pa/units/land/tank_armor/tank_armor.json",
-        "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-      ];
+      var units = [gwaioUnits.inferno, gwaioUnits.vanguard];
       gwaioFunctions.applyDulls(CARD, inventory, units);
     },
   };

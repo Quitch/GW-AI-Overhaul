@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/energy_storage/energy_storage.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.energyStorage)) {
         chance = 60;
       }
 
@@ -35,7 +32,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/energy_storage/energy_storage.json",
+          file: gwaioUnits.energyStorage,
           path: "storage.energy",
           op: "multiply",
           value: 4,

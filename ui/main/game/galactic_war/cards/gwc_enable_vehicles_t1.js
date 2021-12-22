@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -62,12 +65,12 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
-        "/pa/units/land/attack_vehicle/attack_vehicle.json",
-        "/pa/units/land/tank_armor/tank_armor.json",
-        "/pa/units/land/tank_hover/tank_hover.json",
-        "/pa/units/land/tank_light_laser/tank_light_laser.json",
-        "/pa/units/land/vehicle_factory/vehicle_factory.json",
+        gwaioUnits.spinner,
+        gwaioUnits.stryker,
+        gwaioUnits.inferno,
+        gwaioUnits.drifter,
+        gwaioUnits.ant,
+        gwaioUnits.vehicleFactory,
       ]);
     },
     dull: function () {

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,9 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/orbital/solar_array/solar_array.json")
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.solarArray)) {
         chance = 60;
       }
 
@@ -33,21 +32,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/solar_array/solar_array.json",
+          file: gwaioUnits.solarArray,
           path: "tools",
           op: "push",
           value: [
             {
-              spec_id:
-                "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+              spec_id: gwaioUnits.gileEBeam,
               aim_bone: "bone_root",
               record_index: 0,
               fire_event: "fired",
               muzzle_bone: "bone_root",
             },
             {
-              spec_id:
-                "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
+              spec_id: gwaioUnits.umbrellaBeam,
               aim_bone: "bone_root",
               record_index: 1,
               fire_event: "fired",

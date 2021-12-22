@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/titan_structure/titan_structure.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.ragnarok)) {
         chance = 60;
       }
 
@@ -35,79 +32,79 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage",
           op: "replace",
           value: 99999,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "splash_damage",
           op: "replace",
           value: 99999,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "splash_damages_allies",
           op: "replace",
           value: true,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "splash_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage_volume.burnable_remove_radius",
           op: "replace",
           value: 100,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage_volume.delay",
           op: "replace",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage_volume.initial_radius",
           op: "replace",
           value: 20,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage_volume.radius_accel",
           op: "replace",
           value: -40,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "damage_volume.radius_velocity",
           op: "replace",
           value: 500,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "burn_damage",
           op: "replace",
           value: 200,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "burn_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
+          file: gwaioUnits.ragnarokPbaoe,
           path: "planet_impact_spec.delay_time",
           op: "replace",
           value: 99999, // this is a hack and if I understood the eval op that might be better

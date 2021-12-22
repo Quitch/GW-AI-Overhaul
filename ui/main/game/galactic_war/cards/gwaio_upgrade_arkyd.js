@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/radar_satellite/radar_satellite.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.arkyd)) {
         chance = 60;
       }
 
@@ -35,31 +32,31 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/radar_satellite/radar_satellite.json",
+          file: gwaioUnits.arkyd,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/radar_satellite/radar_satellite.json",
+          file: gwaioUnits.arkyd,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/radar_satellite/radar_satellite.json",
+          file: gwaioUnits.arkyd,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/radar_satellite/radar_satellite.json",
+          file: gwaioUnits.arkyd,
           path: "recon.observer.items.3.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/radar_satellite/radar_satellite.json",
+          file: gwaioUnits.arkyd,
           path: "recon.observer.items.4.radius",
           op: "multiply",
           value: 1.5,

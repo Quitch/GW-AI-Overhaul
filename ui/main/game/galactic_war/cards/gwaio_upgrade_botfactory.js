@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,7 +24,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/bot_factory/bot_factory.json") &&
+        gwaioFunctions.hasUnit(gwaioUnits.botFactory) &&
         !inventory.hasCard("gwaio_start_rapid")
       ) {
         chance = 60;
@@ -34,7 +35,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_factory/bot_factory.json",
+          file: gwaioUnits.botFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Bot & Mobile & FactoryBuild)",

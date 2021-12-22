@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -37,9 +38,7 @@ define([
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
-          var units = [
-            "/pa/units/commanders/base_commander/base_commander.json",
-          ];
+          var units = [gwaioUnits.commander];
           var mods = [];
           units.forEach(function (unit) {
             mods.push(
@@ -76,8 +75,8 @@ define([
             );
           });
           var weapons = [
-            "/pa/tools/uber_cannon/uber_cannon.json",
-            "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
+            gwaioUnits.commanderSecondary,
+            gwaioUnits.commanderWeapon,
           ];
           weapons.forEach(function (weapon) {
             mods.push(

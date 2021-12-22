@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -31,13 +32,13 @@ define([
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/land/assault_bot/assault_bot.json",
-            "/pa/units/land/bot_aa/bot_aa.json",
-            "/pa/units/land/bot_bomb/bot_bomb.json",
-            "/pa/units/land/bot_factory/bot_factory.json",
-            "/pa/units/land/bot_grenadier/bot_grenadier.json",
-            "/pa/units/land/bot_tesla/bot_tesla.json",
-            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+            gwaioUnits.dox,
+            gwaioUnits.stinger,
+            gwaioUnits.boom,
+            gwaioUnits.botFactory,
+            gwaioUnits.grenadier,
+            gwaioUnits.spark,
+            gwaioUnits.stitch,
           ]);
         } else {
           // Don't clog up a slot.

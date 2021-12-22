@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,13 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_support_commander/bot_support_commander.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.colonel)
       ) {
         chance = 60;
       }
@@ -39,19 +36,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          file: gwaioUnits.colonel,
           path: "death_weapon.ground_ammo_spec",
           op: "replace",
-          value: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
+          value: gwaioUnits.commanderDeath,
         },
         {
-          file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          file: gwaioUnits.colonel,
           path: "death_weapon.air_ammo_spec",
           op: "replace",
-          value: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
+          value: gwaioUnits.commanderDeathAir,
         },
         {
-          file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+          file: gwaioUnits.colonel,
           path: "death_weapon.air_height_threshold",
           op: "replace",
           value: 50,

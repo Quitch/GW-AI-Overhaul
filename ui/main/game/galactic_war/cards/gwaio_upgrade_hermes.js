@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,12 +24,8 @@ define([
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_probe/orbital_probe.json"
-        )
+        gwaioFunctions.hasUnit(gwaioUnits.orbitalLauncher) &&
+        gwaioFunctions.hasUnit(gwaioUnits.hermes)
       ) {
         chance = 60;
       }
@@ -38,19 +35,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
+          file: gwaioUnits.hermes,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
+          file: gwaioUnits.hermes,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/orbital/orbital_probe/orbital_probe.json",
+          file: gwaioUnits.hermes,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,9 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/orbital/ion_defense/ion_defense.json")
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.umbrella)) {
         chance = 60;
       }
 
@@ -33,19 +32,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/ion_defense/ion_defense.json",
+          file: gwaioUnits.umbrella,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_SurfaceDefense",
         },
         {
-          file: "/pa/units/orbital/ion_defense/ion_defense_tool_weapon.json",
+          file: gwaioUnits.umbrellaWeapon,
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/orbital/ion_defense/ion_defense_ammo.json",
+          file: gwaioUnits.umbrellaAmmo,
           path: "turn_rate",
           op: "replace",
           value: 1000,

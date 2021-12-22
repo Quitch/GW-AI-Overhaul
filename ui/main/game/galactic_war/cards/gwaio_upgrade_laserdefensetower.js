@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,21 +24,11 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/laser_defense/laser_defense.json"
-        ) &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/bot_factory.json"
-        ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory/naval_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory/vehicle_factory.json"
-          ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.laserDefenseTower) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.airFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.navalFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) ||
           inventory.hasCard("gwc_start_artillery") ||
           inventory.hasCard("nem_start_tower_rush"))
       ) {
@@ -49,7 +40,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/laser_defense/laser_defense_tool_weapon.json",
+          file: gwaioUnits.laserDefenseTowerWeapon,
           path: "max_range",
           op: "multiply",
           value: 1.25,

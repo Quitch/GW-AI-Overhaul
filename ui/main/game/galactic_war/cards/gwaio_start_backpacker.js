@@ -3,7 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -35,10 +36,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([
-            "/pa/units/land/assault_bot/assault_bot.json",
-            "/pa/units/land/bot_factory/bot_factory.json",
-          ]);
+          inventory.addUnits([gwaioUnits.dox, gwaioUnits.botFactory]);
           inventory.maxCards(inventory.maxCards() + 12);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

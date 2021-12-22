@@ -3,7 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -41,10 +42,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
-          ]);
+          inventory.addUnits([gwaioUnits.ant, gwaioUnits.vehicleFactory]);
           inventory.maxCards(inventory.maxCards() - 2);
         }
         // Support for GWAIO v4.2.2 and earlier

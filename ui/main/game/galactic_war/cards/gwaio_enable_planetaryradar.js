@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,21 +24,13 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
         inventory.hasCard("gwaio_upgrade_airfactory") ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
         inventory.hasCard("gwaio_upgrade_botfactory") ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
         inventory.hasCard("gwaio_upgrade_navalfactory") ||
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
         inventory.hasCard("gwaio_upgrade_vehiclefactory")
       ) {
         chance = 100;
@@ -48,26 +41,26 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "unit_name",
           op: "replace",
           value: "Planetary Radar",
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "display_name",
           op: "replace",
           value: "!LOC:Planetary Radar",
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "description",
           op: "replace",
           value:
             "!LOC:Planetary Radar - Detects enemy land, sea, and air units across the planet.",
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "unit_types",
           op: "replace",
           value: [
@@ -81,25 +74,25 @@ define([
           ],
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "max_health",
           op: "multiply",
           value: 3,
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "build_metal_cost",
           op: "multiply",
           value: 8,
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "consumption.energy",
           op: "multiply",
           value: 50,
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "recon.observer.items",
           op: "replace",
           value: [
@@ -141,7 +134,7 @@ define([
           ],
         },
         {
-          file: "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
+          file: gwaioUnits.deepSpaceOrbitalRadar,
           path: "selection_icon.diameter",
           op: "replace",
           value: 55,

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/mining_platform/mining_platform.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.jig)) {
         chance = 60;
       }
 
@@ -35,7 +32,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
+          file: gwaioUnits.jigDeath,
           path: "splash_damages_allies",
           op: "replace",
           value: false,

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/artillery_long/artillery_long.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.holkins)) {
         chance = 60;
       }
 
@@ -35,19 +32,19 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/artillery_long/artillery_long.json",
+          file: gwaioUnits.holkins,
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 3,
         },
         {
-          file: "/pa/units/land/artillery_long/artillery_long.json",
+          file: gwaioUnits.holkins,
           path: "tools.0.muzzle_bone",
           op: "replace",
           value: ["socket_muzzle", "socket_muzzle", "socket_muzzle"],
         },
         {
-          file: "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+          file: gwaioUnits.holkinsWeapon,
           path: "firing_standard_deviation",
           op: "multiply",
           value: 3,

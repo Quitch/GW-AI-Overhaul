@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,9 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit("/pa/units/land/assault_bot/assault_bot.json")
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.dox)) {
         chance = 60;
       }
 
@@ -33,32 +32,32 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/assault_bot/assault_bot.json",
+          file: gwaioUnits.dox,
           path: "events.fired.effect_spec",
           op: "replace",
           value:
             "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
         },
         {
-          file: "/pa/units/land/assault_bot/assault_bot_tool_weapon.json",
+          file: gwaioUnits.doxWeapon,
           path: "max_range",
           op: "replace",
           value: 20,
         },
         {
-          file: "/pa/units/land/assault_bot/assault_bot_tool_weapon.json",
+          file: gwaioUnits.doxWeapon,
           path: "spread_fire",
           op: "replace",
           value: true,
         },
         {
-          file: "/pa/units/land/assault_bot/assault_bot_ammo.json",
+          file: gwaioUnits.doxAmmo,
           path: "ammo_type",
           op: "replace",
           value: "AMMO_Beam",
         },
         {
-          file: "/pa/units/land/assault_bot/assault_bot_ammo.json",
+          file: gwaioUnits.doxAmmo,
           path: "damage",
           op: "replace",
           value: 100,

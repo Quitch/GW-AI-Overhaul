@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -47,16 +50,16 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-        "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
-        "/pa/units/orbital/orbital_lander/orbital_lander.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser.json",
-        "/pa/units/orbital/orbital_probe/orbital_probe.json",
-        "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
-        "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-        "/pa/units/orbital/radar_satellite/radar_satellite.json",
-        "/pa/units/orbital/solar_array/solar_array.json",
+        gwaioUnits.omega,
+        gwaioUnits.orbitalFabber,
+        gwaioUnits.avenger,
+        gwaioUnits.astraeus,
+        gwaioUnits.sxx,
+        gwaioUnits.hermes,
+        gwaioUnits.artemis,
+        gwaioUnits.radarSatelliteAdvanced,
+        gwaioUnits.arkyd,
+        gwaioUnits.solarArray,
       ];
       var mods = [];
       units.forEach(function (unit) {

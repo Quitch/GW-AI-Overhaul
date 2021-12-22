@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,11 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/missile_ship/missile_ship.json")
+        gwaioFunctions.hasUnit(gwaioUnits.stingray)
       ) {
         chance = 30;
       }
@@ -37,37 +36,36 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          file: gwaioUnits.stingray,
           path: "tools",
           op: "push",
           value: {
-            spec_id:
-              "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+            spec_id: gwaioUnits.gileEBeam,
             aim_bone: "socket_missile_muzzle01",
             record_index: 0,
             muzzle_bone: ["socket_missile_muzzle01", "socket_missile_muzzle02"],
           },
         },
         {
-          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          file: gwaioUnits.stingray,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          file: gwaioUnits.stingray,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          file: gwaioUnits.stingray,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/sea/missile_ship/missile_ship.json",
+          file: gwaioUnits.stingray,
           path: "recon.observer.items.3.radius",
           op: "multiply",
           value: 1.5,

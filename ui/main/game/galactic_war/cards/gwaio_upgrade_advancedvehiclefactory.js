@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,11 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced)) {
         chance = 60;
       }
 
@@ -34,12 +31,12 @@ define([
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
-        "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
-        "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-        "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
-        "/pa/units/land/tank_flak/tank_flak.json",
-        "/pa/units/land/tank_nuke/tank_nuke.json",
+        gwaioUnits.vehicleFabberAdvanced,
+        gwaioUnits.leveler,
+        gwaioUnits.vanguard,
+        gwaioUnits.sheller,
+        gwaioUnits.storm,
+        gwaioUnits.manhattan,
       ];
       var mods = units.map(function (unit) {
         return {
@@ -50,7 +47,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+        file: gwaioUnits.vehicleFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,

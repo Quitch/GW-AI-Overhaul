@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -23,11 +24,9 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/land/tank_nuke/tank_nuke.json")
+        gwaioFunctions.hasUnit(gwaioUnits.manhattan)
       ) {
         chance = 60;
       }
@@ -37,37 +36,37 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "splash_radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "full_damage_splash_radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "burn_radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "damage_volume.initial_radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "damage_volume.radius_velocity",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_nuke/tank_nuke_pbaoe.json",
+          file: gwaioUnits.manhattanDeath,
           path: "damage_volume.burnable_remove_radius",
           op: "multiply",
           value: 2,

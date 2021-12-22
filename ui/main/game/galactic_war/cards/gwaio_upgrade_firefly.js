@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -22,7 +23,7 @@ define([
     },
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/air/air_scout/air_scout.json")) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.firefly)) {
         chance = 60;
       }
 
@@ -31,31 +32,31 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: gwaioUnits.firefly,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id: "/pa/units/air/air_scout/air_scout_tool_weapon.json",
+              spec_id: gwaioUnits.fireflyWeapon,
               aim_bone: "bone_root",
               muzzle_bone: "bone_root",
             },
           ],
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: gwaioUnits.firefly,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: gwaioUnits.firefly,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/air/air_scout/air_scout.json",
+          file: gwaioUnits.firefly,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,
