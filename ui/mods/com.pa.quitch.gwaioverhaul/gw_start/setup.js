@@ -215,7 +215,6 @@ if (!gwaioSetupLoaded) {
           "require",
           "shared/gw_common",
           "shared/gw_factions",
-          "pages/gw_start/gw_breeder",
           "pages/gw_start/gw_teams",
           "main/shared/js/star_system_templates",
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
@@ -224,12 +223,12 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/breeder.js",
         ],
         function (
           require,
           GW,
           GWFactions,
-          GWBreeder,
           GWTeams,
           normalSystemTemplates, // window.star_system_templates is set instead
           easySystemTemplates,
@@ -237,7 +236,8 @@ if (!gwaioSetupLoaded) {
           gwaioBank,
           gwaioLore,
           gwaioDifficulty,
-          gwaioFunctions
+          gwaioFunctions,
+          gwaioBreeder
         ) {
           var selectedDifficulty = 0;
 
@@ -544,61 +544,63 @@ if (!gwaioSetupLoaded) {
                 neutralStars = 4;
               }
 
-              return GWBreeder.populate({
-                galaxy: game.galaxy(),
-                teams: teams,
-                neutralStars: neutralStars,
-                orderedSpawn: false,
-                spawn: function () {
-                  //empty
-                },
-                canSpread: _.constant(true),
-                spread: function (star, ai) {
-                  var team = teams[ai.team];
+              return gwaioBreeder
+                .populate({
+                  galaxy: game.galaxy(),
+                  teams: teams,
+                  neutralStars: neutralStars,
+                  orderedSpawn: false,
+                  spawn: function () {
+                    //empty
+                  },
+                  canSpread: _.constant(true),
+                  spread: function (star, ai) {
+                    var team = teams[ai.team];
 
-                  // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
-                  var makeWorker = function () {
-                    if (team.workers) {
-                      _.assign(ai, _.cloneDeep(_.sample(team.workers)));
-                    } else if (team.remainingMinions) {
-                      var minion = _.sample(
-                        team.remainingMinions.length
-                          ? team.remainingMinions
-                          : team.faction.minions
-                      );
-                      _.assign(ai, _.cloneDeep(minion));
-                      _.remove(team.remainingMinions, { name: ai.name });
-                    }
-                    return $.when(ai);
-                  };
+                    // GWTeams.makeWorker() replaced because Penchant needs _.cloneDeep() to preserve personality_tags
+                    var makeWorker = function () {
+                      if (team.workers) {
+                        _.assign(ai, _.cloneDeep(_.sample(team.workers)));
+                      } else if (team.remainingMinions) {
+                        var minion = _.sample(
+                          team.remainingMinions.length
+                            ? team.remainingMinions
+                            : team.faction.minions
+                        );
+                        _.assign(ai, _.cloneDeep(minion));
+                        _.remove(team.remainingMinions, { name: ai.name });
+                      }
+                      return $.when(ai);
+                    };
 
-                  return makeWorker().then(function () {
-                    if (team.workers) {
-                      _.remove(team.workers, { name: ai.name });
-                    }
+                    return makeWorker().then(function () {
+                      if (team.workers) {
+                        _.remove(team.workers, { name: ai.name });
+                      }
 
-                    ai.faction = teamInfo[ai.team].faction;
-                    teamInfo[ai.team].workers.push({
-                      ai: ai,
-                      star: star,
+                      ai.faction = teamInfo[ai.team].faction;
+                      teamInfo[ai.team].workers.push({
+                        ai: ai,
+                        star: star,
+                      });
                     });
-                  });
-                },
-                boss: function (star, ai) {
-                  return GWTeams.makeBoss(
-                    star,
-                    ai,
-                    teams[ai.team],
-                    systemTemplates
-                  ).then(function () {
-                    ai.faction = teamInfo[ai.team].faction;
-                    teamInfo[ai.team].boss = ai;
-                  });
-                },
-                breedToOrigin: game.isTutorial(),
-              }).then(function () {
-                return teamInfo;
-              });
+                  },
+                  boss: function (star, ai) {
+                    return GWTeams.makeBoss(
+                      star,
+                      ai,
+                      teams[ai.team],
+                      systemTemplates
+                    ).then(function () {
+                      ai.faction = teamInfo[ai.team].faction;
+                      teamInfo[ai.team].boss = ai;
+                    });
+                  },
+                  breedToOrigin: game.isTutorial(),
+                })
+                .then(function () {
+                  return teamInfo;
+                });
             });
 
             var finishAis = populate.then(function (teamInfo) {
