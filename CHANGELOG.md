@@ -16,6 +16,7 @@
 - Bot Combat Tech health and speed bonuses not being applied to the Gil-E
 - Complete Bot Tech tooltip not listing the Stinger or Gil-E
 - Complete Orbital Tech tooltip not listing the ARKYD
+- Stinger Upgrade tooltip
 
 ## v5.26.1 - 2021-12-08
 
