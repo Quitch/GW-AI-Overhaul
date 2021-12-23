@@ -245,11 +245,10 @@ define([
        This could also mean if a mod changes how these cards work these listings become inaccurate. */
       {
         id: "gwc_enable_air_all",
-        units: [
+        units: gwaioGroups.mobileAir.concat(
           gwaioUnits.airFactoryAdvanced,
-          gwaioUnits.airFactory,
-          gwaioGroups.mobileAir,
-        ],
+          gwaioUnits.airFactory
+        ),
       },
       {
         id: "gwc_enable_air_t1",
@@ -277,11 +276,10 @@ define([
       },
       {
         id: "gwc_enable_bots_all",
-        units: [
+        units: gwaioGroups.mobileBots.concat(
           gwaioUnits.botFactoryAdvanced,
-          gwaioUnits.botFactory,
-          gwaioGroups.mobileBots,
-        ],
+          gwaioUnits.botFactory
+        ),
       },
       {
         id: "gwc_enable_bots_t1",
@@ -381,11 +379,10 @@ define([
       },
       {
         id: "gwc_enable_vehicles_all",
-        units: [
+        units: gwaioGroups.mobileVehicles.concat(
           gwaioUnits.vehicleFactoryAdvanced,
-          gwaioUnits.vehicleFactory,
-          gwaioGroups.mobileVehicles,
-        ],
+          gwaioUnits.vehicleFactory
+        ),
       },
       {
         id: "gwc_enable_vehicles_t1",
