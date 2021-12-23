@@ -406,31 +406,6 @@ if (!gwaioSetupLoaded) {
             });
           });
 
-          // GWDealer.dealCard
-          var gwaioDealStartCard = function (params) {
-            var result = $.Deferred();
-            loaded.then(function () {
-              var card = _.find(processedStartCards, { id: params.id });
-              if (_.isUndefined(card)) {
-                console.error("No matching start card ID found");
-              }
-              var context =
-                card.getContext &&
-                card.getContext(params.galaxy, params.inventory);
-              var deal = card.deal && card.deal(params.star, context);
-              var product = { id: params.id };
-              var cardParams = deal && deal.params;
-              if (cardParams && _.isObject(cardParams)) {
-                _.assign(product, cardParams);
-              }
-              card.keep && card.keep(deal, context);
-              card.releaseContext && card.releaseContext(context);
-              result.resolve(product, deal);
-            });
-            return result;
-          };
-          /* end of GWAIO implementation of GWDealer */
-
           // replicates the functionality of model.makeGame() but
           // only generates the galaxy once the player clicks Go To War
           model.navToNewGame = function () {
@@ -497,6 +472,29 @@ if (!gwaioSetupLoaded) {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
               }
+
+              var gwaioDealStartCard = function (params) {
+                var result = $.Deferred();
+                loaded.then(function () {
+                  var card = _.find(processedStartCards, { id: params.id });
+                  if (_.isUndefined(card)) {
+                    console.error("No matching start card ID found");
+                  }
+                  var context =
+                    card.getContext &&
+                    card.getContext(params.galaxy, params.inventory);
+                  var deal = card.deal && card.deal(params.star, context);
+                  var product = { id: params.id };
+                  var cardParams = deal && deal.params;
+                  if (cardParams && _.isObject(cardParams)) {
+                    _.assign(product, cardParams);
+                  }
+                  card.keep && card.keep(deal, context);
+                  card.releaseContext && card.releaseContext(context);
+                  result.resolve(product, deal);
+                });
+                return result;
+              };
               return gwaioDealStartCard({
                 id: model.activeStartCard().id(),
                 inventory: game.inventory(),
