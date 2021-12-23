@@ -1,12 +1,13 @@
 define(function () {
   var factionName = "Synchronous";
+  var factionColour = [
+    [126, 226, 101],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.2,
@@ -342,10 +343,7 @@ define(function () {
 
   return {
     name: factionName,
-    color: [
-      [126, 226, 101],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     teams: [
       {
         name: factionName,

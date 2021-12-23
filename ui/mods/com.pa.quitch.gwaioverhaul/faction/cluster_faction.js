@@ -3,13 +3,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (planets, gwaioUnits) {
   var factionName = "Cluster";
+  var factionColour = [
+    [128, 128, 128],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.45,
@@ -527,10 +528,7 @@ define([
 
   return {
     name: factionName,
-    color: [
-      [128, 128, 128],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     teams: [
       {
         name: factionName,

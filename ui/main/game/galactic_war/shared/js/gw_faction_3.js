@@ -1,12 +1,13 @@
 define(function () {
   var factionName = "Revenants";
+  var factionColour = [
+    [236, 34, 35],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.25,
@@ -344,10 +345,7 @@ define(function () {
 
   return {
     name: factionName,
-    color: [
-      [236, 34, 35],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     teams: [
       {
         name: factionName,

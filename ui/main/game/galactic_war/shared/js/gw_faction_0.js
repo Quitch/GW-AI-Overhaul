@@ -1,12 +1,13 @@
 define(function () {
   var factionName = "Legonis Machina";
+  var factionColour = [
+    [0, 176, 255],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.55,
@@ -345,10 +346,7 @@ define(function () {
 
   return {
     name: factionName,
-    color: [
-      [0, 176, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     teams: [
       {
         name: factionName,

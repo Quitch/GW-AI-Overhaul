@@ -1,12 +1,13 @@
 define(function () {
   var factionName = "Foundation";
+  var factionColour = [
+    [145, 87, 199],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.2,
@@ -344,10 +345,7 @@ define(function () {
 
   return {
     name: factionName,
-    color: [
-      [145, 87, 199],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     teams: [
       {
         name: factionName,
