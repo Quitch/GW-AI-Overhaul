@@ -193,13 +193,26 @@ if (!gwaioSetupLoaded) {
       model.gwaioFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
+      // We change how we monitor model.ready() to prevent
+      // Shared Systems for Galactic War breaking our new lobby
+      var enableGoToWar = ko.observable(true);
+      model.ready = ko.computed(function () {
+        return enableGoToWar() && !!model.activeStartCard();
+      });
       api.mods.getMounted("client", true).then(function (mods) {
         var modMounted = function (modIdentifier) {
           return _.some(mods, { identifier: modIdentifier });
         };
-
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
+          model.selectedNames.subscribe(function (names) {
+            if (_.isEmpty(names)) {
+              enableGoToWar(false);
+            } else {
+              enableGoToWar(true);
+            }
+          });
+          // Remove System Scaling feature as this mod can't use it
           $("#system-scaling").remove();
           model.gwaioDifficultySettings.systemScaling(false);
         }
@@ -412,7 +425,7 @@ if (!gwaioSetupLoaded) {
             if (!model.ready()) {
               return;
             }
-            model.newGame(undefined);
+            enableGoToWar(false);
 
             var busyToken = {};
             model.makeGameBusy(busyToken);
