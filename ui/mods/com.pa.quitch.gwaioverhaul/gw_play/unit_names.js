@@ -230,11 +230,11 @@ define([
       },
       {
         name: "!LOC:Vehicle Factory",
-        path: gwaioUnits.vehicleFactoryAdvanced,
+        path: gwaioUnits.vehicleFactory,
       },
       {
         name: "!LOC:Advanced Vehicle Factory",
-        path: gwaioUnits.vehicleFactory,
+        path: gwaioUnits.vehicleFactoryAdvanced,
       },
       {
         name: "!LOC:Planetary Radar",
