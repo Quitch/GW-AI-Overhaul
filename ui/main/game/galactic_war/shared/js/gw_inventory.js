@@ -199,7 +199,6 @@ define(["require"], function (require) {
     // Get a tag value.  When called during card processing, an empty
     // context will be replaced with the current card.
     getTag: function (context, name, def) {
-      console.log("Get tag", context, name, def);
       var self = this;
       var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
@@ -215,7 +214,6 @@ define(["require"], function (require) {
         }
         tagContext[name] = def;
       }
-      console.log(tagContext[name]);
       return tagContext[name];
     },
     setTag: function (context, name, value) {
