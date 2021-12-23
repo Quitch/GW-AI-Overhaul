@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,30 +16,25 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/bot_bomb/bot_bomb.json") &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.boom) &&
+        gwaioFunctions.hasUnit(gwaioUnits.lob)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher_ammo.json",
+          file: gwaioUnits.lobAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: "/pa/units/land/bot_bomb/bot_bomb.json",
+          value: gwaioUnits.boom,
         },
       ]);
     },

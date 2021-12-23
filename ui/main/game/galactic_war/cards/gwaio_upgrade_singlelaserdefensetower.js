@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,44 +16,36 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/laser_defense_single/laser_defense_single.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.singleLaserDefenseTower)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       var mods = [
         {
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id:
-                "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+              spec_id: gwaioUnits.mendBuildArm,
               aim_bone: "bone_pitch",
             },
           ],
         },
         {
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "command_caps",
           op: "replace",
           value: ["ORDER_Reclaim", "ORDER_Repair"],
         },
         {
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "fx_offsets",
           op: "replace",
           value: {
@@ -64,7 +57,7 @@ define([
           },
         },
         {
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "audio",
           op: "replace",
           value: {
@@ -79,20 +72,21 @@ define([
           },
         },
         {
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Construction",
         },
       ];
       // Reinstate the Nomad Commander loadout's structure movement
-      if (inventory.hasCard("gwaio_start_nomad"))
+      if (inventory.hasCard("gwaio_start_nomad")) {
         mods.push({
-          file: "/pa/units/land/laser_defense_single/laser_defense_single.json",
+          file: gwaioUnits.singleLaserDefenseTower,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
         });
+      }
       inventory.addMods(mods);
 
       inventory.addAIMods([

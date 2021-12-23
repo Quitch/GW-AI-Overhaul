@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,24 @@ define([
         found: "/VO/Computer/gw/board_tech_available_bot",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
-        "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json",
-        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json",
-        "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
-        "/pa/units/land/bot_sniper/bot_sniper.json",
-        "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
-        "/pa/units/land/bot_support_commander/bot_support_commander.json",
+        gwaioUnits.bluehawk,
+        gwaioUnits.botFabberAdvanced,
+        gwaioUnits.mend,
+        gwaioUnits.slammer,
+        gwaioUnits.gilE,
+        gwaioUnits.locusts,
+        gwaioUnits.colonel,
       ];
       var mods = units.map(function (unit) {
         return {
@@ -50,7 +44,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+        file: gwaioUnits.botFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,

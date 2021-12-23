@@ -1,4 +1,8 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -13,11 +17,7 @@ define(["shared/gw_common"], function (GW) {
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
@@ -28,13 +28,19 @@ define(["shared/gw_common"], function (GW) {
           chance = 12;
         } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
           chance = 24;
-          if (dist > 6) chance = 120;
+          if (dist > 6) {
+            chance = 120;
+          }
         } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
           chance = 24;
-          if (dist > 9) chance = 120;
+          if (dist > 9) {
+            chance = 120;
+          }
         } else {
           chance = 24;
-          if (dist > 12) chance = 120;
+          if (dist > 12) {
+            chance = 120;
+          }
         }
       }
 
@@ -42,22 +48,22 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       var ammos = [
-        "/pa/ammo/mine_pbaoe/mine_pbaoe.json",
-        "/pa/units/land/air_defense_adv/air_defense_adv_ammo.json",
-        "/pa/units/land/air_defense/air_defense_ammo.json",
-        "/pa/units/land/laser_defense_adv/laser_defense_adv_ammo.json",
-        "/pa/units/land/laser_defense_single/laser_defense_single_ammo.json",
-        "/pa/units/land/laser_defense/laser_defense_ammo.json",
-        "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher_ammo.json",
-        "/pa/units/orbital/defense_satellite/defense_satellite_ammo_ground.json",
-        "/pa/units/orbital/defense_satellite/defense_satellite_ammo_orbital.json",
-        "/pa/units/orbital/ion_defense/ion_defense_ammo.json",
-        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
-        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
-        "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo.json",
-        "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_land.json",
-        "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_water.json",
-        "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+        gwaioUnits.landMineAmmo,
+        gwaioUnits.flakAmmo,
+        gwaioUnits.galataAmmo,
+        gwaioUnits.laserDefenseTowerAdvancedAmmo,
+        gwaioUnits.singleLaserDefenseTowerAmmo,
+        gwaioUnits.laserDefenseTowerAmmo,
+        gwaioUnits.catapultAmmo,
+        gwaioUnits.anchorAmmoAG,
+        gwaioUnits.anchorAmmoAO,
+        gwaioUnits.umbrellaAmmo,
+        gwaioUnits.torpedoLauncherAdvancedLandAmmo,
+        gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
+        gwaioUnits.torpedoLauncherAdvancedAmmo,
+        gwaioUnits.torpedoLauncherLandAmmo,
+        gwaioUnits.torpedoLauncherWaterAmmo,
+        gwaioUnits.torpedoLauncherAmmo,
       ];
       var mods = [];
       ammos.forEach(function (ammo) {

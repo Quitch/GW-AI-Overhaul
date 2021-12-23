@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,24 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_start_paratrooper") ||
           inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.mend)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
+          file: gwaioUnits.mendBuildArm,
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,

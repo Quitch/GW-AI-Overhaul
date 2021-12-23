@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,40 +16,29 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/unit_cannon/unit_cannon.json") &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.unitCannon) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-          ) ||
+          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/unit_cannon/unit_cannon.json",
+          file: gwaioUnits.unitCannon,
           path: "factory.spawn_points",
           op: "push",
           value: [

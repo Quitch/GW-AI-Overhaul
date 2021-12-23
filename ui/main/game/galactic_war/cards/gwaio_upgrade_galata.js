@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,40 +16,37 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/air_defense/air_defense.json"))
+      if (gwaioFunctions.hasUnit(gwaioUnits.galata)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/air_defense/air_defense.json",
+          file: gwaioUnits.galata,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_SurfaceDefense",
         },
         {
-          file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
+          file: gwaioUnits.galataWeapon,
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
+          file: gwaioUnits.galataWeapon,
           path: "target_priorities",
           op: "push",
           value: ["Mobile & (Land | Naval)"],
         },
         {
-          file: "/pa/units/land/air_defense/air_defense_ammo.json",
+          file: gwaioUnits.galataAmmo,
           path: "armor_damage_map",
           op: "replace",
           value: {},

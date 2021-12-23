@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,61 +16,50 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit("/pa/units/land/radar/radar.json") &&
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory/bot_factory.json"
-        ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/naval_factory/naval_factory.json"
-          ) ||
-          gwaioFunctions.hasUnit(
-            "/pa/units/land/vehicle_factory/vehicle_factory.json"
-          ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.radar) &&
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.airFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.navalFactory) ||
+          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) ||
           inventory.hasCard("gwc_start_artillery"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/radar/radar.json",
+          file: gwaioUnits.radar,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar/radar.json",
+          file: gwaioUnits.radar,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar/radar.json",
+          file: gwaioUnits.radar,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar/radar.json",
+          file: gwaioUnits.radar,
           path: "recon.observer.items.3.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: "/pa/units/land/radar/radar.json",
+          file: gwaioUnits.radar,
           path: "recon.observer.items.4.radius",
           op: "multiply",
           value: 1.5,

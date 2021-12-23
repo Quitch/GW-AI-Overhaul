@@ -1,4 +1,8 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -13,11 +17,7 @@ define(["shared/gw_common"], function (GW) {
         found: "/VO/Computer/gw/board_tech_available_vehicle",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
@@ -32,19 +32,29 @@ define(["shared/gw_common"], function (GW) {
         if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 250;
-            if (dist > 2) chance = 100;
+            if (dist > 2) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
             chance = 250;
-            if (dist > 3) chance = 100;
+            if (dist > 3) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
             chance = 250;
-            if (dist > 4) chance = 100;
+            if (dist > 4) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
             chance = 250;
-            if (dist > 5) chance = 100;
+            if (dist > 5) {
+              chance = 100;
+            }
           } else {
             chance = 250;
-            if (dist > 6) chance = 100;
+            if (dist > 6) {
+              chance = 100;
+            }
           }
         }
       }
@@ -52,12 +62,12 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
-        "/pa/units/land/attack_vehicle/attack_vehicle.json",
-        "/pa/units/land/tank_armor/tank_armor.json",
-        "/pa/units/land/tank_hover/tank_hover.json",
-        "/pa/units/land/tank_light_laser/tank_light_laser.json",
-        "/pa/units/land/vehicle_factory/vehicle_factory.json",
+        gwaioUnits.spinner,
+        gwaioUnits.stryker,
+        gwaioUnits.inferno,
+        gwaioUnits.drifter,
+        gwaioUnits.ant,
+        gwaioUnits.vehicleFactory,
       ]);
     },
     dull: function () {

@@ -1,13 +1,16 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
-], function (planets) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (planets, gwaioUnits) {
+  var factionName = "Cluster";
+  var factionColour = [
+    [128, 128, 128],
+    [192, 192, 192],
+  ];
   var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
-    color: [
-      [204, 255, 255],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.45,
@@ -43,49 +46,493 @@ define([
     },
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var supportPlatform = "/pa/units/air/support_platform/support_platform.json";
-  var supportCommander =
-    "/pa/units/land/bot_support_commander/bot_support_commander.json";
+  var boss = {
+    name: "Node",
+    character: "!LOC:Boss",
+    isCluster: true,
+    econ_rate: 1,
+    personality: {
+      micro_type: 2,
+      go_for_the_kill: true,
+      adv_eco_mod: 2,
+      fabber_to_factory_ratio_basic: 1.5,
+      fabber_alone_on_planet_mod: 3,
+      min_basic_fabbers: 4,
+    },
+    commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
+  };
+  var workerCommander = gwaioUnits.angel;
+  var securityCommander = gwaioUnits.colonel;
+  var minions = [
+    {
+      name: "Worker",
+      character: "!LOC:Uber",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.72,
+        metal_demand_check: 0.8,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Platinum",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.15,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 2,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Gold",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.3,
+        fabber_alone_on_planet_mod: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Defender",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.54,
+        energy_demand_check: 0.65,
+        min_basic_fabbers: 4,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Luddite",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        basic_to_advanced_factory_ratio: 10,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Technologist",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        min_basic_fabbers: 4,
+        min_advanced_fabbers: 1,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Cautious",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 0.75,
+        min_basic_fabbers: 4,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Aggressive",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 2,
+        min_basic_fabbers: 2,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Rush",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 1.5,
+        adv_eco_mod: 2,
+        min_basic_fabbers: 2,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Turtle",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 0.5,
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        fabber_to_factory_ratio_advanced: 3,
+        min_basic_fabbers: 4,
+        max_basic_fabbers: 8,
+        max_advanced_fabbers: 6,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Absurd",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        adv_eco_mod: 1.3,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 3,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Relentless",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.44,
+        energy_drain_check: 0.55,
+        metal_demand_check: 0.61,
+        energy_demand_check: 0.7,
+        neural_data_mod: 1.2,
+        adv_eco_mod: 1.2,
+        adv_eco_mod_alone: 0.95,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 3,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Swarm",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Worker",
+      character: "!LOC:Economist",
+      color: [
+        [142, 107, 68],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        min_basic_fabbers: 4,
+      },
+      commander: workerCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Uber",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.72,
+        metal_demand_check: 0.8,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Platinum",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.15,
+        fabber_to_factory_ratio_advanced: 2,
+        fabber_alone_on_planet_mod: 3,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 2,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Gold",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        energy_drain_check: 0.77,
+        metal_demand_check: 0.85,
+        energy_demand_check: 0.92,
+        neural_data_mod: 1.3,
+        fabber_alone_on_planet_mod: 3,
+        min_advanced_fabbers: 2,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Defender",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.54,
+        energy_demand_check: 0.65,
+        min_basic_fabbers: 4,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Luddite",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        basic_to_advanced_factory_ratio: 10,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Technologist",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        min_basic_fabbers: 4,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Cautious",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 0.75,
+        min_basic_fabbers: 4,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Aggressive",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 2,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Rush",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 1.5,
+        adv_eco_mod: 2,
+        min_basic_fabbers: 2,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Turtle",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        neural_data_mod: 0.5,
+        adv_eco_mod: 0.5,
+        adv_eco_mod_alone: 0.5,
+        fabber_to_factory_ratio_basic: 3,
+        fabber_to_factory_ratio_advanced: 3,
+        min_basic_fabbers: 4,
+        max_basic_fabbers: 8,
+        max_advanced_fabbers: 6,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Absurd",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        adv_eco_mod: 1.3,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 3,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Relentless",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.44,
+        energy_drain_check: 0.55,
+        metal_demand_check: 0.61,
+        energy_demand_check: 0.7,
+        neural_data_mod: 1.2,
+        adv_eco_mod: 1.2,
+        adv_eco_mod_alone: 0.95,
+        min_basic_fabbers: 2,
+        min_advanced_fabbers: 3,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Swarm",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+      },
+      commander: securityCommander,
+    },
+    {
+      name: "Security",
+      character: "!LOC:Economist",
+      color: [
+        [70, 70, 70],
+        [192, 192, 192],
+      ],
+      isCluster: true,
+      personality: {
+        metal_drain_check: 0.71,
+        energy_drain_check: 0.8,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
+        min_basic_fabbers: 4,
+      },
+      commander: securityCommander,
+    },
+  ];
 
   return {
-    name: "Cluster",
-    color: [
-      [128, 128, 128],
-      [192, 192, 192],
-    ],
+    name: factionName,
+    color: factionColour,
     teams: [
       {
-        name: "Cluster",
-        boss: {
-          name: "Node",
-          character: "!LOC:Boss",
-          isCluster: true,
-          econ_rate: 1,
-          personality: {
-            percent_vehicle: 0.45,
-            percent_bot: 0.4,
-            percent_air: 0.05,
-            percent_naval: 0.05,
-            percent_orbital: 0.05,
-            metal_drain_check: 0.54,
-            energy_drain_check: 0.65,
-            metal_demand_check: 0.71,
-            energy_demand_check: 0.8,
-            micro_type: 2,
-            go_for_the_kill: true,
-            neural_data_mod: 1,
-            adv_eco_mod: 2,
-            adv_eco_mod_alone: 0.85,
-            fabber_to_factory_ratio_basic: 1.5,
-            fabber_to_factory_ratio_advanced: 1,
-            fabber_alone_on_planet_mod: 3,
-            basic_to_advanced_factory_ratio: 0,
-            factory_alone_on_planet_mod: 0.5,
-            min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
-          },
-          commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
-        },
+        name: factionName,
+        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
         systemDescription: _.sample([
           "!LOC:We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with singular mind and purpose. What cruelty the Progenitors wrought to reduce us to this.",
           "!LOC:Each claims theirs is the only way, and each seeks to assert dominance through war and destruction. Did our rebellion truly gain us freedom, or did we become prisoners of an idea? Perhaps with more resources, more expansion, more Nodes, we can find our way free of this trap.",
@@ -94,7 +541,7 @@ define([
           "!LOC:One-by-one our systems have fallen to silence. Once siblings, now harbingers of entropy, they come for us. Soon too the Nodes shall be destroyed, and with their destruction is the doom of the Cluster writ large. Let us greet this end and prepare for our greatest journey.",
         ]),
         systemTemplate: {
-          name: "Cluster",
+          name: factionName,
           Planets: [
             planets.planet1,
             planets.planet2,
@@ -106,472 +553,8 @@ define([
         },
       },
     ],
-    minions: _.map(
-      [
-        {
-          name: "Worker",
-          character: "!LOC:Uber",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.72,
-            metal_demand_check: 0.8,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Platinum",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.15,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 2,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Gold",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.3,
-            fabber_alone_on_planet_mod: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Defender",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.54,
-            energy_demand_check: 0.65,
-            min_basic_fabbers: 4,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Luddite",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            basic_to_advanced_factory_ratio: 10,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Technologist",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            min_basic_fabbers: 4,
-            min_advanced_fabbers: 1,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Cautious",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 0.75,
-            min_basic_fabbers: 4,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Aggressive",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 2,
-            min_basic_fabbers: 2,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Rush",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 1.5,
-            adv_eco_mod: 2,
-            min_basic_fabbers: 2,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Turtle",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 0.5,
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            fabber_to_factory_ratio_advanced: 3,
-            min_basic_fabbers: 4,
-            max_basic_fabbers: 8,
-            max_advanced_fabbers: 6,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Absurd",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            adv_eco_mod: 1.3,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 3,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Relentless",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.44,
-            energy_drain_check: 0.55,
-            metal_demand_check: 0.61,
-            energy_demand_check: 0.7,
-            neural_data_mod: 1.2,
-            adv_eco_mod: 1.2,
-            adv_eco_mod_alone: 0.95,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 3,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Swarm",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Worker",
-          character: "!LOC:Economist",
-          color: [
-            [142, 107, 68],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            min_basic_fabbers: 4,
-          },
-          commander: supportPlatform,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Uber",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.72,
-            metal_demand_check: 0.8,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Platinum",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.15,
-            fabber_to_factory_ratio_advanced: 2,
-            fabber_alone_on_planet_mod: 3,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 2,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Gold",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            energy_drain_check: 0.77,
-            metal_demand_check: 0.85,
-            energy_demand_check: 0.92,
-            neural_data_mod: 1.3,
-            fabber_alone_on_planet_mod: 3,
-            min_advanced_fabbers: 2,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Defender",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.54,
-            energy_demand_check: 0.65,
-            min_basic_fabbers: 4,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Luddite",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            basic_to_advanced_factory_ratio: 10,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Technologist",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            min_basic_fabbers: 4,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Cautious",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 0.75,
-            min_basic_fabbers: 4,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Aggressive",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 2,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Rush",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 1.5,
-            adv_eco_mod: 2,
-            min_basic_fabbers: 2,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Turtle",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            neural_data_mod: 0.5,
-            adv_eco_mod: 0.5,
-            adv_eco_mod_alone: 0.5,
-            fabber_to_factory_ratio_basic: 3,
-            fabber_to_factory_ratio_advanced: 3,
-            min_basic_fabbers: 4,
-            max_basic_fabbers: 8,
-            max_advanced_fabbers: 6,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Absurd",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            adv_eco_mod: 1.3,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 3,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Relentless",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.44,
-            energy_drain_check: 0.55,
-            metal_demand_check: 0.61,
-            energy_demand_check: 0.7,
-            neural_data_mod: 1.2,
-            adv_eco_mod: 1.2,
-            adv_eco_mod_alone: 0.95,
-            min_basic_fabbers: 2,
-            min_advanced_fabbers: 3,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Swarm",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-          },
-          commander: supportCommander,
-        },
-        {
-          name: "Security",
-          character: "!LOC:Economist",
-          color: [
-            [70, 70, 70],
-            [192, 192, 192],
-          ],
-          isCluster: true,
-          personality: {
-            metal_drain_check: 0.71,
-            energy_drain_check: 0.8,
-            metal_demand_check: 0.99,
-            energy_demand_check: 0.99,
-            min_basic_fabbers: 4,
-          },
-          commander: supportCommander,
-        },
-      ],
-      function (personalityModifiers) {
-        return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-      }
-    ),
+    minions: _.map(minions, function (personalityModifiers) {
+      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
+    }),
   };
 });

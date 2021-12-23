@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,35 +16,27 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_fighter/orbital_fighter.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.orbitalLauncher) &&
+        gwaioFunctions.hasUnit(gwaioUnits.avenger)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
+          file: gwaioUnits.avenger,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id:
-                "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
+              spec_id: gwaioUnits.omegaWeaponAO,
               aim_bone: "bone_body",
               record_index: 0,
               fire_event: "fired0",

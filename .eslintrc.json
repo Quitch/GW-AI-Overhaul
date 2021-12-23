@@ -19,20 +19,17 @@
     "requireGW": "readonly",
     "star_system_templates": "readonly",
     "parse": "readonly",
-    "loadScript": "readonly",
     "createjs": "readonly",
     "loadHtml": "readonly",
     "locTree": "readonly",
-    "Build": "readonly",
     "globals": "readonly",
-    "app": "readonly",
-    "engine": "readonly",
     "CommanderUtility": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {
     "lodash/prefer-lodash-method": 0,
     "lodash/prefer-noop": 0,
-    "no-inner-declarations": 0
+    "no-inner-declarations": 0,
+    "curly": [2, "all"]
   }
 }

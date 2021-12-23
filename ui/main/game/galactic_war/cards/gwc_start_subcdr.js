@@ -2,9 +2,9 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -27,26 +27,15 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory, context) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
-          inventory.addUnits([
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
-          ]);
+          gwaioFunctions.setupCluster(inventory);
+          inventory.addUnits([gwaioUnits.ant, gwaioUnits.vehicleFactory]);
           inventory.maxCards(inventory.maxCards() - 2);
         }
         // Support for GWAIO v4.2.2 and earlier
@@ -69,14 +58,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          // Perform dulls here
-
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

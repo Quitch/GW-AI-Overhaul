@@ -354,14 +354,6 @@
       >?</span
     >
   </div>
-  <div
-    class="btn_hero"
-    data-bind="click: $root.gwaioSaveDifficultySettings, click_sound: 'default', rollover_sound: 'default', css: { btn_hero_disabled: !$root.gwaioDifficultySettings.unsavedChanges() }"
-  >
-    <div class="btn_label" style="width: 175px">
-      <loc>Save</loc>
-    </div>
-  </div>
 </div>
 
 <div class="form-group" id="difficulty-options">
@@ -401,19 +393,6 @@
     <span
       class="info_tip"
       data-bind="tooltip: '!LOC:More neutral systems with free technology.'"
-      >?</span
-    >
-  </div>
-  <div>
-    <input
-      type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.tougherCommanders"
-    />
-    <span style="margin-left: 6px"></span>
-    <loc>Tougher Commanders</loc>
-    <span
-      class="info_tip"
-      data-bind="tooltip: '!LOC:AI uses Commander Armor Tech.'"
       >?</span
     >
   </div>

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,32 +16,27 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/air/strafer/strafer.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.horsefly)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/strafer/strafer.json",
+          file: gwaioUnits.horsefly,
           path: "tools",
           op: "push",
           value: {
-            spec_id: "/pa/units/air/bomber/bomber_tool_weapon.json",
+            spec_id: gwaioUnits.bumblebeeWeapon,
             aim_bone: "bone_root",
             muzzle_bone: "bone_root",
           },

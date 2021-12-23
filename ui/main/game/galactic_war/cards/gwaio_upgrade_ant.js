@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,44 +16,41 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
         gwaioFunctions.hasUnit(
           "/pa/units/land/tank_light_laser/tank_light_laser.json"
         )
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "splash_damage",
           op: "replace",
           value: 63,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "splash_radius",
           op: "replace",
           value: 10,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 2,
         },
         {
-          file: "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json",
+          file: gwaioUnits.antAmmo,
           path: "events",
           op: "replace",
           value: {

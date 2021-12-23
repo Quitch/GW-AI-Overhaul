@@ -7,9 +7,6 @@ define(["require"], function (require) {
     self.mods = ko.observableArray();
     self.maxCards = ko.observable(0);
     self.cards = ko.observableArray();
-    self.cards.subscribe(function () {
-      self.applyCards();
-    });
     self.minions = ko.observableArray([]);
     self.tags = ko.observable({});
   };
@@ -52,7 +49,9 @@ define(["require"], function (require) {
           ++removeCount;
         }
       });
-      if (removeCount) self.units(units);
+      if (removeCount) {
+        self.units(units);
+      }
     },
     addAIMods: function (aiMods) {
       var self = this;
@@ -71,13 +70,13 @@ define(["require"], function (require) {
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
       var curCard = "";
-      var _proto_getTag = _.bind(self.getTag, self);
+      var protoGetTag = _.bind(self.getTag, self);
       self.getTag = function (context, name, def) {
-        return _proto_getTag(context || curCard, name, def);
+        return protoGetTag(context || curCard, name, def);
       };
-      var _proto_setTag = _.bind(self.setTag, self);
+      var protoSetTag = _.bind(self.setTag, self);
       self.setTag = function (context, name, value) {
-        return _proto_setTag(context || curCard, name, value);
+        return protoSetTag(context || curCard, name, value);
       };
       var dirty = false;
       // Clean-up function that gets called when everything is done.
@@ -85,35 +84,46 @@ define(["require"], function (require) {
         delete self.getTag;
         delete self.applyCards;
         delete self.isApplyingCards;
-        if (dirty) _.delay(_.bind(self.applyCards, self, done));
-        else if (done) _.delay(done);
+        if (dirty) {
+          _.delay(_.bind(self.applyCards, self, done));
+        } else if (done) {
+          _.delay(done);
+        }
       };
       // Install a hook that calls the new callback when the current
       // process has completed.
       self.applyCards = function (queueDone) {
         dirty = true;
-        if (!queueDone) return;
+        if (!queueDone) {
+          return;
+        }
         if (done) {
           var wrap = done;
           done = function () {
             wrap();
             _.delay(queueDone);
           };
-        } else done = queueDone;
+        } else {
+          done = queueDone;
+        }
       };
 
       var cardCount;
       var finishPhase;
       var finishCard = function () {
         --cardCount;
-        if (!cardCount) finishPhase();
+        if (!cardCount) {
+          finishPhase();
+        }
       };
       var applyCardOp = function (op, cardParams) {
         var cardId;
         if (_.isString(cardParams)) {
           cardId = cardParams;
           cardParams = undefined;
-        } else cardId = cardParams.id;
+        } else {
+          cardId = cardParams.id;
+        }
         require(["cards/" + cardId], function (card) {
           curCard = cardId;
           card[op](self, cardParams);
@@ -126,15 +136,15 @@ define(["require"], function (require) {
       var resetCardCount = function () {
         cardCount = cards.length;
       };
-      var applyBuffs = function () {
-        resetCardCount();
-        finishPhase = applyDulls;
-        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
-      };
       var applyDulls = function () {
         resetCardCount();
         finishPhase = finishApplyCards;
         _.forEach(cards, _.bind(applyCardOp, self, "dull"));
+      };
+      var applyBuffs = function () {
+        resetCardCount();
+        finishPhase = applyDulls;
+        _.forEach(cards, _.bind(applyCardOp, self, "buff"));
       };
 
       self.units([]);
@@ -153,7 +163,9 @@ define(["require"], function (require) {
     },
     hasCardLike: function (test) {
       var ok = test && test.id;
-      if (!ok) return false;
+      if (!ok) {
+        return false;
+      }
 
       var self = this;
       return _.some(self.cards(), { id: test.id() });
@@ -170,8 +182,12 @@ define(["require"], function (require) {
       // channel for communicating between the card & the inventory.
       // Without this, the card would have to be loaded, which would
       // significantly complicate the system.
-      if (_.isObject(test) && test.allowOverflow) return true;
-      if (self.cards().length >= self.maxCards()) return false;
+      if (_.isObject(test) && test.allowOverflow) {
+        return true;
+      }
+      if (self.cards().length >= self.maxCards()) {
+        return false;
+      }
       return true;
     },
 
@@ -186,12 +202,16 @@ define(["require"], function (require) {
       var self = this;
       var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
-        if (_.isUndefined(def)) return;
+        if (_.isUndefined(def)) {
+          return null;
+        }
         tags[context] = {};
       }
       var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
-        if (_.isUndefined(def)) return;
+        if (_.isUndefined(def)) {
+          return null;
+        }
         tagContext[name] = def;
       }
       return tagContext[name];
@@ -202,11 +222,14 @@ define(["require"], function (require) {
       if (_.isUndefined(value)) {
         if (tags[context]) {
           delete tags[context][name];
-          if (_.isEmpty(tags[context])) delete tags[context];
+          if (_.isEmpty(tags[context])) {
+            delete tags[context];
+          }
         }
       } else {
-        if (!Object.prototype.hasOwnProperty.call(tags, context))
+        if (!Object.prototype.hasOwnProperty.call(tags, context)) {
           tags[context] = {};
+        }
         tags[context][name] = value;
       }
     },

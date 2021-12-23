@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,33 +16,26 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.sheller)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar_ammo.json",
+          file: gwaioUnits.shellerAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: "/pa/units/land/land_mine/land_mine.json",
+          value: gwaioUnits.landMine,
         },
       ]);
     },

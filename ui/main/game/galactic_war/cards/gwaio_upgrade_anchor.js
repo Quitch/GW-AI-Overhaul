@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,38 +16,29 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_launcher/orbital_launcher.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json"
-        ) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/defense_satellite/defense_satellite.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.orbitalLauncher) &&
+        gwaioFunctions.hasUnit(gwaioUnits.orbitalFabber) &&
+        gwaioFunctions.hasUnit(gwaioUnits.anchor)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/orbital/defense_satellite/defense_satellite_tool_ground.json",
+          file: gwaioUnits.anchorWeaponAG,
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
         {
-          file: "/pa/units/orbital/defense_satellite/defense_satellite_tool_orbital.json",
+          file: gwaioUnits.anchorWeaponAO,
           path: "max_range",
           op: "multiply",
           value: 1.25,

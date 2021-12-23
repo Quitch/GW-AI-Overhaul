@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,40 +16,35 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/air/fighter_adv/fighter_adv.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.phoenix)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/fighter_adv/fighter_adv_tool_weapon.json",
+          file: gwaioUnits.phoenixWeapon,
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/air/fighter_adv/fighter_adv.json",
+          file: gwaioUnits.phoenix,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Gunship",
         },
         {
-          file: "/pa/units/air/fighter_adv/fighter_adv_ammo.json",
+          file: gwaioUnits.phoenixAmmo,
           path: "armor_damage_map.AT_Structure",
           op: "replace",
           value: 1,

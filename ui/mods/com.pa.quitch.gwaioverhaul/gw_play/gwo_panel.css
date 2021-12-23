@@ -12,15 +12,15 @@
   overflow-y: auto;
 }
 
-.gwo_info {
+.gwo-info {
   color: #88dbff;
 }
 
-.gwo_info h3 {
+.gwo-info h3 {
   color: white;
 }
 
-.gwo_info .data {
+.gwo-info .data {
   font-weight: bold;
   color: white;
   display: table-cell;
@@ -31,34 +31,34 @@
   padding-bottom: 2px;
 }
 
-.gwo_info .table {
+.gwo-info .table {
   display: table;
   margin-top: 5px;
   margin-bottom: 0;
   width: 97%;
 }
 
-.gwo_info .tablebody {
+.gwo-info .tablebody {
   display: table-row-group;
 }
 
-.gwo_info .tr {
+.gwo-info .tr {
   display: table-row;
 }
 
-.gwo_info .td {
+.gwo-info .td {
   display: table-cell;
   padding-bottom: 2px;
 }
 
-.gwo_info .table_bottom {
+.gwo-info .table-bottom {
   display: table;
   margin-top: 0;
   margin-bottom: 10px;
   width: 97%;
 }
 
-.gwo_info .player_masked {
+.gwo-info .player-masked {
   height: 16px;
   width: 16px;
   -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
@@ -66,6 +66,6 @@
   mask: url("#player-mask");
 }
 
-.gwo_info .commander-name {
+.gwo-info .commander-name {
   margin-left: 18px;
 }

@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,55 +16,48 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_start_paratrooper") ||
           inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/assault_bot_adv/assault_bot_adv.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.slammer)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
+          file: gwaioUnits.slammerTorpedo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
+          file: gwaioUnits.slammerTorpedo,
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          file: gwaioUnits.torpedoLauncherAmmo,
           path: "flight_layer",
           op: "replace",
           value: "Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          file: gwaioUnits.torpedoLauncherAmmo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+          file: gwaioUnits.torpedoLauncherAmmo,
           path: "cruise_height",
           op: "replace",
           value: 75,

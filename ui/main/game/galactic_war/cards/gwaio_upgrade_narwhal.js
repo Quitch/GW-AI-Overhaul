@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,26 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory/naval_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/frigate/frigate.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.narwhal)
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/frigate/frigate.json",
+          file: gwaioUnits.narwhal,
           path: "tools",
           op: "push",
           value: {
-            spec_id: "/pa/units/sea/frigate/frigate_tool_weapon_torpedo.json",
+            spec_id: gwaioUnits.narwhalTorpedo,
             record_index: 2,
             aim_bone: "bone_root",
             muzzle_bone: "bone_root",

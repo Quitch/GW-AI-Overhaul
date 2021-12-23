@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,24 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
-        "/pa/units/air/bomber_adv/bomber_adv.json",
-        "/pa/units/air/fighter_adv/fighter_adv.json",
-        "/pa/units/air/gunship/gunship.json",
-        "/pa/units/air/bomber_heavy/bomber_heavy.json",
-        "/pa/units/air/support_platform/support_platform.json",
-        "/pa/units/air/strafer/strafer.json",
+        gwaioUnits.airFabberAdvanced,
+        gwaioUnits.hornet,
+        gwaioUnits.phoenix,
+        gwaioUnits.kestrel,
+        gwaioUnits.wyrm,
+        gwaioUnits.angel,
+        gwaioUnits.horsefly,
       ];
       var mods = units.map(function (unit) {
         return {
@@ -50,7 +44,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/air/air_factory_adv/air_factory_adv.json",
+        file: gwaioUnits.airFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,

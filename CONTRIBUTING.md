@@ -1,6 +1,6 @@
 # Submissions
 
-This project welcomes any changes which aim to improve upon existing features or simply improve current implementations.
+This project welcomes any changes which aim to build upon existing features or simply improve current implementations.
 
 ## Tooling
 
@@ -11,6 +11,7 @@ You will need the following to ensure your submissions adhere to the requirement
 - eslint-plugin-lodash
 - markdownlint
 - prettier
+- sonarlint
 - styleint
 - stylelint-config-prettier
 - stylelint-config-standard
@@ -29,6 +30,7 @@ Any submissions should follow the requirements below:
 
 - Indent using two spaces (soft tabs).
 - All warnings and errors must be resolved prior to commit.
+  - SonarLint's complexity requirements can be ignored for the function encapsulating a file's try...catch.
 - HTML is loaded from a separate file, not included in the body of JavaScript.
 - File shadowing will not be used unless unavoidable.
 - Camel case will be used for variables.

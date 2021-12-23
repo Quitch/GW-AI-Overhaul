@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,25 +22,14 @@ define([
         description: "!LOC:Backpacker Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
-          inventory.addUnits([
-            "/pa/units/land/assault_bot/assault_bot.json",
-            "/pa/units/land/bot_factory/bot_factory.json",
-          ]);
+          gwaioFunctions.setupCluster(inventory);
+          inventory.addUnits([gwaioUnits.dox, gwaioUnits.botFactory]);
           inventory.maxCards(inventory.maxCards() + 12);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
@@ -53,12 +42,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

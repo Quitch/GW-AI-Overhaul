@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,57 +16,52 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-        gwaioFunctions.hasUnit("/pa/units/land/land_scout/land_scout.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
+        gwaioFunctions.hasUnit(gwaioUnits.skitter)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/land_scout/land_scout.json",
+          file: gwaioUnits.skitter,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id: "/pa/units/land/land_scout/land_scout_tool_weapon.json",
+              spec_id: gwaioUnits.skitterWeapon,
               aim_bone: "bone_root",
               muzzle_bone: "bone_root",
             },
           ],
         },
         {
-          file: "/pa/units/land/land_scout/land_scout.json",
+          file: gwaioUnits.skitter,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
         },
         {
-          file: "/pa/units/land/land_scout/land_scout.json",
+          file: gwaioUnits.skitter,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/land_scout/land_scout.json",
+          file: gwaioUnits.skitter,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/land_scout/land_scout.json",
+          file: gwaioUnits.skitter,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 2,

@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## v5.27.0 - 2021-12-23
+
+### Changed
+
+- Galactic War setup is much more responsive as the galaxy is now only generated once you click "Go To War" and not every time you change a setting
+- Buffed Catalyst Upgrade Tech
+- Removed Tougher Commanders option from setup as this is now integrated into the AI buffs system
+
+### Fixed
+
+- Selection icon not being removed from the system the player started at
+- Structure Armor Tech not including the Halley in its tooltip
+- Orbital Engine Tech tooltip including structures
+- Bot Combat Tech health and speed bonuses not being applied to the Gil-E
+- Complete Bot Tech tooltip not listing the Stinger or Gil-E
+- Complete Orbital Tech tooltip not listing the ARKYD
+
 ## v5.26.1 - 2021-12-08
 
 ### Fixed

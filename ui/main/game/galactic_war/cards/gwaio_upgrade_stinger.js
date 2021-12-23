@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,15 +16,12 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/bot_aa/bot_aa.json"))
+      if (gwaioFunctions.hasUnit(gwaioUnits.stinger)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
@@ -34,8 +32,7 @@ define([
           path: "tools",
           op: "replace",
           value: {
-            spec_id:
-              "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+            spec_id: gwaioUnits.flakWeapon,
             aim_bone: "bone_turret",
             projectiles_per_fire: 2,
             muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],

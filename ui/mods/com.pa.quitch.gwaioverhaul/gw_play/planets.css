@@ -1,16 +1,15 @@
 #system-detail .all-planets {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
 }
 
-#system-detail .div_planet {
+#system-detail .div-planet {
   height: 20px;
   width: 20px;
   margin: 4px;
 }
 
-#system-detail img.img_start {
+#system-detail img.img-start {
   height: 16px;
   width: 16px;
   position: relative;
@@ -18,7 +17,7 @@
   right: -10px;
 }
 
-#system-detail .start .thruster_count {
+#system-detail .start .thruster-count {
   height: 12px;
   width: 13px;
   position: relative;
@@ -26,7 +25,7 @@
   right: 2px;
 }
 
-#system-detail .no_start .thruster_count {
+#system-detail .no-start .thruster-count {
   height: 12px;
   width: 13px;
   position: relative;

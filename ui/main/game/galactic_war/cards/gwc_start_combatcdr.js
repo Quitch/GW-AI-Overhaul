@@ -2,9 +2,9 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,26 +22,16 @@ define([
         description: "!LOC:Bionic Augmentation Commander Of Neutralizing",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
-          var units = [
-            "/pa/units/commanders/base_commander/base_commander.json",
-          ];
+          var units = [gwaioUnits.commander];
           var mods = [];
           units.forEach(function (unit) {
             mods.push(
@@ -78,8 +68,8 @@ define([
             );
           });
           var weapons = [
-            "/pa/tools/uber_cannon/uber_cannon.json",
-            "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
+            gwaioUnits.commanderSecondary,
+            gwaioUnits.commanderWeapon,
           ];
           weapons.forEach(function (weapon) {
             mods.push(
@@ -123,14 +113,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          // Perform dulls here
-
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

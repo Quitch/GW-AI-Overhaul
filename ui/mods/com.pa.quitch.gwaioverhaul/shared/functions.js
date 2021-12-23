@@ -1,11 +1,13 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-], function (gwaioUnitsToNames) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
+], function (gwaioUnitsToNames, gwaioTech) {
   return {
     validatePaths: function (path) {
       var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
-      if (index === -1)
+      if (index === -1) {
         console.error(path, "is invalid or missing from GWO unit_names.js");
+      }
     },
     hasUnit: function (path) {
       //this.validatePaths(path);
@@ -40,8 +42,9 @@ define([
       }
       if (highestDifficultyDefeated() === 7) {
         return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
-      } else
+      } else {
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
+      }
     },
     aiEnabled: function () {
       var galaxy = model.game().galaxy();
@@ -49,27 +52,31 @@ define([
       if (originSystem.gwaio) {
         return originSystem.gwaio.ai;
       }
+      return null;
     },
     aiPath: function (type) {
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
       var inventory = game.inventory();
-      if (type === "all" && this.aiEnabled() === "Queller")
+      if (type === "all" && this.aiEnabled() === "Queller") {
         return "/pa/ai_personalities/queller/";
-      else if (type === "enemy" && this.aiEnabled() === "Queller")
+      } else if (type === "enemy" && this.aiEnabled() === "Queller") {
         return "/pa/ai_personalities/queller/q_uber/";
+      }
       // the order of path assignments must match .player unit_map assignments in referee.js
-      else if (type === "subcommander" && this.aiEnabled() === "Queller")
+      else if (type === "subcommander" && this.aiEnabled() === "Queller") {
         return "/pa/ai_personalities/queller/q_gold/";
-      else if (
+      } else if (
         type === "subcommander" &&
         !_.isEmpty(inventory.aiMods()) &&
         ai.mirrorMode !== true
-      )
+      ) {
         return "/pa/ai_tech/";
-      else if (this.aiEnabled() === "Penchant")
+      } else if (this.aiEnabled() === "Penchant") {
         return "/pa/ai_personalities/penchant/";
-      else return "/pa/ai/";
+      } else {
+        return "/pa/ai/";
+      }
     },
     penchants: function () {
       var penchantTags = [
@@ -180,6 +187,33 @@ define([
       return {
         penchants: personalityTags,
         penchantName: penchantName,
+      };
+    },
+    setupCluster: function (inventory) {
+      if (inventory.getTag("global", "playerFaction") === 4) {
+        inventory.addMods(gwaioTech.clusterCommanders);
+      }
+    },
+    applyDulls: function (card, inventory, units) {
+      if (inventory.lookupCard(card) === 0) {
+        var buffCount = inventory.getTag("", "buffCount", 0);
+        if (buffCount) {
+          inventory.removeUnits(units);
+          inventory.setTag("", "buffCount", undefined);
+        }
+      }
+    },
+    getContext: function (galaxy) {
+      return {
+        totalSize: galaxy.stars().length,
+      };
+    },
+    startCard: function () {
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: 0,
       };
     },
   };

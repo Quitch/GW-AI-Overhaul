@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,53 +16,48 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/air/gunship/gunship.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.kestrel)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/gunship/gunship.json",
+          file: gwaioUnits.kestrel,
           path: "events.fired.effect_spec",
           op: "replace",
           value:
             "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
         },
         {
-          file: "/pa/units/air/gunship/gunship_tool_weapon.json",
+          file: gwaioUnits.kestrelWeapon,
           path: "max_range",
           op: "replace",
           value: 20,
         },
         {
-          file: "/pa/units/air/gunship/gunship_tool_weapon.json",
+          file: gwaioUnits.kestrelWeapon,
           path: "spread_fire",
           op: "replace",
           value: true,
         },
         {
-          file: "/pa/units/air/gunship/gunship_ammo.json",
+          file: gwaioUnits.kestrelAmmo,
           path: "ammo_type",
           op: "replace",
           value: "AMMO_Beam",
         },
         {
-          file: "/pa/units/air/gunship/gunship_ammo.json",
+          file: gwaioUnits.kestrelAmmo,
           path: "damage",
           op: "replace",
           value: 100,

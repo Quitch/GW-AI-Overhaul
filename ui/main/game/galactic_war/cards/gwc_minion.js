@@ -1,7 +1,8 @@
 define([
   "shared/gw_factions",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (GWFactions, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GWFactions, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -15,7 +16,9 @@ define([
         result.push("<br>");
         result.push("!LOC:Personality:");
         result.push(" " + loc(minion.character));
-        if (minion.penchant) result.push(" " + loc(minion.penchant));
+        if (minion.penchant) {
+          result.push(" " + loc(minion.penchant));
+        }
       }
       return result;
     },
@@ -38,20 +41,15 @@ define([
     deal: function (system, context, inventory) {
       var chance = context.chance;
       if (
-        (!gwaioFunctions.hasUnit(
-          "/pa/units/land/vehicle_factory/vehicle_factory.json"
-        ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/land/bot_factory/bot_factory.json"
-          ) &&
-          !gwaioFunctions.hasUnit(
-            "/pa/units/air/air_factory/air_factory.json"
-          )) ||
+        (!gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
+          !gwaioFunctions.hasUnit(gwaioUnits.botFactory) &&
+          !gwaioFunctions.hasUnit(gwaioUnits.airFactory)) ||
         inventory.hasCard("nem_start_deepspace")
-      )
+      ) {
         chance = 0;
-      else if (inventory.minions)
+      } else if (inventory.minions) {
         chance = chance / (inventory.minions().length + 1);
+      }
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
       var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
@@ -81,7 +79,9 @@ define([
       // minion parameters will be updated.
       var minion = params.minion;
       inventory.minions.push(minion);
-      if (minion.commander) inventory.addUnits([minion.commander]);
+      if (minion.commander) {
+        inventory.addUnits([minion.commander]);
+      }
     },
     dull: function () {
       //empty

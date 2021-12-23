@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,141 +22,133 @@ define([
         description: "!LOC:Rapid Deployment Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
 
           var mods = [
             {
-              file: "/pa/units/air/air_factory/air_factory.json",
+              file: gwaioUnits.airFactory,
               path: "buildable_types",
               op: "replace",
               value: "(Air & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/air/air_factory_adv/air_factory_adv.json",
+              file: gwaioUnits.airFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
               value: "(Air & Fabber & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/land/bot_factory/bot_factory.json",
+              file: gwaioUnits.botFactory,
               path: "buildable_types",
               op: "replace",
               value: "(Bot & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/land/bot_factory_adv/bot_factory_adv.json",
+              file: gwaioUnits.botFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
               value: "(Bot & Fabber & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/land/vehicle_factory/vehicle_factory.json",
+              file: gwaioUnits.vehicleFactory,
               path: "buildable_types",
               op: "replace",
               value: "(Tank & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/land/vehicle_factory_adv/vehicle_factory_adv.json",
+              file: gwaioUnits.vehicleFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
               value: "(Tank & Fabber & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/sea/naval_factory/naval_factory.json",
+              file: gwaioUnits.navalFactory,
               path: "buildable_types",
               op: "replace",
               value: "(Naval & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+              file: gwaioUnits.navalFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
               value: "(Naval & Fabber & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/orbital/orbital_launcher/orbital_launcher.json",
+              file: gwaioUnits.orbitalLauncher,
               path: "buildable_types",
               op: "replace",
               value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/orbital/orbital_factory/orbital_factory.json",
+              file: gwaioUnits.orbitalFactory,
               path: "buildable_types",
               op: "replace",
               value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
             },
             {
-              file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+              file: gwaioUnits.airFabber,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
             },
             {
-              file: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
+              file: gwaioUnits.airFabber,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
             },
             {
-              file: "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
+              file: gwaioUnits.airFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Air | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Air",
             },
             {
-              file: "/pa/units/land/fabrication_bot/fabrication_bot.json",
+              file: gwaioUnits.botFabber,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Bot | Land & Structure & Basic - Factory | Factory & Advanced & Bot & Land | FabBuild - Factory",
             },
             {
-              file: "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json",
+              file: gwaioUnits.botFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
             },
             {
-              file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+              file: gwaioUnits.colonel,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
             },
             {
-              file: "/pa/units/land/fabrication_vehicle/fabrication_vehicle.json",
+              file: gwaioUnits.vehicleFabber,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Basic & Tank | Land & Structure & Basic - Factory | Factory & Land & Tank & Advanced | FabBuild - Factory",
             },
             {
-              file: "/pa/units/land/fabrication_vehicle_adv/fabrication_vehicle_adv.json",
+              file: gwaioUnits.vehicleFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
                 "Mobile & Tank | Structure & Land & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & (Tank | Naval)",
             },
             {
-              file: "/pa/units/sea/fabrication_ship/fabrication_ship.json",
+              file: gwaioUnits.navalFabber,
               path: "buildable_types",
               op: "replace",
               value:
@@ -171,19 +163,19 @@ define([
             },
             // fix placement issues
             {
-              file: "/pa/units/sea/attack_sub/attack_sub.json",
+              file: gwaioUnits.barracuda,
               path: "spawn_layers",
               op: "replace",
               value: "WL_DeepWater",
             },
             {
-              file: "/pa/units/sea/nuclear_sub/nuclear_sub.json",
+              file: gwaioUnits.kraken,
               path: "spawn_layers",
               op: "replace",
               value: "WL_DeepWater",
             },
             {
-              file: "/pa/units/air/gunship/gunship.json",
+              file: gwaioUnits.kestrel,
               path: "spawn_layers",
               op: "replace",
               value: "WL_LandHorizontal",
@@ -201,20 +193,21 @@ define([
             inventory.hasCard("gwc_enable_orbital_t2") ||
             inventory.hasCard("gwc_enable_orbital_all") ||
             inventory.hasCard("gwaio_upgrade_orbitallauncher")
-          )
+          ) {
             mods.push({
-              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              file: gwaioUnits.orbitalFabber,
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
             });
-          else
+          } else {
             mods.push({
-              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              file: gwaioUnits.orbitalFabber,
               path: "buildable_types",
               op: "replace",
               value: "Orbital & FactoryBuild & Basic | FabOrbBuild - Factory",
             });
+          }
 
           inventory.addMods(mods);
 
@@ -413,12 +406,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

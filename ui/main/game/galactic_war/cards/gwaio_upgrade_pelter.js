@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,38 +16,31 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/artillery_short/artillery_short.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.pelter)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/artillery_short/artillery_short.json",
+          file: gwaioUnits.pelter,
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 3,
         },
         {
-          file: "/pa/units/land/artillery_short/artillery_short.json",
+          file: gwaioUnits.pelter,
           path: "tools.0.muzzle_bone",
           op: "replace",
           value: ["socket_muzzle", "socket_muzzle", "socket_muzzle"],
         },
         {
-          file: "/pa/units/land/artillery_short/artillery_short_tool_weapon.json",
+          file: gwaioUnits.pelterWeapon,
           path: "firing_standard_deviation",
           op: "multiply",
           value: 3,

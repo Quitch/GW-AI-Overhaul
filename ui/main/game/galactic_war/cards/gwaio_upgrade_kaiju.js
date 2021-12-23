@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,39 +16,38 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/hover_ship/hover_ship.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.kaiju)
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/hover_ship/hover_ship.json",
+          file: gwaioUnits.kaiju,
           path: "teleportable",
           op: "replace",
           value: {},
         },
         {
-          file: "/pa/units/sea/hover_ship/hover_ship.json",
+          file: gwaioUnits.kaiju,
           path: "command_caps",
           op: "push",
           value: "ORDER_Use",
         },
       ]);
+
+      var unitTypePrepend = "(Naval & Hover & Advanced & Mobile) | ";
+      var unitTypes =
+        "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan";
 
       inventory.addAIMods([
         {
@@ -78,7 +78,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Land_Attack_XLarge",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -88,8 +88,7 @@ define([
           op: "squad",
           toBuild: "Land_Attack_XLarge",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - Construction - Artillery - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: 40,
             squad: "General",
@@ -99,7 +98,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Land_Attack_Max",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -109,8 +108,7 @@ define([
           op: "squad",
           toBuild: "Land_Attack_Max",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: -1,
             squad: "General",
@@ -120,7 +118,7 @@ define([
           type: "platoon",
           op: "prepend",
           toBuild: "Teleporter_Attack_Queller",
-          value: "(Naval & Hover & Advanced & Mobile) | ",
+          value: unitTypePrepend,
           idToMod: "unit_type_string0",
           refId: "test_type",
           refValue: "UnitPoolCount",
@@ -130,8 +128,7 @@ define([
           op: "squad",
           toBuild: "Teleporter_Attack_Queller",
           value: {
-            unit_types:
-              "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan",
+            unit_types: unitTypes,
             min_count: 0,
             max_count: -1,
             squad: "General",

@@ -3,9 +3,9 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GW, GWCStart, GWCStorage, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GW, GWCStart, GWCStorage, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -23,22 +23,14 @@ define([
         description: "!LOC:Storage Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
           GWCStorage.buff(inventory);
         } else {
           // Don't clog up a slot.
@@ -53,18 +45,8 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          // Perform dulls here
-          inventory.removeUnits([
-            "/pa/units/land/tank_armor/tank_armor.json",
-            "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-          ]);
-
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      var units = [gwaioUnits.inferno, gwaioUnits.vanguard];
+      gwaioFunctions.applyDulls(CARD, inventory, units);
     },
   };
 });

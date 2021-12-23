@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,26 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/air/air_factory_adv/air_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/air/bomber_heavy/bomber_heavy.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.wyrm)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/bomber_heavy/bomber_heavy.json",
+          file: gwaioUnits.wyrm,
           path: "tools.0.spec_id",
           op: "replace",
-          value: "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
+          value: gwaioUnits.typhoonWeapon,
         },
       ]);
     },

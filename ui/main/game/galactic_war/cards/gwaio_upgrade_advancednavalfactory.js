@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,31 +16,24 @@ define([
         found: "/VO/Computer/gw/board_tech_available_sea",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/sea/fabrication_ship_adv/fabrication_ship_adv.json",
-        "/pa/units/sea/missile_ship/missile_ship.json",
-        "/pa/units/sea/battleship/battleship.json",
-        "/pa/units/sea/nuclear_sub/nuclear_sub.json",
-        "/pa/units/sea/hover_ship/hover_ship.json",
-        "/pa/units/sea/drone_carrier/carrier/carrier.json",
-        "/pa/units/sea/drone_carrier/drone/drone.json",
+        gwaioUnits.navalFabberAdvanced,
+        gwaioUnits.stingray,
+        gwaioUnits.leviathan,
+        gwaioUnits.kraken,
+        gwaioUnits.kaiju,
+        gwaioUnits.typhoon,
+        gwaioUnits.squall,
       ];
       var mods = units.map(function (unit) {
         return {
@@ -50,7 +44,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/sea/naval_factory_adv/naval_factory_adv.json",
+        file: gwaioUnits.navalFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,

@@ -1,27 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
-], function (inventory) {
-  // Tougher Commanders
-  var commanderArmourTech = [];
-  inventory.commanderUnits.forEach(function (commander) {
-    commanderArmourTech.push({
-      file: commander,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-
-  var clusterCommanderArmourTech = [];
-  inventory.clusterCommanders.forEach(function (commander) {
-    clusterCommanderArmourTech.push({
-      file: commander,
-      path: "max_health",
-      op: "multiply",
-      value: 2,
-    });
-  });
-
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (inventory, gwaioUnits) {
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
@@ -201,29 +181,34 @@ define([
   });
 
   // 3 - Engine Tech
+  var moveSpeed = "navigation.move_speed";
+  var brake = "navigation.brake";
+  var acceleration = "navigation.acceleration";
+  var turnSpeed = "navigation.turn_speed";
+
   var airSpeedBoost = function (unit) {
     return [
       {
         file: unit,
-        path: "navigation.move_speed",
+        path: moveSpeed,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.brake",
+        path: brake,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.acceleration",
+        path: acceleration,
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: "navigation.turn_speed",
+        path: turnSpeed,
         op: "multiply",
         value: 1.25,
       },
@@ -255,25 +240,25 @@ define([
     return [
       {
         file: unit,
-        path: "navigation.move_speed",
+        path: moveSpeed,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.brake",
+        path: brake,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.acceleration",
+        path: acceleration,
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: "navigation.turn_speed",
+        path: turnSpeed,
         op: "multiply",
         value: 1.5,
       },
@@ -281,7 +266,9 @@ define([
   };
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    if (_.isUndefined(factionsTechNoAir[i][3])) factionsTechNoAir[i][3] = [];
+    if (_.isUndefined(factionsTechNoAir[i][3])) {
+      factionsTechNoAir[i][3] = [];
+    }
     factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
       _.flatten(
         faction.map(function (unit) {
@@ -298,25 +285,25 @@ define([
           return [
             {
               file: unit,
-              path: "navigation.move_speed",
+              path: moveSpeed,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.brake",
+              path: brake,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.acceleration",
+              path: acceleration,
               op: "multiply",
               value: 2,
             },
             {
               file: unit,
-              path: "navigation.turn_speed",
+              path: turnSpeed,
               op: "multiply",
               value: 2,
             },
@@ -380,7 +367,9 @@ define([
   );
 
   factionUnitsNoAir.forEach(function (faction, i) {
-    if (_.isUndefined(factionsTechNoAir[i][6])) factionsTechNoAir[i][6] = [];
+    if (_.isUndefined(factionsTechNoAir[i][6])) {
+      factionsTechNoAir[i][6] = [];
+    }
     factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
       _.flatten(
         faction.map(function (unit) {
@@ -397,25 +386,25 @@ define([
           return [
             {
               file: unit,
-              path: "navigation.move_speed",
+              path: moveSpeed,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.brake",
+              path: brake,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.acceleration",
+              path: acceleration,
               op: "multiply",
               value: 3,
             },
             {
               file: unit,
-              path: "navigation.turn_speed",
+              path: turnSpeed,
               op: "multiply",
               value: 3,
             },
@@ -432,13 +421,13 @@ define([
   // Cluster commander setup
   var clusterCommanderTech = [
     {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      file: gwaioUnits.colonel,
       path: "tools.0.spec_id",
       op: "replace",
-      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
+      value: gwaioUnits.commanderBuildArm,
     },
     {
-      file: "/pa/units/land/bot_support_commander/bot_support_commander.json",
+      file: gwaioUnits.colonel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -451,13 +440,13 @@ define([
       ],
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "buildable_types",
       op: "replace",
       value: "CmdBuild",
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "command_caps",
       op: "replace",
       value: [
@@ -471,32 +460,32 @@ define([
       ],
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "max_health",
       op: "multiply",
       value: 5,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "tools.1.spec_id",
       op: "replace",
-      value: "/pa/tools/commander_build_arm/commander_build_arm.json",
+      value: gwaioUnits.commanderBuildArm,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "transportable.size",
       op: "replace",
       value: 1,
     },
     {
-      file: "/pa/units/air/support_platform/support_platform.json",
+      file: gwaioUnits.angel,
       path: "unit_types",
       op: "replace",
       value: [
         "UNITTYPE_Commander",
         "UNITTYPE_Construction",
         "UNITTYPE_Mobile",
-        "UNITTYPE_Land", // if you don't have Land then the AI won't work right
+        "UNITTYPE_Land", // without this the AI won't work right
         "UNITTYPE_Air",
         "UNITTYPE_NoBuild",
       ],
@@ -561,7 +550,6 @@ define([
   });
 
   return {
-    tougherCommanders: [commanderArmourTech, clusterCommanderArmourTech],
     factionTechs: [
       legonisTech,
       foundationTech,

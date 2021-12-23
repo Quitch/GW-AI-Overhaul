@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,74 +16,65 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-        gwaioFunctions.hasUnit("/pa/units/sea/battleship/battleship.json")
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.leviathan)
+      ) {
         chance = 30;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.0.spec_id",
           op: "replace",
-          value:
-            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+          value: gwaioUnits.holkinsWeapon,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.1.spec_id",
           op: "replace",
-          value:
-            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+          value: gwaioUnits.holkinsWeapon,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.1.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.2.spec_id",
           op: "replace",
-          value:
-            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+          value: gwaioUnits.holkinsWeapon,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.2.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.3.spec_id",
           op: "replace",
-          value:
-            "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+          value: gwaioUnits.holkinsWeapon,
         },
         {
-          file: "/pa/units/sea/battleship/battleship.json",
+          file: gwaioUnits.leviathan,
           path: "tools.3.projectiles_per_fire",
           op: "replace",
           value: 1,

@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,32 +22,24 @@ define([
         description: "!LOC:Planetary Excavation Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
-            "/pa/units/land/tank_armor/tank_armor.json",
-            "/pa/units/land/tank_hover/tank_hover.json",
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
+            gwaioUnits.spinner,
+            gwaioUnits.inferno,
+            gwaioUnits.drifter,
+            gwaioUnits.ant,
+            gwaioUnits.vehicleFactory,
           ]);
           var mods = [];
           var units = [
-            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
-            "/pa/units/land/metal_extractor/metal_extractor.json",
+            gwaioUnits.metalExtractorAdvanced,
+            gwaioUnits.metalExtractor,
           ];
           units.forEach(function (unit) {
             mods.push(
@@ -72,14 +64,14 @@ define([
             );
           });
           mods.push({
-            file: "/pa/units/land/metal_extractor/metal_extractor.json",
+            file: gwaioUnits.metalExtractor,
             path: "description",
             op: "replace",
             value:
               "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
           });
           mods.push({
-            file: "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
+            file: gwaioUnits.metalExtractorAdvanced,
             path: "description",
             op: "replace",
             value:
@@ -156,12 +148,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

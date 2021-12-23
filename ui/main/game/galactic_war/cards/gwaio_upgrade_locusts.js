@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,37 +16,30 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_factory_adv/bot_factory_adv.json"
-        ) ||
+        (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
           inventory.hasCard("gwaio_start_paratrooper") ||
           inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json"
-        )
-      )
+        gwaioFunctions.hasUnit(gwaioUnits.locusts)
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
+          file: gwaioUnits.locusts,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: "/pa/units/land/bot_nanoswarm/bot_nanoswarm.json",
+          file: gwaioUnits.locusts,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,

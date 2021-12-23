@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,34 +16,31 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/land/teleporter/teleporter.json"))
+      if (gwaioFunctions.hasUnit(gwaioUnits.teleporter)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/teleporter/teleporter.json",
+          file: gwaioUnits.teleporter,
           path: "energy_efficiency_requirement",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/teleporter/teleporter.json",
+          file: gwaioUnits.teleporter,
           path: "teleporter.energy_demand",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/teleporter/teleporter.json",
+          file: gwaioUnits.teleporter,
           path: "recon.observable.ignore_radar",
           op: "replace",
           value: true,

@@ -1,4 +1,8 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -13,11 +17,7 @@ define(["shared/gw_common"], function (GW) {
         found: "/VO/Computer/gw/board_tech_available_orbital",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
@@ -31,19 +31,29 @@ define(["shared/gw_common"], function (GW) {
         if (dist > 0) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 100;
-            if (dist > 2) chance = 250;
+            if (dist > 2) {
+              chance = 250;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
             chance = 100;
-            if (dist > 3) chance = 250;
+            if (dist > 3) {
+              chance = 250;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
             chance = 100;
-            if (dist > 4) chance = 250;
+            if (dist > 4) {
+              chance = 250;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
             chance = 100;
-            if (dist > 5) chance = 250;
+            if (dist > 5) {
+              chance = 250;
+            }
           } else {
             chance = 100;
-            if (dist > 6) chance = 250;
+            if (dist > 6) {
+              chance = 250;
+            }
           }
         }
       }
@@ -51,14 +61,10 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/orbital/mining_platform/mining_platform.json",
-        "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
-        "/pa/units/orbital/orbital_factory/orbital_factory.json",
-        "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser.json",
-        "/pa/units/orbital/orbital_probe/orbital_probe.json",
-        "/pa/units/orbital/radar_satellite/radar_satellite.json",
-        "/pa/units/orbital/solar_array/solar_array.json",
+        gwaioUnits.jig,
+        gwaioUnits.orbitalFactory,
+        gwaioUnits.arkyd,
+        gwaioUnits.solarArray,
       ]);
     },
     dull: function () {

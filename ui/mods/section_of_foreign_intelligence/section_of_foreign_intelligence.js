@@ -17,25 +17,45 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         var threat = function (rate) {
-          if (!rate) return "!LOC:Unknown";
-          else if (rate <= 0.5) return "!LOC:Worthless";
-          else if (rate <= 0.6) return "!LOC:Helpless";
-          else if (rate <= 0.725) return "!LOC:Weakling";
-          else if (rate <= 0.85) return "!LOC:Inexperienced";
-          else if (rate <= 0.95) return "!LOC:Competent";
-          else if (rate <= 1.1) return "!LOC:Skilled";
-          else if (rate <= 1.2) return "!LOC:Experienced";
-          else if (rate <= 1.325) return "!LOC:Veteran";
-          else if (rate <= 1.45) return "!LOC:Masterful";
-          else if (rate <= 1.6) return "!LOC:Hardcore";
-          else if (rate <= 1.8) return "!LOC:Dangerous";
-          else if (rate <= 2) return "!LOC:Deadly";
-          else if (rate <= 2.225) return "!LOC:Inhuman";
-          else if (rate <= 2.5) return "!LOC:Genocidal";
-          else if (rate <= 2.75) return "!LOC:Nightmare";
-          else if (rate <= 3) return "!LOC:Demigod";
-          else if (rate < 9) return "!LOC:Godlike";
-          else return "!LOC:Titan";
+          if (!rate) {
+            return "!LOC:Unknown";
+          } else if (rate <= 0.5) {
+            return "!LOC:Worthless";
+          } else if (rate <= 0.6) {
+            return "!LOC:Helpless";
+          } else if (rate <= 0.725) {
+            return "!LOC:Weakling";
+          } else if (rate <= 0.85) {
+            return "!LOC:Inexperienced";
+          } else if (rate <= 0.95) {
+            return "!LOC:Competent";
+          } else if (rate <= 1.1) {
+            return "!LOC:Skilled";
+          } else if (rate <= 1.2) {
+            return "!LOC:Experienced";
+          } else if (rate <= 1.325) {
+            return "!LOC:Veteran";
+          } else if (rate <= 1.45) {
+            return "!LOC:Masterful";
+          } else if (rate <= 1.6) {
+            return "!LOC:Hardcore";
+          } else if (rate <= 1.8) {
+            return "!LOC:Dangerous";
+          } else if (rate <= 2) {
+            return "!LOC:Deadly";
+          } else if (rate <= 2.225) {
+            return "!LOC:Inhuman";
+          } else if (rate <= 2.5) {
+            return "!LOC:Genocidal";
+          } else if (rate <= 2.75) {
+            return "!LOC:Nightmare";
+          } else if (rate <= 3) {
+            return "!LOC:Demigod";
+          } else if (rate < 9) {
+            return "!LOC:Godlike";
+          } else {
+            return "!LOC:Titan";
+          }
         };
         var rgb = function (color) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
@@ -51,10 +71,12 @@ if (!gwaioIntelligenceLoaded) {
           var name = commander.name;
           var eco = commander.econ_rate;
           var faction = factionNames[commander.faction];
-          if (commander.bossCommanders > 1)
-            var numCommanders = commander.bossCommanders;
-          else if (commander.commanderCount > 1)
+          var numCommanders = 0;
+          if (commander.bossCommanders > 1) {
+            numCommanders = commander.bossCommanders;
+          } else if (commander.commanderCount > 1) {
             numCommanders = commander.commanderCount;
+          }
           if (numCommanders) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
@@ -62,8 +84,9 @@ if (!gwaioIntelligenceLoaded) {
           var character = commander.character
             ? loc(commander.character)
             : loc("!LOC:None");
-          if (commander.penchantName)
+          if (commander.penchantName) {
             character = character + " " + loc(commander.penchantName);
+          }
           return {
             name: name,
             threat: loc(threat(eco)),
@@ -96,25 +119,39 @@ if (!gwaioIntelligenceLoaded) {
               if (
                 (world.generator && world.generator.biome !== "gas") ||
                 (world.planet && world.planet.biome !== "gas")
-              )
+              ) {
                 area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+              }
             });
           return formattedString(area);
         });
 
         var totalThreat = function (totalRate) {
-          if (!totalRate) return "!LOC:None";
-          else if (totalRate <= 0.6) return "!LOC:Very Low";
-          else if (totalRate <= 0.9) return "!LOC:Low";
-          else if (totalRate <= 1.6) return "!LOC:Moderate";
-          else if (totalRate <= 2.05) return "!LOC:High";
-          else if (totalRate <= 2.9) return "!LOC:Very High";
-          else if (totalRate <= 3.975) return "!LOC:Extreme";
-          else if (totalRate <= 5.625) return "!LOC:Critical";
-          else if (totalRate <= 7.2) return "!LOC:Suicidal";
-          else if (totalRate <= 10) return "!LOC:Apocalyptic";
-          else if (totalRate <= 20) return "!LOC:Impossible";
-          else return "!LOC:Skynet";
+          if (!totalRate) {
+            return "!LOC:None";
+          } else if (totalRate <= 0.6) {
+            return "!LOC:Very Low";
+          } else if (totalRate <= 0.9) {
+            return "!LOC:Low";
+          } else if (totalRate <= 1.6) {
+            return "!LOC:Moderate";
+          } else if (totalRate <= 2.05) {
+            return "!LOC:High";
+          } else if (totalRate <= 2.9) {
+            return "!LOC:Very High";
+          } else if (totalRate <= 3.975) {
+            return "!LOC:Extreme";
+          } else if (totalRate <= 5.625) {
+            return "!LOC:Critical";
+          } else if (totalRate <= 7.2) {
+            return "!LOC:Suicidal";
+          } else if (totalRate <= 10) {
+            return "!LOC:Apocalyptic";
+          } else if (totalRate <= 20) {
+            return "!LOC:Impossible";
+          } else {
+            return "!LOC:Skynet";
+          }
         };
         model.gwaioSystemThreat = ko.computed(function () {
           var primary = model.selection.system().star.ai();
@@ -141,24 +178,30 @@ if (!gwaioIntelligenceLoaded) {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().bountyMode
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioLandAnywhere = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().landAnywhere
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioSuddenDeath = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().suddenDeath
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioGameOptions = ko.computed(function () {
@@ -166,8 +209,10 @@ if (!gwaioIntelligenceLoaded) {
             model.gwaioBountyMode() ||
             model.gwaioLandAnywhere() ||
             model.gwaioSuddenDeath()
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         // AI Buffs
@@ -177,8 +222,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechCost = ko.computed(function () {
@@ -186,8 +233,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 0)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechDamage = ko.computed(function () {
@@ -195,8 +244,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 1)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechHealth = ko.computed(function () {
@@ -204,8 +255,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 2)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechSpeed = ko.computed(function () {
@@ -213,8 +266,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 3)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         // v5.11.0 and earlier only
@@ -223,8 +278,10 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 5)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechCombat = ko.computed(function () {
@@ -232,16 +289,20 @@ if (!gwaioIntelligenceLoaded) {
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().typeOfBuffs &&
             _.includes(model.selection.system().star.ai().typeOfBuffs, 6)
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioTechMirror = ko.computed(function () {
           if (
             model.selection.system().star.ai() &&
             model.selection.system().star.ai().mirrorMode === true
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         model.gwaioAiBuffs = ko.computed(function () {
@@ -254,8 +315,10 @@ if (!gwaioIntelligenceLoaded) {
             model.gwaioTechHealth() ||
             model.gwaioTechSpeed() ||
             model.gwaioTechMirror()
-          )
+          ) {
             return true;
+          }
+          return false;
         });
 
         // System Faction

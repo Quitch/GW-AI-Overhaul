@@ -1,4 +1,8 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -13,11 +17,7 @@ define(["shared/gw_common"], function (GW) {
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (!inventory.hasCard("gwaio_start_hoarder")) {
@@ -35,19 +35,29 @@ define(["shared/gw_common"], function (GW) {
         if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 25;
-            if (dist > 2) chance = 200;
+            if (dist > 2) {
+              chance = 200;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
             chance = 25;
-            if (dist > 3) chance = 200;
+            if (dist > 3) {
+              chance = 200;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
             chance = 25;
-            if (dist > 4) chance = 200;
+            if (dist > 4) {
+              chance = 200;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
             chance = 25;
-            if (dist > 5) chance = 200;
+            if (dist > 5) {
+              chance = 200;
+            }
           } else {
             chance = 25;
-            if (dist > 6) chance = 200;
+            if (dist > 6) {
+              chance = 200;
+            }
           }
         }
         chance *= chanceMod;
@@ -56,13 +66,13 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/air/air_factory_adv/air_factory_adv.json",
-        "/pa/units/air/air_factory/air_factory.json",
-        "/pa/units/air/air_scout/air_scout.json",
-        "/pa/units/air/bomber/bomber.json",
-        "/pa/units/air/fighter/fighter.json",
-        "/pa/units/air/solar_drone/solar_drone.json",
-        "/pa/units/air/transport/transport.json",
+        gwaioUnits.airFactoryAdvanced,
+        gwaioUnits.airFactory,
+        gwaioUnits.firefly,
+        gwaioUnits.bumblebee,
+        gwaioUnits.hummingbird,
+        gwaioUnits.icarus,
+        gwaioUnits.pelican,
       ]);
     },
     dull: function () {

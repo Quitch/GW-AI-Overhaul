@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,28 +22,20 @@ define([
         description: "!LOC:Tactical Nuke Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/land/nuke_launcher/nuke_launcher.json",
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
-            "/pa/units/land/vehicle_factory/vehicle_factory.json",
+            gwaioUnits.nukeLauncher,
+            gwaioUnits.ant,
+            gwaioUnits.vehicleFactory,
           ]);
           var nukes = [
-            "/pa/units/land/nuke_launcher/nuke_launcher_ammo.json",
+            gwaioUnits.nukeLauncherAmmo,
             "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
           ];
           var mods = [];
@@ -90,32 +82,32 @@ define([
           });
           mods.push(
             {
-              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              file: gwaioUnits.nukeLauncher,
               path: "build_metal_cost",
               op: "replace",
               value: 2500,
             },
             {
-              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              file: gwaioUnits.nukeLauncher,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_FabBuild",
             },
             {
-              file: "/pa/units/land/nuke_launcher/nuke_launcher.json",
+              file: gwaioUnits.nukeLauncher,
               path: "description",
               op: "replace",
               value:
                 "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
             },
             {
-              file: "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+              file: gwaioUnits.nukeLauncherBuildArm,
               path: "construction_demand.metal",
               op: "replace",
               value: 15,
             },
             {
-              file: "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
+              file: gwaioUnits.nukeLauncherBuildArm,
               path: "construction_demand.energy",
               op: "replace",
               value: 2250,
@@ -143,20 +135,15 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.removeUnits([
-            "/pa/units/land/air_defense_adv/air_defense_adv.json",
-            "/pa/units/land/laser_defense_adv/laser_defense_adv.json",
-            "/pa/units/land/laser_defense/laser_defense.json",
-            "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher.json",
-            "/pa/units/orbital/defense_satellite/defense_satellite.json",
-            "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-          ]);
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      var units = [
+        gwaioUnits.flak,
+        gwaioUnits.laserDefenseTowerAdvanced,
+        gwaioUnits.laserDefenseTower,
+        gwaioUnits.catapult,
+        gwaioUnits.anchor,
+        gwaioUnits.torpedoLauncherAdvanced,
+      ];
+      gwaioFunctions.applyDulls(CARD, inventory, units);
     },
   };
 });

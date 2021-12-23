@@ -1,4 +1,8 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -13,11 +17,7 @@ define(["shared/gw_common"], function (GW) {
         found: "/VO/Computer/gw/board_tech_available_bot",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
@@ -33,19 +33,29 @@ define(["shared/gw_common"], function (GW) {
         if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
           if (context.totalSize <= GW.balance.numberOfSystems[0]) {
             chance = 250;
-            if (dist > 2) chance = 100;
+            if (dist > 2) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
             chance = 250;
-            if (dist > 3) chance = 100;
+            if (dist > 3) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
             chance = 250;
-            if (dist > 4) chance = 100;
+            if (dist > 4) {
+              chance = 100;
+            }
           } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
             chance = 250;
-            if (dist > 5) chance = 100;
+            if (dist > 5) {
+              chance = 100;
+            }
           } else {
             chance = 250;
-            if (dist > 6) chance = 100;
+            if (dist > 6) {
+              chance = 100;
+            }
           }
         }
       }
@@ -53,13 +63,13 @@ define(["shared/gw_common"], function (GW) {
     },
     buff: function (inventory) {
       inventory.addUnits([
-        "/pa/units/land/assault_bot/assault_bot.json",
-        "/pa/units/land/bot_aa/bot_aa.json",
-        "/pa/units/land/bot_bomb/bot_bomb.json",
-        "/pa/units/land/bot_factory/bot_factory.json",
-        "/pa/units/land/bot_grenadier/bot_grenadier.json",
-        "/pa/units/land/bot_tesla/bot_tesla.json",
-        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
+        gwaioUnits.dox,
+        gwaioUnits.stinger,
+        gwaioUnits.boom,
+        gwaioUnits.botFactory,
+        gwaioUnits.grenadier,
+        gwaioUnits.spark,
+        gwaioUnits.stitch,
       ]);
     },
     dull: function () {

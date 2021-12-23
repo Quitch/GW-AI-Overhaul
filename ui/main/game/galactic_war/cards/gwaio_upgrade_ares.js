@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,50 +16,43 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/titan_vehicle/titan_vehicle.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.ares)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
+          file: gwaioUnits.aresWeapon,
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
+          file: gwaioUnits.aresWeapon,
           path: "pitch_range",
           op: "replace",
           value: 89,
         },
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_main.json",
+          file: gwaioUnits.aresWeapon,
           path: "arc_type",
           op: "replace",
           value: "ARC_high",
         },
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_tool_weapon_side.json",
+          file: gwaioUnits.aresSecondary,
           path: "max_range",
           op: "multiply",
           value: 1.25,
         },
         {
-          file: "/pa/units/land/titan_vehicle/titan_vehicle_ammo_side.json",
+          file: gwaioUnits.aresSecondaryAmmo,
           path: "max_velocity",
           op: "replace",
           value: 200,

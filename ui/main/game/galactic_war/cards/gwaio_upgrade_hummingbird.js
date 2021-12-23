@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,34 +16,31 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (gwaioFunctions.hasUnit("/pa/units/air/fighter/fighter.json"))
+      if (gwaioFunctions.hasUnit(gwaioUnits.hummingbird)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/air/fighter/fighter.json",
+          file: gwaioUnits.hummingbird,
           path: "system_velocity_multiplier",
           op: "replace",
           value: 15,
         },
         {
-          file: "/pa/units/air/fighter/fighter.json",
+          file: gwaioUnits.hummingbird,
           path: "gravwell_velocity_multiplier",
           op: "replace",
           value: 6,
         },
         {
-          file: "/pa/units/air/fighter/fighter.json",
+          file: gwaioUnits.hummingbird,
           path: "navigation.inter_planetary_type",
           op: "replace",
           value: "system",

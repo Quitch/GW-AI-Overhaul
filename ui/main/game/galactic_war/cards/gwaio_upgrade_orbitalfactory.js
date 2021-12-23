@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,29 +16,22 @@ define([
         found: "/VO/Computer/gw/board_tech_available_orbital",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/orbital/orbital_factory/orbital_factory.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.orbitalFactory)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       var units = [
-        "/pa/units/orbital/solar_array/solar_array.json",
-        "/pa/units/orbital/orbital_laser/orbital_laser.json",
-        "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
-        "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
-        "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+        gwaioUnits.solarArray,
+        gwaioUnits.sxx,
+        gwaioUnits.radarSatelliteAdvanced,
+        gwaioUnits.artemis,
+        gwaioUnits.omega,
       ];
       var mods = units.map(function (unit) {
         return {
@@ -48,7 +42,7 @@ define([
         };
       });
       mods.push({
-        file: "/pa/units/orbital/orbital_factory/orbital_factory.json",
+        file: gwaioUnits.orbitalFactory,
         path: "max_health",
         op: "multiply",
         value: 0.5,

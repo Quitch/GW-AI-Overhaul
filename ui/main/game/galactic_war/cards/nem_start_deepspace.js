@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,78 +22,70 @@ define([
         description: "!LOC:Space Excavation Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            "/pa/units/orbital/mining_platform/mining_platform.json",
-            "/pa/units/orbital/orbital_factory/orbital_factory.json",
-            "/pa/units/orbital/radar_satellite/radar_satellite.json",
+            gwaioUnits.jig,
+            gwaioUnits.orbitalFactory,
+            gwaioUnits.arkyd,
           ]);
           inventory.addMods([
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "build_metal_cost",
               op: "multiply",
               value: 0.25,
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "area_build_separation",
               op: "replace",
               value: 12,
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "production.energy",
               op: "multiply",
               value: 0.7,
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "production.metal",
               op: "multiply",
               value: 0.7,
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "build_restrictions",
               op: "replace",
               value: "none",
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "description",
               op: "replace",
               value:
                 "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform.json",
+              file: gwaioUnits.jig,
               path: "model.animations",
               op: "replace",
               value: {},
             },
             {
-              file: "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
+              file: gwaioUnits.jigDeath,
               path: "damage",
               op: "multiply",
               value: 0.1,
             },
             {
-              file: "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+              file: gwaioUnits.orbitalFabber,
               path: "buildable_types",
               op: "add",
               value: " | FabBuild",
@@ -211,20 +203,15 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.removeUnits([
-            "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
-            "/pa/units/land/energy_plant/energy_plant.json",
-            "/pa/units/land/metal_extractor_adv/metal_extractor_adv.json",
-            "/pa/units/land/metal_extractor/metal_extractor.json",
-            "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
-            "/pa/units/orbital/solar_array/solar_array.json",
-          ]);
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      var units = [
+        gwaioUnits.energyPlantAdvanced,
+        gwaioUnits.energyPlant,
+        gwaioUnits.metalExtractorAdvanced,
+        gwaioUnits.metalExtractor,
+        gwaioUnits.omega,
+        gwaioUnits.solarArray,
+      ];
+      gwaioFunctions.applyDulls(CARD, inventory, units);
     },
   };
 });

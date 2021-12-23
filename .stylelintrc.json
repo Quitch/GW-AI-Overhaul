@@ -1,3 +1,13 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-prettier"]
+  "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+  "rules": {
+    "color-function-notation": "legacy",
+    "alpha-value-notation": "number",
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": ["mask-image", "mask-size"]
+      }
+    ]
+  }
 }

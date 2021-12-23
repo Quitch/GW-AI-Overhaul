@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,65 +16,58 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/bot_grenadier/bot_grenadier.json"
-        )
-      )
+      if (gwaioFunctions.hasUnit(gwaioUnits.grenadier)) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier.json",
+          file: gwaioUnits.grenadier,
           path: "build_metal_cost",
           op: "multiply",
           value: 3,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_tool_weapon.json",
+          file: gwaioUnits.grenadierWeapon,
           path: "rate_of_fire",
           op: "multiply",
           value: 0.25,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
+          file: gwaioUnits.grenadierAmmo,
           path: "damage",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
+          file: gwaioUnits.grenadierAmmo,
           path: "splash_damage",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
+          file: gwaioUnits.grenadierAmmo,
           path: "splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
+          file: gwaioUnits.grenadierAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
+          file: gwaioUnits.grenadierAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: "/pa/units/land/land_mine/land_mine.json",
+          value: gwaioUnits.landMine,
         },
       ]);
     },

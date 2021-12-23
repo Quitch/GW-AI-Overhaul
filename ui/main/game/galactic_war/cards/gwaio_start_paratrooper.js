@@ -2,9 +2,9 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (module, GWCStart, gwaioBank, gwaioTech, gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -22,36 +22,25 @@ define([
         description: "!LOC:Paratrooper Commander",
       };
     },
-    deal: function () {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: 0,
-      };
-    },
+    deal: gwaioFunctions.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          if (inventory.getTag("global", "playerFaction") === 4)
-            inventory.addMods(gwaioTech.clusterCommanders);
+          gwaioFunctions.setupCluster(inventory);
 
-          var unitCannons = [
-            "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json",
-            "/pa/units/land/unit_cannon/unit_cannon.json",
-          ];
+          var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
           var unitCannonUnits = [
-            "/pa/units/land/aa_missile_vehicle/aa_missile_vehicle.json",
-            "/pa/units/land/assault_bot/assault_bot.json",
-            "/pa/units/land/attack_vehicle/attack_vehicle.json",
-            "/pa/units/land/bot_aa/bot_aa.json",
-            "/pa/units/land/bot_bomb/bot_bomb.json",
-            "/pa/units/land/bot_grenadier/bot_grenadier.json",
-            "/pa/units/land/bot_tesla/bot_tesla.json",
-            "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat.json",
-            "/pa/units/land/tank_light_laser/tank_light_laser.json",
+            gwaioUnits.spinner,
+            gwaioUnits.dox,
+            gwaioUnits.stryker,
+            gwaioUnits.stinger,
+            gwaioUnits.boom,
+            gwaioUnits.grenadier,
+            gwaioUnits.spark,
+            gwaioUnits.stitch,
+            gwaioUnits.ant,
           ];
           var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
@@ -79,32 +68,35 @@ define([
           if (
             inventory.hasCard("gwc_enable_vehicles_all") ||
             inventory.hasCard("gwc_enable_vehicles_t1")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
-              "/pa/units/land/tank_armor/tank_armor.json",
-              "/pa/units/land/tank_hover/tank_hover.json",
-              "/pa/units/land/land_scout/land_scout.json"
+              gwaioUnits.inferno,
+              gwaioUnits.drifter,
+              gwaioUnits.skitter
             );
+          }
           if (
             inventory.hasCard("gwc_enable_vehicles_all") ||
             inventory.hasCard("gwaio_upgrade_vehiclefactory")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
-              "/pa/units/land/tank_laser_adv/tank_laser_adv.json",
-              "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json",
-              "/pa/units/land/tank_heavy_mortar/tank_heavy_mortar.json",
-              "/pa/units/land/tank_flak/tank_flak.json",
-              "/pa/units/land/tank_nuke/tank_nuke.json"
+              gwaioUnits.leveler,
+              gwaioUnits.vanguard,
+              gwaioUnits.sheller,
+              gwaioUnits.storm,
+              gwaioUnits.manhattan
             );
+          }
           if (
             inventory.hasCard("gwc_enable_bots_all") ||
             inventory.hasCard("gwaio_upgrade_botfactory")
-          )
+          ) {
             unitCannonUnitsAdditional.push(
-              "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
-              "/pa/units/land/bot_sniper/bot_sniper.json",
-              "/pa/units/land/bot_support_commander/bot_support_commander.json"
+              gwaioUnits.bluehawk,
+              gwaioUnits.gilE,
+              gwaioUnits.colonel
             );
+          }
           // eslint-disable-next-line lodash/prefer-map
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
@@ -233,12 +225,7 @@ define([
       }
     },
     dull: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+      gwaioFunctions.applyDulls(CARD, inventory);
     },
   };
 });

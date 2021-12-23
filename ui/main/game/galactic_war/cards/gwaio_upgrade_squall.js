@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-], function (gwaioFunctions) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwaioFunctions, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,35 +16,26 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwaioFunctions.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/sea/drone_carrier/drone/drone.json"
-        ) &&
-        (((gwaioFunctions.hasUnit(
-          "/pa/units/sea/naval_factory_adv/naval_factory_adv.json"
-        ) ||
+        gwaioFunctions.hasUnit(gwaioUnits.squall) &&
+        (((gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
           inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-          gwaioFunctions.hasUnit(
-            "/pa/units/sea/drone_carrier/carrier/carrier.json"
-          )) ||
+          gwaioFunctions.hasUnit(gwaioUnits.typhoon)) ||
           inventory.hasCard("gwaio_upgrade_omega") ||
           inventory.hasCard("gwaio_upgrade_wyrm"))
-      )
+      ) {
         chance = 60;
+      }
 
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/sea/drone_carrier/drone/drone.json",
+          file: gwaioUnits.squall,
           path: "passive_health_regen",
           op: "multiply",
           value: 0.5,
