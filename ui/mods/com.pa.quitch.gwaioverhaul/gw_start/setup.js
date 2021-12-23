@@ -468,6 +468,7 @@ if (!gwaioSetupLoaded) {
               maxConnections: 4,
               minimumDistanceBonus: 8,
             });
+
             var dealStartCard = buildGalaxy.then(function (galaxy) {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
@@ -508,6 +509,7 @@ if (!gwaioSetupLoaded) {
                   );
               });
             });
+
             var moveIn = dealStartCard.then(function () {
               if (model.makeGameBusy() !== busyToken) {
                 return;
