@@ -7,9 +7,6 @@ define(["require"], function (require) {
     self.mods = ko.observableArray();
     self.maxCards = ko.observable(0);
     self.cards = ko.observableArray();
-    self.cards.subscribe(function () {
-      self.applyCards();
-    });
     self.minions = ko.observableArray([]);
     self.tags = ko.observable({});
   };
@@ -202,6 +199,7 @@ define(["require"], function (require) {
     // Get a tag value.  When called during card processing, an empty
     // context will be replaced with the current card.
     getTag: function (context, name, def) {
+      console.log("Get tag", context, name, def);
       var self = this;
       var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
@@ -217,6 +215,7 @@ define(["require"], function (require) {
         }
         tagContext[name] = def;
       }
+      console.log(tagContext[name]);
       return tagContext[name];
     },
     setTag: function (context, name, value) {
