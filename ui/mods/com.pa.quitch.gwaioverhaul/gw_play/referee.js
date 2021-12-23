@@ -241,8 +241,7 @@ if (!gwaioRefereeChangesLoaded) {
                     var spec = load(mod.file);
                     if (!spec) {
                       return console.warn(
-                        "Warning: File not found in mod",
-                        mod
+                        "Warning: File not found in mod " + mod
                       );
                     }
                     if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
@@ -254,14 +253,15 @@ if (!gwaioRefereeChangesLoaded) {
 
                     var reportError = function (error, step) {
                       console.error(
-                        error,
-                        spec[step],
-                        "spec",
-                        spec,
-                        "mod",
-                        mod,
-                        "path",
-                        originalPath.slice(0, -path.length).join(".")
+                        error +
+                          " " +
+                          spec[step] +
+                          " spec " +
+                          spec +
+                          " mod " +
+                          mod +
+                          " path " +
+                          originalPath.slice(0, -path.length).join(".")
                       );
                       return undefined;
                     };
@@ -652,7 +652,7 @@ if (!gwaioRefereeChangesLoaded) {
                     } else if (aiMod.type === "template") {
                       managerPath = "platoon_templates/";
                     } else {
-                      console.error("Invalid op in", aiMod);
+                      console.error("Invalid op in " + aiMod);
                     }
                     fileList.push(aiTechPath + managerPath + aiMod.value);
                   });

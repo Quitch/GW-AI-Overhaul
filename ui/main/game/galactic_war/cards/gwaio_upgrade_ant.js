@@ -19,11 +19,7 @@ define([
     getContext: gwaioFunctions.getContext,
     deal: function () {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(
-          "/pa/units/land/tank_light_laser/tank_light_laser.json"
-        )
-      ) {
+      if (gwaioFunctions.hasUnit(gwaioUnits.ant)) {
         chance = 60;
       }
 

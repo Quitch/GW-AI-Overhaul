@@ -25,9 +25,9 @@ define([
         path: gwaioUnits.airFabber,
       },
       { name: "Phoenix", path: gwaioUnits.phoenix },
-      { name: "gwaioUnits.hummingbird", path: gwaioUnits.hummingbird },
+      { name: "Hummingbird", path: gwaioUnits.hummingbird },
       { name: "Kestrel", path: gwaioUnits.kestrel },
-      { name: "gwaioUnits.icarus", path: gwaioUnits.icarus },
+      { name: "Icarus", path: gwaioUnits.icarus },
       { name: "Horsefly", path: gwaioUnits.horsefly },
       {
         name: "Angel",
@@ -230,11 +230,11 @@ define([
       },
       {
         name: "!LOC:Vehicle Factory",
-        path: gwaioUnits.vehicleFactoryAdvanced,
+        path: gwaioUnits.vehicleFactory,
       },
       {
         name: "!LOC:Advanced Vehicle Factory",
-        path: gwaioUnits.vehicleFactory,
+        path: gwaioUnits.vehicleFactoryAdvanced,
       },
       {
         name: "!LOC:Planetary Radar",
