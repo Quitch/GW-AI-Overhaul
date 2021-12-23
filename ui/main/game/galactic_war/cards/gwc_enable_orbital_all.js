@@ -62,11 +62,7 @@ define([
     buff: function (inventory) {
       inventory.addUnits([
         gwaioUnits.jig,
-        gwaioUnits.orbitalFabber,
         gwaioUnits.orbitalFactory,
-        gwaioUnits.avenger,
-        gwaioUnits.sxx,
-        gwaioUnits.hermes,
         gwaioUnits.arkyd,
         gwaioUnits.solarArray,
       ]);
