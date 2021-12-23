@@ -129,7 +129,7 @@ define(["require"], function (require) {
           card[op](self, cardParams);
           finishCard();
         }, function (error) {
-          console.error("Failed loading card", cardId, ":", error);
+          console.error("Failed loading card " + cardId, " : " + error);
           finishCard();
         });
       };

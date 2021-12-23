@@ -569,9 +569,9 @@ if (!gwaioCardsLoaded) {
                             minionStock.minion.commander !== clusterWorker
                           ) {
                             console.error(
-                              "Minion commander unitspec",
-                              minionStock.minion.commander,
-                              "invalid"
+                              "Minion commander unitspec " +
+                                minionStock.minion.commander +
+                                " invalid"
                             );
                           }
                         });
@@ -593,8 +593,7 @@ if (!gwaioCardsLoaded) {
 
               if (_.isUndefined(cardId)) {
                 console.error(
-                  "Unable to find a card called",
-                  model.cheats.giveCardId()
+                  "Unable to find a card called " + model.cheats.giveCardId()
                 );
               } else {
                 dealCard({
@@ -708,8 +707,8 @@ if (!gwaioCardsLoaded) {
                   return;
                 } else {
                   console.warn(
-                    cardId,
-                    "is invalid or missing from model.gwaioCardsToUnits"
+                    cardId +
+                      " is invalid or missing from model.gwaioCardsToUnits"
                   );
                 }
               } else {
@@ -723,8 +722,7 @@ if (!gwaioCardsLoaded) {
                     });
                     if (index === -1) {
                       console.warn(
-                        unit,
-                        "is invalid or missing from GWO unit_names.js"
+                        unit + " is invalid or missing from GWO unit_names.js"
                       );
                     } else {
                       var name = loc(gwaioUnitsToNames.units[index].name);
