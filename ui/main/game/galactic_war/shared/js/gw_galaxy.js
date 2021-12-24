@@ -1,4 +1,4 @@
-// We want StarSystemTemplates.generate to have players equal to distance so planets scale up with galaxy depth
+// StarSystemTemplates.generate has systems scale with galaxy depth
 define([
   "shared/GalaxyBuilder",
   "shared/gw_star",

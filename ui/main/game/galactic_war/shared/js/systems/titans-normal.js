@@ -1,4 +1,4 @@
-// We changed the Players arrays
+// Change the Players arrays and add classic systems
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/js/systems/planets.js",
 ], function (gwaioPlanets) {

@@ -1,3 +1,4 @@
+// Add aiMods()
 define(["require"], function (require) {
   var GWInventory = function () {
     var self = this;

@@ -1,3 +1,4 @@
+// Overhauls personalities
 define(function () {
   var factionName = "Foundation";
   var factionColour = [
