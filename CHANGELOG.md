@@ -17,7 +17,7 @@
 - Complete Bot Tech tooltip not listing the Stinger or Gil-E
 - Complete Orbital Tech tooltip not listing the ARKYD
 - Stinger Upgrade tooltip
-- Correct tooltips for Vehicle Factory and Advanced Vehicle Factory being reversed
+- Tooltips for Vehicle Factory and Advanced Vehicle Factory being reversed
 
 ## v5.26.1 - 2021-12-08
 
