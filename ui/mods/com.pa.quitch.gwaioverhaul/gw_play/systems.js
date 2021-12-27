@@ -193,6 +193,7 @@ if (!gwaioSystemChangesLoaded) {
               "beforeChange"
             );
 
+            // Create planets' tooltips for intelligence panel
             self.system.subscribe(function () {
               var newSystem = self.system();
 
@@ -204,34 +205,20 @@ if (!gwaioSystemChangesLoaded) {
                 var metalClusters = loc("!LOC:Metal Clusters:");
                 var metalDensity = loc("!LOC:Metal Density:");
                 var temperature = loc("!LOC:Temperature:");
-                var waterDepth = loc("!LOC:Water Depth:");
                 var waterHeight = loc("!LOC:Water Height:");
 
                 model.gwaioPlanetData = _.map(
                   self.system().planets(),
                   function (planet) {
+                    var tooltip = radius + " " + planet.generator.radius;
                     if (planet.generator.biome === "gas") {
-                      return radius + " " + planet.generator.radius;
-                    } else if (
-                      planet.generator.biome === "metal" ||
-                      planet.generator.biome === "metal_boss" ||
-                      planet.generator.biome === "moon"
-                    ) {
+                      return tooltip;
+                    } else {
                       if (planet.metal_spots) {
-                        return (
-                          radius +
-                          " " +
-                          planet.generator.radius +
-                          "<br>" +
-                          metalSpots +
-                          " " +
-                          planet.metal_spots.length
-                        );
+                        tooltip +=
+                          "<br>" + metalSpots + " " + planet.metal_spots.length;
                       } else {
-                        return (
-                          radius +
-                          " " +
-                          planet.generator.radius +
+                        tooltip +=
                           "<br>" +
                           metalClusters +
                           " " +
@@ -239,78 +226,24 @@ if (!gwaioSystemChangesLoaded) {
                           "<br>" +
                           metalDensity +
                           " " +
-                          Math.round(planet.generator.metalDensity)
-                        );
+                          Math.round(planet.generator.metalDensity);
                       }
-                    } else if (
-                      planet.metal_spots &&
-                      planet.generator.waterDepth
-                    ) {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalSpots +
-                        " " +
-                        planet.metal_spots.length +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterDepth +
-                        " " +
-                        Math.round(planet.generator.waterDepth) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
-                    } else if (planet.metal_spots) {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalSpots +
-                        " " +
-                        planet.metal_spots.length +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
-                    } else {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalClusters +
-                        " " +
-                        Math.round(planet.generator.metalClusters) +
-                        "<br>" +
-                        metalDensity +
-                        " " +
-                        Math.round(planet.generator.metalDensity) +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterDepth +
-                        " " +
-                        Math.round(planet.generator.waterDepth) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
+                      if (
+                        planet.generator.biome !== "metal" &&
+                        planet.generator.biome !== "metal_boss" &&
+                        planet.generator.biome !== "moon"
+                      ) {
+                        tooltip +=
+                          "<br>" +
+                          temperature +
+                          " " +
+                          Math.round(planet.generator.temperature) +
+                          "<br>" +
+                          waterHeight +
+                          " " +
+                          Math.round(planet.generator.waterHeight);
+                      }
+                      return tooltip;
                     }
                   }
                 );
