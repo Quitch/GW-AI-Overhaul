@@ -704,11 +704,11 @@ define([
       },
       {
         id: "gwaio_upgrade_squall",
-        units: ["/pa/units/sea/drone_carrier/drone.json"],
+        units: [gwaioUnits.squall],
       },
       {
         id: "gwaio_upgrade_typhoon",
-        units: ["/pa/units/sea/drone_carrier/carrier.json"],
+        units: [gwaioUnits.typhoon],
       },
       {
         id: "gwaio_upgrade_inferno",

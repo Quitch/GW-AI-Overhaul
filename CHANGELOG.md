@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Errors in tech card tooltips
+
 ## v5.27.0 - 2021-12-23
 
 ### Changed
