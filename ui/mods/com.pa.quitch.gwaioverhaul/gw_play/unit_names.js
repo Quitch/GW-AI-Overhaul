@@ -96,10 +96,6 @@ define([
       },
       { name: "Gil-E", path: gwaioUnits.gilE },
       {
-        name: "Recluse",
-        path: "/pa/units/land/bot_spider_adv/bot_spider_adv.json",
-      },
-      {
         name: "Colonel",
         path: gwaioUnits.colonel,
       },
@@ -261,10 +257,6 @@ define([
         path: gwaioUnits.omega,
       },
       {
-        name: "Exodus",
-        path: "/pa/units/orbital/orbital_carrier/orbital_carrier.json",
-      },
-      {
         name: "!LOC:Orbital Fabrication Bot",
         path: gwaioUnits.orbitalFabber,
       },
@@ -347,7 +339,6 @@ define([
         path: gwaioUnits.navalFactory,
       },
       { name: "Kraken", path: gwaioUnits.kraken },
-      { name: "Jellyfish", path: "/pa/units/sea/sea_mine/sea_mine.json" },
       { name: "Piranha", path: gwaioUnits.piranha },
       {
         name: "!LOC:Advanced Torpedo Launcher",
