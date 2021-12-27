@@ -252,7 +252,7 @@ if (!gwaioSystemChangesLoaded) {
           }
         }
 
-        // turn off the icon before replacing model.selection()
+        // Turn off the original selection icon before replacing model.selection()
         model.selection.visible(false);
 
         model.selection = new SelectionViewModel({
