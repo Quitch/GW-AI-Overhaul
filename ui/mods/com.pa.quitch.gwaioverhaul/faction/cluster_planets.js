@@ -1,3 +1,4 @@
+/* eslint-disable no-loss-of-precision */
 define({
   planet1: {
     isExplicit: true,
