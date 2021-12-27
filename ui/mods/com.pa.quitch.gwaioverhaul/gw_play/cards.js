@@ -30,7 +30,7 @@ if (!gwaioCardsLoaded) {
           self.isEmpty = ko.computed(function () {
             return !self.id();
           });
-          // GWAIO - recognise the mod's loadouts as loadouts
+          // Recognise loadouts introduced by mods as loadouts
           self.isLoadout = ko.computed(function () {
             return _.includes(self.id(), "_start_");
           });
@@ -83,7 +83,8 @@ if (!gwaioCardsLoaded) {
           });
         };
 
-        // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
+        // Allow player to delete tech cards whenever they want and add tooltips
+        // showing units affected by the cards
         $("#hover-card").replaceWith(
           loadHtml(
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
@@ -102,13 +103,13 @@ if (!gwaioCardsLoaded) {
         model.gwaioOfferRerolls = ko.observable(true);
         model.gwaioRerollsUsed = ko
           .observable(0)
-          .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
+          .extend({ session: "gwaio_rerolls_used" }); // prevent UI refresh exploits
         var star = {};
-        // clean start for new games in a single session
+        // Clean start for new games in a single session
         if (game.turnState() === "begin") {
           model.gwaioRerollsUsed(0);
         }
-        // avoid incorrect rerolls when loading an exploration save game
+        // Avoid incorrect rerolls when loading an exploration save game
         else if (game.turnState() === "explore") {
           star = game.galaxy().stars()[game.currentStar()];
           model.gwaioRerollsUsed = ko.observable(
@@ -171,7 +172,7 @@ if (!gwaioCardsLoaded) {
             var inventory = game.inventory();
             var playerFaction = 0;
 
-            // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
+            // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
             if (
               inventory.cards().length === 1 &&
               inventory.cards()[0].id === "gwc_start_subcdr" &&
@@ -207,7 +208,7 @@ if (!gwaioCardsLoaded) {
               });
             }
 
-            /* Start of GWAIO implementation of GWDealer */
+            /* Start of GWO implementation of GWDealer */
             if (!model.gwaioDeck) {
               model.gwaioDeck = [];
             }
@@ -506,7 +507,7 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            // ensure cheats use our deck
+            // Cheats use our deck
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
@@ -532,9 +533,9 @@ if (!gwaioCardsLoaded) {
               });
               return result;
             };
-            /* end of GWAIO implementation of GWDealer */
+            /* end of GWO implementation of GWDealer */
 
-            // we need cheats to deal from our deck
+            // We need cheats to deal from our deck
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
               _.forEach(gwaioCardsToUnits.cards, function (card) {
@@ -628,7 +629,7 @@ if (!gwaioCardsLoaded) {
               }
             };
 
-            // gw_play self.explore - we need to call our chooseCards function
+            // gw_play self.explore - call our chooseCards function
             model.explore = function () {
               if (!game || !game.explore()) {
                 return;
@@ -697,9 +698,10 @@ if (!gwaioCardsLoaded) {
               if (card.isLoadout()) {
                 return;
               }
+              // Ugly hack to ensure inventory hovers work at the same time as the new tech display
               if (i === undefined) {
                 i = 4;
-              } // ugly hack to ensure inventory hovers work at the same time as the new tech display
+              }
               var cardId = card.id();
               var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
               if (index === -1) {
