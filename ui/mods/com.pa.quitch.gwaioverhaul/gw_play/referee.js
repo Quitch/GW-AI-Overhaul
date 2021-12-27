@@ -476,6 +476,7 @@ if (!gwaioRefereeChangesLoaded) {
             return done.promise();
           };
 
+          // parse AI mods and load the results into self.files()
           var generateAI = function () {
             var self = this;
 
