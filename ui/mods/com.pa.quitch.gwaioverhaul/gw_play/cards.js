@@ -738,10 +738,10 @@ if (!gwaioCardsLoaded) {
                   affectedUnits = affectedUnits.sort();
                   model.gwaioTechCardTooltip()[hoverIndex] = _.map(
                     affectedUnits,
-                    function (unit) {
+                    function (unit, index) {
                       if (affectedUnits.length < 13) {
                         return unit.concat("<br>");
-                      } else if (hoverIndex < affectedUnits.length - 1) {
+                      } else if (index < affectedUnits.length - 1) {
                         return unit.concat("; ");
                       } else {
                         return unit;
