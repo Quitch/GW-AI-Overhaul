@@ -1,9 +1,8 @@
 define({
   difficulties: [
     {
-      // Casual
-      customDifficulty: false,
       difficultyName: "!LOC:Casual",
+      customDifficulty: false,
       goForKill: false,
       microType: 0,
       mandatoryMinions: 0,
@@ -29,9 +28,8 @@ define({
       factionTechHandicap: 2,
     },
     {
-      // Iron
-      customDifficulty: false,
       difficultyName: "!LOC:Iron",
+      customDifficulty: false,
       goForKill: false,
       microType: 1,
       mandatoryMinions: 0,
@@ -58,9 +56,8 @@ define({
       starting_location_evaluation_radius: 100,
     },
     {
-      // Bronze
-      customDifficulty: false,
       difficultyName: "!LOC:Bronze",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
@@ -87,9 +84,8 @@ define({
       starting_location_evaluation_radius: 150,
     },
     {
-      // Silver
-      customDifficulty: false,
       difficultyName: "!LOC:Silver",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
@@ -116,9 +112,8 @@ define({
       starting_location_evaluation_radius: 200,
     },
     {
-      // Gold
-      customDifficulty: false,
       difficultyName: "!LOC:Gold",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
@@ -145,9 +140,8 @@ define({
       starting_location_evaluation_radius: 250,
     },
     {
-      // Platinum
-      customDifficulty: false,
       difficultyName: "!LOC:Platinum",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
@@ -174,9 +168,8 @@ define({
       starting_location_evaluation_radius: 300,
     },
     {
-      // Diamond
-      customDifficulty: false,
       difficultyName: "!LOC:Diamond",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
@@ -203,9 +196,8 @@ define({
       starting_location_evaluation_radius: 400,
     },
     {
-      // Uber
-      customDifficulty: false,
       difficultyName: "!LOC:Uber",
+      customDifficulty: false,
       goForKill: true,
       microType: 2,
       mandatoryMinions: -1,
@@ -232,9 +224,8 @@ define({
       starting_location_evaluation_radius: 400,
     },
     {
-      // Custom
-      customDifficulty: true,
       difficultyName: "!LOC:Custom",
+      customDifficulty: true,
     },
   ],
 });
