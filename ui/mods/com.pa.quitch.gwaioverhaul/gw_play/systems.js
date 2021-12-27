@@ -94,6 +94,7 @@ if (!gwaioSystemChangesLoaded) {
           });
         }
 
+        // Add tooltips, starting planet, and thruster icons on planet intelligence icons
         $(".all-planets").replaceWith(
           loadHtml(
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
