@@ -137,8 +137,8 @@ if (!gwaioSystemChangesLoaded) {
             return ko.pureComputed(function () {
               var system = self.system();
               if (system) {
-                var ai = system.star.ai();
-                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - use system information before AI information
+                // Display system description in intelligence panel
+                return loc(system[field]() || "");
               } else {
                 return "";
               }
