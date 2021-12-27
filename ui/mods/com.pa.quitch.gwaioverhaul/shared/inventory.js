@@ -1,7 +1,6 @@
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
+  gwaioUnits
+) {
   return {
     commanderUnits: [gwaioUnits.commander],
     commanderWeapons: [gwaioUnits.commanderSecondary],
