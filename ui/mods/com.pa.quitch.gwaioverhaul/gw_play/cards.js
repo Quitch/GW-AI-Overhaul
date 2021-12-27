@@ -694,17 +694,21 @@ if (!gwaioCardsLoaded) {
 
             model.gwaioTechCardTooltip = ko.observableArray([]);
 
-            var makeCardTooltip = function (card, i) {
+            var makeCardTooltip = function (card, hoverIndex) {
               if (card.isLoadout()) {
                 return;
               }
-              // Ugly hack to ensure inventory hovers work at the same time as the new tech display
-              if (i === undefined) {
-                i = 4;
+              // Ensure inventory hovers work at the same time as the new tech display
+              if (hoverIndex === undefined) {
+                hoverIndex = 0;
+              } else {
+                hoverIndex += 1;
               }
               var cardId = card.id();
-              var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-              if (index === -1) {
+              var cardIndex = _.findIndex(model.gwaioCardsToUnits, {
+                id: cardId,
+              });
+              if (cardIndex === -1) {
                 if (cardId === undefined) {
                   return;
                 } else {
@@ -714,30 +718,30 @@ if (!gwaioCardsLoaded) {
                   );
                 }
               } else {
-                var units = model.gwaioCardsToUnits[index].units;
+                var units = model.gwaioCardsToUnits[cardIndex].units;
                 if (units) {
                   var affectedUnits = [];
                   // TODO: replace with $.getJSON() to get this info from the source?
                   _.forEach(units, function (unit) {
-                    index = _.findIndex(gwaioUnitsToNames.units, {
+                    cardIndex = _.findIndex(gwaioUnitsToNames.units, {
                       path: unit,
                     });
-                    if (index === -1) {
+                    if (cardIndex === -1) {
                       console.warn(
                         unit + " is invalid or missing from GWO unit_names.js"
                       );
                     } else {
-                      var name = loc(gwaioUnitsToNames.units[index].name);
+                      var name = loc(gwaioUnitsToNames.units[cardIndex].name);
                       affectedUnits = affectedUnits.concat(name);
                     }
                   });
                   affectedUnits = affectedUnits.sort();
-                  model.gwaioTechCardTooltip()[i] = _.map(
+                  model.gwaioTechCardTooltip()[hoverIndex] = _.map(
                     affectedUnits,
                     function (unit) {
                       if (affectedUnits.length < 13) {
                         return unit.concat("<br>");
-                      } else if (i < affectedUnits.length - 1) {
+                      } else if (hoverIndex < affectedUnits.length - 1) {
                         return unit.concat("; ");
                       } else {
                         return unit;
@@ -745,7 +749,7 @@ if (!gwaioCardsLoaded) {
                     }
                   );
                 } else {
-                  model.gwaioTechCardTooltip()[i] = undefined;
+                  model.gwaioTechCardTooltip()[hoverIndex] = undefined;
                 }
               }
             };
