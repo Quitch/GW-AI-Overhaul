@@ -326,10 +326,7 @@ if (!gwaioSystemChangesLoaded) {
             });
 
             // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-            if (
-              gwaioSettings &&
-              _.isUndefined(gwaioSettings.treasurePlanetFixed)
-            ) {
+            if (gwaioSettings && !gwaioSettings.treasurePlanetFixed) {
               for (var i = 0; i < galaxy.stars().length; i++) {
                 if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
                   galaxy.stars()[i].cardList([]);
