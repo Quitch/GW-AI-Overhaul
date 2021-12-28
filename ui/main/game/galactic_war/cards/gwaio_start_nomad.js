@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Nomad Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters."
@@ -22,13 +22,13 @@ define([
         description: "!LOC:Nomad Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
 
           var mods = [];
 
@@ -273,7 +273,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwaioCards.applyDulls(CARD, inventory);
     },
   };
 });

@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwaioCards, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,13 +16,13 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwaioCards.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.orbitalFactory) &&
-        gwaioFunctions.hasUnit(gwaioUnits.omega) &&
-        gwaioFunctions.hasUnit(gwaioUnits.squall)
+        gwaioCards.hasUnit(gwaioUnits.orbitalFactory) &&
+        gwaioCards.hasUnit(gwaioUnits.omega) &&
+        gwaioCards.hasUnit(gwaioUnits.squall)
       ) {
         chance = 60;
       }

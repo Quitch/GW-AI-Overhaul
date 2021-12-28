@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Space Excavation Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build Omegas, any resource generating unit or structure, or Sub Commanders."
@@ -22,13 +22,13 @@ define([
         description: "!LOC:Space Excavation Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
           inventory.addUnits([
             gwaioUnits.jig,
             gwaioUnits.orbitalFactory,
@@ -211,7 +211,7 @@ define([
         gwaioUnits.omega,
         gwaioUnits.solarArray,
       ];
-      gwaioFunctions.applyDulls(CARD, inventory, units);
+      gwaioCards.applyDulls(CARD, inventory, units);
     },
   };
 });

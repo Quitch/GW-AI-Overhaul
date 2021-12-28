@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwaioCards, gwaioUnits) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,12 +16,12 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwaioCards.getContext,
     deal: function () {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.airFactory) &&
-        gwaioFunctions.hasUnit(gwaioUnits.airFabber)
+        gwaioCards.hasUnit(gwaioUnits.airFactory) &&
+        gwaioCards.hasUnit(gwaioUnits.airFabber)
       ) {
         chance = 60;
       }

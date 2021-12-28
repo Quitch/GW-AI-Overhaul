@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Buff Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:This Commander prefers quality over quantity and has modified its units to that end. 30% more health, 30% more damage and splash, but 25% slower, and with 30% higher build costs."
@@ -22,13 +22,13 @@ define([
         description: "!LOC:Buff Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
           inventory.addUnits([
             gwaioUnits.spinner,
             gwaioUnits.stryker,
@@ -309,7 +309,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwaioCards.applyDulls(CARD, inventory);
     },
   };
 });

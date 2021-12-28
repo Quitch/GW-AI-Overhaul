@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
@@ -22,13 +22,13 @@ define([
         description: "!LOC:Paratrooper Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
 
           var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
           var unitCannonUnits = [
@@ -225,7 +225,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwaioCards.applyDulls(CARD, inventory);
     },
   };
 });

@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Defense Tech Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators."
@@ -22,13 +22,13 @@ define([
         description: "!LOC:Defense Tech Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
           inventory.addUnits([
             gwaioUnits.flak,
             gwaioUnits.laserDefenseTowerAdvanced,
@@ -261,7 +261,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwaioCards.applyDulls(CARD, inventory);
     },
   };
 });

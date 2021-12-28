@@ -2,16 +2,16 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
+], function (module, GW, GWCStart, gwaioCards, gwaioUnits) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Bionic Augmentation Commander Of Neutralizing"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwaioCards.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 650%."
@@ -22,14 +22,14 @@ define([
         description: "!LOC:Bionic Augmentation Commander Of Neutralizing",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwaioCards.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
+          gwaioCards.setupCluster(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
           var units = [gwaioUnits.commander];
           var mods = [];
@@ -113,7 +113,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwaioCards.applyDulls(CARD, inventory);
     },
   };
 });
