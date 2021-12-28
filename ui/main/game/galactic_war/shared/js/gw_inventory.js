@@ -1,5 +1,5 @@
 // Add aiMods()
-define(["require"], function (require) {
+define(function () {
   var GWInventory = function () {
     var self = this;
     self.units = ko.observableArray();
@@ -125,14 +125,18 @@ define(["require"], function (require) {
         } else {
           cardId = cardParams.id;
         }
-        require(["cards/" + cardId], function (card) {
-          curCard = cardId;
-          card[op](self, cardParams);
-          finishCard();
-        }, function (error) {
-          console.error("Failed loading card " + cardId, " : " + error);
-          finishCard();
-        });
+        requireGW(
+          ["cards/" + cardId],
+          function (card) {
+            curCard = cardId;
+            card[op](self, cardParams);
+            finishCard();
+          },
+          function (error) {
+            console.error("Failed loading card " + cardId, " : " + error);
+            finishCard();
+          }
+        );
       };
       var resetCardCount = function () {
         cardCount = cards.length;
