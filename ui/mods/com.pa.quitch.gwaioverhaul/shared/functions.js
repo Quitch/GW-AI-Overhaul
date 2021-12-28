@@ -46,14 +46,6 @@ define([
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
       }
     },
-    aiEnabled: function () {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (originSystem.gwaio) {
-        return originSystem.gwaio.ai;
-      }
-      return null;
-    },
     aiPath: function (type) {
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();

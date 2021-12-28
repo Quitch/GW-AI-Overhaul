@@ -6,12 +6,8 @@ if (!gwaioRefereeChangesLoaded) {
   function gwaioRefereeChanges() {
     try {
       requireGW(
-        [
-          "shared/gw_common",
-          "pages/gw_play/gw_referee",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-        ],
-        function (GW, GWReferee, gwaioFunctions) {
+        ["shared/gw_common", "pages/gw_play/gw_referee"],
+        function (GW, GWReferee) {
           var gwaioReferee = function (game) {
             var self = this;
 
@@ -73,6 +69,41 @@ if (!gwaioRefereeChangesLoaded) {
             api.game.setUnitSpecTag(".player");
           };
 
+          var aiInUse = function () {
+            var galaxy = model.game().galaxy();
+            var originSystem = galaxy.stars()[galaxy.origin()].system();
+            if (originSystem.gwaio) {
+              return originSystem.gwaio.ai;
+            }
+            return "Titans";
+          };
+          var aiBrain = aiInUse();
+
+          var findAIPath = function (type) {
+            var game = model.game();
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
+            var inventory = game.inventory();
+            if (type === "all" && aiBrain === "Queller") {
+              return "/pa/ai_personalities/queller/";
+            } else if (type === "enemy" && aiBrain === "Queller") {
+              return "/pa/ai_personalities/queller/q_uber/";
+            }
+            // the order of path assignments must match .player unit_map assignments in generateGameFiles()
+            else if (type === "subcommander" && aiBrain === "Queller") {
+              return "/pa/ai_personalities/queller/q_gold/";
+            } else if (
+              type === "subcommander" &&
+              !_.isEmpty(inventory.aiMods()) &&
+              ai.mirrorMode !== true
+            ) {
+              return "/pa/ai_tech/";
+            } else if (aiBrain === "Penchant") {
+              return "/pa/ai_personalities/penchant/";
+            } else {
+              return "/pa/ai/";
+            }
+          };
+
           var generateGameFiles = function () {
             var self = this;
 
@@ -97,16 +128,15 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var aiEnabled = gwaioFunctions.aiEnabled();
               var aiUnitMapPath = "";
               var aiUnitMapTitansPath = "";
 
-              if (aiEnabled === "Queller") {
+              if (aiBrain === "Queller") {
                 aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
-              } else if (aiEnabled === "Penchant") {
+              } else if (aiBrain === "Penchant") {
                 aiUnitMapPath =
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
@@ -381,8 +411,8 @@ if (!gwaioRefereeChangesLoaded) {
                   .then(function (playerSpecFiles) {
                     var playerFilesClassic = {};
                     var playerFilesX1 = {};
-                    // the order of unit_map assignments must match aiPath() in function.js
-                    if (gwaioFunctions.aiEnabled() === "Queller") {
+                    // the order of unit_map assignments must match findAIPath()
+                    if (aiBrain === "Queller") {
                       playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
@@ -419,7 +449,7 @@ if (!gwaioRefereeChangesLoaded) {
                             playerSpecFiles
                           )
                         : {};
-                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                    } else if (aiBrain === "Penchant") {
                       playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
@@ -623,7 +653,7 @@ if (!gwaioRefereeChangesLoaded) {
 
             var quellerEnabled = false;
 
-            if (gwaioFunctions.aiEnabled() === "Queller") {
+            if (aiBrain === "Queller") {
               quellerEnabled = true;
             }
             var aiTechPath = "/pa/ai_tech/";
@@ -659,7 +689,7 @@ if (!gwaioRefereeChangesLoaded) {
                   });
                 }
 
-                var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+                var subcommanderAIPath = findAIPath("subcommander");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -717,8 +747,7 @@ if (!gwaioRefereeChangesLoaded) {
                           if (_.startsWith(filePath, aiTechPath)) {
                             if (quellerEnabled) {
                               // We don't know if the aiPath contains q_uber
-                              var quellerEnemyPath =
-                                gwaioFunctions.aiPath("enemy");
+                              var quellerEnemyPath = findAIPath("enemy");
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
@@ -782,9 +811,9 @@ if (!gwaioRefereeChangesLoaded) {
             var aiFilePath = "";
 
             if (subcommanders.length > 0) {
-              aiFilePath = gwaioFunctions.aiPath("all");
+              aiFilePath = findAIPath("all");
             } else {
-              aiFilePath = gwaioFunctions.aiPath("enemy");
+              aiFilePath = findAIPath("enemy");
             }
 
             var ai = game.galaxy().stars()[game.currentStar()].ai();
@@ -828,7 +857,7 @@ if (!gwaioRefereeChangesLoaded) {
               "on_player_planet",
               "no_restriction",
             ];
-            var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+            var subcommanderAIPath = findAIPath("subcommander");
 
             _.forEach(inventory.minions(), function (subcommander) {
               // Avoid breaking Sub Commanders from earlier versions
@@ -900,7 +929,7 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
-            var enemyAIPath = gwaioFunctions.aiPath("enemy");
+            var enemyAIPath = findAIPath("enemy");
 
             // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
