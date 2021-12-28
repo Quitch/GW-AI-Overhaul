@@ -159,7 +159,7 @@ if (!gwaioCardsLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
           ],
           function (
             GW,
@@ -167,7 +167,7 @@ if (!gwaioCardsLoaded) {
             gwaioBank,
             gwaioCardsToUnits,
             gwaioUnitsToNames,
-            gwaioFunctions
+            gwaioAI
           ) {
             var inventory = game.inventory();
             var playerFaction = 0;
@@ -186,7 +186,7 @@ if (!gwaioCardsLoaded) {
                 var galaxy = game.galaxy();
                 var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                 if (ai === "Penchant") {
-                  var penchantValues = gwaioFunctions.penchants();
+                  var penchantValues = gwaioAI.penchants();
                   subcommander.character =
                     subcommander.character +
                     (" " + loc(penchantValues.penchantName));
@@ -609,7 +609,7 @@ if (!gwaioCardsLoaded) {
                     );
                     var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                     if (ai === "Penchant") {
-                      var penchantValues = gwaioFunctions.penchants();
+                      var penchantValues = gwaioAI.penchants();
                       minion.character =
                         minion.character +
                         (" " + loc(penchantValues.penchantName));

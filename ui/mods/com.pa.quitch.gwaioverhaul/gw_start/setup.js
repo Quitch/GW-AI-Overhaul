@@ -235,7 +235,6 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
         ],
         function (
           require,
@@ -248,8 +247,7 @@ if (!gwaioSetupLoaded) {
           gwaioTech,
           gwaioBank,
           gwaioLore,
-          gwaioDifficulty,
-          gwaioFunctions
+          gwaioDifficulty
         ) {
           var selectedDifficulty = 0;
 
@@ -693,14 +691,18 @@ if (!gwaioSetupLoaded) {
                 }
 
                 // Penchant AI
-                if (model.gwaioDifficultySettings.ai() === 2) {
-                  var penchantValues = gwaioFunctions.penchants();
-                  ai.personality.personality_tags =
-                    ai.personality.personality_tags.concat(
-                      penchantValues.penchants
-                    );
-                  ai.penchantName = penchantValues.penchantName;
-                }
+                require([
+                  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+                ], function (gwaioAI) {
+                  if (model.gwaioDifficultySettings.ai() === 2) {
+                    var penchantValues = gwaioAI.penchants();
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(
+                        penchantValues.penchants
+                      );
+                    ai.penchantName = penchantValues.penchantName;
+                  }
+                });
               };
 
               var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat

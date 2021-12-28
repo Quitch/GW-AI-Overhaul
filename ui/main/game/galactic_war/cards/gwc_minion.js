@@ -2,7 +2,8 @@ define([
   "shared/gw_factions",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GWFactions, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+], function (GWFactions, gwaioFunctions, gwaioUnits, gwaioAI) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -56,7 +57,7 @@ define([
       if (gwaioSettings) {
         var ai = gwaioSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwaioFunctions.penchants();
+          var penchantValues = gwaioAI.penchants();
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
