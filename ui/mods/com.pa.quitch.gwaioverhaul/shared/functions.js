@@ -46,30 +46,6 @@ define([
         return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
       }
     },
-    aiPath: function (type) {
-      var game = model.game();
-      var ai = game.galaxy().stars()[game.currentStar()].ai();
-      var inventory = game.inventory();
-      if (type === "all" && this.aiEnabled() === "Queller") {
-        return "/pa/ai_personalities/queller/";
-      } else if (type === "enemy" && this.aiEnabled() === "Queller") {
-        return "/pa/ai_personalities/queller/q_uber/";
-      }
-      // the order of path assignments must match .player unit_map assignments in referee.js
-      else if (type === "subcommander" && this.aiEnabled() === "Queller") {
-        return "/pa/ai_personalities/queller/q_gold/";
-      } else if (
-        type === "subcommander" &&
-        !_.isEmpty(inventory.aiMods()) &&
-        ai.mirrorMode !== true
-      ) {
-        return "/pa/ai_tech/";
-      } else if (this.aiEnabled() === "Penchant") {
-        return "/pa/ai_personalities/penchant/";
-      } else {
-        return "/pa/ai/";
-      }
-    },
     penchants: function () {
       var penchantTags = [
         "Vanilla",
