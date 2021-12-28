@@ -251,7 +251,6 @@ if (!gwaioSystemChangesLoaded) {
             });
           }
         }
-
         // Turn off the original selection icon before replacing model.selection()
         model.selection.visible(false);
 
@@ -301,50 +300,51 @@ if (!gwaioSystemChangesLoaded) {
           );
         });
 
-        requireGW(["shared/gw_factions"], function (GWFactions) {
-          _.forEach(model.galaxy.systems(), function (system) {
-            ko.computed(function () {
-              var ai = system.star.ai();
-              var normalizedColor = [];
-              if (!ai) {
-                return;
-              } else if (ai.treasurePlanet !== true) {
-                var faction = GWFactions[ai.faction];
-                // Ensures we assign faction colour, not minion colour, to each system
-                normalizedColor = _.map(faction.color[0], function (c) {
-                  return c / 255;
-                });
-              }
-              system.ownerColor(normalizedColor.concat(3));
-              // Dependencies. These will cause the base code that updates color to rerun
-              // so we have to run under the same conditions, and pray we run later than that code.
-              system.connected();
-              model.cheats.noFog();
-              system.star.hasCard();
+        requireGW(
+          ["shared/gw_common", "shared/gw_factions"],
+          function (GW, GWFactions) {
+            _.forEach(model.galaxy.systems(), function (system) {
+              ko.computed(function () {
+                var ai = system.star.ai();
+                var normalizedColor = [];
+                if (!ai) {
+                  return;
+                } else if (ai.treasurePlanet !== true) {
+                  var faction = GWFactions[ai.faction];
+                  // Ensures we assign faction colour, not minion colour, to each system
+                  normalizedColor = _.map(faction.color[0], function (c) {
+                    return c / 255;
+                  });
+                }
+                system.ownerColor(normalizedColor.concat(3));
+                // Dependencies. These will cause the base code that updates color to rerun
+                // so we have to run under the same conditions, and pray we run later than that code.
+                system.connected();
+                model.cheats.noFog();
+                system.star.hasCard();
+              });
             });
-          });
-        });
 
-        // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-        requireGW(["shared/gw_common"], function (GW) {
-          if (
-            gwaioSettings &&
-            _.isUndefined(gwaioSettings.treasurePlanetFixed)
-          ) {
-            for (var i = 0; i < galaxy.stars().length; i++) {
-              if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
-                galaxy.stars()[i].cardList([]);
-                break;
+            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+            if (
+              gwaioSettings &&
+              _.isUndefined(gwaioSettings.treasurePlanetFixed)
+            ) {
+              for (var i = 0; i < galaxy.stars().length; i++) {
+                if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
+                  galaxy.stars()[i].cardList([]);
+                  break;
+                }
               }
+              gwaioSettings.treasurePlanetFixed = true;
+              game.saved(false);
+              model.driveAccessInProgress(true);
+              GW.manifest.saveGame(game).then(function () {
+                model.driveAccessInProgress(false);
+              });
             }
-            gwaioSettings.treasurePlanetFixed = true;
-            game.saved(false);
-            model.driveAccessInProgress(true);
-            GW.manifest.saveGame(game).then(function () {
-              model.driveAccessInProgress(false);
-            });
           }
-        });
+        );
       }
     } catch (e) {
       console.error(e);
