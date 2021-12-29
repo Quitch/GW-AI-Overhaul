@@ -19,17 +19,36 @@ if (!gwaioMenuLoaded) {
             tutorial(game.isTutorial());
           });
 
-          model.menuConfigGenerator = ko.observable(function () {
-            var overString = tutorial()
-              ? "!LOC:Continue Tutorial"
-              : "!LOC:Continue War";
-            var exitString = hardcore() ? "!LOC:Abandon War" : "!LOC:Surrender";
+          var getMenuString = function (boolean, stringTrue, stringFalse) {
+            return boolean ? stringTrue : stringFalse;
+          };
 
-            function getMenuAction() {
-              if (model.gameOver() || model.defeated()) {
+          model.menuConfigGenerator = ko.observable(function () {
+            var overString = getMenuString(
+              tutorial(),
+              "!LOC:Continue Tutorial",
+              "!LOC:Continue War"
+            );
+            var exitString = getMenuString(
+              hardcore(),
+              "!LOC:Abandon War",
+              "!LOC:Surrender"
+            );
+
+            function getMenuAction(boolean) {
+              if (boolean) {
                 return "menuReturnToWar";
               }
-              return hardcore() ? "menuAbandonWar" : "menuSurrender";
+              return getMenuString(
+                hardcore(),
+                "menuAbandonWar",
+                "menuSurrender"
+              );
+            }
+
+            var playerLost = false;
+            if (model.gameOver() || model.defeated()) {
+              playerLost = true;
             }
 
             var list = [
@@ -59,11 +78,8 @@ if (!gwaioMenuLoaded) {
               },
               {
                 // patch Surrender and Continue War buttons to handle more than two teams
-                label:
-                  model.gameOver() || model.defeated()
-                    ? overString
-                    : exitString,
-                action: getMenuAction(),
+                label: getMenuString(playerLost, overString, exitString),
+                action: getMenuAction(playerLost),
                 game_over: overString,
               },
               {
@@ -83,7 +99,7 @@ if (!gwaioMenuLoaded) {
               return {
                 label: loc(entry.label),
                 action: entry.action,
-                game_over: entry.game_over && loc(entry.game_over),
+                game_over: loc(entry.game_over),
               };
             });
             api.Panel.message("", "menu_config", list);
