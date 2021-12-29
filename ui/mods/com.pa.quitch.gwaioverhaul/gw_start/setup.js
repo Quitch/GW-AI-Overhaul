@@ -977,7 +977,9 @@ if (!gwaioSetupLoaded) {
                   }
                 }
               });
+            });
 
+            var warInfo = finishAis.then(function () {
               // Hacky way to store war information for GWO Panel
               var galaxy = game.galaxy();
               var originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -1014,7 +1016,7 @@ if (!gwaioSetupLoaded) {
               originSystem.treasurePlanetFixed = true;
             });
 
-            var finishSetup = finishAis.then(function () {
+            var finishSetup = warInfo.then(function () {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
               }
