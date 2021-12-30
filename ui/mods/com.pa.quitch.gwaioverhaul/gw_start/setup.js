@@ -721,8 +721,8 @@ if (!gwaioSetupLoaded) {
                 return _.sample(buffType, numberBuffs);
               };
 
-              var setupAIBuffs = function (buffDistanceDelay) {
-                var numberBuffs = Math.floor(maxDist / 2 - buffDistanceDelay);
+              var setupAIBuffs = function (distance, buffDistanceDelay) {
+                var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
                 return assignAIBuffs(numberBuffs);
               };
 
@@ -743,7 +743,7 @@ if (!gwaioSetupLoaded) {
                   }
 
                   // Setup boss AI Buffs
-                  var bossBuffs = setupAIBuffs(factionTechHandicap);
+                  var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                   info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
                   _.times(bossBuffs.length, function (n) {
                     info.boss.inventory = info.boss.inventory.concat(
@@ -821,7 +821,7 @@ if (!gwaioSetupLoaded) {
                   }
 
                   // Setup non-boss AI buffs
-                  var workerBuffs = setupAIBuffs(factionTechHandicap);
+                  var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                   worker.ai.typeOfBuffs = workerBuffs; // for intelligence reports
                   _.times(workerBuffs.length, function (n) {
                     worker.ai.inventory = worker.ai.inventory.concat(
