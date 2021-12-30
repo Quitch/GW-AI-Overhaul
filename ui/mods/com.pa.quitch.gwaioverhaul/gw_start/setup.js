@@ -741,6 +741,13 @@ if (!gwaioSetupLoaded) {
                 }
               };
 
+              var gameModeEnabled = function (gameModeChance) {
+                if (Math.random() * 100 <= gameModeChance) {
+                  return true;
+                }
+                return false;
+              };
+
               _.forEach(teamInfo, function (info) {
                 var factionTechHandicap =
                   model.gwaioDifficultySettings.factionTechHandicap();
@@ -804,24 +811,18 @@ if (!gwaioSetupLoaded) {
                     setAIData(worker.ai, dist, false, false, _, numMinions);
 
                     // Determine game modes in use for this system
-                    if (
-                      Math.random() * 100 <=
+                    worker.ai.landAnywhere = gameModeEnabled(
                       model.gwaioDifficultySettings.landAnywhereChance()
-                    ) {
-                      worker.ai.landAnywhere = true;
-                    }
-                    if (
-                      Math.random() * 100 <=
+                    );
+
+                    worker.ai.suddenDeath = gameModeEnabled(
                       model.gwaioDifficultySettings.suddenDeathChance()
-                    ) {
-                      worker.ai.suddenDeath = true;
-                    }
-                    if (
-                      Math.random() * 100 <=
+                    );
+
+                    worker.ai.bountyMode = gameModeEnabled(
                       model.gwaioDifficultySettings.bountyModeChance()
-                    ) {
-                      worker.ai.bountyMode = true;
-                    }
+                    );
+
                     worker.ai.bountyModeValue =
                       model.gwaioDifficultySettings.bountyModeValue();
 
