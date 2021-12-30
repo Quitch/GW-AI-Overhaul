@@ -641,8 +641,7 @@ if (!gwaioSetupLoaded) {
 
               var setAIData = function (
                 ai,
-                dist,
-                isBossSystem,
+                distance,
                 isBoss,
                 faction,
                 minionCount
@@ -683,24 +682,15 @@ if (!gwaioSetupLoaded) {
                 var econBase = model.gwaioDifficultySettings.econBase();
                 var econRatePerDist =
                   model.gwaioDifficultySettings.econRatePerDist();
-                if (isBossSystem) {
-                  ai.econ_rate = aiEconRate(
-                    econBase,
-                    econRatePerDist,
-                    maxDist,
-                    minionCount
-                  );
-                  if (isBoss) {
-                    ai.bossCommanders =
-                      model.gwaioDifficultySettings.bossCommanders();
-                  }
-                } else {
-                  ai.econ_rate = aiEconRate(
-                    econBase,
-                    econRatePerDist,
-                    dist,
-                    minionCount
-                  );
+                ai.econ_rate = aiEconRate(
+                  econBase,
+                  econRatePerDist,
+                  distance,
+                  minionCount
+                );
+                if (isBoss) {
+                  ai.bossCommanders =
+                    model.gwaioDifficultySettings.bossCommanders();
                 }
 
                 // Penchant AI
@@ -754,7 +744,6 @@ if (!gwaioSetupLoaded) {
                 factionMinions,
                 minionCount,
                 clusterName,
-                isBossSystem,
                 faction,
                 distance
               ) {
@@ -767,14 +756,7 @@ if (!gwaioSetupLoaded) {
 
                 _.times(armies, function () {
                   var minion = selectMinion(factionMinions, name);
-                  setAIData(
-                    minion,
-                    distance,
-                    isBossSystem,
-                    false,
-                    faction,
-                    minionCount
-                  );
+                  setAIData(minion, distance, false, faction, minionCount);
                   if (clusterName) {
                     minion.commanderCount = minionCount;
                   }
@@ -802,7 +784,7 @@ if (!gwaioSetupLoaded) {
                 var minions = GWFactions[info.faction].minions;
 
                 // Setup boss system
-                setAIData(info.boss, maxDist, true, true);
+                setAIData(info.boss, maxDist, true);
 
                 info.boss.inventory = [];
                 // Setup Cluster commanders
@@ -831,7 +813,6 @@ if (!gwaioSetupLoaded) {
                     minions,
                     numMinions,
                     minionName,
-                    true,
                     info.boss.faction,
                     maxDist
                   );
@@ -856,7 +837,7 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIData(worker.ai, dist, false, false, _, numMinions);
+                  setAIData(worker.ai, dist, false, _, numMinions);
 
                   worker.ai.inventory = [];
                   // Setup Cluster commanders
@@ -903,7 +884,6 @@ if (!gwaioSetupLoaded) {
                         minions,
                         totalMinions,
                         name,
-                        false,
                         worker.ai.faction,
                         dist
                       );
@@ -944,7 +924,7 @@ if (!gwaioSetupLoaded) {
                         foeCommander.inventory = gwaioTech.clusterCommanders;
                       }
 
-                      setAIData(foeCommander, dist, false, false, foeFaction);
+                      setAIData(foeCommander, dist, false, foeFaction);
 
                       // Setup additional faction AI buffs
                       foeCommander.inventory = aiTech(
