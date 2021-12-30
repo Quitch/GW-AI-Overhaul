@@ -740,6 +740,31 @@ if (!gwaioSetupLoaded) {
                   return _.cloneDeep(_.sample(minions));
                 }
               };
+              var setupBossMinions = function (
+                minions,
+                minionCount,
+                isCluster
+              ) {
+                var name;
+                var count = minionCount;
+                var bossMinions = [];
+
+                if (isCluster) {
+                  name = "Security";
+                  count = 1;
+                }
+
+                _.times(count, function () {
+                  var bossMinion = selectMinion(minions, name);
+                  setAIData(bossMinion, maxDist, true, false);
+                  if (isCluster) {
+                    bossMinion.commanderCount = minionCount;
+                  }
+                  bossMinions.push(bossMinion);
+                });
+
+                return bossMinions;
+              };
 
               var gameModeEnabled = function (gameModeChance) {
                 if (Math.random() * 100 <= gameModeChance) {
@@ -779,20 +804,11 @@ if (!gwaioSetupLoaded) {
                 // Setup boss minions
                 numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
                 if (numMinions > 0) {
-                  info.boss.minions = [];
-                  var bossMinion = {};
-                  if (info.boss.isCluster === true) {
-                    bossMinion = selectMinion(minions, "Security");
-                    setAIData(bossMinion, maxDist, true, false);
-                    bossMinion.commanderCount = numMinions;
-                    info.boss.minions.push(bossMinion);
-                  } else {
-                    _.times(numMinions, function () {
-                      bossMinion = selectMinion(minions);
-                      setAIData(bossMinion, maxDist, true, false);
-                      info.boss.minions.push(bossMinion);
-                    });
-                  }
+                  info.boss.minions = setupBossMinions(
+                    minions,
+                    numMinions,
+                    info.boss.isCluster
+                  );
                 }
 
                 // Setup non-boss AI system
