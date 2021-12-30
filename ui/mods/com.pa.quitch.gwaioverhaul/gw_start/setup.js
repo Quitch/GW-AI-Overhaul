@@ -610,7 +610,6 @@ if (!gwaioSetupLoaded) {
               });
             });
 
-            // Apply a ±10% modifier to AI eco
             var randomPercentageAdjustment = function (min, max) {
               return Math.random() * (max - min) + min;
             };
