@@ -718,13 +718,20 @@ if (!gwaioSetupLoaded) {
                 }
               };
 
-              var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
-              var buffDelay =
+              var assignAIBuffs = function (numberBuffs) {
+                var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
+                return _.sample(buffType, numberBuffs);
+              };
+
+              var setupAIBuffs = function (buffDistanceDelay) {
+                var numberBuffs = Math.floor(maxDist / 2 - buffDistanceDelay);
+                return assignAIBuffs(numberBuffs);
+              };
+
+              var factionTechHandicap =
                 model.gwaioDifficultySettings.factionTechHandicap();
 
               _.forEach(teamInfo, function (info) {
-                var numBuffs = 0;
-                var typeOfBuffs = [];
                 var numMinions = 0;
 
                 // Setup boss system
@@ -738,12 +745,11 @@ if (!gwaioSetupLoaded) {
                   }
 
                   // Setup boss AI Buffs
-                  numBuffs = Math.floor(maxDist / 2 - buffDelay);
-                  typeOfBuffs = _.sample(buffType, numBuffs);
-                  info.boss.typeOfBuffs = typeOfBuffs; // for intelligence reports
-                  _.times(typeOfBuffs.length, function (n) {
+                  var bossBuffs = setupAIBuffs(factionTechHandicap);
+                  info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
+                  _.times(bossBuffs.length, function (n) {
                     info.boss.inventory = info.boss.inventory.concat(
-                      gwaioTech.factionTechs[info.boss.faction][typeOfBuffs[n]]
+                      gwaioTech.factionTechs[info.boss.faction][bossBuffs[n]]
                     );
                   });
 
@@ -817,12 +823,11 @@ if (!gwaioSetupLoaded) {
                   }
 
                   // Setup non-boss AI buffs
-                  numBuffs = Math.floor(dist / 2 - buffDelay);
-                  typeOfBuffs = _.sample(buffType, numBuffs);
-                  worker.ai.typeOfBuffs = typeOfBuffs; // for intelligence reports
-                  _.times(typeOfBuffs.length, function (n) {
+                  var workerBuffs = setupAIBuffs(factionTechHandicap);
+                  worker.ai.typeOfBuffs = workerBuffs; // for intelligence reports
+                  _.times(workerBuffs.length, function (n) {
                     worker.ai.inventory = worker.ai.inventory.concat(
-                      gwaioTech.factionTechs[worker.ai.faction][typeOfBuffs[n]]
+                      gwaioTech.factionTechs[worker.ai.faction][workerBuffs[n]]
                     );
                   });
 
@@ -903,9 +908,9 @@ if (!gwaioSetupLoaded) {
                       setAIData(foeCommander, dist, false, false, foeFaction);
 
                       // Setup additional faction AI buffs
-                      _.times(typeOfBuffs.length, function (n) {
+                      _.times(workerBuffs.length, function (n) {
                         foeCommander.inventory = foeCommander.inventory.concat(
-                          gwaioTech.factionTechs[foeFaction][typeOfBuffs[n]]
+                          gwaioTech.factionTechs[foeFaction][workerBuffs[n]]
                         );
                       });
                       worker.ai.foes.push(foeCommander);
