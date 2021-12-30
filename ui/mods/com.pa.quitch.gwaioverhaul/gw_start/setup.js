@@ -610,6 +610,25 @@ if (!gwaioSetupLoaded) {
               });
             });
 
+            // Apply a ±10% modifier to AI eco
+            var randomPercentageAdjustment = function (min, max) {
+              return Math.random() * (max - min) + min;
+            };
+
+            var aiEcoMinionReduction = function (eco, ecoStep, minions) {
+              return eco - minions * ecoStep;
+            };
+
+            var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
+              var eco =
+                (ecoBase + distance * ecoStep) *
+                randomPercentageAdjustment(0.9, 1.1);
+              if (minions) {
+                eco = aiEcoMinionReduction(eco, ecoStep, minions);
+              }
+              return eco;
+            };
+
             var finishAis = populate.then(function (teamInfo) {
               if (model.makeGameBusy() !== busyToken) {
                 return;
@@ -664,32 +683,28 @@ if (!gwaioSetupLoaded) {
                   ai.personality.starting_location_evaluation_radius =
                     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
                 }
-                // Apply a ±10% modifier to AI eco
-                var getRandomArbitrary = function (min, max) {
-                  return Math.random() * (max - min) + min;
-                };
+
+                var econBase = model.gwaioDifficultySettings.econBase();
+                var econRatePerDist =
+                  model.gwaioDifficultySettings.econRatePerDist();
                 if (isBossSystem) {
-                  ai.econ_rate =
-                    (model.gwaioDifficultySettings.econBase() +
-                      maxDist *
-                        model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
+                  ai.econ_rate = aiEconRate(
+                    econBase,
+                    econRatePerDist,
+                    maxDist,
+                    minionCount
+                  );
                   if (isBoss) {
                     ai.bossCommanders =
                       model.gwaioDifficultySettings.bossCommanders();
                   }
                 } else {
-                  ai.econ_rate =
-                    (model.gwaioDifficultySettings.econBase() +
-                      dist * model.gwaioDifficultySettings.econRatePerDist()) *
-                    getRandomArbitrary(0.9, 1.1);
-                }
-                // Primary system faction gains eco or minion not both
-                if (minionCount) {
-                  ai.econ_rate =
-                    ai.econ_rate -
-                    minionCount *
-                      model.gwaioDifficultySettings.econRatePerDist();
+                  ai.econ_rate = aiEconRate(
+                    econBase,
+                    econRatePerDist,
+                    dist,
+                    minionCount
+                  );
                 }
 
                 // Penchant AI
@@ -934,10 +949,11 @@ if (!gwaioSetupLoaded) {
                       ai.boss = true; // otherwise it won't display its icon
                       ai.mirrorMode = true;
                       ai.treasurePlanet = true;
-                      ai.econ_rate =
-                        model.gwaioDifficultySettings.econBase() +
-                        maxDist *
-                          model.gwaioDifficultySettings.econRatePerDist();
+                      ai.econ_rate = aiEconRate(
+                        model.gwaioDifficultySettings.econBase(),
+                        model.gwaioDifficultySettings.econRatePerDist(),
+                        maxDist
+                      );
                       ai.bossCommanders =
                         model.gwaioDifficultySettings.bossCommanders();
                       ai.name = "The Guardians";
