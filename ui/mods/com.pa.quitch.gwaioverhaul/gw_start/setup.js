@@ -727,7 +727,7 @@ if (!gwaioSetupLoaded) {
                 return Math.floor(minionBase + distance * minionStep);
               };
 
-              var setupMinion = function (minions, clusterName) {
+              var selectMinion = function (minions, clusterName) {
                 if (clusterName) {
                   return _.cloneDeep(
                     _.sample(
@@ -780,13 +780,13 @@ if (!gwaioSetupLoaded) {
                     info.boss.minions = [];
                     var bossMinion = {};
                     if (info.boss.isCluster === true) {
-                      bossMinion = setupMinion(minions, "Security");
+                      bossMinion = selectMinion(minions, "Security");
                       setAIData(bossMinion, maxDist, true, false);
                       bossMinion.commanderCount = numMinions;
                       info.boss.minions.push(bossMinion);
                     } else {
                       _.times(numMinions, function () {
-                        bossMinion = setupMinion(minions);
+                        bossMinion = selectMinion(minions);
                         setAIData(bossMinion, maxDist, true, false);
                         info.boss.minions.push(bossMinion);
                       });
@@ -848,7 +848,7 @@ if (!gwaioSetupLoaded) {
                       var minion = {};
                       // Cluster Security always has Worker type minions
                       if (worker.ai.name === "Security") {
-                        minion = setupMinion(minions, "Worker");
+                        minion = selectMinion(minions, "Worker");
                         setAIData(minion, dist, false, false, _, numMinions);
                         minion.commanderCount =
                           numMinions +
@@ -867,7 +867,7 @@ if (!gwaioSetupLoaded) {
                           );
                       } else {
                         _.times(numMinions, function () {
-                          minion = setupMinion(minions);
+                          minion = selectMinion(minions);
                           setAIData(minion, dist, false, false, _, numMinions);
                           worker.ai.minions.push(minion);
                         });
