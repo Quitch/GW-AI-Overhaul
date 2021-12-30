@@ -799,129 +799,122 @@ if (!gwaioSetupLoaded) {
                       });
                     }
                   }
-                } else {
-                  // Setup non-boss AI system
-                  _.forEach(info.workers, function (worker) {
-                    // Determine game modes in use for this system
-                    worker.ai.landAnywhere = gameModeEnabled(
-                      model.gwaioDifficultySettings.landAnywhereChance()
-                    );
-                    worker.ai.suddenDeath = gameModeEnabled(
-                      model.gwaioDifficultySettings.suddenDeathChance()
-                    );
-                    worker.ai.bountyMode = gameModeEnabled(
-                      model.gwaioDifficultySettings.bountyModeChance()
-                    );
-                    worker.ai.bountyModeValue =
-                      model.gwaioDifficultySettings.bountyModeValue();
-
-                    var dist = worker.star.distance();
-
-                    numMinions = countMinions(
-                      mandatoryMinions,
-                      dist,
-                      minionMod
-                    );
-
-                    setAIData(worker.ai, dist, false, false, _, numMinions);
-
-                    worker.ai.inventory = [];
-                    // Setup Cluster commanders
-                    if (worker.ai.isCluster === true) {
-                      worker.ai.inventory = gwaioTech.clusterCommanders;
-                    }
-
-                    // Setup non-boss AI buffs
-                    var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
-                    worker.ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                    _.times(workerBuffs.length, function (n) {
-                      worker.ai.inventory = worker.ai.inventory.concat(
-                        gwaioTech.factionTechs[worker.ai.faction][
-                          workerBuffs[n]
-                        ]
-                      );
-                    });
-
-                    // Setup non-boss minions
-                    if (numMinions > 0) {
-                      worker.ai.minions = [];
-                      var minion = {};
-                      // Cluster Security always has Worker type minions
-                      if (worker.ai.name === "Security") {
-                        minion = selectMinion(minions, "Worker");
-                        setAIData(minion, dist, false, false, _, numMinions);
-                        minion.commanderCount =
-                          numMinions +
-                          Math.floor(
-                            model.gwaioDifficultySettings.bossCommanders() / 2
-                          );
-                        worker.ai.minions.push(minion);
-                      }
-                      // Cluster Workers don't have minions but instead use a
-                      // shared army setup and get additional commanders
-                      else if (worker.ai.name === "Worker") {
-                        worker.ai.commanderCount =
-                          numMinions +
-                          Math.floor(
-                            model.gwaioDifficultySettings.bossCommanders() / 2
-                          );
-                      } else {
-                        _.times(numMinions, function () {
-                          minion = selectMinion(minions);
-                          setAIData(minion, dist, false, false, _, numMinions);
-                          worker.ai.minions.push(minion);
-                        });
-                      }
-                    }
-
-                    // Setup additional factions for FFA
-                    var availableFactions = _.without(
-                      aiFactions,
-                      worker.ai.faction
-                    );
-                    _.times(availableFactions.length, function () {
-                      if (
-                        Math.random() * 100 <=
-                        model.gwaioDifficultySettings.ffaChance()
-                      ) {
-                        if (worker.ai.foes === undefined) {
-                          worker.ai.foes = [];
-                        }
-                        availableFactions = _.shuffle(availableFactions);
-                        var foeFaction = availableFactions.splice(0, 1);
-                        var foeCommander = _.cloneDeep(
-                          _.sample(GWFactions[foeFaction].minions)
-                        );
-                        var numFoes = Math.round((numMinions + 1) / 2);
-
-                        // Cluster Workers get additional commanders
-                        if (foeCommander.name === "Worker") {
-                          numFoes += Math.floor(
-                            model.gwaioDifficultySettings.bossCommanders() / 2
-                          );
-                        }
-                        foeCommander.commanderCount = numFoes;
-                        foeCommander.inventory = [];
-
-                        // Setup Cluster commanders
-                        if (foeCommander.isCluster === true) {
-                          foeCommander.inventory = gwaioTech.clusterCommanders;
-                        }
-
-                        setAIData(foeCommander, dist, false, false, foeFaction);
-
-                        // Setup additional faction AI buffs
-                        _.times(workerBuffs.length, function (n) {
-                          foeCommander.inventory =
-                            foeCommander.inventory.concat(
-                              gwaioTech.factionTechs[foeFaction][workerBuffs[n]]
-                            );
-                        });
-                        worker.ai.foes.push(foeCommander);
-                      }
-                    });
-                  });
                 }
+
+                // Setup non-boss AI system
+                _.forEach(info.workers, function (worker) {
+                  // Determine game modes in use for this system
+                  worker.ai.landAnywhere = gameModeEnabled(
+                    model.gwaioDifficultySettings.landAnywhereChance()
+                  );
+                  worker.ai.suddenDeath = gameModeEnabled(
+                    model.gwaioDifficultySettings.suddenDeathChance()
+                  );
+                  worker.ai.bountyMode = gameModeEnabled(
+                    model.gwaioDifficultySettings.bountyModeChance()
+                  );
+                  worker.ai.bountyModeValue =
+                    model.gwaioDifficultySettings.bountyModeValue();
+
+                  var dist = worker.star.distance();
+
+                  numMinions = countMinions(mandatoryMinions, dist, minionMod);
+
+                  setAIData(worker.ai, dist, false, false, _, numMinions);
+
+                  worker.ai.inventory = [];
+                  // Setup Cluster commanders
+                  if (worker.ai.isCluster === true) {
+                    worker.ai.inventory = gwaioTech.clusterCommanders;
+                  }
+
+                  // Setup non-boss AI buffs
+                  var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
+                  worker.ai.typeOfBuffs = workerBuffs; // for intelligence reports
+                  _.times(workerBuffs.length, function (n) {
+                    worker.ai.inventory = worker.ai.inventory.concat(
+                      gwaioTech.factionTechs[worker.ai.faction][workerBuffs[n]]
+                    );
+                  });
+
+                  // Setup non-boss minions
+                  if (numMinions > 0) {
+                    worker.ai.minions = [];
+                    var minion = {};
+                    // Cluster Security always has Worker type minions
+                    if (worker.ai.name === "Security") {
+                      minion = selectMinion(minions, "Worker");
+                      setAIData(minion, dist, false, false, _, numMinions);
+                      minion.commanderCount =
+                        numMinions +
+                        Math.floor(
+                          model.gwaioDifficultySettings.bossCommanders() / 2
+                        );
+                      worker.ai.minions.push(minion);
+                    }
+                    // Cluster Workers don't have minions but instead use a
+                    // shared army setup and get additional commanders
+                    else if (worker.ai.name === "Worker") {
+                      worker.ai.commanderCount =
+                        numMinions +
+                        Math.floor(
+                          model.gwaioDifficultySettings.bossCommanders() / 2
+                        );
+                    } else {
+                      _.times(numMinions, function () {
+                        minion = selectMinion(minions);
+                        setAIData(minion, dist, false, false, _, numMinions);
+                        worker.ai.minions.push(minion);
+                      });
+                    }
+                  }
+
+                  // Setup additional factions for FFA
+                  var availableFactions = _.without(
+                    aiFactions,
+                    worker.ai.faction
+                  );
+                  _.times(availableFactions.length, function () {
+                    if (
+                      Math.random() * 100 <=
+                      model.gwaioDifficultySettings.ffaChance()
+                    ) {
+                      if (worker.ai.foes === undefined) {
+                        worker.ai.foes = [];
+                      }
+                      availableFactions = _.shuffle(availableFactions);
+                      var foeFaction = availableFactions.splice(0, 1);
+                      var foeCommander = _.cloneDeep(
+                        _.sample(GWFactions[foeFaction].minions)
+                      );
+                      var numFoes = Math.round((numMinions + 1) / 2);
+
+                      // Cluster Workers get additional commanders
+                      if (foeCommander.name === "Worker") {
+                        numFoes += Math.floor(
+                          model.gwaioDifficultySettings.bossCommanders() / 2
+                        );
+                      }
+                      foeCommander.commanderCount = numFoes;
+                      foeCommander.inventory = [];
+
+                      // Setup Cluster commanders
+                      if (foeCommander.isCluster === true) {
+                        foeCommander.inventory = gwaioTech.clusterCommanders;
+                      }
+
+                      setAIData(foeCommander, dist, false, false, foeFaction);
+
+                      // Setup additional faction AI buffs
+                      _.times(workerBuffs.length, function (n) {
+                        foeCommander.inventory = foeCommander.inventory.concat(
+                          gwaioTech.factionTechs[foeFaction][workerBuffs[n]]
+                        );
+                      });
+                      worker.ai.foes.push(foeCommander);
+                    }
+                  });
+                });
               });
 
               var treasurePlanetSetup = false;
