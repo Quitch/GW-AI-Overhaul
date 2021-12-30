@@ -633,7 +633,6 @@ if (!gwaioSetupLoaded) {
                 return;
               }
 
-              // DIFFICULTY RAMPING CODE
               var maxDist = _.reduce(
                 game.galaxy().stars(),
                 function (value, star) {
