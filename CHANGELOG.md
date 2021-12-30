@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Increased change of bounty mode for Bronze difficulty and higher
+
 ### Fixed
 
 - Errors in tech card tooltips
