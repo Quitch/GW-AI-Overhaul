@@ -722,18 +722,18 @@ if (!gwaioSetupLoaded) {
                 var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
                 return assignAIBuffs(numberBuffs);
               };
-              var factionTechHandicap =
-                model.gwaioDifficultySettings.factionTechHandicap();
 
               var countMinions = function (minionBase, minionStep, distance) {
                 return Math.floor(minionBase + distance * minionStep);
               };
-              var mandatoryMinions =
-                model.gwaioDifficultySettings.mandatoryMinions();
-              var minionMod = model.gwaioDifficultySettings.minionMod();
 
               _.forEach(teamInfo, function (info) {
                 var numMinions = 0;
+                var factionTechHandicap =
+                  model.gwaioDifficultySettings.factionTechHandicap();
+                var mandatoryMinions =
+                  model.gwaioDifficultySettings.mandatoryMinions();
+                var minionMod = model.gwaioDifficultySettings.minionMod();
 
                 // Setup boss system
                 if (info.boss) {
