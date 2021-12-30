@@ -802,29 +802,28 @@ if (!gwaioSetupLoaded) {
                 } else {
                   // Setup non-boss AI system
                   _.forEach(info.workers, function (worker) {
+                    // Determine game modes in use for this system
+                    worker.ai.landAnywhere = gameModeEnabled(
+                      model.gwaioDifficultySettings.landAnywhereChance()
+                    );
+                    worker.ai.suddenDeath = gameModeEnabled(
+                      model.gwaioDifficultySettings.suddenDeathChance()
+                    );
+                    worker.ai.bountyMode = gameModeEnabled(
+                      model.gwaioDifficultySettings.bountyModeChance()
+                    );
+                    worker.ai.bountyModeValue =
+                      model.gwaioDifficultySettings.bountyModeValue();
+
                     var dist = worker.star.distance();
+
                     numMinions = countMinions(
                       mandatoryMinions,
                       dist,
                       minionMod
                     );
+
                     setAIData(worker.ai, dist, false, false, _, numMinions);
-
-                    // Determine game modes in use for this system
-                    worker.ai.landAnywhere = gameModeEnabled(
-                      model.gwaioDifficultySettings.landAnywhereChance()
-                    );
-
-                    worker.ai.suddenDeath = gameModeEnabled(
-                      model.gwaioDifficultySettings.suddenDeathChance()
-                    );
-
-                    worker.ai.bountyMode = gameModeEnabled(
-                      model.gwaioDifficultySettings.bountyModeChance()
-                    );
-
-                    worker.ai.bountyModeValue =
-                      model.gwaioDifficultySettings.bountyModeValue();
 
                     worker.ai.inventory = [];
                     // Setup Cluster commanders
