@@ -714,13 +714,13 @@ if (!gwaioSetupLoaded) {
                 }
               };
 
-              var assignAIBuffs = function (numberBuffs) {
+              var selectAIBuffs = function (numberBuffs) {
                 var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
                 return _.sample(buffType, numberBuffs);
               };
               var setupAIBuffs = function (distance, buffDistanceDelay) {
                 var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
-                return assignAIBuffs(numberBuffs);
+                return selectAIBuffs(numberBuffs);
               };
 
               var countMinions = function (minionBase, minionStep, distance) {
