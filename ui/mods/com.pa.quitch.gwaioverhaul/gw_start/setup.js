@@ -759,45 +759,39 @@ if (!gwaioSetupLoaded) {
                 var minions = GWFactions[info.faction].minions;
 
                 // Setup boss system
-                if (info.boss) {
-                  setAIData(info.boss, maxDist, true, true);
+                setAIData(info.boss, maxDist, true, true);
 
-                  info.boss.inventory = [];
-                  // Setup Cluster commanders
-                  if (info.boss.isCluster === true) {
-                    info.boss.inventory = gwaioTech.clusterCommanders;
-                  }
+                info.boss.inventory = [];
+                // Setup Cluster commanders
+                if (info.boss.isCluster === true) {
+                  info.boss.inventory = gwaioTech.clusterCommanders;
+                }
 
-                  // Setup boss AI Buffs
-                  var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
-                  info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
-                  _.times(bossBuffs.length, function (n) {
-                    info.boss.inventory = info.boss.inventory.concat(
-                      gwaioTech.factionTechs[info.boss.faction][bossBuffs[n]]
-                    );
-                  });
-
-                  // Setup boss minions
-                  numMinions = countMinions(
-                    mandatoryMinions,
-                    minionMod,
-                    maxDist
+                // Setup boss AI Buffs
+                var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
+                info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
+                _.times(bossBuffs.length, function (n) {
+                  info.boss.inventory = info.boss.inventory.concat(
+                    gwaioTech.factionTechs[info.boss.faction][bossBuffs[n]]
                   );
-                  if (numMinions > 0) {
-                    info.boss.minions = [];
-                    var bossMinion = {};
-                    if (info.boss.isCluster === true) {
-                      bossMinion = selectMinion(minions, "Security");
+                });
+
+                // Setup boss minions
+                numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
+                if (numMinions > 0) {
+                  info.boss.minions = [];
+                  var bossMinion = {};
+                  if (info.boss.isCluster === true) {
+                    bossMinion = selectMinion(minions, "Security");
+                    setAIData(bossMinion, maxDist, true, false);
+                    bossMinion.commanderCount = numMinions;
+                    info.boss.minions.push(bossMinion);
+                  } else {
+                    _.times(numMinions, function () {
+                      bossMinion = selectMinion(minions);
                       setAIData(bossMinion, maxDist, true, false);
-                      bossMinion.commanderCount = numMinions;
                       info.boss.minions.push(bossMinion);
-                    } else {
-                      _.times(numMinions, function () {
-                        bossMinion = selectMinion(minions);
-                        setAIData(bossMinion, maxDist, true, false);
-                        info.boss.minions.push(bossMinion);
-                      });
-                    }
+                    });
                   }
                 }
 
