@@ -727,13 +727,29 @@ if (!gwaioSetupLoaded) {
                 return Math.floor(minionBase + distance * minionStep);
               };
 
+              var setupMinion = function (minions, clusterName) {
+                if (clusterName) {
+                  return _.cloneDeep(
+                    _.sample(
+                      _.filter(minions, {
+                        name: clusterName,
+                      })
+                    )
+                  );
+                } else {
+                  return _.cloneDeep(_.sample(minions));
+                }
+              };
+
               _.forEach(teamInfo, function (info) {
-                var numMinions = 0;
                 var factionTechHandicap =
                   model.gwaioDifficultySettings.factionTechHandicap();
+
+                var numMinions = 0;
                 var mandatoryMinions =
                   model.gwaioDifficultySettings.mandatoryMinions();
                 var minionMod = model.gwaioDifficultySettings.minionMod();
+                var minions = GWFactions[info.faction].minions;
 
                 // Setup boss system
                 if (info.boss) {
@@ -764,21 +780,13 @@ if (!gwaioSetupLoaded) {
                     info.boss.minions = [];
                     var bossMinion = {};
                     if (info.boss.isCluster === true) {
-                      bossMinion = _.cloneDeep(
-                        _.sample(
-                          _.filter(GWFactions[info.faction].minions, {
-                            name: "Security",
-                          })
-                        )
-                      );
+                      bossMinion = setupMinion(minions, "Security");
                       setAIData(bossMinion, maxDist, true, false);
                       bossMinion.commanderCount = numMinions;
                       info.boss.minions.push(bossMinion);
                     } else {
                       _.times(numMinions, function () {
-                        bossMinion = _.cloneDeep(
-                          _.sample(GWFactions[info.faction].minions)
-                        );
+                        bossMinion = setupMinion(minions);
                         setAIData(bossMinion, maxDist, true, false);
                         info.boss.minions.push(bossMinion);
                       });
@@ -840,13 +848,7 @@ if (!gwaioSetupLoaded) {
                       var minion = {};
                       // Cluster Security always has Worker type minions
                       if (worker.ai.name === "Security") {
-                        minion = _.cloneDeep(
-                          _.sample(
-                            _.filter(GWFactions[info.faction].minions, {
-                              name: "Worker",
-                            })
-                          )
-                        );
+                        minion = setupMinion(minions, "Worker");
                         setAIData(minion, dist, false, false, _, numMinions);
                         minion.commanderCount =
                           numMinions +
@@ -865,9 +867,7 @@ if (!gwaioSetupLoaded) {
                           );
                       } else {
                         _.times(numMinions, function () {
-                          minion = _.cloneDeep(
-                            _.sample(GWFactions[info.faction].minions)
-                          );
+                          minion = setupMinion(minions);
                           setAIData(minion, dist, false, false, _, numMinions);
                           worker.ai.minions.push(minion);
                         });
