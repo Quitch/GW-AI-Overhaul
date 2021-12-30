@@ -725,6 +725,13 @@ if (!gwaioSetupLoaded) {
               var factionTechHandicap =
                 model.gwaioDifficultySettings.factionTechHandicap();
 
+              var countMinions = function (minionBase, minionStep, distance) {
+                return Math.floor(minionBase + distance * minionStep);
+              };
+              var mandatoryMinions =
+                model.gwaioDifficultySettings.mandatoryMinions();
+              var minionMod = model.gwaioDifficultySettings.minionMod();
+
               _.forEach(teamInfo, function (info) {
                 var numMinions = 0;
 
@@ -748,9 +755,10 @@ if (!gwaioSetupLoaded) {
                   });
 
                   // Setup boss minions
-                  numMinions = Math.floor(
-                    model.gwaioDifficultySettings.mandatoryMinions() +
-                      maxDist * model.gwaioDifficultySettings.minionMod()
+                  numMinions = countMinions(
+                    mandatoryMinions,
+                    minionMod,
+                    maxDist
                   );
                   if (numMinions > 0) {
                     info.boss.minions = [];
@@ -781,11 +789,7 @@ if (!gwaioSetupLoaded) {
                 // Setup non-boss AI system
                 _.forEach(info.workers, function (worker) {
                   var dist = worker.star.distance();
-                  numMinions = Math.floor(
-                    model.gwaioDifficultySettings.mandatoryMinions() +
-                      worker.star.distance() *
-                        model.gwaioDifficultySettings.minionMod()
-                  );
+                  numMinions = countMinions(mandatoryMinions, dist, minionMod);
                   setAIData(worker.ai, dist, false, false, _, numMinions);
 
                   // Determine game modes in use for this system
