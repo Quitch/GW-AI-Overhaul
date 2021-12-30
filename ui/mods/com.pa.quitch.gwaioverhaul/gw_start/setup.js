@@ -718,6 +718,7 @@ if (!gwaioSetupLoaded) {
                 var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
                 return _.sample(buffType, numberBuffs);
               };
+
               var setupAIBuffs = function (distance, buffDistanceDelay) {
                 var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
                 return selectAIBuffs(numberBuffs);
@@ -748,30 +749,39 @@ if (!gwaioSetupLoaded) {
                   return _.cloneDeep(_.sample(minions));
                 }
               };
-              var setupBossMinions = function (
-                minions,
-                minionCount,
-                isCluster
-              ) {
-                var name;
-                var count = minionCount;
-                var bossMinions = [];
 
-                if (isCluster) {
-                  name = "Security";
-                  count = 1;
+              var setupMinions = function (
+                factionMinions,
+                minionCount,
+                clusterName,
+                isBossSystem,
+                faction,
+                distance
+              ) {
+                var armies = minionCount;
+                var minions = [];
+
+                if (clusterName) {
+                  armies = 1;
                 }
 
-                _.times(count, function () {
-                  var bossMinion = selectMinion(minions, name);
-                  setAIData(bossMinion, maxDist, true, false);
-                  if (isCluster) {
-                    bossMinion.commanderCount = minionCount;
+                _.times(armies, function () {
+                  var minion = selectMinion(factionMinions, name);
+                  setAIData(
+                    minion,
+                    distance,
+                    isBossSystem,
+                    false,
+                    faction,
+                    minionCount
+                  );
+                  if (clusterName) {
+                    minion.commanderCount = minionCount;
                   }
-                  bossMinions.push(bossMinion);
+                  minions.push(minion);
                 });
 
-                return bossMinions;
+                return minions;
               };
 
               var gameModeEnabled = function (gameModeChance) {
@@ -813,10 +823,17 @@ if (!gwaioSetupLoaded) {
                 // Setup boss minions
                 numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
                 if (numMinions > 0) {
-                  info.boss.minions = setupBossMinions(
+                  var minionName;
+                  if (info.boss.isCluster === true) {
+                    minionName = "Security";
+                  }
+                  info.boss.minions = setupMinions(
                     minions,
                     numMinions,
-                    info.boss.isCluster
+                    minionName,
+                    true,
+                    info.boss.faction,
+                    maxDist
                   );
                 }
 
@@ -857,35 +874,39 @@ if (!gwaioSetupLoaded) {
                     gwaioTech.factionTechs
                   );
 
+                  if (worker.ai.name === "Worker") {
+                    console.log(worker.ai.name);
+                    console.log("Minion count:", numMinions);
+                  }
+
                   // Setup non-boss minions
                   if (numMinions > 0) {
                     worker.ai.minions = [];
-                    var minion = {};
-                    // Cluster Security always has Worker type minions
-                    if (worker.ai.name === "Security") {
-                      minion = selectMinion(minions, "Worker");
-                      setAIData(minion, dist, false, false, _, numMinions);
-                      minion.commanderCount =
+
+                    var name;
+                    var totalMinions = numMinions;
+                    if (worker.ai.isCluster === true) {
+                      name = worker.ai.name;
+                      totalMinions =
                         numMinions +
                         Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
-                      worker.ai.minions.push(minion);
+                      console.log("Total minions:", totalMinions);
                     }
-                    // Cluster Workers don't have minions but instead use a
-                    // shared army setup and get additional commanders
-                    else if (worker.ai.name === "Worker") {
-                      worker.ai.commanderCount =
-                        numMinions +
-                        Math.floor(
-                          model.gwaioDifficultySettings.bossCommanders() / 2
-                        );
+
+                    // Workers have additional commanders not minions
+                    if (name === "Worker") {
+                      worker.ai.commanderCount = totalMinions;
                     } else {
-                      _.times(numMinions, function () {
-                        minion = selectMinion(minions);
-                        setAIData(minion, dist, false, false, _, numMinions);
-                        worker.ai.minions.push(minion);
-                      });
+                      worker.ai.minions = setupMinions(
+                        minions,
+                        totalMinions,
+                        name,
+                        false,
+                        worker.ai.faction,
+                        dist
+                      );
                     }
                   }
 
