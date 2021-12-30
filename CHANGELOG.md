@@ -5,6 +5,7 @@
 ### Change
 
 - Increased change of bounty mode for Bronze difficulty and higher
+- Increased chance of land anywhere for all difficulties
 
 ### Fixed
 
