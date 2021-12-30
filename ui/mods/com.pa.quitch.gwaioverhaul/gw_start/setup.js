@@ -723,6 +723,14 @@ if (!gwaioSetupLoaded) {
                 return selectAIBuffs(numberBuffs);
               };
 
+              var aiTech = function (buffs, inventory, faction, tech) {
+                var inventoryCopy = inventory;
+                _.times(buffs.length, function (n) {
+                  inventoryCopy = inventoryCopy.concat(tech[faction][buffs[n]]);
+                });
+                return inventoryCopy;
+              };
+
               var countMinions = function (minionBase, minionStep, distance) {
                 return Math.floor(minionBase + distance * minionStep);
               };
@@ -795,11 +803,12 @@ if (!gwaioSetupLoaded) {
                 // Setup boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
-                _.times(bossBuffs.length, function (n) {
-                  info.boss.inventory = info.boss.inventory.concat(
-                    gwaioTech.factionTechs[info.boss.faction][bossBuffs[n]]
-                  );
-                });
+                info.boss.inventory = aiTech(
+                  bossBuffs,
+                  info.boss.inventory,
+                  info.boss.faction,
+                  gwaioTech.factionTechs
+                );
 
                 // Setup boss minions
                 numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
@@ -841,11 +850,12 @@ if (!gwaioSetupLoaded) {
                   // Setup non-boss AI buffs
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                   worker.ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                  _.times(workerBuffs.length, function (n) {
-                    worker.ai.inventory = worker.ai.inventory.concat(
-                      gwaioTech.factionTechs[worker.ai.faction][workerBuffs[n]]
-                    );
-                  });
+                  worker.ai.inventory = aiTech(
+                    workerBuffs,
+                    worker.ai.inventory,
+                    worker.ai.faction,
+                    gwaioTech.factionTechs
+                  );
 
                   // Setup non-boss minions
                   if (numMinions > 0) {
@@ -916,11 +926,13 @@ if (!gwaioSetupLoaded) {
                       setAIData(foeCommander, dist, false, false, foeFaction);
 
                       // Setup additional faction AI buffs
-                      _.times(workerBuffs.length, function (n) {
-                        foeCommander.inventory = foeCommander.inventory.concat(
-                          gwaioTech.factionTechs[foeFaction][workerBuffs[n]]
-                        );
-                      });
+                      foeCommander.inventory = aiTech(
+                        workerBuffs,
+                        foeCommander.inventory,
+                        foeFaction,
+                        gwaioTech.factionTechs
+                      );
+
                       worker.ai.foes.push(foeCommander);
                     }
                   });
