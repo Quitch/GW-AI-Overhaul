@@ -780,15 +780,6 @@ if (!gwaioSetupLoaded) {
               };
 
               _.forEach(teamInfo, function (info) {
-                var factionTechHandicap =
-                  model.gwaioDifficultySettings.factionTechHandicap();
-
-                var numMinions = 0;
-                var mandatoryMinions =
-                  model.gwaioDifficultySettings.mandatoryMinions();
-                var minionMod = model.gwaioDifficultySettings.minionMod();
-                var minions = GWFactions[info.faction].minions;
-
                 // Setup boss system
                 setAIData(info.boss, maxDist, true);
 
@@ -798,6 +789,8 @@ if (!gwaioSetupLoaded) {
                   info.boss.inventory = gwaioTech.clusterCommanders;
                 }
 
+                var factionTechHandicap =
+                  model.gwaioDifficultySettings.factionTechHandicap();
                 // Setup boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 info.boss.typeOfBuffs = bossBuffs; // for intelligence reports
@@ -808,6 +801,11 @@ if (!gwaioSetupLoaded) {
                   gwaioTech.factionTechs
                 );
 
+                var numMinions = 0;
+                var mandatoryMinions =
+                  model.gwaioDifficultySettings.mandatoryMinions();
+                var minionMod = model.gwaioDifficultySettings.minionMod();
+                var minions = GWFactions[info.faction].minions;
                 // Setup boss minions
                 numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
                 if (numMinions > 0) {
