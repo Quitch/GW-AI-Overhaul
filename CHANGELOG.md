@@ -6,7 +6,6 @@
 
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
-- Workers always receive at least one extra commander in a FFA
 
 ### Fixed
 

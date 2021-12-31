@@ -729,10 +729,7 @@ if (!gwaioSetupLoaded) {
                 minionCount,
                 bossCommanders
               ) {
-                return Math.max(
-                  minionCount + Math.floor(bossCommanders / 2),
-                  2
-                );
+                return minionCount + Math.floor(bossCommanders / 2);
               };
 
               var selectMinion = function (minions, minionName) {
@@ -861,7 +858,7 @@ if (!gwaioSetupLoaded) {
 
                     // Workers have additional commanders not minions
                     if (worker.ai.name === "Worker") {
-                      worker.ai.commanderCount = totalMinions;
+                      worker.ai.commanderCount = Math.max(totalMinions, 2);
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
