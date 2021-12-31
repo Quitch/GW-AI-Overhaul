@@ -209,11 +209,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       gwaioUnits.solarArray,
       gwaioUnits.helios,
     ],
-    revenantsWeapons: [
-      gwaioUnits.sxxWeapon,
-      gwaioUnits.artemisWeapon,
-      gwaioUnits.heliosWeaponAG,
-    ],
+    revenantsWeapons: [gwaioUnits.sxxWeapon, gwaioUnits.artemisWeapon],
     revenantsAmmo: [
       gwaioUnits.anchorAmmoAG,
       gwaioUnits.anchorAmmoAO,

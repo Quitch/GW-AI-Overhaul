@@ -11,6 +11,7 @@
 
 - Errors in tech card tooltips
 - Workers always receive at least one extra commander if a system should have minions
+- Removed references to an unused Helios weapon
 
 ## v5.27.0 - 2021-12-23
 

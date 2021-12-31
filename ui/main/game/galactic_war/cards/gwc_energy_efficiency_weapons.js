@@ -34,7 +34,6 @@ define([
         gwaioUnits.sparkWeapon,
         gwaioUnits.sxxWeapon,
         gwaioUnits.artemisWeapon,
-        gwaioUnits.heliosWeaponAG,
       ];
       var mods = [];
       weapons.forEach(function (weapon) {

@@ -89,7 +89,6 @@ define([
         gwaioUnits.sparkWeapon,
         gwaioUnits.sxxWeapon,
         gwaioUnits.artemisWeapon,
-        gwaioUnits.heliosWeaponAG,
       ];
       weapons.forEach(function (weapon) {
         mods.push(
