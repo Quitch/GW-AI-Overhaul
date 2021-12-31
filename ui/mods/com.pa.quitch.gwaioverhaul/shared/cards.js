@@ -6,7 +6,7 @@ define([
     validatePaths: function (path) {
       var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
       if (index === -1) {
-        console.error(path + "is invalid or missing from GWO unit_names.js");
+        console.error(path + " is invalid or missing from GWO unit_names.js");
       }
     },
     hasUnit: function (path) {
