@@ -855,11 +855,6 @@ if (!gwaioSetupLoaded) {
                     gwaioTech.factionTechs
                   );
 
-                  if (worker.ai.name === "Worker") {
-                    console.log(worker.ai.name);
-                    console.log("Minion count:", numMinions);
-                  }
-
                   // Setup non-boss minions
                   if (numMinions > 0) {
                     worker.ai.minions = [];
@@ -873,7 +868,6 @@ if (!gwaioSetupLoaded) {
                         Math.floor(
                           model.gwaioDifficultySettings.bossCommanders() / 2
                         );
-                      console.log("Total minions:", totalMinions);
                     }
 
                     // Workers have additional commanders not minions
