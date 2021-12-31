@@ -626,42 +626,36 @@ if (!gwaioSetupLoaded) {
                 0
               );
 
-              var setAIPersonality = function (ai, faction) {
+              var setAIPersonality = function (ai, settings, faction) {
                 if (ai.faction === undefined) {
                   ai.faction = faction;
                 }
-                ai.personality.micro_type =
-                  model.gwaioDifficultySettings.microTypeChosen();
-                ai.personality.go_for_the_kill =
-                  model.gwaioDifficultySettings.goForKill();
+                ai.personality.micro_type = settings.microTypeChosen();
+                ai.personality.go_for_the_kill = settings.goForKill();
                 ai.personality.priority_scout_metal_spots =
-                  model.gwaioDifficultySettings.priorityScoutMetalSpots();
+                  settings.priorityScoutMetalSpots();
                 ai.personality.factory_build_delay_min =
-                  model.gwaioDifficultySettings.factoryBuildDelayMin();
+                  settings.factoryBuildDelayMin();
                 ai.personality.factory_build_delay_max =
-                  model.gwaioDifficultySettings.factoryBuildDelayMax();
+                  settings.factoryBuildDelayMax();
                 ai.personality.unable_to_expand_delay =
-                  model.gwaioDifficultySettings.unableToExpandDelay();
+                  settings.unableToExpandDelay();
                 ai.personality.enable_commander_danger_responses =
-                  model.gwaioDifficultySettings.enableCommanderDangerResponses();
+                  settings.enableCommanderDangerResponses();
                 ai.personality.per_expansion_delay =
-                  model.gwaioDifficultySettings.perExpansionDelay();
-                ai.personality.max_basic_fabbers =
-                  model.gwaioDifficultySettings.maxBasicFabbers();
+                  settings.perExpansionDelay();
+                ai.personality.max_basic_fabbers = settings.maxBasicFabbers();
                 ai.personality.max_advanced_fabbers =
-                  model.gwaioDifficultySettings.maxAdvancedFabbers();
+                  settings.maxAdvancedFabbers();
                 ai.personality.personality_tags =
-                  model.gwaioDifficultySettings.personalityTagsChosen();
-                if (
-                  model.gwaioDifficultySettings.startingLocationEvaluationRadius() >
-                  0
-                ) {
+                  settings.personalityTagsChosen();
+                if (settings.startingLocationEvaluationRadius() > 0) {
                   ai.personality.starting_location_evaluation_radius =
-                    model.gwaioDifficultySettings.startingLocationEvaluationRadius();
+                    settings.startingLocationEvaluationRadius();
                 }
 
                 // Penchant AI
-                if (model.gwaioDifficultySettings.ai() === 2) {
+                if (settings.ai() === 2) {
                   var penchantValues = gwaioAI.penchants();
                   ai.personality.personality_tags =
                     ai.personality.personality_tags.concat(
@@ -725,7 +719,7 @@ if (!gwaioSetupLoaded) {
                   model.gwaioDifficultySettings.econRatePerDist();
 
                 // Setup boss system
-                setAIPersonality(info.boss);
+                setAIPersonality(info.boss, model.gwaioDifficultySettings);
                 info.boss.econ_rate = aiEconRate(
                   econBase,
                   econRatePerDist,
@@ -768,7 +762,11 @@ if (!gwaioSetupLoaded) {
                   }
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, minionName);
-                    setAIPersonality(minion, info.boss.faction);
+                    setAIPersonality(
+                      minion,
+                      model.gwaioDifficultySettings,
+                      info.boss.faction
+                    );
                     minion.econ_rate = aiEconRate(
                       econBase,
                       econRatePerDist,
@@ -801,7 +799,7 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIPersonality(worker.ai);
+                  setAIPersonality(worker.ai, model.gwaioDifficultySettings);
                   worker.ai.econ_rate = aiEconRate(
                     econBase,
                     econRatePerDist,
@@ -845,7 +843,11 @@ if (!gwaioSetupLoaded) {
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
-                        setAIPersonality(minion, worker.ai.faction);
+                        setAIPersonality(
+                          minion,
+                          model.gwaioDifficultySettings,
+                          worker.ai.faction
+                        );
                         minion.econ_rate = aiEconRate(
                           econBase,
                           econRatePerDist,
@@ -878,7 +880,11 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      setAIPersonality(foeCommander, foeFaction);
+                      setAIPersonality(
+                        foeCommander,
+                        model.gwaioDifficultySettings,
+                        foeFaction
+                      );
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
                         econRatePerDist,
