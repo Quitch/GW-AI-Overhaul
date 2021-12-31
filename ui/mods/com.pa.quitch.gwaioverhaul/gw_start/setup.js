@@ -762,7 +762,7 @@ if (!gwaioSetupLoaded) {
                 }
 
                 _.times(armies, function () {
-                  var minion = selectMinion(factionMinions, name);
+                  var minion = selectMinion(factionMinions, clusterName);
                   setAIData(minion, distance, false, faction, minionCount);
                   if (clusterName) {
                     minion.commanderCount = minionCount;
