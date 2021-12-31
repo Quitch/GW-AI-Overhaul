@@ -742,9 +742,8 @@ if (!gwaioSetupLoaded) {
                       })
                     )
                   );
-                } else {
-                  return _.cloneDeep(_.sample(minions));
                 }
+                return _.cloneDeep(_.sample(minions));
               };
 
               var setupMinions = function (
