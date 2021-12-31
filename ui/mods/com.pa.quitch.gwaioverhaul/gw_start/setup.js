@@ -639,7 +639,7 @@ if (!gwaioSetupLoaded) {
                 0
               );
 
-              var setAIData = function (ai, isBoss, faction) {
+              var setAIData = function (ai, faction) {
                 if (ai.faction === undefined) {
                   ai.faction = faction;
                 }
@@ -671,11 +671,6 @@ if (!gwaioSetupLoaded) {
                 ) {
                   ai.personality.starting_location_evaluation_radius =
                     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
-                }
-
-                if (isBoss) {
-                  ai.bossCommanders =
-                    model.gwaioDifficultySettings.bossCommanders();
                 }
 
                 // Penchant AI
@@ -744,12 +739,14 @@ if (!gwaioSetupLoaded) {
                   model.gwaioDifficultySettings.econRatePerDist();
 
                 // Setup boss system
-                setAIData(info.boss, true);
+                setAIData(info.boss);
                 info.boss.econ_rate = aiEconRate(
                   econBase,
                   econRatePerDist,
                   maxDist
                 );
+                info.boss.bossCommanders =
+                  model.gwaioDifficultySettings.bossCommanders();
 
                 info.boss.inventory = [];
                 // Setup Cluster commanders
@@ -785,7 +782,7 @@ if (!gwaioSetupLoaded) {
                   }
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, minionName);
-                    setAIData(minion, true, info.boss.faction);
+                    setAIData(minion, info.boss.faction);
                     minion.econ_rate = aiEconRate(
                       econBase,
                       econRatePerDist,
@@ -818,7 +815,7 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIData(worker.ai, false);
+                  setAIData(worker.ai);
                   info.workers.econ_rate = aiEconRate(
                     econBase,
                     econRatePerDist,
@@ -862,7 +859,7 @@ if (!gwaioSetupLoaded) {
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
-                        setAIData(minion, false, worker.ai.faction);
+                        setAIData(minion, worker.ai.faction);
                         minion.econ_rate = aiEconRate(
                           econBase,
                           econRatePerDist,
@@ -895,7 +892,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      setAIData(foeCommander, false, foeFaction);
+                      setAIData(foeCommander, foeFaction);
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
                         econRatePerDist,
