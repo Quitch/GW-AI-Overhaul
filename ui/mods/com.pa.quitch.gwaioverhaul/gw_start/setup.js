@@ -754,7 +754,7 @@ if (!gwaioSetupLoaded) {
                 distance
               ) {
                 var armies = minionCount;
-                var minions = [];
+                var selectedMinions = [];
 
                 if (clusterName) {
                   armies = 1;
@@ -766,10 +766,10 @@ if (!gwaioSetupLoaded) {
                   if (clusterName) {
                     minion.commanderCount = minionCount;
                   }
-                  minions.push(minion);
+                  selectedMinions.push(minion);
                 });
 
-                return minions;
+                return selectedMinions;
               };
 
               var gameModeEnabled = function (gameModeChance) {
