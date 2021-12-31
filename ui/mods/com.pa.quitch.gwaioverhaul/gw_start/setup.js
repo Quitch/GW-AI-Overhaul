@@ -732,44 +732,18 @@ if (!gwaioSetupLoaded) {
                 return minionCount + Math.floor(bossCommanders / 2);
               };
 
-              var selectMinion = function (minions, name) {
+              var selectMinion = function (minions, minionName) {
                 // Cluster
-                if (name === "Worker" || name === "Security") {
+                if (minionName === "Worker" || minionName === "Security") {
                   return _.cloneDeep(
                     _.sample(
                       _.filter(minions, {
-                        name: name,
+                        name: minionName,
                       })
                     )
                   );
                 }
                 return _.cloneDeep(_.sample(minions));
-              };
-
-              var setupMinions = function (
-                factionMinions,
-                minionCount,
-                clusterName,
-                faction,
-                distance
-              ) {
-                var armies = minionCount;
-                var selectedMinions = [];
-
-                if (clusterName) {
-                  armies = 1;
-                }
-
-                _.times(armies, function () {
-                  var minion = selectMinion(factionMinions, clusterName);
-                  setAIData(minion, distance, false, faction, minionCount);
-                  if (clusterName) {
-                    minion.commanderCount = minionCount;
-                  }
-                  selectedMinions.push(minion);
-                });
-
-                return selectedMinions;
               };
 
               var gameModeEnabled = function (gameModeChance) {
@@ -809,17 +783,26 @@ if (!gwaioSetupLoaded) {
                 // Setup boss minions
                 numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
                 if (numMinions > 0) {
+                  info.boss.minions = [];
+
                   var minionName;
                   if (info.boss.isCluster === true) {
                     minionName = "Security";
                   }
-                  info.boss.minions = setupMinions(
-                    minions,
-                    numMinions,
-                    minionName,
-                    info.boss.faction,
-                    maxDist
-                  );
+                  _.times(numMinions, function () {
+                    var minion = selectMinion(minions, minionName);
+                    setAIData(
+                      minion,
+                      maxDist,
+                      true,
+                      info.boss.faction,
+                      numMinions
+                    );
+                    if (info.boss.isCluster === true) {
+                      minion.commanderCount = numMinions;
+                    }
+                    info.boss.minions.push(minion);
+                  });
                 }
 
                 // Setup non-boss AI system
@@ -877,13 +860,20 @@ if (!gwaioSetupLoaded) {
                     if (worker.ai.name === "Worker") {
                       worker.ai.commanderCount = totalMinions;
                     } else {
-                      worker.ai.minions = setupMinions(
-                        minions,
-                        totalMinions,
-                        clusterType,
-                        worker.ai.faction,
-                        dist
-                      );
+                      _.times(numMinions, function () {
+                        var minion = selectMinion(minions, clusterType);
+                        setAIData(
+                          minion,
+                          maxDist,
+                          false,
+                          worker.ai.faction,
+                          numMinions
+                        );
+                        if (worker.ai.isCluster === true) {
+                          minion.commanderCount = totalMinions;
+                        }
+                        worker.ai.minions.push(minion);
+                      });
                     }
                   }
 
