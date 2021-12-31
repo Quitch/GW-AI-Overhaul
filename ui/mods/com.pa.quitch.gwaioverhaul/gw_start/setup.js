@@ -866,10 +866,10 @@ if (!gwaioSetupLoaded) {
                   if (numMinions > 0) {
                     worker.ai.minions = [];
 
-                    var aiName;
+                    var clusterType;
                     var totalMinions = numMinions;
                     if (worker.ai.isCluster === true) {
-                      aiName = worker.ai.name;
+                      clusterType = "Worker";
                       totalMinions = clusterCommanderCount(
                         numMinions,
                         model.gwaioDifficultySettings.bossCommanders()
@@ -877,13 +877,13 @@ if (!gwaioSetupLoaded) {
                     }
 
                     // Workers have additional commanders not minions
-                    if (aiName === "Worker") {
+                    if (worker.ai.name === "Worker") {
                       worker.ai.commanderCount = totalMinions;
                     } else {
                       worker.ai.minions = setupMinions(
                         minions,
                         totalMinions,
-                        aiName,
+                        clusterType,
                         worker.ai.faction,
                         dist
                       );
