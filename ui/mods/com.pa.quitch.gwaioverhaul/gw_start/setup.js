@@ -639,13 +639,7 @@ if (!gwaioSetupLoaded) {
                 0
               );
 
-              var setAIData = function (
-                ai,
-                distance,
-                isBoss,
-                faction,
-                minionCount
-              ) {
+              var setAIData = function (ai, isBoss, faction) {
                 if (ai.faction === undefined) {
                   ai.faction = faction;
                 }
@@ -679,15 +673,6 @@ if (!gwaioSetupLoaded) {
                     model.gwaioDifficultySettings.startingLocationEvaluationRadius();
                 }
 
-                var econBase = model.gwaioDifficultySettings.econBase();
-                var econRatePerDist =
-                  model.gwaioDifficultySettings.econRatePerDist();
-                ai.econ_rate = aiEconRate(
-                  econBase,
-                  econRatePerDist,
-                  distance,
-                  minionCount
-                );
                 if (isBoss) {
                   ai.bossCommanders =
                     model.gwaioDifficultySettings.bossCommanders();
@@ -754,8 +739,17 @@ if (!gwaioSetupLoaded) {
               };
 
               _.forEach(teamInfo, function (info) {
+                var econBase = model.gwaioDifficultySettings.econBase();
+                var econRatePerDist =
+                  model.gwaioDifficultySettings.econRatePerDist();
+
                 // Setup boss system
-                setAIData(info.boss, maxDist, true);
+                setAIData(info.boss, true);
+                info.boss.econ_rate = aiEconRate(
+                  econBase,
+                  econRatePerDist,
+                  maxDist
+                );
 
                 info.boss.inventory = [];
                 // Setup Cluster commanders
@@ -791,11 +785,11 @@ if (!gwaioSetupLoaded) {
                   }
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, minionName);
-                    setAIData(
-                      minion,
+                    setAIData(minion, true, info.boss.faction);
+                    minion.econ_rate = aiEconRate(
+                      econBase,
+                      econRatePerDist,
                       maxDist,
-                      true,
-                      info.boss.faction,
                       numMinions
                     );
                     if (info.boss.isCluster === true) {
@@ -824,7 +818,13 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIData(worker.ai, dist, false, _, numMinions);
+                  setAIData(worker.ai, false);
+                  info.workers.econ_rate = aiEconRate(
+                    econBase,
+                    econRatePerDist,
+                    dist,
+                    numMinions
+                  );
 
                   worker.ai.inventory = [];
                   // Setup Cluster commanders
@@ -862,11 +862,11 @@ if (!gwaioSetupLoaded) {
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
-                        setAIData(
-                          minion,
-                          maxDist,
-                          false,
-                          worker.ai.faction,
+                        setAIData(minion, false, worker.ai.faction);
+                        minion.econ_rate = aiEconRate(
+                          econBase,
+                          econRatePerDist,
+                          dist,
                           numMinions
                         );
                         if (worker.ai.isCluster === true) {
@@ -895,7 +895,13 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      setAIData(foeCommander, dist, false, foeFaction);
+                      setAIData(foeCommander, false, foeFaction);
+                      foeCommander.econ_rate = aiEconRate(
+                        econBase,
+                        econRatePerDist,
+                        dist,
+                        numMinions
+                      );
                       var numFoes = Math.round((numMinions + 1) / 2);
                       // Cluster Workers get additional commanders
                       if (foeCommander.name === "Worker") {
