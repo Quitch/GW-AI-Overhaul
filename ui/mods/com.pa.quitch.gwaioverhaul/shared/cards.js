@@ -42,9 +42,8 @@ define([
       }
       if (highestDifficultyDefeated() === 7) {
         return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
-      } else {
-        return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
       }
+      return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
     setupCluster: function (inventory) {
       if (inventory.getTag("global", "playerFaction") === 4) {
