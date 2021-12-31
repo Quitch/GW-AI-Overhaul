@@ -149,8 +149,7 @@ If you are adding new loadouts to the game and want to be compatible, then you w
 4. Within the `if (!buffCount)` block of your loadout add:
 
    ```javascript
-   if (inventory.getTag("global", "playerFaction") === 4)
-     inventory.addMods(gwaioTech.clusterCommanders);
+   gwaioCards.setupCluster(inventory);
    ```
 
 ## Compatible Tech Cards
