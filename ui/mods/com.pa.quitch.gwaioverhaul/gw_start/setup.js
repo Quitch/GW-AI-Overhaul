@@ -897,8 +897,7 @@ if (!gwaioSetupLoaded) {
                   );
                   _.times(availableFactions.length, function () {
                     if (
-                      Math.random() * 100 <=
-                      model.gwaioDifficultySettings.ffaChance()
+                      gameModeEnabled(model.gwaioDifficultySettings.ffaChance())
                     ) {
                       if (worker.ai.foes === undefined) {
                         worker.ai.foes = [];
