@@ -256,101 +256,87 @@ if (!gwaioSetupLoaded) {
           // Track difficulty settings so GW-CUSTOM fields appear and display correct values
           ko.computed(function () {
             selectedDifficulty = model.newGameDifficultyIndex();
+            var difficultySettings = model.gwaioDifficultySettings;
+            var difficulties = gwaioDifficulty.difficulties;
 
-            if (
-              gwaioDifficulty.difficulties[selectedDifficulty].customDifficulty
-            ) {
-              model.gwaioDifficultySettings.customDifficulty(true);
+            if (difficulties[selectedDifficulty].customDifficulty) {
+              difficultySettings.customDifficulty(true);
             } else {
-              model.gwaioDifficultySettings.customDifficulty(false);
+              difficultySettings.customDifficulty(false);
 
-              model.gwaioDifficultySettings.goForKill(
-                gwaioDifficulty.difficulties[selectedDifficulty].goForKill
+              difficultySettings.goForKill(
+                difficulties[selectedDifficulty].goForKill
               );
-              model.gwaioDifficultySettings.microTypeChosen(
-                gwaioDifficulty.difficulties[selectedDifficulty].microType
+              difficultySettings.microTypeChosen(
+                difficulties[selectedDifficulty].microType
               );
-              model.gwaioDifficultySettings.mandatoryMinions(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .mandatoryMinions
+              difficultySettings.mandatoryMinions(
+                difficulties[selectedDifficulty].mandatoryMinions
               );
-              model.gwaioDifficultySettings.minionMod(
-                gwaioDifficulty.difficulties[selectedDifficulty].minionMod
+              difficultySettings.minionMod(
+                difficulties[selectedDifficulty].minionMod
               );
-              model.gwaioDifficultySettings.priorityScoutMetalSpots(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .priority_scout_metal_spots
+              difficultySettings.priorityScoutMetalSpots(
+                difficulties[selectedDifficulty].priority_scout_metal_spots
               );
-              model.gwaioDifficultySettings.useEasierSystemTemplate(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .useEasierSystemTemplate
+              difficultySettings.useEasierSystemTemplate(
+                difficulties[selectedDifficulty].useEasierSystemTemplate
               );
-              model.gwaioDifficultySettings.factoryBuildDelayMin(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factory_build_delay_min
+              difficultySettings.factoryBuildDelayMin(
+                difficulties[selectedDifficulty].factory_build_delay_min
               );
-              model.gwaioDifficultySettings.factoryBuildDelayMax(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factory_build_delay_max
+              difficultySettings.factoryBuildDelayMax(
+                difficulties[selectedDifficulty].factory_build_delay_max
               );
-              model.gwaioDifficultySettings.unableToExpandDelay(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .unable_to_expand_delay
+              difficultySettings.unableToExpandDelay(
+                difficulties[selectedDifficulty].unable_to_expand_delay
               );
-              model.gwaioDifficultySettings.enableCommanderDangerResponses(
-                gwaioDifficulty.difficulties[selectedDifficulty]
+              difficultySettings.enableCommanderDangerResponses(
+                difficulties[selectedDifficulty]
                   .enable_commander_danger_responses
               );
-              model.gwaioDifficultySettings.perExpansionDelay(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .per_expansion_delay
+              difficultySettings.perExpansionDelay(
+                difficulties[selectedDifficulty].per_expansion_delay
               );
-              model.gwaioDifficultySettings.personalityTagsChosen(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .personality_tags
+              difficultySettings.personalityTagsChosen(
+                difficulties[selectedDifficulty].personality_tags
               );
-              model.gwaioDifficultySettings.econBase(
-                gwaioDifficulty.difficulties[selectedDifficulty].econBase
+              difficultySettings.econBase(
+                difficulties[selectedDifficulty].econBase
               );
-              model.gwaioDifficultySettings.econRatePerDist(
-                gwaioDifficulty.difficulties[selectedDifficulty].econRatePerDist
+              difficultySettings.econRatePerDist(
+                difficulties[selectedDifficulty].econRatePerDist
               );
-              model.gwaioDifficultySettings.maxBasicFabbers(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .max_basic_fabbers
+              difficultySettings.maxBasicFabbers(
+                difficulties[selectedDifficulty].max_basic_fabbers
               );
-              model.gwaioDifficultySettings.maxAdvancedFabbers(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .max_advanced_fabbers
+              difficultySettings.maxAdvancedFabbers(
+                difficulties[selectedDifficulty].max_advanced_fabbers
               );
-              model.gwaioDifficultySettings.ffaChance(
-                gwaioDifficulty.difficulties[selectedDifficulty].ffa_chance
+              difficultySettings.ffaChance(
+                difficulties[selectedDifficulty].ffa_chance
               );
-              model.gwaioDifficultySettings.bossCommanders(
-                gwaioDifficulty.difficulties[selectedDifficulty].bossCommanders
+              difficultySettings.bossCommanders(
+                difficulties[selectedDifficulty].bossCommanders
               );
-              model.gwaioDifficultySettings.startingLocationEvaluationRadius(
-                gwaioDifficulty.difficulties[selectedDifficulty]
+              difficultySettings.startingLocationEvaluationRadius(
+                difficulties[selectedDifficulty]
                   .starting_location_evaluation_radius
               );
-              model.gwaioDifficultySettings.landAnywhereChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .landAnywhereChance
+              difficultySettings.landAnywhereChance(
+                difficulties[selectedDifficulty].landAnywhereChance
               );
-              model.gwaioDifficultySettings.suddenDeathChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .suddenDeathChance
+              difficultySettings.suddenDeathChance(
+                difficulties[selectedDifficulty].suddenDeathChance
               );
-              model.gwaioDifficultySettings.bountyModeChance(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .bountyModeChance
+              difficultySettings.bountyModeChance(
+                difficulties[selectedDifficulty].bountyModeChance
               );
-              model.gwaioDifficultySettings.bountyModeValue(
-                gwaioDifficulty.difficulties[selectedDifficulty].bountyModeValue
+              difficultySettings.bountyModeValue(
+                difficulties[selectedDifficulty].bountyModeValue
               );
-              model.gwaioDifficultySettings.factionTechHandicap(
-                gwaioDifficulty.difficulties[selectedDifficulty]
-                  .factionTechHandicap
+              difficultySettings.factionTechHandicap(
+                difficulties[selectedDifficulty].factionTechHandicap
               );
             }
           });
