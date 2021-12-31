@@ -425,7 +425,6 @@ define([
           gwaioUnits.artemis,
           gwaioUnits.radarSatelliteAdvanced,
           gwaioUnits.arkyd,
-          gwaioUnits.helios,
         ],
       },
       {
@@ -451,7 +450,6 @@ define([
           gwaioUnits.spark,
           gwaioUnits.sxx,
           gwaioUnits.artemis,
-          gwaioUnits.helios,
         ],
       },
       {
