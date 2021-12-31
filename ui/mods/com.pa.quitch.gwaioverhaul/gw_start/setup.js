@@ -898,6 +898,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
+                      setAIData(foeCommander, dist, false, foeFaction);
                       var numFoes = Math.round((numMinions + 1) / 2);
                       // Cluster Workers get additional commanders
                       if (foeCommander.name === "Worker") {
@@ -907,8 +908,6 @@ if (!gwaioSetupLoaded) {
                         );
                       }
                       foeCommander.commanderCount = numFoes;
-
-                      setAIData(foeCommander, dist, false, foeFaction);
 
                       foeCommander.inventory = [];
                       // Setup Cluster commanders
