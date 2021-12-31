@@ -205,6 +205,7 @@ if (!gwaioSetupLoaded) {
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
           model.selectedNames.subscribe(function (names) {
+            // No systems selected
             if (_.isEmpty(names)) {
               enableGoToWar(false);
             } else {
