@@ -35,7 +35,7 @@ if (!gwaioMenuLoaded) {
               "!LOC:Surrender"
             );
 
-            function getMenuAction(boolean) {
+            var getMenuAction = function (boolean) {
               if (boolean) {
                 return "menuReturnToWar";
               }
@@ -44,7 +44,7 @@ if (!gwaioMenuLoaded) {
                 "menuAbandonWar",
                 "menuSurrender"
               );
-            }
+            };
 
             var playerLost = false;
             if (model.gameOver() || model.defeated()) {
