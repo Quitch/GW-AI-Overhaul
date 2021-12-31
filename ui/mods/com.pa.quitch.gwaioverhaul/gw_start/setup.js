@@ -816,7 +816,7 @@ if (!gwaioSetupLoaded) {
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
                   setAIPersonality(worker.ai);
-                  info.workers.econ_rate = aiEconRate(
+                  worker.ai.econ_rate = aiEconRate(
                     econBase,
                     econRatePerDist,
                     dist,
