@@ -170,6 +170,13 @@ if (!gwaioCardsLoaded) {
               });
             };
 
+            var saveGame = function (gameState) {
+              model.driveAccessInProgress(true);
+              GW.manifest.saveGame(gameState).then(function () {
+                model.driveAccessInProgress(false);
+              });
+            };
+
             var inventory = game.inventory();
             var playerFaction = 0;
 
@@ -203,10 +210,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              model.driveAccessInProgress(true);
-              GW.manifest.saveGame(game).then(function () {
-                model.driveAccessInProgress(false);
-              });
+              saveGame(game);
             }
 
             /* Start of GWO implementation of GWDealer */
@@ -674,10 +678,7 @@ if (!gwaioCardsLoaded) {
                 if (model.currentSystemCardList()[0].isLoadout()) {
                   model.gwaioOfferRerolls(false);
                 }
-                model.driveAccessInProgress(true);
-                GW.manifest.saveGame(game).then(function () {
-                  model.driveAccessInProgress(false);
-                });
+                saveGame(game);
 
                 _.delay(function () {
                   model.scanning(false);
