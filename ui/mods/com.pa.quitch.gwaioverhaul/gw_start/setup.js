@@ -908,7 +908,6 @@ if (!gwaioSetupLoaded) {
                         _.sample(GWFactions[foeFaction].minions)
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
-
                       // Cluster Workers get additional commanders
                       if (foeCommander.name === "Worker") {
                         numFoes += clusterCommanderCount(
@@ -917,14 +916,14 @@ if (!gwaioSetupLoaded) {
                         );
                       }
                       foeCommander.commanderCount = numFoes;
-                      foeCommander.inventory = [];
 
+                      setAIData(foeCommander, dist, false, foeFaction);
+
+                      foeCommander.inventory = [];
                       // Setup Cluster commanders
                       if (foeCommander.isCluster === true) {
                         foeCommander.inventory = gwaioTech.clusterCommanders;
                       }
-
-                      setAIData(foeCommander, dist, false, foeFaction);
 
                       // Setup additional faction AI buffs
                       foeCommander.inventory = aiTech(
