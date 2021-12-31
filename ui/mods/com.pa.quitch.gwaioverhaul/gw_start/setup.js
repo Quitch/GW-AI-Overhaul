@@ -715,11 +715,10 @@ if (!gwaioSetupLoaded) {
               };
 
               var aiTech = function (buffs, inventory, faction, tech) {
-                var inventoryCopy = inventory;
                 _.times(buffs.length, function (n) {
-                  inventoryCopy = inventoryCopy.concat(tech[faction][buffs[n]]);
+                  inventory = inventory.concat(tech[faction][buffs[n]]);
                 });
-                return inventoryCopy;
+                return inventory;
               };
 
               var countMinions = function (minionBase, minionStep, distance) {
