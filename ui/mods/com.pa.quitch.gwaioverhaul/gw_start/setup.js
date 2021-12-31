@@ -729,7 +729,10 @@ if (!gwaioSetupLoaded) {
                 minionCount,
                 bossCommanders
               ) {
-                return minionCount + Math.floor(bossCommanders / 2);
+                return Math.max(
+                  minionCount + Math.floor(bossCommanders / 2),
+                  2
+                );
               };
 
               var selectMinion = function (minions, minionName) {
@@ -898,8 +901,8 @@ if (!gwaioSetupLoaded) {
                       var numFoes = Math.round((numMinions + 1) / 2);
                       // Cluster Workers get additional commanders
                       if (foeCommander.name === "Worker") {
-                        numFoes += clusterCommanderCount(
-                          0,
+                        numFoes = clusterCommanderCount(
+                          numMinions,
                           model.gwaioDifficultySettings.bossCommanders()
                         );
                       }

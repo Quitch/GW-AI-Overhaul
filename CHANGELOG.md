@@ -6,10 +6,12 @@
 
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
+- Workers always receive at least one extra commander in a FFA
 
 ### Fixed
 
 - Errors in tech card tooltips
+- Workers always receive at least one extra commander if a system should have minions
 
 ## v5.27.0 - 2021-12-23
 
