@@ -726,6 +726,13 @@ if (!gwaioSetupLoaded) {
                 return Math.floor(minionBase + distance * minionStep);
               };
 
+              var clusterCommanderCount = function (
+                minionCount,
+                bossCommanders
+              ) {
+                return minionCount + Math.floor(bossCommanders / 2);
+              };
+
               var selectMinion = function (minions, clusterName) {
                 if (clusterName) {
                   return _.cloneDeep(
@@ -863,11 +870,10 @@ if (!gwaioSetupLoaded) {
                     var totalMinions = numMinions;
                     if (worker.ai.isCluster === true) {
                       name = worker.ai.name;
-                      totalMinions =
-                        numMinions +
-                        Math.floor(
-                          model.gwaioDifficultySettings.bossCommanders() / 2
-                        );
+                      totalMinions = clusterCommanderCount(
+                        numMinions,
+                        model.gwaioDifficultySettings.bossCommanders()
+                      );
                     }
 
                     // Workers have additional commanders not minions
@@ -905,8 +911,9 @@ if (!gwaioSetupLoaded) {
 
                       // Cluster Workers get additional commanders
                       if (foeCommander.name === "Worker") {
-                        numFoes += Math.floor(
-                          model.gwaioDifficultySettings.bossCommanders() / 2
+                        numFoes += clusterCommanderCount(
+                          0,
+                          model.gwaioDifficultySettings.bossCommanders()
                         );
                       }
                       foeCommander.commanderCount = numFoes;
