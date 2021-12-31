@@ -28,33 +28,16 @@ define([
         )
       ) {
         var dist = system.distance();
-        if (dist > 0) {
-          if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-            chance = 100;
-            if (dist > 2) {
-              chance = 250;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-            chance = 100;
-            if (dist > 3) {
-              chance = 250;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-            chance = 100;
-            if (dist > 4) {
-              chance = 250;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-            chance = 100;
-            if (dist > 5) {
-              chance = 250;
-            }
-          } else {
-            chance = 100;
-            if (dist > 6) {
-              chance = 250;
-            }
-          }
+        if (
+          (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
+          (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
+          (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
+          (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
+          dist > 6
+        ) {
+          chance = 250;
+        } else {
+          chance = 100;
         }
       }
       return { chance: chance };

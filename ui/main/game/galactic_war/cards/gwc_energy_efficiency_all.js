@@ -21,43 +21,24 @@ define([
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
-      if (dist > 0) {
-        if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-          chance = 33;
-          if (dist > 4) {
-            chance = 166;
-          } else if (dist > 2) {
-            chance = 333;
-          }
-        } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-          chance = 33;
-          if (dist > 6) {
-            chance = 166;
-          } else if (dist > 3) {
-            chance = 333;
-          }
-        } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-          chance = 33;
-          if (dist > 9) {
-            chance = 166;
-          } else if (dist > 5) {
-            chance = 333;
-          }
-        } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-          chance = 33;
-          if (dist > 10) {
-            chance = 166;
-          } else if (dist > 6) {
-            chance = 333;
-          }
-        } else {
-          chance = 33;
-          if (dist > 12) {
-            chance = 166;
-          } else if (dist > 7) {
-            chance = 333;
-          }
-        }
+      if (
+        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
+        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
+        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 9) ||
+        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 10) ||
+        dist > 12
+      ) {
+        chance = 166;
+      } else if (
+        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
+        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
+        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 5) ||
+        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 6) ||
+        dist > 7
+      ) {
+        chance = 333;
+      } else {
+        chance = 33;
       }
       return { chance: chance };
     },

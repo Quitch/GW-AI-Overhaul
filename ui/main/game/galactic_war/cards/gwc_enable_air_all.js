@@ -32,32 +32,17 @@ define([
         ) {
           chanceMod = 3;
         }
-        if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
-          if (context.totalSize <= GW.balance.numberOfSystems[0]) {
+        if (!inventory.hasCard("gwaio_start_hoarder")) {
+          if (
+            (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
+            (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
+            (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
+            (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
+            dist > 6
+          ) {
             chance = 25;
-            if (dist > 2) {
-              chance = 200;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-            chance = 25;
-            if (dist > 3) {
-              chance = 200;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-            chance = 25;
-            if (dist > 4) {
-              chance = 200;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-            chance = 25;
-            if (dist > 5) {
-              chance = 200;
-            }
           } else {
-            chance = 25;
-            if (dist > 6) {
-              chance = 200;
-            }
+            chance = 200;
           }
         }
         chance *= chanceMod;

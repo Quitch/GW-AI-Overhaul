@@ -21,29 +21,20 @@ define([
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
-      if (dist > 0) {
-        if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-          chance = 12;
-        } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-          chance = 12;
-        } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-          chance = 24;
-          if (dist > 6) {
-            chance = 120;
-          }
-        } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-          chance = 24;
-          if (dist > 9) {
-            chance = 120;
-          }
-        } else {
-          chance = 24;
-          if (dist > 12) {
-            chance = 120;
-          }
-        }
+      if (
+        context.totalSize <= GW.balance.numberOfSystems[0] ||
+        context.totalSize <= GW.balance.numberOfSystems[1]
+      ) {
+        chance = 12;
+      } else if (
+        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 6) ||
+        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
+        dist > 12
+      ) {
+        chance = 120;
+      } else {
+        chance = 24;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
