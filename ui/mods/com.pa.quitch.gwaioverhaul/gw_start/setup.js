@@ -639,7 +639,7 @@ if (!gwaioSetupLoaded) {
                 0
               );
 
-              var setAIData = function (ai, faction) {
+              var setAIPersonality = function (ai, faction) {
                 if (ai.faction === undefined) {
                   ai.faction = faction;
                 }
@@ -739,7 +739,7 @@ if (!gwaioSetupLoaded) {
                   model.gwaioDifficultySettings.econRatePerDist();
 
                 // Setup boss system
-                setAIData(info.boss);
+                setAIPersonality(info.boss);
                 info.boss.econ_rate = aiEconRate(
                   econBase,
                   econRatePerDist,
@@ -782,7 +782,7 @@ if (!gwaioSetupLoaded) {
                   }
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, minionName);
-                    setAIData(minion, info.boss.faction);
+                    setAIPersonality(minion, info.boss.faction);
                     minion.econ_rate = aiEconRate(
                       econBase,
                       econRatePerDist,
@@ -815,7 +815,7 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIData(worker.ai);
+                  setAIPersonality(worker.ai);
                   info.workers.econ_rate = aiEconRate(
                     econBase,
                     econRatePerDist,
@@ -859,7 +859,7 @@ if (!gwaioSetupLoaded) {
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
-                        setAIData(minion, worker.ai.faction);
+                        setAIPersonality(minion, worker.ai.faction);
                         minion.econ_rate = aiEconRate(
                           econBase,
                           econRatePerDist,
@@ -892,7 +892,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      setAIData(foeCommander, foeFaction);
+                      setAIPersonality(foeCommander, foeFaction);
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
                         econRatePerDist,
