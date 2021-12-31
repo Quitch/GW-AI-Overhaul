@@ -732,12 +732,13 @@ if (!gwaioSetupLoaded) {
                 return minionCount + Math.floor(bossCommanders / 2);
               };
 
-              var selectMinion = function (minions, clusterName) {
-                if (clusterName) {
+              var selectMinion = function (minions, name) {
+                // Cluster
+                if (name === "Worker" || name === "Security") {
                   return _.cloneDeep(
                     _.sample(
                       _.filter(minions, {
-                        name: clusterName,
+                        name: name,
                       })
                     )
                   );
@@ -902,8 +903,9 @@ if (!gwaioSetupLoaded) {
                       }
                       availableFactions = _.shuffle(availableFactions);
                       var foeFaction = availableFactions.splice(0, 1);
-                      var foeCommander = _.cloneDeep(
-                        _.sample(GWFactions[foeFaction].minions)
+                      var foeCommander = selectMinion(
+                        GWFactions[foeFaction].minions,
+                        foeCommander.name
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
                       // Cluster Workers get additional commanders
