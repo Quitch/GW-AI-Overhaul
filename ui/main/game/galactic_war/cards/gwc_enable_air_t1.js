@@ -42,8 +42,8 @@ define([
             chance = 200;
           }
         }
-        return { chance: chance };
       }
+      return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addUnits([
