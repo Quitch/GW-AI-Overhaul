@@ -892,11 +892,11 @@ if (!gwaioSetupLoaded) {
                       if (worker.ai.foes === undefined) {
                         worker.ai.foes = [];
                       }
+
                       availableFactions = _.shuffle(availableFactions);
                       var foeFaction = availableFactions.splice(0, 1);
                       var foeCommander = selectMinion(
-                        GWFactions[foeFaction].minions,
-                        foeCommander.name
+                        GWFactions[foeFaction].minions
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
                       // Cluster Workers get additional commanders
