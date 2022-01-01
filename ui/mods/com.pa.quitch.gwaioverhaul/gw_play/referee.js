@@ -906,6 +906,7 @@ if (!gwaioRefereeChangesLoaded) {
               });
               armies.push({
                 slots: slotsArraySubCommander,
+                // TODO: give out colours in order of spawn to maximise clarity
                 color: subcommander.color,
                 econ_rate: 1,
                 personality: subcommander.personality,
@@ -953,6 +954,7 @@ if (!gwaioRefereeChangesLoaded) {
             );
             armies.push({
               slots: slotsArrayAI,
+              // TODO: give out colours in order of spawn to maximise clarity
               color: ai.color,
               econ_rate: ai.econ_rate,
               personality: ai.personality,
@@ -983,6 +985,7 @@ if (!gwaioRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayMinions,
+                // TODO: give out colours in order of spawn to maximise clarity
                 color: minion.color,
                 econ_rate: minion.econ_rate,
                 personality: minion.personality,
@@ -1018,6 +1021,7 @@ if (!gwaioRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayFoes,
+                // TODO: give out colours in order of spawn to maximise clarity
                 color: foe.color,
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
