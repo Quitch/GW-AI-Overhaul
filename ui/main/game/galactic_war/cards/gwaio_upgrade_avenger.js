@@ -45,6 +45,12 @@ define([
             },
           ],
         },
+        {
+          file: gwaioUnits.avenger,
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Heavy",
+        },
       ]);
     },
     dull: function () {
