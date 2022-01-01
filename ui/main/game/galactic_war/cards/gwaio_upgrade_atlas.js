@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Atlas Upgrade Tech increases the health of the seismic titan by 50%."
+      "!LOC:Atlas Upgrade Tech increases the health of the seismic titan by 25%."
     ),
     summarize: _.constant("!LOC:Atlas Upgrade Tech"),
     icon: _.constant(
@@ -31,7 +31,7 @@ define([
           file: gwaioUnits.atlas,
           path: "max_health",
           op: "multiply",
-          value: 1.5,
+          value: 1.25,
         },
       ]);
     },

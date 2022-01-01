@@ -14,6 +14,8 @@
   - Narwhal Upgrade Tech
   - Jig Upgrade Tech
   - Spark Upgrade Tech
+- Nerfed the following cards:
+  - Atlas Upgrade Tech
 
 ### Fixed
 
