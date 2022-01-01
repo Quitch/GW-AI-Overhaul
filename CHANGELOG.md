@@ -9,6 +9,7 @@
 - Cards:
   - Nuclear Missile Launcher Upgrade Tech
   - Omega Upgrade Tech
+  - Narwhal Upgrade Tech
 
 ### Fixed
 

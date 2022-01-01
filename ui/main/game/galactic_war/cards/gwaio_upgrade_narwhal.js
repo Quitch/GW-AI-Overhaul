@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Narwhal Upgrade Tech adds a torpedo launcher to the frigate."
+      "!LOC:Narwhal Upgrade Tech doubles the rate of fire of all weapons."
     ),
     summarize: _.constant("!LOC:Narwhal Upgrade Tech"),
     icon: _.constant(
@@ -31,17 +31,22 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.narwhal,
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id: gwaioUnits.narwhalTorpedo,
-            record_index: 2,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-            fire_event: "fired2",
-            show_range: false,
-          },
+          file: gwaioUnits.narwhalWeapon,
+          path: "rate_of_fire",
+          op: "multiple",
+          value: 2,
+        },
+        {
+          file: gwaioUnits.narwhalWeaponAA,
+          path: "rate_of_fire",
+          op: "multiple",
+          value: 2,
+        },
+        {
+          file: gwaioUnits.narwhalTorpedo,
+          path: "rate_of_fire",
+          op: "multiple",
+          value: 2,
         },
       ]);
     },
