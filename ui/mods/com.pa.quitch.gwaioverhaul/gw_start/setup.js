@@ -626,6 +626,15 @@ if (!gwaioSetupLoaded) {
                 0
               );
 
+              var setupPenchantAI = function (ai) {
+                var penchantValues = gwaioAI.penchants();
+                ai.personality.personality_tags =
+                  ai.personality.personality_tags.concat(
+                    penchantValues.penchants
+                  );
+                ai.penchantName = penchantValues.penchantName;
+              };
+
               var setAIPersonality = function (ai, settings, faction) {
                 if (ai.faction === undefined) {
                   ai.faction = faction;
@@ -654,14 +663,8 @@ if (!gwaioSetupLoaded) {
                     settings.startingLocationEvaluationRadius();
                 }
 
-                // Penchant AI
                 if (settings.ai() === 2) {
-                  var penchantValues = gwaioAI.penchants();
-                  ai.personality.personality_tags =
-                    ai.personality.personality_tags.concat(
-                      penchantValues.penchants
-                    );
-                  ai.penchantName = penchantValues.penchantName;
+                  setupPenchantAI(ai);
                 }
               };
 
