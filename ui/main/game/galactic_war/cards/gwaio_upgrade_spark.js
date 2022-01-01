@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spark Upgrade Tech doubles the tesla bot's splash damage radius."
+      "!LOC:Spark Upgrade Tech triples the tesla bot's splash damage radius."
     ),
     summarize: _.constant("!LOC:Spark Upgrade Tech"),
     icon: _.constant(
@@ -31,7 +31,7 @@ define([
           file: gwaioUnits.sparkAmmo,
           path: "splash_radius",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
       ]);
     },

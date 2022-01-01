@@ -13,6 +13,7 @@
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
   - Jig Upgrade Tech
+  - Spark Upgrade Tech
 
 ### Fixed
 
