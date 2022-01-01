@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport."
+      "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity and build speed of this interplanetary transport."
     ),
     summarize: _.constant("!LOC:Unit Cannon Upgrade Tech"),
     icon: _.constant(
@@ -55,6 +55,12 @@ define([
             "socket_build",
             "socket_build",
           ],
+        },
+        {
+          file: gwaioUnits.unitCannonBuildArm,
+          path: "construction_demand.metal",
+          op: "multiply",
+          value: 2,
         },
       ]);
     },

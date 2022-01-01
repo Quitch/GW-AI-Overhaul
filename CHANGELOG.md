@@ -14,6 +14,7 @@
   - Halley Upgrade Tech
   - Helios Upgrade Tech
   - Laser Defense Tower Upgrade Tech
+  - Unit Cannon Upgrade Tech
 - Changed the following cards:
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
