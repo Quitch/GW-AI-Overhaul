@@ -12,6 +12,7 @@
   - Catalyst Upgrade Tech
   - Drifter Upgrade Tech
   - Halley Upgrade Tech
+  - Helios Upgrade Tech
 - Changed the following cards:
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
