@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Change
+### Changed
 
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
