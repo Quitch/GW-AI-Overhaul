@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Halley Upgrade Tech increases the health of the delta V engine by 75%, enough to survive a nuclear blast."
+      "!LOC:Halley Upgrade Tech doubles the health of the delta V engine and halves its cost."
     ),
     summarize: _.constant("!LOC:Halley Upgrade Tech"),
     icon: _.constant(
@@ -41,7 +41,13 @@ define([
           file: gwaioUnits.halley,
           path: "max_health",
           op: "multiply",
-          value: 1.75,
+          value: 2,
+        },
+        {
+          file: gwaioUnits.halley,
+          path: "build_metal_cost",
+          op: "multiply",
+          value: 0.5,
         },
       ]);
     },
