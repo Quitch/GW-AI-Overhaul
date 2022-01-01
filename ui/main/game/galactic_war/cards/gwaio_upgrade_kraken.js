@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 100%."
+      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
     ),
     summarize: _.constant("!LOC:Kraken Upgrade Tech"),
     icon: _.constant(
@@ -35,7 +35,7 @@ define([
           file: gwaioUnits.krakenMissile,
           path: "max_range",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
       ]);
     },

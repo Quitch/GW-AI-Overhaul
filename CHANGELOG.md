@@ -11,6 +11,7 @@
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
   - Jig Upgrade Tech
+  - Kraken Upgrade Tech
 
 ### Fixed
 
