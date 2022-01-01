@@ -6,12 +6,13 @@
 
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
-- Cards:
+- Buffed the following cards:
   - Nuclear Missile Launcher Upgrade Tech
+  - Kraken Upgrade Tech
+- Changed the following cards:
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
   - Jig Upgrade Tech
-  - Kraken Upgrade Tech
 
 ### Fixed
 
