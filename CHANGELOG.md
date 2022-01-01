@@ -10,6 +10,7 @@
   - Nuclear Missile Launcher Upgrade Tech
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
+  - Jig Upgrade Tech
 
 ### Fixed
 

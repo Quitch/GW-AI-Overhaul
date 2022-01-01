@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Jig Upgrade Tech removes friendly damage from gas mining explosions."
+      "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production."
     ),
     summarize: _.constant("!LOC:Jig Upgrade Tech"),
     icon: _.constant(
@@ -28,10 +28,22 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.jigDeath,
-          path: "splash_damages_allies",
-          op: "replace",
-          value: false,
+          file: gwaioUnits.jig,
+          path: "production.energy",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwaioUnits.jig,
+          path: "storage.energy",
+          op: "add",
+          value: 50000,
+        },
+        {
+          file: gwaioUnits.jig,
+          path: "storage.metal",
+          op: "add",
+          value: 10000,
         },
       ]);
     },
