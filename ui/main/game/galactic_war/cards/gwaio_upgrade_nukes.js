@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Nuclear Missile Launcher Upgrade Tech doubles the damage dealt to commanders by LR-96 Pacifier Nuclear Missiles."
+      "!LOC:Nuclear Missile Launcher Upgrade Tech increases the damage dealt to commanders and orbital from the LR-96 Pacifier Nuclear Missiles by 200%."
     ),
     summarize: _.constant("!LOC:Nuclear Missile Launcher Upgrade Tech"),
     icon: _.constant(
@@ -42,7 +42,13 @@ define([
           file: gwaioUnits.nukeLauncherAmmo,
           path: "armor_damage_map.AT_Commander",
           op: "multiply",
-          value: 2,
+          value: 3,
+        },
+        {
+          file: gwaioUnits.nukeLauncherAmmo,
+          path: "armor_damage_map.AT_Orbital",
+          op: "multiply",
+          value: 3,
         },
       ]);
     },

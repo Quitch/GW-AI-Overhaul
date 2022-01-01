@@ -6,6 +6,8 @@
 
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
+- Card buffs:
+  - Nuclear Missile Launcher Upgrade Tech
 
 ### Fixed
 
