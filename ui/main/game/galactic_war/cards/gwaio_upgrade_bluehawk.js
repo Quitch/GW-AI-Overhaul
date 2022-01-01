@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bluehawk Upgrade Tech doubles the number of tactical missiles Bluehawks fire per volley."
+      "!LOC:Bluehawk Upgrade Tech doubles the number of missiles launched and allows the missile pods to target independently of one another."
     ),
     summarize: _.constant("!LOC:Bluehawk Upgrade Tech"),
     icon: _.constant(
@@ -33,9 +33,26 @@ define([
       inventory.addMods([
         {
           file: gwaioUnits.bluehawk,
-          path: "tools.0.projectiles_per_fire",
+          path: "tools.0.muzzle_bone",
           op: "replace",
-          value: 2,
+          value: "socket_rightMuzzle",
+        },
+        {
+          file: gwaioUnits.bluehawk,
+          path: "tools.0.record_index",
+          op: "replace",
+          value: 0,
+        },
+        {
+          file: gwaioUnits.bluehawk,
+          path: "tools",
+          op: "push",
+          value: {
+            spec_id: gwaioUnits.bluehawkWeapon,
+            aim_bone: "socket_leftMuzzle",
+            muzzle_bone: "socket_leftMuzzle",
+            record_index: 1,
+          },
         },
       ]);
     },
