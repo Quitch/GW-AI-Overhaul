@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 25%."
+      "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
     ),
     summarize: _.constant("!LOC:Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -39,7 +39,7 @@ define([
           file: gwaioUnits.laserDefenseTowerWeapon,
           path: "max_range",
           op: "multiply",
-          value: 1.25,
+          value: 1.5,
         },
       ]);
     },

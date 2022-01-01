@@ -13,6 +13,7 @@
   - Drifter Upgrade Tech
   - Halley Upgrade Tech
   - Helios Upgrade Tech
+  - Laser Defense Tower Upgrade Tech
 - Changed the following cards:
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
