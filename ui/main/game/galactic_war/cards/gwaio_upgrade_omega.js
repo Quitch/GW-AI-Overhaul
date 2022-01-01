@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Omega Upgrade Tech allows all the orbital battleship's lasers to target the planet."
+      "!LOC:Omega Upgrade Tech replace's the battleship's underside laser with an SXX laser."
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
@@ -32,21 +32,11 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.omegaWeaponAO,
-          path: "target_layers",
-          op: "push",
-          value: [
-            "WL_Air",
-            "WL_LandHorizontal",
-            "WL_WaterSurface",
-            "WL_SeaFloor",
-          ],
-        },
-        {
-          file: gwaioUnits.omegaWeaponAO,
-          path: "pitch_range",
+          file: gwaioUnits.omega,
+          path: "tools.4.spec_id",
           op: "replace",
-          value: 180,
+          value:
+            "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
         },
       ]);
     },
