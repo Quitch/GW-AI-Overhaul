@@ -641,7 +641,6 @@ if (!gwaioSetupLoaded) {
                   );
                 ai.penchantName = penchantValues.penchantName;
               };
-
               var setAIPersonality = function (ai, settings) {
                 ai.personality.micro_type = settings.microTypeChosen();
                 ai.personality.go_for_the_kill = settings.goForKill();
