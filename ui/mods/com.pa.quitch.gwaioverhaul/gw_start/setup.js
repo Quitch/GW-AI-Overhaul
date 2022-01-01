@@ -720,6 +720,7 @@ if (!gwaioSetupLoaded) {
                 return false;
               };
 
+              // Setup the AI
               _.forEach(teamInfo, function (info) {
                 var econBase = model.gwaioDifficultySettings.econBase();
                 var econRatePerDist =
@@ -923,6 +924,7 @@ if (!gwaioSetupLoaded) {
                 });
               });
 
+              // Setup lore and the treasure planet
               var treasurePlanetSetup = false;
               var loreEntry = 0;
               var optionalLoreEntry = 0;
