@@ -20,6 +20,7 @@
   - Jig Upgrade Tech
   - Spark Upgrade Tech
   - Bluehawk Upgrade Tech
+  - Squall Upgrade Tech
 - Nerfed the following cards:
   - Atlas Upgrade Tech
 
