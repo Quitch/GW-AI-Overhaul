@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Catalyst Upgrade Tech increases the health of the Catalyst by 75% and halves its cost."
+      "!LOC:Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost."
     ),
     summarize: _.constant("!LOC:Catalyst Upgrade Tech"),
     icon: _.constant(
@@ -41,7 +41,7 @@ define([
           file: gwaioUnits.catalyst,
           path: "max_health",
           op: "multiply",
-          value: 1.75,
+          value: 2,
         },
         {
           file: gwaioUnits.catalyst,

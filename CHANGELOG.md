@@ -9,6 +9,7 @@
 - Buffed the following cards:
   - Nuclear Missile Launcher Upgrade Tech
   - Kraken Upgrade Tech
+  - Catalyst Upgrade Tech
 - Changed the following cards:
   - Omega Upgrade Tech
   - Narwhal Upgrade Tech
