@@ -7,6 +7,7 @@
 - Increased chance of bounty mode for Bronze difficulty and higher
 - Increased chance of land anywhere for all difficulties
 - Buffed the following cards:
+  - Barracuda Upgrade Tech
   - Nuclear Missile Launcher Upgrade Tech
   - Kraken Upgrade Tech
   - Catalyst Upgrade Tech
