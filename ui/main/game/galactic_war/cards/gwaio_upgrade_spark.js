@@ -33,6 +33,12 @@ define([
           op: "multiply",
           value: 3,
         },
+        {
+          file: gwaioUnits.sparkAmmo,
+          path: "full_damage_splash_radius",
+          op: "multiply",
+          value: 3,
+        },
       ]);
     },
     dull: function () {
