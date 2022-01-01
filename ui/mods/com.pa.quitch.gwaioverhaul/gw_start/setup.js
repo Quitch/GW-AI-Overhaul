@@ -661,6 +661,8 @@ if (!gwaioSetupLoaded) {
                   settings.maxAdvancedFabbers();
                 ai.personality.personality_tags =
                   settings.personalityTagsChosen();
+                // We treat 0 as undefined, which means the AI examines the radius
+                // of the spawn zone
                 if (settings.startingLocationEvaluationRadius() > 0) {
                   ai.personality.starting_location_evaluation_radius =
                     settings.startingLocationEvaluationRadius();
