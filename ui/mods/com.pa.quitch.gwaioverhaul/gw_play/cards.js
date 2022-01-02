@@ -419,6 +419,7 @@ if (!gwaioCardsLoaded) {
               var count = params.count;
               star = params.star;
               var galaxy = params.galaxy;
+              var dealAddSlot = params.addSlot;
 
               var result = $.Deferred();
               loaded.then(function () {
@@ -439,7 +440,9 @@ if (!gwaioCardsLoaded) {
 
                     var match =
                       inventory.hasCard(card.id) ||
-                      _.some(list, { id: card.id });
+                      _.some(list, { id: card.id }) ||
+                      (card.id === "gwc_add_card_slot" &&
+                        dealAddSlot === false);
 
                     var cardChance =
                       card.deal && card.deal(star, context, inventory);
@@ -502,9 +505,6 @@ if (!gwaioCardsLoaded) {
                         _.assign(systemCard, cardParams);
                       }
 
-                      console.log("List", list);
-                      console.log("System Card", systemCard);
-
                       list.push(systemCard);
                     }
                   }
@@ -525,6 +525,7 @@ if (!gwaioCardsLoaded) {
                     count: 1,
                     star: system.star,
                     galaxy: game.galaxy(),
+                    addSlot: false,
                   }).then(function (result) {
                     system.star.cardList(result);
                   });
