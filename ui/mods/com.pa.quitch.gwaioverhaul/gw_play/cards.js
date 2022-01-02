@@ -170,11 +170,18 @@ if (!gwaioCardsLoaded) {
               });
             };
 
-            var saveGame = function (gameState) {
+            var saveGame = function (gameState, saveStars) {
+              var deferred = $.Deferred();
+              var starsSaved = saveStars ? false : true;
+
+              model.game().saved(starsSaved);
               model.driveAccessInProgress(true);
+
               GW.manifest.saveGame(gameState).then(function () {
                 model.driveAccessInProgress(false);
+                deferred.resolve();
               });
+              return deferred;
             };
 
             var inventory = game.inventory();
@@ -532,7 +539,6 @@ if (!gwaioCardsLoaded) {
                 }
               });
             };
-            dealOneStarCard();
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -701,11 +707,52 @@ if (!gwaioCardsLoaded) {
                 if (model.currentSystemCardList()[0].isLoadout()) {
                   model.gwaioOfferRerolls(false);
                 }
-                saveGame(game);
 
                 _.delay(function () {
                   model.scanning(false);
                 }, 2000);
+              });
+            };
+
+            model.win = function (selected_card_index) {
+              model.exitGate($.Deferred());
+
+              var tech_card =
+                model.currentSystemCardList()[selected_card_index];
+              var tech_audio =
+                tech_card && tech_card.audio() ? tech_card.audio().found : null;
+              var play_tech_audio = !!tech_card;
+
+              game.winTurn(selected_card_index).then(function (didWin) {
+                if (!didWin) {
+                  console.error("Failed winning turn", game);
+                  return;
+                }
+
+                // Update the pre-dealt card at each selectable star
+                dealOneStarCard();
+
+                model.maybePlayCaptureSound();
+
+                saveGame(game, true).then(function () {
+                  if (model.gameOver()) {
+                    api.tally.incStatInt("gw_war_victory").always(function () {
+                      model.exitGate().resolve();
+                    });
+                  } else {
+                    model.exitGate().resolve();
+
+                    if (play_tech_audio) {
+                      if (!tech_audio) {
+                        api.audio.playSound(
+                          "/VO/Computer/gw/board_tech_acquired"
+                        );
+                      } else {
+                        api.audio.playSound(tech_audio);
+                      }
+                    }
+                  }
+                });
               });
             };
 
