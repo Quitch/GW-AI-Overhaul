@@ -753,19 +753,21 @@ if (!gwaioSetupLoaded) {
                 var mandatoryMinions = difficulty.mandatoryMinions();
                 var minionMod = difficulty.minionMod();
                 var minions = GWFactions[info.faction].minions;
+                var clusterType = "";
                 // Setup boss minions
                 var numMinions = countMinions(
                   mandatoryMinions,
                   minionMod,
                   maxDist
                 );
+
                 if (numMinions > 0) {
                   boss.minions = [];
 
-                  var clusterType = "";
                   if (boss.isCluster === true) {
                     clusterType = "Security";
                   }
+
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, clusterType);
                     setAIFaction(minion.faction, boss.faction);
