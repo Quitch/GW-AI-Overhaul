@@ -755,13 +755,16 @@ if (!gwaioSetupLoaded) {
                   gwaioTech.factionTechs
                 );
 
-                var numMinions = 0;
                 var mandatoryMinions =
                   model.gwaioDifficultySettings.mandatoryMinions();
                 var minionMod = model.gwaioDifficultySettings.minionMod();
                 var minions = GWFactions[info.faction].minions;
                 // Setup boss minions
-                numMinions = countMinions(mandatoryMinions, minionMod, maxDist);
+                var numMinions = countMinions(
+                  mandatoryMinions,
+                  minionMod,
+                  maxDist
+                );
                 if (numMinions > 0) {
                   info.boss.minions = [];
 
