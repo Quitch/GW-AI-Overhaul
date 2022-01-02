@@ -768,12 +768,12 @@ if (!gwaioSetupLoaded) {
                 if (numMinions > 0) {
                   info.boss.minions = [];
 
-                  var minionName;
+                  var clusterType = "";
                   if (info.boss.isCluster === true) {
-                    minionName = "Security";
+                    clusterType = "Security";
                   }
                   _.times(numMinions, function () {
-                    var minion = selectMinion(minions, minionName);
+                    var minion = selectMinion(minions, clusterType);
                     setAIFaction(minion.faction, info.boss.faction);
                     setAIPersonality(minion, model.gwaioDifficultySettings);
                     minion.econ_rate = aiEconRate(
@@ -837,7 +837,6 @@ if (!gwaioSetupLoaded) {
                   if (numMinions > 0) {
                     worker.ai.minions = [];
 
-                    var clusterType;
                     var totalMinions = numMinions;
                     if (worker.ai.isCluster === true) {
                       clusterType = "Worker";
