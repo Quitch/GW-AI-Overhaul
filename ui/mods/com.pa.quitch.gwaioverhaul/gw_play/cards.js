@@ -502,6 +502,9 @@ if (!gwaioCardsLoaded) {
                         _.assign(systemCard, cardParams);
                       }
 
+                      console.log("List", list);
+                      console.log("System Card", systemCard);
+
                       list.push(systemCard);
                     }
                   }
@@ -673,23 +676,24 @@ if (!gwaioCardsLoaded) {
               star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
                 inventory: inventory,
-                count: cardsOffered - model.gwaioRerollsUsed(),
+                count:
+                  cardsOffered -
+                  model.gwaioRerollsUsed() -
+                  star.cardList().length,
                 star: star,
                 galaxy: game.galaxy(),
               }).then(function (result) {
                 var ok = true;
 
                 _.forEach(star.cardList(), function (card) {
-                  if (
-                    !GW.bank.hasStartCard(card) &&
-                    !gwaioBank.hasStartCard(card)
-                  ) {
+                  if (card.isLoadout && card.isLoadout()) {
                     ok = false;
                   }
                 });
 
                 if (ok) {
-                  star.cardList(result);
+                  var cardList = result.concat(star.cardList());
+                  star.cardList(cardList);
                 }
               });
               $.when(dealStarCards).then(function () {
