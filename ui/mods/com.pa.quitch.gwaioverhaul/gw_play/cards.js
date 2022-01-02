@@ -512,6 +512,24 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
+            // Assign one card to each system
+            var dealOneStarCard = function () {
+              // eslint-disable-next-line lodash/prefer-filter
+              _.forEach(model.galaxy.systems(), function (system, starIndex) {
+                if (model.canSelect(starIndex) && system.star.ai()) {
+                  chooseCards({
+                    inventory: inventory,
+                    count: 1,
+                    star: system.star,
+                    galaxy: game.galaxy(),
+                  }).then(function (result) {
+                    system.star.cardList(result);
+                  });
+                }
+              });
+            };
+            dealOneStarCard();
+
             // Cheats use our deck
             var dealCard = function (params) {
               var result = $.Deferred();
