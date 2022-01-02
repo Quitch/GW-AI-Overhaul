@@ -626,13 +626,6 @@ if (!gwaioSetupLoaded) {
                 return eco;
               };
 
-              var setAIFaction = function (aiFaction, bossFaction) {
-                if (_.isUndefined(aiFaction)) {
-                  return bossFaction;
-                }
-                return aiFaction;
-              };
-
               var setupPenchantAI = function (ai) {
                 var penchantValues = gwaioAI.penchants();
                 ai.personality.personality_tags =
@@ -770,7 +763,6 @@ if (!gwaioSetupLoaded) {
 
                   _.times(numMinions, function () {
                     var minion = selectMinion(minions, clusterType);
-                    setAIFaction(minion.faction, boss.faction);
                     setAIPersonality(minion, difficulty);
                     minion.econ_rate = aiEconRate(
                       econBase,
@@ -805,7 +797,6 @@ if (!gwaioSetupLoaded) {
 
                   numMinions = countMinions(mandatoryMinions, dist, minionMod);
 
-                  setAIFaction(ai.faction, boss.faction);
                   setAIPersonality(ai, difficulty);
                   ai.econ_rate = aiEconRate(
                     econBase,
@@ -849,7 +840,6 @@ if (!gwaioSetupLoaded) {
                     } else {
                       _.times(numMinions, function () {
                         var minion = selectMinion(minions, clusterType);
-                        setAIFaction(minion.faction, boss.faction);
                         setAIPersonality(minion, difficulty);
                         minion.econ_rate = aiEconRate(
                           econBase,
@@ -878,7 +868,7 @@ if (!gwaioSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      setAIFaction(foeCommander.faction, boss.faction);
+                      foeCommander.faction = foeFaction;
                       setAIPersonality(foeCommander, difficulty);
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
@@ -906,7 +896,7 @@ if (!gwaioSetupLoaded) {
                       foeCommander.inventory = aiTech(
                         workerBuffs,
                         foeCommander.inventory,
-                        foeFaction,
+                        foeCommander.faction,
                         gwaioTech.factionTechs
                       );
 
