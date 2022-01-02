@@ -597,22 +597,6 @@ if (!gwaioSetupLoaded) {
               });
             });
 
-            var randomPercentageAdjustment = function (min, max) {
-              return Math.random() * (max - min) + min;
-            };
-            var aiEcoMinionReduction = function (eco, ecoStep, minions) {
-              return eco - minions * ecoStep;
-            };
-            var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
-              var eco =
-                (ecoBase + distance * ecoStep) *
-                randomPercentageAdjustment(0.9, 1.1);
-              if (minions) {
-                eco = aiEcoMinionReduction(eco, ecoStep, minions);
-              }
-              return eco;
-            };
-
             var finishAis = populate.then(function (teamInfo) {
               if (model.makeGameBusy() !== busyToken) {
                 return;
@@ -625,6 +609,22 @@ if (!gwaioSetupLoaded) {
                 },
                 0
               );
+
+              var randomPercentageAdjustment = function (min, max) {
+                return Math.random() * (max - min) + min;
+              };
+              var aiEcoMinionReduction = function (eco, ecoStep, minions) {
+                return eco - minions * ecoStep;
+              };
+              var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
+                var eco =
+                  (ecoBase + distance * ecoStep) *
+                  randomPercentageAdjustment(0.9, 1.1);
+                if (minions) {
+                  eco = aiEcoMinionReduction(eco, ecoStep, minions);
+                }
+                return eco;
+              };
 
               var setAIFaction = function (aiFaction, bossFaction) {
                 if (_.isUndefined(aiFaction)) {
