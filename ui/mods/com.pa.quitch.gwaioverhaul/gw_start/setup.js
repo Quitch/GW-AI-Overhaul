@@ -641,34 +641,34 @@ if (!gwaioSetupLoaded) {
                   );
                 ai.penchantName = penchantValues.penchantName;
               };
-              var setAIPersonality = function (ai, settings) {
-                ai.personality.micro_type = settings.microTypeChosen();
-                ai.personality.go_for_the_kill = settings.goForKill();
+              var setAIPersonality = function (ai, difficulty) {
+                ai.personality.micro_type = difficulty.microTypeChosen();
+                ai.personality.go_for_the_kill = difficulty.goForKill();
                 ai.personality.priority_scout_metal_spots =
-                  settings.priorityScoutMetalSpots();
+                  difficulty.priorityScoutMetalSpots();
                 ai.personality.factory_build_delay_min =
-                  settings.factoryBuildDelayMin();
+                  difficulty.factoryBuildDelayMin();
                 ai.personality.factory_build_delay_max =
-                  settings.factoryBuildDelayMax();
+                  difficulty.factoryBuildDelayMax();
                 ai.personality.unable_to_expand_delay =
-                  settings.unableToExpandDelay();
+                  difficulty.unableToExpandDelay();
                 ai.personality.enable_commander_danger_responses =
-                  settings.enableCommanderDangerResponses();
+                  difficulty.enableCommanderDangerResponses();
                 ai.personality.per_expansion_delay =
-                  settings.perExpansionDelay();
-                ai.personality.max_basic_fabbers = settings.maxBasicFabbers();
+                  difficulty.perExpansionDelay();
+                ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
                 ai.personality.max_advanced_fabbers =
-                  settings.maxAdvancedFabbers();
+                  difficulty.maxAdvancedFabbers();
                 ai.personality.personality_tags =
-                  settings.personalityTagsChosen();
+                  difficulty.personalityTagsChosen();
                 // We treat 0 as undefined, which means the AI examines the radius
                 // of the spawn zone
-                if (settings.startingLocationEvaluationRadius() > 0) {
+                if (difficulty.startingLocationEvaluationRadius() > 0) {
                   ai.personality.starting_location_evaluation_radius =
-                    settings.startingLocationEvaluationRadius();
+                    difficulty.startingLocationEvaluationRadius();
                 }
 
-                if (settings.ai() === 2) {
+                if (difficulty.ai() === 2) {
                   setupPenchantAI(ai);
                 }
               };
