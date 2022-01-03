@@ -217,7 +217,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              saveGame(game);
+              dealOneStarCard().then(saveGame(game, true));
             }
 
             /* Start of GWO implementation of GWDealer */
@@ -525,19 +525,31 @@ if (!gwaioCardsLoaded) {
 
             // Assign one card to each selectable enemy system
             var dealOneStarCard = function () {
+              var deferred = $.Deferred();
+              var deferredQueue = [];
+
               _.forEach(model.galaxy.systems(), function (system, starIndex) {
                 if (model.canSelect(starIndex) && system.star.ai()) {
-                  chooseCards({
-                    inventory: inventory,
-                    count: 1,
-                    star: system.star,
-                    galaxy: game.galaxy(),
-                    addSlot: false,
-                  }).then(function (result) {
-                    system.star.cardList(result);
-                  });
+                  deferredQueue.push(
+                    chooseCards({
+                      inventory: inventory,
+                      count: 1,
+                      star: system.star,
+                      galaxy: game.galaxy(),
+                      addSlot: false,
+                    }).then(function (result) {
+                      system.star.cardList(result);
+                      console.log(result);
+                    })
+                  );
                 }
               });
+
+              $.when(deferredQueue).then(function () {
+                deferred.resolve();
+              });
+
+              return deferred.promise();
             };
 
             // Cheats use our deck
@@ -660,6 +672,7 @@ if (!gwaioCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
+                  dealOneStarCard().then(saveGame(game, true));
                 });
               }
             };
@@ -732,29 +745,31 @@ if (!gwaioCardsLoaded) {
                 }
 
                 // Update the pre-dealt card at each selectable star
-                dealOneStarCard();
-
                 model.maybePlayCaptureSound();
 
-                saveGame(game, true).then(function () {
-                  if (model.gameOver()) {
-                    api.tally.incStatInt("gw_war_victory").always(function () {
+                dealOneStarCard().then(
+                  saveGame(game, true).then(function () {
+                    if (model.gameOver()) {
+                      api.tally
+                        .incStatInt("gw_war_victory")
+                        .always(function () {
+                          model.exitGate().resolve();
+                        });
+                    } else {
                       model.exitGate().resolve();
-                    });
-                  } else {
-                    model.exitGate().resolve();
 
-                    if (play_tech_audio) {
-                      if (!tech_audio) {
-                        api.audio.playSound(
-                          "/VO/Computer/gw/board_tech_acquired"
-                        );
-                      } else {
-                        api.audio.playSound(tech_audio);
+                      if (play_tech_audio) {
+                        if (!tech_audio) {
+                          api.audio.playSound(
+                            "/VO/Computer/gw/board_tech_acquired"
+                          );
+                        } else {
+                          api.audio.playSound(tech_audio);
+                        }
                       }
                     }
-                  }
-                });
+                  })
+                );
               });
             };
 
