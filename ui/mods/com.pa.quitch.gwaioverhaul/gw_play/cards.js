@@ -487,6 +487,17 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
+            var setCardName = function (system) {
+              var deferred = $.Deferred();
+              var card = system.star.cardList()[0];
+              requireGW(["cards/" + card.id], function (data) {
+                var cardName = loc(data.summarize());
+                system.star.ai().cardName = cardName;
+                deferred.resolve();
+              });
+              return deferred.promise();
+            };
+
             var dealCardSelectableAI = function (win, turnState) {
               var deferred = $.Deferred();
 
@@ -511,6 +522,7 @@ if (!gwaioCardsLoaded) {
                         system.star.cardList(result);
                       })
                     );
+                    deferredQueue.push(setCardName(system));
                   }
                 });
 

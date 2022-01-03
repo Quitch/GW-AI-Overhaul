@@ -174,6 +174,14 @@ if (!gwaioIntelligenceLoaded) {
 
         // Card
 
+        model.gwaioCard = ko.computed(function () {
+          var star = model.selection.system().star;
+          if (star.ai() && star.ai().cardName) {
+            return star.ai().cardName;
+          }
+          return null;
+        });
+
         model.gwaioCardAvailable = ko.computed(function () {
           var star = model.selection.system().star;
           if (
