@@ -171,17 +171,14 @@ if (!gwaioCardsLoaded) {
             };
 
             var saveGame = function (gameState, saveStars) {
-              var deferred = $.Deferred();
               var starsSaved = saveStars ? false : true;
 
               model.game().saved(starsSaved);
               model.driveAccessInProgress(true);
 
-              GW.manifest.saveGame(gameState).then(function () {
+              return GW.manifest.saveGame(gameState).then(function () {
                 model.driveAccessInProgress(false);
-                deferred.resolve();
               });
-              return deferred;
             };
 
             var inventory = game.inventory();
