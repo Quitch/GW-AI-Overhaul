@@ -535,7 +535,6 @@ if (!gwaioCardsLoaded) {
                       addSlot: false,
                     }).then(function (result) {
                       system.star.cardList(result);
-                      console.log(result);
                     })
                   );
                 }
