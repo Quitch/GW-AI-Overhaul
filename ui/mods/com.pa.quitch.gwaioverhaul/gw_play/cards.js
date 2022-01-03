@@ -495,7 +495,11 @@ if (!gwaioCardsLoaded) {
                 var deferredQueue = [];
 
                 _.forEach(model.galaxy.systems(), function (system, starIndex) {
-                  if (model.canSelect(starIndex) && system.star.ai()) {
+                  if (
+                    model.canSelect(starIndex) &&
+                    system.star.ai() &&
+                    system.star.ai().treasurePlanet !== true
+                  ) {
                     deferredQueue.push(
                       chooseCards({
                         inventory: inventory,
