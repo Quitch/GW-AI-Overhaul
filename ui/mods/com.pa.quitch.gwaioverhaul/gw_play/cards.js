@@ -560,6 +560,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
               inventory.applyCards();
+              // This will also trigger a save
               firstDealCardSelectableAI(
                 galaxy.stars()[galaxy.origin()].system().gwaio
               );
