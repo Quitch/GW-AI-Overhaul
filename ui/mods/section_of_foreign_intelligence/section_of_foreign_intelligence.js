@@ -175,12 +175,13 @@ if (!gwaioIntelligenceLoaded) {
         // Card
 
         model.gwaioCardAvailable = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().treasurePlanet !== true &&
-            model.selection.system().star.cardList() &&
+            star.ai() &&
+            star.ai().treasurePlanet !== true &&
+            star.cardList() &&
             // Don't show when finding cards through Explore
-            model.selection.system().star.cardList().length === 1
+            star.cardList().length === 1
           ) {
             return true;
           }
@@ -190,30 +191,24 @@ if (!gwaioIntelligenceLoaded) {
         // Game Options
 
         model.gwaioBountyMode = ko.computed(function () {
-          if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().bountyMode
-          ) {
+          var star = model.selection.system().star;
+          if (star.ai() && star.ai().bountyMode) {
             return true;
           }
           return false;
         });
 
         model.gwaioLandAnywhere = ko.computed(function () {
-          if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().landAnywhere
-          ) {
+          var star = model.selection.system().star;
+          if (star.ai() && star.ai().landAnywhere) {
             return true;
           }
           return false;
         });
 
         model.gwaioSuddenDeath = ko.computed(function () {
-          if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().suddenDeath
-          ) {
+          var star = model.selection.system().star;
+          if (star.ai() && star.ai().suddenDeath) {
             return true;
           }
           return false;
@@ -233,10 +228,11 @@ if (!gwaioIntelligenceLoaded) {
         // AI Buffs
 
         model.gwaioTechBuild = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 4)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 4)
           ) {
             return true;
           }
@@ -244,10 +240,11 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechCost = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 0)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 0)
           ) {
             return true;
           }
@@ -255,10 +252,11 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechDamage = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 1)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 1)
           ) {
             return true;
           }
@@ -266,10 +264,11 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechHealth = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 2)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 2)
           ) {
             return true;
           }
@@ -277,10 +276,11 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechSpeed = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 3)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 3)
           ) {
             return true;
           }
@@ -289,10 +289,11 @@ if (!gwaioIntelligenceLoaded) {
 
         // v5.11.0 and earlier only
         model.gwaioEnhancedCommanders = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 5)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 5)
           ) {
             return true;
           }
@@ -300,10 +301,11 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechCombat = ko.computed(function () {
+          var star = model.selection.system().star;
           if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().typeOfBuffs &&
-            _.includes(model.selection.system().star.ai().typeOfBuffs, 6)
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 6)
           ) {
             return true;
           }
@@ -311,10 +313,8 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         model.gwaioTechMirror = ko.computed(function () {
-          if (
-            model.selection.system().star.ai() &&
-            model.selection.system().star.ai().mirrorMode === true
-          ) {
+          var star = model.selection.system().star;
+          if (star.ai() && star.ai().mirrorMode === true) {
             return true;
           }
           return false;
