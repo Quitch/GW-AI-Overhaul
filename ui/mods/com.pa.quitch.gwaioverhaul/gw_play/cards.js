@@ -521,7 +521,7 @@ if (!gwaioCardsLoaded) {
             };
 
             // Deal some cards when the war starts
-            var firstDealCardSelectableAI = function (settings) {
+            var dealFirstCardSelectableAI = function (settings) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
                 dealCardSelectableAI(false).then(saveGame(game, true));
@@ -561,12 +561,12 @@ if (!gwaioCardsLoaded) {
               });
               inventory.applyCards();
               // This will also trigger a save
-              firstDealCardSelectableAI(
+              dealFirstCardSelectableAI(
                 galaxy.stars()[galaxy.origin()].system().gwaio
               );
             }
 
-            firstDealCardSelectableAI(
+            dealFirstCardSelectableAI(
               galaxy.stars()[galaxy.origin()].system().gwaio
             );
 
