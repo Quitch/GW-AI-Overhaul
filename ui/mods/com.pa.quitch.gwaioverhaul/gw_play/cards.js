@@ -214,7 +214,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              dealOneStarCard().then(saveGame(game, true));
+              dealCardSelectableAI().then(saveGame(game, true));
             }
 
             /* Start of GWO implementation of GWDealer */
@@ -520,8 +520,7 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            // Assign one card to each selectable enemy system
-            var dealOneStarCard = function () {
+            var dealCardSelectableAI = function () {
               var deferred = $.Deferred();
               var deferredQueue = [];
 
@@ -669,7 +668,7 @@ if (!gwaioCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
-                  dealOneStarCard().then(saveGame(game, true));
+                  dealCardSelectableAI().then(saveGame(game, true));
                 });
               }
             };
@@ -744,7 +743,7 @@ if (!gwaioCardsLoaded) {
                 // Update the pre-dealt card at each selectable star
                 model.maybePlayCaptureSound();
 
-                dealOneStarCard().then(
+                dealCardSelectableAI().then(
                   saveGame(game, true).then(function () {
                     if (model.gameOver()) {
                       api.tally
