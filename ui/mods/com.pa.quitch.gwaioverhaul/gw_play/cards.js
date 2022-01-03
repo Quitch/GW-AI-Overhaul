@@ -522,8 +522,8 @@ if (!gwaioCardsLoaded) {
 
             // Deal some cards when the war starts
             var firstDealCardSelectableAI = function (settings) {
-              if (settings && !settings.dealt) {
-                settings.dealt = true;
+              if (settings && !settings.firstDealComplete) {
+                settings.firstDealComplete = true;
                 dealCardSelectableAI(false).then(saveGame(game, true));
               }
             };
