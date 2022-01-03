@@ -659,6 +659,7 @@ if (!gwaioCardsLoaded) {
                     product.unique = Math.random();
                   }
                   game.inventory().cards.push(product);
+                  inventory.applyCards();
                 });
               }
             };
