@@ -528,7 +528,9 @@ if (!gwaioCardsLoaded) {
             var dealFirstCardSelectableAI = function (settings) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
-                dealCardSelectableAI(false).then(saveGame(game, true));
+                dealCardSelectableAI(false).then(function () {
+                  saveGame(game, true);
+                });
               }
             };
 
@@ -694,7 +696,9 @@ if (!gwaioCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
-                  dealCardSelectableAI(false).then(saveGame(game, true));
+                  dealCardSelectableAI(false).then(function () {
+                    saveGame(game, true);
+                  });
                 });
               }
             };
@@ -769,7 +773,7 @@ if (!gwaioCardsLoaded) {
                 // Update the pre-dealt card at each selectable star
                 model.maybePlayCaptureSound();
 
-                dealCardSelectableAI(true, game.turnState()).then(
+                dealCardSelectableAI(true, game.turnState()).then(function () {
                   saveGame(game, true).then(function () {
                     if (model.gameOver()) {
                       api.tally
@@ -790,8 +794,8 @@ if (!gwaioCardsLoaded) {
                         }
                       }
                     }
-                  })
-                );
+                  });
+                });
               });
             };
 
