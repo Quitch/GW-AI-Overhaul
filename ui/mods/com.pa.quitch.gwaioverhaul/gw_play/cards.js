@@ -448,6 +448,7 @@ if (!gwaioCardsLoaded) {
                     var match =
                       inventory.hasCard(card.id) ||
                       _.some(list, { id: card.id }) ||
+                      // Never deal Additional Data Bank as a system's pre-dealt card
                       (card.id === "gwc_add_card_slot" &&
                         dealAddSlot === false);
 
@@ -522,9 +523,8 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            // Assign one card to each system
+            // Assign one card to each selectable enemy system
             var dealOneStarCard = function () {
-              // eslint-disable-next-line lodash/prefer-filter
               _.forEach(model.galaxy.systems(), function (system, starIndex) {
                 if (model.canSelect(starIndex) && system.star.ai()) {
                   chooseCards({
