@@ -618,6 +618,7 @@ if (!gwaioCardsLoaded) {
                 });
               });
             };
+
             model.cheats.giveCard = function () {
               var id = model.cheats.giveCardId();
               var cardId = _.find(model.gwaioDeck, function (card) {
