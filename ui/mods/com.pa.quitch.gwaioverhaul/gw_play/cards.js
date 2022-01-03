@@ -383,6 +383,8 @@ if (!gwaioCardsLoaded) {
               });
             });
 
+            var galaxy = model.game().galaxy();
+
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
               inventory = params.inventory;
@@ -545,8 +547,6 @@ if (!gwaioCardsLoaded) {
                 });
               }
             };
-
-            var galaxy = model.game().galaxy();
 
             // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
             if (
