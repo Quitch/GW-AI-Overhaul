@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- The system intelligence panel displays a card you are guaranteed to get offered if you conquer the system
+
 ### Changed
 
 - Increased chance of bounty mode for Bronze difficulty and higher
