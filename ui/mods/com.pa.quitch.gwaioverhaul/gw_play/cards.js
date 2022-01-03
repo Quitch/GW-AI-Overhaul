@@ -184,39 +184,6 @@ if (!gwaioCardsLoaded) {
             var inventory = game.inventory();
             var playerFaction = 0;
 
-            // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
-            if (
-              inventory.cards().length === 1 &&
-              inventory.cards()[0].id === "gwc_start_subcdr" &&
-              !inventory.cards()[0].minions
-            ) {
-              _.times(2, function () {
-                playerFaction = inventory.getTag("global", "playerFaction");
-                var subcommander = _.cloneDeep(
-                  _.sample(GWFactions[playerFaction].minions)
-                );
-                var galaxy = game.galaxy();
-                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
-                if (ai === "Penchant") {
-                  var penchantValues = gwaioAI.penchants();
-                  subcommander.character =
-                    subcommander.character +
-                    (" " + loc(penchantValues.penchantName));
-                  subcommander.personality.personality_tags =
-                    subcommander.personality.personality_tags.concat(
-                      penchantValues.penchants
-                    );
-                }
-                inventory.cards().push({
-                  id: "gwc_minion",
-                  minion: subcommander,
-                  unique: Math.random(),
-                });
-              });
-              inventory.applyCards();
-              dealCardSelectableAI().then(saveGame(game, true));
-            }
-
             /* Start of GWO implementation of GWDealer */
             if (!model.gwaioDeck) {
               model.gwaioDeck = [];
@@ -422,7 +389,7 @@ if (!gwaioCardsLoaded) {
               var rng = params.rng || new Math.seedrandom();
               var count = params.count;
               star = params.star;
-              var galaxy = params.galaxy;
+              galaxy = params.galaxy;
               var dealAddSlot = params.addSlot;
 
               var result = $.Deferred();
@@ -520,32 +487,87 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            var dealCardSelectableAI = function () {
+            var dealCardSelectableAI = function (win, turnState) {
               var deferred = $.Deferred();
-              var deferredQueue = [];
 
-              _.forEach(model.galaxy.systems(), function (system, starIndex) {
-                if (model.canSelect(starIndex) && system.star.ai()) {
-                  deferredQueue.push(
-                    chooseCards({
-                      inventory: inventory,
-                      count: 1,
-                      star: system.star,
-                      galaxy: game.galaxy(),
-                      addSlot: false,
-                    }).then(function (result) {
-                      system.star.cardList(result);
-                    })
-                  );
-                }
-              });
+              // Avoid running twice after winning a fight
+              if (!win || turnState === "end") {
+                var deferredQueue = [];
 
-              $.when(deferredQueue).then(function () {
+                _.forEach(model.galaxy.systems(), function (system, starIndex) {
+                  if (model.canSelect(starIndex) && system.star.ai()) {
+                    deferredQueue.push(
+                      chooseCards({
+                        inventory: inventory,
+                        count: 1,
+                        star: system.star,
+                        galaxy: game.galaxy(),
+                        addSlot: false,
+                      }).then(function (result) {
+                        system.star.cardList(result);
+                      })
+                    );
+                  }
+                });
+
+                $.when(deferredQueue).then(function () {
+                  deferred.resolve();
+                });
+              } else {
                 deferred.resolve();
-              });
+              }
 
               return deferred.promise();
             };
+
+            // Deal some cards when the war starts
+            var firstDealCardSelectableAI = function (settings) {
+              if (settings && !settings.dealt) {
+                settings.dealt = true;
+                dealCardSelectableAI(false).then(saveGame(game, true));
+              }
+            };
+
+            var galaxy = model.game().galaxy();
+
+            // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
+            if (
+              inventory.cards().length === 1 &&
+              inventory.cards()[0].id === "gwc_start_subcdr" &&
+              !inventory.cards()[0].minions
+            ) {
+              _.times(2, function () {
+                playerFaction = inventory.getTag("global", "playerFaction");
+                var subcommander = _.cloneDeep(
+                  _.sample(GWFactions[playerFaction].minions)
+                );
+                galaxy = game.galaxy();
+                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                if (ai === "Penchant") {
+                  var penchantValues = gwaioAI.penchants();
+                  subcommander.character =
+                    subcommander.character +
+                    (" " + loc(penchantValues.penchantName));
+                  subcommander.personality.personality_tags =
+                    subcommander.personality.personality_tags.concat(
+                      penchantValues.penchants
+                    );
+                }
+                inventory.cards().push({
+                  id: "gwc_minion",
+                  minion: subcommander,
+                  unique: Math.random(),
+                });
+              });
+              inventory.applyCards();
+              firstDealCardSelectableAI(
+                galaxy.stars()[galaxy.origin()].system().gwaio
+              );
+            }
+
+            firstDealCardSelectableAI(
+              galaxy.stars()[galaxy.origin()].system().gwaio
+            );
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -631,7 +653,7 @@ if (!gwaioCardsLoaded) {
               var cardId = _.find(model.gwaioDeck, function (card) {
                 return card === id;
               });
-              var galaxy = game.galaxy();
+              galaxy = game.galaxy();
 
               if (_.isUndefined(cardId)) {
                 console.error(
@@ -667,7 +689,7 @@ if (!gwaioCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
-                  dealCardSelectableAI().then(saveGame(game, true));
+                  dealCardSelectableAI(false).then(saveGame(game, true));
                 });
               }
             };
@@ -742,7 +764,7 @@ if (!gwaioCardsLoaded) {
                 // Update the pre-dealt card at each selectable star
                 model.maybePlayCaptureSound();
 
-                dealCardSelectableAI().then(
+                dealCardSelectableAI(true, game.turnState()).then(
                   saveGame(game, true).then(function () {
                     if (model.gameOver()) {
                       api.tally
