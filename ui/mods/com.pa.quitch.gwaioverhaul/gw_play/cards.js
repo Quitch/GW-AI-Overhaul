@@ -767,16 +767,15 @@ if (!gwaioCardsLoaded) {
               });
             };
 
-            model.win = function (selected_card_index) {
+            model.win = function (selectedCardIndex) {
               model.exitGate($.Deferred());
 
-              var tech_card =
-                model.currentSystemCardList()[selected_card_index];
-              var tech_audio =
-                tech_card && tech_card.audio() ? tech_card.audio().found : null;
-              var play_tech_audio = !!tech_card;
+              var techCard = model.currentSystemCardList()[selectedCardIndex];
+              var techAudio =
+                techCard && techCard.audio() ? techCard.audio().found : null;
+              var playTechAudio = !!techCard;
 
-              game.winTurn(selected_card_index).then(function (didWin) {
+              game.winTurn(selectedCardIndex).then(function (didWin) {
                 if (!didWin) {
                   console.error("Failed winning turn", game);
                   return;
@@ -796,13 +795,13 @@ if (!gwaioCardsLoaded) {
                     } else {
                       model.exitGate().resolve();
 
-                      if (play_tech_audio) {
-                        if (!tech_audio) {
+                      if (playTechAudio) {
+                        if (!techAudio) {
                           api.audio.playSound(
                             "/VO/Computer/gw/board_tech_acquired"
                           );
                         } else {
-                          api.audio.playSound(tech_audio);
+                          api.audio.playSound(techAudio);
                         }
                       }
                     }
