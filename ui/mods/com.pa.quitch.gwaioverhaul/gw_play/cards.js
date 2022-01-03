@@ -520,11 +520,11 @@ if (!gwaioCardsLoaded) {
                         star: system.star,
                         galaxy: game.galaxy(),
                         addSlot: false,
-                      }).then(function (result) {
-                        system.star.cardList(result);
+                      }).then(function (card) {
+                        system.star.cardList(card);
+                        setCardName(system);
                       })
                     );
-                    deferredQueue.push(setCardName(system));
                   }
                 });
 
