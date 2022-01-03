@@ -489,10 +489,9 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            var setCardName = function (system) {
+            var setCardName = function (system, card) {
               var deferred = $.Deferred();
-              var card = system.star.cardList()[0];
-              requireGW(["cards/" + card.id], function (data) {
+              requireGW(["cards/" + card[0].id], function (data) {
                 var cardName = loc(data.summarize());
                 system.star.ai().cardName = cardName;
                 deferred.resolve();
@@ -522,7 +521,7 @@ if (!gwaioCardsLoaded) {
                         addSlot: false,
                       }).then(function (card) {
                         system.star.cardList(card);
-                        setCardName(system);
+                        return setCardName(system, card);
                       })
                     );
                   }
@@ -784,8 +783,11 @@ if (!gwaioCardsLoaded) {
                 // Update the pre-dealt card at each selectable star
                 model.maybePlayCaptureSound();
 
-                dealCardSelectableAI(true, game.turnState()).then(function () {
-                  saveGame(game, true).then(function () {
+                dealCardSelectableAI(true, game.turnState())
+                  .then(function () {
+                    return saveGame(game, true);
+                  })
+                  .then(function () {
                     if (model.gameOver()) {
                       api.tally
                         .incStatInt("gw_war_victory")
@@ -806,7 +808,6 @@ if (!gwaioCardsLoaded) {
                       }
                     }
                   });
-                });
               });
             };
 
