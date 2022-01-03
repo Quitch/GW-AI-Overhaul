@@ -172,6 +172,21 @@ if (!gwaioIntelligenceLoaded) {
           return loc(totalThreat(totalEco));
         });
 
+        // Card
+
+        model.gwaioCardAvailable = ko.computed(function () {
+          if (
+            model.selection.system().star.ai() &&
+            model.selection.system().star.ai().treasurePlanet !== true &&
+            model.selection.system().star.cardList() &&
+            // Don't show when finding cards through Explore
+            model.selection.system().star.cardList().length === 1
+          ) {
+            return true;
+          }
+          return false;
+        });
+
         // Game Options
 
         model.gwaioBountyMode = ko.computed(function () {
