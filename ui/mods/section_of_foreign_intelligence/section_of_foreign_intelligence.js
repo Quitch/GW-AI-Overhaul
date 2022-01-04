@@ -63,6 +63,8 @@ if (!gwaioIntelligenceLoaded) {
         };
 
         var intelligence = function (commander) {
+          var name = commander.name;
+          var eco = commander.econ_rate;
           var factionNames = [
             "Legonis Machina",
             "Foundation",
@@ -70,8 +72,6 @@ if (!gwaioIntelligenceLoaded) {
             "Revenants",
             "Cluster",
           ];
-          var name = commander.name;
-          var eco = commander.econ_rate;
           var faction = factionNames[commander.faction];
           var numCommanders = 0;
           if (commander.bossCommanders > 1) {
