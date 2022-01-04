@@ -29,7 +29,7 @@
   - Squall Upgrade Tech
 - Nerfed the following cards:
   - Atlas Upgrade Tech
-- You can choose to take a tech from The Guardians instead of a loadout if you wish
+- You can choose to take a tech from The Guardians instead of a loadout
 
 ### Fixed
 
