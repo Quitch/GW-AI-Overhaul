@@ -225,7 +225,6 @@ if (!gwaioSetupLoaded) {
 
       requireGW(
         [
-          "require",
           "shared/gw_common",
           "shared/gw_factions",
           "pages/gw_start/gw_breeder",
@@ -239,7 +238,6 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         ],
         function (
-          require,
           GW,
           GWFactions,
           GWBreeder,
@@ -395,7 +393,7 @@ if (!gwaioSetupLoaded) {
           var loadCount = allCards.length;
           var loaded = $.Deferred();
           _.forEach(allCards, function (card) {
-            require(["cards/" + card.id], function (cardFile) {
+            requireGW(["cards/" + card.id], function (cardFile) {
               cardFile.id = card.id;
               processedStartCards[card.id] = cardFile;
               --loadCount;
