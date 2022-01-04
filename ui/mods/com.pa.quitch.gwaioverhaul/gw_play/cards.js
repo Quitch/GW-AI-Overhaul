@@ -527,7 +527,8 @@ if (!gwaioCardsLoaded) {
                   }
                 });
 
-                $.when(deferredQueue).then(function () {
+                // $.when() doesn't wait for setCardName() to return
+                Promise.all(deferredQueue).then(function () {
                   deferred.resolve();
                 });
               } else {
