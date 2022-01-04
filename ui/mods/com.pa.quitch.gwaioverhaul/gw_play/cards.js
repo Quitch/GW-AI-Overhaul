@@ -768,7 +768,6 @@ if (!gwaioCardsLoaded) {
                   return;
                 }
 
-                // Update the pre-dealt card at each selectable star
                 model.maybePlayCaptureSound();
 
                 dealCardSelectableAI(true, game.turnState())
