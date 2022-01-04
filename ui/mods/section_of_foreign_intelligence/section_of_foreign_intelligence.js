@@ -57,9 +57,11 @@ if (!gwaioIntelligenceLoaded) {
             return "!LOC:Titan";
           }
         };
+
         var rgb = function (color) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
+
         var factionNames = [
           "Legonis Machina",
           "Foundation",
@@ -67,6 +69,7 @@ if (!gwaioIntelligenceLoaded) {
           "Revenants",
           "Cluster",
         ];
+
         var intelligence = function (commander) {
           var name = commander.name;
           var eco = commander.econ_rate;
@@ -110,6 +113,7 @@ if (!gwaioIntelligenceLoaded) {
             return Math.floor(number);
           }
         };
+
         model.gwaioSystemSurfaceArea = ko.computed(function () {
           var area = 0;
           model.selection
@@ -153,6 +157,7 @@ if (!gwaioIntelligenceLoaded) {
             return "!LOC:Skynet";
           }
         };
+
         model.gwaioSystemThreat = ko.computed(function () {
           var primary = model.selection.system().star.ai();
           var commanders = [];
