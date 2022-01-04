@@ -611,9 +611,11 @@ if (!gwaioSetupLoaded) {
               var randomPercentageAdjustment = function (min, max) {
                 return Math.random() * (max - min) + min;
               };
+
               var aiEcoMinionReduction = function (eco, ecoStep, minions) {
                 return eco - minions * ecoStep;
               };
+
               var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
                 var eco =
                   (ecoBase + distance * ecoStep) *
@@ -632,6 +634,7 @@ if (!gwaioSetupLoaded) {
                   );
                 ai.penchantName = penchantValues.penchantName;
               };
+
               var setAIPersonality = function (ai, difficulty) {
                 ai.personality.micro_type = difficulty.microTypeChosen();
                 ai.personality.go_for_the_kill = difficulty.goForKill();
@@ -668,6 +671,7 @@ if (!gwaioSetupLoaded) {
                 var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
                 return _.sample(buffType, numberBuffs);
               };
+
               var setupAIBuffs = function (distance, buffDistanceDelay) {
                 var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
                 return selectAIBuffs(numberBuffs);
