@@ -45,6 +45,7 @@ if (!gwaioSystemChangesLoaded) {
             if (params.noCache) {
               throw new Error("noCache incompatible with color");
             }
+
             var updateFilters = function () {
               var color = result.color();
               result.filters = [];
@@ -60,6 +61,7 @@ if (!gwaioSystemChangesLoaded) {
               }
             };
             updateFilters();
+
             result.color.subscribe(function () {
               updateFilters();
               result.updateCache();
@@ -103,7 +105,6 @@ if (!gwaioSystemChangesLoaded) {
 
         function SelectionViewModel(config) {
           var self = this;
-
           var galaxyView = config.galaxy;
           var hover = !!config.hover;
           var iconUrl = config.iconUrl;
@@ -149,7 +150,6 @@ if (!gwaioSystemChangesLoaded) {
           self.name = extractor("name");
           self.html = extractor("html");
           self.description = extractor("description");
-
           self.scale = new createjs.Container();
           self.scale.scaleY = 0.5;
           self.scale.z = -1;
@@ -269,22 +269,17 @@ if (!gwaioSystemChangesLoaded) {
           if (model.player.moving()) {
             return false;
           }
-
           var from = game.currentStar();
           var to = model.selection.star();
-
           if (to < 0 || to > galaxy.stars().length) {
             return false;
           }
-
           if (!model.canSelectOrMovePrefix()) {
             return false;
           }
-
           if (from === to) {
             return false;
           }
-
           return galaxy.pathBetween(from, to, model.cheats.noFog());
         });
 
