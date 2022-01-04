@@ -56,8 +56,8 @@ define([
 
         checked[node] = true;
 
-        for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
-          var other = nodeNeighbors[neighbor];
+        for (var neighbor of nodeNeighbors) {
+          var other = neighbor;
 
           if (checked[other]) {
             continue;
