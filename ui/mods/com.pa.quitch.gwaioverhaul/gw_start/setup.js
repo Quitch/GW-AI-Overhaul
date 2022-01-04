@@ -153,26 +153,22 @@ if (!gwaioSetupLoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tooltip.html"
         )
       );
-
       $("#game-size").before(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/size_tooltip.html"
         )
       );
-
       var gameDifficultyLabelId = "#game-difficulty-label";
       $(gameDifficultyLabelId).before(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
         )
       );
-
       $(gameDifficultyLabelId).append(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
         )
       );
-
       var gameDifficultyId = "#game-difficulty";
       $(gameDifficultyId).replaceWith(
         loadHtml(
@@ -180,7 +176,6 @@ if (!gwaioSetupLoaded) {
         )
       );
       locTree($(gameDifficultyId));
-
       $(gameDifficultyId).after(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
@@ -257,7 +252,6 @@ if (!gwaioSetupLoaded) {
             selectedDifficulty = model.newGameDifficultyIndex();
             var difficultySettings = model.gwaioDifficultySettings;
             var difficulties = gwaioDifficulty.difficulties;
-
             if (difficulties[selectedDifficulty].customDifficulty) {
               difficultySettings.customDifficulty(true);
             } else {
@@ -418,14 +412,12 @@ if (!gwaioSetupLoaded) {
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
-
             game.name(model.newGameName());
             game.mode(model.mode());
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
             selectedDifficulty = model.newGameDifficultyIndex();
-
             var useEasySystems =
               gwaioDifficulty.difficulties[selectedDifficulty]
                 .useEasierSystemTemplate;
@@ -434,7 +426,6 @@ if (!gwaioSetupLoaded) {
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
             var size = sizes[model.newGameSizeIndex()] || 40;
-
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
             if (model.gwaioDifficultySettings.factionScaling()) {
@@ -489,6 +480,7 @@ if (!gwaioSetupLoaded) {
                 });
                 return result;
               };
+
               return gwaioDealStartCard({
                 id: model.activeStartCard().id(),
                 inventory: game.inventory(),
@@ -509,12 +501,11 @@ if (!gwaioSetupLoaded) {
               }
               var galaxy = game.galaxy();
               game.move(galaxy.origin());
-
               var star = galaxy.stars()[game.currentStar()];
               star.explored(true);
-
               game.gameState(GW.Game.gameStates.active);
             });
+
             var populate = moveIn.then(function () {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
@@ -523,7 +514,6 @@ if (!gwaioSetupLoaded) {
               // Scatter some AIs
               aiFactions = _.shuffle(aiFactions);
               var teams = _.map(aiFactions, GWTeams.getTeam);
-
               var teamInfo = _.map(teams, function (team, teamIndex) {
                 return {
                   team: team,
@@ -548,7 +538,6 @@ if (!gwaioSetupLoaded) {
                 canSpread: _.constant(true),
                 spread: function (star, ai) {
                   var team = teams[ai.team];
-
                   // GWTeams.makeWorker() replaced because Penchant needs
                   // _.cloneDeep() to preserve personality_tags
                   var makeWorker = function () {
@@ -565,12 +554,10 @@ if (!gwaioSetupLoaded) {
                     }
                     return $.when(ai);
                   };
-
                   return makeWorker().then(function () {
                     if (team.workers) {
                       _.remove(team.workers, { name: ai.name });
                     }
-
                     ai.faction = teamInfo[ai.team].faction;
                     teamInfo[ai.team].workers.push({
                       ai: ai,
