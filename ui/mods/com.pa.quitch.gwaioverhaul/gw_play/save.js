@@ -1,6 +1,5 @@
 define(["shared/gw_common"], function (GW) {
   return function (gameState, saveStars) {
-    console.log("SAVING");
     var starsSaved = saveStars ? false : true;
 
     model.game().saved(starsSaved);
