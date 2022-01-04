@@ -62,15 +62,14 @@ if (!gwaioIntelligenceLoaded) {
           return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
         };
 
-        var factionNames = [
-          "Legonis Machina",
-          "Foundation",
-          "Synchronous",
-          "Revenants",
-          "Cluster",
-        ];
-
         var intelligence = function (commander) {
+          var factionNames = [
+            "Legonis Machina",
+            "Foundation",
+            "Synchronous",
+            "Revenants",
+            "Cluster",
+          ];
           var name = commander.name;
           var eco = commander.econ_rate;
           var faction = factionNames[commander.faction];
