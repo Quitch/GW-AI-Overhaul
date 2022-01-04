@@ -301,8 +301,11 @@ if (!gwaioSystemChangesLoaded) {
         });
 
         requireGW(
-          ["shared/gw_common", "shared/gw_factions"],
-          function (GW, GWFactions) {
+          [
+            "shared/gw_factions",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+          ],
+          function (GWFactions, gwaioSave) {
             _.forEach(model.galaxy.systems(), function (system) {
               ko.computed(function () {
                 var ai = system.star.ai();
@@ -334,11 +337,7 @@ if (!gwaioSystemChangesLoaded) {
                 }
               }
               gwaioSettings.treasurePlanetFixed = true;
-              game.saved(false);
-              model.driveAccessInProgress(true);
-              GW.manifest.saveGame(game).then(function () {
-                model.driveAccessInProgress(false);
-              });
+              gwaioSave(game, true);
             }
           }
         );

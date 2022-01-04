@@ -79,20 +79,20 @@ if (!gwaioCardsLoaded) {
 
         requireGW(
           [
-            "shared/gw_common",
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
           ],
           function (
-            GW,
             GWFactions,
             gwaioBank,
             gwaioCardsToUnits,
             gwaioUnitsToNames,
-            gwaioAI
+            gwaioAI,
+            gwaioSave
           ) {
             globals.CardViewModel = function (params) {
               var self = this;
@@ -167,17 +167,6 @@ if (!gwaioCardsLoaded) {
                 } else {
                   loadCard({}, data);
                 }
-              });
-            };
-
-            var saveGame = function (gameState, saveStars) {
-              var starsSaved = saveStars ? false : true;
-
-              model.game().saved(starsSaved);
-              model.driveAccessInProgress(true);
-
-              return GW.manifest.saveGame(gameState).then(function () {
-                model.driveAccessInProgress(false);
               });
             };
 
@@ -543,7 +532,7 @@ if (!gwaioCardsLoaded) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
                 dealCardSelectableAI(false).then(function () {
-                  saveGame(game, true);
+                  gwaioSave(game, true);
                 });
               }
             };
@@ -709,7 +698,7 @@ if (!gwaioCardsLoaded) {
                   game.inventory().cards.push(product);
                   inventory.applyCards();
                   dealCardSelectableAI(false).then(function () {
-                    saveGame(game, true);
+                    gwaioSave(game, true);
                   });
                 });
               }
@@ -786,7 +775,7 @@ if (!gwaioCardsLoaded) {
 
                 dealCardSelectableAI(true, game.turnState())
                   .then(function () {
-                    return saveGame(game, true);
+                    return gwaioSave(game, true);
                   })
                   .then(function () {
                     if (model.gameOver()) {
