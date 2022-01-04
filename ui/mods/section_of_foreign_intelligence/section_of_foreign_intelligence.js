@@ -172,7 +172,7 @@ if (!gwaioIntelligenceLoaded) {
           return loc(totalThreat(totalEco));
         });
 
-        // Card
+        // Available Technology
 
         model.gwaioCardName = ko.computed(function () {
           var star = model.selection.system().star;
