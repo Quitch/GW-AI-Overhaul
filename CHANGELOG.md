@@ -13,7 +13,6 @@
 - Buffed the following cards:
   - Barracuda Upgrade Tech
   - Catalyst Upgrade Tech
-  - Drifter Upgrade Tech
   - Halley Upgrade Tech
   - Helios Upgrade Tech
   - Kraken Upgrade Tech
