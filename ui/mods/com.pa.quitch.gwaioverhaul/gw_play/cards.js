@@ -747,7 +747,7 @@ if (!gwaioCardsLoaded) {
                 if (model.currentSystemCardList()[0].isLoadout()) {
                   model.gwaioOfferRerolls(false);
                 }
-
+                gwaioSave(game, false);
                 _.delay(function () {
                   model.scanning(false);
                 }, 2000);
