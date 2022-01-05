@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bluehawk Upgrade Tech doubles the number of missiles launched and allows the missile pods to target independently of one another."
+      "!LOC:Bluehawk Upgrade Tech doubles the number of tactical missiles Bluehawks fire per volley."
     ),
     summarize: _.constant("!LOC:Bluehawk Upgrade Tech"),
     icon: _.constant(
