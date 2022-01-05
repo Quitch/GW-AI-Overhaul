@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spark Upgrade Tech triples the tesla bot's splash damage radius."
+      "!LOC:Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%."
     ),
     summarize: _.constant("!LOC:Spark Upgrade Tech"),
     icon: _.constant(
