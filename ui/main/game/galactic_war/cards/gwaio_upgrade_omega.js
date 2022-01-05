@@ -38,6 +38,12 @@ define([
           value:
             "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
         },
+        {
+          file: gwaioUnits.omega,
+          path: "attack_range_frac",
+          op: "replace",
+          value: 0.3,
+        },
       ]);
     },
     dull: function () {
