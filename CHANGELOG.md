@@ -19,13 +19,13 @@
   - Kraken Upgrade Tech
   - Laser Defense Tower Upgrade Tech
   - Nuclear Missile Launcher Upgrade Tech
+  - Spark Upgrade Tech
   - Unit Cannon Upgrade Tech
 - Changed the following cards:
   - Bluehawk Upgrade Tech
   - Jig Upgrade Tech
   - Narwhal Upgrade Tech
   - Omega Upgrade Tech
-  - Spark Upgrade Tech
   - Squall Upgrade Tech
 - Nerfed the following cards:
   - Atlas Upgrade Tech
