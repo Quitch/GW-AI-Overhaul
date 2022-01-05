@@ -33,19 +33,19 @@ define([
         {
           file: gwaioUnits.narwhalWeapon,
           path: "rate_of_fire",
-          op: "multiple",
+          op: "multiply",
           value: 2,
         },
         {
           file: gwaioUnits.narwhalAA,
           path: "rate_of_fire",
-          op: "multiple",
+          op: "multiply",
           value: 2,
         },
         {
           file: gwaioUnits.narwhalTorpedo,
           path: "rate_of_fire",
-          op: "multiple",
+          op: "multiply",
           value: 2,
         },
       ]);
