@@ -37,7 +37,7 @@ define([
           value: 2,
         },
         {
-          file: gwaioUnits.narwhalWeaponAA,
+          file: gwaioUnits.narwhalAA,
           path: "rate_of_fire",
           op: "multiple",
           value: 2,
