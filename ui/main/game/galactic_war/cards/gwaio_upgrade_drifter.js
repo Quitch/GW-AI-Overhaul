@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 50%."
+      "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 25%."
     ),
     summarize: _.constant("!LOC:Drifter Upgrade Tech"),
     icon: _.constant(
@@ -31,7 +31,7 @@ define([
           file: gwaioUnits.drifterWeapon,
           path: "max_range",
           op: "multiply",
-          value: 1.5,
+          value: 1.25,
         },
       ]);
     },
