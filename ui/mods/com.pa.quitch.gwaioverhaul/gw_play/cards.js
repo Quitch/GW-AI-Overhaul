@@ -79,18 +79,22 @@ if (!gwaioCardsLoaded) {
 
         requireGW(
           [
+            "shared/gw_common",
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           ],
           function (
+            GW,
             GWFactions,
             gwaioCardsToUnits,
             gwaioUnitsToNames,
             gwaioAI,
-            gwaioSave
+            gwaioSave,
+            gwaioBank
           ) {
             globals.CardViewModel = function (params) {
               var self = this;
@@ -733,7 +737,11 @@ if (!gwaioCardsLoaded) {
                 var ok = true;
 
                 _.forEach(star.cardList(), function (card) {
-                  if (card.isLoadout && card.isLoadout()) {
+                  if (
+                    _.includes(card.id, "_start_") &&
+                    !GW.bank.hasStartCard(card) &&
+                    !gwaioBank.hasStartCard(card)
+                  ) {
                     ok = false;
                   }
                 });
