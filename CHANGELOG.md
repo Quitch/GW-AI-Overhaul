@@ -12,20 +12,20 @@
 - Increased chance of land anywhere for all difficulties
 - Buffed the following cards:
   - Barracuda Upgrade Tech
-  - Nuclear Missile Launcher Upgrade Tech
-  - Kraken Upgrade Tech
   - Catalyst Upgrade Tech
   - Drifter Upgrade Tech
   - Halley Upgrade Tech
   - Helios Upgrade Tech
+  - Kraken Upgrade Tech
   - Laser Defense Tower Upgrade Tech
+  - Nuclear Missile Launcher Upgrade Tech
   - Unit Cannon Upgrade Tech
 - Changed the following cards:
-  - Omega Upgrade Tech
-  - Narwhal Upgrade Tech
-  - Jig Upgrade Tech
-  - Spark Upgrade Tech
   - Bluehawk Upgrade Tech
+  - Jig Upgrade Tech
+  - Narwhal Upgrade Tech
+  - Omega Upgrade Tech
+  - Spark Upgrade Tech
   - Squall Upgrade Tech
 - Nerfed the following cards:
   - Atlas Upgrade Tech
