@@ -34,6 +34,7 @@ define([
     buff: function (inventory) {
       var units = [
         gwaioUnits.slammerAmmo,
+        gwaioUnits.slammerTorpedoAmmo,
         gwaioUnits.doxAmmo,
         gwaioUnits.stingerAmmo,
         gwaioUnits.boomAmmo,

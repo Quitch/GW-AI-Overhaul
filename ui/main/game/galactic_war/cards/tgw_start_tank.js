@@ -165,6 +165,7 @@ define([
             gwaioUnits.holkinsAmmo,
             gwaioUnits.pelterAmmo,
             gwaioUnits.slammerAmmo,
+            gwaioUnits.slammerTorpedoAmmo,
             gwaioUnits.doxAmmo,
             gwaioUnits.stingerAmmo,
             gwaioUnits.boomAmmo,

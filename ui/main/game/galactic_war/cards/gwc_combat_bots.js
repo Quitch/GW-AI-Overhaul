@@ -71,6 +71,7 @@ define([
       });
       var ammos = [
         gwaioUnits.slammerAmmo,
+        gwaioUnits.slammerTorpedoAmmo,
         gwaioUnits.doxAmmo,
         gwaioUnits.stingerAmmo,
         gwaioUnits.boomAmmo,
