@@ -1,4 +1,7 @@
-define(["shared/gw_common"], function (GW) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (GW, gwaioCards) {
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
@@ -11,6 +14,8 @@ define(["shared/gw_common"], function (GW) {
       inventory.maxCards(
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
+
+      gwaioCards.setupCluster(inventory);
 
       var commander = inventory.getTag("global", "commander");
       commander && inventory.addUnits([commander]);

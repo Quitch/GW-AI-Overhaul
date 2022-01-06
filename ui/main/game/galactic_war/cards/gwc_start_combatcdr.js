@@ -29,7 +29,6 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioCards.setupCluster(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
           var units = [gwaioUnits.commander];
           var mods = [];
