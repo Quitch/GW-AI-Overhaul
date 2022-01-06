@@ -35,8 +35,7 @@ define([
           file: gwaioUnits.omega,
           path: "tools.4.spec_id",
           op: "replace",
-          value:
-            "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
+          value: gwaioUnits.sxxWeapon,
         },
         {
           file: gwaioUnits.omega,

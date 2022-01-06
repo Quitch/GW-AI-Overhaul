@@ -68,13 +68,13 @@ define([
           value: false,
         },
         {
-          file: "/pa/units/air/support_platform/support_platform_interception_ammo.json",
+          file: gwaioUnits.angelAmmo,
           path: "collision_check",
           op: "replace",
           value: "enemies",
         },
         {
-          file: "/pa/units/air/support_platform/support_platform_interception_ammo.json",
+          file: gwaioUnits.angelAmmo,
           path: "collision_response",
           op: "replace",
           value: "impact",

@@ -49,8 +49,7 @@ define([
           file: gwaioUnits.slammerTorpedo,
           path: "ammo_id",
           op: "replace",
-          value:
-            "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo.json",
+          value: gwaioUnits.slammerTorpedoAmmo,
         },
         {
           file: gwaioUnits.slammerTorpedo,
