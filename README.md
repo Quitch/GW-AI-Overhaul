@@ -163,55 +163,6 @@ If you are adding new tech cards to the game and want to be compatible, then you
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
 
-## How to Report a Bug
-
-Use the template below:
-
-### Attestation
-
-[ ] I have verified this bug with all other mods disabled
-
-[ ] I did not create this war while using one of the documented incompatible mods
-
-### Describe the bug
-
-A clear and concise description of what the bug is.
-
-### To Reproduce
-
-Steps to reproduce the behaviour:
-
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-### Expected behaviour
-
-A clear and concise description of what you expected to happen.
-
-### Screenshots
-
-If applicable, add screenshots to help explain your problem.
-
-### GWO Info
-
-Taken from the top-right GWO panel:
-
-- Version:
-- Difficulty:
-- Size:
-- AI:
-- Options:
-
-### Additional context
-
-Add any other context about the problem here.
-
-### Logs
-
-Please attach the most recent [client and server log](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring.
-
 ## FAQ
 
 **Q. Why am I not seeing the latest changes in my war?**
