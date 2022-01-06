@@ -28,7 +28,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_aa/bot_aa_weapon.json",
+          file: gwaioUnits.stingerWeapon,
           path: "tools",
           op: "replace",
           value: {

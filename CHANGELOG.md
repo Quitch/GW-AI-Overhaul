@@ -37,6 +37,7 @@
 - Hotfix for old versions being unnecessarily applied on the start of a new war
 - Slammer Upgrade Tech
 - Rapid Deployment Commander not changing the behaviour of the Advanced Naval Fabricator
+- Stinger Upgrade Tech
 
 ## v5.27.0 - 2021-12-23
 
