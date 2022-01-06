@@ -71,19 +71,19 @@ define([
           value: ["Mobile", "Structure - Wall", "Wall"],
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwaioUnits.slammerTorpedoAmmo,
           path: "base_spec",
           op: "replace",
           value: "/pa/ammo/base_missiles/base_missile_tactical.json",
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwaioUnits.slammerTorpedoAmmo,
           path: "damage",
           op: "replace",
           value: 250,
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwaioUnits.slammerTorpedoAmmo,
           path: "cruise_height",
           op: "replace",
           value: 75,
