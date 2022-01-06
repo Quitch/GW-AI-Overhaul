@@ -34,53 +34,7 @@ define([
             gwaioUnits.ant,
             gwaioUnits.vehicleFactory,
           ]);
-          var nukes = [
-            gwaioUnits.nukeLauncherAmmo,
-            "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
-          ];
-          var mods = [];
-          nukes.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "replace",
-                value: 300,
-              },
-              {
-                file: unit,
-                path: "damage",
-                op: "replace",
-                value: 750,
-              },
-              {
-                file: unit,
-                path: "splash_damage",
-                op: "replace",
-                value: 750,
-              },
-              {
-                file: unit,
-                path: "full_damage_splash_radius",
-                op: "replace",
-                value: 50,
-              },
-              {
-                file: unit,
-                path: "splash_radius",
-                op: "replace",
-                value: 45,
-              },
-              {
-                file: unit,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
-              }
-            );
-          });
-          mods.push(
+          var mods = [
             {
               file: gwaioUnits.nukeLauncher,
               path: "build_metal_cost",
@@ -111,8 +65,45 @@ define([
               path: "construction_demand.energy",
               op: "replace",
               value: 2250,
-            }
-          );
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "build_metal_cost",
+              op: "replace",
+              value: 300,
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "damage",
+              op: "replace",
+              value: 750,
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "splash_damage",
+              op: "replace",
+              value: 750,
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "full_damage_splash_radius",
+              op: "replace",
+              value: 50,
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "splash_radius",
+              op: "replace",
+              value: 45,
+            },
+            {
+              file: gwaioUnits.nukeLauncherAmmo,
+              path: "description",
+              op: "replace",
+              value:
+                "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
+            },
+          ];
           inventory.addMods(mods);
 
           inventory.addAIMods([
