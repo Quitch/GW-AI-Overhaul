@@ -36,6 +36,7 @@
 - Removed references to an unused Helios weapon
 - Hotfix for old versions being unnecessarily applied on the start of a new war
 - Slammer Upgrade Tech
+- Rapid Deployment Commander not changing the behaviour of the Advanced Naval Fabricator
 
 ## v5.27.0 - 2021-12-23
 

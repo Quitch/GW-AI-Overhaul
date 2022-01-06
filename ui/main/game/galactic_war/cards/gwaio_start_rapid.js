@@ -155,7 +155,7 @@ define([
                 "Mobile & Basic & Naval | Naval & Structure & Basic - Factory | Naval & Factory & Advanced | FabBuild - Factory",
             },
             {
-              file: "/pa/units/land/fabrication_ship_adv/fabrication_ship_adv.json",
+              file: gwaioUnits.navalFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
