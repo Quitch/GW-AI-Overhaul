@@ -47,12 +47,6 @@ define([
         },
         {
           file: gwaioUnits.slammerTorpedo,
-          path: "ammo_id",
-          op: "replace",
-          value: gwaioUnits.slammerTorpedoAmmo,
-        },
-        {
-          file: gwaioUnits.slammerTorpedo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
@@ -74,12 +68,6 @@ define([
           path: "base_spec",
           op: "replace",
           value: "/pa/ammo/base_missiles/base_missile_tactical.json",
-        },
-        {
-          file: gwaioUnits.slammerTorpedoAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 2.5,
         },
         {
           file: gwaioUnits.slammerTorpedoAmmo,

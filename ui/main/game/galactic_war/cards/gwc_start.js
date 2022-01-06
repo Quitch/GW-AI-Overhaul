@@ -1,7 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], function (GW, gwaioCards) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, gwaioCards, gwaioUnits) {
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
@@ -16,6 +17,24 @@ define([
       );
 
       gwaioCards.setupCluster(inventory);
+
+      // Correct issues which affect buffs being applied correctly
+      inventory.addMods([
+        {
+          // Slammer torpedo should be encompassed in bot buffs not structures'
+          file: gwaioUnits.slammerTorpedo,
+          path: "ammo_id",
+          op: "replace",
+          value: gwaioUnits.slammerTorpedoAmmo,
+        },
+        {
+          // Match the damage of the previous ammo
+          file: gwaioUnits.slammerTorpedoAmmo,
+          path: "damage",
+          op: "multiply",
+          value: 2.5,
+        },
+      ]);
 
       var commander = inventory.getTag("global", "commander");
       commander && inventory.addUnits([commander]);
