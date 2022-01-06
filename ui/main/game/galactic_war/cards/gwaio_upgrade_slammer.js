@@ -78,8 +78,8 @@ define([
         {
           file: gwaioUnits.slammerTorpedoAmmo,
           path: "damage",
-          op: "replace",
-          value: 250,
+          op: "multiply",
+          value: 2.5,
         },
         {
           file: gwaioUnits.slammerTorpedoAmmo,
