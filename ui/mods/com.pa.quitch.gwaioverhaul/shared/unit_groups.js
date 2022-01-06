@@ -2,7 +2,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   gwaioUnits
 ) {
   return {
-    mobileAir: [
+    airMobile: [
       gwaioUnits.firefly,
       gwaioUnits.hornet,
       gwaioUnits.wyrm,
@@ -17,7 +17,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       gwaioUnits.angel,
       gwaioUnits.pelican,
     ],
-    mobileBots: [
+    botsMobile: [
       gwaioUnits.slammer,
       gwaioUnits.dox,
       gwaioUnits.stinger,
@@ -33,7 +33,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       gwaioUnits.stitch,
       gwaioUnits.botFabber,
     ],
-    mobileOrbital: [
+    orbitalMobile: [
       gwaioUnits.omega,
       gwaioUnits.orbitalFabber,
       gwaioUnits.avenger,
@@ -45,7 +45,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       gwaioUnits.arkyd,
       gwaioUnits.solarArray,
     ],
-    mobileNaval: [
+    navalMobile: [
       gwaioUnits.barracuda,
       gwaioUnits.leviathan,
       gwaioUnits.orca,
@@ -60,7 +60,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       gwaioUnits.kraken,
       gwaioUnits.piranha,
     ],
-    mobileVehicles: [
+    vehiclesMobile: [
       gwaioUnits.spinner,
       gwaioUnits.stryker,
       gwaioUnits.vehicleFabberAdvanced,

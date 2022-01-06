@@ -43,11 +43,11 @@ define([
       },
       {
         id: "gwc_combat_air",
-        units: gwaioGroups.mobileAir,
+        units: gwaioGroups.airMobile,
       },
       {
         id: "gwc_combat_bots",
-        units: gwaioGroups.mobileBots,
+        units: gwaioGroups.botsMobile,
       },
       {
         id: "gwc_combat_commander",
@@ -55,11 +55,11 @@ define([
       },
       {
         id: "gwc_combat_orbital",
-        units: gwaioGroups.mobileOrbital,
+        units: gwaioGroups.orbitalMobile,
       },
       {
         id: "gwc_combat_sea",
-        units: gwaioGroups.mobileNaval,
+        units: gwaioGroups.navalMobile,
       },
       {
         id: "gwc_combat_structures",
@@ -67,11 +67,11 @@ define([
       },
       {
         id: "gwc_combat_vehicles",
-        units: gwaioGroups.mobileVehicles,
+        units: gwaioGroups.vehiclesMobile,
       },
       {
         id: "gwc_cost_air",
-        units: gwaioGroups.mobileAir,
+        units: gwaioGroups.airMobile,
       },
       {
         id: "gwc_cost_artillery",
@@ -79,7 +79,7 @@ define([
       },
       {
         id: "gwc_cost_bots",
-        units: gwaioGroups.mobileBots,
+        units: gwaioGroups.botsMobile,
       },
       {
         id: "gwc_cost_defenses",
@@ -124,11 +124,11 @@ define([
       },
       {
         id: "gwc_cost_orbital",
-        units: gwaioGroups.mobileOrbital,
+        units: gwaioGroups.orbitalMobile,
       },
       {
         id: "gwc_cost_sea",
-        units: gwaioGroups.mobileNaval,
+        units: gwaioGroups.navalMobile,
       },
       {
         id: "gwc_cost_super_weapons",
@@ -150,7 +150,7 @@ define([
       },
       {
         id: "gwc_cost_vehicles",
-        units: gwaioGroups.mobileVehicles,
+        units: gwaioGroups.vehiclesMobile,
       },
       {
         id: "gwc_damage_air",
@@ -245,7 +245,7 @@ define([
        This could also mean if a mod changes how these cards work these listings become inaccurate. */
       {
         id: "gwc_enable_air_all",
-        units: gwaioGroups.mobileAir.concat(
+        units: gwaioGroups.airMobile.concat(
           gwaioUnits.airFactoryAdvanced,
           gwaioUnits.airFactory
         ),
@@ -276,7 +276,7 @@ define([
       },
       {
         id: "gwc_enable_bots_all",
-        units: gwaioGroups.mobileBots.concat(
+        units: gwaioGroups.botsMobile.concat(
           gwaioUnits.botFactoryAdvanced,
           gwaioUnits.botFactory
         ),
@@ -379,7 +379,7 @@ define([
       },
       {
         id: "gwc_enable_vehicles_all",
-        units: gwaioGroups.mobileVehicles.concat(
+        units: gwaioGroups.vehiclesMobile.concat(
           gwaioUnits.vehicleFactoryAdvanced,
           gwaioUnits.vehicleFactory
         ),
@@ -454,11 +454,11 @@ define([
       },
       {
         id: "gwc_health_air",
-        units: gwaioGroups.mobileAir,
+        units: gwaioGroups.airMobile,
       },
       {
         id: "gwc_health_bots",
-        units: gwaioGroups.mobileBots,
+        units: gwaioGroups.botsMobile,
       },
       {
         id: "gwc_health_commander",
@@ -466,11 +466,11 @@ define([
       },
       {
         id: "gwc_health_orbital",
-        units: gwaioGroups.mobileOrbital,
+        units: gwaioGroups.orbitalMobile,
       },
       {
         id: "gwc_health_sea",
-        units: gwaioGroups.mobileNaval,
+        units: gwaioGroups.navalMobile,
       },
       {
         id: "gwc_health_structures",
@@ -478,16 +478,16 @@ define([
       },
       {
         id: "gwc_health_vehicles",
-        units: gwaioGroups.mobileVehicles,
+        units: gwaioGroups.vehiclesMobile,
       },
       { id: "gwc_minion" },
       {
         id: "gwc_speed_air",
-        units: gwaioGroups.mobileAir,
+        units: gwaioGroups.airMobile,
       },
       {
         id: "gwc_speed_bots",
-        units: gwaioGroups.mobileBots,
+        units: gwaioGroups.botsMobile,
       },
       {
         id: "gwc_speed_commander",
@@ -495,15 +495,15 @@ define([
       },
       {
         id: "gwc_speed_orbital",
-        units: gwaioGroups.mobileOrbital,
+        units: gwaioGroups.orbitalMobile,
       },
       {
         id: "gwc_speed_sea",
-        units: gwaioGroups.mobileNaval,
+        units: gwaioGroups.navalMobile,
       },
       {
         id: "gwc_speed_vehicles",
-        units: gwaioGroups.mobileVehicles,
+        units: gwaioGroups.vehiclesMobile,
       },
       {
         id: "gwc_storage_1",

@@ -31,7 +31,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.mobileAir;
+      var units = gwaioGroups.airMobile;
       var mods = [];
       units.forEach(function (unit) {
         mods.push(
