@@ -33,7 +33,7 @@ define([
             gwaioUnits.ant,
             gwaioUnits.vehicleFactory,
           ]);
-          var mods = [
+          inventory.addMods([
             {
               file: gwaioUnits.nukeLauncher,
               path: "build_metal_cost",
@@ -102,8 +102,7 @@ define([
               value:
                 "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
             },
-          ];
-          inventory.addMods(mods);
+          ]);
 
           inventory.addAIMods([
             {
