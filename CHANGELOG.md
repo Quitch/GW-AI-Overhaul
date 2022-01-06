@@ -35,6 +35,7 @@
 - Workers always receive at least one extra commander if a system should have minions
 - Removed references to an unused Helios weapon
 - Hotfix for old versions being unnecessarily applied on the start of a new war
+- Slammer Upgrade Tech
 
 ## v5.27.0 - 2021-12-23
 

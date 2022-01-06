@@ -33,6 +33,26 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
+          file: gwaioUnits.slammer,
+          path: "tools.1.show_range",
+          op: "replace",
+          value: true,
+        },
+        {
+          file: gwaioUnits.slammerTorpedo,
+          path: "base_spec",
+          op: "replace",
+          value:
+            "/pa/tools/base_missile_tactical_turret/base_missile_tactical_turret.json",
+        },
+        {
+          file: gwaioUnits.slammerTorpedo,
+          path: "ammo_id",
+          op: "replace",
+          value:
+            "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo.json",
+        },
+        {
           file: gwaioUnits.slammerTorpedo,
           path: "spawn_layers",
           op: "replace",
@@ -45,16 +65,22 @@ define([
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
-          path: "flight_layer",
+          file: gwaioUnits.slammerTorpedo,
+          path: "target_priorities",
           op: "replace",
-          value: "Air",
+          value: ["Mobile", "Structure - Wall", "Wall"],
         },
         {
           file: gwaioUnits.torpedoLauncherAmmo,
-          path: "spawn_layers",
+          path: "base_spec",
           op: "replace",
-          value: "WL_Air",
+          value: "/pa/ammo/base_missiles/base_missile_tactical.json",
+        },
+        {
+          file: gwaioUnits.torpedoLauncherAmmo,
+          path: "damage",
+          op: "replace",
+          value: 250,
         },
         {
           file: gwaioUnits.torpedoLauncherAmmo,
