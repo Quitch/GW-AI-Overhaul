@@ -121,15 +121,17 @@ define({
   commanderAAAmmo:
     "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
   commanderAmmo: "/pa/units/commanders/base_commander/base_commander_ammo.json",
+  commanderBuildArm: "/pa/tools/commander_build_arm/commander_build_arm.json",
+  commanderDeath: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
+  commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
+  commanderSecondary: "/pa/tools/uber_cannon/uber_cannon.json",
+  commanderSecondaryAmmo: "/pa/ammo/cannon_uber/cannon_uber.json",
   commanderTorpedo:
     "/pa/units/commanders/base_commander/base_commander_tool_torpedo_weapon.json",
   commanderTorpedoAmmo:
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
   commanderWeapon:
     "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
-  commanderSecondaryAmmo: "/pa/ammo/cannon_uber/cannon_uber.json",
-  commanderSecondary: "/pa/tools/uber_cannon/uber_cannon.json",
-  commanderBuildArm: "/pa/tools/commander_build_arm/commander_build_arm.json",
   deepSpaceOrbitalRadar:
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
   dox: "/pa/units/land/assault_bot/assault_bot.json",
@@ -266,8 +268,6 @@ define({
     "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
   nukeLauncherWeapon:
     "/pa/units/land/nuke_launcher/nuke_launcher_tool_weapon.json",
-  commanderDeath: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
-  commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
   omega: "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
   omegaAmmoAG:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
