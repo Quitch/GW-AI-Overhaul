@@ -248,6 +248,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.vehicleFabber,
     gwaioUnits.vehicleFabberAdvanced,
   ];
+  var starterUnits = [structuresEcoBasic, structuresDefencesBasic];
   return {
     airAdvanced: airAdvanced,
     airBasic: airBasic,
@@ -272,5 +273,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesAdvanced: vehiclesAdvanced,
     vehiclesBasic: vehiclesBasic,
     vehiclesMobile: vehiclesMobile,
+    starterUnits: starterUnits,
   };
 });
