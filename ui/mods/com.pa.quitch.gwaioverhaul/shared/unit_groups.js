@@ -134,10 +134,28 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.typhoon,
   ];
   var structuresArtilleryBasic = [gwaioUnits.lob, gwaioUnits.pelter];
+  var structuresArtilleryBasicAmmo = [
+    gwaioUnits.lobAmmo,
+    gwaioUnits.pelterAmmo,
+  ];
+  var structuresArtilleryBasicWeapon = [
+    gwaioUnits.lobWeapon,
+    gwaioUnits.pelterWeapon,
+  ];
   var structuresArtilleryAdvanced = [gwaioUnits.holkins];
+  var structuresArtilleryAdvancedAmmo = [gwaioUnits.holkinsAmmo];
+  var structuresArtilleryAdvancedWeapons = [gwaioUnits.holkinsWeapon];
   var structuresArtillery = [
     structuresArtilleryBasic,
     structuresArtilleryAdvanced,
+  ];
+  var structuresArtilleryAmmo = [
+    structuresArtilleryBasicAmmo,
+    structuresArtilleryAdvancedAmmo,
+  ];
+  var structuresArtilleryWeapons = [
+    structuresArtilleryBasicWeapon,
+    structuresArtilleryAdvancedWeapons,
   ];
   var structuresDefencesBasic = [
     gwaioUnits.anchor,
@@ -274,5 +292,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesBasic: vehiclesBasic,
     vehiclesMobile: vehiclesMobile,
     starterUnits: starterUnits,
+    structuresArtilleryAmmo: structuresArtilleryAmmo,
+    structuresArtilleryWeapons: structuresArtilleryWeapons,
   };
 });
