@@ -72,7 +72,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.stitch,
   ];
   var orbitalBasic = [
-    gwaioUnits.arkyd,
     gwaioUnits.astraeus,
     gwaioUnits.avenger,
     gwaioUnits.hermes,
@@ -80,6 +79,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.orbitalLauncher,
   ];
   var orbitalAdvanced = [
+    gwaioUnits.arkyd, // due to how GW treats orbital unlocks
     gwaioUnits.artemis,
     gwaioUnits.omega,
     gwaioUnits.orbitalFactory,
