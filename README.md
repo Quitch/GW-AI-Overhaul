@@ -179,7 +179,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 ## Known Issues
 
-None.
+- More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
 
 ## Recommended mods
 
