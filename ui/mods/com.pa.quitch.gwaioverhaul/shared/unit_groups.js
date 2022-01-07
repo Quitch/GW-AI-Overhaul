@@ -207,6 +207,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresEco,
     structuresArtillery,
   ];
+  var titans = [
+    gwaioUnits.ares,
+    gwaioUnits.atlas,
+    gwaioUnits.helios,
+    gwaioUnits.ragnarok,
+    gwaioUnits.zeus,
+  ];
   var vehiclesBasic = [
     gwaioUnits.ant,
     gwaioUnits.drifter,
@@ -261,6 +268,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresFactories: structuresFactories,
     structuresIntelligence: structuresIntelligence,
     structuresSuperWeapons: structuresSuperWeapons,
+    titans: titans,
     vehiclesAdvanced: vehiclesAdvanced,
     vehiclesBasic: vehiclesBasic,
     vehiclesMobile: vehiclesMobile,
