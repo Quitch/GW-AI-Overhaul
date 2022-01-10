@@ -214,39 +214,57 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var vehiclesMobile = vehiclesBasicMobile.concat(vehiclesAdvancedMobile);
   var vehicles = vehiclesBasic.concat(vehiclesAdvanced);
 
+  var fabbersBasic = [
+    gwaioUnits.airFabber,
+    gwaioUnits.botFabber,
+    gwaioUnits.navalFabber,
+    gwaioUnits.orbitalFabber,
+    gwaioUnits.vehicleFabber,
+  ];
+  var fabbersAdvanced = [
+    gwaioUnits.airFabberAdvanced,
+    gwaioUnits.botFabberAdvanced,
+    gwaioUnits.navalFabberAdvanced,
+    gwaioUnits.vehicleFabberAdvanced,
+  ];
+  var fabbers = fabbersBasic.concat(fabbersAdvanced);
+
   var starterUnits = structuresEcoBasic.concat(structuresDefencesBasic);
 
   return {
-    airBasic: airBasic,
-    airAdvanced: airAdvanced,
-    airMobile: airMobile,
     air: air,
-    botsBasic: botsBasic,
-    botsAdvanced: botsAdvanced,
-    botsMobile: botsMobile,
+    airAdvanced: airAdvanced,
+    airBasic: airBasic,
+    airMobile: airMobile,
     bots: bots,
-    navalBasic: navalBasic,
-    navalAdvanced: navalAdvanced,
-    navalMobile: navalMobile,
+    botsAdvanced: botsAdvanced,
+    botsBasic: botsBasic,
+    botsMobile: botsMobile,
+    fabbers: fabbers,
+    fabbersAdvanced: fabbersAdvanced,
+    fabbersBasic: fabbersBasic,
     naval: naval,
-    orbitalBasic: orbitalBasic,
-    orbitalAdvanced: orbitalAdvanced,
-    orbitalMobile: orbitalMobile,
+    navalAdvanced: navalAdvanced,
+    navalBasic: navalBasic,
+    navalMobile: navalMobile,
     orbital: orbital,
+    orbitalAdvanced: orbitalAdvanced,
+    orbitalBasic: orbitalBasic,
+    orbitalMobile: orbitalMobile,
+    starterUnits: starterUnits,
     structures: structures,
     structuresArtillery: structuresArtillery,
+    structuresArtilleryAmmo: structuresArtilleryAmmo,
+    structuresArtilleryWeapons: structuresArtilleryWeapons,
     structuresDefences: structuresDefences,
     structuresEco: structuresEco,
     structuresFactories: structuresFactories,
     structuresIntelligence: structuresIntelligence,
     structuresSuperWeapons: structuresSuperWeapons,
     titans: titans,
+    vehicles: vehicles,
     vehiclesAdvanced: vehiclesAdvanced,
     vehiclesBasic: vehiclesBasic,
     vehiclesMobile: vehiclesMobile,
-    vehicles: vehicles,
-    starterUnits: starterUnits,
-    structuresArtilleryAmmo: structuresArtilleryAmmo,
-    structuresArtilleryWeapons: structuresArtilleryWeapons,
   };
 });
