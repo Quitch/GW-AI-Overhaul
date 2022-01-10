@@ -210,21 +210,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var vehiclesAdvanced = vehiclesAdvancedMobile.concat(
     gwaioUnits.vehicleFactoryAdvanced
   );
-  var vehiclesMobile = [
-    gwaioUnits.ant,
-    gwaioUnits.drifter,
-    gwaioUnits.inferno,
-    gwaioUnits.leveler,
-    gwaioUnits.manhattan,
-    gwaioUnits.sheller,
-    gwaioUnits.skitter,
-    gwaioUnits.spinner,
-    gwaioUnits.storm,
-    gwaioUnits.stryker,
-    gwaioUnits.vanguard,
-    gwaioUnits.vehicleFabber,
-    gwaioUnits.vehicleFabberAdvanced,
-  ];
+  var vehiclesMobile = vehiclesBasicMobile.concat(vehiclesAdvancedMobile);
   var vehicles = vehiclesBasic.concat(vehiclesAdvanced);
 
   var starterUnits = structuresEcoBasic.concat(structuresDefencesBasic);
