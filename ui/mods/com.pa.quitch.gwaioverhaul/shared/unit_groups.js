@@ -10,6 +10,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.pelican,
   ];
   var airAdvancedMobile = [
+    gwaioUnits.airFabberAdvanced,
     gwaioUnits.angel,
     gwaioUnits.hornet,
     gwaioUnits.horsefly,
