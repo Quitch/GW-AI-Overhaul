@@ -127,8 +127,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.laserDefenseTowerAdvanced,
     gwaioUnits.torpedoLauncherAdvanced,
   ];
-  var structuresDefences = structuresDefencesAdvanced.concat(
-    structuresDefencesBasic
+  var structuresDefences = structuresDefencesBasic.concat(
+    structuresDefencesAdvanced
   );
 
   var structuresEcoBasic = [gwaioUnits.energyPlant, gwaioUnits.metalExtractor];
@@ -141,8 +141,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.energyStorage,
     gwaioUnits.metalStorage,
   ];
-  var structuresEco = structuresEcoAdvanced.concat(
-    structuresEcoBasic,
+  var structuresEco = structuresEcoBasic.concat(
+    structuresEcoAdvanced,
     structuresEcoStorage
   );
   var structuresFactories = [
