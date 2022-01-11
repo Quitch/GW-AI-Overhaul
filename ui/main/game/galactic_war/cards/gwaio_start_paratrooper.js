@@ -31,15 +31,16 @@ define([
 
           var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
           var unitCannonUnits = [
-            gwaioUnits.spinner,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
+            gwaioUnits.ant,
             gwaioUnits.boom,
+            gwaioUnits.dox,
             gwaioUnits.grenadier,
             gwaioUnits.spark,
+            gwaioUnits.spinner,
+            gwaioUnits.stinger,
             gwaioUnits.stitch,
-            gwaioUnits.ant,
+            gwaioUnits.storm,
+            gwaioUnits.stryker,
           ];
           var units = unitCannons.concat(unitCannonUnits);
           inventory.addUnits(units);
