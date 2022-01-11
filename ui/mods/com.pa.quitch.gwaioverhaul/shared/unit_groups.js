@@ -242,7 +242,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
-  var starterUnits = structuresEcoBasic.concat(structuresDefencesBasic);
+  var starterUnits = structuresEcoBasic.concat(
+    structuresDefencesBasic,
+    navalBasic,
+    orbitalBasic
+  );
 
   return {
     air: air,

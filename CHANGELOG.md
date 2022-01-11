@@ -28,6 +28,7 @@
   - Squall Upgrade Tech
 - Nerfed the following cards:
   - Atlas Upgrade Tech
+- All loadouts start with the ARKYD
 
 ### Fixed
 
