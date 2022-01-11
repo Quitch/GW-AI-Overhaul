@@ -12,9 +12,9 @@ define([
     hasAnyUnit: function (inventoryUnits, units) {
       return _.some(_.intersection(inventoryUnits, units));
     },
-    hasUnit: function (path) {
+    hasUnit: function (inventoryUnits, path) {
       this.validatePaths(path);
-      return _.some(model.game().inventory().units(), function (unit) {
+      return _.some(inventoryUnits, function (unit) {
         return path === unit;
       });
     },
