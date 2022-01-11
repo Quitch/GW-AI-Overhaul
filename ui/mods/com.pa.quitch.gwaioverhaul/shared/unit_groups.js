@@ -71,13 +71,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var naval = navalBasic.concat(navalAdvanced);
 
   var orbitalBasicMobile = [
+    gwaioUnits.arkyd,
     gwaioUnits.astraeus,
     gwaioUnits.avenger,
     gwaioUnits.hermes,
     gwaioUnits.orbitalFabber,
   ];
   var orbitalAdvancedMobile = [
-    gwaioUnits.arkyd, // due to how GW treats orbital unlocks
     gwaioUnits.artemis,
     gwaioUnits.omega,
     gwaioUnits.radarSatelliteAdvanced,
