@@ -214,6 +214,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var vehiclesMobile = vehiclesBasicMobile.concat(vehiclesAdvancedMobile);
   var vehicles = vehiclesBasic.concat(vehiclesAdvanced);
 
+  var unitCannonMobile = [
+    gwaioUnits.ant,
+    gwaioUnits.boom,
+    gwaioUnits.dox,
+    gwaioUnits.grenadier,
+    gwaioUnits.spark,
+    gwaioUnits.spinner,
+    gwaioUnits.stinger,
+    gwaioUnits.stitch,
+    gwaioUnits.storm,
+    gwaioUnits.stryker,
+  ];
+
   var fabbersBasic = [
     gwaioUnits.airFabber,
     gwaioUnits.botFabber,
@@ -239,6 +252,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     bots: bots,
     botsAdvanced: botsAdvanced,
     botsBasic: botsBasic,
+    botsBasicMobile: botsBasicMobile,
+    botsAdvancedMobile: botsAdvancedMobile,
     botsMobile: botsMobile,
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
@@ -246,10 +261,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     naval: naval,
     navalAdvanced: navalAdvanced,
     navalBasic: navalBasic,
+    navalBasicMobile: navalBasicMobile,
+    navalAdvancedMobile: navalAdvancedMobile,
     navalMobile: navalMobile,
     orbital: orbital,
     orbitalAdvanced: orbitalAdvanced,
     orbitalBasic: orbitalBasic,
+    orbitalBasicMobile: orbitalBasicMobile,
+    orbitalAdvancedMobile: orbitalAdvancedMobile,
     orbitalMobile: orbitalMobile,
     starterUnits: starterUnits,
     structures: structures,
@@ -262,9 +281,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresIntelligence: structuresIntelligence,
     structuresSuperWeapons: structuresSuperWeapons,
     titans: titans,
+    unitCannonMobile: unitCannonMobile,
     vehicles: vehicles,
     vehiclesAdvanced: vehiclesAdvanced,
     vehiclesBasic: vehiclesBasic,
+    vehiclesBasicMobile: vehiclesBasicMobile,
+    vehiclesAdvancedMobile: vehiclesAdvancedMobile,
     vehiclesMobile: vehiclesMobile,
   };
 });
