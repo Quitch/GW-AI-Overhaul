@@ -9,8 +9,8 @@ define([
         console.error(path + " is invalid or missing from GWO unit_names.js");
       }
     },
-    hasAnyUnit: function (units, group) {
-      return _.some(_.intersection(units, group));
+    hasAnyUnit: function (inventoryUnits, units) {
+      return _.some(_.intersection(inventoryUnits, units));
     },
     hasUnit: function (path) {
       this.validatePaths(path);
