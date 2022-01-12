@@ -13,8 +13,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
     },
     missingUnit: function (inventoryUnits, units) {
       if (_.isArray(units)) {
-        if (_.isEmpty(_.difference(units, inventoryUnits))) {
-          return false;
+        for (var unit of units) {
+          if (_.includes(inventoryUnits, unit)) {
+            return false;
+          }
         }
       } else if (_.includes(inventoryUnits, units)) {
         return false;
