@@ -18,8 +18,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
             return false;
           }
         }
-      } else if (_.includes(inventoryUnits, units)) {
-        return false;
+      } else {
+        return _.includes(inventoryUnits, units);
       }
       return true;
     },
