@@ -36,8 +36,13 @@ define([
         },
       ]);
       var commander = inventory.getTag("global", "commander");
-      // Basic defence, intel, orbital, naval, and eco
-      var starterUnits = gwaioGroups.starterUnits.concat(commander);
+      var starterUnits = gwaioGroups.structuresEcoBasic.concat(
+        gwaioGroups.structuresDefencesBasic,
+        gwaioGroups.structuresIntelBasic,
+        gwaioGroups.navalBasic,
+        gwaioGroups.orbitalBasic,
+        commander
+      );
       inventory.addUnits(starterUnits);
     },
     dull: function () {

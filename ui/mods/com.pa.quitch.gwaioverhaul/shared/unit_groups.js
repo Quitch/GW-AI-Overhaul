@@ -491,11 +491,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesWeapons
   );
 
-  var starterUnits = structuresEcoBasic.concat(
-    structuresDefencesBasic,
-    structuresIntelBasic,
-    navalBasic,
-    orbitalBasic
+  // units all T2 fabbers have access to immediately
+  var starterUnitsAdvanced = structuresSuperWeapons.concat(
+    gwaioUnits.radarAdvanced,
+    gwaioUnits.unitCannon
   );
 
   return {
@@ -537,7 +536,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     orbitalBasicMobile: orbitalBasicMobile,
     orbitalMobile: orbitalMobile,
     orbitalWeapons: orbitalWeapons,
-    starterUnits: starterUnits,
+    starterUnitsAdvanced: starterUnitsAdvanced,
     structures: structures,
     structuresArtillery: structuresArtillery,
     structuresArtilleryAmmo: structuresArtilleryAmmo,
