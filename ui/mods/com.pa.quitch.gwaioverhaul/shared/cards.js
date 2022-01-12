@@ -21,6 +21,17 @@ define([
         });
       }
     },
+    missingUnit: function (inventoryUnits, units) {
+      this.validatePaths(units);
+      if (_.isArray(units)) {
+        if (_.isEmpty(_.difference(units, inventoryUnits))) {
+          return false;
+        }
+      } else if (_.includes(inventoryUnits, units)) {
+        return false;
+      }
+      return true;
+    },
     loadoutIcon: function (loadoutId) {
       var highestDifficultyDefeated = ko
         .observable()
