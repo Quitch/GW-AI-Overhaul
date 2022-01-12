@@ -1,4 +1,3 @@
-// !LOCNS:galactic_war
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
