@@ -16,8 +16,20 @@ define([
       inventory.maxCards(
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
+
       // Modifications if player is playing as Cluster faction
       gwaioCards.setupCluster(inventory);
+
+      var commander = inventory.getTag("global", "commander");
+      var starterUnits = gwaioGroups.structuresEcoBasic.concat(
+        gwaioGroups.structuresDefencesBasic,
+        gwaioGroups.structuresIntelBasic,
+        gwaioGroups.navalBasic,
+        gwaioGroups.orbitalBasic,
+        commander
+      );
+      inventory.addUnits(starterUnits);
+
       // Correct issues which prevent buffs being applied correctly
       inventory.addMods([
         {
@@ -35,15 +47,6 @@ define([
           value: 2.5,
         },
       ]);
-      var commander = inventory.getTag("global", "commander");
-      var starterUnits = gwaioGroups.structuresEcoBasic.concat(
-        gwaioGroups.structuresDefencesBasic,
-        gwaioGroups.structuresIntelBasic,
-        gwaioGroups.navalBasic,
-        gwaioGroups.orbitalBasic,
-        commander
-      );
-      inventory.addUnits(starterUnits);
     },
     dull: function () {
       // empty
