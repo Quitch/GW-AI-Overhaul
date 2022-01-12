@@ -42,7 +42,9 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.bots);
+      inventory.addUnits(
+        gwaioGroups.starterUnitsAdvanced.concat(gwaioGroups.bots)
+      );
     },
     dull: function () {
       //empty

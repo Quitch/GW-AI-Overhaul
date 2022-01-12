@@ -37,7 +37,9 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.naval);
+      inventory.addUnits(
+        gwaioGroups.starterUnitsAdvanced.concat(gwaioGroups.naval)
+      );
     },
     dull: function () {
       //empty
