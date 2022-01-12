@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,23 +20,17 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_enable_air_all") ||
-        inventory.hasCard("gwaio_start_hoarder")
+        gwaioCards.missingUnit(
+          inventory.units(),
+          gwaioGroups.structuresDefencesAdvanced
+        )
       ) {
         chance = 100;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.flak,
-        gwaioUnits.laserDefenseTowerAdvanced,
-        gwaioUnits.catapult,
-        gwaioUnits.anchor,
-        gwaioUnits.torpedoLauncherAdvanced,
-      ]);
+      inventory.addUnits(gwaioGroups.structuresDefencesAdvanced);
     },
     dull: function () {
       //empty

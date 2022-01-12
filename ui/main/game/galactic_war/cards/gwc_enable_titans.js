@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,28 +19,13 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_enable_air_all") ||
-        inventory.hasCard("gwc_enable_sea_all") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.fabbersAdvanced)) {
         chance = 150;
-      }
-      if (!api.content.usingTitans() || inventory.hasCard("gwc_start_titan")) {
-        chance = 0;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.zeus,
-        gwaioUnits.atlas,
-        gwaioUnits.ragnarok,
-        gwaioUnits.ares,
-        gwaioUnits.helios,
-      ]);
+      inventory.addUnits(gwaioGroups.titans);
     },
     dull: function () {
       //empty

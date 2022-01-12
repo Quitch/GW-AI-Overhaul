@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,17 +19,18 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (!inventory.hasCard("gwc_start_artillery")) {
+      if (
+        gwaioCards.missingUnit(
+          inventory.units(),
+          gwaioGroups.structuresArtillery
+        )
+      ) {
         chance = 100;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.holkins,
-        gwaioUnits.pelter,
-        gwaioUnits.lob,
-      ]);
+      inventory.addUnits(gwaioGroups.structuresArtillery);
     },
     dull: function () {
       // empty

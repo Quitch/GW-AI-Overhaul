@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,13 +20,7 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        !(
-          inventory.hasCard("gwc_start_orbital") ||
-          inventory.hasCard("nem_start_deepspace") ||
-          inventory.hasCard("gwaio_start_hoarder")
-        )
-      ) {
+      if (gwaioCards.missingUnit(inventory.units(), gwaioGroups.orbital)) {
         var dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
@@ -43,12 +37,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.jig,
-        gwaioUnits.orbitalFactory,
-        gwaioUnits.arkyd,
-        gwaioUnits.solarArray,
-      ]);
+      inventory.addUnits(gwaioGroups.orbital);
     },
     dull: function () {
       //empty

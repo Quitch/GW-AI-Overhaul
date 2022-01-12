@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -21,7 +21,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       var dist = system.distance();
-      if (!inventory.hasCard("gwaio_start_hoarder")) {
+      if (gwaioCards.missingUnit(inventory.units(), gwaioGroups.naval)) {
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
           (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
@@ -37,10 +37,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.navalFactoryAdvanced,
-        gwaioUnits.navalFactory,
-      ]);
+      inventory.addUnits(gwaioGroups.naval);
     },
     dull: function () {
       //empty

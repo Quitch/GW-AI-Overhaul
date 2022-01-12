@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,25 +18,18 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(gwaioUnits.airFactoryAdvanced)) {
+      if (
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFactoryAdvanced)
+      ) {
         chance = 60;
       }
 
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.airFabberAdvanced,
-        gwaioUnits.hornet,
-        gwaioUnits.phoenix,
-        gwaioUnits.kestrel,
-        gwaioUnits.wyrm,
-        gwaioUnits.angel,
-        gwaioUnits.horsefly,
-      ];
-      var mods = units.map(function (unit) {
+      var mods = _.map(gwaioGroups.airAdvancedMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

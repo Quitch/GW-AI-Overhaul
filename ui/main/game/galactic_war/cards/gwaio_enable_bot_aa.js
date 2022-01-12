@@ -1,4 +1,4 @@
-// Obsolete - kept for compatibility with GWO v5.9.0 and earlier
+// Obsolete - kept for compatibility with saves from GWO v5.9.0 and earlier
 define({
   visible: _.constant(false), // Can't discard this card,
   describe: _.constant(""),

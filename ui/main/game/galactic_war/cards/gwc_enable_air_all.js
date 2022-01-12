@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,45 +20,29 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (!inventory.hasCard("gwaio_start_hoarder")) {
+      if (gwaioCards.missingUnit(inventory.units(), gwaioGroups.air)) {
         var dist = system.distance();
-        var chanceMod = 1;
         if (
-          !(
-            inventory.hasCard("gwc_enable_bots_all") ||
-            inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwaio_start_hoarder")
-          )
+          (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
+          (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
+          (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
+          (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
+          dist > 6
         ) {
-          chanceMod = 3;
+          chance = 25;
+        } else {
+          chance = 200;
         }
-        if (!inventory.hasCard("gwaio_start_hoarder")) {
-          if (
-            (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
-            (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
-            (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
-            (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
-            dist > 6
-          ) {
-            chance = 25;
-          } else {
-            chance = 200;
-          }
+        if (
+          !gwaioCards.hasUnit(inventory.units(), gwaioGroups.factoriesAdvanced)
+        ) {
+          chance *= 3;
         }
-        chance *= chanceMod;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.airFactoryAdvanced,
-        gwaioUnits.airFactory,
-        gwaioUnits.firefly,
-        gwaioUnits.bumblebee,
-        gwaioUnits.hummingbird,
-        gwaioUnits.icarus,
-        gwaioUnits.pelican,
-      ]);
+      inventory.addUnits(gwaioGroups.air);
     },
     dull: function () {
       //empty

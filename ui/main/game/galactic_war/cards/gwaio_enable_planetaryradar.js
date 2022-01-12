@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,22 +20,13 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_airfactory") ||
-        gwaioCards.hasUnit(gwaioUnits.botFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_botfactory") ||
-        gwaioCards.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_navalfactory") ||
-        gwaioCards.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_vehiclefactory")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.fabbersAdvanced)) {
         chance = 100;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnit(gwaioUnits.deepSpaceOrbitalRadar);
       inventory.addMods([
         {
           file: gwaioUnits.deepSpaceOrbitalRadar,
@@ -136,6 +128,7 @@ define([
           value: 55,
         },
       ]);
+
       inventory.addAIMods([
         {
           type: "fabber",
