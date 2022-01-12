@@ -4,12 +4,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
   return {
     hasUnit: function (inventoryUnits, units) {
       if (_.isArray(units)) {
-        return _.some(_.intersection(inventoryUnits, units));
+        for (var unit of units) {
+          if (_.includes(inventoryUnits, unit)) {
+            return true;
+          }
+        }
       } else {
         return _.some(inventoryUnits, function (path) {
           return units === path;
         });
       }
+      return false;
     },
     missingUnit: function (inventoryUnits, units) {
       if (_.isArray(units)) {
