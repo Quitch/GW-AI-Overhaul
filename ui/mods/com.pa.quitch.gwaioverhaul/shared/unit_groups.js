@@ -462,6 +462,26 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
+  // exclude orbital factories due to their fabber working differently
+  var factoriesBasic = [
+    (gwaioUnits.airFactory,
+    gwaioUnits.botFactory,
+    gwaioUnits.navalFactory,
+    gwaioUnits.vehicleFactory),
+  ];
+  var factoriesAdvanced = [
+    (gwaioUnits.airFactoryAdvanced,
+    gwaioUnits.botFactoryAdvanced,
+    gwaioUnits.navalFactoryAdvanced,
+    gwaioUnits.vehicleFactoryAdvanced),
+  ];
+  // add orbital factories too
+  var factories = factoriesBasic.concat(
+    factoriesAdvanced,
+    gwaioUnits.orbitalLauncher,
+    gwaioUnits.orbitalFactory
+  );
+
   var mobile = airMobile.concat(
     botsMobile,
     navalMobile,
@@ -518,6 +538,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
     fabbersBasic: fabbersBasic,
+    factories: factories,
+    factoriesAdvanced: factoriesAdvanced,
+    factoriesBasic: factoriesBasic,
     mobile: mobile,
     naval: naval,
     navalAdvanced: navalAdvanced,
