@@ -3,20 +3,23 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
 ], function (gwaioUnitsToNames, gwaioTech) {
   return {
-    validatePaths: function (path) {
-      var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
-      if (index === -1) {
-        console.error(path + " is invalid or missing from GWO unit_names.js");
-      }
-    },
-    hasAnyUnit: function (inventoryUnits, units) {
-      return _.some(_.intersection(inventoryUnits, units));
-    },
-    hasUnit: function (inventoryUnits, unit) {
-      this.validatePaths(unit);
-      return _.some(inventoryUnits, function (path) {
-        return unit === path;
+    validatePaths: function (paths) {
+      _.forEach(paths, function (path) {
+        var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
+        if (index === -1) {
+          console.error(path + " is invalid or missing from GWO unit_names.js");
+        }
       });
+    },
+    hasUnit: function (inventoryUnits, units) {
+      this.validatePaths(units);
+      if (_.isArray(units)) {
+        return _.some(_.intersection(inventoryUnits, units));
+      } else {
+        return _.some(inventoryUnits, function (path) {
+          return units === path;
+        });
+      }
     },
     loadoutIcon: function (loadoutId) {
       var highestDifficultyDefeated = ko
