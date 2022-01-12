@@ -24,7 +24,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
           }
         }
       } else {
-        return _.includes(inventoryUnits, units);
+        return !_.includes(inventoryUnits, units);
       }
       return false;
     },
