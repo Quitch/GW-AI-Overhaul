@@ -500,8 +500,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   return {
     air: air,
     airAdvanced: airAdvanced,
+    airAdvancedMobile: airAdvancedMobile,
     airAmmo: airAmmo,
     airBasic: airBasic,
+    airBasicMobile: airBasicMobile,
     airMobile: airMobile,
     airWeapons: airWeapons,
     ammo: ammo,
