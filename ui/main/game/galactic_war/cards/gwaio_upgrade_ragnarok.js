@@ -17,12 +17,11 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(gwaioUnits.ragnarok)) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.ragnarok)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
@@ -103,7 +102,7 @@ define([
           file: gwaioUnits.ragnarokPbaoe,
           path: "planet_impact_spec.delay_time",
           op: "replace",
-          value: 99999, // this is a hack and if I understood the eval op that might be better
+          value: 99999, // this is an ugly hack
         },
       ]);
     },

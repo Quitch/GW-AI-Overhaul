@@ -19,14 +19,9 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.astraeus) &&
-        (gwaioCards.hasUnit(gwaioUnits.orbitalLauncher) ||
-          inventory.hasCard("gwaio_upgrade_orbitallauncher"))
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.astraeus)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

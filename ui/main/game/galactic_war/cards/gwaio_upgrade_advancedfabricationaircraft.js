@@ -20,13 +20,10 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioCards.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioCards.hasUnit(gwaioUnits.airFabberAdvanced)
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFactoryAdvanced)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,15 +21,16 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioCards.hasUnit(gwaioUnits.navalFactory) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.navalFactory)
       ) {
         chance = 30;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioGroups.navalAdvancedMobile);
+
       inventory.addMods([
         {
           file: gwaioUnits.navalFactory,
@@ -38,7 +40,34 @@ define([
         },
       ]);
 
-      inventory.addAIMods([
+      var units = [
+        "Battleship",
+        "MissleShip",
+        "MissileSub",
+        "HoverShip",
+        "DroneCarrier",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "BasicNavalFactory",
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 97,
+            },
+          ];
+        })
+      );
+      aiMods.push(
         {
           type: "factory",
           op: "append",
@@ -55,78 +84,9 @@ define([
             test_type: "HaveEcoForAdvanced",
             boolean: true,
           },
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "Battleship",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "MissleShip",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "MissileSub",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "HoverShip",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "DroneCarrier",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "Battleship",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "MissleShip",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "MissileSub",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "HoverShip",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "DroneCarrier",
-          idToMod: "priority",
-          value: 97,
-        },
-      ]);
+        }
+      );
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

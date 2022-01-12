@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,15 +21,16 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioCards.hasUnit(gwaioUnits.botFactory) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.botFactory)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioGroups.botsAdvancedMobile);
+
       inventory.addMods([
         {
           file: gwaioUnits.botFactory,
@@ -38,103 +40,63 @@ define([
         },
       ]);
 
-      inventory.addAIMods([
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedBotFabber",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
+      var units = [
+        "AdvancedArtilleryBot",
+        "AdvancedAssaultBot",
+        "AdvancedBotCombatFabber",
+        "NanoSwarm",
+        "SupportCommander",
+        "TMLBot",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "BasicBotFactory",
+              refId: "builders",
+              refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 97,
+              refId: "builders",
+              refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
+            },
+          ];
+        })
+      );
+      var fabbers = [
+        "AdvancedBotCombatFabber",
+        "AdvancedBotFabber",
+        "SupportCommander",
+      ];
+      _.forEach(fabbers, function (fabber) {
+        aiMods.push({
           type: "factory",
           op: "new",
-          toBuild: "AdvancedBotFabber",
+          toBuild: fabber,
           idToMod: "", // add to every test array
           value: {
             test_type: "HaveEcoForAdvanced",
             boolean: true,
           },
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedAssaultBot",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-          refId: "priority",
-          refValue: 199, // avoid Unit Cannon builds
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedArtilleryBot",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "TMLBot",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "NanoSwarm",
-          idToMod: "builders",
-          value: "BasicBotFactory",
-          refId: "priority",
-          refValue: 199, // avoid Unit Cannon builds
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedAssaultBot",
-          idToMod: "priority",
-          value: 97,
-          refId: "priority",
-          refValue: 199, // avoid Unit Cannon builds
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedBotCombatFabber",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedArtilleryBot",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "TMLBot",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "SupportCommander",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "NanoSwarm",
-          idToMod: "priority",
-          value: 97,
-          refId: "priority",
-          refValue: 199, // avoid Unit Cannon builds
-        },
-      ]);
+        });
+      });
+      aiMods.push({
+        type: "factory",
+        op: "append",
+        toBuild: "AdvancedBotFabber",
+        idToMod: "builders",
+        value: "BasicBotFactory",
+      });
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

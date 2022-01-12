@@ -17,17 +17,11 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.landMine) &&
-        (gwaioCards.hasUnit(gwaioUnits.barnacle) ||
-          gwaioCards.hasUnit(gwaioUnits.stitch) ||
-          gwaioCards.hasUnit(gwaioUnits.botFactoryAdvanced))
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.landMine)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

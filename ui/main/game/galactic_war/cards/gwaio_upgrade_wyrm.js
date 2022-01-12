@@ -18,15 +18,12 @@ define([
     },
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
+      inventory.addUnits(gwaioUnits.squall);
+
       var chance = 0;
-      if (
-        (gwaioCards.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioCards.hasUnit(gwaioUnits.wyrm)
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.wyrm)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

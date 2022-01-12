@@ -19,17 +19,14 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioCards.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioCards.hasUnit(gwaioUnits.sheller)
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.sheller)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioUnits.landMine);
+
       inventory.addMods([
         {
           file: gwaioUnits.shellerAmmo,

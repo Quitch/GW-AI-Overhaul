@@ -22,7 +22,6 @@ define([
       if (inventory.hasCard("gwaio_enable_planetaryradar")) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

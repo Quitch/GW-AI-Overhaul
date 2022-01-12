@@ -20,15 +20,12 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        (gwaioCards.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory")) &&
-        gwaioCards.hasUnit(gwaioUnits.leveler) &&
-        gwaioCards.hasUnit(gwaioUnits.unitCannon) &&
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.leveler) &&
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.unitCannon) &&
         !inventory.hasCard("gwaio_start_paratrooper")
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

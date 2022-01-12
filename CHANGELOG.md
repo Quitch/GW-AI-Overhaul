@@ -41,6 +41,7 @@
 - Stinger Upgrade Tech
 - Slammer torpedo is buffed by bot buffs not structure buffs
 - Defense Tech Commander not reducing cost of Umbrellas
+- Omega Upgrade Tech being tied to ownership of irrelevant units
 
 ## v5.27.0 - 2021-12-23
 

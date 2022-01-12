@@ -17,15 +17,13 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioCards.hasUnit(gwaioUnits.orbitalFactory) &&
-        gwaioCards.hasUnit(gwaioUnits.radarSatelliteAdvanced)
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.radarSatelliteAdvanced)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

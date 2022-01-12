@@ -19,14 +19,9 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioCards.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioCards.hasUnit(gwaioUnits.phoenix)
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.phoenix)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

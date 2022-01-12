@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,18 +18,16 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.airFactory) &&
-        gwaioCards.hasUnit(gwaioUnits.airFabber)
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFabber)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioGroups.starterUnitsAdvanced);
+
       inventory.addMods([
         {
           file: gwaioUnits.airFabber,
@@ -38,99 +37,31 @@ define([
         },
       ]);
 
-      inventory.addAIMods([
-        {
+      var units = [
+        "AdvancedAirDefense",
+        "AdvancedLandDefense",
+        "AdvancedNavalDefense",
+        "AdvancedRadar",
+        "AntiNukeSilo",
+        "ControlModule",
+        "LongRangeArtillery",
+        "NukeSilo",
+        "PlanetEngine",
+        "PlanetSplitter",
+        "TeslaGunship",
+        "TML",
+        "UnitCannon",
+      ];
+      var aiMods = _.map(units, function (unit) {
+        return {
           type: "fabber",
           op: "append",
-          toBuild: "AdvancedNavalDefense",
+          toBuild: unit,
           idToMod: "builders",
           value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedAirDefense",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedLandDefense",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AntiNukeSilo",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedRadar",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "TML",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "NukeSilo",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "UnitCannon",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "LongRangeArtillery",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "ControlModule",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "PlanetEngine",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "PlanetSplitter",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "TeslaGunship",
-          idToMod: "builders",
-          value: "BasicAirFabber",
-        },
-      ]);
+        };
+      });
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

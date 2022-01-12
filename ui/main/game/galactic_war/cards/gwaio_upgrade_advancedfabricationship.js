@@ -17,15 +17,13 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioCards.hasUnit(gwaioUnits.navalFactoryAdvanced) &&
-        gwaioCards.hasUnit(gwaioUnits.navalFabberAdvanced)
+        gwaioCards.hasUnit(inventory.units(), gwaioUnits.navalFactoryAdvanced)
       ) {
         chance = 30;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

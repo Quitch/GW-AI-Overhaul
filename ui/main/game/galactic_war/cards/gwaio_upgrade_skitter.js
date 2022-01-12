@@ -17,15 +17,11 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.vehicleFactory) &&
-        gwaioCards.hasUnit(gwaioUnits.skitter)
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.skitter)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {

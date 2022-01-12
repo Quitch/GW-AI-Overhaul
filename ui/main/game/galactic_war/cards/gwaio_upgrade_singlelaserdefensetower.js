@@ -17,12 +17,16 @@ define([
       };
     },
     getContext: gwaioCards.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(gwaioUnits.singleLaserDefenseTower)) {
+      if (
+        gwaioCards.hasUnit(
+          inventory.units(),
+          gwaioUnits.singleLaserDefenseTower
+        )
+      ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
@@ -131,7 +135,7 @@ define([
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
-          value: 0, // Turn off for Queller Guardians
+          value: 0, // Turn off for Queller
           refId: "name",
           refValue: "Single Laser Defense Tower - Snipe",
         },

@@ -19,17 +19,9 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(gwaioUnits.radar) &&
-        (gwaioCards.hasUnit(gwaioUnits.botFactory) ||
-          gwaioCards.hasUnit(gwaioUnits.airFactory) ||
-          gwaioCards.hasUnit(gwaioUnits.navalFactory) ||
-          gwaioCards.hasUnit(gwaioUnits.vehicleFactory) ||
-          inventory.hasCard("gwc_start_artillery"))
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.radar)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
