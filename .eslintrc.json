@@ -29,9 +29,9 @@
   },
   "plugins": ["lodash"],
   "rules": {
-    "lodash/prefer-lodash-method": 0,
     "lodash/prefer-noop": 0,
     "no-inner-declarations": 0,
-    "curly": [2, "all"]
+    "curly": [2, "all"],
+    "lodash/prefer-map": 0
   }
 }
