@@ -29,6 +29,7 @@
   },
   "plugins": ["lodash"],
   "rules": {
+    "lodash/prefer-lodash-method": [2, { "ignoreMethods": ["split"] }],
     "lodash/prefer-noop": 0,
     "no-inner-declarations": 0,
     "curly": [2, "all"],
