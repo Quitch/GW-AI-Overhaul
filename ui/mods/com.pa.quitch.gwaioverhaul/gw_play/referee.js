@@ -522,13 +522,15 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = build[idToMod].concat(value);
                       } else if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] += value;
@@ -554,13 +556,15 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = value.concat(build[idToMod]);
                       } else if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value + build[idToMod];
@@ -586,7 +590,8 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value;
