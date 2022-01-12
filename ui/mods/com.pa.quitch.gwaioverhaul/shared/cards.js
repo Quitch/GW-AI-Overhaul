@@ -12,10 +12,10 @@ define([
     hasAnyUnit: function (inventoryUnits, units) {
       return _.some(_.intersection(inventoryUnits, units));
     },
-    hasUnit: function (inventoryUnits, path) {
-      this.validatePaths(path);
-      return _.some(inventoryUnits, function (unit) {
-        return path === unit;
+    hasUnit: function (inventoryUnits, unit) {
+      this.validatePaths(unit);
+      return _.some(inventoryUnits, function (path) {
+        return unit === path;
       });
     },
     loadoutIcon: function (loadoutId) {
