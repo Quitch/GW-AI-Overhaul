@@ -14,14 +14,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
     missingUnit: function (inventoryUnits, units) {
       if (_.isArray(units)) {
         for (var unit of units) {
-          if (_.includes(inventoryUnits, unit)) {
-            return false;
+          if (!_.includes(inventoryUnits, unit)) {
+            return true;
           }
         }
       } else {
         return _.includes(inventoryUnits, units);
       }
-      return true;
+      return false;
     },
     loadoutIcon: function (loadoutId) {
       var highestDifficultyDefeated = ko
