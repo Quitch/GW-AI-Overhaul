@@ -36,7 +36,7 @@ define([
           op: "replace",
           value: [
             {
-              spec_id: gwaioUnits.omegaWeaponAO,
+              spec_id: gwaioUnits.omegaWeapon,
               aim_bone: "bone_body",
               record_index: 0,
               fire_event: "fired0",

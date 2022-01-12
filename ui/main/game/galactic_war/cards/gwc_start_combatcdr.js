@@ -30,47 +30,43 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
-          var units = [gwaioUnits.commander];
-          var mods = [];
-          units.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "max_health",
-                op: "multiply",
-                value: 3,
-              }
-            );
-          });
+          var mods = [
+            {
+              file: gwaioUnits.commander,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 5,
+            },
+            {
+              file: gwaioUnits.commander,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 5,
+            },
+            {
+              file: gwaioUnits.commander,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 5,
+            },
+            {
+              file: gwaioUnits.commander,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 5,
+            },
+            {
+              file: gwaioUnits.commander,
+              path: "max_health",
+              op: "multiply",
+              value: 3,
+            },
+          ];
           var weapons = [
             gwaioUnits.commanderSecondary,
             gwaioUnits.commanderWeapon,
           ];
-          weapons.forEach(function (weapon) {
+          _.forEach(weapons, function (weapon) {
             mods.push(
               {
                 file: weapon,

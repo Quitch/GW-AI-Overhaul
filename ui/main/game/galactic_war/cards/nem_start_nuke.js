@@ -29,8 +29,10 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.addUnits([
-            gwaioUnits.nukeLauncher,
             gwaioUnits.ant,
+            gwaioUnits.nukeLauncher,
+            gwaioUnits.skitter,
+            gwaioUnits.vehicleFabber,
             gwaioUnits.vehicleFactory,
           ]);
           inventory.addMods([

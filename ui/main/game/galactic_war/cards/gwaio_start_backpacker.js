@@ -28,7 +28,11 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([gwaioUnits.dox, gwaioUnits.botFactory]);
+          inventory.addUnits([
+            gwaioUnits.botFabber,
+            gwaioUnits.botFactory,
+            gwaioUnits.dox,
+          ]);
           inventory.maxCards(inventory.maxCards() + 12);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

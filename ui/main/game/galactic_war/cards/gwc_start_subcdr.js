@@ -42,7 +42,7 @@ define([
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
         ) {
-          context.minions.forEach(function (minion) {
+          _.forEach(context.minions, function (minion) {
             inventory.minions.push(minion);
           });
           var minionSpecs = _.compact(_.pluck(context.minions, "commander"));

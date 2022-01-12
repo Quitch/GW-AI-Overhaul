@@ -187,10 +187,9 @@ define([
             },
           ];
 
-          // control orbital T1/T2 access
+          // Orbital Launcher Upgrade Tech support
           if (
-            inventory.hasCard("gwc_enable_orbital_t2") ||
-            inventory.hasCard("gwc_enable_orbital_all") ||
+            gwaioCards.hasUnit(inventory.units(), gwaioUnits.orbitalLauncher) ||
             inventory.hasCard("gwaio_upgrade_orbitallauncher")
           ) {
             mods.push({
@@ -210,6 +209,18 @@ define([
 
           inventory.addMods(mods);
 
+          var factoriesBasic = [
+            "BasicAirFactory",
+            "BasicBotFactory",
+            "BasicNavalFactory",
+            "BasicVehicleFactory",
+          ];
+          var factoriesAdvanced = [
+            "AdvancedAirFactory",
+            "AdvancedBotFactory",
+            "AdvancedNavalFactory",
+            "AdvancedVehicleFactory",
+          ];
           var aiMods = [
             {
               type: "fabber",
@@ -224,83 +235,11 @@ define([
             {
               type: "fabber",
               op: "replace",
-              toBuild: "BasicAirFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 376,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicBotFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 376,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicVehicleFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 376,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicNavalFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 376,
-            },
-            {
-              type: "fabber",
-              op: "replace",
               toBuild: "OrbitalLauncher",
               idToMod: "priority",
               value: 0,
               refId: "priority",
               refValue: 485,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicAirFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 515,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicBotFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 515,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicVehicleFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 515,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "BasicNavalFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 515,
             },
             {
               type: "fabber",
@@ -314,85 +253,60 @@ define([
             {
               type: "fabber",
               op: "replace",
-              toBuild: "AdvancedAirFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 477,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedBotFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 477,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedVehicleFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 477,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedNavalFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 477,
-            },
-            {
-              type: "fabber",
-              op: "replace",
               toBuild: "OrbitalFactory",
               idToMod: "priority",
               value: 0,
               refId: "priority",
               refValue: 477,
             },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedAirFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 525,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedBotFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 525,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedVehicleFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 525,
-            },
-            {
-              type: "fabber",
-              op: "replace",
-              toBuild: "AdvancedNavalFactory",
-              idToMod: "priority",
-              value: 0,
-              refId: "priority",
-              refValue: 525,
-            },
           ];
+
+          _.forEach(factoriesBasic, function (factory) {
+            aiMods.push(
+              {
+                type: "fabber",
+                op: "replace",
+                toBuild: factory,
+                idToMod: "priority",
+                value: 0,
+                refId: "priority",
+                refValue: 376,
+              },
+              {
+                type: "fabber",
+                op: "replace",
+                toBuild: factory,
+                idToMod: "priority",
+                value: 0,
+                refId: "priority",
+                refValue: 515,
+              }
+            );
+          });
+
+          _.forEach(factoriesAdvanced, function (factory) {
+            aiMods.push(
+              {
+                type: "fabber",
+                op: "replace",
+                toBuild: factory,
+                idToMod: "priority",
+                value: 0,
+                refId: "priority",
+                refValue: 477,
+              },
+              {
+                type: "fabber",
+                op: "replace",
+                toBuild: factory,
+                idToMod: "priority",
+                value: 0,
+                refId: "priority",
+                refValue: 525,
+              }
+            );
+          });
+
           inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

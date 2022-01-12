@@ -16,9 +16,7 @@ define([
       inventory.maxCards(
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
-
       gwaioCards.setupCluster(inventory);
-
       // Correct issues which affect buffs being applied correctly
       inventory.addMods([
         {
@@ -36,7 +34,6 @@ define([
           value: 2.5,
         },
       ]);
-
       var commander = inventory.getTag("global", "commander");
       var starterUnits = gwaioGroups.starterUnits.concat(commander);
       inventory.addUnits(starterUnits);

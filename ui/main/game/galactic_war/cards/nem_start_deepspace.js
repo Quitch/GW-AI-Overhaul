@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -28,11 +29,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([
-            gwaioUnits.jig,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.arkyd,
-          ]);
+          inventory.addUnits(gwaioGroups.orbitalAdvanced);
           inventory.addMods([
             {
               file: gwaioUnits.jig,
@@ -91,106 +88,32 @@ define([
             },
           ]);
 
-          inventory.addAIMods([
-            {
+          var structures = [
+            "BasicAirDefense",
+            "BasicAirFactory",
+            "BasicArtillery",
+            "BasicBotFactory",
+            "BasicEnergyGenerator",
+            "BasicLandDefense",
+            "BasicLandDefenseSingle",
+            "BasicRadar",
+            "BasicVehicleFactory",
+            "EnergyStorage",
+            "MetalStorage",
+            "OrbitalLauncher",
+            "Umbrella",
+            "Wall",
+          ];
+          var aiMods = _.map(structures, function (structure) {
+            return {
               type: "fabber",
               op: "append",
-              toBuild: "BasicAirFactory",
+              toBuild: structure,
               idToMod: "builders",
               value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicAirDefense",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefenseSingle",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefense",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicArtillery",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "Wall",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "Umbrella",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicEnergyGenerator",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "EnergyStorage",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MetalStorage",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicRadar",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicBotFactory",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicVehicleFactory",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "OrbitalLauncher",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-          ]);
+            };
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

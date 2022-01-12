@@ -3,8 +3,8 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GW, GWCStart, gwaioCards, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -23,14 +23,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([
-            gwaioUnits.airFactory,
-            gwaioUnits.firefly,
-            gwaioUnits.bumblebee,
-            gwaioUnits.hummingbird,
-            gwaioUnits.icarus,
-            gwaioUnits.pelican,
-          ]);
+          inventory.addUnits(gwaioGroups.airBasic);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);

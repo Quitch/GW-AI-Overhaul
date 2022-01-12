@@ -3,8 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -29,35 +29,14 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 4);
-          inventory.addUnits([
-            gwaioUnits.airFactoryAdvanced,
-            gwaioUnits.airFactory,
-            gwaioUnits.firefly,
-            gwaioUnits.bumblebee,
-            gwaioUnits.hummingbird,
-            gwaioUnits.icarus,
-            gwaioUnits.pelican,
-            gwaioUnits.spinner,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
-            gwaioUnits.boom,
-            gwaioUnits.botFactoryAdvanced,
-            gwaioUnits.botFactory,
-            gwaioUnits.grenadier,
-            gwaioUnits.spark,
-            gwaioUnits.stitch,
-            gwaioUnits.inferno,
-            gwaioUnits.drifter,
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFactoryAdvanced,
-            gwaioUnits.vehicleFactory,
-            gwaioUnits.jig,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.arkyd,
-            gwaioUnits.solarArray,
-            gwaioUnits.navalFactoryAdvanced,
-          ]);
+          inventory.addUnits(
+            gwaioGroups.air.concat(
+              gwaioGroups.bots,
+              gwaioGroups.naval,
+              gwaioGroups.orbital,
+              gwaioGroups.vehicles
+            )
+          );
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

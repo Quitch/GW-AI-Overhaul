@@ -4,7 +4,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GW, GWCStart, gwaioCards, gwaioUnits, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -23,20 +24,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([
-            gwaioUnits.anchor,
-            gwaioUnits.jig,
-            gwaioUnits.omega,
-            gwaioUnits.orbitalFabber,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.avenger,
-            gwaioUnits.sxx,
-            gwaioUnits.hermes,
-            gwaioUnits.artemis,
-            gwaioUnits.radarSatelliteAdvanced,
-            gwaioUnits.arkyd,
-            gwaioUnits.solarArray,
-          ]);
+          inventory.addUnits(gwaioGroups.orbital);
           inventory.addMods([
             {
               file: gwaioUnits.deepSpaceOrbitalRadar,

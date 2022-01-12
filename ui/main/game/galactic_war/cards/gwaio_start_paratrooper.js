@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -30,19 +31,7 @@ define([
           GWCStart.buff(inventory);
 
           var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
-          var unitCannonUnits = [
-            gwaioUnits.ant,
-            gwaioUnits.boom,
-            gwaioUnits.dox,
-            gwaioUnits.grenadier,
-            gwaioUnits.spark,
-            gwaioUnits.spinner,
-            gwaioUnits.stinger,
-            gwaioUnits.stitch,
-            gwaioUnits.storm,
-            gwaioUnits.stryker,
-          ];
-          var units = unitCannons.concat(unitCannonUnits);
+          var units = unitCannons.concat(gwaioGroups.unitCannonMobile);
           inventory.addUnits(units);
 
           var mods = _.flatten(
@@ -64,40 +53,55 @@ define([
             })
           );
 
+          var exclusion = function (unit) {
+            return !_.includes(gwaioGroups.unitCannonMobile, unit);
+          };
+
           var unitCannonUnitsAdditional = [];
           if (
-            inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwc_enable_vehicles_t1")
-          ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.inferno,
-              gwaioUnits.drifter,
-              gwaioUnits.skitter
-            );
-          }
-          if (
-            inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwaio_upgrade_vehiclefactory")
-          ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.leveler,
-              gwaioUnits.vanguard,
-              gwaioUnits.sheller,
-              gwaioUnits.storm,
-              gwaioUnits.manhattan
-            );
-          }
-          if (
-            inventory.hasCard("gwc_enable_bots_all") ||
+            gwaioCards.hasUnit(
+              inventory.units(),
+              gwaioUnits.botFactoryAdvanced
+            ) ||
             inventory.hasCard("gwaio_upgrade_botfactory")
           ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.bluehawk,
-              gwaioUnits.gilE,
-              gwaioUnits.colonel
+            var remainingAdvancedBots = _.filter(
+              gwaioGroups.botsAdvancedMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingAdvancedBots
             );
           }
-          // eslint-disable-next-line lodash/prefer-map
+          if (
+            gwaioCards.hasUnit(inventory.units(), gwaioUnits.vehicleFactory)
+          ) {
+            var remainingBasicVehicles = _.filter(
+              gwaioGroups.vehiclesBasicMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingBasicVehicles
+            );
+          }
+          if (
+            gwaioCards.hasUnit(
+              inventory.units(),
+              gwaioUnits.vehicleFactoryAdvanced
+            ) ||
+            inventory.hasCard("gwaio_upgrade_vehiclefactory")
+          ) {
+            var remainingAdvancedVehicles = _.filter(
+              gwaioGroups.vehiclesAdvancedMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingAdvancedVehicles
+            );
+          }
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
               file: unit,
@@ -150,7 +154,7 @@ define([
             {
               type: "fabber",
               op: "load",
-              value: "gwaio_start_paratrooper.json", // Queller AI
+              value: CARD.id + ".json", // Queller AI
             },
             {
               type: "factory",

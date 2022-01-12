@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -28,22 +29,13 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([
-            gwaioUnits.flak,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.catapult,
-            gwaioUnits.anchor,
-            gwaioUnits.torpedoLauncherAdvanced,
-          ]);
-          var units = [
-            gwaioUnits.flak,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.catapult,
-            gwaioUnits.torpedoLauncherAdvanced,
-          ];
+          inventory.addUnits(gwaioGroups.structuresDefencesAdvanced);
+
+          var units = gwaioGroups.structuresDefencesAdvanced.concat(
+            gwaioUnits.laserDefenseTower
+          );
           var mods = [];
-          units.forEach(function (unit) {
+          _.forEach(units, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -59,19 +51,16 @@ define([
               }
             );
           });
-          var costUnits = [
-            gwaioUnits.flak,
-            gwaioUnits.galata,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.singleLaserDefenseTower,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.catapult,
-            gwaioUnits.anchor,
-            gwaioUnits.umbrellaAmmo,
-            gwaioUnits.torpedoLauncherAdvanced,
-            gwaioUnits.torpedoLauncher,
-          ];
-          costUnits.forEach(function (unit) {
+          var costUnits = _.filter(
+            gwaioGroups.structuresDefences,
+            function (defence) {
+              return (
+                !_.includes(defence, gwaioUnits.wall) &&
+                !_.includes(defence, gwaioUnits.landMine)
+              );
+            }
+          );
+          _.forEach(costUnits, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -87,39 +76,27 @@ define([
               }
             );
           });
-          var buildUnits = [gwaioUnits.wall];
-          buildUnits.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.1,
-              },
-              {
-                file: unit,
-                path: "max_health",
-                op: "multiply",
-                value: 2,
-              }
-            );
-          });
-          var weapons = [
-            gwaioUnits.flakWeapon,
-            gwaioUnits.galataWeapon,
-            gwaioUnits.laserDefenseTowerAdvancedWeapon,
-            gwaioUnits.singleLaserDefenseTowerWeapon,
-            gwaioUnits.laserDefenseTowerWeapon,
-            gwaioUnits.catapultWeapon,
-            gwaioUnits.catapultBeam,
-            gwaioUnits.anchorWeaponAG,
-            gwaioUnits.anchorWeaponAO,
-            gwaioUnits.umbrellaBeam,
-            gwaioUnits.umbrellaWeapon,
-            gwaioUnits.torpedoLauncherAdvancedWeapon,
-            gwaioUnits.torpedoLauncherWeapon,
-          ];
-          weapons.forEach(function (unit) {
+          mods.push(
+            {
+              file: gwaioUnits.wall,
+              path: "build_metal_cost",
+              op: "multiply",
+              value: 0.1,
+            },
+            {
+              file: gwaioUnits.wall,
+              path: "max_health",
+              op: "multiply",
+              value: 2,
+            }
+          );
+          var weapons = _.filter(
+            gwaioGroups.structuresDefences,
+            function (defence) {
+              return defence !== gwaioUnits.landMineWeapon;
+            }
+          );
+          _.forEach(weapons, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -149,106 +126,41 @@ define([
           });
           inventory.addMods(mods);
 
-          inventory.addAIMods([
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefense",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefense",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedAirDefense",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedAirDefense",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedAirDefense",
-              idToMod: "builders",
-              value: "AnyBasicFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedLandDefense",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedLandDefense",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedLandDefense",
-              idToMod: "builders",
-              value: "AnyBasicFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "TML",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "TML",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "TML",
-              idToMod: "builders",
-              value: "AnyBasicFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedNavalDefense",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedNavalDefense",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "AdvancedNavalDefense",
-              idToMod: "builders",
-              value: "AnyBasicFabber",
-            },
-          ]);
+          var structures = [
+            "AdvancedAirDefense",
+            "AdvancedLandDefense",
+            "AdvancedNavalDefense",
+            "BasicLandDefense",
+            "TML",
+          ];
+          var aiMods = _.flatten(
+            _.map(structures, function (structure) {
+              return [
+                {
+                  type: "fabber",
+                  op: "append",
+                  toBuild: structure,
+                  idToMod: "builders",
+                  value: "Commander",
+                },
+                {
+                  type: "fabber",
+                  op: "append",
+                  toBuild: structure,
+                  idToMod: "builders",
+                  value: "UberCommander",
+                },
+                {
+                  type: "fabber",
+                  op: "append",
+                  toBuild: structure,
+                  idToMod: "builders",
+                  value: "AnyBasicFabber",
+                },
+              ];
+            })
+          );
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

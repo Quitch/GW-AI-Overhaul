@@ -58,7 +58,7 @@ define([
             {
               type: "fabber",
               op: "load",
-              value: "gwaio_start_ceo.json",
+              value: CARD.id + ".json",
             },
           ]);
         } else {

@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
@@ -32,32 +33,32 @@ define([
           var mods = [];
 
           var smallStructures = [
-            gwaioUnits.galata,
-            gwaioUnits.pelter,
             gwaioUnits.energyPlant,
             gwaioUnits.energyStorage,
-            gwaioUnits.wall,
+            gwaioUnits.galata,
             gwaioUnits.landMine,
-            gwaioUnits.singleLaserDefenseTower,
             gwaioUnits.metalStorage,
+            gwaioUnits.pelter,
             gwaioUnits.radar,
+            gwaioUnits.singleLaserDefenseTower,
             gwaioUnits.torpedoLauncher,
+            gwaioUnits.wall,
           ];
           var mediumStructures = [
-            gwaioUnits.flak,
-            gwaioUnits.energyPlantAdvanced,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.laserDefenseTower,
             gwaioUnits.catapult,
-            gwaioUnits.umbrella,
+            gwaioUnits.energyPlantAdvanced,
+            gwaioUnits.flak,
+            gwaioUnits.laserDefenseTower,
+            gwaioUnits.laserDefenseTowerAdvanced,
             gwaioUnits.torpedoLauncherAdvanced,
+            gwaioUnits.umbrella,
           ];
           var largeStructures = [
-            gwaioUnits.holkins,
-            gwaioUnits.radarAdvanced,
-            gwaioUnits.deepSpaceOrbitalRadar,
             gwaioUnits.anchor,
+            gwaioUnits.deepSpaceOrbitalRadar,
+            gwaioUnits.holkins,
             gwaioUnits.jig,
+            gwaioUnits.radarAdvanced,
           ];
           var allStructures = smallStructures.concat(
             mediumStructures,
@@ -66,11 +67,11 @@ define([
 
           var groundStructures = _.filter(allStructures, function (structure) {
             return (
-              !_.includes(structure, "defense_satellite") &&
-              !_.includes(structure, "mining_platform")
+              !_.includes(structure, gwaioUnits.anchor) &&
+              !_.includes(structure, gwaioUnits.jig)
             );
           });
-          groundStructures.forEach(function (unit) {
+          _.forEach(groundStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -112,7 +113,7 @@ define([
           });
 
           var orbitalStructures = [gwaioUnits.anchor, gwaioUnits.jig];
-          orbitalStructures.forEach(function (unit) {
+          _.forEach(orbitalStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -153,7 +154,7 @@ define([
             );
           });
 
-          allStructures.forEach(function (unit) {
+          _.forEach(allStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -182,7 +183,7 @@ define([
             );
           });
 
-          smallStructures.forEach(function (unit) {
+          _.forEach(smallStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -206,7 +207,7 @@ define([
           });
 
           var teleportableStructures = smallStructures.concat(mediumStructures);
-          teleportableStructures.forEach(function (unit) {
+          _.forEach(teleportableStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -223,22 +224,16 @@ define([
             );
           });
 
-          var offensiveStructures = [
-            gwaioUnits.galata,
-            gwaioUnits.pelter,
-            gwaioUnits.landMine,
-            gwaioUnits.singleLaserDefenseTower,
-            gwaioUnits.torpedoLauncher,
-            gwaioUnits.flak,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.catapult,
-            gwaioUnits.umbrella,
-            gwaioUnits.torpedoLauncherAdvanced,
-            gwaioUnits.holkins,
-            gwaioUnits.anchor,
-          ];
-          offensiveStructures.forEach(function (unit) {
+          var defensiveStructures = gwaioGroups.structuresArtillery.concat(
+            gwaioGroups.structuresDefences
+          );
+          var offensiveStructures = _.filter(
+            defensiveStructures,
+            function (structure) {
+              return !_.includes(structure, gwaioUnits.wall);
+            }
+          );
+          _.forEach(offensiveStructures, function (unit) {
             mods.push({
               file: unit,
               path: "command_caps",
@@ -253,12 +248,12 @@ define([
             {
               type: "platoon",
               op: "load",
-              value: "gwaio_start_nomad.json",
+              value: CARD.id + ".json",
             },
             {
               type: "template",
               op: "load",
-              value: "gwaio_start_nomad.json",
+              value: CARD.id + ".json",
             },
           ]);
         } else {

@@ -269,12 +269,14 @@ define({
   nukeLauncherWeapon:
     "/pa/units/land/nuke_launcher/nuke_launcher_tool_weapon.json",
   omega: "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+  omegaAmmo:
+    "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo.json",
   omegaAmmoAG:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
+  omegaWeapon:
+    "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
   omegaWeaponAG:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon_ground.json",
-  omegaWeaponAO:
-    "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
   orbitalFabber:
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
   orbitalFabberBuildArm:
