@@ -1,18 +1,8 @@
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-], function (gwaioUnitsToNames, gwaioTech) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
+  gwaioTech
+) {
   return {
-    validatePaths: function (paths) {
-      _.forEach(paths, function (path) {
-        var index = _.findIndex(gwaioUnitsToNames.units, { path: path });
-        if (index === -1) {
-          console.error(path + " is invalid or missing from GWO unit_names.js");
-        }
-      });
-    },
     hasUnit: function (inventoryUnits, units) {
-      this.validatePaths(units);
       if (_.isArray(units)) {
         return _.some(_.intersection(inventoryUnits, units));
       } else {
@@ -22,7 +12,6 @@ define([
       }
     },
     missingUnit: function (inventoryUnits, units) {
-      this.validatePaths(units);
       if (_.isArray(units)) {
         if (_.isEmpty(_.difference(units, inventoryUnits))) {
           return false;
