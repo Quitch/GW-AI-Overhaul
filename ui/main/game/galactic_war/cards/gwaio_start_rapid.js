@@ -98,13 +98,6 @@ define([
                 "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
             },
             {
-              file: gwaioUnits.airFabber,
-              path: "buildable_types",
-              op: "replace",
-              value:
-                "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
-            },
-            {
               file: gwaioUnits.airFabberAdvanced,
               path: "buildable_types",
               op: "replace",
@@ -186,7 +179,6 @@ define([
               value: "WL_Orbital",
             },
           ];
-
           // Orbital Launcher Upgrade Tech support
           if (
             gwaioCards.hasUnit(inventory.units(), gwaioUnits.orbitalLauncher) ||
@@ -206,32 +198,9 @@ define([
               value: "Orbital & FactoryBuild & Basic | FabOrbBuild - Factory",
             });
           }
-
           inventory.addMods(mods);
 
-          var factoriesBasic = [
-            "BasicAirFactory",
-            "BasicBotFactory",
-            "BasicNavalFactory",
-            "BasicVehicleFactory",
-          ];
-          var factoriesAdvanced = [
-            "AdvancedAirFactory",
-            "AdvancedBotFactory",
-            "AdvancedNavalFactory",
-            "AdvancedVehicleFactory",
-          ];
           var aiMods = [
-            {
-              type: "fabber",
-              op: "load",
-              value: "gwaio_start_rapid.json",
-            },
-            {
-              type: "factory",
-              op: "load",
-              value: "gwaio_start_rapid.json",
-            },
             {
               type: "fabber",
               op: "replace",
@@ -260,7 +229,20 @@ define([
               refValue: 477,
             },
           ];
-
+          var types = ["fabber", "factory"];
+          _.forEach(types, function (type) {
+            aiMods.push({
+              type: type,
+              op: "load",
+              value: CARD.id + ".json",
+            });
+          });
+          var factoriesBasic = [
+            "BasicAirFactory",
+            "BasicBotFactory",
+            "BasicNavalFactory",
+            "BasicVehicleFactory",
+          ];
           _.forEach(factoriesBasic, function (factory) {
             aiMods.push(
               {
@@ -283,7 +265,12 @@ define([
               }
             );
           });
-
+          var factoriesAdvanced = [
+            "AdvancedAirFactory",
+            "AdvancedBotFactory",
+            "AdvancedNavalFactory",
+            "AdvancedVehicleFactory",
+          ];
           _.forEach(factoriesAdvanced, function (factory) {
             aiMods.push(
               {
@@ -306,7 +293,6 @@ define([
               }
             );
           });
-
           inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);

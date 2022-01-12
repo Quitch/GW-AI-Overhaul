@@ -34,7 +34,11 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits([gwaioUnits.ant, gwaioUnits.vehicleFactory]);
+          inventory.addUnits([
+            gwaioUnits.ant,
+            gwaioUnits.vehicleFabber,
+            gwaioUnits.vehicleFactory,
+          ]);
           inventory.maxCards(inventory.maxCards() - 2);
         }
         // Support for GWAIO v4.2.2 and earlier

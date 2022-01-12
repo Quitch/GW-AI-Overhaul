@@ -34,25 +34,7 @@ define([
           var units = unitCannons.concat(gwaioGroups.unitCannonMobile);
           inventory.addUnits(units);
 
-          var mods = _.flatten(
-            _.map(unitCannons, function (unit) {
-              return [
-                {
-                  file: unit,
-                  path: "unit_types",
-                  op: "push",
-                  value: "UNITTYPE_CmdBuild",
-                },
-                {
-                  file: unit,
-                  path: "build_metal_cost",
-                  op: "multiply",
-                  value: 0.5,
-                },
-              ];
-            })
-          );
-
+          // Avoid adding duplicate UNITTYPEs
           var exclusion = function (unit) {
             return !_.includes(gwaioGroups.unitCannonMobile, unit);
           };
@@ -102,6 +84,24 @@ define([
               remainingAdvancedVehicles
             );
           }
+          var mods = _.flatten(
+            _.map(unitCannons, function (unit) {
+              return [
+                {
+                  file: unit,
+                  path: "unit_types",
+                  op: "push",
+                  value: "UNITTYPE_CmdBuild",
+                },
+                {
+                  file: unit,
+                  path: "build_metal_cost",
+                  op: "multiply",
+                  value: 0.5,
+                },
+              ];
+            })
+          );
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
               file: unit,
@@ -110,38 +110,9 @@ define([
               value: "UNITTYPE_CannonBuildable",
             });
           });
-
           inventory.addMods(mods);
 
-          inventory.addAIMods([
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "UberCommander",
-            },
+          var aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -158,66 +129,49 @@ define([
             },
             {
               type: "factory",
-              op: "append",
-              toBuild: "BasicArmorTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "HoverTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "LandScout",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
               op: "load",
               value: "gwaio_upgrade_leveler.json",
             },
-            {
+          ];
+          var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
+          _.forEach(factoryArtillery, function (structure) {
+            aiMods.push(
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "Commander", // TITANS AI
+              },
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "UberCommander", // Queller AI
+              }
+            );
+          });
+          var vehicles = [
+            "BasicArmorTank",
+            "HoverTank",
+            "LandScout",
+            "AdvancedArmorTank",
+            "AdvancedArtilleryVehicle",
+            "FlakTank",
+            "NukeTank",
+            "AdvancedArtilleryBot",
+          ];
+          _.forEach(vehicles, function (unit) {
+            aiMods.push({
               type: "factory",
               op: "append",
-              toBuild: "AdvancedArmorTank",
+              toBuild: unit,
               idToMod: "builders",
               value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "AdvancedArtilleryVehicle",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "FlakTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "NukeTank", // No AI uses this currently
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "AdvancedArtilleryBot",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-          ]);
+            });
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

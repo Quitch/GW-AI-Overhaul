@@ -16,8 +16,9 @@ define([
       inventory.maxCards(
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
+      // Modifications if player is playing as Cluster faction
       gwaioCards.setupCluster(inventory);
-      // Correct issues which affect buffs being applied correctly
+      // Correct issues which prevent buffs being applied correctly
       inventory.addMods([
         {
           // Slammer torpedo should be encompassed in bot buffs not structures'
@@ -35,6 +36,7 @@ define([
         },
       ]);
       var commander = inventory.getTag("global", "commander");
+      // Basic defence, orbital, naval, and eco
       var starterUnits = gwaioGroups.starterUnits.concat(commander);
       inventory.addUnits(starterUnits);
     },

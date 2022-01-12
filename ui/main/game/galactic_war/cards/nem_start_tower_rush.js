@@ -55,8 +55,7 @@ define([
             gwaioGroups.structuresDefences,
             function (defence) {
               return (
-                !_.includes(defence, gwaioUnits.wall) &&
-                !_.includes(defence, gwaioUnits.landMine)
+                defence !== gwaioUnits.wall && defence !== gwaioUnits.landMine
               );
             }
           );

@@ -3,9 +3,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (module, GWCStart, gwaioBank, gwaioCards, gwaioGroups) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {

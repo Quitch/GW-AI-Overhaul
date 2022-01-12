@@ -31,7 +31,6 @@ define([
           GWCStart.buff(inventory);
 
           var mods = [];
-
           var smallStructures = [
             gwaioUnits.energyPlant,
             gwaioUnits.energyStorage,
@@ -64,11 +63,9 @@ define([
             mediumStructures,
             largeStructures
           );
-
           var groundStructures = _.filter(allStructures, function (structure) {
             return (
-              !_.includes(structure, gwaioUnits.anchor) &&
-              !_.includes(structure, gwaioUnits.jig)
+              structure !== gwaioUnits.anchor && structure !== gwaioUnits.jig
             );
           });
           _.forEach(groundStructures, function (unit) {
@@ -111,7 +108,6 @@ define([
               }
             );
           });
-
           var orbitalStructures = [gwaioUnits.anchor, gwaioUnits.jig];
           _.forEach(orbitalStructures, function (unit) {
             mods.push(
@@ -153,7 +149,6 @@ define([
               }
             );
           });
-
           _.forEach(allStructures, function (unit) {
             mods.push(
               {
@@ -182,7 +177,6 @@ define([
               }
             );
           });
-
           _.forEach(smallStructures, function (unit) {
             mods.push(
               {
@@ -205,7 +199,6 @@ define([
             op: "replace",
             value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
           });
-
           var teleportableStructures = smallStructures.concat(mediumStructures);
           _.forEach(teleportableStructures, function (unit) {
             mods.push(
@@ -223,14 +216,13 @@ define([
               }
             );
           });
-
           var defensiveStructures = gwaioGroups.structuresArtillery.concat(
             gwaioGroups.structuresDefences
           );
           var offensiveStructures = _.filter(
             defensiveStructures,
             function (structure) {
-              return !_.includes(structure, gwaioUnits.wall);
+              return structure !== gwaioUnits.wall;
             }
           );
           _.forEach(offensiveStructures, function (unit) {
@@ -241,21 +233,17 @@ define([
               value: "ORDER_Attack",
             });
           });
-
           inventory.addMods(mods);
 
-          inventory.addAIMods([
-            {
-              type: "platoon",
+          var types = ["platoon", "template"];
+          var aiMods = _.map(types, function (type) {
+            return {
+              type: type,
               op: "load",
               value: CARD.id + ".json",
-            },
-            {
-              type: "template",
-              op: "load",
-              value: CARD.id + ".json",
-            },
-          ]);
+            };
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }

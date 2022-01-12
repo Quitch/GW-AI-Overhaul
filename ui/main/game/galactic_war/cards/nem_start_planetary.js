@@ -78,32 +78,7 @@ define([
           inventory.addMods(mods);
 
           var structures = ["BasicMetalExtractor", "AdvancedMetalExtractor"];
-          var aiMods = _.flatten(
-            _.map(structures, function (structure) {
-              return [
-                {
-                  type: "fabber",
-                  op: "replace",
-                  toBuild: structure,
-                  idToMod: "priority",
-                  value: 0,
-                  refId: "task_type",
-                  refValue: "AreaBuild",
-                },
-                {
-                  type: "fabber",
-                  op: "new",
-                  toBuild: structure,
-                  idToMod: "", // add to every test array
-                  value: {
-                    test_type: "CanFindPlaceToBuild",
-                    string0: structure,
-                  },
-                },
-              ];
-            })
-          );
-          aiMods.push(
+          var aiMods = [
             {
               type: "fabber",
               op: "remove",
@@ -121,8 +96,31 @@ define([
                 test_type: "CanFindMetalSpotToBuildAdvanced",
                 boolean: true,
               },
-            }
-          );
+            },
+          ];
+          _.forEach(structures, function (structure) {
+            aiMods.push(
+              {
+                type: "fabber",
+                op: "replace",
+                toBuild: structure,
+                idToMod: "priority",
+                value: 0,
+                refId: "task_type",
+                refValue: "AreaBuild",
+              },
+              {
+                type: "fabber",
+                op: "new",
+                toBuild: structure,
+                idToMod: "", // add to every test array
+                value: {
+                  test_type: "CanFindPlaceToBuild",
+                  string0: structure,
+                },
+              }
+            );
+          });
           inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
