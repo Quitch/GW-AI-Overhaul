@@ -10,9 +10,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
           }
         }
       } else {
-        return _.some(inventoryUnits, function (path) {
-          return units === path;
-        });
+        return _.includes(inventoryUnits, units);
       }
       return false;
     },
