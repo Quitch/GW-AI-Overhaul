@@ -610,10 +610,10 @@ if (!gwaioCardsLoaded) {
             // We need cheats to deal from our deck
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
-              _.forEach(model.gwaioDeck, function (card) {
-                console.log("Testing " + card);
+              _.forEach(model.gwaioDeck, function (cardId) {
+                console.log("Testing " + cardId);
                 dealCard({
-                  id: card,
+                  id: cardId,
                   galaxy: game.galaxy(),
                   inventory: game.inventory(),
                   star: star,
