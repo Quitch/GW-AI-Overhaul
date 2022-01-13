@@ -465,16 +465,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   // exclude orbital factories due to their fabber working differently
   var factoriesBasic = [
-    (gwaioUnits.airFactory,
+    gwaioUnits.airFactory,
     gwaioUnits.botFactory,
     gwaioUnits.navalFactory,
-    gwaioUnits.vehicleFactory),
+    gwaioUnits.vehicleFactory,
   ];
   var factoriesAdvanced = [
-    (gwaioUnits.airFactoryAdvanced,
+    gwaioUnits.airFactoryAdvanced,
     gwaioUnits.botFactoryAdvanced,
     gwaioUnits.navalFactoryAdvanced,
-    gwaioUnits.vehicleFactoryAdvanced),
+    gwaioUnits.vehicleFactoryAdvanced,
   ];
   // add orbital factories too
   var factories = factoriesBasic.concat(
