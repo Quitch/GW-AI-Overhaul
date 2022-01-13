@@ -314,6 +314,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var structuresEcoStorage = [
     gwaioUnits.energyStorage,
     gwaioUnits.metalStorage,
+    gwaioUnits.jig,
   ];
   var structuresEco = structuresEcoBasic.concat(
     structuresEcoAdvanced,
@@ -479,8 +480,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   // add orbital factories too
   var factories = factoriesBasic.concat(
     factoriesAdvanced,
+    gwaioUnits.antiNukeLauncher,
+    gwaioUnits.orbitalFactory,
     gwaioUnits.orbitalLauncher,
-    gwaioUnits.orbitalFactory
+    gwaioUnits.unitCannon
   );
 
   var mobile = airMobile.concat(
@@ -494,10 +497,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
   var notMobile = structures.concat(gwaioUnits.ragnarok);
 
-  var energyUnits = structuresIntel.concat(
+  var energyIntel = structuresIntel.concat(
     gwaioUnits.arkyd,
     gwaioUnits.radarSatelliteAdvanced
   );
+  var energyUnits = [
+    gwaioUnits.artemis,
+    gwaioUnits.bumblebee,
+    gwaioUnits.commander,
+    gwaioUnits.holkins,
+    gwaioUnits.icarus,
+    gwaioUnits.pelter,
+    gwaioUnits.spark,
+    gwaioUnits.sxx,
+    gwaioUnits.wyrm,
+    gwaioUnits.zeus,
+  ];
+  var energyAll = energyIntel.concat(energyUnits);
   var energyWeapons = [
     gwaioUnits.artemisWeapon,
     gwaioUnits.bumblebeeWeapon,
@@ -554,7 +570,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsBasicMobile: botsBasicMobile,
     botsMobile: botsMobile,
     botsWeapons: botsWeapons,
+    energyIntel: energyIntel,
     energyUnits: energyUnits,
+    energyAll: energyAll,
     energyWeapons: energyWeapons,
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
