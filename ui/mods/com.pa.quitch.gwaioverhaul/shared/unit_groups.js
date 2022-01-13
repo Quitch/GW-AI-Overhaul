@@ -547,9 +547,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
+    gwaioUnits.antiNukeLauncher,
+    gwaioUnits.energyPlantAdvanced,
+    gwaioUnits.metalExtractorAdvanced,
     gwaioUnits.radarAdvanced,
-    gwaioUnits.unitCannon,
-    gwaioUnits.antiNukeLauncher
+    gwaioUnits.unitCannon
   );
 
   return {
