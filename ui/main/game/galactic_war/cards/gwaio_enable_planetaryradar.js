@@ -26,7 +26,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnit(gwaioUnits.deepSpaceOrbitalRadar);
+      inventory.addUnits(gwaioUnits.deepSpaceOrbitalRadar);
       inventory.addMods([
         {
           file: gwaioUnits.deepSpaceOrbitalRadar,
