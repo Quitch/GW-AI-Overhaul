@@ -256,7 +256,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.anchorAmmoAG,
     gwaioUnits.anchorAmmoAO,
     gwaioUnits.galataAmmo,
-    gwaioUnits.LandMineAmmo,
+    gwaioUnits.landMineAmmo,
     gwaioUnits.laserDefenseTowerAmmo,
     gwaioUnits.singleLaserDefenseTowerAmmo,
     gwaioUnits.torpedoLauncherAmmo,
