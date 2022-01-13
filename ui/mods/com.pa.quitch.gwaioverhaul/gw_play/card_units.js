@@ -240,9 +240,6 @@ define([
           gwaioUnits.ant,
         ],
       },
-      /* We take some liberties with the active gwc_enable_ cards, due to them working counterintuitively.
-       They will list units that start unlocked in gwc_start.js, but the player doesn't know this.
-       This could also mean if a mod changes how these cards work these listings become inaccurate. */
       {
         id: "gwc_enable_air_all",
         units: gwaioGroups.airMobile.concat(
