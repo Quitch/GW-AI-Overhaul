@@ -613,6 +613,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresEco: structuresEco,
     structuresEcoAdvanced: structuresEcoAdvanced,
     structuresEcoBasic: structuresEcoBasic,
+    structuresEcoStorage: structuresEcoStorage,
     structuresFactories: structuresFactories,
     structuresIntel: structuresIntel,
     structuresIntelAdvanced: structuresIntelAdvanced,
