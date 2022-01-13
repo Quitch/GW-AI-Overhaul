@@ -297,8 +297,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.torpedoLauncherAdvancedWeapon,
   ];
   var structuresDefencesAmmo = structuresDefencesBasicAmmo.concat(
-    structuresDefencesAdvancedAmmo,
-    gwaioUnits.antiNukeLauncherAmmo
+    structuresDefencesAdvancedAmmo
   );
   var structuresDefencesWeapons = structuresDefencesBasicWeapons.concat(
     structuresDefencesAdvancedWeapons
