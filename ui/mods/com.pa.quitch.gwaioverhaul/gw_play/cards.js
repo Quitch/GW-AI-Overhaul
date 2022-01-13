@@ -612,9 +612,8 @@ if (!gwaioCardsLoaded) {
               star = game.galaxy().stars()[game.currentStar()];
               _.forEach(model.gwaioDeck, function (card) {
                 console.log("Testing " + card);
-                card = { id: card };
                 dealCard({
-                  id: card.id,
+                  id: card,
                   galaxy: game.galaxy(),
                   inventory: game.inventory(),
                   star: star,
