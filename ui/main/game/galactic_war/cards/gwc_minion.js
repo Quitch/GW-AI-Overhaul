@@ -41,16 +41,24 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
+
       if (
-        (!gwaioCards.hasUnit(gwaioUnits.vehicleFactory) &&
-          !gwaioCards.hasUnit(gwaioUnits.botFactory) &&
-          !gwaioCards.hasUnit(gwaioUnits.airFactory)) ||
+        (!gwaioCards.hasUnit(inventory.units(), gwaioUnits.vehicleFactory) &&
+          !gwaioCards.hasUnit(inventory.units(), gwaioUnits.botFactory) &&
+          !gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFactory)) ||
         inventory.hasCard("nem_start_deepspace")
       ) {
-        chance = 0;
+        return {
+          params: {
+            minion: {},
+            unique: Math.random(),
+          },
+          chance: 0,
+        };
       } else if (inventory.minions) {
         chance = chance / (inventory.minions().length + 1);
       }
+
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
       var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
@@ -66,12 +74,13 @@ define([
             );
         }
       }
+
       return {
         params: {
           minion: minion,
           unique: Math.random(),
         },
-        chance: system.distance() > 0 ? chance : 0,
+        chance: chance,
       };
     },
     buff: function (inventory, params) {

@@ -21,8 +21,7 @@ define([
       deal: function (system, context, inventory) {
         var chance = 0;
         if (
-          inventory.hasCard("gwc_enable_artillery") ||
-          inventory.hasCard("gwc_start_artillery")
+          gwaioCards.hasUnit(inventory.units(), gwaioGroups.structuresArtillery)
         ) {
           chance = 50;
         }
@@ -30,39 +29,43 @@ define([
       },
       buff: function (inventory) {
         var mods = [];
-        _.forEach(gwaioGroups.structuresArtilleryAmmo, function (unit) {
-          mods.push({
-            file: unit,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          });
-          mods.push({
-            file: unit,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          });
+        _.forEach(gwaioGroups.structuresArtilleryAmmo, function (ammo) {
+          mods.push(
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            }
+          );
         });
-        _.forEach(gwaioGroups.structuresArtilleryWeapons, function (weap) {
-          mods.push({
-            file: weap,
-            path: "ammo_capacity",
-            op: "multiply",
-            value: 0.1,
-          });
-          mods.push({
-            file: weap,
-            path: "ammo_demand",
-            op: "multiply",
-            value: 0.1,
-          });
-          mods.push({
-            file: weap,
-            path: "ammo_per_shot",
-            op: "multiply",
-            value: 0.1,
-          });
+        _.forEach(gwaioGroups.structuresArtilleryWeapons, function (weapon) {
+          mods.push(
+            {
+              file: weapon,
+              path: "ammo_capacity",
+              op: "multiply",
+              value: 0.1,
+            },
+            {
+              file: weapon,
+              path: "ammo_demand",
+              op: "multiply",
+              value: 0.1,
+            },
+            {
+              file: weapon,
+              path: "ammo_per_shot",
+              op: "multiply",
+              value: 0.1,
+            }
+          );
         });
         inventory.addMods(mods);
       },

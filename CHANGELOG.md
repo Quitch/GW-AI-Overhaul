@@ -29,6 +29,8 @@
 - Nerfed the following cards:
   - Atlas Upgrade Tech
 - All loadouts start with the ARKYD
+- Defense Fabrication Tech doesn't reduce the cost of anti-nuke ammo
+- Upgrades which require another unit now add that unit to your inventory
 
 ### Fixed
 
@@ -42,6 +44,7 @@
 - Slammer torpedo is buffed by bot buffs not structure buffs
 - Defense Tech Commander not reducing cost of Umbrellas
 - Omega Upgrade Tech being tied to ownership of irrelevant units
+- Improved Energy Weapons never being dealt
 
 ## v5.27.0 - 2021-12-23
 

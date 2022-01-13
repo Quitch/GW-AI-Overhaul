@@ -1,9 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -39,15 +38,13 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.structures;
-      var mods = [];
-      units.forEach(function (unit) {
-        mods.push({
+      var mods = _.map(gwaioGroups.structures, function (unit) {
+        return {
           file: unit,
           path: "max_health",
           op: "multiply",
           value: 1.5,
-        });
+        };
       });
       inventory.addMods(mods);
     },

@@ -38,15 +38,13 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.orbitalMobile;
-      var mods = [];
-      units.forEach(function (unit) {
-        mods.push({
+      var mods = _.map(gwaioGroups.orbitalMobile, function (unit) {
+        return {
           file: unit,
           path: "max_health",
           op: "multiply",
           value: 1.5,
-        });
+        };
       });
       inventory.addMods(mods);
     },

@@ -492,6 +492,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
   var notMobile = structures.concat(gwaioUnits.ragnarok);
 
+  var energyUnits = structuresIntel.concat(
+    gwaioUnits.arkyd,
+    gwaioUnits.radarSatelliteAdvanced
+  );
+  var energyWeapons = [
+    gwaioUnits.artemisWeapon,
+    gwaioUnits.bumblebeeWeapon,
+    gwaioUnits.commanderSecondary,
+    gwaioUnits.holkinsWeapon,
+    gwaioUnits.icarusWeapon,
+    gwaioUnits.pelterWeapon,
+    gwaioUnits.sparkWeapon,
+    gwaioUnits.sxxWeapon,
+    gwaioUnits.wyrmWeapon,
+    gwaioUnits.zeusWeapon,
+  ];
+
   var ammo = airAmmo.concat(
     botsAmmo,
     navalAmmo,
@@ -535,6 +552,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsBasicMobile: botsBasicMobile,
     botsMobile: botsMobile,
     botsWeapons: botsWeapons,
+    energyUnits: energyUnits,
+    energyWeapons: energyWeapons,
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
     fabbersBasic: fabbersBasic,

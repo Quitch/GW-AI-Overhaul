@@ -19,27 +19,19 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_bots_t1") ||
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_start_bot") ||
-        inventory.hasCard("gwaio_start_hoarder") ||
-        inventory.hasCard("tgw_start_speed")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.botsMobile)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.botsMobile;
-      var mods = [];
-      units.forEach(function (unit) {
-        mods.push({
+      var mods = _.map(gwaioGroups.botsMobile, function (unit) {
+        return {
           file: unit,
           path: "max_health",
           op: "multiply",
           value: 1.5,
-        });
+        };
       });
       inventory.addMods(mods);
     },

@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,39 +19,20 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_vehicles_t1") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_start_vehicle") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.vehiclesMobile)) {
         chance = 70;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.spinnerAmmo,
-        gwaioUnits.skitterAmmo,
-        gwaioUnits.skitterAmmo,
-        gwaioUnits.infernoAmmo,
-        gwaioUnits.stormAmmo,
-        gwaioUnits.vanguardAmmo,
-        gwaioUnits.drifterAmmo,
-        gwaioUnits.levelerAmmo,
-        gwaioUnits.antAmmo,
-      ];
-      var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
+      var mods = _.map(gwaioGroups.vehiclesAmmo, function (unit) {
+        return {
           file: unit,
           path: "damage",
           op: "multiply",
           value: 1.25,
-        });
-      };
-      _.forEach(units, modUnit);
+        };
+      });
       inventory.addMods(mods);
     },
     dull: function () {

@@ -1,9 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -36,9 +35,8 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.structures;
       var mods = [];
-      units.forEach(function (unit) {
+      _.forEach(gwaioGroups.structures, function (unit) {
         mods.push({
           file: unit,
           path: "max_health",
@@ -46,25 +44,7 @@ define([
           value: 1.5,
         });
       });
-      var ammos = [
-        gwaioUnits.landMineAmmo,
-        gwaioUnits.flakAmmo,
-        gwaioUnits.galataAmmo,
-        gwaioUnits.laserDefenseTowerAdvancedAmmo,
-        gwaioUnits.singleLaserDefenseTowerAmmo,
-        gwaioUnits.laserDefenseTowerAmmo,
-        gwaioUnits.catapultAmmo,
-        gwaioUnits.anchorAmmoAG,
-        gwaioUnits.anchorAmmoAO,
-        gwaioUnits.umbrellaAmmo,
-        gwaioUnits.torpedoLauncherAdvancedLandAmmo,
-        gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
-        gwaioUnits.torpedoLauncherAdvancedAmmo,
-        gwaioUnits.torpedoLauncherLandAmmo,
-        gwaioUnits.torpedoLauncherWaterAmmo,
-        gwaioUnits.torpedoLauncherAmmo,
-      ];
-      ammos.forEach(function (ammo) {
+      _.forEach(gwaioGroups.structuresDefencesAmmo, function (ammo) {
         mods.push({
           file: ammo,
           path: "damage",

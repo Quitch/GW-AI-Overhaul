@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -38,32 +38,13 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var ammos = [
-        gwaioUnits.landMineAmmo,
-        gwaioUnits.flakAmmo,
-        gwaioUnits.galataAmmo,
-        gwaioUnits.laserDefenseTowerAdvancedAmmo,
-        gwaioUnits.singleLaserDefenseTowerAmmo,
-        gwaioUnits.laserDefenseTowerAmmo,
-        gwaioUnits.catapultAmmo,
-        gwaioUnits.anchorAmmoAG,
-        gwaioUnits.anchorAmmoAO,
-        gwaioUnits.umbrellaAmmo,
-        gwaioUnits.torpedoLauncherAdvancedLandAmmo,
-        gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
-        gwaioUnits.torpedoLauncherAdvancedAmmo,
-        gwaioUnits.torpedoLauncherLandAmmo,
-        gwaioUnits.torpedoLauncherWaterAmmo,
-        gwaioUnits.torpedoLauncherAmmo,
-      ];
-      var mods = [];
-      ammos.forEach(function (ammo) {
-        mods.push({
+      var mods = _.map(gwaioGroups.structuresDefencesAmmo, function (ammo) {
+        return {
           file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
-        });
+        };
       });
       inventory.addMods(mods);
     },

@@ -1,8 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,22 +19,14 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_bots_t1") ||
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_start_bot") ||
-        inventory.hasCard("gwaio_start_hoarder") ||
-        inventory.hasCard("tgw_start_speed")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.botsMobile)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.botsMobile;
       var mods = [];
-      units.forEach(function (unit) {
+      _.forEach(gwaioGroups.botsMobile, function (unit) {
         mods.push(
           {
             file: unit,
@@ -69,19 +60,7 @@ define([
           }
         );
       });
-      var ammos = [
-        gwaioUnits.slammerAmmo,
-        gwaioUnits.slammerTorpedoAmmo,
-        gwaioUnits.doxAmmo,
-        gwaioUnits.stingerAmmo,
-        gwaioUnits.boomAmmo,
-        gwaioUnits.locustsAmmo,
-        gwaioUnits.gilEAmmo,
-        gwaioUnits.colonelAmmo,
-        gwaioUnits.bluehawkAmmo,
-        gwaioUnits.sparkAmmo,
-      ];
-      ammos.forEach(function (ammo) {
+      _.forEach(gwaioGroups.botsAmmo, function (ammo) {
         mods.push({
           file: ammo,
           path: "damage",

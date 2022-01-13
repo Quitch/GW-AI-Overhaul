@@ -20,24 +20,22 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        inventory.hasCard("gwc_enable_artillery") ||
-        inventory.hasCard("gwc_start_artillery")
+        gwaioCards.hasUnit(inventory.units(), gwaioGroups.structuresArtillery)
       ) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addMods(
-        _.map(gwaioGroups.structuresArtillery, function (unit) {
-          return {
-            file: unit,
-            path: "build_metal_cost",
-            op: "multiply",
-            value: 0.25,
-          };
-        })
-      );
+      var mods = _.map(gwaioGroups.structuresArtillery, function (unit) {
+        return {
+          file: unit,
+          path: "build_metal_cost",
+          op: "multiply",
+          value: 0.25,
+        };
+      });
+      inventory.addMods(mods);
     },
     dull: function () {
       // empty

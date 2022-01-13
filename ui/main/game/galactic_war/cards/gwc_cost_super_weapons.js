@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioUnits, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,32 +21,27 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_enable_air_all") ||
-        inventory.hasCard("gwaio_start_hoarder")
+        gwaioCards.hasUnit(
+          inventory.units(),
+          gwaioGroups.structuresSuperWeapons
+        )
       ) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.catalyst,
-        gwaioUnits.nukeLauncherAmmo,
-        gwaioUnits.nukeLauncher,
-        gwaioUnits.halley,
-      ];
-      var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
+      var units = gwaioGroups.structuresSuperWeapons.concat(
+        gwaioUnits.nukeLauncherAmmo
+      );
+      var mods = _.map(units, function (unit) {
+        return {
           file: unit,
           path: "build_metal_cost",
           op: "multiply",
           value: 0.25,
-        });
-      };
-      _.forEach(units, modUnit);
+        };
+      });
       inventory.addMods(mods);
     },
     dull: function () {

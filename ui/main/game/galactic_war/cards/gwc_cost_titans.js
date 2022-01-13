@@ -18,25 +18,21 @@ define([
       getContext: gwaioCards.getContext,
       deal: function (system, context, inventory) {
         var chance = 0;
-        if (
-          inventory.hasCard("gwc_enable_titans") ||
-          inventory.hasCard("gwc_start_titans")
-        ) {
+        if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.titans)) {
           chance = 80;
         }
         return { chance: chance };
       },
       buff: function (inventory) {
-        inventory.addMods(
-          _.map(gwaioGroups.titans, function (unit) {
-            return {
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.5,
-            };
-          })
-        );
+        var mods = _.map(gwaioGroups.titans, function (unit) {
+          return {
+            file: unit,
+            path: "build_metal_cost",
+            op: "multiply",
+            value: 0.5,
+          };
+        });
+        inventory.addMods(mods);
       },
       dull: function () {
         // empty

@@ -19,47 +19,42 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_vehicles_t1") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_start_vehicle") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.vehiclesMobile)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.vehiclesMobile;
-      var mods = [];
-      units.forEach(function (unit) {
-        mods.push(
-          {
-            file: unit,
-            path: "navigation.move_speed",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.brake",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.acceleration",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.turn_speed",
-            op: "multiply",
-            value: 1.5,
-          }
-        );
-      });
+      var mods = _.flatten(
+        _.map(gwaioGroups.vehiclesMobile, function (unit) {
+          return [
+            {
+              file: unit,
+              path: "navigation.move_speed",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.brake",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.acceleration",
+              op: "multiply",
+              value: 1.5,
+            },
+            {
+              file: unit,
+              path: "navigation.turn_speed",
+              op: "multiply",
+              value: 1.5,
+            },
+          ];
+        })
+      );
       inventory.addMods(mods);
     },
     dull: function () {

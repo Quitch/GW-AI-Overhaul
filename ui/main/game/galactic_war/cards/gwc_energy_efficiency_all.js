@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -43,15 +43,8 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.deepSpaceOrbitalRadar,
-        gwaioUnits.arkyd,
-        gwaioUnits.radarSatelliteAdvanced,
-        gwaioUnits.radar,
-        gwaioUnits.radarAdvanced,
-      ];
       var mods = [];
-      units.forEach(function (unit) {
+      _.forEach(gwaioGroups.energyUnits, function (unit) {
         mods.push({
           file: unit,
           path: "consumption.energy",
@@ -59,19 +52,7 @@ define([
           value: 0.25,
         });
       });
-      var weapons = [
-        gwaioUnits.commanderSecondary,
-        gwaioUnits.wyrmWeapon,
-        gwaioUnits.bumblebeeWeapon,
-        gwaioUnits.icarusWeapon,
-        gwaioUnits.zeusWeapon,
-        gwaioUnits.holkinsWeapon,
-        gwaioUnits.pelterWeapon,
-        gwaioUnits.sparkWeapon,
-        gwaioUnits.sxxWeapon,
-        gwaioUnits.artemisWeapon,
-      ];
-      weapons.forEach(function (weapon) {
+      _.forEach(gwaioGroups.energyWeapons, function (weapon) {
         mods.push(
           {
             file: weapon,

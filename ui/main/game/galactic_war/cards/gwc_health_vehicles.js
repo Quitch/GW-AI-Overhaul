@@ -19,28 +19,20 @@ define([
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_vehicles_t1") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_start_vehicle") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.vehiclesMobile)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.vehiclesMobile;
-      var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
+      var mods = _.map(gwaioGroups.vehiclesMobile, function (unit) {
+        return {
           file: unit,
           path: "max_health",
           op: "multiply",
           value: 1.5,
-        });
-      };
-      _.forEach(units, modUnit);
+        };
+      });
       inventory.addMods(mods);
     },
     dull: function () {

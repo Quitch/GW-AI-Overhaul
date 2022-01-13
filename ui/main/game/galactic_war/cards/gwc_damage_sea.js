@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwaioCards, gwaioGroups) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -18,39 +18,16 @@ define([
     },
     getContext: gwaioCards.getContext,
     deal: function () {
-      var chance = 0;
-      chance = 35;
-
-      return { chance: chance };
+      return { chance: 35 };
     },
     buff: function (inventory) {
-      var ammos = [
-        gwaioUnits.barracudaAmmo,
-        gwaioUnits.leviathanAmmo,
-        gwaioUnits.leviathanAmmo,
-        gwaioUnits.orcaAmmo,
-        gwaioUnits.orcaTorpedoAmmo,
-        gwaioUnits.squallTorpedoAmmo,
-        gwaioUnits.squallAmmo,
-        gwaioUnits.narwhalAAAmmo,
-        gwaioUnits.narwhalAmmo,
-        gwaioUnits.narwhalTorpedoAmmo,
-        gwaioUnits.kaijuSecondaryAmmo,
-        gwaioUnits.kaijuAmmo,
-        gwaioUnits.stingrayAAAmmo,
-        gwaioUnits.stingrayAmmo,
-        gwaioUnits.krakenMissileAmmo,
-        gwaioUnits.krakenWeaponAmmo,
-        gwaioUnits.piranhaAmmo,
-      ];
-      var mods = [];
-      ammos.forEach(function (ammo) {
-        mods.push({
+      var mods = _.map(gwaioGroups.navalAmmo, function (ammo) {
+        return {
           file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
-        });
+        };
       });
       inventory.addMods(mods);
     },
