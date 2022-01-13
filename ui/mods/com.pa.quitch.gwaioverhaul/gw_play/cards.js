@@ -611,6 +611,7 @@ if (!gwaioCardsLoaded) {
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
               _.forEach(gwaioCardsToUnits.cards, function (card) {
+                console.log(card.id)
                 dealCard({
                   id: card.id,
                   galaxy: game.galaxy(),
