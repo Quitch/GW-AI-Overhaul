@@ -278,6 +278,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.flak,
     gwaioUnits.laserDefenseTowerAdvanced,
     gwaioUnits.torpedoLauncherAdvanced,
+    gwaioUnits.antiNukeLauncher,
   ];
   var structuresDefencesAdvancedAmmo = [
     gwaioUnits.catapultAmmo,
@@ -296,7 +297,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.torpedoLauncherAdvancedWeapon,
   ];
   var structuresDefencesAmmo = structuresDefencesBasicAmmo.concat(
-    structuresDefencesAdvancedAmmo
+    structuresDefencesAdvancedAmmo,
+    gwaioUnits.antiNukeLauncherAmmo
   );
   var structuresDefencesWeapons = structuresDefencesBasicWeapons.concat(
     structuresDefencesAdvancedWeapons
@@ -338,19 +340,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var structuresIntel = structuresIntelBasic.concat(structuresIntelAdvanced);
   var structuresSuperWeapons = [
-    gwaioUnits.antiNukeLauncher,
     gwaioUnits.catalyst,
     gwaioUnits.halley,
     gwaioUnits.nukeLauncher,
   ];
-  var structures = [
-    structuresFactories,
+  var structures = structuresFactories.concat(
     structuresDefences,
     structuresSuperWeapons,
     structuresIntel,
     structuresEco,
-    structuresArtillery,
-  ];
+    structuresArtillery
+  );
 
   var titans = [
     gwaioUnits.ares,
@@ -514,7 +514,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
     gwaioUnits.radarAdvanced,
-    gwaioUnits.unitCannon
+    gwaioUnits.unitCannon,
+    gwaioUnits.antiNukeLauncher
   );
 
   return {
