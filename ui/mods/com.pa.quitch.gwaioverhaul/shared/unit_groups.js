@@ -211,7 +211,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.sxxWeapon,
   ];
   var orbitalBasic = orbitalBasicMobile.concat(gwaioUnits.orbitalLauncher);
-  var orbitalAdvanced = orbitalAdvancedMobile.concat(gwaioUnits.orbitalFactory);
+  var orbitalAdvanced = orbitalAdvancedMobile.concat(
+    gwaioUnits.orbitalFactory,
+    gwaioUnits.jig // this is how GW treats it
+  );
   var orbitalAmmo = orbitalBasicAmmo.concat(orbitalAdvancedAmmo);
   var orbitalWeapons = orbitalBasicWeapons.concat(orbitalAdvancedWeapons);
   var orbitalMobile = orbitalBasicMobile.concat(orbitalAdvancedMobile);
