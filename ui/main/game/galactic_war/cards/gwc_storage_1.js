@@ -37,10 +37,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(gwaioGroups.structuresStorage);
-      var units = gwaioGroups.structuresEcoStorage.concat(
-        gwaioUnits.commander,
-        gwaioUnits.jig
-      );
+      var units = gwaioGroups.structuresEcoStorage.concat(gwaioUnits.commander);
       inventory.addMods(
         _.flatten(
           _.map(units, function (unit) {

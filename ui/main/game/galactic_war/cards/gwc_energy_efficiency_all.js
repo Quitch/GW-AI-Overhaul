@@ -44,7 +44,7 @@ define([
     },
     buff: function (inventory) {
       var mods = [];
-      _.forEach(gwaioGroups.energyUnits, function (unit) {
+      _.forEach(gwaioGroups.energyIntel, function (unit) {
         mods.push({
           file: unit,
           path: "consumption.energy",
