@@ -36,7 +36,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.structuresStorage);
+      inventory.addUnits(gwaioGroups.structuresEcoStorage);
       var units = gwaioGroups.structuresEcoStorage.concat(gwaioUnits.commander);
       inventory.addMods(
         _.flatten(
