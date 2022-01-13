@@ -844,7 +844,6 @@ if (!gwaioCardsLoaded) {
                 var units = model.gwaioCardsToUnits[cardIndex].units;
                 if (units) {
                   var affectedUnits = [];
-                  // TODO: replace with $.getJSON() to get this info from the source?
                   _.forEach(units, function (unit) {
                     cardIndex = _.findIndex(gwaioUnitsToNames.units, {
                       path: unit,
