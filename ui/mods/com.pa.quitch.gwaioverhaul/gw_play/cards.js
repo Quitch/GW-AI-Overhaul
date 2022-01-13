@@ -619,6 +619,7 @@ if (!gwaioCardsLoaded) {
                   star: star,
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
+                    // 1. test all the minions first
                     _.forEach(GWFactions, function (faction) {
                       _.forEach(faction.minions, function (minion) {
                         var minionStock = _.cloneDeep(product);
@@ -651,10 +652,26 @@ if (!gwaioCardsLoaded) {
                         });
                       });
                     });
-                  } else {
-                    game.inventory().cards.push(product);
-                    inventory.applyCards();
+                    // 2. then deal a sub commander for battle testing
+                    var minion = _.cloneDeep(
+                      _.sample(GWFactions[playerFaction].minions)
+                    );
+                    var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                    if (ai === "Penchant") {
+                      var penchantValues = gwaioAI.penchants();
+                      minion.character =
+                        minion.character +
+                        (" " + loc(penchantValues.penchantName));
+                      minion.personality.personality_tags =
+                        minion.personality.personality_tags.concat(
+                          penchantValues.penchants
+                        );
+                    }
+                    product.minion = minion;
+                    product.unique = Math.random();
                   }
+                  game.inventory().cards.push(product);
+                  inventory.applyCards();
                 });
               });
             };
