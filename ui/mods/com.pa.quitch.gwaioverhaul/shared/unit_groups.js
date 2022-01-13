@@ -445,19 +445,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var fabbersBasic = [
     gwaioUnits.airFabber,
+    gwaioUnits.barnacle,
     gwaioUnits.botFabber,
     gwaioUnits.navalFabber,
     gwaioUnits.orbitalFabber,
-    gwaioUnits.vehicleFabber,
     gwaioUnits.stitch,
-    gwaioUnits.barnacle,
+    gwaioUnits.vehicleFabber,
   ];
   var fabbersAdvanced = [
     gwaioUnits.airFabberAdvanced,
+    gwaioUnits.angel,
     gwaioUnits.botFabberAdvanced,
+    gwaioUnits.colonel,
+    gwaioUnits.mend,
     gwaioUnits.navalFabberAdvanced,
     gwaioUnits.vehicleFabberAdvanced,
-    gwaioUnits.mend,
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
