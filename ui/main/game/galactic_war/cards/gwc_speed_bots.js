@@ -26,7 +26,7 @@ define([
     },
     buff: function (inventory) {
       var mods = _.flatten(
-        _.map(function (unit) {
+        _.map(gwaioGroups.botsMobile, function (unit) {
           return [
             {
               file: unit,
