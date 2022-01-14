@@ -115,17 +115,14 @@ if (!gwaioIntelligenceLoaded) {
 
         model.gwaioSystemSurfaceArea = ko.computed(function () {
           var area = 0;
-          model.selection
-            .system()
-            .planets()
-            .forEach(function (world) {
-              if (
-                (world.generator && world.generator.biome !== "gas") ||
-                (world.planet && world.planet.biome !== "gas")
-              ) {
-                area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
-              }
-            });
+          _.forEach(model.selection.system().planets(), function (world) {
+            if (
+              (world.generator && world.generator.biome !== "gas") ||
+              (world.planet && world.planet.biome !== "gas")
+            ) {
+              area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+            }
+          });
           return formattedString(area);
         });
 
@@ -163,10 +160,12 @@ if (!gwaioIntelligenceLoaded) {
           if (primary) {
             commanders.push(intelligence(primary));
             if (primary.minions) {
-              commanders = commanders.concat(primary.minions.map(intelligence));
+              commanders = commanders.concat(
+                _.map(primary.minions, intelligence)
+              );
             }
             if (primary.foes) {
-              commanders = commanders.concat(primary.foes.map(intelligence));
+              commanders = commanders.concat(_.map(primary.foes, intelligence));
             }
           }
           var totalEco = 0;
@@ -356,7 +355,9 @@ if (!gwaioIntelligenceLoaded) {
           if (primary) {
             commanders.push(intelligence(primary));
             if (primary.minions) {
-              commanders = commanders.concat(primary.minions.map(intelligence));
+              commanders = commanders.concat(
+                _.map(primary.minions, intelligence)
+              );
             }
           }
           return commanders;
@@ -368,7 +369,7 @@ if (!gwaioIntelligenceLoaded) {
           var primary = model.selection.system().star.ai();
           var commanders = [];
           if (primary && primary.foes) {
-            commanders = primary.foes.map(intelligence);
+            commanders = _.map(primary.foes, intelligence);
           }
           return commanders;
         });

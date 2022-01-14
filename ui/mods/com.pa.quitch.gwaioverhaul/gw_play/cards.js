@@ -895,12 +895,12 @@ if (!gwaioCardsLoaded) {
 
             model.showSystemCard.subscribe(function () {
               if (model.showSystemCard()) {
-                model.currentSystemCardList().forEach(makeCardTooltip);
+                _.forEach(model.currentSystemCardList(), makeCardTooltip);
               }
             });
             // Ensure the tooltip is shown even if the UI is refreshed
             if (model.showSystemCard()) {
-              model.currentSystemCardList().forEach(makeCardTooltip);
+              _.forEach(model.currentSystemCardList(), makeCardTooltip);
             }
 
             var hoverCount = 0;
