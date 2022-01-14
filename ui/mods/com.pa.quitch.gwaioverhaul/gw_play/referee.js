@@ -6,8 +6,12 @@ if (!gwaioRefereeChangesLoaded) {
   function gwaioRefereeChanges() {
     try {
       requireGW(
-        ["shared/gw_common", "pages/gw_play/gw_referee"],
-        function (GW, GWReferee) {
+        [
+          "shared/gw_common",
+          "pages/gw_play/gw_referee",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+        ],
+        function (GW, GWReferee, gwaioUnits) {
           var gwaioReferee = function (game) {
             var self = this;
 
@@ -348,6 +352,23 @@ if (!gwaioRefereeChangesLoaded) {
                 };
                 /* end of gw_spec.js replacements */
 
+                // allow for specs not assigned to units to still be processed
+                var combineSpecs = function (baseSpecs, newSpecs) {
+                  return baseSpecs.concat(newSpecs);
+                };
+
+                // global for modder compatibility
+                if (!model.gwaioSpecs) {
+                  model.gwaioSpecs = [];
+                }
+                // files not assigned by default that we wish to mod
+                model.gwaioSpecs.push(
+                  gwaioUnits.fireflyAmmo,
+                  gwaioUnits.narwhalTorpedo,
+                  gwaioUnits.narwhalTorpedoAmmo,
+                  gwaioUnits.skitterAmmo
+                );
+
                 var inventory = self.game().inventory();
 
                 var units = parse(unitsGet[0]).units;
@@ -363,9 +384,10 @@ if (!gwaioRefereeChangesLoaded) {
                     aiX1UnitMap,
                     aiTag[n]
                   );
+                  var aiSpecs = combineSpecs(units, model.gwaioSpecs);
 
                   GW.specs
-                    .genUnitSpecs(units, aiTag[n])
+                    .genUnitSpecs(aiSpecs, aiTag[n])
                     .then(function (aiSpecFiles) {
                       var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
                       var enemyAIUnitMapPair = {};
@@ -406,9 +428,13 @@ if (!gwaioRefereeChangesLoaded) {
                 var playerX1AIUnitMap = titans
                   ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
+                var playerSpecs = combineSpecs(
+                  inventory.units(),
+                  model.gwaioSpecs
+                );
 
                 GW.specs
-                  .genUnitSpecs(inventory.units(), playerTag)
+                  .genUnitSpecs(playerSpecs, playerTag)
                   .then(function (playerSpecFiles) {
                     var playerFilesClassic = {};
                     var playerFilesX1 = {};
