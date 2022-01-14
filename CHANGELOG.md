@@ -17,7 +17,6 @@
   - Halley Upgrade Tech
   - Helios Upgrade Tech
   - Kraken Upgrade Tech
-  - Laser Defense Tower Upgrade Tech
   - Nuclear Missile Launcher Upgrade Tech
   - Skitter Upgrade Tech
   - Spark Upgrade Tech
