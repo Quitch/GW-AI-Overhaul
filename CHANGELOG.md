@@ -34,7 +34,7 @@
 - Defense Fabrication Tech doesn't reduce the cost of anti-nuke ammo
 - Upgrades which require another unit now add that unit to your inventory
 - Allow Nomad loadout units to be pushed
-- Enemy AIs won't build land titans due to pathing issues
+- AIs won't build land titans due to pathing issues
 
 ### Fixed
 
