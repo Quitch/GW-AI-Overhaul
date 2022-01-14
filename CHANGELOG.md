@@ -5,6 +5,7 @@
 ### Added
 
 - The system intelligence panel displays a card you are guaranteed to get offered if you conquer the system
+- Zoom level fix from Bigger Galactic War
 
 ### Changed
 

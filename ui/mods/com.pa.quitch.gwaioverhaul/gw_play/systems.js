@@ -20,6 +20,14 @@ if (!gwaioSystemChangesLoaded) {
           );
         }
 
+        // Don't allow starting zoom higher than maximum zoom
+        _.defer(function () {
+          model.galaxy.zoom(
+            Math.max(model.galaxy.zoom(), model.galaxy.minZoom())
+          );
+          model.centerOnPlayer();
+        });
+
         function createBitmap(params) {
           if (!params.url) {
             throw new Error("No URL specified");
