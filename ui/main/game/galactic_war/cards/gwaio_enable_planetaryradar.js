@@ -27,6 +27,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(gwaioUnits.deepSpaceOrbitalRadar);
+
       inventory.addMods([
         {
           file: gwaioUnits.deepSpaceOrbitalRadar,

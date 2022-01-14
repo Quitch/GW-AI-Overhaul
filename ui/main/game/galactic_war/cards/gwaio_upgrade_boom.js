@@ -29,6 +29,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(gwaioUnits.lob);
+
       inventory.addMods([
         {
           file: gwaioUnits.lobAmmo,

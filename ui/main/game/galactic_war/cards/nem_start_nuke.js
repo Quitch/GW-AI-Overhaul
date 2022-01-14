@@ -34,6 +34,7 @@ define([
             gwaioUnits.vehicleFabber,
             gwaioUnits.vehicleFactory,
           ]);
+
           inventory.addMods([
             {
               file: gwaioUnits.nukeLauncher,

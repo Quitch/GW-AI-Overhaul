@@ -30,6 +30,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.addUnits(gwaioGroups.orbitalAdvanced);
+
           inventory.addMods([
             {
               file: gwaioUnits.jig,

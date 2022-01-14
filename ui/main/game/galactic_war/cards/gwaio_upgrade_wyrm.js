@@ -26,6 +26,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(gwaioUnits.squall);
+
       inventory.addMods([
         {
           file: gwaioUnits.wyrm,
