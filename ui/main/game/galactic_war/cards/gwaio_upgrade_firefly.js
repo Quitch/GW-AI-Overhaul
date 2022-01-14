@@ -56,6 +56,12 @@ define([
           op: "multiply",
           value: 2,
         },
+        {
+          file: gwaioUnits.fireflyAmmo,
+          path: "damage",
+          op: "multiply",
+          value: 3.34,
+        },
       ]);
     },
     dull: function () {

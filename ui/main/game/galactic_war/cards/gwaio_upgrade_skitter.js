@@ -62,6 +62,24 @@ define([
           op: "multiply",
           value: 2,
         },
+        {
+          file: gwaioUnits.skitterAmmo,
+          path: "initial_velocity",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwaioUnits.skitterAmmo,
+          path: "max_velocity",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwaioUnits.skitterAmmo,
+          path: "damage",
+          op: "multiply",
+          value: 2,
+        },
       ]);
     },
     dull: function () {
