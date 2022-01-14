@@ -653,21 +653,21 @@ if (!gwaioCardsLoaded) {
                       });
                     });
                     // 2. then deal a sub commander for battle testing
-                    var minion = _.cloneDeep(
+                    var subcommander = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
                     var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwaioAI.penchants();
-                      minion.character =
-                        minion.character +
+                      subcommander.character =
+                        subcommander.character +
                         (" " + loc(penchantValues.penchantName));
-                      minion.personality.personality_tags =
-                        minion.personality.personality_tags.concat(
+                      subcommander.personality.personality_tags =
+                        subcommander.personality.personality_tags.concat(
                           penchantValues.penchants
                         );
                     }
-                    product.minion = minion;
+                    product.minion = subcommander;
                     product.unique = Math.random();
                   }
                   game.inventory().cards.push(product);
