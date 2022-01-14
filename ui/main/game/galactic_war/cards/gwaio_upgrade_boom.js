@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob."
+      "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
     ),
     summarize: _.constant("!LOC:Boom Upgrade Tech"),
     icon: _.constant(
@@ -28,6 +28,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioUnits.lob);
       inventory.addMods([
         {
           file: gwaioUnits.lobAmmo,
