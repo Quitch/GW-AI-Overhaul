@@ -39,7 +39,7 @@ define([
           value: "water-hover",
         },
         {
-          spec_id: gwaioUnits.orcaWeapon,
+          file: gwaioUnits.orcaWeapon,
           path: "max_range",
           op: "multiply",
           value: 1.5,
