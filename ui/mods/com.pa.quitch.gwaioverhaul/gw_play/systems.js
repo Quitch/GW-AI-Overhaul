@@ -1,18 +1,18 @@
-var gwaioSystemChangesLoaded;
+var gwoSystemChangesLoaded;
 
-if (!gwaioSystemChangesLoaded) {
-  gwaioSystemChangesLoaded = true;
+if (!gwoSystemChangesLoaded) {
+  gwoSystemChangesLoaded = true;
 
-  function gwaioSystemChanges() {
+  function gwoSystemChanges() {
     try {
       var game = model.game();
 
       if (!game.isTutorial()) {
         var galaxy = game.galaxy();
-        var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-        if (gwaioSettings) {
+        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        if (gwoSettings) {
           console.log(
-            "War created using Galactic War Overhaul v" + gwaioSettings.version
+            "War created using Galactic War Overhaul v" + gwoSettings.version
           );
         } else {
           console.log(
@@ -215,7 +215,7 @@ if (!gwaioSystemChangesLoaded) {
                 var temperature = loc("!LOC:Temperature:");
                 var waterHeight = loc("!LOC:Water Height:");
 
-                model.gwaioPlanetData = _.map(
+                model.gwoPlanetData = _.map(
                   self.system().planets(),
                   function (planet) {
                     var tooltip = radius + " " + planet.generator.radius;
@@ -308,7 +308,7 @@ if (!gwaioSystemChangesLoaded) {
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
           ],
-          function (GWFactions, gwaioSave) {
+          function (GWFactions, gwoSave) {
             _.forEach(model.galaxy.systems(), function (system) {
               ko.computed(function () {
                 var ai = system.star.ai();
@@ -332,15 +332,15 @@ if (!gwaioSystemChangesLoaded) {
             });
 
             // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-            if (gwaioSettings && !gwaioSettings.treasurePlanetFixed) {
+            if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
               for (var star of galaxy.stars()) {
                 if (_.includes(star.cardList(), undefined)) {
                   star.cardList([]);
                   break;
                 }
               }
-              gwaioSettings.treasurePlanetFixed = true;
-              gwaioSave(game, true);
+              gwoSettings.treasurePlanetFixed = true;
+              gwoSave(game, true);
             }
           }
         );
@@ -350,5 +350,5 @@ if (!gwaioSystemChangesLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioSystemChanges();
+  gwoSystemChanges();
 }

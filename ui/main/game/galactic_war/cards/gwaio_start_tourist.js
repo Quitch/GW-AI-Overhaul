@@ -4,13 +4,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Tourist Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories. Sub Commanders will not do anything except defend themselves and automatically transfer their excess income to you."
@@ -21,7 +21,7 @@ define([
         description: "!LOC:Tourist Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -29,7 +29,7 @@ define([
           GWCStart.buff(inventory);
           inventory.addMods([
             {
-              file: gwaioUnits.commander,
+              file: gwoUnit.commander,
               path: "storage.metal",
               op: "multiply",
               value: 200,
@@ -42,15 +42,12 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      var units = [
-        gwaioUnits.metalExtractorAdvanced,
-        gwaioUnits.metalExtractor,
-      ];
-      gwaioCards.applyDulls(CARD, inventory, units);
+      var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
+      gwoCard.applyDulls(CARD, inventory, units);
     },
   };
 });

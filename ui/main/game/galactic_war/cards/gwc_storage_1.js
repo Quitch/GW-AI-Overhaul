@@ -3,7 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (GW, gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -18,7 +18,7 @@ define([
         found: "/VO/Computer/gw/board_tech_available_economy",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
@@ -36,8 +36,8 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.structuresEcoStorage);
-      var units = gwaioGroups.structuresEcoStorage.concat(gwaioUnits.commander);
+      inventory.addUnits(gwoGroup.structuresEcoStorage);
+      var units = gwoGroup.structuresEcoStorage.concat(gwoUnit.commander);
       inventory.addMods(
         _.flatten(
           _.map(units, function (unit) {

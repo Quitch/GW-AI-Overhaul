@@ -4,13 +4,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioGroups) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Buff Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:This Commander prefers quality over quantity and has modified its units to that end. 30% more health, 30% more damage and splash, but 25% slower, and with 30% higher build costs."
@@ -21,16 +21,16 @@ define([
         description: "!LOC:Buff Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits(gwaioGroups.vehiclesBasic);
+          inventory.addUnits(gwoGroup.vehiclesBasic);
 
           var mods = [];
-          _.forEach(gwaioGroups.mobile, function (unit) {
+          _.forEach(gwoGroup.mobile, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -70,7 +70,7 @@ define([
               }
             );
           });
-          _.forEach(gwaioGroups.ammo, function (ammo) {
+          _.forEach(gwoGroup.ammo, function (ammo) {
             mods.push(
               {
                 file: ammo,
@@ -86,7 +86,7 @@ define([
               }
             );
           });
-          _.forEach(gwaioGroups.notMobile, function (unit) {
+          _.forEach(gwoGroup.notMobile, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -110,11 +110,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

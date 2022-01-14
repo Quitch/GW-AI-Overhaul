@@ -5,13 +5,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
@@ -22,32 +22,29 @@ define([
         description: "!LOC:Paratrooper Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
 
-          var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
-          var units = unitCannons.concat(gwaioGroups.unitCannonMobile);
+          var unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
+          var units = unitCannons.concat(gwoGroup.unitCannonMobile);
           inventory.addUnits(units);
 
           // Avoid adding duplicate UNITTYPEs
           var exclusion = function (unit) {
-            return !_.includes(gwaioGroups.unitCannonMobile, unit);
+            return !_.includes(gwoGroup.unitCannonMobile, unit);
           };
 
           var unitCannonUnitsAdditional = [];
           if (
-            gwaioCards.hasUnit(
-              inventory.units(),
-              gwaioUnits.botFactoryAdvanced
-            ) ||
+            gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced) ||
             inventory.hasCard("gwaio_upgrade_botfactory")
           ) {
             var remainingAdvancedBots = _.filter(
-              gwaioGroups.botsAdvancedMobile,
+              gwoGroup.botsAdvancedMobile,
               exclusion
             );
             unitCannonUnitsAdditional.push.apply(
@@ -55,11 +52,9 @@ define([
               remainingAdvancedBots
             );
           }
-          if (
-            gwaioCards.hasUnit(inventory.units(), gwaioUnits.vehicleFactory)
-          ) {
+          if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)) {
             var remainingBasicVehicles = _.filter(
-              gwaioGroups.vehiclesBasicMobile,
+              gwoGroup.vehiclesBasicMobile,
               exclusion
             );
             unitCannonUnitsAdditional.push.apply(
@@ -68,14 +63,14 @@ define([
             );
           }
           if (
-            gwaioCards.hasUnit(
+            gwoCard.hasUnit(
               inventory.units(),
-              gwaioUnits.vehicleFactoryAdvanced
+              gwoUnit.vehicleFactoryAdvanced
             ) ||
             inventory.hasCard("gwaio_upgrade_vehiclefactory")
           ) {
             var remainingAdvancedVehicles = _.filter(
-              gwaioGroups.vehiclesAdvancedMobile,
+              gwoGroup.vehiclesAdvancedMobile,
               exclusion
             );
             unitCannonUnitsAdditional.push.apply(
@@ -178,11 +173,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

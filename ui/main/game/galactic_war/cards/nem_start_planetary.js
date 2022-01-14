@@ -5,13 +5,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Planetary Excavation Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Modifies Metal Extractors to enable building them anywhere at 150% the cost and 50% efficiency. Starts with basic vehicles."
@@ -22,18 +22,15 @@ define([
         description: "!LOC:Planetary Excavation Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits(gwaioGroups.vehiclesBasic);
+          inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          var units = [
-            gwaioUnits.metalExtractorAdvanced,
-            gwaioUnits.metalExtractor,
-          ];
+          var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
           var mods = _.flatten(
             _.map(units, function (unit) {
               return [
@@ -60,14 +57,14 @@ define([
           );
           mods.push(
             {
-              file: gwaioUnits.metalExtractor,
+              file: gwoUnit.metalExtractor,
               path: "description",
               op: "replace",
               value:
                 "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
             },
             {
-              file: gwaioUnits.metalExtractorAdvanced,
+              file: gwoUnit.metalExtractorAdvanced,
               path: "description",
               op: "replace",
               value:
@@ -128,11 +125,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.ragnarok)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.ragnarok)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,79 +27,79 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage",
           op: "replace",
           value: 99999,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "splash_damage",
           op: "replace",
           value: 99999,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "splash_damages_allies",
           op: "replace",
           value: true,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "splash_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage_volume.burnable_remove_radius",
           op: "replace",
           value: 100,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage_volume.delay",
           op: "replace",
           value: 1.5,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage_volume.initial_radius",
           op: "replace",
           value: 20,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage_volume.radius_accel",
           op: "replace",
           value: -40,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "damage_volume.radius_velocity",
           op: "replace",
           value: 500,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "burn_damage",
           op: "replace",
           value: 200,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "burn_radius",
           op: "replace",
           value: 99999,
         },
         {
-          file: gwaioUnits.ragnarokPbaoe,
+          file: gwoUnit.ragnarokPbaoe,
           path: "planet_impact_spec.delay_time",
           op: "replace",
           value: 99999, // this is an ugly hack

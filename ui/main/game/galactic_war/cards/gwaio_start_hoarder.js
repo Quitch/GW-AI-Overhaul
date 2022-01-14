@@ -4,13 +4,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioGroups) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Hoarder Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Contains every factory on every tier of the tech tree, but this has left no space for anything else. You will need to seek out additional data banks."
@@ -21,7 +21,7 @@ define([
         description: "!LOC:Hoarder Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
@@ -29,11 +29,11 @@ define([
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 4);
           inventory.addUnits(
-            gwaioGroups.air.concat(
-              gwaioGroups.bots,
-              gwaioGroups.naval,
-              gwaioGroups.orbital,
-              gwaioGroups.vehicles
+            gwoGroup.air.concat(
+              gwoGroup.bots,
+              gwoGroup.naval,
+              gwoGroup.orbital,
+              gwoGroup.vehicles
             )
           );
         } else {
@@ -43,11 +43,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

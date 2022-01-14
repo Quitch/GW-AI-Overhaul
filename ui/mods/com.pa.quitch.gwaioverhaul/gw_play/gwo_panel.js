@@ -1,9 +1,9 @@
-var gwaioWarInfoPanelLoaded;
+var gwoWarInfoPanelLoaded;
 
-if (!gwaioWarInfoPanelLoaded) {
-  gwaioWarInfoPanelLoaded = true;
+if (!gwoWarInfoPanelLoaded) {
+  gwoWarInfoPanelLoaded = true;
 
-  function gwaioWarInfoPanel() {
+  function gwoWarInfoPanel() {
     try {
       var game = model.game();
 
@@ -11,35 +11,35 @@ if (!gwaioWarInfoPanelLoaded) {
         // War Information
         var galaxy = game.galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwaioSettings = originSystem.gwaio;
+        model.gwoSettings = originSystem.gwaio;
 
-        if (model.gwaioSettings) {
-          model.gwaioDifficulty = loc(model.gwaioSettings.difficulty);
-          model.gwaioSize = loc(model.gwaioSettings.galaxySize);
+        if (model.gwoSettings) {
+          model.gwoDifficulty = loc(model.gwoSettings.difficulty);
+          model.gwoSize = loc(model.gwoSettings.galaxySize);
 
-          if (model.gwaioSettings.ai) {
-            model.gwaioAI = model.gwaioSettings.ai;
+          if (model.gwoSettings.ai) {
+            model.gwoAI = model.gwoSettings.ai;
           } else {
-            model.gwaioAI = "Titans";
+            model.gwoAI = "Titans";
           }
 
-          model.gwaioOptions = ko.observableArray([]);
+          model.gwoOptions = ko.observableArray([]);
 
-          if (model.gwaioSettings.factionScaling) {
-            model.gwaioOptions.push(loc("!LOC:Faction scaling"));
+          if (model.gwoSettings.factionScaling) {
+            model.gwoOptions.push(loc("!LOC:Faction scaling"));
           }
-          if (model.gwaioSettings.systemScaling) {
-            model.gwaioOptions.push(loc("!LOC:System scaling"));
+          if (model.gwoSettings.systemScaling) {
+            model.gwoOptions.push(loc("!LOC:System scaling"));
           }
-          if (model.gwaioSettings.easierStart) {
-            model.gwaioOptions.push(loc("!LOC:Easier start"));
+          if (model.gwoSettings.easierStart) {
+            model.gwoOptions.push(loc("!LOC:Easier start"));
           }
           // No longer used - for v5.26.1 and earlier saves only
-          if (model.gwaioSettings.tougherCommanders) {
-            model.gwaioOptions.push(loc("!LOC:Tougher commanders"));
+          if (model.gwoSettings.tougherCommanders) {
+            model.gwoOptions.push(loc("!LOC:Tougher commanders"));
           }
           if (game.hardcore()) {
-            model.gwaioOptions.push(loc("!LOC:Hardcore mode"));
+            model.gwoOptions.push(loc("!LOC:Hardcore mode"));
           }
         }
 
@@ -54,14 +54,14 @@ if (!gwaioWarInfoPanelLoaded) {
           "Cluster",
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
-        model.gwaioFactionName = factions[factionIndex];
+        model.gwoFactionName = factions[factionIndex];
 
         var cards = inventory.cards();
 
         var loadoutId = cards[0].id;
-        model.gwaioLoadout = ko.observable("");
+        model.gwoLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
-          model.gwaioLoadout(loc(card.summarize()));
+          model.gwoLoadout(loc(card.summarize()));
         });
 
         var rgb = function (color) {
@@ -92,7 +92,7 @@ if (!gwaioWarInfoPanelLoaded) {
           };
         };
 
-        model.gwaioPlayer = ko.computed(function () {
+        model.gwoPlayer = ko.computed(function () {
           var playerName = ko.observable().extend({ session: "displayName" });
           var playerColor = rgb(inventory.getTag("global", "playerColor")[0]);
 
@@ -124,5 +124,5 @@ if (!gwaioWarInfoPanelLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioWarInfoPanel();
+  gwoWarInfoPanel();
 }

@@ -5,13 +5,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwaioBank, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Defense Tech Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators."
@@ -22,16 +22,16 @@ define([
         description: "!LOC:Defense Tech Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits(gwaioGroups.structuresDefencesAdvanced);
+          inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
 
-          var units = gwaioGroups.structuresDefencesAdvanced.concat(
-            gwaioUnits.laserDefenseTower
+          var units = gwoGroup.structuresDefencesAdvanced.concat(
+            gwoUnit.laserDefenseTower
           );
           var mods = [];
           _.forEach(units, function (unit) {
@@ -51,11 +51,9 @@ define([
             );
           });
           var costUnits = _.filter(
-            gwaioGroups.structuresDefences,
+            gwoGroup.structuresDefences,
             function (defence) {
-              return (
-                defence !== gwaioUnits.wall && defence !== gwaioUnits.landMine
-              );
+              return defence !== gwoUnit.wall && defence !== gwoUnit.landMine;
             }
           );
           _.forEach(costUnits, function (unit) {
@@ -76,22 +74,22 @@ define([
           });
           mods.push(
             {
-              file: gwaioUnits.wall,
+              file: gwoUnit.wall,
               path: "build_metal_cost",
               op: "multiply",
               value: 0.1,
             },
             {
-              file: gwaioUnits.wall,
+              file: gwoUnit.wall,
               path: "max_health",
               op: "multiply",
               value: 2,
             }
           );
           var weapons = _.filter(
-            gwaioGroups.structuresDefences,
+            gwoGroup.structuresDefences,
             function (defence) {
-              return defence !== gwaioUnits.landMineWeapon;
+              return defence !== gwoUnit.landMineWeapon;
             }
           );
           _.forEach(weapons, function (unit) {
@@ -166,11 +164,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

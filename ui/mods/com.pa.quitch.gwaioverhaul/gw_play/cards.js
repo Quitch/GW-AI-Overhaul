@@ -1,9 +1,9 @@
-var gwaioCardsLoaded;
+var gwoCardsLoaded;
 
-if (!gwaioCardsLoaded) {
-  gwaioCardsLoaded = true;
+if (!gwoCardsLoaded) {
+  gwoCardsLoaded = true;
 
-  function gwaioCards() {
+  function gwoCard() {
     try {
       var game = model.game();
 
@@ -25,33 +25,33 @@ if (!gwaioCardsLoaded) {
 
         var numCardsToOffer = 3;
 
-        model.gwaioOfferRerolls = ko.observable(true);
-        model.gwaioRerollsUsed = ko
+        model.gwoOfferRerolls = ko.observable(true);
+        model.gwoRerollsUsed = ko
           .observable(0)
           .extend({ session: "gwaio_rerolls_used" }); // prevent UI refresh exploits
         var star = {};
         // Clean start for new games in a single session
         if (game.turnState() === "begin") {
-          model.gwaioRerollsUsed(0);
+          model.gwoRerollsUsed(0);
         }
         // Avoid incorrect rerolls when loading an exploration save game
         else if (game.turnState() === "explore") {
           star = game.galaxy().stars()[game.currentStar()];
-          model.gwaioRerollsUsed = ko.observable(
+          model.gwoRerollsUsed = ko.observable(
             numCardsToOffer - star.cardList().length
           );
           if (
-            model.gwaioRerollsUsed() >= numCardsToOffer - 1 ||
+            model.gwoRerollsUsed() >= numCardsToOffer - 1 ||
             (self.isLoadout && self.isLoadout())
           ) {
-            model.gwaioOfferRerolls(false);
+            model.gwoOfferRerolls(false);
           }
         }
         ko.computed(function () {
           game.turnState();
           if (game.turnState() === "end") {
-            model.gwaioRerollsUsed(0);
-            model.gwaioOfferRerolls(true);
+            model.gwoRerollsUsed(0);
+            model.gwoOfferRerolls(true);
           }
         });
         model.rerollTech = function () {
@@ -62,9 +62,9 @@ if (!gwaioCardsLoaded) {
             cardsOffered = numCardsToOffer;
           }
           star = game.galaxy().stars()[game.currentStar()];
-          model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
-            model.gwaioOfferRerolls(false);
+          model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
+          if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+            model.gwoOfferRerolls(false);
           }
           star.cardList([]);
           game.turnState("begin");
@@ -90,11 +90,11 @@ if (!gwaioCardsLoaded) {
           function (
             GW,
             GWFactions,
-            gwaioCardsToUnits,
-            gwaioUnitsToNames,
-            gwaioAI,
-            gwaioSave,
-            gwaioBank
+            gwoCardsToUnits,
+            gwoUnitToNames,
+            gwoAI,
+            gwoSave,
+            gwoBank
           ) {
             globals.CardViewModel = function (params) {
               var self = this;
@@ -176,10 +176,10 @@ if (!gwaioCardsLoaded) {
             var playerFaction = 0;
 
             /* Start of GWO implementation of GWDealer */
-            if (!model.gwaioDeck) {
-              model.gwaioDeck = [];
+            if (!model.gwoDeck) {
+              model.gwoDeck = [];
             }
-            model.gwaioDeck.push(
+            model.gwoDeck.push(
               "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedbotfactory",
@@ -358,11 +358,11 @@ if (!gwaioCardsLoaded) {
             var cards = [];
             var cardContexts = {};
 
-            var loadCount = model.gwaioDeck.length;
+            var loadCount = model.gwoDeck.length;
             var loaded = $.Deferred();
 
             var deck = [];
-            _.forEach(model.gwaioDeck, function (cardId) {
+            _.forEach(model.gwoDeck, function (cardId) {
               requireGW(["cards/" + cardId], function (card) {
                 card.id = cardId;
                 cards.push(card);
@@ -534,7 +534,7 @@ if (!gwaioCardsLoaded) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
                 dealCardSelectableAI(false).then(function () {
-                  gwaioSave(game, true);
+                  gwoSave(game, true);
                 });
               }
             };
@@ -553,7 +553,7 @@ if (!gwaioCardsLoaded) {
                 galaxy = game.galaxy();
                 var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                 if (ai === "Penchant") {
-                  var penchantValues = gwaioAI.penchants();
+                  var penchantValues = gwoAI.penchants();
                   subcommander.character =
                     subcommander.character +
                     (" " + loc(penchantValues.penchantName));
@@ -583,7 +583,7 @@ if (!gwaioCardsLoaded) {
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
-                var card = _.find(model.gwaioDeck, function (cardId) {
+                var card = _.find(model.gwoDeck, function (cardId) {
                   return cardId === params.id;
                 });
 
@@ -610,7 +610,7 @@ if (!gwaioCardsLoaded) {
             // We need cheats to deal from our deck
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
-              _.forEach(model.gwaioDeck, function (cardId) {
+              _.forEach(model.gwoDeck, function (cardId) {
                 console.log("Testing " + cardId);
                 dealCard({
                   id: cardId,
@@ -632,9 +632,9 @@ if (!gwaioCardsLoaded) {
                         }
                         require([
                           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-                        ], function (gwaioUnits) {
-                          var clusterSecurity = gwaioUnits.colonel;
-                          var clusterWorker = gwaioUnits.angel;
+                        ], function (gwoUnit) {
+                          var clusterSecurity = gwoUnit.colonel;
+                          var clusterWorker = gwoUnit.angel;
 
                           if (
                             !CommanderUtility.bySpec.getObjectName(
@@ -658,7 +658,7 @@ if (!gwaioCardsLoaded) {
                     );
                     var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                     if (ai === "Penchant") {
-                      var penchantValues = gwaioAI.penchants();
+                      var penchantValues = gwoAI.penchants();
                       subcommander.character =
                         subcommander.character +
                         (" " + loc(penchantValues.penchantName));
@@ -678,7 +678,7 @@ if (!gwaioCardsLoaded) {
 
             model.cheats.giveCard = function () {
               var id = model.cheats.giveCardId();
-              var cardId = _.find(model.gwaioDeck, function (card) {
+              var cardId = _.find(model.gwoDeck, function (card) {
                 return card === id;
               });
               galaxy = game.galaxy();
@@ -700,7 +700,7 @@ if (!gwaioCardsLoaded) {
                     );
                     var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                     if (ai === "Penchant") {
-                      var penchantValues = gwaioAI.penchants();
+                      var penchantValues = gwoAI.penchants();
                       minion.character =
                         minion.character +
                         (" " + loc(penchantValues.penchantName));
@@ -718,7 +718,7 @@ if (!gwaioCardsLoaded) {
                   game.inventory().cards.push(product);
                   inventory.applyCards();
                   dealCardSelectableAI(false).then(function () {
-                    gwaioSave(game, true);
+                    gwoSave(game, true);
                   });
                 });
               }
@@ -747,7 +747,7 @@ if (!gwaioCardsLoaded) {
                 inventory: inventory,
                 count:
                   cardsOffered -
-                  model.gwaioRerollsUsed() -
+                  model.gwoRerollsUsed() -
                   star.cardList().length,
                 star: star,
                 galaxy: game.galaxy(),
@@ -758,7 +758,7 @@ if (!gwaioCardsLoaded) {
                   if (
                     _.includes(card.id, "_start_") &&
                     !GW.bank.hasStartCard(card) &&
-                    !gwaioBank.hasStartCard(card)
+                    !gwoBank.hasStartCard(card)
                   ) {
                     ok = false;
                   }
@@ -771,9 +771,9 @@ if (!gwaioCardsLoaded) {
               });
               $.when(dealStarCards).then(function () {
                 if (model.currentSystemCardList()[0].isLoadout()) {
-                  model.gwaioOfferRerolls(false);
+                  model.gwoOfferRerolls(false);
                 }
-                gwaioSave(game, false);
+                gwoSave(game, false);
                 _.delay(function () {
                   model.scanning(false);
                 }, 2000);
@@ -798,7 +798,7 @@ if (!gwaioCardsLoaded) {
 
                 dealCardSelectableAI(true, game.turnState())
                   .then(function () {
-                    return gwaioSave(game, true);
+                    return gwoSave(game, true);
                   })
                   .then(function () {
                     if (model.gameOver()) {
@@ -824,15 +824,15 @@ if (!gwaioCardsLoaded) {
               });
             };
 
-            if (model.gwaioCardsToUnits) {
-              model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
-                gwaioCardsToUnits.cards
+            if (model.gwoCardsToUnits) {
+              model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
+                gwoCardsToUnits.cards
               );
             } else {
-              model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+              model.gwoCardsToUnits = gwoCardsToUnits.cards;
             }
 
-            model.gwaioTechCardTooltip = ko.observableArray([]);
+            model.gwoTechCardTooltip = ko.observableArray([]);
 
             var makeCardTooltip = function (card, hoverIndex) {
               if (card.isLoadout()) {
@@ -845,7 +845,7 @@ if (!gwaioCardsLoaded) {
                 hoverIndex += 1;
               }
               var cardId = card.id();
-              var cardIndex = _.findIndex(model.gwaioCardsToUnits, {
+              var cardIndex = _.findIndex(model.gwoCardsToUnits, {
                 id: cardId,
               });
               if (cardIndex === -1) {
@@ -853,16 +853,15 @@ if (!gwaioCardsLoaded) {
                   return;
                 } else {
                   console.warn(
-                    cardId +
-                      " is invalid or missing from model.gwaioCardsToUnits"
+                    cardId + " is invalid or missing from model.gwoCardsToUnits"
                   );
                 }
               } else {
-                var units = model.gwaioCardsToUnits[cardIndex].units;
+                var units = model.gwoCardsToUnits[cardIndex].units;
                 if (units) {
                   var affectedUnits = [];
                   _.forEach(units, function (unit) {
-                    cardIndex = _.findIndex(gwaioUnitsToNames.units, {
+                    cardIndex = _.findIndex(gwoUnitToNames.units, {
                       path: unit,
                     });
                     if (cardIndex === -1) {
@@ -870,12 +869,12 @@ if (!gwaioCardsLoaded) {
                         unit + " is invalid or missing from GWO unit_names.js"
                       );
                     } else {
-                      var name = loc(gwaioUnitsToNames.units[cardIndex].name);
+                      var name = loc(gwoUnitToNames.units[cardIndex].name);
                       affectedUnits = affectedUnits.concat(name);
                     }
                   });
                   affectedUnits = affectedUnits.sort();
-                  model.gwaioTechCardTooltip()[hoverIndex] = _.map(
+                  model.gwoTechCardTooltip()[hoverIndex] = _.map(
                     affectedUnits,
                     function (unit, index) {
                       if (affectedUnits.length < 13) {
@@ -888,7 +887,7 @@ if (!gwaioCardsLoaded) {
                     }
                   );
                 } else {
-                  model.gwaioTechCardTooltip()[hoverIndex] = undefined;
+                  model.gwoTechCardTooltip()[hoverIndex] = undefined;
                 }
               }
             };
@@ -940,5 +939,5 @@ if (!gwaioCardsLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioCards();
+  gwoCard();
 }

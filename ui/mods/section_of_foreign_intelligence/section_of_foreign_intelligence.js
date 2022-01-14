@@ -1,10 +1,10 @@
 // Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
-var gwaioIntelligenceLoaded;
+var gwoIntelligenceLoaded;
 
-if (!gwaioIntelligenceLoaded) {
-  gwaioIntelligenceLoaded = true;
+if (!gwoIntelligenceLoaded) {
+  gwoIntelligenceLoaded = true;
 
-  function gwaioIntelligence() {
+  function gwoIntelligence() {
     try {
       if (!model.game().isTutorial()) {
         var url =
@@ -113,7 +113,7 @@ if (!gwaioIntelligenceLoaded) {
           }
         };
 
-        model.gwaioSystemSurfaceArea = ko.computed(function () {
+        model.gwoSystemSurfaceArea = ko.computed(function () {
           var area = 0;
           _.forEach(model.selection.system().planets(), function (world) {
             if (
@@ -154,7 +154,7 @@ if (!gwaioIntelligenceLoaded) {
           }
         };
 
-        model.gwaioSystemThreat = ko.computed(function () {
+        model.gwoSystemThreat = ko.computed(function () {
           var primary = model.selection.system().star.ai();
           var commanders = [];
           if (primary) {
@@ -177,7 +177,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // Available Technology
 
-        model.gwaioCardName = ko.computed(function () {
+        model.gwoCardName = ko.computed(function () {
           var star = model.selection.system().star;
           if (star.ai() && star.ai().cardName) {
             return star.ai().cardName;
@@ -185,7 +185,7 @@ if (!gwaioIntelligenceLoaded) {
           return null;
         });
 
-        model.gwaioCardAvailable = ko.computed(function () {
+        model.gwoCardAvailable = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -201,7 +201,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // Game Options
 
-        model.gwaioBountyMode = ko.computed(function () {
+        model.gwoBountyMode = ko.computed(function () {
           var star = model.selection.system().star;
           if (star.ai() && star.ai().bountyMode) {
             return true;
@@ -209,7 +209,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioLandAnywhere = ko.computed(function () {
+        model.gwoLandAnywhere = ko.computed(function () {
           var star = model.selection.system().star;
           if (star.ai() && star.ai().landAnywhere) {
             return true;
@@ -217,7 +217,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioSuddenDeath = ko.computed(function () {
+        model.gwoSuddenDeath = ko.computed(function () {
           var star = model.selection.system().star;
           if (star.ai() && star.ai().suddenDeath) {
             return true;
@@ -225,11 +225,11 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioGameOptions = ko.computed(function () {
+        model.gwoGameOptions = ko.computed(function () {
           if (
-            model.gwaioBountyMode() ||
-            model.gwaioLandAnywhere() ||
-            model.gwaioSuddenDeath()
+            model.gwoBountyMode() ||
+            model.gwoLandAnywhere() ||
+            model.gwoSuddenDeath()
           ) {
             return true;
           }
@@ -238,7 +238,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // AI Buffs
 
-        model.gwaioTechBuild = ko.computed(function () {
+        model.gwoTechBuild = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -250,7 +250,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechCost = ko.computed(function () {
+        model.gwoTechCost = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -262,7 +262,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechDamage = ko.computed(function () {
+        model.gwoTechDamage = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -274,7 +274,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechHealth = ko.computed(function () {
+        model.gwoTechHealth = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -286,7 +286,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechSpeed = ko.computed(function () {
+        model.gwoTechSpeed = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -299,7 +299,7 @@ if (!gwaioIntelligenceLoaded) {
         });
 
         // v5.11.0 and earlier only
-        model.gwaioEnhancedCommanders = ko.computed(function () {
+        model.gwoEnhancedCommanders = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -311,7 +311,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechCombat = ko.computed(function () {
+        model.gwoTechCombat = ko.computed(function () {
           var star = model.selection.system().star;
           if (
             star.ai() &&
@@ -323,7 +323,7 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioTechMirror = ko.computed(function () {
+        model.gwoTechMirror = ko.computed(function () {
           var star = model.selection.system().star;
           if (star.ai() && star.ai().mirrorMode === true) {
             return true;
@@ -331,16 +331,16 @@ if (!gwaioIntelligenceLoaded) {
           return false;
         });
 
-        model.gwaioAiBuffs = ko.computed(function () {
+        model.gwoAiBuffs = ko.computed(function () {
           if (
-            model.gwaioTechBuild() ||
-            model.gwaioTechCombat() ||
-            model.gwaioTechCost() ||
-            model.gwaioEnhancedCommanders() ||
-            model.gwaioTechDamage() ||
-            model.gwaioTechHealth() ||
-            model.gwaioTechSpeed() ||
-            model.gwaioTechMirror()
+            model.gwoTechBuild() ||
+            model.gwoTechCombat() ||
+            model.gwoTechCost() ||
+            model.gwoEnhancedCommanders() ||
+            model.gwoTechDamage() ||
+            model.gwoTechHealth() ||
+            model.gwoTechSpeed() ||
+            model.gwoTechMirror()
           ) {
             return true;
           }
@@ -349,7 +349,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // System Faction
 
-        model.gwaioSystemOwner = ko.computed(function () {
+        model.gwoSystemOwner = ko.computed(function () {
           var primary = model.selection.system().star.ai();
           var commanders = [];
           if (primary) {
@@ -365,7 +365,7 @@ if (!gwaioIntelligenceLoaded) {
 
         // Additional Factions
 
-        model.gwaioFfaOpponents = ko.computed(function () {
+        model.gwoFfaOpponents = ko.computed(function () {
           var primary = model.selection.system().star.ai();
           var commanders = [];
           if (primary && primary.foes) {
@@ -379,5 +379,5 @@ if (!gwaioIntelligenceLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioIntelligence();
+  gwoIntelligence();
 }

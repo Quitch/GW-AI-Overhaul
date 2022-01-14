@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.skitter)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.skitter)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,55 +27,55 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.skitter,
+          file: gwoUnit.skitter,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id: gwaioUnits.skitterWeapon,
+              spec_id: gwoUnit.skitterWeapon,
               aim_bone: "bone_root",
               muzzle_bone: "bone_root",
             },
           ],
         },
         {
-          file: gwaioUnits.skitter,
+          file: gwoUnit.skitter,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
         },
         {
-          file: gwaioUnits.skitter,
+          file: gwoUnit.skitter,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.skitter,
+          file: gwoUnit.skitter,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.skitter,
+          file: gwoUnit.skitter,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.skitterAmmo,
+          file: gwoUnit.skitterAmmo,
           path: "initial_velocity",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.skitterAmmo,
+          file: gwoUnit.skitterAmmo,
           path: "max_velocity",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.skitterAmmo,
+          file: gwoUnit.skitterAmmo,
           path: "damage",
           op: "multiply",
           value: 2,

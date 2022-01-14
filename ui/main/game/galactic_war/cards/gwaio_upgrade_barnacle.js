@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.barnacle)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.barnacle)) {
         chance = 30;
       }
       return { chance: chance };
@@ -27,7 +27,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.barnacleBuildArm,
+          file: gwoUnit.barnacleBuildArm,
           path: "can_only_assist_with_buildable_items",
           op: "replace",
           value: false,

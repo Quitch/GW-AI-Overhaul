@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_economy",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.energyStorage)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.energyStorage)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,7 +27,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.energyStorage,
+          file: gwoUnit.energyStorage,
           path: "storage.energy",
           op: "multiply",
           value: 4,

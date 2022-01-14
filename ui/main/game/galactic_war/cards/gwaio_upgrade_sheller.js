@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,23 +16,23 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.sheller)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.sheller)) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioUnits.landMine);
+      inventory.addUnits(gwoUnit.landMine);
 
       inventory.addMods([
         {
-          file: gwaioUnits.shellerAmmo,
+          file: gwoUnit.shellerAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: gwaioUnits.landMine,
+          value: gwoUnit.landMine,
         },
       ]);
     },

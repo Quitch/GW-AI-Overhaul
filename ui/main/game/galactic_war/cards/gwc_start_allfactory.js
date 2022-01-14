@@ -4,13 +4,13 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GW, GWCStart, gwaioCards, gwaioGroups) {
+], function (module, GW, GWCStart, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Assault Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses."
@@ -21,7 +21,7 @@ define([
         description: "!LOC:Assault Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
@@ -29,10 +29,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.addUnits(
-            gwaioGroups.airBasic.concat(
-              gwaioGroups.botsBasic,
-              gwaioGroups.vehiclesBasic
-            )
+            gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
           );
         } else {
           // Don't clog up a slot.
@@ -47,11 +44,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(
-        CARD,
-        inventory,
-        gwaioGroups.structuresDefencesBasic
-      );
+      gwoCard.applyDulls(CARD, inventory, gwoGroup.structuresDefencesBasic);
     },
   };
 });

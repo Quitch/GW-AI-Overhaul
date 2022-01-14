@@ -1,16 +1,16 @@
-var gwaioWarOverLoadoutStatsLoaded;
+var gwoWarOverLoadoutStatsLoaded;
 
-if (!gwaioWarOverLoadoutStatsLoaded) {
-  gwaioWarOverLoadoutStatsLoaded = true;
+if (!gwoWarOverLoadoutStatsLoaded) {
+  gwoWarOverLoadoutStatsLoaded = true;
 
   // Track the highest difficulty defeated for loadout icons
-  function gwaioWarOverLoadoutStats() {
+  function gwoWarOverLoadoutStats() {
     try {
       var game = model.game();
       var galaxy = game.galaxy();
-      var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
-      if (gwaioSettings && game.gameState() === "won") {
+      if (gwoSettings && game.gameState() === "won") {
         var difficultyLevelAsInt = _.findIndex(
           [
             "!LOC:Casual",
@@ -23,7 +23,7 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
             "!LOC:Uber",
           ],
           function (difficulty) {
-            var warDifficulty = gwaioSettings.difficulty;
+            var warDifficulty = gwoSettings.difficulty;
             return difficulty === warDifficulty;
           }
         );
@@ -44,5 +44,5 @@ if (!gwaioWarOverLoadoutStatsLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioWarOverLoadoutStats();
+  gwoWarOverLoadoutStats();
 }

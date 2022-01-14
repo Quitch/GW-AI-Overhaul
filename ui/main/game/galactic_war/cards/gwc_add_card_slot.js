@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwaioCards
+  gwoCard
 ) {
   return {
     visible: _.constant(false), // Can't discard this card
@@ -13,7 +13,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         found: "/VO/Computer/gw/board_slot_increased",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 300;
       if (inventory.handIsFull()) {

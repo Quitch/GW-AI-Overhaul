@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,13 +17,13 @@ define([
         found: "/VO/Computer/gw/board_tech_available_cost_reduction",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function () {
       var chance = 50;
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwaioGroups.structuresDefences, function (unit) {
+      var mods = _.map(gwoGroup.structuresDefences, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

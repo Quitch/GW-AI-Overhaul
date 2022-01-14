@@ -8,68 +8,68 @@
         <div class="td">
           <span
             class="inline"
-            data-bind="text: $root.gwaioSystemSurfaceArea"
+            data-bind="text: $root.gwoSystemSurfaceArea"
           ></span
           >k<sup>2</sup>
         </div>
       </div>
       <div class="tr">
         <div class="td"><loc>Threat Level:</loc></div>
-        <div class="data" data-bind="text: $root.gwaioSystemThreat"></div>
+        <div class="data" data-bind="text: $root.gwoSystemThreat"></div>
       </div>
     </div>
   </div>
-  <div data-bind="visible: $root.gwaioCardAvailable">
+  <div data-bind="visible: $root.gwoCardAvailable">
     <h3><loc>Available Technology</loc></h3>
-    <div class="td" data-bind="text: $root.gwaioCardName"></div>
+    <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
-  <div data-bind="visible: $root.gwaioGameOptions">
+  <div data-bind="visible: $root.gwoGameOptions">
     <h3><loc>Game Modifiers</loc></h3>
     <ul>
-      <li data-bind="visible: $root.gwaioBountyMode"><loc>Bounties</loc></li>
-      <li data-bind="visible: $root.gwaioLandAnywhere">
+      <li data-bind="visible: $root.gwoBountyMode"><loc>Bounties</loc></li>
+      <li data-bind="visible: $root.gwoLandAnywhere">
         <loc>Land Anywhere</loc>
       </li>
-      <li data-bind="visible: $root.gwaioSuddenDeath">
+      <li data-bind="visible: $root.gwoSuddenDeath">
         <loc>Sudden Death</loc>
       </li>
     </ul>
   </div>
-  <div data-bind="visible: $root.gwaioAiBuffs">
+  <div data-bind="visible: $root.gwoAiBuffs">
     <h3><loc>AI Tech</loc></h3>
     <ul>
-      <li data-bind="visible: $root.gwaioTechBuild"><loc>Build faster</loc></li>
-      <li data-bind="visible: $root.gwaioTechCombat">
+      <li data-bind="visible: $root.gwoTechBuild"><loc>Build faster</loc></li>
+      <li data-bind="visible: $root.gwoTechCombat">
         <loc>Combat units enhanced</loc>
       </li>
       <!-- Commanders enhanced is v5.11.0 and earlier only -->
-      <li data-bind="visible: $root.gwaioEnhancedCommanders">
+      <li data-bind="visible: $root.gwoEnhancedCommanders">
         <loc>Commanders enhanced</loc>
       </li>
-      <li data-bind="visible: $root.gwaioTechCost">
+      <li data-bind="visible: $root.gwoTechCost">
         <loc>Costs decreased</loc>
       </li>
-      <li data-bind="visible: $root.gwaioTechDamage">
+      <li data-bind="visible: $root.gwoTechDamage">
         <loc>Damage increased</loc>
       </li>
-      <li data-bind="visible: $root.gwaioTechHealth">
+      <li data-bind="visible: $root.gwoTechHealth">
         <loc>Health increased</loc>
       </li>
-      <li data-bind="visible: $root.gwaioTechSpeed">
+      <li data-bind="visible: $root.gwoTechSpeed">
         <loc>Speed increased</loc>
       </li>
-      <li data-bind="visible: $root.gwaioTechMirror">
+      <li data-bind="visible: $root.gwoTechMirror">
         <loc>Your technology bonuses</loc>
       </li>
     </ul>
   </div>
-  <!-- ko if: $root.selection.system().star.ai() && !$root.selection.system().star.ai().treasurePlanet && $root.gwaioSystemOwner() -->
-  <h3><span data-bind="text: $root.gwaioSystemOwner()[0].faction"></span></h3>
+  <!-- ko if: $root.selection.system().star.ai() && !$root.selection.system().star.ai().treasurePlanet && $root.gwoSystemOwner() -->
+  <h3><span data-bind="text: $root.gwoSystemOwner()[0].faction"></span></h3>
   <!-- /ko -->
-  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().treasurePlanet && $root.gwaioSystemOwner() -->
+  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().treasurePlanet && $root.gwoSystemOwner() -->
   <h3><loc>Unknown Faction</loc></h3>
   <!-- /ko -->
-  <ul data-bind="foreach: $root.gwaioSystemOwner">
+  <ul data-bind="foreach: $root.gwoSystemOwner">
     <li class="commander">
       <div class="div_player_icon">
         <div
@@ -101,7 +101,7 @@
   <!-- header for versions prior to v4.15.0 -->
   <h3><loc>Additional Factions</loc></h3>
   <!-- /ko -->
-  <ul data-bind="foreach: $root.gwaioFfaOpponents">
+  <ul data-bind="foreach: $root.gwoFfaOpponents">
     <h3><span data-bind="text: faction"></span></h3>
     <li class="commander">
       <div class="div_player_icon">

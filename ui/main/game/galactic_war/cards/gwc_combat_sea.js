@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioGroups) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,13 +16,13 @@ define([
         found: "PA/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function () {
       return { chance: 30 };
     },
     buff: function (inventory) {
       var mods = [];
-      _.forEach(gwaioGroups.navalMobile, function (unit) {
+      _.forEach(gwoGroup.navalMobile, function (unit) {
         mods.push(
           {
             file: unit,
@@ -56,7 +56,7 @@ define([
           }
         );
       });
-      _.forEach(gwaioGroups.navalAmmo, function (ammo) {
+      _.forEach(gwoGroup.navalAmmo, function (ammo) {
         mods.push({
           file: ammo,
           path: "damage",

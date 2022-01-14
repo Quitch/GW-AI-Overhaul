@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwaioCards
+  gwoCard
 ) {
   return {
     visible: _.constant(true),
@@ -15,7 +15,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         found: "/VO/Computer/gw/board_tech_available_subcommander",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (inventory.minions().length > 0) {

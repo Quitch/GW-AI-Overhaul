@@ -1,771 +1,771 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioUnits, gwaioGroups) {
+], function (gwoUnit, gwoGroup) {
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
       { id: "gwc_add_card_slot" },
       {
         id: "gwc_bld_efficiency_cdr",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwc_bld_efficiency_fabs",
-        units: gwaioGroups.fabbers.concat(gwaioGroups.factories),
+        units: gwoGroup.fabbers.concat(gwoGroup.factories),
       },
       {
         id: "gwc_combat_air",
-        units: gwaioGroups.airMobile,
+        units: gwoGroup.airMobile,
       },
       {
         id: "gwc_combat_bots",
-        units: gwaioGroups.botsMobile,
+        units: gwoGroup.botsMobile,
       },
       {
         id: "gwc_combat_commander",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwc_combat_orbital",
-        units: gwaioGroups.orbitalMobile,
+        units: gwoGroup.orbitalMobile,
       },
       {
         id: "gwc_combat_sea",
-        units: gwaioGroups.navalMobile,
+        units: gwoGroup.navalMobile,
       },
       {
         id: "gwc_combat_structures",
-        units: gwaioGroups.structures,
+        units: gwoGroup.structures,
       },
       {
         id: "gwc_combat_vehicles",
-        units: gwaioGroups.vehiclesMobile,
+        units: gwoGroup.vehiclesMobile,
       },
       {
         id: "gwc_cost_air",
-        units: gwaioGroups.airMobile,
+        units: gwoGroup.airMobile,
       },
       {
         id: "gwc_cost_artillery",
-        units: gwaioGroups.structuresArtillery,
+        units: gwoGroup.structuresArtillery,
       },
       {
         id: "gwc_cost_bots",
-        units: gwaioGroups.botsMobile,
+        units: gwoGroup.botsMobile,
       },
       {
         id: "gwc_cost_defenses",
-        units: gwaioGroups.structuresDefences,
+        units: gwoGroup.structuresDefences,
       },
       {
         id: "gwc_cost_economy",
-        units: gwaioGroups.structuresEco,
+        units: gwoGroup.structuresEco,
       },
       {
         id: "gwc_cost_intel",
-        units: gwaioGroups.energyUnits,
+        units: gwoGroup.energyUnits,
       },
       {
         id: "gwc_cost_orbital",
-        units: gwaioGroups.orbitalMobile,
+        units: gwoGroup.orbitalMobile,
       },
       {
         id: "gwc_cost_sea",
-        units: gwaioGroups.navalMobile,
+        units: gwoGroup.navalMobile,
       },
       {
         id: "gwc_cost_super_weapons",
-        units: gwaioGroups.structuresSuperWeapons,
+        units: gwoGroup.structuresSuperWeapons,
       },
       {
         id: "gwc_cost_titans",
-        units: gwaioGroups.titans,
+        units: gwoGroup.titans,
       },
       {
         id: "gwc_cost_vehicles",
-        units: gwaioGroups.vehiclesMobile,
+        units: gwoGroup.vehiclesMobile,
       },
       {
         id: "gwc_damage_air",
-        units: gwaioGroups.airMobile,
+        units: gwoGroup.airMobile,
       },
       {
         id: "gwc_damage_artillery",
-        units: gwaioGroups.structuresArtillery,
+        units: gwoGroup.structuresArtillery,
       },
       {
         id: "gwc_damage_bots",
         units: [
-          gwaioUnits.bluehawk,
-          gwaioUnits.boom,
-          gwaioUnits.colonel,
-          gwaioUnits.dox,
-          gwaioUnits.gilE,
-          gwaioUnits.locusts,
-          gwaioUnits.slammer,
-          gwaioUnits.spark,
-          gwaioUnits.stinger,
+          gwoUnit.bluehawk,
+          gwoUnit.boom,
+          gwoUnit.colonel,
+          gwoUnit.dox,
+          gwoUnit.gilE,
+          gwoUnit.locusts,
+          gwoUnit.slammer,
+          gwoUnit.spark,
+          gwoUnit.stinger,
         ],
       },
       {
         id: "gwc_damage_commander",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwc_damage_defenses",
         units: [
-          gwaioUnits.anchor,
-          gwaioUnits.catapult,
-          gwaioUnits.flak,
-          gwaioUnits.galata,
-          gwaioUnits.landMine,
-          gwaioUnits.laserDefenseTower,
-          gwaioUnits.laserDefenseTowerAdvanced,
-          gwaioUnits.singleLaserDefenseTower,
-          gwaioUnits.torpedoLauncher,
-          gwaioUnits.torpedoLauncherAdvanced,
-          gwaioUnits.umbrella,
+          gwoUnit.anchor,
+          gwoUnit.catapult,
+          gwoUnit.flak,
+          gwoUnit.galata,
+          gwoUnit.landMine,
+          gwoUnit.laserDefenseTower,
+          gwoUnit.laserDefenseTowerAdvanced,
+          gwoUnit.singleLaserDefenseTower,
+          gwoUnit.torpedoLauncher,
+          gwoUnit.torpedoLauncherAdvanced,
+          gwoUnit.umbrella,
         ],
       },
       {
         id: "gwc_damage_orbital",
         units: [
-          gwaioUnits.anchor,
-          gwaioUnits.artemis,
-          gwaioUnits.avenger,
-          gwaioUnits.omega,
-          gwaioUnits.sxx,
+          gwoUnit.anchor,
+          gwoUnit.artemis,
+          gwoUnit.avenger,
+          gwoUnit.omega,
+          gwoUnit.sxx,
         ],
       },
       {
         id: "gwc_damage_sea",
         units: [
-          gwaioUnits.barracuda,
-          gwaioUnits.kaiju,
-          gwaioUnits.kraken,
-          gwaioUnits.leviathan,
-          gwaioUnits.narwhal,
-          gwaioUnits.orca,
-          gwaioUnits.piranha,
-          gwaioUnits.squall,
-          gwaioUnits.stingray,
+          gwoUnit.barracuda,
+          gwoUnit.kaiju,
+          gwoUnit.kraken,
+          gwoUnit.leviathan,
+          gwoUnit.narwhal,
+          gwoUnit.orca,
+          gwoUnit.piranha,
+          gwoUnit.squall,
+          gwoUnit.stingray,
         ],
       },
       {
         id: "gwc_damage_vehicles",
         units: [
-          gwaioUnits.ant,
-          gwaioUnits.drifter,
-          gwaioUnits.inferno,
-          gwaioUnits.leveler,
-          gwaioUnits.skitter,
-          gwaioUnits.spinner,
-          gwaioUnits.storm,
-          gwaioUnits.vanguard,
+          gwoUnit.ant,
+          gwoUnit.drifter,
+          gwoUnit.inferno,
+          gwoUnit.leveler,
+          gwoUnit.skitter,
+          gwoUnit.spinner,
+          gwoUnit.storm,
+          gwoUnit.vanguard,
         ],
       },
       {
         id: "gwc_enable_air_all",
-        units: gwaioGroups.air,
+        units: gwoGroup.air,
       },
       {
         id: "gwc_enable_air_t1",
-        units: gwaioGroups.airBasic,
+        units: gwoGroup.airBasic,
       },
       {
         id: "gwc_enable_air_t2", // not used
-        units: gwaioGroups.airAdvanced,
+        units: gwoGroup.airAdvanced,
       },
       {
         id: "gwc_enable_artillery",
-        units: gwaioGroups.structuresArtillery,
+        units: gwoGroup.structuresArtillery,
       },
       {
         id: "gwc_enable_bots_all",
-        units: gwaioGroups.bot,
+        units: gwoGroup.bot,
       },
       {
         id: "gwc_enable_bots_t1",
-        units: gwaioGroups.botsBasic,
+        units: gwoGroup.botsBasic,
       },
       {
         id: "gwc_enable_bots_t2", // not used
-        units: gwaioGroups.botsAdvanced,
+        units: gwoGroup.botsAdvanced,
       },
       {
         id: "gwc_enable_defenses_t2",
         units: [
-          gwaioUnits.catapult,
-          gwaioUnits.flak,
-          gwaioUnits.laserDefenseTowerAdvanced,
-          gwaioUnits.torpedoLauncherAdvanced,
+          gwoUnit.catapult,
+          gwoUnit.flak,
+          gwoUnit.laserDefenseTowerAdvanced,
+          gwoUnit.torpedoLauncherAdvanced,
         ],
       },
       {
         id: "gwc_enable_orbital_all",
-        units: gwaioGroups.orbitalAdvanced, // basic starts unlocked
+        units: gwoGroup.orbitalAdvanced, // basic starts unlocked
       },
       {
         id: "gwc_enable_orbital_t1", // not used
-        units: gwaioGroups.orbitalBasic,
+        units: gwoGroup.orbitalBasic,
       },
       {
         id: "gwc_enable_orbital_t2", // not used
-        units: gwaioGroups.orbitalAdvanced,
+        units: gwoGroup.orbitalAdvanced,
       },
       {
         id: "gwc_enable_sea_all",
-        units: gwaioGroups.navalAdvanced, // basic starts unlocked
+        units: gwoGroup.navalAdvanced, // basic starts unlocked
       },
       {
         id: "gwc_enable_sea_t1", // not used
-        units: gwaioGroups.navalBasic,
+        units: gwoGroup.navalBasic,
       },
       {
         id: "gwc_enable_sea_t2", // not used
-        units: gwaioGroups.navalAdvanced,
+        units: gwoGroup.navalAdvanced,
       },
       {
         id: "gwc_enable_super_weapons", // not used
-        units: gwaioGroups.structuresSuperWeapons,
+        units: gwoGroup.structuresSuperWeapons,
       },
       {
         id: "gwc_enable_titans",
-        units: gwaioGroups.titans,
+        units: gwoGroup.titans,
       },
       {
         id: "gwc_enable_vehicles_all",
-        units: gwaioGroups.vehicles,
+        units: gwoGroup.vehicles,
       },
       {
         id: "gwc_enable_vehicles_t1",
-        units: gwaioGroups.vehiclesBasic,
+        units: gwoGroup.vehiclesBasic,
       },
       {
         id: "gwc_enable_vehicles_t2", // not used
-        units: gwaioGroups.vehiclesAdvanced,
+        units: gwoGroup.vehiclesAdvanced,
       },
       {
         id: "gwc_energy_efficiency_all",
-        units: gwaioGroups.energyAll,
+        units: gwoGroup.energyAll,
       },
       {
         id: "gwc_energy_efficiency_intel",
-        units: gwaioGroups.energyIntel,
+        units: gwoGroup.energyIntel,
       },
       {
         id: "gwc_energy_efficiency_weapons",
-        units: gwaioGroups.energyUnits,
+        units: gwoGroup.energyUnits,
       },
       {
         id: "gwc_health_air",
-        units: gwaioGroups.airMobile,
+        units: gwoGroup.airMobile,
       },
       {
         id: "gwc_health_bots",
-        units: gwaioGroups.botsMobile,
+        units: gwoGroup.botsMobile,
       },
       {
         id: "gwc_health_commander",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwc_health_orbital",
-        units: gwaioGroups.orbitalMobile,
+        units: gwoGroup.orbitalMobile,
       },
       {
         id: "gwc_health_sea",
-        units: gwaioGroups.navalMobile,
+        units: gwoGroup.navalMobile,
       },
       {
         id: "gwc_health_structures",
-        units: gwaioGroups.structures,
+        units: gwoGroup.structures,
       },
       {
         id: "gwc_health_vehicles",
-        units: gwaioGroups.vehiclesMobile,
+        units: gwoGroup.vehiclesMobile,
       },
       { id: "gwc_minion" },
       {
         id: "gwc_speed_air",
-        units: gwaioGroups.airMobile,
+        units: gwoGroup.airMobile,
       },
       {
         id: "gwc_speed_bots",
-        units: gwaioGroups.botsMobile,
+        units: gwoGroup.botsMobile,
       },
       {
         id: "gwc_speed_commander",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwc_speed_orbital",
-        units: gwaioGroups.orbitalMobile,
+        units: gwoGroup.orbitalMobile,
       },
       {
         id: "gwc_speed_sea",
-        units: gwaioGroups.navalMobile,
+        units: gwoGroup.navalMobile,
       },
       {
         id: "gwc_speed_vehicles",
-        units: gwaioGroups.vehiclesMobile,
+        units: gwoGroup.vehiclesMobile,
       },
       {
         id: "gwc_storage_1",
-        units: gwaioGroups.structuresEcoStorage.concat(gwaioUnits.commander),
+        units: gwoGroup.structuresEcoStorage.concat(gwoUnit.commander),
       },
       {
         id: "gwc_storage_and_buff",
-        units: gwaioGroups.structuresEco.concat(
+        units: gwoGroup.structuresEco.concat(
           // don't use storage group so as to avoid a duplicate Jig
-          gwaioUnits.energyStorage,
-          gwaioUnits.metalStorage
+          gwoUnit.energyStorage,
+          gwoUnit.metalStorage
         ),
       },
       {
         id: "gwaio_upgrade_wyrm",
-        units: [gwaioUnits.wyrm],
+        units: [gwoUnit.wyrm],
       },
       {
         id: "gwaio_upgrade_ubercannon_structure",
-        units: [gwaioUnits.commander],
+        units: [gwoUnit.commander],
       },
       {
         id: "gwaio_upgrade_omega",
-        units: [gwaioUnits.omega],
+        units: [gwoUnit.omega],
       },
       {
         id: "gwaio_upgrade_lob",
-        units: [gwaioUnits.lob],
+        units: [gwoUnit.lob],
       },
       {
         id: "gwaio_upgrade_dox",
-        units: [gwaioUnits.dox],
+        units: [gwoUnit.dox],
       },
       {
         id: "gwaio_upgrade_gile",
-        units: [gwaioUnits.gilE],
+        units: [gwoUnit.gilE],
       },
       {
         id: "gwaio_upgrade_kaiju",
-        units: [gwaioUnits.kaiju],
+        units: [gwoUnit.kaiju],
       },
       {
         id: "gwaio_upgrade_skitter",
-        units: [gwaioUnits.skitter],
+        units: [gwoUnit.skitter],
       },
       {
         id: "gwaio_upgrade_leveler",
-        units: [gwaioUnits.leveler],
+        units: [gwoUnit.leveler],
       },
       {
         id: "gwaio_upgrade_nukes",
-        units: [gwaioUnits.nukeLauncher],
+        units: [gwoUnit.nukeLauncher],
       },
       {
         id: "gwaio_upgrade_firefly",
-        units: [gwaioUnits.firefly],
+        units: [gwoUnit.firefly],
       },
       {
         id: "gwaio_upgrade_hummingbird",
-        units: [gwaioUnits.hummingbird],
+        units: [gwoUnit.hummingbird],
       },
       {
         id: "gwaio_upgrade_angel",
-        units: [gwaioUnits.angel],
+        units: [gwoUnit.angel],
       },
       {
         id: "gwaio_upgrade_narwhal",
-        units: [gwaioUnits.narwhal],
+        units: [gwoUnit.narwhal],
       },
       {
         id: "gwaio_upgrade_teleporter",
-        units: [gwaioUnits.teleporter],
+        units: [gwoUnit.teleporter],
       },
       {
         id: "gwaio_upgrade_singlelaserdefensetower",
-        units: [gwaioUnits.singleLaserDefenseTower],
+        units: [gwoUnit.singleLaserDefenseTower],
       },
       {
         id: "gwaio_upgrade_astraeus",
-        units: [gwaioUnits.astraeus],
+        units: [gwoUnit.astraeus],
       },
       {
         id: "gwaio_upgrade_sxx",
-        units: [gwaioUnits.sxx],
+        units: [gwoUnit.sxx],
       },
       {
         id: "gwaio_upgrade_jig",
-        units: [gwaioUnits.jig],
+        units: [gwoUnit.jig],
       },
       {
         id: "gwaio_upgrade_energystorage",
-        units: [gwaioUnits.energyStorage],
+        units: [gwoUnit.energyStorage],
       },
       {
         id: "gwaio_upgrade_metalstorage",
-        units: [gwaioUnits.metalStorage],
+        units: [gwoUnit.metalStorage],
       },
       {
         id: "gwaio_upgrade_icarus",
-        units: [gwaioUnits.icarus],
+        units: [gwoUnit.icarus],
       },
       {
         id: "gwaio_upgrade_phoenix",
-        units: [gwaioUnits.phoenix],
+        units: [gwoUnit.phoenix],
       },
       {
         id: "gwaio_upgrade_leviathan",
-        units: [gwaioUnits.leviathan],
+        units: [gwoUnit.leviathan],
       },
       {
         id: "gwaio_upgrade_orca",
-        units: [gwaioUnits.orca],
+        units: [gwoUnit.orca],
       },
       {
         id: "gwaio_upgrade_piranha",
-        units: [gwaioUnits.piranha],
+        units: [gwoUnit.piranha],
       },
       {
         id: "gwaio_upgrade_horsefly",
-        units: [gwaioUnits.horsefly],
+        units: [gwoUnit.horsefly],
       },
       {
         id: "gwaio_upgrade_hornet",
-        units: [gwaioUnits.hornet],
+        units: [gwoUnit.hornet],
       },
       {
         id: "gwaio_upgrade_pelican",
-        units: [gwaioUnits.pelican],
+        units: [gwoUnit.pelican],
       },
       {
         id: "gwaio_upgrade_grenadier",
-        units: [gwaioUnits.grenadier],
+        units: [gwoUnit.grenadier],
       },
       {
         id: "gwaio_upgrade_boom",
-        units: [gwaioUnits.boom],
+        units: [gwoUnit.boom],
       },
       {
         id: "gwaio_upgrade_holkins",
-        units: [gwaioUnits.holkins],
+        units: [gwoUnit.holkins],
       },
       {
         id: "gwaio_upgrade_manhattan",
-        units: [gwaioUnits.manhattan],
+        units: [gwoUnit.manhattan],
       },
       {
         id: "gwaio_upgrade_colonel",
-        units: [gwaioUnits.colonel],
+        units: [gwoUnit.colonel],
       },
       {
         id: "gwaio_upgrade_vanguard",
-        units: [gwaioUnits.vanguard],
+        units: [gwoUnit.vanguard],
       },
       {
         id: "gwaio_upgrade_torpedolauncher",
-        units: [gwaioUnits.torpedoLauncher],
+        units: [gwoUnit.torpedoLauncher],
       },
       {
         id: "gwaio_upgrade_advancedtorpedolauncher",
-        units: [gwaioUnits.torpedoLauncherAdvanced],
+        units: [gwoUnit.torpedoLauncherAdvanced],
       },
       {
         id: "gwaio_upgrade_catalyst",
-        units: [gwaioUnits.catalyst],
+        units: [gwoUnit.catalyst],
       },
       {
         id: "gwaio_upgrade_halley",
-        units: [gwaioUnits.halley],
+        units: [gwoUnit.halley],
       },
       {
         id: "gwaio_upgrade_ragnarok",
-        units: [gwaioUnits.ragnarok],
+        units: [gwoUnit.ragnarok],
       },
       {
         id: "gwaio_upgrade_radar",
-        units: [gwaioUnits.radar],
+        units: [gwoUnit.radar],
       },
       {
         id: "gwaio_upgrade_advancedradar",
-        units: [gwaioUnits.radarAdvanced],
+        units: [gwoUnit.radarAdvanced],
       },
       {
         id: "gwaio_upgrade_laserdefensetower",
-        units: [gwaioUnits.laserDefenseTower],
+        units: [gwoUnit.laserDefenseTower],
       },
       {
         id: "gwaio_upgrade_antinuke",
-        units: [gwaioUnits.antiNukeLauncher],
+        units: [gwoUnit.antiNukeLauncher],
       },
       {
         id: "gwaio_upgrade_squall",
-        units: [gwaioUnits.squall],
+        units: [gwoUnit.squall],
       },
       {
         id: "gwaio_upgrade_typhoon",
-        units: [gwaioUnits.typhoon],
+        units: [gwoUnit.typhoon],
       },
       {
         id: "gwaio_upgrade_inferno",
-        units: [gwaioUnits.inferno],
+        units: [gwoUnit.inferno],
       },
       {
         id: "gwaio_upgrade_sheller",
-        units: [gwaioUnits.sheller],
+        units: [gwoUnit.sheller],
       },
       {
         id: "gwaio_upgrade_bumblebee",
-        units: [gwaioUnits.bumblebee],
+        units: [gwoUnit.bumblebee],
       },
       {
         id: "gwaio_upgrade_kestrel",
-        units: [gwaioUnits.kestrel],
+        units: [gwoUnit.kestrel],
       },
       {
         id: "gwaio_upgrade_spark",
-        units: [gwaioUnits.spark],
+        units: [gwoUnit.spark],
       },
       {
         id: "gwaio_upgrade_stinger",
-        units: [gwaioUnits.stinger],
+        units: [gwoUnit.stinger],
       },
       {
         id: "gwaio_upgrade_bluehawk",
-        units: [gwaioUnits.bluehawk],
+        units: [gwoUnit.bluehawk],
       },
       {
         id: "gwaio_upgrade_locusts",
-        units: [gwaioUnits.locusts],
+        units: [gwoUnit.locusts],
       },
       {
         id: "gwaio_upgrade_slammer",
-        units: [gwaioUnits.slammer],
+        units: [gwoUnit.slammer],
       },
       {
         id: "gwaio_upgrade_ant",
-        units: [gwaioUnits.ant],
+        units: [gwoUnit.ant],
       },
       {
         id: "gwaio_upgrade_spinner",
-        units: [gwaioUnits.spinner],
+        units: [gwoUnit.spinner],
       },
       {
         id: "gwaio_upgrade_storm",
-        units: [gwaioUnits.storm],
+        units: [gwoUnit.storm],
       },
       {
         id: "gwaio_upgrade_drifter",
-        units: [gwaioUnits.drifter],
+        units: [gwoUnit.drifter],
       },
       {
         id: "gwaio_upgrade_stryker",
-        units: [gwaioUnits.stryker],
+        units: [gwoUnit.stryker],
       },
       {
         id: "gwaio_upgrade_barracuda",
-        units: [gwaioUnits.barracuda],
+        units: [gwoUnit.barracuda],
       },
       {
         id: "gwaio_upgrade_stingray",
-        units: [gwaioUnits.stingray],
+        units: [gwoUnit.stingray],
       },
       {
         id: "gwaio_upgrade_kraken",
-        units: [gwaioUnits.kraken],
+        units: [gwoUnit.kraken],
       },
       {
         id: "gwaio_upgrade_advancedlaserdefensetower",
-        units: [gwaioUnits.laserDefenseTowerAdvanced],
+        units: [gwoUnit.laserDefenseTowerAdvanced],
       },
       {
         id: "gwaio_upgrade_catapult",
-        units: [gwaioUnits.catapult],
+        units: [gwoUnit.catapult],
       },
       {
         id: "gwaio_upgrade_airfactory",
-        units: [gwaioUnits.airFactory],
+        units: [gwoUnit.airFactory],
       },
       {
         id: "gwaio_upgrade_botfactory",
-        units: [gwaioUnits.botFactory],
+        units: [gwoUnit.botFactory],
       },
       {
         id: "gwaio_upgrade_navalfactory",
-        units: [gwaioUnits.navalFactory],
+        units: [gwoUnit.navalFactory],
       },
       {
         id: "gwaio_upgrade_orbitallauncher",
-        units: [gwaioUnits.orbitalLauncher],
+        units: [gwoUnit.orbitalLauncher],
       },
       {
         id: "gwaio_upgrade_unitcannon",
-        units: [gwaioUnits.unitCannon],
+        units: [gwoUnit.unitCannon],
       },
       {
         id: "gwaio_upgrade_vehiclefactory",
-        units: [gwaioUnits.vehicleFactory],
+        units: [gwoUnit.vehicleFactory],
       },
       {
         id: "gwaio_upgrade_hermes",
-        units: [gwaioUnits.hermes],
+        units: [gwoUnit.hermes],
       },
       {
         id: "gwaio_upgrade_advancedradarsatellite",
-        units: [gwaioUnits.radarSatelliteAdvanced],
+        units: [gwoUnit.radarSatelliteAdvanced],
       },
       {
         id: "gwaio_upgrade_umbrella",
-        units: [gwaioUnits.umbrella],
+        units: [gwoUnit.umbrella],
       },
       {
         id: "gwaio_upgrade_galata",
-        units: [gwaioUnits.galata],
+        units: [gwoUnit.galata],
       },
       {
         id: "gwaio_upgrade_flak",
-        units: [gwaioUnits.flak],
+        units: [gwoUnit.flak],
       },
       {
         id: "gwaio_upgrade_pelter",
-        units: [gwaioUnits.pelter],
+        units: [gwoUnit.pelter],
       },
       {
         id: "gwaio_upgrade_arkyd",
-        units: [gwaioUnits.arkyd],
+        units: [gwoUnit.arkyd],
       },
       {
         id: "gwaio_upgrade_stitch",
-        units: [gwaioUnits.stitch],
+        units: [gwoUnit.stitch],
       },
       {
         id: "gwaio_upgrade_mend",
-        units: [gwaioUnits.mend],
+        units: [gwoUnit.mend],
       },
       {
         id: "gwaio_upgrade_barnacle",
-        units: [gwaioUnits.mend],
+        units: [gwoUnit.mend],
       },
       {
         id: "gwaio_upgrade_mine",
-        units: [gwaioUnits.landMine],
+        units: [gwoUnit.landMine],
       },
       {
         id: "gwaio_upgrade_wall",
-        units: [gwaioUnits.wall],
+        units: [gwoUnit.wall],
       },
       {
         id: "gwaio_upgrade_zeus",
-        units: [gwaioUnits.zeus],
+        units: [gwoUnit.zeus],
       },
       {
         id: "gwaio_upgrade_atlas",
-        units: [gwaioUnits.atlas],
+        units: [gwoUnit.atlas],
       },
       {
         id: "gwaio_upgrade_helios",
-        units: [gwaioUnits.helios],
+        units: [gwoUnit.helios],
       },
       {
         id: "gwaio_upgrade_ares",
-        units: [gwaioUnits.ares],
+        units: [gwoUnit.ares],
       },
       {
         id: "gwaio_upgrade_solararray",
-        units: [gwaioUnits.solarArray],
+        units: [gwoUnit.solarArray],
       },
       {
         id: "gwaio_upgrade_fabricationbot",
-        units: [gwaioUnits.botFabber],
+        units: [gwoUnit.botFabber],
       },
       {
         id: "gwaio_upgrade_fabricationvehicle",
-        units: [gwaioUnits.vehicleFabber],
+        units: [gwoUnit.vehicleFabber],
       },
       {
         id: "gwaio_upgrade_fabricationaircraft",
-        units: [gwaioUnits.airFabber],
+        units: [gwoUnit.airFabber],
       },
       {
         id: "gwaio_upgrade_fabricationship",
-        units: [gwaioUnits.navalFabber],
+        units: [gwoUnit.navalFabber],
       },
       {
         id: "gwaio_upgrade_advancedfabricationaircraft",
-        units: [gwaioUnits.airFabberAdvanced],
+        units: [gwoUnit.airFabberAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedfabricationbot",
-        units: [gwaioUnits.botFabberAdvanced],
+        units: [gwoUnit.botFabberAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedfabricationvehicle",
-        units: [gwaioUnits.vehicleFabberAdvanced],
+        units: [gwoUnit.vehicleFabberAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedfabricationship",
-        units: [gwaioUnits.navalFabberAdvanced],
+        units: [gwoUnit.navalFabberAdvanced],
       },
       {
         id: "gwaio_upgrade_orbitalfabricationbot",
-        units: [gwaioUnits.orbitalFabber],
+        units: [gwoUnit.orbitalFabber],
       },
       {
         id: "gwaio_upgrade_artemis",
-        units: [gwaioUnits.artemis],
+        units: [gwoUnit.artemis],
       },
       {
         id: "gwaio_upgrade_avenger",
-        units: [gwaioUnits.avenger],
+        units: [gwoUnit.avenger],
       },
       {
         id: "gwaio_upgrade_anchor",
-        units: [gwaioUnits.anchor],
+        units: [gwoUnit.anchor],
       },
       {
         id: "gwaio_upgrade_energyplant",
-        units: [gwaioUnits.energyPlant],
+        units: [gwoUnit.energyPlant],
       },
       {
         id: "gwaio_upgrade_metalextractor",
-        units: [gwaioUnits.metalExtractor],
+        units: [gwoUnit.metalExtractor],
       },
       {
         id: "gwaio_upgrade_advancedmetalextractor",
-        units: [gwaioUnits.metalExtractorAdvanced],
+        units: [gwoUnit.metalExtractorAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedenergyplant",
-        units: [gwaioUnits.energyPlantAdvanced],
+        units: [gwoUnit.energyPlantAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedairfactory",
-        units: [gwaioUnits.airFactoryAdvanced],
+        units: [gwoUnit.airFactoryAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedbotfactory",
-        units: [gwaioUnits.botFactoryAdvanced],
+        units: [gwoUnit.botFactoryAdvanced],
       },
       {
         id: "gwaio_upgrade_advancednavalfactory",
-        units: [gwaioUnits.navalFactoryAdvanced],
+        units: [gwoUnit.navalFactoryAdvanced],
       },
       {
         id: "gwaio_upgrade_advancedvehiclefactory",
-        units: [gwaioUnits.vehicleFactoryAdvanced],
+        units: [gwoUnit.vehicleFactoryAdvanced],
       },
       {
         id: "gwaio_upgrade_orbitalfactory",
-        units: [gwaioUnits.orbitalFactory],
+        units: [gwoUnit.orbitalFactory],
       },
       {
         id: "gwaio_enable_planetaryradar",
-        units: [gwaioUnits.deepSpaceOrbitalRadar],
+        units: [gwoUnit.deepSpaceOrbitalRadar],
       },
       {
         id: "gwaio_upgrade_planetaryradar",
-        units: [gwaioUnits.deepSpaceOrbitalRadar],
+        units: [gwoUnit.deepSpaceOrbitalRadar],
       },
       {
         id: "gwaio_upgrade_subcommander_duplication",

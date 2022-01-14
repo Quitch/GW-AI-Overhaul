@@ -1,230 +1,225 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
-  gwaioUnits
+  gwoUnit
 ) {
   var airBasicMobile = [
-    gwaioUnits.airFabber,
-    gwaioUnits.bumblebee,
-    gwaioUnits.firefly,
-    gwaioUnits.hummingbird,
-    gwaioUnits.icarus,
-    gwaioUnits.pelican,
+    gwoUnit.airFabber,
+    gwoUnit.bumblebee,
+    gwoUnit.firefly,
+    gwoUnit.hummingbird,
+    gwoUnit.icarus,
+    gwoUnit.pelican,
   ];
   var airAdvancedMobile = [
-    gwaioUnits.airFabberAdvanced,
-    gwaioUnits.angel,
-    gwaioUnits.hornet,
-    gwaioUnits.horsefly,
-    gwaioUnits.kestrel,
-    gwaioUnits.phoenix,
-    gwaioUnits.wyrm,
+    gwoUnit.airFabberAdvanced,
+    gwoUnit.angel,
+    gwoUnit.hornet,
+    gwoUnit.horsefly,
+    gwoUnit.kestrel,
+    gwoUnit.phoenix,
+    gwoUnit.wyrm,
   ];
   var airBasicAmmo = [
-    gwaioUnits.bumblebeeAmmo,
-    gwaioUnits.fireflyAmmo,
-    gwaioUnits.hummingbirdAmmo,
-    gwaioUnits.icarusAmmo,
+    gwoUnit.bumblebeeAmmo,
+    gwoUnit.fireflyAmmo,
+    gwoUnit.hummingbirdAmmo,
+    gwoUnit.icarusAmmo,
   ];
   var airBasicWeapons = [
-    gwaioUnits.bumblebeeWeapon,
-    gwaioUnits.fireflyWeapon,
-    gwaioUnits.hummingbirdWeapon,
-    gwaioUnits.icarusWeapon,
+    gwoUnit.bumblebeeWeapon,
+    gwoUnit.fireflyWeapon,
+    gwoUnit.hummingbirdWeapon,
+    gwoUnit.icarusWeapon,
   ];
   var airAdvancedAmmo = [
-    gwaioUnits.angelAmmo,
-    gwaioUnits.hornetAmmo,
-    gwaioUnits.horseflyAmmo,
-    gwaioUnits.kestrelAmmo,
-    gwaioUnits.phoenixAmmo,
-    gwaioUnits.wyrmAmmo,
+    gwoUnit.angelAmmo,
+    gwoUnit.hornetAmmo,
+    gwoUnit.horseflyAmmo,
+    gwoUnit.kestrelAmmo,
+    gwoUnit.phoenixAmmo,
+    gwoUnit.wyrmAmmo,
   ];
   var airAdvancedWeapons = [
-    gwaioUnits.hornetWeapon,
-    gwaioUnits.horseflyWeapon,
-    gwaioUnits.kestrelWeapon,
-    gwaioUnits.phoenixWeapon,
-    gwaioUnits.wyrmWeapon,
+    gwoUnit.hornetWeapon,
+    gwoUnit.horseflyWeapon,
+    gwoUnit.kestrelWeapon,
+    gwoUnit.phoenixWeapon,
+    gwoUnit.wyrmWeapon,
   ];
-  var airBasic = airBasicMobile.concat(gwaioUnits.airFactory);
-  var airAdvanced = airAdvancedMobile.concat(gwaioUnits.airFactoryAdvanced);
+  var airBasic = airBasicMobile.concat(gwoUnit.airFactory);
+  var airAdvanced = airAdvancedMobile.concat(gwoUnit.airFactoryAdvanced);
   var airAmmo = airBasicAmmo.concat(airAdvancedAmmo);
   var airWeapons = airBasicWeapons.concat(airAdvancedWeapons);
   var airMobile = airBasicMobile.concat(airAdvancedMobile);
   var air = airBasic.concat(airAdvanced);
 
   var botsBasicMobile = [
-    gwaioUnits.boom,
-    gwaioUnits.botFabber,
-    gwaioUnits.dox,
-    gwaioUnits.grenadier,
-    gwaioUnits.spark,
-    gwaioUnits.stinger,
-    gwaioUnits.stitch,
+    gwoUnit.boom,
+    gwoUnit.botFabber,
+    gwoUnit.dox,
+    gwoUnit.grenadier,
+    gwoUnit.spark,
+    gwoUnit.stinger,
+    gwoUnit.stitch,
   ];
   var botsBasicAmmo = [
-    gwaioUnits.boomAmmo,
-    gwaioUnits.doxAmmo,
-    gwaioUnits.grenadierAmmo,
-    gwaioUnits.sparkAmmo,
-    gwaioUnits.stingerAmmo,
+    gwoUnit.boomAmmo,
+    gwoUnit.doxAmmo,
+    gwoUnit.grenadierAmmo,
+    gwoUnit.sparkAmmo,
+    gwoUnit.stingerAmmo,
   ];
   var botsBasicWeapons = [
-    gwaioUnits.boomWeapon,
-    gwaioUnits.doxWeapon,
-    gwaioUnits.grenadierWeapon,
-    gwaioUnits.sparkWeapon,
-    gwaioUnits.stingerWeapon,
+    gwoUnit.boomWeapon,
+    gwoUnit.doxWeapon,
+    gwoUnit.grenadierWeapon,
+    gwoUnit.sparkWeapon,
+    gwoUnit.stingerWeapon,
   ];
   var botsAdvancedMobile = [
-    gwaioUnits.bluehawk,
-    gwaioUnits.botFabberAdvanced,
-    gwaioUnits.colonel,
-    gwaioUnits.gilE,
-    gwaioUnits.locusts,
-    gwaioUnits.mend,
-    gwaioUnits.slammer,
+    gwoUnit.bluehawk,
+    gwoUnit.botFabberAdvanced,
+    gwoUnit.colonel,
+    gwoUnit.gilE,
+    gwoUnit.locusts,
+    gwoUnit.mend,
+    gwoUnit.slammer,
   ];
   var botsAdvancedAmmo = [
-    gwaioUnits.bluehawkAmmo,
-    gwaioUnits.colonelAmmo,
-    gwaioUnits.gilEAmmo,
-    gwaioUnits.locustsAmmo,
-    gwaioUnits.slammerAmmo,
-    gwaioUnits.slammerTorpedoAmmo,
+    gwoUnit.bluehawkAmmo,
+    gwoUnit.colonelAmmo,
+    gwoUnit.gilEAmmo,
+    gwoUnit.locustsAmmo,
+    gwoUnit.slammerAmmo,
+    gwoUnit.slammerTorpedoAmmo,
   ];
   var botsAdvancedWeapons = [
-    gwaioUnits.bluehawkWeapon,
-    gwaioUnits.colonelWeapon,
-    gwaioUnits.gileEWeapon,
-    gwaioUnits.locustsWeapon,
-    gwaioUnits.slammerTorpedo,
-    gwaioUnits.slammerWeapon,
+    gwoUnit.bluehawkWeapon,
+    gwoUnit.colonelWeapon,
+    gwoUnit.gileEWeapon,
+    gwoUnit.locustsWeapon,
+    gwoUnit.slammerTorpedo,
+    gwoUnit.slammerWeapon,
   ];
-  var botsBasic = botsBasicMobile.concat(gwaioUnits.botFactory);
-  var botsAdvanced = botsAdvancedMobile.concat(gwaioUnits.botFactoryAdvanced);
+  var botsBasic = botsBasicMobile.concat(gwoUnit.botFactory);
+  var botsAdvanced = botsAdvancedMobile.concat(gwoUnit.botFactoryAdvanced);
   var botsAmmo = botsBasicAmmo.concat(botsAdvancedAmmo);
   var botsWeapons = botsBasicWeapons.concat(botsAdvancedWeapons);
   var botsMobile = botsBasicMobile.concat(botsAdvancedMobile);
   var bots = botsBasic.concat(botsAdvanced);
 
   var navalBasicMobile = [
-    gwaioUnits.barnacle,
-    gwaioUnits.barracuda,
-    gwaioUnits.narwhal,
-    gwaioUnits.navalFabber,
-    gwaioUnits.orca,
-    gwaioUnits.piranha,
+    gwoUnit.barnacle,
+    gwoUnit.barracuda,
+    gwoUnit.narwhal,
+    gwoUnit.navalFabber,
+    gwoUnit.orca,
+    gwoUnit.piranha,
   ];
   var navalBasicAmmo = [
-    gwaioUnits.barracudaAmmo,
-    gwaioUnits.narwhalAAAmmo,
-    gwaioUnits.narwhalAmmo,
-    gwaioUnits.narwhalTorpedoAmmo,
-    gwaioUnits.orcaAmmo,
-    gwaioUnits.orcaTorpedoAmmo,
-    gwaioUnits.piranhaAmmo,
+    gwoUnit.barracudaAmmo,
+    gwoUnit.narwhalAAAmmo,
+    gwoUnit.narwhalAmmo,
+    gwoUnit.narwhalTorpedoAmmo,
+    gwoUnit.orcaAmmo,
+    gwoUnit.orcaTorpedoAmmo,
+    gwoUnit.piranhaAmmo,
   ];
   var navalBasicWeapons = [
-    gwaioUnits.barracudaWeapon,
-    gwaioUnits.narwhalAA,
-    gwaioUnits.narwhalTorpedo,
-    gwaioUnits.narwhalWeapon,
-    gwaioUnits.orcaTorpedo,
-    gwaioUnits.orcaWeapon,
-    gwaioUnits.piranhaWeapon,
+    gwoUnit.barracudaWeapon,
+    gwoUnit.narwhalAA,
+    gwoUnit.narwhalTorpedo,
+    gwoUnit.narwhalWeapon,
+    gwoUnit.orcaTorpedo,
+    gwoUnit.orcaWeapon,
+    gwoUnit.piranhaWeapon,
   ];
   var navalAdvancedMobile = [
-    gwaioUnits.kaiju,
-    gwaioUnits.kraken,
-    gwaioUnits.leviathan,
-    gwaioUnits.navalFabberAdvanced,
-    gwaioUnits.squall,
-    gwaioUnits.stingray,
-    gwaioUnits.typhoon,
+    gwoUnit.kaiju,
+    gwoUnit.kraken,
+    gwoUnit.leviathan,
+    gwoUnit.navalFabberAdvanced,
+    gwoUnit.squall,
+    gwoUnit.stingray,
+    gwoUnit.typhoon,
   ];
   var navalAdvancedAmmo = [
-    gwaioUnits.kaijuAmmo,
-    gwaioUnits.kaijuSecondaryAmmo,
-    gwaioUnits.krakenMissileAmmo,
-    gwaioUnits.krakenWeaponAmmo,
-    gwaioUnits.leviathanAmmo,
-    gwaioUnits.squallAmmo,
-    gwaioUnits.squallTorpedoAmmo,
-    gwaioUnits.stingrayAAAmmo,
-    gwaioUnits.stingrayAmmo,
-    gwaioUnits.typhoonAmmo,
+    gwoUnit.kaijuAmmo,
+    gwoUnit.kaijuSecondaryAmmo,
+    gwoUnit.krakenMissileAmmo,
+    gwoUnit.krakenWeaponAmmo,
+    gwoUnit.leviathanAmmo,
+    gwoUnit.squallAmmo,
+    gwoUnit.squallTorpedoAmmo,
+    gwoUnit.stingrayAAAmmo,
+    gwoUnit.stingrayAmmo,
+    gwoUnit.typhoonAmmo,
   ];
   var navalAdvancedWeapons = [
-    gwaioUnits.kaijuSecondary,
-    gwaioUnits.kaijuWeapon,
-    gwaioUnits.krakenMissile,
-    gwaioUnits.krakenWeapon,
-    gwaioUnits.leviathanWeapon,
-    gwaioUnits.squallTorpedo,
-    gwaioUnits.squallWeapon,
-    gwaioUnits.stingrayAA,
-    gwaioUnits.stingrayWeapon,
-    gwaioUnits.typhoonWeapon,
+    gwoUnit.kaijuSecondary,
+    gwoUnit.kaijuWeapon,
+    gwoUnit.krakenMissile,
+    gwoUnit.krakenWeapon,
+    gwoUnit.leviathanWeapon,
+    gwoUnit.squallTorpedo,
+    gwoUnit.squallWeapon,
+    gwoUnit.stingrayAA,
+    gwoUnit.stingrayWeapon,
+    gwoUnit.typhoonWeapon,
   ];
-  var navalBasic = navalBasicMobile.concat(gwaioUnits.navalFactory);
-  var navalAdvanced = navalAdvancedMobile.concat(
-    gwaioUnits.navalFactoryAdvanced
-  );
+  var navalBasic = navalBasicMobile.concat(gwoUnit.navalFactory);
+  var navalAdvanced = navalAdvancedMobile.concat(gwoUnit.navalFactoryAdvanced);
   var navalAmmo = navalBasicAmmo.concat(navalAdvancedAmmo);
   var navalWeapons = navalBasicWeapons.concat(navalAdvancedWeapons);
   var navalMobile = navalBasicMobile.concat(navalAdvancedMobile);
   var naval = navalBasic.concat(navalAdvanced);
 
   var orbitalBasicMobile = [
-    gwaioUnits.arkyd,
-    gwaioUnits.astraeus,
-    gwaioUnits.avenger,
-    gwaioUnits.hermes,
-    gwaioUnits.orbitalFabber,
+    gwoUnit.arkyd,
+    gwoUnit.astraeus,
+    gwoUnit.avenger,
+    gwoUnit.hermes,
+    gwoUnit.orbitalFabber,
   ];
-  var orbitalBasicAmmo = [gwaioUnits.avengerAmmo];
-  var orbitalBasicWeapons = [gwaioUnits.avengerWeapon];
+  var orbitalBasicAmmo = [gwoUnit.avengerAmmo];
+  var orbitalBasicWeapons = [gwoUnit.avengerWeapon];
   var orbitalAdvancedMobile = [
-    gwaioUnits.artemis,
-    gwaioUnits.omega,
-    gwaioUnits.radarSatelliteAdvanced,
-    gwaioUnits.solarArray,
-    gwaioUnits.sxx,
+    gwoUnit.artemis,
+    gwoUnit.omega,
+    gwoUnit.radarSatelliteAdvanced,
+    gwoUnit.solarArray,
+    gwoUnit.sxx,
   ];
   var orbitalAdvancedAmmo = [
-    gwaioUnits.artemisAmmo,
-    gwaioUnits.omegaAmmo,
-    gwaioUnits.omegaAmmoAG,
-    gwaioUnits.sxxAmmo,
+    gwoUnit.artemisAmmo,
+    gwoUnit.omegaAmmo,
+    gwoUnit.omegaAmmoAG,
+    gwoUnit.sxxAmmo,
   ];
   var orbitalAdvancedWeapons = [
-    gwaioUnits.artemisWeapon,
-    gwaioUnits.omegaWeapon,
-    gwaioUnits.omegaWeaponAG,
-    gwaioUnits.sxxWeapon,
+    gwoUnit.artemisWeapon,
+    gwoUnit.omegaWeapon,
+    gwoUnit.omegaWeaponAG,
+    gwoUnit.sxxWeapon,
   ];
-  var orbitalBasic = orbitalBasicMobile.concat(gwaioUnits.orbitalLauncher);
+  var orbitalBasic = orbitalBasicMobile.concat(gwoUnit.orbitalLauncher);
   var orbitalAdvanced = orbitalAdvancedMobile.concat(
-    gwaioUnits.orbitalFactory,
-    gwaioUnits.jig // this is how GW treats it
+    gwoUnit.orbitalFactory,
+    gwoUnit.jig // this is how GW treats it
   );
   var orbitalAmmo = orbitalBasicAmmo.concat(orbitalAdvancedAmmo);
   var orbitalWeapons = orbitalBasicWeapons.concat(orbitalAdvancedWeapons);
   var orbitalMobile = orbitalBasicMobile.concat(orbitalAdvancedMobile);
   var orbital = orbitalBasic.concat(orbitalAdvanced);
 
-  var structuresArtilleryBasic = [gwaioUnits.lob, gwaioUnits.pelter];
-  var structuresArtilleryBasicAmmo = [
-    gwaioUnits.lobAmmo,
-    gwaioUnits.pelterAmmo,
-  ];
+  var structuresArtilleryBasic = [gwoUnit.lob, gwoUnit.pelter];
+  var structuresArtilleryBasicAmmo = [gwoUnit.lobAmmo, gwoUnit.pelterAmmo];
   var structuresArtilleryBasicWeapon = [
-    gwaioUnits.lobWeapon,
-    gwaioUnits.pelterWeapon,
+    gwoUnit.lobWeapon,
+    gwoUnit.pelterWeapon,
   ];
-  var structuresArtilleryAdvanced = [gwaioUnits.holkins];
-  var structuresArtilleryAdvancedAmmo = [gwaioUnits.holkinsAmmo];
-  var structuresArtilleryAdvancedWeapons = [gwaioUnits.holkinsWeapon];
+  var structuresArtilleryAdvanced = [gwoUnit.holkins];
+  var structuresArtilleryAdvancedAmmo = [gwoUnit.holkinsAmmo];
+  var structuresArtilleryAdvancedWeapons = [gwoUnit.holkinsWeapon];
   var structuresArtillery = structuresArtilleryBasic.concat(
     structuresArtilleryAdvanced
   );
@@ -236,55 +231,55 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
 
   var structuresDefencesBasic = [
-    gwaioUnits.anchor,
-    gwaioUnits.galata,
-    gwaioUnits.landMine,
-    gwaioUnits.laserDefenseTower,
-    gwaioUnits.singleLaserDefenseTower,
-    gwaioUnits.torpedoLauncher,
-    gwaioUnits.umbrella,
-    gwaioUnits.wall,
+    gwoUnit.anchor,
+    gwoUnit.galata,
+    gwoUnit.landMine,
+    gwoUnit.laserDefenseTower,
+    gwoUnit.singleLaserDefenseTower,
+    gwoUnit.torpedoLauncher,
+    gwoUnit.umbrella,
+    gwoUnit.wall,
   ];
   var structuresDefencesBasicAmmo = [
-    gwaioUnits.anchorAmmoAG,
-    gwaioUnits.anchorAmmoAO,
-    gwaioUnits.galataAmmo,
-    gwaioUnits.landMineAmmo,
-    gwaioUnits.laserDefenseTowerAmmo,
-    gwaioUnits.singleLaserDefenseTowerAmmo,
-    gwaioUnits.torpedoLauncherLandAmmo,
-    gwaioUnits.torpedoLauncherWaterAmmo,
-    gwaioUnits.umbrellaAmmo,
+    gwoUnit.anchorAmmoAG,
+    gwoUnit.anchorAmmoAO,
+    gwoUnit.galataAmmo,
+    gwoUnit.landMineAmmo,
+    gwoUnit.laserDefenseTowerAmmo,
+    gwoUnit.singleLaserDefenseTowerAmmo,
+    gwoUnit.torpedoLauncherLandAmmo,
+    gwoUnit.torpedoLauncherWaterAmmo,
+    gwoUnit.umbrellaAmmo,
   ];
   var structuresDefencesBasicWeapons = [
-    gwaioUnits.anchorWeaponAG,
-    gwaioUnits.anchorWeaponAO,
-    gwaioUnits.galataWeapon,
-    gwaioUnits.landMineWeapon,
-    gwaioUnits.laserDefenseTowerWeapon,
-    gwaioUnits.singleLaserDefenseTowerWeapon,
-    gwaioUnits.torpedoLauncherWeapon,
-    gwaioUnits.umbrellaWeapon,
+    gwoUnit.anchorWeaponAG,
+    gwoUnit.anchorWeaponAO,
+    gwoUnit.galataWeapon,
+    gwoUnit.landMineWeapon,
+    gwoUnit.laserDefenseTowerWeapon,
+    gwoUnit.singleLaserDefenseTowerWeapon,
+    gwoUnit.torpedoLauncherWeapon,
+    gwoUnit.umbrellaWeapon,
   ];
   var structuresDefencesAdvanced = [
-    gwaioUnits.catapult,
-    gwaioUnits.flak,
-    gwaioUnits.laserDefenseTowerAdvanced,
-    gwaioUnits.torpedoLauncherAdvanced,
-    gwaioUnits.antiNukeLauncher,
+    gwoUnit.catapult,
+    gwoUnit.flak,
+    gwoUnit.laserDefenseTowerAdvanced,
+    gwoUnit.torpedoLauncherAdvanced,
+    gwoUnit.antiNukeLauncher,
   ];
   var structuresDefencesAdvancedAmmo = [
-    gwaioUnits.catapultAmmo,
-    gwaioUnits.flakAmmo,
-    gwaioUnits.laserDefenseTowerAdvancedAmmo,
-    gwaioUnits.torpedoLauncherAdvancedLandAmmo,
-    gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
+    gwoUnit.catapultAmmo,
+    gwoUnit.flakAmmo,
+    gwoUnit.laserDefenseTowerAdvancedAmmo,
+    gwoUnit.torpedoLauncherAdvancedLandAmmo,
+    gwoUnit.torpedoLauncherAdvancedWaterAmmo,
   ];
   var structuresDefencesAdvancedWeapons = [
-    gwaioUnits.catapultWeapon,
-    gwaioUnits.flakWeapon,
-    gwaioUnits.laserDefenseTowerAdvancedWeapon,
-    gwaioUnits.torpedoLauncherAdvancedWeapon,
+    gwoUnit.catapultWeapon,
+    gwoUnit.flakWeapon,
+    gwoUnit.laserDefenseTowerAdvancedWeapon,
+    gwoUnit.torpedoLauncherAdvancedWeapon,
   ];
   var structuresDefencesAmmo = structuresDefencesBasicAmmo.concat(
     structuresDefencesAdvancedAmmo
@@ -295,44 +290,44 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var structuresDefences = structuresDefencesBasic.concat(
     structuresDefencesAdvanced
   );
-  var structuresEcoBasic = [gwaioUnits.energyPlant, gwaioUnits.metalExtractor];
+  var structuresEcoBasic = [gwoUnit.energyPlant, gwoUnit.metalExtractor];
   var structuresEcoAdvanced = [
-    gwaioUnits.energyPlantAdvanced,
-    gwaioUnits.jig,
-    gwaioUnits.metalExtractorAdvanced,
+    gwoUnit.energyPlantAdvanced,
+    gwoUnit.jig,
+    gwoUnit.metalExtractorAdvanced,
   ];
   var structuresEcoStorage = [
-    gwaioUnits.energyStorage,
-    gwaioUnits.metalStorage,
-    gwaioUnits.jig,
+    gwoUnit.energyStorage,
+    gwoUnit.metalStorage,
+    gwoUnit.jig,
   ];
   var structuresEco = structuresEcoBasic.concat(
     structuresEcoAdvanced,
     structuresEcoStorage
   );
   var structuresFactories = [
-    gwaioUnits.airFactory,
-    gwaioUnits.airFactoryAdvanced,
-    gwaioUnits.botFactory,
-    gwaioUnits.botFactoryAdvanced,
-    gwaioUnits.navalFactory,
-    gwaioUnits.navalFactoryAdvanced,
-    gwaioUnits.orbitalFactory,
-    gwaioUnits.orbitalLauncher,
-    gwaioUnits.unitCannon,
-    gwaioUnits.vehicleFactory,
-    gwaioUnits.vehicleFactoryAdvanced,
+    gwoUnit.airFactory,
+    gwoUnit.airFactoryAdvanced,
+    gwoUnit.botFactory,
+    gwoUnit.botFactoryAdvanced,
+    gwoUnit.navalFactory,
+    gwoUnit.navalFactoryAdvanced,
+    gwoUnit.orbitalFactory,
+    gwoUnit.orbitalLauncher,
+    gwoUnit.unitCannon,
+    gwoUnit.vehicleFactory,
+    gwoUnit.vehicleFactoryAdvanced,
   ];
-  var structuresIntelBasic = [gwaioUnits.radar, gwaioUnits.teleporter];
+  var structuresIntelBasic = [gwoUnit.radar, gwoUnit.teleporter];
   var structuresIntelAdvanced = [
-    gwaioUnits.deepSpaceOrbitalRadar,
-    gwaioUnits.radarAdvanced,
+    gwoUnit.deepSpaceOrbitalRadar,
+    gwoUnit.radarAdvanced,
   ];
   var structuresIntel = structuresIntelBasic.concat(structuresIntelAdvanced);
   var structuresSuperWeapons = [
-    gwaioUnits.catalyst,
-    gwaioUnits.halley,
-    gwaioUnits.nukeLauncher,
+    gwoUnit.catalyst,
+    gwoUnit.halley,
+    gwoUnit.nukeLauncher,
   ];
   var structures = structuresFactories.concat(
     structuresDefences,
@@ -343,78 +338,78 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
 
   var titans = [
-    gwaioUnits.ares,
-    gwaioUnits.atlas,
-    gwaioUnits.helios,
-    gwaioUnits.ragnarok,
-    gwaioUnits.zeus,
+    gwoUnit.ares,
+    gwoUnit.atlas,
+    gwoUnit.helios,
+    gwoUnit.ragnarok,
+    gwoUnit.zeus,
   ];
   var titansAmmo = [
-    gwaioUnits.aresAmmo,
-    gwaioUnits.aresSecondaryAmmo,
-    gwaioUnits.aresStompAmmo,
-    gwaioUnits.atlasAmmo,
-    gwaioUnits.heliosAmmo,
-    gwaioUnits.zeusAmmo,
+    gwoUnit.aresAmmo,
+    gwoUnit.aresSecondaryAmmo,
+    gwoUnit.aresStompAmmo,
+    gwoUnit.atlasAmmo,
+    gwoUnit.heliosAmmo,
+    gwoUnit.zeusAmmo,
   ];
   var titansWeapons = [
-    gwaioUnits.aresSecondary,
-    gwaioUnits.aresStomp,
-    gwaioUnits.aresWeapon,
-    gwaioUnits.atlasWeapon,
-    gwaioUnits.heliosWeapon,
-    gwaioUnits.zeusWeapon,
+    gwoUnit.aresSecondary,
+    gwoUnit.aresStomp,
+    gwoUnit.aresWeapon,
+    gwoUnit.atlasWeapon,
+    gwoUnit.heliosWeapon,
+    gwoUnit.zeusWeapon,
   ];
 
   var vehiclesBasicMobile = [
-    gwaioUnits.ant,
-    gwaioUnits.drifter,
-    gwaioUnits.inferno,
-    gwaioUnits.skitter,
-    gwaioUnits.spinner,
-    gwaioUnits.stryker,
-    gwaioUnits.vehicleFabber,
+    gwoUnit.ant,
+    gwoUnit.drifter,
+    gwoUnit.inferno,
+    gwoUnit.skitter,
+    gwoUnit.spinner,
+    gwoUnit.stryker,
+    gwoUnit.vehicleFabber,
   ];
   var vehiclesBasicAmmo = [
-    gwaioUnits.antAmmo,
-    gwaioUnits.drifterAmmo,
-    gwaioUnits.infernoAmmo,
-    gwaioUnits.skitterAmmo,
-    gwaioUnits.spinnerAmmo,
-    gwaioUnits.strykerAmmo,
+    gwoUnit.antAmmo,
+    gwoUnit.drifterAmmo,
+    gwoUnit.infernoAmmo,
+    gwoUnit.skitterAmmo,
+    gwoUnit.spinnerAmmo,
+    gwoUnit.strykerAmmo,
   ];
   var vehiclesBasicWeapons = [
-    gwaioUnits.antWeapon,
-    gwaioUnits.drifterWeapon,
-    gwaioUnits.infernoWeapon,
-    gwaioUnits.skitterWeapon,
-    gwaioUnits.spinnerWeapon,
-    gwaioUnits.strykerWeapon,
+    gwoUnit.antWeapon,
+    gwoUnit.drifterWeapon,
+    gwoUnit.infernoWeapon,
+    gwoUnit.skitterWeapon,
+    gwoUnit.spinnerWeapon,
+    gwoUnit.strykerWeapon,
   ];
   var vehiclesAdvancedMobile = [
-    gwaioUnits.leveler,
-    gwaioUnits.manhattan,
-    gwaioUnits.sheller,
-    gwaioUnits.storm,
-    gwaioUnits.vanguard,
-    gwaioUnits.vehicleFabberAdvanced,
+    gwoUnit.leveler,
+    gwoUnit.manhattan,
+    gwoUnit.sheller,
+    gwoUnit.storm,
+    gwoUnit.vanguard,
+    gwoUnit.vehicleFabberAdvanced,
   ];
   var vehiclesAdvancedAmmo = [
-    gwaioUnits.levelerAmmo,
-    gwaioUnits.shellerAmmo,
-    gwaioUnits.stormAmmo,
-    gwaioUnits.vanguardAmmo,
+    gwoUnit.levelerAmmo,
+    gwoUnit.shellerAmmo,
+    gwoUnit.stormAmmo,
+    gwoUnit.vanguardAmmo,
   ];
   var vehiclesAdvancedWeapons = [
-    gwaioUnits.levelerWeapon,
-    gwaioUnits.manhattanWeapon,
-    gwaioUnits.shellerWeapon,
-    gwaioUnits.stormWeapon,
-    gwaioUnits.vanguardWeapon,
+    gwoUnit.levelerWeapon,
+    gwoUnit.manhattanWeapon,
+    gwoUnit.shellerWeapon,
+    gwoUnit.stormWeapon,
+    gwoUnit.vanguardWeapon,
   ];
-  var vehiclesBasic = vehiclesBasicMobile.concat(gwaioUnits.vehicleFactory);
+  var vehiclesBasic = vehiclesBasicMobile.concat(gwoUnit.vehicleFactory);
   var vehiclesAdvanced = vehiclesAdvancedMobile.concat(
-    gwaioUnits.vehicleFactoryAdvanced
+    gwoUnit.vehicleFactoryAdvanced
   );
   var vehiclesAmmo = vehiclesBasicAmmo.concat(vehiclesAdvancedAmmo);
   var vehiclesWeapons = vehiclesBasicWeapons.concat(vehiclesAdvancedWeapons);
@@ -422,58 +417,58 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var vehicles = vehiclesBasic.concat(vehiclesAdvanced);
 
   var unitCannonMobile = [
-    gwaioUnits.ant,
-    gwaioUnits.boom,
-    gwaioUnits.dox,
-    gwaioUnits.grenadier,
-    gwaioUnits.spark,
-    gwaioUnits.spinner,
-    gwaioUnits.stinger,
-    gwaioUnits.stitch,
-    gwaioUnits.storm,
-    gwaioUnits.stryker,
+    gwoUnit.ant,
+    gwoUnit.boom,
+    gwoUnit.dox,
+    gwoUnit.grenadier,
+    gwoUnit.spark,
+    gwoUnit.spinner,
+    gwoUnit.stinger,
+    gwoUnit.stitch,
+    gwoUnit.storm,
+    gwoUnit.stryker,
   ];
 
   var fabbersBasic = [
-    gwaioUnits.airFabber,
-    gwaioUnits.barnacle,
-    gwaioUnits.botFabber,
-    gwaioUnits.navalFabber,
-    gwaioUnits.orbitalFabber,
-    gwaioUnits.stitch,
-    gwaioUnits.vehicleFabber,
+    gwoUnit.airFabber,
+    gwoUnit.barnacle,
+    gwoUnit.botFabber,
+    gwoUnit.navalFabber,
+    gwoUnit.orbitalFabber,
+    gwoUnit.stitch,
+    gwoUnit.vehicleFabber,
   ];
   var fabbersAdvanced = [
-    gwaioUnits.airFabberAdvanced,
-    gwaioUnits.angel,
-    gwaioUnits.botFabberAdvanced,
-    gwaioUnits.colonel,
-    gwaioUnits.mend,
-    gwaioUnits.navalFabberAdvanced,
-    gwaioUnits.vehicleFabberAdvanced,
+    gwoUnit.airFabberAdvanced,
+    gwoUnit.angel,
+    gwoUnit.botFabberAdvanced,
+    gwoUnit.colonel,
+    gwoUnit.mend,
+    gwoUnit.navalFabberAdvanced,
+    gwoUnit.vehicleFabberAdvanced,
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
   // exclude orbital factories due to their fabber working differently
   var factoriesBasic = [
-    gwaioUnits.airFactory,
-    gwaioUnits.botFactory,
-    gwaioUnits.navalFactory,
-    gwaioUnits.vehicleFactory,
+    gwoUnit.airFactory,
+    gwoUnit.botFactory,
+    gwoUnit.navalFactory,
+    gwoUnit.vehicleFactory,
   ];
   var factoriesAdvanced = [
-    gwaioUnits.airFactoryAdvanced,
-    gwaioUnits.botFactoryAdvanced,
-    gwaioUnits.navalFactoryAdvanced,
-    gwaioUnits.vehicleFactoryAdvanced,
+    gwoUnit.airFactoryAdvanced,
+    gwoUnit.botFactoryAdvanced,
+    gwoUnit.navalFactoryAdvanced,
+    gwoUnit.vehicleFactoryAdvanced,
   ];
   // add orbital factories too
   var factories = factoriesBasic.concat(
     factoriesAdvanced,
-    gwaioUnits.antiNukeLauncher,
-    gwaioUnits.orbitalFactory,
-    gwaioUnits.orbitalLauncher,
-    gwaioUnits.unitCannon
+    gwoUnit.antiNukeLauncher,
+    gwoUnit.orbitalFactory,
+    gwoUnit.orbitalLauncher,
+    gwoUnit.unitCannon
   );
 
   var mobile = airMobile.concat(
@@ -481,40 +476,40 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    gwaioUnits.atlas,
-    gwaioUnits.ares,
-    gwaioUnits.zeus
+    gwoUnit.atlas,
+    gwoUnit.ares,
+    gwoUnit.zeus
   );
-  var notMobile = structures.concat(gwaioUnits.ragnarok);
+  var notMobile = structures.concat(gwoUnit.ragnarok);
 
   var energyIntel = structuresIntel.concat(
-    gwaioUnits.arkyd,
-    gwaioUnits.radarSatelliteAdvanced
+    gwoUnit.arkyd,
+    gwoUnit.radarSatelliteAdvanced
   );
   var energyUnits = [
-    gwaioUnits.artemis,
-    gwaioUnits.bumblebee,
-    gwaioUnits.commander,
-    gwaioUnits.holkins,
-    gwaioUnits.icarus,
-    gwaioUnits.pelter,
-    gwaioUnits.spark,
-    gwaioUnits.sxx,
-    gwaioUnits.wyrm,
-    gwaioUnits.zeus,
+    gwoUnit.artemis,
+    gwoUnit.bumblebee,
+    gwoUnit.commander,
+    gwoUnit.holkins,
+    gwoUnit.icarus,
+    gwoUnit.pelter,
+    gwoUnit.spark,
+    gwoUnit.sxx,
+    gwoUnit.wyrm,
+    gwoUnit.zeus,
   ];
   var energyAll = energyIntel.concat(energyUnits);
   var energyWeapons = [
-    gwaioUnits.artemisWeapon,
-    gwaioUnits.bumblebeeWeapon,
-    gwaioUnits.commanderSecondary,
-    gwaioUnits.holkinsWeapon,
-    gwaioUnits.icarusWeapon,
-    gwaioUnits.pelterWeapon,
-    gwaioUnits.sparkWeapon,
-    gwaioUnits.sxxWeapon,
-    gwaioUnits.wyrmWeapon,
-    gwaioUnits.zeusWeapon,
+    gwoUnit.artemisWeapon,
+    gwoUnit.bumblebeeWeapon,
+    gwoUnit.commanderSecondary,
+    gwoUnit.holkinsWeapon,
+    gwoUnit.icarusWeapon,
+    gwoUnit.pelterWeapon,
+    gwoUnit.sparkWeapon,
+    gwoUnit.sxxWeapon,
+    gwoUnit.wyrmWeapon,
+    gwoUnit.zeusWeapon,
   ];
 
   var ammo = airAmmo.concat(
@@ -537,11 +532,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
-    gwaioUnits.antiNukeLauncher,
-    gwaioUnits.energyPlantAdvanced,
-    gwaioUnits.metalExtractorAdvanced,
-    gwaioUnits.radarAdvanced,
-    gwaioUnits.unitCannon
+    gwoUnit.antiNukeLauncher,
+    gwoUnit.energyPlantAdvanced,
+    gwoUnit.metalExtractorAdvanced,
+    gwoUnit.radarAdvanced,
+    gwoUnit.unitCannon
   );
 
   return {

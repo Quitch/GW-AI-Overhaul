@@ -241,8 +241,8 @@ define([
       var starGenerators = _.map(self.stars(), function (star) {
         var systemSize = 0;
         if (
-          model.gwaioDifficultySettings &&
-          !model.gwaioDifficultySettings.systemScaling()
+          model.gwoDifficultySettings &&
+          !model.gwoDifficultySettings.systemScaling()
         ) {
           systemSize = Math.floor(Math.random() * 10 + 1);
         } else {

@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (inventory, gwaioUnits) {
+], function (inventory, gwoUnit) {
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
@@ -421,13 +421,13 @@ define([
   // Cluster commander setup
   var clusterCommanderTech = [
     {
-      file: gwaioUnits.colonel,
+      file: gwoUnit.colonel,
       path: "tools.0.spec_id",
       op: "replace",
-      value: gwaioUnits.commanderBuildArm,
+      value: gwoUnit.commanderBuildArm,
     },
     {
-      file: gwaioUnits.colonel,
+      file: gwoUnit.colonel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -440,13 +440,13 @@ define([
       ],
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "buildable_types",
       op: "replace",
       value: "CmdBuild",
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "command_caps",
       op: "replace",
       value: [
@@ -460,25 +460,25 @@ define([
       ],
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "max_health",
       op: "multiply",
       value: 5,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "tools.1.spec_id",
       op: "replace",
-      value: gwaioUnits.commanderBuildArm,
+      value: gwoUnit.commanderBuildArm,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "transportable.size",
       op: "replace",
       value: 1,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "unit_types",
       op: "replace",
       value: [

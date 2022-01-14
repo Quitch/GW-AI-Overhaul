@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,18 +17,16 @@ define([
         found: "/VO/Computer/gw/board_tech_available_sea",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(inventory.units(), gwaioUnits.navalFactoryAdvanced)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced)) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwaioGroups.navalAdvancedMobile, function (unit) {
+      var mods = _.map(gwoGroup.navalAdvancedMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",
@@ -37,7 +35,7 @@ define([
         };
       });
       mods.push({
-        file: gwaioUnits.navalFactoryAdvanced,
+        file: gwoUnit.navalFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,

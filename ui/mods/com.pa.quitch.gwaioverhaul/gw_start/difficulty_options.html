@@ -1,12 +1,12 @@
 <div
   class="form-group"
   id="custom-difficulty-settings"
-  data-bind="visible: $root.gwaioDifficultySettings.customDifficulty()"
+  data-bind="visible: $root.gwoDifficultySettings.customDifficulty()"
 >
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.goForKill"
+      data-bind="checked: $root.gwoDifficultySettings.goForKill"
     />
     <span style="margin-left: 6px"></span>
     <loc>Target Weakest</loc>
@@ -17,7 +17,7 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.priorityScoutMetalSpots"
+      data-bind="checked: $root.gwoDifficultySettings.priorityScoutMetalSpots"
     />
     <span style="margin-left: 6px"></span>
     <loc>Scout Metal First</loc>
@@ -30,7 +30,7 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.useEasierSystemTemplate"
+      data-bind="checked: $root.gwoDifficultySettings.useEasierSystemTemplate"
     />
     <span style="margin-left: 6px"></span>
     <loc>Easy Systems</loc>
@@ -43,7 +43,7 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.enableCommanderDangerResponses"
+      data-bind="checked: $root.gwoDifficultySettings.enableCommanderDangerResponses"
     />
     <span style="margin-left: 6px"></span>
     <loc>Commander Leaves Planet</loc>
@@ -55,7 +55,7 @@
   </div>
   <div>
     <select
-      data-bind="options: $root.gwaioDifficultySettings.microType, optionsText: $root.gwaioDifficultySettings.getmicroTypeDescription, value:$root.gwaioDifficultySettings.microTypeChosen"
+      data-bind="options: $root.gwoDifficultySettings.microType, optionsText: $root.gwoDifficultySettings.getmicroTypeDescription, value:$root.gwoDifficultySettings.microTypeChosen"
     ></select>
     <span style="margin-left: 6px"></span>
     <loc>Micro</loc>
@@ -69,7 +69,7 @@
     <input
       type="number"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.mandatoryMinions"
+      data-bind="textInput: $root.gwoDifficultySettings.mandatoryMinions"
     />
     <span style="margin-left: 6px"></span>
     <loc>Mandatory Minions</loc>
@@ -84,7 +84,7 @@
       type="number"
       step="0.1"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.minionMod"
+      data-bind="textInput: $root.gwoDifficultySettings.minionMod"
     />
     <span style="margin-left: 6px"></span>
     <loc>Minion Modifier</loc>
@@ -99,7 +99,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.factoryBuildDelayMin"
+      data-bind="textInput: $root.gwoDifficultySettings.factoryBuildDelayMin"
     />
     <span style="margin-left: 6px"></span>
     <loc>Unit Production Delay (min)</loc>
@@ -114,7 +114,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.factoryBuildDelayMax"
+      data-bind="textInput: $root.gwoDifficultySettings.factoryBuildDelayMax"
     />
     <span style="margin-left: 6px"></span>
     <loc>Unit Production Delay (max)</loc>
@@ -129,7 +129,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.unableToExpandDelay"
+      data-bind="textInput: $root.gwoDifficultySettings.unableToExpandDelay"
     />
     <span style="margin-left: 6px"></span>
     <loc>Unable To Expand Delay</loc>
@@ -144,7 +144,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.perExpansionDelay"
+      data-bind="textInput: $root.gwoDifficultySettings.perExpansionDelay"
     />
     <span style="margin-left: 6px"></span>
     <loc>Per Expansion Delay</loc>
@@ -160,7 +160,7 @@
       min="0"
       step="0.1"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.econBase"
+      data-bind="textInput: $root.gwoDifficultySettings.econBase"
     />
     <span style="margin-left: 6px"></span>
     <loc>Base Econ Modifier</loc>
@@ -176,7 +176,7 @@
       min="0"
       step="0.1"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.econRatePerDist"
+      data-bind="textInput: $root.gwoDifficultySettings.econRatePerDist"
     />
     <span style="margin-left: 6px"></span>
     <loc>Distance Econ Modifier</loc>
@@ -191,7 +191,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.maxBasicFabbers"
+      data-bind="textInput: $root.gwoDifficultySettings.maxBasicFabbers"
     />
     <span style="margin-left: 6px"></span>
     <loc>Max Basic Fabbers</loc>
@@ -206,7 +206,7 @@
       type="number"
       min="0"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.maxAdvancedFabbers"
+      data-bind="textInput: $root.gwoDifficultySettings.maxAdvancedFabbers"
     />
     <span style="margin-left: 6px"></span>
     <loc>Max Advanced Fabbers</loc>
@@ -222,7 +222,7 @@
       min="0"
       step="50"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.startingLocationEvaluationRadius"
+      data-bind="textInput: $root.gwoDifficultySettings.startingLocationEvaluationRadius"
     />
     <span style="margin-left: 6px"></span>
     <loc>Landing Evaluation</loc>
@@ -238,7 +238,7 @@
       min="0"
       max="100"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.ffaChance"
+      data-bind="textInput: $root.gwoDifficultySettings.ffaChance"
     />
     <span style="margin-left: 6px"></span>
     <loc>FFA Chance</loc>
@@ -253,7 +253,7 @@
       type="number"
       min="1"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.bossCommanders"
+      data-bind="textInput: $root.gwoDifficultySettings.bossCommanders"
     />
     <span style="margin-left: 6px"></span>
     <loc>Boss Commanders</loc>
@@ -269,7 +269,7 @@
       min="0"
       max="100"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.landAnywhereChance"
+      data-bind="textInput: $root.gwoDifficultySettings.landAnywhereChance"
     />
     <span style="margin-left: 6px"></span>
     <loc>Big Spawns Chance</loc>
@@ -285,7 +285,7 @@
       min="0"
       max="100"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.suddenDeathChance"
+      data-bind="textInput: $root.gwoDifficultySettings.suddenDeathChance"
     />
     <span style="margin-left: 6px"></span>
     <loc>Team Death Chance</loc>
@@ -301,7 +301,7 @@
       min="0"
       max="100"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.bountyModeChance"
+      data-bind="textInput: $root.gwoDifficultySettings.bountyModeChance"
     />
     <span style="margin-left: 6px"></span>
     <loc>Bounties Chance</loc>
@@ -316,7 +316,7 @@
       type="number"
       step="0.1"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.bountyModeValue"
+      data-bind="textInput: $root.gwoDifficultySettings.bountyModeValue"
     />
     <span style="margin-left: 6px"></span>
     <loc>Bounty Value</loc>
@@ -331,7 +331,7 @@
       type="number"
       step="0.5"
       style="width: 60px; padding-bottom: 0px"
-      data-bind="textInput: $root.gwaioDifficultySettings.factionTechHandicap"
+      data-bind="textInput: $root.gwoDifficultySettings.factionTechHandicap"
     />
     <span style="margin-left: 6px"></span>
     <loc>Buff Handicap</loc>
@@ -343,7 +343,7 @@
   </div>
   <div>
     <select
-      data-bind="options: $root.gwaioDifficultySettings.personalityTags, optionsText: $root.gwaioDifficultySettings.getpersonalityTagsDescription, selectedOptions: $root.gwaioDifficultySettings.personalityTagsChosen"
+      data-bind="options: $root.gwoDifficultySettings.personalityTags, optionsText: $root.gwoDifficultySettings.getpersonalityTagsDescription, selectedOptions: $root.gwoDifficultySettings.personalityTagsChosen"
       multiple="true"
     ></select>
     <span style="margin-left: 6px"></span>
@@ -360,12 +360,12 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.factionScaling"
+      data-bind="checked: $root.gwoDifficultySettings.factionScaling"
     />
     <span style="margin-left: 6px"></span>
     <loc>Faction Scaling</loc>
     <!-- Use a variable for the tooltip because PA Inc wants to avoid escaping characters in HTML -->
-    <span class="info_tip" data-bind="tooltip: gwaioFactionScalingTooltip"
+    <span class="info_tip" data-bind="tooltip: gwoFactionScalingTooltip"
       >?</span
     >
   </div>
@@ -373,7 +373,7 @@
   <div id="system-scaling">
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.systemScaling"
+      data-bind="checked: $root.gwoDifficultySettings.systemScaling"
     />
     <span style="margin-left: 6px"></span>
     <loc>System Scaling</loc>
@@ -386,7 +386,7 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.easierStart"
+      data-bind="checked: $root.gwoDifficultySettings.easierStart"
     />
     <span style="margin-left: 6px"></span>
     <loc>Easier Start</loc>
@@ -399,7 +399,7 @@
   <div>
     <input
       type="checkbox"
-      data-bind="checked: $root.gwaioDifficultySettings.paLore"
+      data-bind="checked: $root.gwoDifficultySettings.paLore"
     />
     <span style="margin-left: 6px"></span>
     <loc>System Lore</loc>

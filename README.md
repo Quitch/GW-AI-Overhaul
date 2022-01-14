@@ -138,8 +138,8 @@ If you are adding new loadouts to the game and want to be compatible, then you w
 1. Add the following to the gw_start scene:
 
    ```javascript
-   if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
-   model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
+   if (!model.gwoNewStartCards) model.gwoNewStartCards = [];
+   model.gwoNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
    ```
 
 2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
@@ -151,10 +151,10 @@ If you are adding new tech cards to the game and want to be compatible, then you
 1. Add the following to the gw_play scene:
 
    ```javascript
-   if (!model.gwaioDeck) model.gwaioDeck = [];
-   if (!model.gwaioCardsToUnits) model.gwaioCardsToUnits = [];
-   model.gwaioDeck.push("YOUR_TECH_ID");
-   model.gwaioCardsToUnits.push({
+   if (!model.gwoDeck) model.gwoDeck = [];
+   if (!model.gwoCardsToUnits) model.gwoCardsToUnits = [];
+   model.gwoDeck.push("YOUR_TECH_ID");
+   model.gwoCardsToUnits.push({
      id: "YOUR_TECH_ID",
      // Use the base_commander for commander and always the use unit, not the ammo, etc.
      units: ["AFFECTED_UNIT_PATH"],

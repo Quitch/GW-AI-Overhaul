@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,23 +17,23 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFactory)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)
       ) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.airAdvancedMobile);
+      inventory.addUnits(gwoGroup.airAdvancedMobile);
 
       inventory.addMods([
         {
-          file: gwaioUnits.airFactory,
+          file: gwoUnit.airFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Air & Mobile & FactoryBuild)",

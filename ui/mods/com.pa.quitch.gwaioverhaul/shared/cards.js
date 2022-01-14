@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
-  gwaioTech
+  gwoTech
 ) {
   return {
     hasUnit: function (inventoryUnits, units) {
@@ -58,7 +58,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
     },
     setupCluster: function (inventory) {
       if (inventory.getTag("global", "playerFaction") === 4) {
-        inventory.addMods(gwaioTech.clusterCommanders);
+        inventory.addMods(gwoTech.clusterCommanders);
       }
     },
     applyDulls: function (card, inventory, units) {

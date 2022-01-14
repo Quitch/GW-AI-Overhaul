@@ -2,7 +2,7 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioGroups) {
+], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,10 +17,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.missingUnit(inventory.units(), gwaioGroups.airBasic)) {
+      if (gwoCard.missingUnit(inventory.units(), gwoGroup.airBasic)) {
         var dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
@@ -37,7 +37,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.airBasic);
+      inventory.addUnits(gwoGroup.airBasic);
     },
     dull: function () {
       //empty

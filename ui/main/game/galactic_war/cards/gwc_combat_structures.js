@@ -2,7 +2,7 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioGroups) {
+], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,7 +17,7 @@ define([
         found: "PA/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
@@ -36,7 +36,7 @@ define([
     },
     buff: function (inventory) {
       var mods = [];
-      _.forEach(gwaioGroups.structures, function (unit) {
+      _.forEach(gwoGroup.structures, function (unit) {
         mods.push({
           file: unit,
           path: "max_health",
@@ -44,7 +44,7 @@ define([
           value: 1.5,
         });
       });
-      _.forEach(gwaioGroups.structuresDefencesAmmo, function (ammo) {
+      _.forEach(gwoGroup.structuresDefencesAmmo, function (ammo) {
         mods.push({
           file: ammo,
           path: "damage",

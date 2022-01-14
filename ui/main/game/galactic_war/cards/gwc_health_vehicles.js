@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioGroups) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,16 +16,16 @@ define([
         found: "/VO/Computer/gw/board_tech_available_armor",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.vehiclesMobile)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwaioGroups.vehiclesMobile, function (unit) {
+      var mods = _.map(gwoGroup.vehiclesMobile, function (unit) {
         return {
           file: unit,
           path: "max_health",

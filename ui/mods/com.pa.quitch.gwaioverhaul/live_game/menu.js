@@ -1,9 +1,9 @@
-var gwaioMenuLoaded;
+var gwoMenuLoaded;
 
-if (!gwaioMenuLoaded) {
-  gwaioMenuLoaded = true;
+if (!gwoMenuLoaded) {
+  gwoMenuLoaded = true;
 
-  function gwaioMenu() {
+  function gwoMenu() {
     try {
       if (model.gameType() === "Galactic War") {
         requireGW(["shared/gw_common"], function (GW) {
@@ -113,5 +113,5 @@ if (!gwaioMenuLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioMenu();
+  gwoMenu();
 }

@@ -7,7 +7,7 @@ define(function () {
 
   var loading = false;
 
-  var gwaioBank = function () {
+  var gwoBank = function () {
     self = this;
 
     self.startCards = ko.observableArray();
@@ -30,7 +30,7 @@ define(function () {
     self.load();
   };
 
-  gwaioBank.prototype = {
+  gwoBank.prototype = {
     load: function () {
       loading = true;
       var bankJson = localStorage[LS_KEY];
@@ -66,5 +66,5 @@ define(function () {
     },
   };
 
-  return new gwaioBank();
+  return new gwoBank();
 });

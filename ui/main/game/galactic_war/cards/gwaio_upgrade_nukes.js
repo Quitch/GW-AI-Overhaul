@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_super_weapon",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.nukeLauncher)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.nukeLauncher)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,13 +27,13 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.nukeLauncherAmmo,
+          file: gwoUnit.nukeLauncherAmmo,
           path: "armor_damage_map.AT_Commander",
           op: "multiply",
           value: 3,
         },
         {
-          file: gwaioUnits.nukeLauncherAmmo,
+          file: gwoUnit.nukeLauncherAmmo,
           path: "armor_damage_map.AT_Orbital",
           op: "multiply",
           value: 3,

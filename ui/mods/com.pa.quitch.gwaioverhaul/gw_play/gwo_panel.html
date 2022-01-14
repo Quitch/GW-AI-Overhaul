@@ -6,31 +6,31 @@
 >
   <div class="gwo-info">
     <h2><loc>Galactic War Overhaul</loc></h2>
-    <!-- ko if: $root.gwaioSettings -->
+    <!-- ko if: $root.gwoSettings -->
     <div class="table">
       <div class="tablebody">
         <div class="tr">
           <div class="td"><loc>Version:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioSettings.version"></div>
+          <div class="data" data-bind="text: $root.gwoSettings.version"></div>
         </div>
         <div class="tr">
           <div class="td"><loc>Difficulty:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioDifficulty"></div>
+          <div class="data" data-bind="text: $root.gwoDifficulty"></div>
         </div>
         <div class="tr">
           <div class="td"><loc>Size:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioSize"></div>
+          <div class="data" data-bind="text: $root.gwoSize"></div>
         </div>
         <div class="tr">
           <div class="td"><loc>AI:</loc></div>
-          <div class="data" data-bind="text: $root.gwaioAI"></div>
+          <div class="data" data-bind="text: $root.gwoAI"></div>
         </div>
       </div>
     </div>
     <div class="table">
       <div
         class="tablebody"
-        data-bind="visible:$root.gwaioOptions().length > 0, foreach: $root.gwaioOptions()"
+        data-bind="visible:$root.gwoOptions().length > 0, foreach: $root.gwoOptions()"
       >
         <div class="tr">
           <div class="td">
@@ -38,15 +38,15 @@
           </div>
           <div
             class="data"
-            data-bind="text: $root.gwaioOptions()[$index()]"
+            data-bind="text: $root.gwoOptions()[$index()]"
           ></div>
         </div>
       </div>
     </div>
     <!-- /ko -->
-    <h3 data-bind="text: $root.gwaioFactionName"></h3>
-    <div class="td" data-bind="text: $root.gwaioLoadout"></div>
-    <ul data-bind="foreach: $root.gwaioPlayer">
+    <h3 data-bind="text: $root.gwoFactionName"></h3>
+    <div class="td" data-bind="text: $root.gwoLoadout"></div>
+    <ul data-bind="foreach: $root.gwoPlayer">
       <li class="commander">
         <div class="div_player_icon">
           <div

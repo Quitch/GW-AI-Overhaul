@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,23 +17,23 @@ define([
         found: "/VO/Computer/gw/board_tech_available_orbital",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwaioCards.hasUnit(inventory.units(), gwaioUnits.orbitalLauncher)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher)
       ) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioGroups.orbitalAdvancedMobile);
+      inventory.addUnits(gwoGroup.orbitalAdvancedMobile);
 
       inventory.addMods([
         {
-          file: gwaioUnits.orbitalLauncher,
+          file: gwoUnit.orbitalLauncher,
           path: "buildable_types",
           op: "add",
           value: "| (Orbital & FactoryBuild)",

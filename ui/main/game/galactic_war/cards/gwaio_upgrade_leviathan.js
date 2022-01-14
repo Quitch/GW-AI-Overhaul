@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.leviathan)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.leviathan)) {
         chance = 30;
       }
       return { chance: chance };
@@ -27,49 +27,49 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.0.spec_id",
           op: "replace",
-          value: gwaioUnits.holkinsWeapon,
+          value: gwoUnit.holkinsWeapon,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.1.spec_id",
           op: "replace",
-          value: gwaioUnits.holkinsWeapon,
+          value: gwoUnit.holkinsWeapon,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.1.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.2.spec_id",
           op: "replace",
-          value: gwaioUnits.holkinsWeapon,
+          value: gwoUnit.holkinsWeapon,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.2.projectiles_per_fire",
           op: "replace",
           value: 1,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.3.spec_id",
           op: "replace",
-          value: gwaioUnits.holkinsWeapon,
+          value: gwoUnit.holkinsWeapon,
         },
         {
-          file: gwaioUnits.leviathan,
+          file: gwoUnit.leviathan,
           path: "tools.3.projectiles_per_fire",
           op: "replace",
           value: 1,

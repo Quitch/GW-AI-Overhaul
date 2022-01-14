@@ -1,9 +1,9 @@
-var gwaioSetupLoaded;
+var gwoSetupLoaded;
 
-if (!gwaioSetupLoaded) {
-  gwaioSetupLoaded = true;
+if (!gwoSetupLoaded) {
+  gwoSetupLoaded = true;
 
-  function gwaioSetup() {
+  function gwoSetup() {
     try {
       ko.extenders.decimals = function (target, decimals) {
         // create a writable computed observable to intercept writes to our observable
@@ -49,7 +49,7 @@ if (!gwaioSetupLoaded) {
       model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
 
       // gw_start uses ko.applyBindings(model)
-      model.gwaioDifficultySettings = {
+      model.gwoDifficultySettings = {
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         easierStart: ko.observable(false),
@@ -65,9 +65,7 @@ if (!gwaioSetupLoaded) {
         }),
         microTypeChosen: ko.observable(0),
         getmicroTypeDescription: function (value) {
-          return loc(
-            model.gwaioDifficultySettings.microTypeDescription()[value]
-          );
+          return loc(model.gwoDifficultySettings.microTypeDescription()[value]);
         },
         mandatoryMinions: ko.observable(0).extend({
           decimals: 2,
@@ -107,7 +105,7 @@ if (!gwaioSetupLoaded) {
         personalityTagsChosen: ko.observableArray([]),
         getpersonalityTagsDescription: function (value) {
           return loc(
-            model.gwaioDifficultySettings.personalityTagsDescription()[value]
+            model.gwoDifficultySettings.personalityTagsDescription()[value]
           );
         },
         econBase: ko.observable(0).extend({
@@ -184,7 +182,7 @@ if (!gwaioSetupLoaded) {
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
       // Because PA Inc wants to avoid escaping characters in HTML
-      model.gwaioFactionScalingTooltip =
+      model.gwoFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
 
       // We change how we monitor model.ready() to prevent
@@ -209,7 +207,7 @@ if (!gwaioSetupLoaded) {
           });
           // Remove System Scaling feature as this mod can't use it
           $("#system-scaling").remove();
-          model.gwaioDifficultySettings.systemScaling(false);
+          model.gwoDifficultySettings.systemScaling(false);
         }
       });
 
@@ -239,19 +237,19 @@ if (!gwaioSetupLoaded) {
           GWTeams,
           normalSystemTemplates, // window.star_system_templates is set instead
           easySystemTemplates,
-          gwaioTech,
-          gwaioBank,
-          gwaioLore,
-          gwaioDifficulty,
-          gwaioAI
+          gwoTech,
+          gwoBank,
+          gwoLore,
+          gwoDifficulty,
+          gwoAI
         ) {
           var selectedDifficulty = 0;
 
           // Track difficulty settings so GW-CUSTOM fields appear and display correct values
           ko.computed(function () {
             selectedDifficulty = model.newGameDifficultyIndex();
-            var difficultySettings = model.gwaioDifficultySettings;
-            var difficulties = gwaioDifficulty.difficulties;
+            var difficultySettings = model.gwoDifficultySettings;
+            var difficulties = gwoDifficulty.difficulties;
             if (difficulties[selectedDifficulty].customDifficulty) {
               difficultySettings.customDifficulty(true);
             } else {
@@ -334,10 +332,10 @@ if (!gwaioSetupLoaded) {
             }
           });
 
-          if (!model.gwaioNewStartCards) {
-            model.gwaioNewStartCards = [];
+          if (!model.gwoNewStartCards) {
+            model.gwoNewStartCards = [];
           }
-          model.gwaioNewStartCards.push(
+          model.gwoNewStartCards.push(
             { id: "gwaio_start_ceo" },
             { id: "gwaio_start_paratrooper" },
             { id: "nem_start_deepspace" },
@@ -367,14 +365,14 @@ if (!gwaioSetupLoaded) {
           ];
           var allCards = startingCards.concat(
             lockedBaseCards,
-            model.gwaioNewStartCards
+            model.gwoNewStartCards
           );
           // Determine which start cards are available and which are locked
           var startCards = _.map(allCards, function (cardData) {
             if (
               _.includes(startingCards, cardData) ||
               GW.bank.hasStartCard(cardData) ||
-              gwaioBank.hasStartCard(cardData)
+              gwoBank.hasStartCard(cardData)
             ) {
               return model.makeKnown(cardData);
             } else {
@@ -419,7 +417,7 @@ if (!gwaioSetupLoaded) {
 
             selectedDifficulty = model.newGameDifficultyIndex();
             var useEasySystems =
-              gwaioDifficulty.difficulties[selectedDifficulty]
+              gwoDifficulty.difficulties[selectedDifficulty]
                 .useEasierSystemTemplate;
             var systemTemplates = useEasySystems
               ? easySystemTemplates
@@ -428,7 +426,7 @@ if (!gwaioSetupLoaded) {
             var size = sizes[model.newGameSizeIndex()] || 40;
             var aiFactions = _.range(GWFactions.length);
             aiFactions.splice(model.playerFactionIndex(), 1);
-            if (model.gwaioDifficultySettings.factionScaling()) {
+            if (model.gwoDifficultySettings.factionScaling()) {
               var numFactions = model.newGameSizeIndex() + 1;
               aiFactions = _.sample(aiFactions, numFactions);
             }
@@ -458,7 +456,7 @@ if (!gwaioSetupLoaded) {
                 return null;
               }
 
-              var gwaioDealStartCard = function (params) {
+              var gwoDealStartCard = function (params) {
                 var result = $.Deferred();
                 loaded.then(function () {
                   var card = _.find(processedStartCards, { id: params.id });
@@ -481,7 +479,7 @@ if (!gwaioSetupLoaded) {
                 return result;
               };
 
-              return gwaioDealStartCard({
+              return gwoDealStartCard({
                 id: model.activeStartCard().id(),
                 inventory: game.inventory(),
                 galaxy: galaxy,
@@ -523,7 +521,7 @@ if (!gwaioSetupLoaded) {
               });
 
               var neutralStars = 2;
-              if (model.gwaioDifficultySettings.easierStart()) {
+              if (model.gwoDifficultySettings.easierStart()) {
                 neutralStars = 4;
               }
 
@@ -614,7 +612,7 @@ if (!gwaioSetupLoaded) {
               };
 
               var setupPenchantAI = function (ai) {
-                var penchantValues = gwaioAI.penchants();
+                var penchantValues = gwoAI.penchants();
                 ai.personality.personality_tags =
                   ai.personality.personality_tags.concat(
                     penchantValues.penchants
@@ -706,7 +704,7 @@ if (!gwaioSetupLoaded) {
               // Setup the AI
               _.forEach(teamInfo, function (info) {
                 var boss = info.boss;
-                var difficulty = model.gwaioDifficultySettings;
+                var difficulty = model.gwoDifficultySettings;
                 var econBase = difficulty.econBase();
                 var econRatePerDist = difficulty.econRatePerDist();
 
@@ -718,7 +716,7 @@ if (!gwaioSetupLoaded) {
                 boss.inventory = [];
                 // Setup Cluster commanders
                 if (boss.isCluster === true) {
-                  boss.inventory = gwaioTech.clusterCommanders;
+                  boss.inventory = gwoTech.clusterCommanders;
                 }
 
                 var factionTechHandicap = difficulty.factionTechHandicap();
@@ -729,7 +727,7 @@ if (!gwaioSetupLoaded) {
                   bossBuffs,
                   boss.inventory,
                   boss.faction,
-                  gwaioTech.factionTechs
+                  gwoTech.factionTechs
                 );
 
                 var mandatoryMinions = difficulty.mandatoryMinions();
@@ -797,7 +795,7 @@ if (!gwaioSetupLoaded) {
                   ai.inventory = [];
                   // Setup Cluster commanders
                   if (ai.isCluster === true) {
-                    ai.inventory = gwaioTech.clusterCommanders;
+                    ai.inventory = gwoTech.clusterCommanders;
                   }
 
                   // Setup non-boss AI buffs
@@ -807,7 +805,7 @@ if (!gwaioSetupLoaded) {
                     workerBuffs,
                     ai.inventory,
                     ai.faction,
-                    gwaioTech.factionTechs
+                    gwoTech.factionTechs
                   );
 
                   // Setup non-boss minions
@@ -878,7 +876,7 @@ if (!gwaioSetupLoaded) {
                       foeCommander.inventory = [];
                       // Setup Cluster commanders
                       if (foeCommander.isCluster === true) {
-                        foeCommander.inventory = gwaioTech.clusterCommanders;
+                        foeCommander.inventory = gwoTech.clusterCommanders;
                       }
 
                       // Setup additional faction AI buffs
@@ -886,7 +884,7 @@ if (!gwaioSetupLoaded) {
                         workerBuffs,
                         foeCommander.inventory,
                         foeCommander.faction,
-                        gwaioTech.factionTechs
+                        gwoTech.factionTechs
                       );
 
                       ai.foes.push(foeCommander);
@@ -900,17 +898,17 @@ if (!gwaioSetupLoaded) {
               var loreEntry = 0;
               var optionalLoreEntry = 0;
               var treasureCards = lockedBaseCards.concat(
-                model.gwaioNewStartCards
+                model.gwoNewStartCards
               );
               _.forEach(game.galaxy().stars(), function (star) {
                 var ai = star.ai();
                 var system = star.system();
                 if (!ai) {
                   // Add some lore to neutral systems
-                  if (gwaioLore.neutralSystems[loreEntry]) {
-                    system.name = gwaioLore.neutralSystems[loreEntry].name;
+                  if (gwoLore.neutralSystems[loreEntry]) {
+                    system.name = gwoLore.neutralSystems[loreEntry].name;
                     system.description =
-                      gwaioLore.neutralSystems[loreEntry].description;
+                      gwoLore.neutralSystems[loreEntry].description;
                     loreEntry += 1;
                   }
                 } else {
@@ -919,7 +917,7 @@ if (!gwaioSetupLoaded) {
                   });
 
                   if (!ai.bossCommanders) {
-                    var difficulty = model.gwaioDifficultySettings;
+                    var difficulty = model.gwoDifficultySettings;
 
                     // Setup The Guardians' treasure planet
                     if (treasurePlanetSetup === false) {
@@ -953,7 +951,7 @@ if (!gwaioSetupLoaded) {
                         function (card) {
                           return (
                             !GW.bank.hasStartCard(card) &&
-                            !gwaioBank.hasStartCard(card)
+                            !gwoBank.hasStartCard(card)
                           );
                         }
                       );
@@ -968,11 +966,10 @@ if (!gwaioSetupLoaded) {
                       }
                     } else if (
                       difficulty.paLore() &&
-                      gwaioLore.aiSystems[optionalLoreEntry]
+                      gwoLore.aiSystems[optionalLoreEntry]
                     ) {
                       // Add lore to systems
-                      system.description =
-                        gwaioLore.aiSystems[optionalLoreEntry];
+                      system.description = gwoLore.aiSystems[optionalLoreEntry];
                       optionalLoreEntry += 1;
                     }
                   }
@@ -987,7 +984,7 @@ if (!gwaioSetupLoaded) {
               originSystem.gwaio = {};
               originSystem.gwaio.version = version;
               originSystem.gwaio.difficulty =
-                gwaioDifficulty.difficulties[selectedDifficulty].difficultyName;
+                gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
               originSystem.gwaio.galaxySize = [
                 "!LOC:Small",
                 "!LOC:Medium",
@@ -1000,14 +997,14 @@ if (!gwaioSetupLoaded) {
                 "!LOC:Marathon",
               ][model.newGameSizeIndex()];
               originSystem.gwaio.factionScaling =
-                model.gwaioDifficultySettings.factionScaling();
+                model.gwoDifficultySettings.factionScaling();
               originSystem.gwaio.systemScaling =
-                model.gwaioDifficultySettings.systemScaling();
+                model.gwoDifficultySettings.systemScaling();
               originSystem.gwaio.easierStart =
-                model.gwaioDifficultySettings.easierStart();
-              if (model.gwaioDifficultySettings.ai() === 1) {
+                model.gwoDifficultySettings.easierStart();
+              if (model.gwoDifficultySettings.ai() === 1) {
                 originSystem.gwaio.ai = "Queller";
-              } else if (model.gwaioDifficultySettings.ai() === 2) {
+              } else if (model.gwoDifficultySettings.ai() === 2) {
                 originSystem.gwaio.ai = "Penchant";
               } else {
                 originSystem.gwaio.ai = "Titans";
@@ -1048,5 +1045,5 @@ if (!gwaioSetupLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioSetup();
+  gwoSetup();
 }

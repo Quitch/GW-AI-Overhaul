@@ -3,7 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioUnits, gwaioGroups) {
+], function (GW, gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
@@ -18,14 +18,14 @@ define([
       );
 
       // Modifications if player is playing as Cluster faction
-      gwaioCards.setupCluster(inventory);
+      gwoCard.setupCluster(inventory);
 
       var commander = inventory.getTag("global", "commander");
-      var starterUnits = gwaioGroups.structuresEcoBasic.concat(
-        gwaioGroups.structuresDefencesBasic,
-        gwaioGroups.structuresIntelBasic,
-        gwaioGroups.navalBasic,
-        gwaioGroups.orbitalBasic,
+      var starterUnits = gwoGroup.structuresEcoBasic.concat(
+        gwoGroup.structuresDefencesBasic,
+        gwoGroup.structuresIntelBasic,
+        gwoGroup.navalBasic,
+        gwoGroup.orbitalBasic,
         commander
       );
       inventory.addUnits(starterUnits);

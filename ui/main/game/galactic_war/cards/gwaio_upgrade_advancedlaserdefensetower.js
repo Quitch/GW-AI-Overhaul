@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,14 +16,11 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioCards.hasUnit(
-          inventory.units(),
-          gwaioUnits.laserDefenseTowerAdvanced
-        )
+        gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTowerAdvanced)
       ) {
         chance = 60;
       }
@@ -32,49 +29,49 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "rate_of_fire",
           op: "multiply",
           value: 4,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "ammo_source",
           op: "replace",
           value: "energy",
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "ammo_capacity",
           op: "replace",
           value: 1200,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "ammo_demand",
           op: "replace",
           value: 300,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "ammo_per_shot",
           op: "replace",
           value: 100,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "spread_fire",
           op: "replace",
           value: true,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "carpet_fire",
           op: "replace",
           value: true,
         },
         {
-          file: gwaioUnits.laserDefenseTowerAdvancedWeapon,
+          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
           path: "carpet_wait_for_full_ammo",
           op: "replace",
           value: true,

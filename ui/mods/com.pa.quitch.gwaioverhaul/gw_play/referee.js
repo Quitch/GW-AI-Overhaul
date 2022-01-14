@@ -1,9 +1,9 @@
-var gwaioRefereeChangesLoaded;
+var gwoRefereeChangesLoaded;
 
-if (!gwaioRefereeChangesLoaded) {
-  gwaioRefereeChangesLoaded = true;
+if (!gwoRefereeChangesLoaded) {
+  gwoRefereeChangesLoaded = true;
 
-  function gwaioRefereeChanges() {
+  function gwoRefereeChanges() {
     try {
       requireGW(
         [
@@ -11,8 +11,8 @@ if (!gwaioRefereeChangesLoaded) {
           "pages/gw_play/gw_referee",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
         ],
-        function (GW, GWReferee, gwaioUnits) {
-          var gwaioReferee = function (game) {
+        function (GW, GWReferee, gwoUnit) {
+          var gwoReferee = function (game) {
             var self = this;
 
             self.game = ko.observable(game);
@@ -22,7 +22,7 @@ if (!gwaioRefereeChangesLoaded) {
             self.config = ko.observable();
           };
 
-          gwaioReferee.prototype.stripSystems = function () {
+          gwoReferee.prototype.stripSystems = function () {
             var self = this;
 
             // remove the systems from the galaxy
@@ -30,7 +30,7 @@ if (!gwaioRefereeChangesLoaded) {
             GW.Game.saveSystems(gw);
           };
 
-          gwaioReferee.prototype.mountFiles = function () {
+          gwoReferee.prototype.mountFiles = function () {
             var self = this;
 
             var deferred = $.Deferred();
@@ -69,7 +69,7 @@ if (!gwaioRefereeChangesLoaded) {
             return deferred.promise();
           };
 
-          gwaioReferee.prototype.tagGame = function () {
+          gwoReferee.prototype.tagGame = function () {
             api.game.setUnitSpecTag(".player");
           };
 
@@ -358,15 +358,15 @@ if (!gwaioRefereeChangesLoaded) {
                 };
 
                 // global for modder compatibility
-                if (!model.gwaioSpecs) {
-                  model.gwaioSpecs = [];
+                if (!model.gwoSpecs) {
+                  model.gwoSpecs = [];
                 }
                 // files not assigned by default that we wish to mod
-                model.gwaioSpecs.push(
-                  gwaioUnits.fireflyAmmo,
-                  gwaioUnits.narwhalTorpedo,
-                  gwaioUnits.narwhalTorpedoAmmo,
-                  gwaioUnits.skitterAmmo
+                model.gwoSpecs.push(
+                  gwoUnit.fireflyAmmo,
+                  gwoUnit.narwhalTorpedo,
+                  gwoUnit.narwhalTorpedoAmmo,
+                  gwoUnit.skitterAmmo
                 );
 
                 var inventory = self.game().inventory();
@@ -384,7 +384,7 @@ if (!gwaioRefereeChangesLoaded) {
                     aiX1UnitMap,
                     aiTag[n]
                   );
-                  var aiSpecs = combineSpecs(units, model.gwaioSpecs);
+                  var aiSpecs = combineSpecs(units, model.gwoSpecs);
 
                   GW.specs
                     .genUnitSpecs(aiSpecs, aiTag[n])
@@ -430,7 +430,7 @@ if (!gwaioRefereeChangesLoaded) {
                   : {};
                 var playerSpecs = combineSpecs(
                   inventory.units(),
-                  model.gwaioSpecs
+                  model.gwoSpecs
                 );
 
                 GW.specs
@@ -971,7 +971,7 @@ if (!gwaioRefereeChangesLoaded) {
             _.times(
               ai.bossCommanders ||
                 ai.commanderCount ||
-                // legacy GWAIO support
+                // legacy GWO support
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
               function () {
@@ -1002,7 +1002,7 @@ if (!gwaioRefereeChangesLoaded) {
               var slotsArrayMinions = [];
               _.times(
                 minion.commanderCount ||
-                  // legacy GWAIO support
+                  // legacy GWO support
                   (minion.landing_policy && minion.landing_policy.length) ||
                   1,
                 function () {
@@ -1038,7 +1038,7 @@ if (!gwaioRefereeChangesLoaded) {
               var slotsArrayFoes = [];
               _.times(
                 foe.commanderCount ||
-                  // legacy GWAIO support
+                  // legacy GWO support
                   (foe.landing_policy && foe.landing_policy.length) ||
                   1,
                 function () {
@@ -1093,7 +1093,7 @@ if (!gwaioRefereeChangesLoaded) {
 
           GWReferee.hire = function (game) {
             // call our own gw_referee implementation
-            var ref = new gwaioReferee(game);
+            var ref = new gwoReferee(game);
             return _.bind(generateGameFiles, ref)()
               .then(_.bind(generateAI, ref))
               .then(_.bind(generateConfig, ref))
@@ -1108,5 +1108,5 @@ if (!gwaioRefereeChangesLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioRefereeChanges();
+  gwoRefereeChanges();
 }

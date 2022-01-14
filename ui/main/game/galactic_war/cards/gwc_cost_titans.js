@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioGroups) {
+], function (gwoCard, gwoGroup) {
   {
     return {
       visible: _.constant(true),
@@ -15,16 +15,16 @@ define([
           found: "/VO/Computer/gw/board_tech_available_titan_cost_reduction",
         };
       },
-      getContext: gwaioCards.getContext,
+      getContext: gwoCard.getContext,
       deal: function (system, context, inventory) {
         var chance = 0;
-        if (gwaioCards.hasUnit(inventory.units(), gwaioGroups.titans)) {
+        if (gwoCard.hasUnit(inventory.units(), gwoGroup.titans)) {
           chance = 80;
         }
         return { chance: chance };
       },
       buff: function (inventory) {
-        var mods = _.map(gwaioGroups.titans, function (unit) {
+        var mods = _.map(gwoGroup.titans, function (unit) {
           return {
             file: unit,
             path: "build_metal_cost",

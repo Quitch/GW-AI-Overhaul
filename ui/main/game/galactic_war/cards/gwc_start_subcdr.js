@@ -4,13 +4,13 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioCards, gwaioUnits) {
+], function (module, GW, GWCStart, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:General Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:The General Commander loadout contains very limited mobile forces and only two data banks. However, the loadout comes with two Sub Commanders that accompany you into each battle."
@@ -26,7 +26,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory, context) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
@@ -34,13 +34,13 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.addUnits([
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFabber,
-            gwaioUnits.vehicleFactory,
+            gwoUnit.ant,
+            gwoUnit.vehicleFabber,
+            gwoUnit.vehicleFactory,
           ]);
           inventory.maxCards(inventory.maxCards() - 2);
         }
-        // Support for GWAIO v4.2.2 and earlier
+        // Support for GWO v4.2.2 and earlier
         if (
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
@@ -60,7 +60,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioCards.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

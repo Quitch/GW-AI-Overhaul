@@ -2,7 +2,7 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwaioCards, gwaioGroups) {
+], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,7 +17,7 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 0;
       var dist = system.distance();
@@ -44,7 +44,7 @@ define([
     },
     buff: function (inventory) {
       var mods = [];
-      _.forEach(gwaioGroups.energyIntel, function (unit) {
+      _.forEach(gwoGroup.energyIntel, function (unit) {
         mods.push({
           file: unit,
           path: "consumption.energy",
@@ -52,7 +52,7 @@ define([
           value: 0.25,
         });
       });
-      _.forEach(gwaioGroups.energyWeapons, function (weapon) {
+      _.forEach(gwoGroup.energyWeapons, function (weapon) {
         mods.push(
           {
             file: weapon,

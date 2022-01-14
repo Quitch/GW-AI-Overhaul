@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.sxx)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.sxx)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,7 +27,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.sxx,
+          file: gwoUnit.sxx,
           path: "planetary_arrival_cooldown_time",
           op: "replace",
           value: 0,

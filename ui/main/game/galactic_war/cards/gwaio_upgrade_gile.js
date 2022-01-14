@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,10 +16,10 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.gilE)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.gilE)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,49 +27,49 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "ammo_type",
           op: "replace",
           value: "AMMO_Beam",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "audio_loop",
           op: "replace",
           value: "/SE/Impacts/laser_blast",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "collision_audio",
           op: "replace",
           value: "/SE/Impacts/laser_blast",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "recon.observable.ignore_radar",
           op: "replace",
           value: true,
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "collision_check",
           op: "replace",
           value: "target",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "collision_response",
           op: "replace",
           value: "impact",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "fx_beam_spec",
           op: "replace",
           value: "/pa/units/land/bot_sniper/bot_sniper_ammo_beam.pfx",
         },
         {
-          file: gwaioUnits.gilEAmmo,
+          file: gwoUnit.gilEAmmo,
           path: "fx_collision_spec",
           op: "replace",
           value: "/pa/effects/specs/default_proj_explosion.pfx",

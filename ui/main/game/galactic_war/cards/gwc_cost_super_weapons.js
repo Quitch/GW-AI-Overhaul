@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioCards, gwaioUnits, gwaioGroups) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,22 +17,17 @@ define([
         found: "/VO/Computer/gw/board_tech_available_cost_reduction",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioCards.hasUnit(
-          inventory.units(),
-          gwaioGroups.structuresSuperWeapons
-        )
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons)) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.structuresSuperWeapons.concat(
-        gwaioUnits.nukeLauncherAmmo
+      var units = gwoGroup.structuresSuperWeapons.concat(
+        gwoUnit.nukeLauncherAmmo
       );
       var mods = _.map(units, function (unit) {
         return {

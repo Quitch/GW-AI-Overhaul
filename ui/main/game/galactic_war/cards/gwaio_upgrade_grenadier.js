@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioCards, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,59 +16,59 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioCards.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.grenadier)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.grenadier)) {
         chance = 60;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwaioUnits.landMine);
+      inventory.addUnits(gwoUnit.landMine);
 
       inventory.addMods([
         {
-          file: gwaioUnits.grenadier,
+          file: gwoUnit.grenadier,
           path: "build_metal_cost",
           op: "multiply",
           value: 3,
         },
         {
-          file: gwaioUnits.grenadierWeapon,
+          file: gwoUnit.grenadierWeapon,
           path: "rate_of_fire",
           op: "multiply",
           value: 0.25,
         },
         {
-          file: gwaioUnits.grenadierAmmo,
+          file: gwoUnit.grenadierAmmo,
           path: "damage",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.grenadierAmmo,
+          file: gwoUnit.grenadierAmmo,
           path: "splash_damage",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.grenadierAmmo,
+          file: gwoUnit.grenadierAmmo,
           path: "splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.grenadierAmmo,
+          file: gwoUnit.grenadierAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.grenadierAmmo,
+          file: gwoUnit.grenadierAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: gwaioUnits.landMine,
+          value: gwoUnit.landMine,
         },
       ]);
     },

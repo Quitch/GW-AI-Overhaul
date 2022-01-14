@@ -3,7 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (GWFactions, gwaioCards, gwaioUnits, gwaioAI) {
+], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -43,9 +43,9 @@ define([
       var chance = context.chance;
 
       if (
-        (!gwaioCards.hasUnit(inventory.units(), gwaioUnits.vehicleFactory) &&
-          !gwaioCards.hasUnit(inventory.units(), gwaioUnits.botFactory) &&
-          !gwaioCards.hasUnit(inventory.units(), gwaioUnits.airFactory)) ||
+        (!gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory) &&
+          !gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory) &&
+          !gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)) ||
         inventory.hasCard("nem_start_deepspace")
       ) {
         return {
@@ -61,11 +61,11 @@ define([
 
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
-      var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-      if (gwaioSettings) {
-        var ai = gwaioSettings.ai;
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      if (gwoSettings) {
+        var ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwaioAI.penchants();
+          var penchantValues = gwoAI.penchants();
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =

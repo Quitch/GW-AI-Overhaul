@@ -5,13 +5,13 @@ define([
   "cards/gwc_storage_and_buff",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, GWCStorage, gwaioCards, gwaioUnits) {
+], function (module, GW, GWCStart, GWCStorage, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Storage Commander"),
     icon: function () {
-      return gwaioCards.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks."
@@ -22,7 +22,7 @@ define([
         description: "!LOC:Storage Commander",
       };
     },
-    deal: gwaioCards.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
@@ -43,8 +43,8 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [gwaioUnits.inferno, gwaioUnits.vanguard];
-      gwaioCards.applyDulls(CARD, inventory, units);
+      var units = [gwoUnit.inferno, gwoUnit.vanguard];
+      gwoCard.applyDulls(CARD, inventory, units);
     },
   };
 });
