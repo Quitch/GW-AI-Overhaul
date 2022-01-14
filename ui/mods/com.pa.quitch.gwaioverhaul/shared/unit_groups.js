@@ -39,7 +39,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.wyrmAmmo,
   ];
   var airAdvancedWeapons = [
-    gwaioUnits.angelBeam,
     gwaioUnits.hornetWeapon,
     gwaioUnits.horseflyWeapon,
     gwaioUnits.kestrelWeapon,
@@ -87,19 +86,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var botsAdvancedAmmo = [
     gwaioUnits.bluehawkAmmo,
-    gwaioUnits.bluehawkBeamAmmo,
     gwaioUnits.colonelAmmo,
     gwaioUnits.gilEAmmo,
-    gwaioUnits.gileEBeamAmmo,
     gwaioUnits.locustsAmmo,
     gwaioUnits.slammerAmmo,
     gwaioUnits.slammerTorpedoAmmo,
   ];
   var botsAdvancedWeapons = [
-    gwaioUnits.bluehawkBeam,
     gwaioUnits.bluehawkWeapon,
     gwaioUnits.colonelWeapon,
-    gwaioUnits.gileEBeam,
     gwaioUnits.gileEWeapon,
     gwaioUnits.locustsWeapon,
     gwaioUnits.slammerTorpedo,
@@ -157,7 +152,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.squallTorpedoAmmo,
     gwaioUnits.stingrayAAAmmo,
     gwaioUnits.stingrayAmmo,
-    gwaioUnits.stingrayBeamAmmo,
     gwaioUnits.typhoonAmmo,
   ];
   var navalAdvancedWeapons = [
@@ -169,7 +163,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.squallTorpedo,
     gwaioUnits.squallWeapon,
     gwaioUnits.stingrayAA,
-    gwaioUnits.stingrayBeam,
     gwaioUnits.stingrayWeapon,
     gwaioUnits.typhoonWeapon,
   ];
@@ -259,11 +252,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.landMineAmmo,
     gwaioUnits.laserDefenseTowerAmmo,
     gwaioUnits.singleLaserDefenseTowerAmmo,
-    gwaioUnits.torpedoLauncherAmmo,
     gwaioUnits.torpedoLauncherLandAmmo,
     gwaioUnits.torpedoLauncherWaterAmmo,
     gwaioUnits.umbrellaAmmo,
-    gwaioUnits.umbrellaBeam,
   ];
   var structuresDefencesBasicWeapons = [
     gwaioUnits.anchorWeaponAG,
@@ -273,7 +264,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwaioUnits.laserDefenseTowerWeapon,
     gwaioUnits.singleLaserDefenseTowerWeapon,
     gwaioUnits.torpedoLauncherWeapon,
-    gwaioUnits.umbrellaBeam,
     gwaioUnits.umbrellaWeapon,
   ];
   var structuresDefencesAdvanced = [
@@ -285,15 +275,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var structuresDefencesAdvancedAmmo = [
     gwaioUnits.catapultAmmo,
-    gwaioUnits.catapultBeamAmmo,
     gwaioUnits.flakAmmo,
     gwaioUnits.laserDefenseTowerAdvancedAmmo,
-    gwaioUnits.torpedoLauncherAdvancedAmmo,
     gwaioUnits.torpedoLauncherAdvancedLandAmmo,
     gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
   ];
   var structuresDefencesAdvancedWeapons = [
-    gwaioUnits.catapultBeam,
     gwaioUnits.catapultWeapon,
     gwaioUnits.flakWeapon,
     gwaioUnits.laserDefenseTowerAdvancedWeapon,

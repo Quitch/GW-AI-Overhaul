@@ -328,8 +328,9 @@ define({
   slammerAmmo: "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
   slammerTorpedo:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
+  // torpedo launcher doesn't use this ammo, only the Slammer does
   slammerTorpedoAmmo:
-    "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo.json",
+    "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   slammerWeapon:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
   solarArray: "/pa/units/orbital/solar_array/solar_array.json",
@@ -374,16 +375,12 @@ define({
   torpedoLauncher: "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   torpedoLauncherAdvanced:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-  torpedoLauncherAdvancedAmmo:
-    "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo.json",
   torpedoLauncherAdvancedLandAmmo:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
   torpedoLauncherAdvancedWaterAmmo:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
   torpedoLauncherAdvancedWeapon:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
-  torpedoLauncherAmmo:
-    "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   torpedoLauncherLandAmmo:
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_land.json",
   torpedoLauncherWaterAmmo:

@@ -29,24 +29,6 @@ define([
         commander
       );
       inventory.addUnits(starterUnits);
-
-      // Correct issues which prevent buffs being applied correctly
-      inventory.addMods([
-        {
-          // Slammer torpedo should be encompassed in bot buffs not structures'
-          file: gwaioUnits.slammerTorpedo,
-          path: "ammo_id",
-          op: "replace",
-          value: gwaioUnits.slammerTorpedoAmmo,
-        },
-        {
-          // Match the damage of the previous ammo
-          file: gwaioUnits.slammerTorpedoAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 2.5,
-        },
-      ]);
     },
     dull: function () {
       // empty

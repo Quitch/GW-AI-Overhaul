@@ -34,13 +34,6 @@ define([
         },
         {
           file: gwaioUnits.slammerTorpedo,
-          path: "base_spec",
-          op: "replace",
-          value:
-            "/pa/tools/base_missile_tactical_turret/base_missile_tactical_turret.json",
-        },
-        {
-          file: gwaioUnits.slammerTorpedo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
@@ -59,15 +52,21 @@ define([
         },
         {
           file: gwaioUnits.slammerTorpedoAmmo,
-          path: "base_spec",
+          path: "flight_layer",
           op: "replace",
-          value: "/pa/ammo/base_missiles/base_missile_tactical.json",
+          value: "Air",
+        },
+        {
+          file: gwaioUnits.slammerTorpedoAmmo,
+          path: "spawn_layers",
+          op: "replace",
+          value: "WL_Air",
         },
         {
           file: gwaioUnits.slammerTorpedoAmmo,
           path: "cruise_height",
           op: "replace",
-          value: 75,
+          value: 200,
         },
       ]);
     },
