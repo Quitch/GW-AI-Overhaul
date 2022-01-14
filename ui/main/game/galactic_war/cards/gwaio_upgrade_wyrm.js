@@ -18,8 +18,6 @@ define([
     },
     getContext: gwaioCards.getContext,
     deal: function (system, context, inventory) {
-      inventory.addUnits(gwaioUnits.squall);
-
       var chance = 0;
       if (gwaioCards.hasUnit(inventory.units(), gwaioUnits.wyrm)) {
         chance = 60;
@@ -27,6 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwaioUnits.squall);
       inventory.addMods([
         {
           file: gwaioUnits.wyrm,
