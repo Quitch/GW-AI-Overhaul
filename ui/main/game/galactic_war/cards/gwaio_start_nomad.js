@@ -104,6 +104,18 @@ define([
                 path: "navigation.turn_speed",
                 op: "replace",
                 value: 60,
+              },
+              {
+                file: unit,
+                path: "physics.allow_pushing",
+                op: "replace",
+                value: true,
+              },
+              {
+                file: unit,
+                path: "physics.push_sideways",
+                op: "replace",
+                value: true,
               }
             );
           });
@@ -173,6 +185,12 @@ define([
                 path: "unit_types",
                 op: "push",
                 value: "UNITTYPE_Mobile",
+              },
+              {
+                file: unit,
+                path: "physics.radius",
+                op: "multiply",
+                value: 5,
               }
             );
           });

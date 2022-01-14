@@ -33,6 +33,7 @@
 - All loadouts start with the ARKYD
 - Defense Fabrication Tech doesn't reduce the cost of anti-nuke ammo
 - Upgrades which require another unit now add that unit to your inventory
+- Allow Nomad loadout units to be pushed
 
 ### Fixed
 
