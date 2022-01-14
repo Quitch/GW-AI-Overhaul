@@ -130,12 +130,6 @@ define([
               },
               {
                 file: unit,
-                path: "armor_type",
-                op: "replace",
-                value: "AT_Structure",
-              },
-              {
-                file: unit,
                 path: "navigation.acceleration",
                 op: "replace",
                 value: 25,
