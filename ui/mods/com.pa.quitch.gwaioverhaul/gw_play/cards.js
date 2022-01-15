@@ -826,7 +826,8 @@ if (!gwoCardsLoaded) {
             };
 
             if (model.gwoCardsToUnits) {
-              model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
+              model.gwoCardsToUnits.push.apply(
+                model.gwoCardsToUnits,
                 gwoCardsToUnits.cards
               );
             } else {
