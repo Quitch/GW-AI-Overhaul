@@ -683,13 +683,12 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
-            var quellerEnabled = false;
+            var aiIsQueller = function (brain) {
+              return brain === "Queller";
+            };
 
-            if (aiBrain === "Queller") {
-              quellerEnabled = true;
-            }
+            var quellerEnabled = aiIsQueller(aiBrain);
             var aiTechPath = "/pa/ai_tech/";
-
             var game = self.game();
             var inventory = game.inventory();
 
@@ -731,8 +730,8 @@ if (!gwoRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
+                    var aiBuildOps = [];
                     var quellerSubCommander = false;
-
                     if (
                       quellerEnabled &&
                       inventory.minions().length > 0 &&
@@ -741,8 +740,6 @@ if (!gwoRefereeChangesLoaded) {
                     ) {
                       quellerSubCommander = true;
                     }
-
-                    var aiBuildOps = [];
 
                     if (
                       aiToModify !== "None" &&
@@ -840,15 +837,13 @@ if (!gwoRefereeChangesLoaded) {
             };
 
             var subcommanders = inventory.minions();
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
             var aiFilePath = "";
-
             if (subcommanders.length > 0) {
               aiFilePath = findAIPath("all");
             } else {
               aiFilePath = findAIPath("enemy");
             }
-
-            var ai = game.galaxy().stars()[game.currentStar()].ai();
 
             if (_.isEmpty(inventory.aiMods())) {
               parseFiles(aiFilePath, deferredAIFiles, "None");
