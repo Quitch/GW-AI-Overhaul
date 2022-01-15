@@ -23,7 +23,10 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.structuresDefences, function (unit) {
+      var unitsAndMissiles = gwoGroup.structuresDefences.concat(
+        gwoUnit.antiNukeLauncherAmmo
+      );
+      var mods = _.map(unitsAndMissiles, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

@@ -30,7 +30,6 @@
 - Modified the implementation of Bluehawk Upgrade Tech to allow for independent targeting
 - Nerfed Atlas Upgrade Tech
 - All loadouts start with the ARKYD
-- Defense Fabrication Tech doesn't reduce the cost of anti-nuke ammo
 - Upgrades which require another unit now add that unit to your inventory
 - Allow Nomad loadout units to be pushed
 - AIs won't build land titans due to pathing issues
