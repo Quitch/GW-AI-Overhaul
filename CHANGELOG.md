@@ -5,7 +5,7 @@
 ### Added
 
 - The system intelligence panel displays a card you are guaranteed to get offered if you conquer the system
-- Zoom level fix from Bigger Galactic War
+- Zoom level fix on war commencement from Bigger Galactic War
 
 ### Changed
 
@@ -23,13 +23,12 @@
   - Spark Upgrade Tech
   - Unit Cannon Upgrade Tech
 - Changed the following cards:
-  - Bluehawk Upgrade Tech
   - Jig Upgrade Tech
   - Narwhal Upgrade Tech
   - Omega Upgrade Tech
   - Squall Upgrade Tech
-- Nerfed the following cards:
-  - Atlas Upgrade Tech
+- Modified the implementation of Bluehawk Upgrade Tech to allow for independent targeting
+- Nerfed Atlas Upgrade Tech
 - All loadouts start with the ARKYD
 - Defense Fabrication Tech doesn't reduce the cost of anti-nuke ammo
 - Upgrades which require another unit now add that unit to your inventory
@@ -42,7 +41,6 @@
 - Workers always receive at least one extra commander if a system should have minions
 - Removed references to an unused Helios weapon
 - Hotfix for old versions being unnecessarily applied on the start of a new war
-- Slammer Upgrade Tech
 - Rapid Deployment Commander not changing the behaviour of the Advanced Naval Fabricator
 - Stinger Upgrade Tech
 - Slammer torpedo is buffed by bot buffs not structure buffs
