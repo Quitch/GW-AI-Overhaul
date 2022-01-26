@@ -106,9 +106,8 @@ if (!gwoRefereeChangesLoaded) {
               return "/pa/ai_tech/";
             } else if (aiBrain === "Penchant") {
               return "/pa/ai_personalities/penchant/";
-            } else {
-              return "/pa/ai/";
             }
+            return "/pa/ai/";
           };
 
           var generateGameFiles = function () {
