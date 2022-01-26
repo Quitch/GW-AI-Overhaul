@@ -987,6 +987,7 @@ if (!gwoRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion) {
+              // Avoid AI teching too early/late due to eco modifiers
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
@@ -1021,6 +1022,7 @@ if (!gwoRefereeChangesLoaded) {
 
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
+              // Avoid AI teching too early/late due to eco modifiers
               foe.personality.adv_eco_mod =
                 foe.personality.adv_eco_mod * foe.econ_rate;
               foe.personality.adv_eco_mod_alone =
