@@ -686,11 +686,7 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
-            var aiIsQueller = function (brain) {
-              return brain === "Queller";
-            };
-
-            var quellerEnabled = aiIsQueller(aiBrain);
+            var quellerEnabled = aiBrain === "Queller";
             var aiTechPath = "/pa/ai_tech/";
             var game = self.game();
             var inventory = game.inventory();
