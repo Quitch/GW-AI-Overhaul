@@ -37,14 +37,15 @@ if (!gwoRefereeChangesLoaded) {
 
             var allFiles = _.cloneDeep(self.files());
             // The player unit list needs to be the superset of units for proper UI behavior
-            var playerUnits = allFiles["/pa/units/unit_list.json.player"];
-            var aiUnits = allFiles["/pa/units/unit_list.json.ai"];
+            var unitList = "/pa/units/unit_list.json";
+            var playerUnits = allFiles[unitList + ".player"];
+            var aiUnits = allFiles[unitList + ".ai"];
             if (playerUnits) {
               var allUnits = _.cloneDeep(playerUnits);
               if (aiUnits && allUnits.units) {
                 allUnits.units = allUnits.units.concat(aiUnits.units);
               }
-              allFiles["/pa/units/unit_list.json"] = allUnits;
+              allFiles[unitList] = allUnits;
             }
 
             if (self.localFiles()) {
@@ -87,14 +88,15 @@ if (!gwoRefereeChangesLoaded) {
             var game = model.game();
             var ai = game.galaxy().stars()[game.currentStar()].ai();
             var inventory = game.inventory();
+            var quellerPath = "/pa/ai_personalities/queller/";
             if (type === "all" && aiBrain === "Queller") {
-              return "/pa/ai_personalities/queller/";
+              return quellerPath;
             } else if (type === "enemy" && aiBrain === "Queller") {
-              return "/pa/ai_personalities/queller/q_uber/";
+              return quellerPath + "q_uber/";
             }
             // the order of path assignments must match .player unit_map assignments in generateGameFiles()
             else if (type === "subcommander" && aiBrain === "Queller") {
-              return "/pa/ai_personalities/queller/q_gold/";
+              return quellerPath + "q_gold/";
             } else if (
               type === "subcommander" &&
               !_.isEmpty(inventory.aiMods()) &&
