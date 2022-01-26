@@ -1023,10 +1023,8 @@ if (!gwoRefereeChangesLoaded) {
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
               // Avoid AI teching too early/late due to eco modifiers
-              foe.personality.adv_eco_mod =
-                foe.personality.adv_eco_mod * foe.econ_rate;
-              foe.personality.adv_eco_mod_alone =
-                foe.personality.adv_eco_mod_alone * foe.econ_rate;
+              foe.personality.adv_eco_mod *= foe.econ_rate;
+              foe.personality.adv_eco_mod_alone *= foe.econ_rate;
 
               // Avoid breaking enemies from earlier versions
               foe.personality.ai_path = enemyAIPath;
