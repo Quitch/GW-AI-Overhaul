@@ -90,11 +90,11 @@ if (!gwoRefereeChangesLoaded) {
             var inventory = game.inventory();
             var quellerPath = "/pa/ai_personalities/queller/";
             // the order of path assignments must match .player unit_map assignments in generateGameFiles()
-            if (type === "all" && aiBrain === "Queller") {
+            if (aiBrain === "Queller" && type === "all") {
               return quellerPath;
-            } else if (type === "enemy" && aiBrain === "Queller") {
+            } else if (aiBrain === "Queller" && type === "enemy") {
               return quellerPath + "q_uber/";
-            } else if (type === "subcommander" && aiBrain === "Queller") {
+            } else if (aiBrain === "Queller" && type === "subcommander") {
               return quellerPath + "q_gold/";
             } else if (
               type === "subcommander" &&
