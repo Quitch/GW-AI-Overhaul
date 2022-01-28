@@ -462,7 +462,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.navalFactoryAdvanced,
     gwoUnit.vehicleFactoryAdvanced,
   ];
-  // add orbital factories too
   var factories = factoriesBasic.concat(
     factoriesAdvanced,
     gwoUnit.antiNukeLauncher,
