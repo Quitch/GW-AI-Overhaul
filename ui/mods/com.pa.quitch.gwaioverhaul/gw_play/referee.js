@@ -712,7 +712,7 @@ if (!gwoRefereeChangesLoaded) {
                     } else if (aiMod.type === "template") {
                       managerPath = "platoon_templates/";
                     } else {
-                      console.error("Invalid op in ", aiMod);
+                      console.error("Invalid op in", aiMod);
                     }
                     fileList.push(aiTechPath + managerPath + aiMod.value);
                   });
