@@ -14,6 +14,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
       }
       return false;
     },
+    // cannot use !hasUnit() as it matches any unit
+    // missingUnit() matches any missing unit
     missingUnit: function (inventoryUnits, units) {
       if (_.isArray(units)) {
         for (var unit of units) {
