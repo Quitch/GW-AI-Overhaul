@@ -277,12 +277,12 @@ if (!gwoRefereeChangesLoaded) {
                     var spec = load(mod.file);
                     if (!spec) {
                       return console.warn(
-                        "Warning: File not found in mod ",
+                        "Warning: File not found in mod",
                         mod
                       );
                     }
                     if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
-                      return console.error("Invalid operation in mod ", mod);
+                      return console.error("Invalid operation in mod", mod);
                     }
 
                     var originalPath = (mod.path || "").split(".");
@@ -291,13 +291,12 @@ if (!gwoRefereeChangesLoaded) {
                     var reportError = function (error, step) {
                       console.error(
                         error,
-                        " ",
                         spec[step],
-                        " spec ",
+                        "spec",
                         spec,
-                        " mod ",
+                        "mod",
                         mod,
-                        " path ",
+                        "path",
                         originalPath.slice(0, -path.length).join(".")
                       );
                       return undefined;
