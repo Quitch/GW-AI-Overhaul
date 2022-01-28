@@ -640,8 +640,8 @@ if (!gwoSetupLoaded) {
                   difficulty.maxAdvancedFabbers();
                 ai.personality.personality_tags =
                   difficulty.personalityTagsChosen();
-                // We treat 0 as undefined, which means the AI examines the radius
-                // of the spawn zone
+                // We treat 0 as undefined, which means the AI examines the
+                // radius of the spawn zone
                 if (difficulty.startingLocationEvaluationRadius() > 0) {
                   ai.personality.starting_location_evaluation_radius =
                     difficulty.startingLocationEvaluationRadius();
