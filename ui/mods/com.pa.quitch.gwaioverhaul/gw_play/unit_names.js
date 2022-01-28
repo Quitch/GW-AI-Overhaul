@@ -1,7 +1,6 @@
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
+  gwoUnit
+) {
   return {
     units: [
       {
