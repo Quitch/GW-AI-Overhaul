@@ -685,7 +685,7 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
-            var quellerEnabled = aiBrain === "Queller";
+            var isQueller = aiBrain === "Queller";
             var aiTechPath = "/pa/ai_tech/";
             var game = self.game();
             var inventory = game.inventory();
@@ -731,7 +731,7 @@ if (!gwoRefereeChangesLoaded) {
                     var aiBuildOps = [];
                     var quellerSubCommander = false;
                     if (
-                      quellerEnabled &&
+                      isQueller &&
                       inventory.minions().length > 0 &&
                       (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
@@ -742,7 +742,7 @@ if (!gwoRefereeChangesLoaded) {
                     if (
                       aiToModify !== "None" &&
                       !_.isEmpty(aiMods[1]) &&
-                      (!quellerEnabled ||
+                      (!isQueller ||
                         quellerSubCommander ||
                         aiToModify === "All")
                     ) {
@@ -772,7 +772,7 @@ if (!gwoRefereeChangesLoaded) {
                           }
                           // Put "load" files where the AI expects them to be
                           if (_.startsWith(filePath, aiTechPath)) {
-                            if (quellerEnabled) {
+                            if (isQueller) {
                               // We don't know if the aiPath contains q_uber
                               var quellerEnemyPath = findAIPath("enemy");
                               filePath =
