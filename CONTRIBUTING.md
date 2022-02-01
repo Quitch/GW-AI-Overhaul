@@ -12,7 +12,7 @@ You will need the following to ensure your submissions adhere to the requirement
 - markdownlint
 - prettier
 - sonarlint
-- styleint
+- stylelint
 - stylelint-config-prettier
 - stylelint-config-standard
 
