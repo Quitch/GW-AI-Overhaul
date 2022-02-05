@@ -152,6 +152,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 ## Known Issues
 
 - More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
+- Selection and combat grouping mods e.g. Air Scout Select, can cause the AI to use these units incorrectly
 
 ## Recommended mods
 
@@ -163,11 +164,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 - Challenge Levels for galactic war
 - Enemy ramp for galactic war
 - Galactic War Unique Loadouts
-- More Pew Pew
-  - Can cause modified units to potentially show incorrect stats, range circles, etc.
 - Section of Foreign Intelligence for galactic war
-- Selection and combat grouping mods e.g. Air Scout Select
-  - Can cause the AI to use these units incorrectly
 - Unique Commander Loadouts
 
 ## Thanks to
