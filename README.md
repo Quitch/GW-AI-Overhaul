@@ -159,13 +159,16 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 ## Incompatible mods
 
-- Enemy ramp for galactic war
-- Challenge Levels for galactic war
-- Section of Foreign Intelligence for galactic war
-- Unique Commander Loadouts
-- Galactic War Unique Loadouts
-- Combat Fabricator Group Deselect
 - Aurora Artillery
+- Challenge Levels for galactic war
+- Enemy ramp for galactic war
+- Galactic War Unique Loadouts
+- More Pew Pew
+  - Can cause modified units to potentially show incorrect stats, range circles, etc.
+- Section of Foreign Intelligence for galactic war
+- Selection and combat grouping mods e.g. Air Scout Select
+  - Can cause the AI to use these units incorrectly
+- Unique Commander Loadouts
 
 ## Thanks to
 
