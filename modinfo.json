@@ -26,6 +26,7 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"
     ],
