@@ -65,95 +65,6 @@ if (!gwoSetupLoaded) {
           gwoDifficulty,
           gwoAI
         ) {
-          var selectedDifficulty = 0;
-
-          // Track difficulty settings so GW-CUSTOM fields appear and display correct values
-          ko.computed(function () {
-            selectedDifficulty = model.newGameDifficultyIndex();
-            var difficultySettings = model.gwoDifficultySettings;
-            var difficulties = gwoDifficulty.difficulties;
-            if (difficulties[selectedDifficulty].customDifficulty) {
-              difficultySettings.customDifficulty(true);
-            } else {
-              difficultySettings.customDifficulty(false);
-
-              difficultySettings.goForKill(
-                difficulties[selectedDifficulty].goForKill
-              );
-              difficultySettings.microTypeChosen(
-                difficulties[selectedDifficulty].microType
-              );
-              difficultySettings.mandatoryMinions(
-                difficulties[selectedDifficulty].mandatoryMinions
-              );
-              difficultySettings.minionMod(
-                difficulties[selectedDifficulty].minionMod
-              );
-              difficultySettings.priorityScoutMetalSpots(
-                difficulties[selectedDifficulty].priority_scout_metal_spots
-              );
-              difficultySettings.useEasierSystemTemplate(
-                difficulties[selectedDifficulty].useEasierSystemTemplate
-              );
-              difficultySettings.factoryBuildDelayMin(
-                difficulties[selectedDifficulty].factory_build_delay_min
-              );
-              difficultySettings.factoryBuildDelayMax(
-                difficulties[selectedDifficulty].factory_build_delay_max
-              );
-              difficultySettings.unableToExpandDelay(
-                difficulties[selectedDifficulty].unable_to_expand_delay
-              );
-              difficultySettings.enableCommanderDangerResponses(
-                difficulties[selectedDifficulty]
-                  .enable_commander_danger_responses
-              );
-              difficultySettings.perExpansionDelay(
-                difficulties[selectedDifficulty].per_expansion_delay
-              );
-              difficultySettings.personalityTagsChosen(
-                difficulties[selectedDifficulty].personality_tags
-              );
-              difficultySettings.econBase(
-                difficulties[selectedDifficulty].econBase
-              );
-              difficultySettings.econRatePerDist(
-                difficulties[selectedDifficulty].econRatePerDist
-              );
-              difficultySettings.maxBasicFabbers(
-                difficulties[selectedDifficulty].max_basic_fabbers
-              );
-              difficultySettings.maxAdvancedFabbers(
-                difficulties[selectedDifficulty].max_advanced_fabbers
-              );
-              difficultySettings.ffaChance(
-                difficulties[selectedDifficulty].ffa_chance
-              );
-              difficultySettings.bossCommanders(
-                difficulties[selectedDifficulty].bossCommanders
-              );
-              difficultySettings.startingLocationEvaluationRadius(
-                difficulties[selectedDifficulty]
-                  .starting_location_evaluation_radius
-              );
-              difficultySettings.landAnywhereChance(
-                difficulties[selectedDifficulty].landAnywhereChance
-              );
-              difficultySettings.suddenDeathChance(
-                difficulties[selectedDifficulty].suddenDeathChance
-              );
-              difficultySettings.bountyModeChance(
-                difficulties[selectedDifficulty].bountyModeChance
-              );
-              difficultySettings.bountyModeValue(
-                difficulties[selectedDifficulty].bountyModeValue
-              );
-              difficultySettings.factionTechHandicap(
-                difficulties[selectedDifficulty].factionTechHandicap
-              );
-            }
-          });
-
           if (!model.gwoNewStartCards) {
             model.gwoNewStartCards = [];
           }
@@ -237,7 +148,7 @@ if (!gwoSetupLoaded) {
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
-            selectedDifficulty = model.newGameDifficultyIndex();
+            var selectedDifficulty = model.newGameDifficultyIndex();
             var useEasySystems =
               gwoDifficulty.difficulties[selectedDifficulty]
                 .useEasierSystemTemplate;
