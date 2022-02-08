@@ -1,9 +1,9 @@
-var gwoWarLoaded;
+var gwoSetupLoaded;
 
-if (!gwoWarLoaded) {
-  gwoWarLoaded = true;
+if (!gwoSetupLoaded) {
+  gwoSetupLoaded = true;
 
-  function gwoWar() {
+  function gwoSetup() {
     try {
       // Prevent changes to settings creating new galaxies
       model.makeGame = function () {
@@ -867,5 +867,5 @@ if (!gwoWarLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwoWar();
+  gwoSetup();
 }
