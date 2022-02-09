@@ -33,6 +33,7 @@
 - Upgrades which require another unit now add that unit to your inventory
 - Allow Nomad loadout units to be pushed
 - AIs won't build land titans due to pathing issues
+- Commanders assigned colour by faction in order of spawn to improve visual clarity
 
 ### Fixed
 

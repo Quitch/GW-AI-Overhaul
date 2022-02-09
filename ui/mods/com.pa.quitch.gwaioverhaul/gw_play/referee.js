@@ -883,7 +883,64 @@ if (!gwoRefereeChangesLoaded) {
             ];
             var subcommanderAIPath = findAIPath("subcommander");
 
-            _.forEach(inventory.minions(), function (subcommander) {
+            var colour = function (faction, minionColour, count) {
+              var legonisColours = [
+                [0, 176, 255],
+                [153, 204, 255],
+                [102, 178, 255],
+                [51, 153, 255],
+                [0, 128, 255],
+                [0, 102, 204],
+                [0, 76, 204],
+              ];
+              var foundationColours = [
+                [145, 87, 199],
+                [229, 204, 255],
+                [204, 153, 255],
+                [178, 102, 255],
+                [153, 51, 255],
+                [127, 0, 255],
+                [102, 0, 204],
+              ];
+              var synchronousColours = [
+                [126, 226, 101],
+                [229, 255, 204],
+                [204, 255, 153],
+                [178, 255, 102],
+                [128, 255, 0],
+                [102, 204, 0],
+                [76, 153, 0],
+              ];
+              var revenantsColours = [
+                [236, 34, 35],
+                [255, 204, 204],
+                [255, 153, 153],
+                [255, 51, 51],
+                [255, 0, 0],
+                [204, 0, 0],
+                [153, 0, 0],
+              ];
+              var clusterColours = [
+                [128, 128, 128],
+                [216, 216, 216],
+                [187, 187, 187],
+              ];
+              var factions = [
+                legonisColours,
+                foundationColours,
+                synchronousColours,
+                revenantsColours,
+                clusterColours,
+              ];
+
+              if (count > factions[faction].length - 1) {
+                // We ran out of colours
+                return minionColour;
+              }
+              return [factions[faction][count], [192, 192, 192]];
+            };
+
+            _.forEach(inventory.minions(), function (subcommander, index) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
@@ -919,6 +976,7 @@ if (!gwoRefereeChangesLoaded) {
                 : 1;
 
               var slotsArraySubCommander = [];
+
               _.times(subcommanderCommanders, function () {
                 slotsArraySubCommander.push({
                   ai: true,
@@ -929,8 +987,11 @@ if (!gwoRefereeChangesLoaded) {
               });
               armies.push({
                 slots: slotsArraySubCommander,
-                // TODO: give out colours in order of spawn to maximise clarity
-                color: subcommander.color,
+                color: colour(
+                  inventory.getTag("global", "playerFaction"),
+                  subcommander.color + 1,
+                  index + 1 // player has colour 0
+                ),
                 econ_rate: 1,
                 personality: subcommander.personality,
                 spec_tag: playerTag,
@@ -977,14 +1038,13 @@ if (!gwoRefereeChangesLoaded) {
             );
             armies.push({
               slots: slotsArrayAI,
-              // TODO: give out colours in order of spawn to maximise clarity
-              color: ai.color,
+              color: colour(ai.faction, ai.color, 0),
               econ_rate: ai.econ_rate,
               personality: ai.personality,
               spec_tag: aiTag[0],
               alliance_group: 2,
             });
-            _.forEach(ai.minions, function (minion) {
+            _.forEach(ai.minions, function (minion, index) {
               // Avoid AI teching too early/late due to eco modifiers
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
@@ -1009,8 +1069,7 @@ if (!gwoRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayMinions,
-                // TODO: give out colours in order of spawn to maximise clarity
-                color: minion.color,
+                color: colour(ai.faction, minion.color, index + 1), // primary AI has colour 0
                 econ_rate: minion.econ_rate,
                 personality: minion.personality,
                 spec_tag: aiTag[0],
@@ -1044,8 +1103,7 @@ if (!gwoRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayFoes,
-                // TODO: give out colours in order of spawn to maximise clarity
-                color: foe.color,
+                color: colour(foe.faction, foe.color, 0),
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
                 spec_tag: aiTag[index + 1], // 0 taken by primary AI
