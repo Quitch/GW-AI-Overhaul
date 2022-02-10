@@ -135,7 +135,6 @@ if (!gwoWarInfoPanelLoaded) {
                 ];
 
                 var subcommanders = inventory.minions();
-                // eslint-disable-next-line lodash/prefer-map
                 _.forEach(subcommanders, function (subcommander, index) {
                   commanders.push(intelligence(subcommander, index));
                 });
