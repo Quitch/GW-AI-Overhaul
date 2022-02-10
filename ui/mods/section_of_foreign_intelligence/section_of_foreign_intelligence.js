@@ -58,9 +58,8 @@ if (!gwoIntelligenceLoaded) {
                 return "!LOC:Demigod";
               } else if (rate < 9) {
                 return "!LOC:Godlike";
-              } else {
-                return "!LOC:Titan";
               }
+              return "!LOC:Titan";
             };
 
             var factionIndex = 0;
@@ -116,9 +115,8 @@ if (!gwoIntelligenceLoaded) {
               number = number / km2;
               if (number < 1000) {
                 return number.toPrecision(3);
-              } else {
-                return Math.floor(number);
               }
+              return Math.floor(number);
             };
 
             model.gwoSystemSurfaceArea = ko.computed(function () {
@@ -157,9 +155,8 @@ if (!gwoIntelligenceLoaded) {
                 return "!LOC:Apocalyptic";
               } else if (totalRate <= 20) {
                 return "!LOC:Impossible";
-              } else {
-                return "!LOC:Skynet";
               }
+              return "!LOC:Skynet";
             };
 
             model.gwoSystemThreat = ko.computed(function () {
