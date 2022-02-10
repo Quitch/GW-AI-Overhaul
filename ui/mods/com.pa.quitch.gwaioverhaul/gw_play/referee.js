@@ -883,7 +883,7 @@ if (!gwoRefereeChangesLoaded) {
             ];
             var subcommanderAIPath = findAIPath("subcommander");
 
-            var colour = function (faction, minionColour, count) {
+            var pickColour = function (faction, minionColour, count) {
               var legonisColours = [
                 [0, 176, 255],
                 [153, 204, 255],
@@ -987,7 +987,7 @@ if (!gwoRefereeChangesLoaded) {
               });
               armies.push({
                 slots: slotsArraySubCommander,
-                color: colour(
+                color: pickColour(
                   inventory.getTag("global", "playerFaction"),
                   subcommander.color + 1,
                   index + 1 // player has colour 0
@@ -1038,7 +1038,7 @@ if (!gwoRefereeChangesLoaded) {
             );
             armies.push({
               slots: slotsArrayAI,
-              color: colour(ai.faction, ai.color, 0),
+              color: pickColour(ai.faction, ai.color, 0),
               econ_rate: ai.econ_rate,
               personality: ai.personality,
               spec_tag: aiTag[0],
@@ -1069,7 +1069,7 @@ if (!gwoRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayMinions,
-                color: colour(ai.faction, minion.color, index + 1), // primary AI has colour 0
+                color: pickColour(ai.faction, minion.color, index + 1), // primary AI has colour 0
                 econ_rate: minion.econ_rate,
                 personality: minion.personality,
                 spec_tag: aiTag[0],
@@ -1103,7 +1103,7 @@ if (!gwoRefereeChangesLoaded) {
               );
               armies.push({
                 slots: slotsArrayFoes,
-                color: colour(foe.faction, foe.color, 0),
+                color: pickColour(foe.faction, foe.color, 0),
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
                 spec_tag: aiTag[index + 1], // 0 taken by primary AI
