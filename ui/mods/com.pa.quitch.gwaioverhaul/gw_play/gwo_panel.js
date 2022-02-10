@@ -13,6 +13,15 @@ if (!gwoWarInfoPanelLoaded) {
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
           ],
           function (gwoColour) {
+            var url =
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
+            $.get(url, function (html) {
+              var $fi = $(html);
+              $("#header").append($fi);
+              locTree($("#gwo-panel"));
+              ko.applyBindings(model, $fi[0]);
+            });
+
             // War Information
             var galaxy = game.galaxy();
             var originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -131,15 +140,6 @@ if (!gwoWarInfoPanelLoaded) {
                   commanders.push(intelligence(subcommander, index));
                 });
                 return commanders;
-              });
-
-              var url =
-                "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
-              $.get(url, function (html) {
-                var $fi = $(html);
-                $("#header").append($fi);
-                locTree($("#gwo-panel"));
-                ko.applyBindings(model, $fi[0]);
               });
             }
           }
