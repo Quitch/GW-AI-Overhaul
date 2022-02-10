@@ -69,7 +69,7 @@ if (!gwoWarInfoPanelLoaded) {
               model.gwoLoadout(loc(card.summarize()));
             });
 
-            var intelligence = function (subcommander, colourIndex) {
+            var intelligence = function (subcommander, index) {
               var personality = subcommander.character
                 ? loc(subcommander.character)
                 : loc("!LOC:None");
@@ -90,7 +90,7 @@ if (!gwoWarInfoPanelLoaded) {
                   gwoColour.pick(
                     factionIndex,
                     subcommander.color,
-                    colourIndex + 1 // player uses the primary faction colour
+                    index + 1 // player uses the primary faction colour
                   )
                 ),
                 character: personality,

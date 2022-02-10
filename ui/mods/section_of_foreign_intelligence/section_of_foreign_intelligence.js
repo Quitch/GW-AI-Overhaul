@@ -65,7 +65,7 @@ if (!gwoIntelligenceLoaded) {
 
             var factionIndex = 0;
 
-            var intelligence = function (commander, colourIndex) {
+            var intelligence = function (commander, index) {
               var name = commander.name;
               var eco = commander.econ_rate;
               var factionNames = [
@@ -80,7 +80,7 @@ if (!gwoIntelligenceLoaded) {
               factionIndex = commander.faction
                 ? commander.faction
                 : factionIndex;
-              colourIndex = commander.faction ? 0 : colourIndex + 1;
+              index = commander.faction ? 0 : index + 1;
               var numCommanders = 0;
               if (commander.bossCommanders > 1) {
                 numCommanders = commander.bossCommanders;
@@ -101,7 +101,7 @@ if (!gwoIntelligenceLoaded) {
                 name: name,
                 threat: loc(threat(eco)),
                 color: gwoColour.rgb(
-                  gwoColour.pick(factionIndex, commander.color, colourIndex)
+                  gwoColour.pick(factionIndex, commander.color, index)
                 ),
                 character: character,
                 eco: eco,
