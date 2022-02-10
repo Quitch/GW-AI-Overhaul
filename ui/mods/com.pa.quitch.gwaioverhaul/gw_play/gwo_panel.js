@@ -69,18 +69,6 @@ if (!gwoWarInfoPanelLoaded) {
               model.gwoLoadout(loc(card.summarize()));
             });
 
-            var rgb = function (color) {
-              return (
-                "rgb(" +
-                color[0][0] +
-                "," +
-                color[0][1] +
-                "," +
-                color[0][2] +
-                ")"
-              );
-            };
-
             var intelligence = function (subcommander, colourIndex) {
               var personality = subcommander.character
                 ? loc(subcommander.character)
@@ -98,7 +86,7 @@ if (!gwoWarInfoPanelLoaded) {
               }
               return {
                 name: subcommanderName,
-                color: rgb(
+                color: gwoColour.rgb(
                   gwoColour.pick(
                     factionIndex,
                     subcommander.color,
@@ -113,7 +101,9 @@ if (!gwoWarInfoPanelLoaded) {
               var playerName = ko
                 .observable()
                 .extend({ session: "displayName" });
-              var playerColor = rgb(inventory.getTag("global", "playerColor"));
+              var playerColor = gwoColour.rgb(
+                inventory.getTag("global", "playerColor")
+              );
 
               var commanders = [
                 {
@@ -128,7 +118,6 @@ if (!gwoWarInfoPanelLoaded) {
               _.forEach(subcommanders, function (subcommander, index) {
                 commanders.push(intelligence(subcommander, index));
               });
-              console.log(commanders);
               return commanders;
             });
 

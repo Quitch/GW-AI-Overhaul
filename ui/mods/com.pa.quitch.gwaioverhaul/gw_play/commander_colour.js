@@ -1,5 +1,8 @@
 define(function () {
   return {
+    rgb: function (color) {
+      return "rgb(" + color[0][0] + "," + color[0][1] + "," + color[0][2] + ")";
+    },
     pick: function (faction, minionColour, count) {
       var legonisColours = [
         [0, 176, 255],

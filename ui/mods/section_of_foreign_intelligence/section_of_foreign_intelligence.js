@@ -63,21 +63,9 @@ if (!gwoIntelligenceLoaded) {
               }
             };
 
-            var rgb = function (color) {
-              return (
-                "rgb(" +
-                color[0][0] +
-                "," +
-                color[0][1] +
-                "," +
-                color[0][2] +
-                ")"
-              );
-            };
-
             var factionIndex = 0;
 
-            var intelligence = function (commander, index) {
+            var intelligence = function (commander, colourIndex) {
               var name = commander.name;
               var eco = commander.econ_rate;
               var factionNames = [
@@ -92,8 +80,7 @@ if (!gwoIntelligenceLoaded) {
               factionIndex = commander.faction
                 ? commander.faction
                 : factionIndex;
-              // Setup the next colour for minions but not primary or FFA opponents
-              index = commander.faction ? 0 : index + 1;
+              colourIndex = commander.faction ? 0 : colourIndex + 1;
               var numCommanders = 0;
               if (commander.bossCommanders > 1) {
                 numCommanders = commander.bossCommanders;
@@ -113,8 +100,8 @@ if (!gwoIntelligenceLoaded) {
               return {
                 name: name,
                 threat: loc(threat(eco)),
-                color: rgb(
-                  gwoColour.pick(factionIndex, commander.color, index)
+                color: gwoColour.rgb(
+                  gwoColour.pick(factionIndex, commander.color, colourIndex)
                 ),
                 character: character,
                 eco: eco,
