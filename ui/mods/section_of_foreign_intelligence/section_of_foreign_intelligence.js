@@ -191,7 +191,6 @@ if (!gwoIntelligenceLoaded) {
                   );
                 }
               }
-              console.log(commanders);
               var totalEco = 0;
               _.times(commanders.length, function (n) {
                 totalEco += commanders[n].eco;
@@ -384,7 +383,6 @@ if (!gwoIntelligenceLoaded) {
                   );
                 }
               }
-              console.log(commanders);
               return commanders;
             });
 
@@ -396,7 +394,6 @@ if (!gwoIntelligenceLoaded) {
               if (primary && primary.foes) {
                 commanders = _.map(primary.foes, intelligence);
               }
-              console.log(commanders);
               return commanders;
             });
           }

@@ -50,10 +50,6 @@ define(function () {
         clusterColours,
       ];
 
-      console.log(faction);
-      console.log(minionColour);
-      console.log(count);
-
       if (count > factions[faction].length - 1) {
         // We ran out of colours
         return minionColour;
