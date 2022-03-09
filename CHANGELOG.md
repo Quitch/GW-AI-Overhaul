@@ -1077,7 +1077,7 @@
 
 ### Changed
 
-- Removed use of lodash aliases to futureproof for move to v4
+- Removed use of lodash aliases to future-proof for move to v4
 
 ### Fixed
 
