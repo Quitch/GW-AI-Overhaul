@@ -644,7 +644,7 @@ if (!gwoCardsLoaded) {
                             minionStock.minion.commander !== clusterWorker
                           ) {
                             console.error(
-                              "Minion commander unitspec " +
+                              "Minion commander unit spec " +
                                 minionStock.minion.commander +
                                 " invalid"
                             );
