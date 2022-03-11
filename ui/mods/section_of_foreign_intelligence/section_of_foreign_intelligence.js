@@ -194,152 +194,113 @@ if (!gwoIntelligenceLoaded) {
 
             model.gwoCardAvailable = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().treasurePlanet !== true &&
                 star.cardList() &&
                 // Don't show when finding cards through Explore
                 star.cardList().length === 1
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             // Game Options
 
             model.gwoBountyMode = ko.computed(function () {
               var star = model.selection.system().star;
-              if (star.ai() && star.ai().bountyMode) {
-                return true;
-              }
-              return false;
+              return star.ai() && star.ai().bountyMode;
             });
 
             model.gwoLandAnywhere = ko.computed(function () {
               var star = model.selection.system().star;
-              if (star.ai() && star.ai().landAnywhere) {
-                return true;
-              }
-              return false;
+              return star.ai() && star.ai().landAnywhere;
             });
 
             model.gwoSuddenDeath = ko.computed(function () {
               var star = model.selection.system().star;
-              if (star.ai() && star.ai().suddenDeath) {
-                return true;
-              }
-              return false;
+              return star.ai() && star.ai().suddenDeath;
             });
 
             model.gwoGameOptions = ko.computed(function () {
-              if (
+              return (
                 model.gwoBountyMode() ||
                 model.gwoLandAnywhere() ||
                 model.gwoSuddenDeath()
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             // AI Buffs
 
             model.gwoTechBuild = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 4)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechCost = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 0)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechDamage = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 1)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechHealth = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 2)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechSpeed = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 3)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             // v5.11.0 and earlier only
             model.gwoEnhancedCommanders = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 5)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechCombat = ko.computed(function () {
               var star = model.selection.system().star;
-              if (
+              return (
                 star.ai() &&
                 star.ai().typeOfBuffs &&
                 _.includes(star.ai().typeOfBuffs, 6)
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             model.gwoTechMirror = ko.computed(function () {
               var star = model.selection.system().star;
-              if (star.ai() && star.ai().mirrorMode === true) {
-                return true;
-              }
-              return false;
+              return star.ai() && star.ai().mirrorMode === true;
             });
 
             model.gwoAiBuffs = ko.computed(function () {
-              if (
+              return (
                 model.gwoTechBuild() ||
                 model.gwoTechCombat() ||
                 model.gwoTechCost() ||
@@ -348,10 +309,7 @@ if (!gwoIntelligenceLoaded) {
                 model.gwoTechHealth() ||
                 model.gwoTechSpeed() ||
                 model.gwoTechMirror()
-              ) {
-                return true;
-              }
-              return false;
+              );
             });
 
             // System Faction

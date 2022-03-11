@@ -424,15 +424,7 @@ if (!gwoCardsLoaded) {
                   });
 
                   hand = _.filter(fullHand, function (deal) {
-                    if (!deal) {
-                      return false;
-                    }
-
-                    if (!deal.chance) {
-                      return false;
-                    }
-
-                    return true;
+                    return !!deal && !!deal.chance;
                   });
 
                   if (hand.length) {

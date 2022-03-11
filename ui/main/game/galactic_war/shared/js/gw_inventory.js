@@ -190,10 +190,7 @@ define(function () {
       if (_.isObject(test) && test.allowOverflow) {
         return true;
       }
-      if (self.cards().length >= self.maxCards()) {
-        return false;
-      }
-      return true;
+      return self.cards().length < self.maxCards();
     },
 
     handIsFull: function () {

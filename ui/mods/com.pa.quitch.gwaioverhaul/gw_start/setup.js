@@ -428,10 +428,7 @@ if (!gwoSetupLoaded) {
               };
 
               var gameModeEnabled = function (gameModeChance) {
-                if (Math.random() * 100 <= gameModeChance) {
-                  return true;
-                }
-                return false;
+                return Math.random() * 100 <= gameModeChance;
               };
 
               // Setup the AI
