@@ -366,8 +366,8 @@ if (!gwoRefereeChangesLoaded) {
                 // files not assigned by default that we wish to mod
                 model.gwoSpecs.push(
                   gwoUnit.fireflyAmmo,
-                  gwoUnit.narwhalTorpedo,
-                  gwoUnit.narwhalTorpedoAmmo,
+                  gwoUnit.orcaTorpedo,
+                  gwoUnit.orcaTorpedoAmmo,
                   gwoUnit.skitterAmmo
                 );
 
