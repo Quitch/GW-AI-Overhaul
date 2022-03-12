@@ -860,6 +860,20 @@ if (!gwoRefereeChangesLoaded) {
             return deferred.promise();
           };
 
+          var armyCommander = function (ai, name, commander) {
+            var aiLandingOptions = [
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ];
+            return {
+              ai: ai,
+              name: name,
+              commander: commander,
+              landing_policy: _.sample(aiLandingOptions),
+            };
+          };
+
           var generateConfig = function () {
             var self = this;
 
@@ -876,11 +890,6 @@ if (!gwoRefereeChangesLoaded) {
                 spec_tag: playerTag,
                 alliance_group: 1,
               },
-            ];
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
             ];
             var subcommanderAIPath = findAIPath("subcommander");
 
@@ -922,12 +931,9 @@ if (!gwoRefereeChangesLoaded) {
               var slotsArraySubCommander = [];
 
               _.times(subcommanderCommanders, function () {
-                slotsArraySubCommander.push({
-                  ai: true,
-                  name: subcommander.name,
-                  commander: subcommander.commander,
-                  landing_policy: _.sample(aiLandingOptions),
-                });
+                slotsArraySubCommander.push(
+                  armyCommander(true, subcommander.name, subcommander.commander)
+                );
               });
               armies.push({
                 slots: slotsArraySubCommander,
@@ -972,12 +978,7 @@ if (!gwoRefereeChangesLoaded) {
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
               function () {
-                slotsArrayAI.push({
-                  ai: true,
-                  name: ai.name,
-                  commander: ai.commander,
-                  landing_policy: _.sample(aiLandingOptions),
-                });
+                slotsArrayAI.push(armyCommander(true, ai.name, ai.commander));
               }
             );
             armies.push({
@@ -1003,12 +1004,9 @@ if (!gwoRefereeChangesLoaded) {
                   (minion.landing_policy && minion.landing_policy.length) ||
                   1,
                 function () {
-                  slotsArrayMinions.push({
-                    ai: true,
-                    name: minion.name,
-                    commander: minion.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
+                  slotsArrayMinions.push(
+                    armyCommander(true, minion.name, minion.commander)
+                  );
                 }
               );
               armies.push({
@@ -1037,12 +1035,9 @@ if (!gwoRefereeChangesLoaded) {
                   (foe.landing_policy && foe.landing_policy.length) ||
                   1,
                 function () {
-                  slotsArrayFoes.push({
-                    ai: true,
-                    name: foe.name,
-                    commander: foe.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
+                  slotsArrayFoes.push(
+                    armyCommander(true, foe.name, foe.commander)
+                  );
                 }
               );
               armies.push({
