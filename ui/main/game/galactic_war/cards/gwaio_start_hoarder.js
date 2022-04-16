@@ -2,16 +2,15 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Hoarder Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Contains every factory on every tier of the tech tree, but this has left no space for anything else. You will need to seek out additional data banks."
@@ -22,43 +21,21 @@ define([
         description: "!LOC:Hoarder Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
           inventory.maxCards(inventory.maxCards() - 4);
-          inventory.addUnits([
-            gwaioUnits.airFactoryAdvanced,
-            gwaioUnits.airFactory,
-            gwaioUnits.firefly,
-            gwaioUnits.bumblebee,
-            gwaioUnits.hummingbird,
-            gwaioUnits.icarus,
-            gwaioUnits.pelican,
-            gwaioUnits.spinner,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
-            gwaioUnits.boom,
-            gwaioUnits.botFactoryAdvanced,
-            gwaioUnits.botFactory,
-            gwaioUnits.grenadier,
-            gwaioUnits.spark,
-            gwaioUnits.stitch,
-            gwaioUnits.inferno,
-            gwaioUnits.drifter,
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFactoryAdvanced,
-            gwaioUnits.vehicleFactory,
-            gwaioUnits.jig,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.arkyd,
-            gwaioUnits.solarArray,
-            gwaioUnits.navalFactoryAdvanced,
-          ]);
+          inventory.addUnits(
+            gwoGroup.air.concat(
+              gwoGroup.bots,
+              gwoGroup.naval,
+              gwoGroup.orbital,
+              gwoGroup.vehicles
+            )
+          );
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
@@ -66,11 +43,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

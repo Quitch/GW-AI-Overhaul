@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,35 +16,30 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit(gwaioUnits.phoenix)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.phoenix)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.phoenixWeapon,
+          file: gwoUnit.phoenixWeapon,
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: gwaioUnits.phoenix,
+          file: gwoUnit.phoenix,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Gunship",
         },
         {
-          file: gwaioUnits.phoenixAmmo,
+          file: gwoUnit.phoenixAmmo,
           path: "armor_damage_map.AT_Structure",
           op: "replace",
           value: 1,

@@ -1,5 +1,54 @@
 # CHANGELOG
 
+## v5.28.0 - 2022-04-16
+
+### Added
+
+- The system intelligence panel displays a card you are guaranteed to get offered if you conquer the system
+- Zoom level fix on war commencement from Bigger Galactic War
+
+### Changed
+
+- Increased chance of bounty mode for Bronze difficulty and higher
+- Increased chance of land anywhere for all difficulties
+- Buffed the following cards:
+  - Barracuda Upgrade Tech
+  - Catalyst Upgrade Tech
+  - Firefly Upgrade Tech
+  - Halley Upgrade Tech
+  - Helios Upgrade Tech
+  - Kraken Upgrade Tech
+  - Nuclear Missile Launcher Upgrade Tech
+  - Skitter Upgrade Tech
+  - Spark Upgrade Tech
+  - Unit Cannon Upgrade Tech
+- Changed the following cards:
+  - Jig Upgrade Tech
+  - Narwhal Upgrade Tech
+  - Omega Upgrade Tech
+  - Squall Upgrade Tech
+- Modified the implementation of Bluehawk Upgrade Tech to allow for independent targeting
+- Nerfed Atlas Upgrade Tech
+- All loadouts start with the ARKYD
+- Upgrades which require another unit now add that unit to your inventory
+- Allow Nomad loadout units to be pushed
+- AIs won't build land titans due to pathing issues
+- Commanders assigned colour by faction in order of spawn to improve visual clarity
+- Defense Fabrication Tech doesn't reduce the cost of the anti-nuke missiles
+
+### Fixed
+
+- Errors in tech card tooltips
+- Workers always receive at least one extra commander if a system should have minions
+- Removed references to an unused Helios weapon
+- Hotfix for old versions being unnecessarily applied on the start of a new war
+- Rapid Deployment Commander not changing the behaviour of the Advanced Naval Fabricator
+- Stinger Upgrade Tech
+- Slammer torpedo is buffed by bot buffs not structure buffs
+- Defense Tech Commander not reducing cost of Umbrellas
+- Omega Upgrade Tech being tied to ownership of irrelevant units
+- Improved Energy Weapons never being dealt
+
 ## v5.27.0 - 2021-12-23
 
 ### Changed
@@ -17,7 +66,7 @@
 - Complete Bot Tech tooltip not listing the Stinger or Gil-E
 - Complete Orbital Tech tooltip not listing the ARKYD
 - Stinger Upgrade tooltip
-- Correct tooltips for Vehicle Factory and Advanced Vehicle Factory being reversed
+- Tooltips for Vehicle Factory and Advanced Vehicle Factory being reversed
 
 ## v5.26.1 - 2021-12-08
 
@@ -1028,7 +1077,7 @@
 
 ### Changed
 
-- Removed use of lodash aliases to futureproof for move to v4
+- Removed use of lodash aliases to future-proof for move to v4
 
 ### Fixed
 

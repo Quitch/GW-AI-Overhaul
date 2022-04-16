@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 25%."
+      "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
     ),
     summarize: _.constant("!LOC:Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -16,27 +16,18 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.laserDefenseTower) &&
-        (gwaioFunctions.hasUnit(gwaioUnits.botFactory) ||
-          gwaioFunctions.hasUnit(gwaioUnits.airFactory) ||
-          gwaioFunctions.hasUnit(gwaioUnits.navalFactory) ||
-          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) ||
-          inventory.hasCard("gwc_start_artillery") ||
-          inventory.hasCard("nem_start_tower_rush"))
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTower)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.laserDefenseTowerWeapon,
+          file: gwoUnit.laserDefenseTowerWeapon,
           path: "max_range",
           op: "multiply",
           value: 1.25,

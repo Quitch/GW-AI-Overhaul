@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (inventory, gwaioUnits) {
+], function (inventory, gwoUnit) {
   // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
@@ -41,8 +41,8 @@ define([
     inventory.clusterUnits,
   ];
 
-  factionUnits.forEach(function (faction, i) {
-    factionsTech[i][0] = faction.map(function (unit) {
+  _.forEach(factionUnits, function (faction, i) {
+    factionsTech[i][0] = _.map(faction, function (unit) {
       return {
         file: unit,
         path: "build_metal_cost",
@@ -71,9 +71,9 @@ define([
     clusterAmmo,
   ];
 
-  factionAmmo.forEach(function (faction, i) {
+  _.forEach(factionAmmo, function (faction, i) {
     factionsTech[i][1] = _.flatten(
-      faction.map(function (ammo) {
+      _.map(faction, function (ammo) {
         return [
           {
             file: ammo,
@@ -115,10 +115,10 @@ define([
     clusterWeapons,
   ];
 
-  factionWeapons.forEach(function (faction, i) {
+  _.forEach(factionWeapons, function (faction, i) {
     factionsTech[i][1] = factionsTech[i][1].concat(
       _.flatten(
-        faction.map(function (weapon) {
+        _.map(faction, function (weapon) {
           return [
             {
               file: weapon,
@@ -145,8 +145,8 @@ define([
   });
 
   // 2 - Armour Tech
-  factionUnits.forEach(function (faction, i) {
-    factionsTech[i][2] = faction.map(function (unit) {
+  _.forEach(factionUnits, function (faction, i) {
+    factionsTech[i][2] = _.map(faction, function (unit) {
       return {
         file: unit,
         path: "max_health",
@@ -167,9 +167,9 @@ define([
     clusterCommanders,
   ];
 
-  factionCommanders.forEach(function (faction, i) {
+  _.forEach(factionCommanders, function (faction, i) {
     factionsTech[i][2] = factionsTech[i][2].concat(
-      faction.map(function (unit) {
+      _.map(faction, function (unit) {
         return {
           file: unit,
           path: "max_health",
@@ -216,7 +216,7 @@ define([
   };
 
   foundationTech[3] = _.flatten(
-    inventory.foundationUnitsMobileAir.map(function (unit) {
+    _.map(inventory.foundationUnitsMobileAir, function (unit) {
       return airSpeedBoost(unit);
     })
   );
@@ -265,23 +265,23 @@ define([
     ];
   };
 
-  factionUnitsNoAir.forEach(function (faction, i) {
+  _.forEach(factionUnitsNoAir, function (faction, i) {
     if (_.isUndefined(factionsTechNoAir[i][3])) {
       factionsTechNoAir[i][3] = [];
     }
     factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
       _.flatten(
-        faction.map(function (unit) {
+        _.map(faction, function (unit) {
           return speedBoost(unit);
         })
       )
     );
   });
 
-  factionCommanders.forEach(function (faction, i) {
+  _.forEach(factionCommanders, function (faction, i) {
     factionsTech[i][3] = factionsTech[i][3].concat(
       _.flatten(
-        faction.map(function (unit) {
+        _.map(faction, function (unit) {
           return [
             {
               file: unit,
@@ -337,9 +337,9 @@ define([
     clusterBuildArms,
   ];
 
-  factionBuildArms.forEach(function (faction, i) {
+  _.forEach(factionBuildArms, function (faction, i) {
     factionsTech[i][4] = _.flatten(
-      faction.map(function (buildArm) {
+      _.map(faction, function (buildArm) {
         return [
           {
             file: buildArm,
@@ -361,28 +361,28 @@ define([
   // 6 - Combat Tech
   // we redo the speed tech because Combat Commander Tech uses different values
   foundationTech[6] = _.flatten(
-    inventory.foundationUnitsMobileAir.map(function (unit) {
+    _.map(inventory.foundationUnitsMobileAir, function (unit) {
       return airSpeedBoost(unit);
     })
   );
 
-  factionUnitsNoAir.forEach(function (faction, i) {
+  _.forEach(factionUnitsNoAir, function (faction, i) {
     if (_.isUndefined(factionsTechNoAir[i][6])) {
       factionsTechNoAir[i][6] = [];
     }
     factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
       _.flatten(
-        faction.map(function (unit) {
+        _.map(faction, function (unit) {
           return speedBoost(unit);
         })
       )
     );
   });
 
-  factionCommanders.forEach(function (faction, i) {
+  _.forEach(factionCommanders, function (faction, i) {
     factionsTech[i][6] = factionsTech[i][6].concat(
       _.flatten(
-        faction.map(function (unit) {
+        _.map(faction, function (unit) {
           return [
             {
               file: unit,
@@ -421,13 +421,13 @@ define([
   // Cluster commander setup
   var clusterCommanderTech = [
     {
-      file: gwaioUnits.colonel,
+      file: gwoUnit.colonel,
       path: "tools.0.spec_id",
       op: "replace",
-      value: gwaioUnits.commanderBuildArm,
+      value: gwoUnit.commanderBuildArm,
     },
     {
-      file: gwaioUnits.colonel,
+      file: gwoUnit.colonel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -440,13 +440,13 @@ define([
       ],
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "buildable_types",
       op: "replace",
       value: "CmdBuild",
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "command_caps",
       op: "replace",
       value: [
@@ -460,25 +460,25 @@ define([
       ],
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "max_health",
       op: "multiply",
       value: 5,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "tools.1.spec_id",
       op: "replace",
-      value: gwaioUnits.commanderBuildArm,
+      value: gwoUnit.commanderBuildArm,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "transportable.size",
       op: "replace",
       value: 1,
     },
     {
-      file: gwaioUnits.angel,
+      file: gwoUnit.angel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -491,7 +491,7 @@ define([
       ],
     },
   ];
-  inventory.clusterCommanders.forEach(function (commander) {
+  _.forEach(inventory.clusterCommanders, function (commander) {
     clusterCommanderTech.push(
       {
         file: commander,

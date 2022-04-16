@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,37 +17,19 @@ define([
         found: "/VO/Computer/gw/board_tech_available_cost_reduction",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function () {
       var chance = 50;
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.flak,
-        gwaioUnits.galata,
-        gwaioUnits.antiNukeLauncherAmmo,
-        gwaioUnits.antiNukeLauncher,
-        gwaioUnits.wall,
-        gwaioUnits.landMine,
-        gwaioUnits.laserDefenseTowerAdvanced,
-        gwaioUnits.singleLaserDefenseTower,
-        gwaioUnits.laserDefenseTower,
-        gwaioUnits.catapult,
-        gwaioUnits.anchor,
-        gwaioUnits.umbrella,
-        gwaioUnits.torpedoLauncherAdvanced,
-        gwaioUnits.torpedoLauncher,
-      ];
-      var mods = [];
-      units.forEach(function (unit) {
-        mods.push({
+      var mods = _.map(gwoGroup.structuresDefences, function (unit) {
+        return {
           file: unit,
           path: "build_metal_cost",
           op: "multiply",
           value: 0.5,
-        });
+        };
       });
       inventory.addMods(mods);
     },

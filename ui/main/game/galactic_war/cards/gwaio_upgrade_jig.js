@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Jig Upgrade Tech removes friendly damage from gas mining explosions."
+      "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production."
     ),
     summarize: _.constant("!LOC:Jig Upgrade Tech"),
     icon: _.constant(
@@ -16,22 +16,33 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.jig)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.jig)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.jigDeath,
-          path: "splash_damages_allies",
-          op: "replace",
-          value: false,
+          file: gwoUnit.jig,
+          path: "production.energy",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwoUnit.jig,
+          path: "storage.energy",
+          op: "add",
+          value: 50000,
+        },
+        {
+          file: gwoUnit.jig,
+          path: "storage.metal",
+          op: "add",
+          value: 10000,
         },
       ]);
     },

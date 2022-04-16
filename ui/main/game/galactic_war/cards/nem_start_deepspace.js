@@ -2,16 +2,17 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Space Excavation Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build Omegas, any resource generating unit or structure, or Sub Commanders."
@@ -22,176 +23,98 @@ define([
         description: "!LOC:Space Excavation Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([
-            gwaioUnits.jig,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.arkyd,
-          ]);
+          inventory.addUnits(gwoGroup.orbitalAdvanced);
+
           inventory.addMods([
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "build_metal_cost",
               op: "multiply",
               value: 0.25,
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "area_build_separation",
               op: "replace",
               value: 12,
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "production.energy",
               op: "multiply",
               value: 0.7,
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "production.metal",
               op: "multiply",
               value: 0.7,
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "build_restrictions",
               op: "replace",
               value: "none",
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "description",
               op: "replace",
               value:
                 "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
             },
             {
-              file: gwaioUnits.jig,
+              file: gwoUnit.jig,
               path: "model.animations",
               op: "replace",
               value: {},
             },
             {
-              file: gwaioUnits.jigDeath,
+              file: gwoUnit.jigDeath,
               path: "damage",
               op: "multiply",
               value: 0.1,
             },
             {
-              file: gwaioUnits.orbitalFabber,
+              file: gwoUnit.orbitalFabber,
               path: "buildable_types",
               op: "add",
               value: " | FabBuild",
             },
           ]);
 
-          inventory.addAIMods([
-            {
+          var structures = [
+            "BasicAirDefense",
+            "BasicAirFactory",
+            "BasicArtillery",
+            "BasicBotFactory",
+            "BasicEnergyGenerator",
+            "BasicLandDefense",
+            "BasicLandDefenseSingle",
+            "BasicRadar",
+            "BasicVehicleFactory",
+            "EnergyStorage",
+            "MetalStorage",
+            "OrbitalLauncher",
+            "Umbrella",
+            "Wall",
+          ];
+          var aiMods = _.map(structures, function (structure) {
+            return {
               type: "fabber",
               op: "append",
-              toBuild: "BasicAirFactory",
+              toBuild: structure,
               idToMod: "builders",
               value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicAirDefense",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefenseSingle",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicLandDefense",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicArtillery",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "Wall",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "Umbrella",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicEnergyGenerator",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "EnergyStorage",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MetalStorage",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicRadar",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicBotFactory",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "BasicVehicleFactory",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "OrbitalLauncher",
-              idToMod: "builders",
-              value: "OrbitalFabber",
-            },
-          ]);
+            };
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
@@ -199,19 +122,19 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
       var units = [
-        gwaioUnits.energyPlantAdvanced,
-        gwaioUnits.energyPlant,
-        gwaioUnits.metalExtractorAdvanced,
-        gwaioUnits.metalExtractor,
-        gwaioUnits.omega,
-        gwaioUnits.solarArray,
+        gwoUnit.energyPlantAdvanced,
+        gwoUnit.energyPlant,
+        gwoUnit.metalExtractorAdvanced,
+        gwoUnit.metalExtractor,
+        gwoUnit.omega,
+        gwoUnit.solarArray,
       ];
-      gwaioFunctions.applyDulls(CARD, inventory, units);
+      gwoCard.applyDulls(CARD, inventory, units);
     },
   };
 });

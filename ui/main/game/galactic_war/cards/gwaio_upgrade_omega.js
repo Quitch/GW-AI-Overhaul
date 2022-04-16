@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Omega Upgrade Tech allows all the orbital battleship's lasers to target the planet."
+      "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
@@ -16,37 +16,27 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.orbitalFactory) &&
-        gwaioFunctions.hasUnit(gwaioUnits.omega) &&
-        gwaioFunctions.hasUnit(gwaioUnits.squall)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.omega)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.omegaWeaponAO,
-          path: "target_layers",
-          op: "push",
-          value: [
-            "WL_Air",
-            "WL_LandHorizontal",
-            "WL_WaterSurface",
-            "WL_SeaFloor",
-          ],
+          file: gwoUnit.omega,
+          path: "tools.4.spec_id",
+          op: "replace",
+          value: gwoUnit.sxxWeapon,
         },
         {
-          file: gwaioUnits.omegaWeaponAO,
-          path: "pitch_range",
+          file: gwoUnit.omega,
+          path: "attack_range_frac",
           op: "replace",
-          value: 180,
+          value: 0.3,
         },
       ]);
     },

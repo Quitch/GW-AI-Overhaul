@@ -1,89 +1,15 @@
-var gwaioCardsLoaded;
+var gwoCardsLoaded;
 
-if (!gwaioCardsLoaded) {
-  gwaioCardsLoaded = true;
+if (!gwoCardsLoaded) {
+  gwoCardsLoaded = true;
 
-  function gwaioCards() {
+  function gwoCard() {
     try {
       var game = model.game();
 
       if (!game.isTutorial()) {
-        globals.CardViewModel = function (params) {
-          var self = this;
-
-          self.params = ko.observable(params);
-          self.id = ko.computed(function () {
-            var p = self.params();
-            return _.isObject(p) ? p.id : p;
-          });
-
-          self.visible = ko.observable(false);
-          self.desc = ko.observable();
-          self.locDesc = ko.computed(function () {
-            return loc(self.desc());
-          });
-          self.summary = ko.observable();
-          self.icon = ko.observable();
-          self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
-          self.audio = ko.observable();
-
-          self.isEmpty = ko.computed(function () {
-            return !self.id();
-          });
-          // GWAIO - recognise the mod's loadouts as loadouts
-          self.isLoadout = ko.computed(function () {
-            return _.includes(self.id(), "_start_");
-          });
-
-          var loaded = $.Deferred();
-          self.card = loaded.promise();
-
-          var loadCard = function (card, data) {
-            if (_.isEmpty(card)) {
-              self.desc(
-                "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
-              );
-              self.summary("!LOC:Empty Data Bank");
-              self.icon(
-                "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png"
-              );
-              self.iconPlaceholder(undefined);
-              self.visible(true);
-            } else {
-              self.desc(card.describe && card.describe(data));
-              self.summary(card.summarize && card.summarize(data));
-              self.icon(card.icon && card.icon(data));
-              self.iconPlaceholder(
-                !self.icon() && (self.summary() || self.desc())
-              );
-              self.audio(card.audio && card.audio(data));
-              self.visible(
-                card.visible === true || !!(card.visible && card.visible(data))
-              );
-            }
-            loaded.resolve(card);
-          };
-
-          var loadToken = 0;
-          ko.computed(function () {
-            var data = self.params();
-            ++loadToken;
-            var myToken = loadToken;
-            var cardId = self.id();
-            if (cardId) {
-              requireGW(["cards/" + cardId], function (card) {
-                if (loadToken !== myToken) {
-                  return;
-                }
-                loadCard(card, data);
-              });
-            } else {
-              loadCard({}, data);
-            }
-          });
-        };
-
-        // Allow player to delete tech cards whenever they want and add tooltips showing units affected by the cards
+        // Allow player to delete tech cards whenever they want and add tooltips
+        // showing units affected by the cards
         $("#hover-card").replaceWith(
           loadHtml(
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
@@ -99,33 +25,33 @@ if (!gwaioCardsLoaded) {
 
         var numCardsToOffer = 3;
 
-        model.gwaioOfferRerolls = ko.observable(true);
-        model.gwaioRerollsUsed = ko
+        model.gwoOfferRerolls = ko.observable(true);
+        model.gwoRerollsUsed = ko
           .observable(0)
-          .extend({ session: "gwaio_rerolls_used" }); // to prevent UI refresh exploits
+          .extend({ session: "gwaio_rerolls_used" }); // prevent UI refresh exploits
         var star = {};
-        // clean start for new games in a single session
+        // Clean start for new games in a single session
         if (game.turnState() === "begin") {
-          model.gwaioRerollsUsed(0);
+          model.gwoRerollsUsed(0);
         }
-        // avoid incorrect rerolls when loading an exploration save game
+        // Avoid incorrect rerolls when loading an exploration save game
         else if (game.turnState() === "explore") {
           star = game.galaxy().stars()[game.currentStar()];
-          model.gwaioRerollsUsed = ko.observable(
+          model.gwoRerollsUsed = ko.observable(
             numCardsToOffer - star.cardList().length
           );
           if (
-            model.gwaioRerollsUsed() >= numCardsToOffer - 1 ||
+            model.gwoRerollsUsed() >= numCardsToOffer - 1 ||
             (self.isLoadout && self.isLoadout())
           ) {
-            model.gwaioOfferRerolls(false);
+            model.gwoOfferRerolls(false);
           }
         }
         ko.computed(function () {
           game.turnState();
           if (game.turnState() === "end") {
-            model.gwaioRerollsUsed(0);
-            model.gwaioOfferRerolls(true);
+            model.gwoRerollsUsed(0);
+            model.gwoOfferRerolls(true);
           }
         });
         model.rerollTech = function () {
@@ -136,9 +62,9 @@ if (!gwaioCardsLoaded) {
             cardsOffered = numCardsToOffer;
           }
           star = game.galaxy().stars()[game.currentStar()];
-          model.gwaioRerollsUsed(model.gwaioRerollsUsed() + 1);
-          if (model.gwaioRerollsUsed() >= cardsOffered - 1) {
-            model.gwaioOfferRerolls(false);
+          model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
+          if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+            model.gwoOfferRerolls(false);
           }
           star.cardList([]);
           game.turnState("begin");
@@ -155,63 +81,105 @@ if (!gwaioCardsLoaded) {
           [
             "shared/gw_common",
             "shared/gw_factions",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           ],
           function (
             GW,
             GWFactions,
-            gwaioBank,
-            gwaioCardsToUnits,
-            gwaioUnitsToNames,
-            gwaioFunctions
+            gwoCardsToUnits,
+            gwoUnitToNames,
+            gwoAI,
+            gwoSave,
+            gwoBank
           ) {
+            globals.CardViewModel = function (params) {
+              var self = this;
+
+              self.params = ko.observable(params);
+              self.id = ko.computed(function () {
+                var p = self.params();
+                return _.isObject(p) ? p.id : p;
+              });
+
+              self.visible = ko.observable(false);
+              self.desc = ko.observable();
+              self.locDesc = ko.computed(function () {
+                return loc(self.desc());
+              });
+              self.summary = ko.observable();
+              self.icon = ko.observable();
+              self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
+              self.audio = ko.observable();
+
+              self.isEmpty = ko.computed(function () {
+                return !self.id();
+              });
+              // Recognise loadouts introduced by mods as loadouts
+              self.isLoadout = ko.computed(function () {
+                return _.includes(self.id(), "_start_");
+              });
+
+              var completed = $.Deferred();
+              self.card = completed.promise();
+
+              var loadCard = function (card, data) {
+                if (_.isEmpty(card)) {
+                  self.desc(
+                    "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
+                  );
+                  self.summary("!LOC:Empty Data Bank");
+                  self.icon(
+                    "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png"
+                  );
+                  self.iconPlaceholder(undefined);
+                  self.visible(true);
+                } else {
+                  self.desc(card.describe && card.describe(data));
+                  self.summary(card.summarize && card.summarize(data));
+                  self.icon(card.icon && card.icon(data));
+                  self.iconPlaceholder(
+                    !self.icon() && (self.summary() || self.desc())
+                  );
+                  self.audio(card.audio && card.audio(data));
+                  self.visible(
+                    card.visible === true ||
+                      !!(card.visible && card.visible(data))
+                  );
+                }
+                completed.resolve(card);
+              };
+
+              var loadToken = 0;
+              ko.computed(function () {
+                var data = self.params();
+                ++loadToken;
+                var myToken = loadToken;
+                var cardId = self.id();
+                if (cardId) {
+                  requireGW(["cards/" + cardId], function (card) {
+                    if (loadToken !== myToken) {
+                      return;
+                    }
+                    loadCard(card, data);
+                  });
+                } else {
+                  loadCard({}, data);
+                }
+              });
+            };
+
             var inventory = game.inventory();
             var playerFaction = 0;
 
-            // Deal the General Commander's minions as cards to the inventory for GWAIO v4.3.0+
-            if (
-              inventory.cards().length === 1 &&
-              inventory.cards()[0].id === "gwc_start_subcdr" &&
-              !inventory.cards()[0].minions
-            ) {
-              _.times(2, function () {
-                playerFaction = inventory.getTag("global", "playerFaction");
-                var subcommander = _.cloneDeep(
-                  _.sample(GWFactions[playerFaction].minions)
-                );
-                var galaxy = game.galaxy();
-                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
-                if (ai === "Penchant") {
-                  var penchantValues = gwaioFunctions.penchants();
-                  subcommander.character =
-                    subcommander.character +
-                    (" " + loc(penchantValues.penchantName));
-                  subcommander.personality.personality_tags =
-                    subcommander.personality.personality_tags.concat(
-                      penchantValues.penchants
-                    );
-                }
-                inventory.cards().push({
-                  id: "gwc_minion",
-                  minion: subcommander,
-                  unique: Math.random(),
-                });
-              });
-              inventory.applyCards();
-              model.driveAccessInProgress(true);
-              GW.manifest.saveGame(game).then(function () {
-                model.driveAccessInProgress(false);
-              });
+            /* Start of GWO implementation of GWDealer */
+            if (!model.gwoDeck) {
+              model.gwoDeck = [];
             }
-
-            /* Start of GWAIO implementation of GWDealer */
-            if (!model.gwaioDeck) {
-              model.gwaioDeck = [];
-            }
-            model.gwaioDeck.push(
+            model.gwoDeck.push(
               "gwaio_enable_planetaryradar",
               "gwaio_upgrade_advancedairfactory",
               "gwaio_upgrade_advancedbotfactory",
@@ -390,11 +358,11 @@ if (!gwaioCardsLoaded) {
             var cards = [];
             var cardContexts = {};
 
-            var loadCount = model.gwaioDeck.length;
+            var loadCount = model.gwoDeck.length;
             var loaded = $.Deferred();
 
             var deck = [];
-            _.forEach(model.gwaioDeck, function (cardId) {
+            _.forEach(model.gwoDeck, function (cardId) {
               requireGW(["cards/" + cardId], function (card) {
                 card.id = cardId;
                 cards.push(card);
@@ -406,13 +374,16 @@ if (!gwaioCardsLoaded) {
               });
             });
 
+            var galaxy = model.game().galaxy();
+
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
               inventory = params.inventory;
               var rng = params.rng || new Math.seedrandom();
               var count = params.count;
               star = params.star;
-              var galaxy = params.galaxy;
+              galaxy = params.galaxy;
+              var dealAddSlot = params.addSlot;
 
               var result = $.Deferred();
               loaded.then(function () {
@@ -433,7 +404,10 @@ if (!gwaioCardsLoaded) {
 
                     var match =
                       inventory.hasCard(card.id) ||
-                      _.some(list, { id: card.id });
+                      _.some(list, { id: card.id }) ||
+                      // Never deal Additional Data Bank as a system's pre-dealt card
+                      (card.id === "gwc_add_card_slot" &&
+                        dealAddSlot === false);
 
                     var cardChance =
                       card.deal && card.deal(star, context, inventory);
@@ -450,15 +424,7 @@ if (!gwaioCardsLoaded) {
                   });
 
                   hand = _.filter(fullHand, function (deal) {
-                    if (!deal) {
-                      return false;
-                    }
-
-                    if (!deal.chance) {
-                      return false;
-                    }
-
-                    return true;
+                    return !!deal && !!deal.chance;
                   });
 
                   if (hand.length) {
@@ -506,11 +472,112 @@ if (!gwaioCardsLoaded) {
               return result;
             };
 
-            // ensure cheats use our deck
+            var setCardName = function (system, card) {
+              var deferred = $.Deferred();
+              if (!_.isEmpty(card)) {
+                requireGW(["cards/" + card[0].id], function (data) {
+                  var cardName = loc(data.summarize());
+                  system.star.ai().cardName = cardName;
+                  deferred.resolve();
+                });
+              }
+              return deferred.promise();
+            };
+
+            var dealCardSelectableAI = function (win, turnState) {
+              var deferred = $.Deferred();
+
+              // Avoid running twice after winning a fight
+              if (!win || turnState === "end") {
+                var deferredQueue = [];
+
+                _.forEach(model.galaxy.systems(), function (system, starIndex) {
+                  if (
+                    model.canSelect(starIndex) &&
+                    system.star.ai() &&
+                    system.star.ai().treasurePlanet !== true
+                  ) {
+                    deferredQueue.push(
+                      chooseCards({
+                        inventory: inventory,
+                        count: 1,
+                        star: system.star,
+                        galaxy: game.galaxy(),
+                        addSlot: false,
+                      }).then(function (card) {
+                        system.star.cardList(card);
+                        return setCardName(system, card);
+                      })
+                    );
+                  }
+                });
+
+                // $.when() doesn't wait for setCardName() to return
+                Promise.all(deferredQueue).then(function () {
+                  deferred.resolve();
+                });
+              } else {
+                deferred.resolve();
+              }
+
+              return deferred.promise();
+            };
+
+            // Deal some cards when the war starts
+            var dealFirstCardSelectableAI = function (settings) {
+              if (settings && !settings.firstDealComplete) {
+                settings.firstDealComplete = true;
+                dealCardSelectableAI(false).then(function () {
+                  gwoSave(game, true);
+                });
+              }
+            };
+
+            // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
+            if (
+              inventory.cards().length === 1 &&
+              inventory.cards()[0].id === "gwc_start_subcdr" &&
+              !inventory.cards()[0].minions
+            ) {
+              _.times(2, function () {
+                playerFaction = inventory.getTag("global", "playerFaction");
+                var subcommander = _.cloneDeep(
+                  _.sample(GWFactions[playerFaction].minions)
+                );
+                galaxy = game.galaxy();
+                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                if (ai === "Penchant") {
+                  var penchantValues = gwoAI.penchants();
+                  subcommander.character =
+                    subcommander.character +
+                    (" " + loc(penchantValues.penchantName));
+                  subcommander.personality.personality_tags =
+                    subcommander.personality.personality_tags.concat(
+                      penchantValues.penchants
+                    );
+                }
+                inventory.cards().push({
+                  id: "gwc_minion",
+                  minion: subcommander,
+                  unique: Math.random(),
+                });
+              });
+              inventory.applyCards();
+              // This will also trigger a save
+              dealFirstCardSelectableAI(
+                galaxy.stars()[galaxy.origin()].system().gwaio
+              );
+            }
+
+            dealFirstCardSelectableAI(
+              galaxy.stars()[galaxy.origin()].system().gwaio
+            );
+
+            // Cheats use our deck
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
-                var card = _.find(model.gwaioDeck, function (cardId) {
+                var card = _.find(model.gwoDeck, function (cardId) {
                   return cardId === params.id;
                 });
 
@@ -532,19 +599,21 @@ if (!gwaioCardsLoaded) {
               });
               return result;
             };
-            /* end of GWAIO implementation of GWDealer */
+            /* end of GWO implementation of GWDealer */
 
-            // we need cheats to deal from our deck
+            // We need cheats to deal from our deck
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
-              _.forEach(gwaioCardsToUnits.cards, function (card) {
+              _.forEach(model.gwoDeck, function (cardId) {
+                console.log("Testing " + cardId);
                 dealCard({
-                  id: card.id,
+                  id: cardId,
                   galaxy: game.galaxy(),
                   inventory: game.inventory(),
                   star: star,
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
+                    // 1. test all the minions first
                     _.forEach(GWFactions, function (faction) {
                       _.forEach(faction.minions, function (minion) {
                         var minionStock = _.cloneDeep(product);
@@ -557,9 +626,9 @@ if (!gwaioCardsLoaded) {
                         }
                         require([
                           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-                        ], function (gwaioUnits) {
-                          var clusterSecurity = gwaioUnits.colonel;
-                          var clusterWorker = gwaioUnits.angel;
+                        ], function (gwoUnit) {
+                          var clusterSecurity = gwoUnit.colonel;
+                          var clusterWorker = gwoUnit.angel;
 
                           if (
                             !CommanderUtility.bySpec.getObjectName(
@@ -569,7 +638,7 @@ if (!gwaioCardsLoaded) {
                             minionStock.minion.commander !== clusterWorker
                           ) {
                             console.error(
-                              "Minion commander unitspec " +
+                              "Minion commander unit spec " +
                                 minionStock.minion.commander +
                                 " invalid"
                             );
@@ -577,19 +646,36 @@ if (!gwaioCardsLoaded) {
                         });
                       });
                     });
-                  } else {
-                    game.inventory().cards.push(product);
-                    game.inventory().cards.pop();
+                    // 2. then deal a sub commander for battle testing
+                    var subcommander = _.cloneDeep(
+                      _.sample(GWFactions[playerFaction].minions)
+                    );
+                    var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                    if (ai === "Penchant") {
+                      var penchantValues = gwoAI.penchants();
+                      subcommander.character =
+                        subcommander.character +
+                        (" " + loc(penchantValues.penchantName));
+                      subcommander.personality.personality_tags =
+                        subcommander.personality.personality_tags.concat(
+                          penchantValues.penchants
+                        );
+                    }
+                    product.minion = subcommander;
+                    product.unique = Math.random();
                   }
+                  game.inventory().cards.push(product);
+                  inventory.applyCards();
                 });
               });
             };
+
             model.cheats.giveCard = function () {
               var id = model.cheats.giveCardId();
-              var cardId = _.find(model.gwaioDeck, function (card) {
+              var cardId = _.find(model.gwoDeck, function (card) {
                 return card === id;
               });
-              var galaxy = game.galaxy();
+              galaxy = game.galaxy();
 
               if (_.isUndefined(cardId)) {
                 console.error(
@@ -608,7 +694,7 @@ if (!gwaioCardsLoaded) {
                     );
                     var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
                     if (ai === "Penchant") {
-                      var penchantValues = gwaioFunctions.penchants();
+                      var penchantValues = gwoAI.penchants();
                       minion.character =
                         minion.character +
                         (" " + loc(penchantValues.penchantName));
@@ -624,11 +710,15 @@ if (!gwaioCardsLoaded) {
                     product.unique = Math.random();
                   }
                   game.inventory().cards.push(product);
+                  inventory.applyCards();
+                  dealCardSelectableAI(false).then(function () {
+                    gwoSave(game, true);
+                  });
                 });
               }
             };
 
-            // gw_play self.explore - we need to call our chooseCards function
+            // gw_play self.explore - call our chooseCards function
             model.explore = function () {
               if (!game || !game.explore()) {
                 return;
@@ -649,7 +739,10 @@ if (!gwaioCardsLoaded) {
               star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
                 inventory: inventory,
-                count: cardsOffered - model.gwaioRerollsUsed(),
+                count:
+                  cardsOffered -
+                  model.gwoRerollsUsed() -
+                  star.cardList().length,
                 star: star,
                 galaxy: game.galaxy(),
               }).then(function (result) {
@@ -657,85 +750,132 @@ if (!gwaioCardsLoaded) {
 
                 _.forEach(star.cardList(), function (card) {
                   if (
+                    _.includes(card.id, "_start_") &&
                     !GW.bank.hasStartCard(card) &&
-                    !gwaioBank.hasStartCard(card)
+                    !gwoBank.hasStartCard(card)
                   ) {
                     ok = false;
                   }
                 });
 
                 if (ok) {
-                  star.cardList(result);
+                  var cardList = result.concat(star.cardList());
+                  star.cardList(cardList);
                 }
               });
               $.when(dealStarCards).then(function () {
                 if (model.currentSystemCardList()[0].isLoadout()) {
-                  model.gwaioOfferRerolls(false);
+                  model.gwoOfferRerolls(false);
                 }
-                model.driveAccessInProgress(true);
-                GW.manifest.saveGame(game).then(function () {
-                  model.driveAccessInProgress(false);
-                });
-
+                gwoSave(game, false);
                 _.delay(function () {
                   model.scanning(false);
                 }, 2000);
               });
             };
 
-            if (model.gwaioCardsToUnits) {
-              model.gwaioCardsToUnits = model.gwaioCardsToUnits.concat(
-                gwaioCardsToUnits.cards
+            // call dealCardSelectableAI() so system cards update when player acquires a card
+            model.win = function (selectedCardIndex) {
+              model.exitGate($.Deferred());
+
+              var techCard = model.currentSystemCardList()[selectedCardIndex];
+              var techAudio =
+                techCard && techCard.audio() ? techCard.audio().found : null;
+              var playTechAudio = !!techCard;
+
+              game.winTurn(selectedCardIndex).then(function (didWin) {
+                if (!didWin) {
+                  console.error("Failed winning turn", game);
+                  return;
+                }
+
+                model.maybePlayCaptureSound();
+
+                dealCardSelectableAI(true, game.turnState())
+                  .then(function () {
+                    return gwoSave(game, true);
+                  })
+                  .then(function () {
+                    if (model.gameOver()) {
+                      api.tally
+                        .incStatInt("gw_war_victory")
+                        .always(function () {
+                          model.exitGate().resolve();
+                        });
+                    } else {
+                      model.exitGate().resolve();
+
+                      if (playTechAudio) {
+                        if (!techAudio) {
+                          api.audio.playSound(
+                            "/VO/Computer/gw/board_tech_acquired"
+                          );
+                        } else {
+                          api.audio.playSound(techAudio);
+                        }
+                      }
+                    }
+                  });
+              });
+            };
+
+            if (model.gwoCardsToUnits) {
+              model.gwoCardsToUnits.push.apply(
+                model.gwoCardsToUnits,
+                gwoCardsToUnits.cards
               );
             } else {
-              model.gwaioCardsToUnits = gwaioCardsToUnits.cards;
+              model.gwoCardsToUnits = gwoCardsToUnits.cards;
             }
 
-            model.gwaioTechCardTooltip = ko.observableArray([]);
+            model.gwoTechCardTooltip = ko.observableArray([]);
 
-            var makeCardTooltip = function (card, i) {
+            var makeCardTooltip = function (card, hoverIndex) {
               if (card.isLoadout()) {
                 return;
               }
-              if (i === undefined) {
-                i = 4;
-              } // ugly hack to ensure inventory hovers work at the same time as the new tech display
+              // Ensure inventory hovers work at the same time as the new tech display
+              if (hoverIndex === undefined) {
+                hoverIndex = 0;
+              } else {
+                hoverIndex += 1;
+              }
               var cardId = card.id();
-              var index = _.findIndex(model.gwaioCardsToUnits, { id: cardId });
-              if (index === -1) {
+              var cardIndex = _.findIndex(model.gwoCardsToUnits, {
+                id: cardId,
+              });
+              if (cardIndex === -1) {
                 if (cardId === undefined) {
                   return;
                 } else {
                   console.warn(
-                    cardId +
-                      " is invalid or missing from model.gwaioCardsToUnits"
+                    cardId + " is invalid or missing from model.gwoCardsToUnits"
                   );
                 }
               } else {
-                var units = model.gwaioCardsToUnits[index].units;
+                var units = model.gwoCardsToUnits[cardIndex].units;
                 if (units) {
                   var affectedUnits = [];
-                  // TODO: replace with $.getJSON() to get this info from the source?
                   _.forEach(units, function (unit) {
-                    index = _.findIndex(gwaioUnitsToNames.units, {
+                    cardIndex = _.findIndex(gwoUnitToNames.units, {
                       path: unit,
                     });
-                    if (index === -1) {
+                    if (cardIndex === -1) {
                       console.warn(
                         unit + " is invalid or missing from GWO unit_names.js"
                       );
                     } else {
-                      var name = loc(gwaioUnitsToNames.units[index].name);
+                      var name = loc(gwoUnitToNames.units[cardIndex].name);
                       affectedUnits = affectedUnits.concat(name);
                     }
                   });
                   affectedUnits = affectedUnits.sort();
-                  model.gwaioTechCardTooltip()[i] = _.map(
+                  model.gwoTechCardTooltip()[hoverIndex] = _.map(
                     affectedUnits,
-                    function (unit) {
+                    function (unit, index) {
                       if (affectedUnits.length < 13) {
                         return unit.concat("<br>");
-                      } else if (i < affectedUnits.length - 1) {
+                      } else if (index < affectedUnits.length - 1) {
                         return unit.concat("; ");
                       } else {
                         return unit;
@@ -743,19 +883,19 @@ if (!gwaioCardsLoaded) {
                     }
                   );
                 } else {
-                  model.gwaioTechCardTooltip()[i] = undefined;
+                  model.gwoTechCardTooltip()[hoverIndex] = undefined;
                 }
               }
             };
 
             model.showSystemCard.subscribe(function () {
               if (model.showSystemCard()) {
-                model.currentSystemCardList().forEach(makeCardTooltip);
+                _.forEach(model.currentSystemCardList(), makeCardTooltip);
               }
             });
             // Ensure the tooltip is shown even if the UI is refreshed
             if (model.showSystemCard()) {
-              model.currentSystemCardList().forEach(makeCardTooltip);
+              _.forEach(model.currentSystemCardList(), makeCardTooltip);
             }
 
             var hoverCount = 0;
@@ -795,5 +935,5 @@ if (!gwaioCardsLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioCards();
+  gwoCard();
 }

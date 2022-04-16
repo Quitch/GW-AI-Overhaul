@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,121 +17,51 @@ define([
         found: "/VO/Computer/gw/board_tech_available_vehicle",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
-        gwaioFunctions.hasUnit(gwaioUnits.vehicleFabber)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFabber)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoGroup.starterUnitsAdvanced);
+
       inventory.addMods([
         {
-          file: gwaioUnits.vehicleFabber,
+          file: gwoUnit.vehicleFabber,
           path: "buildable_types",
           op: "add",
           value: " | Structure & Land & Advanced - Factory | FabAdvBuild",
         },
       ]);
 
-      inventory.addAIMods([
-        {
+      var units = [
+        "AdvancedAirDefense",
+        "AdvancedLandDefense",
+        "AdvancedNavalDefense",
+        "AdvancedRadar",
+        "AntiNukeSilo",
+        "ControlModule",
+        "LongRangeArtillery",
+        "NukeSilo",
+        "PlanetEngine",
+        "PlanetSplitter",
+        "TeslaGunship",
+        "TML",
+        "UnitCannon",
+      ];
+      var aiMods = _.map(units, function (unit) {
+        return {
           type: "fabber",
           op: "append",
-          toBuild: "AdvancedNavalDefense",
+          toBuild: unit,
           idToMod: "builders",
           value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedAirDefense",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedLandDefense",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AntiNukeSilo",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "AdvancedRadar",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "TML",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "NukeSilo",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "UnitCannon",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "LongRangeArtillery",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "ControlModule",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "PlanetEngine",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "PlanetSplitter",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-        {
-          type: "fabber",
-          op: "append",
-          toBuild: "FortressVehicle",
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-        },
-      ]);
+        };
+      });
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

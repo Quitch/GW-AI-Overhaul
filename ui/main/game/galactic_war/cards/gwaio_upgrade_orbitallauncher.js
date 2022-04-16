@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,100 +17,57 @@ define([
         found: "/VO/Computer/gw/board_tech_available_orbital",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.orbitalLauncher) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoGroup.orbitalAdvancedMobile);
+
       inventory.addMods([
         {
-          file: gwaioUnits.orbitalLauncher,
+          file: gwoUnit.orbitalLauncher,
           path: "buildable_types",
           op: "add",
           value: "| (Orbital & FactoryBuild)",
         },
       ]);
 
-      inventory.addAIMods([
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "SolarArray",
-          idToMod: "builders",
-          value: "OrbitalLauncher",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "OrbitalDeathLaser",
-          idToMod: "builders",
-          value: "OrbitalLauncher",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedRadarSattelite",
-          idToMod: "builders",
-          value: "OrbitalLauncher",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "OrbitalRailgun",
-          idToMod: "builders",
-          value: "OrbitalLauncher",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "OrbitalBattleShip",
-          idToMod: "builders",
-          value: "OrbitalLauncher",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "SolarArray",
-          idToMod: "priority",
-          value: 100,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "OrbitalDeathLaser",
-          idToMod: "priority",
-          value: 100,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedRadarSattelite",
-          idToMod: "priority",
-          value: 100,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "OrbitalRailgun",
-          idToMod: "priority",
-          value: 100,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "OrbitalBattleShip",
-          idToMod: "priority",
-          value: 100,
-        },
-      ]);
+      var units = [
+        "SolarArray",
+        "OrbitalDeathLaser",
+        "AdvancedRadarSattelite",
+        "OrbitalRailgun",
+        "OrbitalBattleShip",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "OrbitalLauncher",
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 100,
+            },
+          ];
+        })
+      );
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

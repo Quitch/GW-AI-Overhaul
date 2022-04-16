@@ -1,7 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (planets, gwaioUnits) {
+], function (planets, gwoUnit) {
   var factionName = "Cluster";
   var factionColour = [
     [128, 128, 128],
@@ -61,8 +61,8 @@ define([
     },
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var workerCommander = gwaioUnits.angel;
-  var securityCommander = gwaioUnits.colonel;
+  var workerCommander = gwoUnit.angel;
+  var securityCommander = gwoUnit.colonel;
   var minions = [
     {
       name: "Worker",

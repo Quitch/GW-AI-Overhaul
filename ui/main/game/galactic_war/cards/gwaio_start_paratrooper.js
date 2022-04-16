@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
@@ -22,29 +22,62 @@ define([
         description: "!LOC:Paratrooper Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
 
-          var unitCannons = [gwaioUnits.lob, gwaioUnits.unitCannon];
-          var unitCannonUnits = [
-            gwaioUnits.spinner,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
-            gwaioUnits.boom,
-            gwaioUnits.grenadier,
-            gwaioUnits.spark,
-            gwaioUnits.stitch,
-            gwaioUnits.ant,
-          ];
-          var units = unitCannons.concat(unitCannonUnits);
+          var unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
+          var units = unitCannons.concat(gwoGroup.unitCannonMobile);
           inventory.addUnits(units);
 
+          // Avoid adding duplicate UNITTYPEs
+          var exclusion = function (unit) {
+            return !_.includes(gwoGroup.unitCannonMobile, unit);
+          };
+
+          var unitCannonUnitsAdditional = [];
+          if (
+            gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced) ||
+            inventory.hasCard("gwaio_upgrade_botfactory")
+          ) {
+            var remainingAdvancedBots = _.filter(
+              gwoGroup.botsAdvancedMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingAdvancedBots
+            );
+          }
+          if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)) {
+            var remainingBasicVehicles = _.filter(
+              gwoGroup.vehiclesBasicMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingBasicVehicles
+            );
+          }
+          if (
+            gwoCard.hasUnit(
+              inventory.units(),
+              gwoUnit.vehicleFactoryAdvanced
+            ) ||
+            inventory.hasCard("gwaio_upgrade_vehiclefactory")
+          ) {
+            var remainingAdvancedVehicles = _.filter(
+              gwoGroup.vehiclesAdvancedMobile,
+              exclusion
+            );
+            unitCannonUnitsAdditional.push.apply(
+              unitCannonUnitsAdditional,
+              remainingAdvancedVehicles
+            );
+          }
           var mods = _.flatten(
             _.map(unitCannons, function (unit) {
               return [
@@ -63,41 +96,6 @@ define([
               ];
             })
           );
-
-          var unitCannonUnitsAdditional = [];
-          if (
-            inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwc_enable_vehicles_t1")
-          ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.inferno,
-              gwaioUnits.drifter,
-              gwaioUnits.skitter
-            );
-          }
-          if (
-            inventory.hasCard("gwc_enable_vehicles_all") ||
-            inventory.hasCard("gwaio_upgrade_vehiclefactory")
-          ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.leveler,
-              gwaioUnits.vanguard,
-              gwaioUnits.sheller,
-              gwaioUnits.storm,
-              gwaioUnits.manhattan
-            );
-          }
-          if (
-            inventory.hasCard("gwc_enable_bots_all") ||
-            inventory.hasCard("gwaio_upgrade_botfactory")
-          ) {
-            unitCannonUnitsAdditional.push(
-              gwaioUnits.bluehawk,
-              gwaioUnits.gilE,
-              gwaioUnits.colonel
-            );
-          }
-          // eslint-disable-next-line lodash/prefer-map
           _.forEach(unitCannonUnitsAdditional, function (unit) {
             mods.push({
               file: unit,
@@ -106,38 +104,9 @@ define([
               value: "UNITTYPE_CannonBuildable",
             });
           });
-
           inventory.addMods(mods);
 
-          inventory.addAIMods([
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "UnitCannon",
-              idToMod: "builders",
-              value: "UberCommander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "Commander",
-            },
-            {
-              type: "fabber",
-              op: "append",
-              toBuild: "MiniUnitCannon", // No AI uses this currently
-              idToMod: "builders",
-              value: "UberCommander",
-            },
+          var aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -150,70 +119,53 @@ define([
             {
               type: "fabber",
               op: "load",
-              value: "gwaio_start_paratrooper.json", // Queller AI
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "BasicArmorTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "HoverTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "LandScout",
-              idToMod: "builders",
-              value: "UnitCannon",
+              value: CARD.id + ".json", // Queller AI
             },
             {
               type: "factory",
               op: "load",
               value: "gwaio_upgrade_leveler.json",
             },
-            {
+          ];
+          var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
+          _.forEach(factoryArtillery, function (structure) {
+            aiMods.push(
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "Commander", // TITANS AI
+              },
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "UberCommander", // Queller AI
+              }
+            );
+          });
+          var vehicles = [
+            "BasicArmorTank",
+            "HoverTank",
+            "LandScout",
+            "AdvancedArmorTank",
+            "AdvancedArtilleryVehicle",
+            "FlakTank",
+            "NukeTank",
+            "AdvancedArtilleryBot",
+          ];
+          _.forEach(vehicles, function (unit) {
+            aiMods.push({
               type: "factory",
               op: "append",
-              toBuild: "AdvancedArmorTank",
+              toBuild: unit,
               idToMod: "builders",
               value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "AdvancedArtilleryVehicle",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "FlakTank",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "NukeTank", // No AI uses this currently
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-            {
-              type: "factory",
-              op: "append",
-              toBuild: "AdvancedArtilleryBot",
-              idToMod: "builders",
-              value: "UnitCannon",
-            },
-          ]);
+            });
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
@@ -221,11 +173,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

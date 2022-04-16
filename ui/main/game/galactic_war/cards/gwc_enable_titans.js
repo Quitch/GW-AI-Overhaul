@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,31 +16,16 @@ define([
         found: "/VO/Computer/gw/board_tech_available_titans_all",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_bots_all") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_enable_air_all") ||
-        inventory.hasCard("gwc_enable_sea_all") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
         chance = 150;
-      }
-      if (!api.content.usingTitans() || inventory.hasCard("gwc_start_titan")) {
-        chance = 0;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.zeus,
-        gwaioUnits.atlas,
-        gwaioUnits.ragnarok,
-        gwaioUnits.ares,
-        gwaioUnits.helios,
-      ]);
+      inventory.addUnits(gwoGroup.titans);
     },
     dull: function () {
       //empty

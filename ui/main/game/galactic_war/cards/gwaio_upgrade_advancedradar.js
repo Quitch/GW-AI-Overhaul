@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,53 +16,42 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.radarAdvanced) &&
-        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory") ||
-          gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_botfactory") ||
-          gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_navalfactory") ||
-          gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_vehiclefactory"))
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.radarAdvanced)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.radarAdvanced,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: gwaioUnits.radarAdvanced,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: gwaioUnits.radarAdvanced,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: gwaioUnits.radarAdvanced,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.3.radius",
           op: "multiply",
           value: 1.5,
         },
         {
-          file: gwaioUnits.radarAdvanced,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.4.radius",
           op: "multiply",
           value: 1.5,

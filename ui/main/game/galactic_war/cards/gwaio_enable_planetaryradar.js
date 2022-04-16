@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,47 +17,39 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_airfactory") ||
-        gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_botfactory") ||
-        gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_navalfactory") ||
-        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactoryAdvanced) ||
-        inventory.hasCard("gwaio_upgrade_vehiclefactory")
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
         chance = 100;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoUnit.deepSpaceOrbitalRadar);
+
       inventory.addMods([
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "unit_name",
           op: "replace",
           value: "Planetary Radar",
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "display_name",
           op: "replace",
           value: "!LOC:Planetary Radar",
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "description",
           op: "replace",
           value:
             "!LOC:Planetary Radar - Detects enemy land, sea, and air units across the planet.",
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "unit_types",
           op: "replace",
           value: [
@@ -70,25 +63,25 @@ define([
           ],
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "max_health",
           op: "multiply",
           value: 3,
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "build_metal_cost",
           op: "multiply",
           value: 8,
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "consumption.energy",
           op: "multiply",
           value: 50,
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "recon.observer.items",
           op: "replace",
           value: [
@@ -130,12 +123,13 @@ define([
           ],
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "selection_icon.diameter",
           op: "replace",
           value: 55,
         },
       ]);
+
       inventory.addAIMods([
         {
           type: "fabber",

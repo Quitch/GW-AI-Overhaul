@@ -3,16 +3,15 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "cards/gwc_storage_and_buff",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, GWCStorage, gwaioFunctions, gwaioUnits) {
+], function (module, GW, GWCStart, GWCStorage, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Storage Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks."
@@ -23,14 +22,13 @@ define([
         description: "!LOC:Storage Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
           GWCStorage.buff(inventory);
         } else {
           // Don't clog up a slot.
@@ -45,8 +43,8 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [gwaioUnits.inferno, gwaioUnits.vanguard];
-      gwaioFunctions.applyDulls(CARD, inventory, units);
+      var units = [gwoUnit.inferno, gwoUnit.vanguard];
+      gwoCard.applyDulls(CARD, inventory, units);
     },
   };
 });

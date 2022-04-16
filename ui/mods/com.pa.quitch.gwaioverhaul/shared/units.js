@@ -121,15 +121,17 @@ define({
   commanderAAAmmo:
     "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
   commanderAmmo: "/pa/units/commanders/base_commander/base_commander_ammo.json",
+  commanderBuildArm: "/pa/tools/commander_build_arm/commander_build_arm.json",
+  commanderDeath: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
+  commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
+  commanderSecondary: "/pa/tools/uber_cannon/uber_cannon.json",
+  commanderSecondaryAmmo: "/pa/ammo/cannon_uber/cannon_uber.json",
   commanderTorpedo:
     "/pa/units/commanders/base_commander/base_commander_tool_torpedo_weapon.json",
   commanderTorpedoAmmo:
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
   commanderWeapon:
     "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
-  commanderSecondaryAmmo: "/pa/ammo/cannon_uber/cannon_uber.json",
-  commanderSecondary: "/pa/tools/uber_cannon/uber_cannon.json",
-  commanderBuildArm: "/pa/tools/commander_build_arm/commander_build_arm.json",
   deepSpaceOrbitalRadar:
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
   dox: "/pa/units/land/assault_bot/assault_bot.json",
@@ -162,9 +164,7 @@ define({
   halley: "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
   helios: "/pa/units/orbital/titan_orbital/titan_orbital.json",
   heliosAmmo: "/pa/units/orbital/titan_orbital/titan_orbital_ammo.json",
-  heliosWeaponAG:
-    "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_ground.json",
-  heliosWeaponAO:
+  heliosWeapon:
     "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_orbital.json",
   hermes: "/pa/units/orbital/orbital_probe/orbital_probe.json",
   holkins: "/pa/units/land/artillery_long/artillery_long.json",
@@ -268,15 +268,15 @@ define({
     "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
   nukeLauncherWeapon:
     "/pa/units/land/nuke_launcher/nuke_launcher_tool_weapon.json",
-  commanderDeath: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
-  commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
   omega: "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+  omegaAmmo:
+    "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo.json",
   omegaAmmoAG:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo_ground.json",
+  omegaWeapon:
+    "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
   omegaWeaponAG:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon_ground.json",
-  omegaWeaponAO:
-    "/pa/units/orbital/orbital_battleship/orbital_battleship_tool_weapon.json",
   orbitalFabber:
     "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
   orbitalFabberBuildArm:
@@ -328,8 +328,9 @@ define({
   slammerAmmo: "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
   slammerTorpedo:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
+  // torpedo launcher doesn't use this ammo, only the Slammer does
   slammerTorpedoAmmo:
-    "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo.json",
+    "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   slammerWeapon:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
   solarArray: "/pa/units/orbital/solar_array/solar_array.json",
@@ -374,16 +375,12 @@ define({
   torpedoLauncher: "/pa/units/sea/torpedo_launcher/torpedo_launcher.json",
   torpedoLauncherAdvanced:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv.json",
-  torpedoLauncherAdvancedAmmo:
-    "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo.json",
   torpedoLauncherAdvancedLandAmmo:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_land.json",
   torpedoLauncherAdvancedWaterAmmo:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_ammo_water.json",
   torpedoLauncherAdvancedWeapon:
     "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json",
-  torpedoLauncherAmmo:
-    "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   torpedoLauncherLandAmmo:
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo_land.json",
   torpedoLauncherWaterAmmo:

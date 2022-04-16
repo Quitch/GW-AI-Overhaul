@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,31 +16,30 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.holkins)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.holkins)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.holkins,
+          file: gwoUnit.holkins,
           path: "tools.0.projectiles_per_fire",
           op: "replace",
           value: 3,
         },
         {
-          file: gwaioUnits.holkins,
+          file: gwoUnit.holkins,
           path: "tools.0.muzzle_bone",
           op: "replace",
           value: ["socket_muzzle", "socket_muzzle", "socket_muzzle"],
         },
         {
-          file: gwaioUnits.holkinsWeapon,
+          file: gwoUnit.holkinsWeapon,
           path: "firing_standard_deviation",
           op: "multiply",
           value: 3,

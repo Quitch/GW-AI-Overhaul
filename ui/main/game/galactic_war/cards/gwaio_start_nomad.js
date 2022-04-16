@@ -2,16 +2,16 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Nomad Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters."
@@ -22,56 +22,50 @@ define([
         description: "!LOC:Nomad Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
 
           var mods = [];
-
           var smallStructures = [
-            gwaioUnits.galata,
-            gwaioUnits.pelter,
-            gwaioUnits.energyPlant,
-            gwaioUnits.energyStorage,
-            gwaioUnits.wall,
-            gwaioUnits.landMine,
-            gwaioUnits.singleLaserDefenseTower,
-            gwaioUnits.metalStorage,
-            gwaioUnits.radar,
-            gwaioUnits.torpedoLauncher,
+            gwoUnit.energyPlant,
+            gwoUnit.energyStorage,
+            gwoUnit.galata,
+            gwoUnit.landMine,
+            gwoUnit.metalStorage,
+            gwoUnit.pelter,
+            gwoUnit.radar,
+            gwoUnit.singleLaserDefenseTower,
+            gwoUnit.torpedoLauncher,
+            gwoUnit.wall,
           ];
           var mediumStructures = [
-            gwaioUnits.flak,
-            gwaioUnits.energyPlantAdvanced,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.catapult,
-            gwaioUnits.umbrella,
-            gwaioUnits.torpedoLauncherAdvanced,
+            gwoUnit.catapult,
+            gwoUnit.energyPlantAdvanced,
+            gwoUnit.flak,
+            gwoUnit.laserDefenseTower,
+            gwoUnit.laserDefenseTowerAdvanced,
+            gwoUnit.torpedoLauncherAdvanced,
+            gwoUnit.umbrella,
           ];
           var largeStructures = [
-            gwaioUnits.holkins,
-            gwaioUnits.radarAdvanced,
-            gwaioUnits.deepSpaceOrbitalRadar,
-            gwaioUnits.anchor,
-            gwaioUnits.jig,
+            gwoUnit.anchor,
+            gwoUnit.deepSpaceOrbitalRadar,
+            gwoUnit.holkins,
+            gwoUnit.jig,
+            gwoUnit.radarAdvanced,
           ];
           var allStructures = smallStructures.concat(
             mediumStructures,
             largeStructures
           );
-
           var groundStructures = _.filter(allStructures, function (structure) {
-            return (
-              !_.includes(structure, "defense_satellite") &&
-              !_.includes(structure, "mining_platform")
-            );
+            return structure !== gwoUnit.anchor && structure !== gwoUnit.jig;
           });
-          groundStructures.forEach(function (unit) {
+          _.forEach(groundStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -108,24 +102,29 @@ define([
                 path: "navigation.turn_speed",
                 op: "replace",
                 value: 60,
+              },
+              {
+                file: unit,
+                path: "physics.allow_pushing",
+                op: "replace",
+                value: true,
+              },
+              {
+                file: unit,
+                path: "physics.push_sideways",
+                op: "replace",
+                value: true,
               }
             );
           });
-
-          var orbitalStructures = [gwaioUnits.anchor, gwaioUnits.jig];
-          orbitalStructures.forEach(function (unit) {
+          var orbitalStructures = [gwoUnit.anchor, gwoUnit.jig];
+          _.forEach(orbitalStructures, function (unit) {
             mods.push(
               {
                 file: unit,
                 path: "base_spec",
                 op: "replace",
                 value: "/pa/units/orbital/base_orbital/base_orbital.json",
-              },
-              {
-                file: unit,
-                path: "armor_type",
-                op: "replace",
-                value: "AT_Structure",
               },
               {
                 file: unit,
@@ -153,8 +152,7 @@ define([
               }
             );
           });
-
-          allStructures.forEach(function (unit) {
+          _.forEach(allStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -179,11 +177,16 @@ define([
                 path: "unit_types",
                 op: "push",
                 value: "UNITTYPE_Mobile",
+              },
+              {
+                file: unit,
+                path: "physics.radius",
+                op: "multiply",
+                value: 5,
               }
             );
           });
-
-          smallStructures.forEach(function (unit) {
+          _.forEach(smallStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -200,14 +203,13 @@ define([
             );
           });
           mods.push({
-            file: gwaioUnits.pelican,
+            file: gwoUnit.pelican,
             path: "transporter.transportable_unit_types",
             op: "replace",
             value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
           });
-
           var teleportableStructures = smallStructures.concat(mediumStructures);
-          teleportableStructures.forEach(function (unit) {
+          _.forEach(teleportableStructures, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -223,23 +225,16 @@ define([
               }
             );
           });
-
-          var offensiveStructures = [
-            gwaioUnits.galata,
-            gwaioUnits.pelter,
-            gwaioUnits.landMine,
-            gwaioUnits.singleLaserDefenseTower,
-            gwaioUnits.torpedoLauncher,
-            gwaioUnits.flak,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.catapult,
-            gwaioUnits.umbrella,
-            gwaioUnits.torpedoLauncherAdvanced,
-            gwaioUnits.holkins,
-            gwaioUnits.anchor,
-          ];
-          offensiveStructures.forEach(function (unit) {
+          var defensiveStructures = gwoGroup.structuresArtillery.concat(
+            gwoGroup.structuresDefences
+          );
+          var offensiveStructures = _.filter(
+            defensiveStructures,
+            function (structure) {
+              return structure !== gwoUnit.wall;
+            }
+          );
+          _.forEach(offensiveStructures, function (unit) {
             mods.push({
               file: unit,
               path: "command_caps",
@@ -247,21 +242,17 @@ define([
               value: "ORDER_Attack",
             });
           });
-
           inventory.addMods(mods);
 
-          inventory.addAIMods([
-            {
-              type: "platoon",
+          var types = ["platoon", "template"];
+          var aiMods = _.map(types, function (type) {
+            return {
+              type: type,
               op: "load",
-              value: "gwaio_start_nomad.json",
-            },
-            {
-              type: "template",
-              op: "load",
-              value: "gwaio_start_nomad.json",
-            },
-          ]);
+              value: CARD.id + ".json",
+            };
+          });
+          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
@@ -269,11 +260,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

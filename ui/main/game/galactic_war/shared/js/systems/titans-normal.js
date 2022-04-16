@@ -1,34 +1,34 @@
-// We changed the Players arrays
+// Change the Players arrays and add classic systems
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/js/systems/planets.js",
-], function (gwaioPlanets) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/planets.js",
+], function (gwoPlanets) {
   return [
     {
       Players: [0, 3],
       Systems: [
         {
-          Planets: [gwaioPlanets.planet1],
+          Planets: [gwoPlanets.planet1],
         },
         {
-          Planets: [gwaioPlanets.planet2],
+          Planets: [gwoPlanets.planet2],
         },
         {
-          Planets: [gwaioPlanets.planet3],
+          Planets: [gwoPlanets.planet3],
         },
         {
-          Planets: [gwaioPlanets.planet4],
+          Planets: [gwoPlanets.planet4],
         },
         {
-          Planets: [gwaioPlanets.planet5],
+          Planets: [gwoPlanets.planet5],
         },
         {
-          Planets: [gwaioPlanets.planet6],
+          Planets: [gwoPlanets.planet6],
         },
         {
-          Planets: [gwaioPlanets.planet7],
+          Planets: [gwoPlanets.planet7],
         },
         {
-          Planets: [gwaioPlanets.planet8],
+          Planets: [gwoPlanets.planet8],
         },
       ],
     },
@@ -36,38 +36,38 @@ define([
       Players: [2, 6],
       Systems: [
         {
-          Planets: [gwaioPlanets.planet1],
+          Planets: [gwoPlanets.planet1],
         },
         {
-          Planets: [gwaioPlanets.planet9],
+          Planets: [gwoPlanets.planet9],
         },
         {
-          Planets: [gwaioPlanets.planet1, gwaioPlanets.planet10],
+          Planets: [gwoPlanets.planet1, gwoPlanets.planet10],
         },
         {
-          Planets: [gwaioPlanets.planet11, gwaioPlanets.planet12],
+          Planets: [gwoPlanets.planet11, gwoPlanets.planet12],
         },
         {
-          Planets: [gwaioPlanets.planet1, gwaioPlanets.planet13],
+          Planets: [gwoPlanets.planet1, gwoPlanets.planet13],
         },
         {
-          Planets: [gwaioPlanets.planet14, gwaioPlanets.planet13],
+          Planets: [gwoPlanets.planet14, gwoPlanets.planet13],
         },
         {
           Planets: [
-            gwaioPlanets.planet15,
-            gwaioPlanets.planet16,
-            gwaioPlanets.planet17,
+            gwoPlanets.planet15,
+            gwoPlanets.planet16,
+            gwoPlanets.planet17,
           ],
         },
         {
-          Planets: [gwaioPlanets.planet18],
+          Planets: [gwoPlanets.planet18],
         },
         {
-          Planets: [gwaioPlanets.planet7],
+          Planets: [gwoPlanets.planet7],
         },
         {
-          Planets: [gwaioPlanets.planet18, gwaioPlanets.planet12],
+          Planets: [gwoPlanets.planet18, gwoPlanets.planet12],
         },
       ],
     },
@@ -75,49 +75,49 @@ define([
       Players: [4, 10],
       Systems: [
         {
-          Planets: [gwaioPlanets.planet19],
+          Planets: [gwoPlanets.planet19],
         },
         {
-          Planets: [gwaioPlanets.planet20, gwaioPlanets.planet12],
+          Planets: [gwoPlanets.planet20, gwoPlanets.planet12],
         },
         {
           Planets: [
-            gwaioPlanets.planet21,
-            gwaioPlanets.planet12,
-            gwaioPlanets.planet22,
+            gwoPlanets.planet21,
+            gwoPlanets.planet12,
+            gwoPlanets.planet22,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet23,
-            gwaioPlanets.planet24,
-            gwaioPlanets.planet25,
-            gwaioPlanets.planet26,
-            gwaioPlanets.planet27,
-            gwaioPlanets.planet28,
-            gwaioPlanets.planet29,
-            gwaioPlanets.planet30,
-            gwaioPlanets.planet31,
+            gwoPlanets.planet23,
+            gwoPlanets.planet24,
+            gwoPlanets.planet25,
+            gwoPlanets.planet26,
+            gwoPlanets.planet27,
+            gwoPlanets.planet28,
+            gwoPlanets.planet29,
+            gwoPlanets.planet30,
+            gwoPlanets.planet31,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet32,
-            gwaioPlanets.planet33,
-            gwaioPlanets.planet34,
-            gwaioPlanets.planet35,
-            gwaioPlanets.planet36,
-            gwaioPlanets.planet37,
-            gwaioPlanets.planet38,
+            gwoPlanets.planet32,
+            gwoPlanets.planet33,
+            gwoPlanets.planet34,
+            gwoPlanets.planet35,
+            gwoPlanets.planet36,
+            gwoPlanets.planet37,
+            gwoPlanets.planet38,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet15,
-            gwaioPlanets.planet39,
-            gwaioPlanets.planet17,
-            gwaioPlanets.planet40,
-            gwaioPlanets.planet41,
+            gwoPlanets.planet15,
+            gwoPlanets.planet39,
+            gwoPlanets.planet17,
+            gwoPlanets.planet40,
+            gwoPlanets.planet41,
           ],
         },
       ],
@@ -126,48 +126,48 @@ define([
       Players: [6, 100],
       Systems: [
         {
-          Planets: [gwaioPlanets.planet42],
+          Planets: [gwoPlanets.planet42],
         },
         {
-          Planets: [gwaioPlanets.planet43, gwaioPlanets.planet12],
+          Planets: [gwoPlanets.planet43, gwoPlanets.planet12],
         },
         {
           Planets: [
-            gwaioPlanets.planet20,
-            gwaioPlanets.planet12,
-            gwaioPlanets.planet22,
+            gwoPlanets.planet20,
+            gwoPlanets.planet12,
+            gwoPlanets.planet22,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet44,
-            gwaioPlanets.planet45,
-            gwaioPlanets.planet46,
-            gwaioPlanets.planet47,
-            gwaioPlanets.planet48,
-            gwaioPlanets.planet49,
-            gwaioPlanets.planet50,
-            gwaioPlanets.planet51,
-            gwaioPlanets.planet52,
+            gwoPlanets.planet44,
+            gwoPlanets.planet45,
+            gwoPlanets.planet46,
+            gwoPlanets.planet47,
+            gwoPlanets.planet48,
+            gwoPlanets.planet49,
+            gwoPlanets.planet50,
+            gwoPlanets.planet51,
+            gwoPlanets.planet52,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet44,
-            gwaioPlanets.planet53,
-            gwaioPlanets.planet45,
-            gwaioPlanets.planet49,
+            gwoPlanets.planet44,
+            gwoPlanets.planet53,
+            gwoPlanets.planet45,
+            gwoPlanets.planet49,
           ],
         },
         {
           Planets: [
-            gwaioPlanets.planet54,
-            gwaioPlanets.planet33,
-            gwaioPlanets.planet34,
-            gwaioPlanets.planet35,
-            gwaioPlanets.planet36,
-            gwaioPlanets.planet37,
-            gwaioPlanets.planet38,
+            gwoPlanets.planet54,
+            gwoPlanets.planet33,
+            gwoPlanets.planet34,
+            gwoPlanets.planet35,
+            gwoPlanets.planet36,
+            gwoPlanets.planet37,
+            gwoPlanets.planet38,
           ],
         },
       ],

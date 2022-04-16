@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,52 +16,50 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.bumblebee) &&
-        gwaioFunctions.hasUnit(gwaioUnits.landMine)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.bumblebee)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoUnit.landMine);
+
       inventory.addMods([
         {
-          file: gwaioUnits.bumblebeeAmmo,
+          file: gwoUnit.bumblebeeAmmo,
           path: "damage",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.bumblebeeAmmo,
+          file: gwoUnit.bumblebeeAmmo,
           path: "splash_damage",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.bumblebeeAmmo,
+          file: gwoUnit.bumblebeeAmmo,
           path: "splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.bumblebeeAmmo,
+          file: gwoUnit.bumblebeeAmmo,
           path: "full_damage_splash_radius",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.bumblebeeAmmo,
+          file: gwoUnit.bumblebeeAmmo,
           path: "spawn_unit_on_death",
           op: "replace",
-          value: gwaioUnits.landMine,
+          value: gwoUnit.landMine,
         },
         {
-          file: gwaioUnits.bumblebeeWeapon,
+          file: gwoUnit.bumblebeeWeapon,
           path: "ammo_per_shot",
           op: "replace",
           value: 425,

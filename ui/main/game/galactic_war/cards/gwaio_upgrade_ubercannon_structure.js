@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,20 +16,20 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function () {
       return { chance: 30 };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.commanderSecondaryAmmo,
+          file: gwoUnit.commanderSecondaryAmmo,
           path: "armor_damage_map.AT_Structure",
           op: "multiply",
           value: 4,
         },
         {
-          file: gwaioUnits.commanderSecondaryAmmo,
+          file: gwoUnit.commanderSecondaryAmmo,
           path: "armor_damage_map.AT_Commander",
           op: "multiply",
           value: 4,

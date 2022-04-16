@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,29 +17,57 @@ define([
         found: "/VO/Computer/gw/board_tech_available_sea",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory)
       ) {
         chance = 30;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoGroup.navalAdvancedMobile);
+
       inventory.addMods([
         {
-          file: gwaioUnits.navalFactory,
+          file: gwoUnit.navalFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Naval & Mobile & FactoryBuild)",
         },
       ]);
 
-      inventory.addAIMods([
+      var units = [
+        "Battleship",
+        "MissleShip",
+        "MissileSub",
+        "HoverShip",
+        "DroneCarrier",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "BasicNavalFactory",
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 97,
+            },
+          ];
+        })
+      );
+      aiMods.push(
         {
           type: "factory",
           op: "append",
@@ -55,78 +84,9 @@ define([
             test_type: "HaveEcoForAdvanced",
             boolean: true,
           },
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "Battleship",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "MissleShip",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "MissileSub",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "HoverShip",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "DroneCarrier",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "Battleship",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "MissleShip",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "MissileSub",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "HoverShip",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "DroneCarrier",
-          idToMod: "priority",
-          value: 97,
-        },
-      ]);
+        }
+      );
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

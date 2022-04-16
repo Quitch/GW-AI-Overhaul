@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwaioFunctions, gwaioGroups) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,32 +16,23 @@ define([
         found: "/VO/Computer/gw/board_tech_available_cost_reduction",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_vehicles_t1") ||
-        inventory.hasCard("gwc_enable_vehicles_all") ||
-        inventory.hasCard("gwc_start_vehicle") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile)) {
         chance = 80;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwaioGroups.mobileVehicles;
-      var mods = [];
-      var modUnit = function (unit) {
-        mods.push({
+      var mods = _.map(gwoGroup.vehiclesMobile, function (unit) {
+        return {
           file: unit,
           path: "build_metal_cost",
           op: "multiply",
           value: 0.75,
-        });
-      };
-      _.forEach(units, modUnit);
+        };
+      });
       inventory.addMods(mods);
     },
     dull: function () {

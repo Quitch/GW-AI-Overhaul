@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,46 +16,51 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.firefly)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.firefly)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.firefly,
+          file: gwoUnit.firefly,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id: gwaioUnits.fireflyWeapon,
+              spec_id: gwoUnit.fireflyWeapon,
               aim_bone: "bone_root",
               muzzle_bone: "bone_root",
             },
           ],
         },
         {
-          file: gwaioUnits.firefly,
+          file: gwoUnit.firefly,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
         },
         {
-          file: gwaioUnits.firefly,
+          file: gwoUnit.firefly,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
         },
         {
-          file: gwaioUnits.firefly,
+          file: gwoUnit.firefly,
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,
+        },
+        {
+          file: gwoUnit.fireflyAmmo,
+          path: "damage",
+          op: "multiply",
+          value: 3.34,
         },
       ]);
     },

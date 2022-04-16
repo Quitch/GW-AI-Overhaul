@@ -2,16 +2,15 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GW, GWCStart, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Assault Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses."
@@ -22,35 +21,16 @@ define([
         description: "!LOC:Assault Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([
-            gwaioUnits.airFactory,
-            gwaioUnits.firefly,
-            gwaioUnits.bumblebee,
-            gwaioUnits.hummingbird,
-            gwaioUnits.icarus,
-            gwaioUnits.pelican,
-            gwaioUnits.spinner,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
-            gwaioUnits.boom,
-            gwaioUnits.botFactory,
-            gwaioUnits.grenadier,
-            gwaioUnits.spark,
-            gwaioUnits.stitch,
-            gwaioUnits.inferno,
-            gwaioUnits.drifter,
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFactory,
-          ]);
+          inventory.addUnits(
+            gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
+          );
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);
@@ -64,15 +44,7 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [
-        gwaioUnits.galata,
-        gwaioUnits.wall,
-        gwaioUnits.singleLaserDefenseTower,
-        gwaioUnits.laserDefenseTower,
-        gwaioUnits.torpedoLauncherAdvanced,
-        gwaioUnits.torpedoLauncher,
-      ];
-      gwaioFunctions.applyDulls(CARD, inventory, units);
+      gwoCard.applyDulls(CARD, inventory, gwoGroup.structuresDefencesBasic);
     },
   };
 });

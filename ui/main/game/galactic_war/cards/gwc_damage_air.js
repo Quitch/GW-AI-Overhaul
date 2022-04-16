@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,40 +16,22 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        inventory.hasCard("gwc_enable_air_t1") ||
-        inventory.hasCard("gwc_enable_air_all") ||
-        inventory.hasCard("gwc_start_air") ||
-        inventory.hasCard("gwaio_start_hoarder")
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.airMobile)) {
         chance = 70;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var ammos = [
-        gwaioUnits.fireflyAmmo,
-        gwaioUnits.hornetAmmo,
-        gwaioUnits.wyrmAmmo,
-        gwaioUnits.bumblebeeAmmo,
-        gwaioUnits.hummingbirdAmmo,
-        gwaioUnits.phoenixAmmo,
-        gwaioUnits.kestrelAmmo,
-        gwaioUnits.icarusAmmo,
-        gwaioUnits.horseflyAmmo,
-      ];
-      var mods = [];
-      ammos.forEach(function (ammo) {
-        mods.push({
+      var mods = _.map(gwoGroup.airAmmo, function (ammo) {
+        return {
           file: ammo,
           path: "damage",
           op: "multiply",
           value: 1.25,
-        });
+        };
       });
       inventory.addMods(mods);
     },

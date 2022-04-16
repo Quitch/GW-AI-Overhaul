@@ -2,16 +2,15 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwaioFunctions, gwaioUnits) {
+], function (module, GW, GWCStart, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:General Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:The General Commander loadout contains very limited mobile forces and only two data banks. However, the loadout comes with two Sub Commanders that accompany you into each battle."
@@ -27,23 +26,26 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory, context) {
       if (inventory.lookupCard(CARD) === 0) {
         // Make sure we only do the start buff/dull once
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([gwaioUnits.ant, gwaioUnits.vehicleFactory]);
+          inventory.addUnits([
+            gwoUnit.ant,
+            gwoUnit.vehicleFabber,
+            gwoUnit.vehicleFactory,
+          ]);
           inventory.maxCards(inventory.maxCards() - 2);
         }
-        // Support for GWAIO v4.2.2 and earlier
+        // Support for GWO v4.2.2 and earlier
         if (
           inventory.cards()[0].id === "gwc_start_subcdr" &&
           inventory.cards()[0].minions
         ) {
-          context.minions.forEach(function (minion) {
+          _.forEach(context.minions, function (minion) {
             inventory.minions.push(minion);
           });
           var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
@@ -58,7 +60,7 @@ define([
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,25 +16,24 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (inventory.hasCard("gwaio_enable_planetaryradar")) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 33.33,
         },
         {
-          file: gwaioUnits.deepSpaceOrbitalRadar,
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 8.3325,

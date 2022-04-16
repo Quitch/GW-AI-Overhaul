@@ -133,93 +133,7 @@ From easiest to hardest:
 
 ## Compatible Loadouts
 
-If you are adding new loadouts to the game and want to be compatible, then you will need to do the following:
-
-1. Add the following to the gw_start scene:
-
-   ```javascript
-   if (!model.gwaioNewStartCards) model.gwaioNewStartCards = [];
-   model.gwaioNewStartCards.push({ id: "YOUR_LOADOUT_ID" });
-   ```
-
-2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
-
-3. Add `coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js` and `gwaioTech` to your loadout's `define()` function
-
-4. Within the `if (!buffCount)` block of your loadout add:
-
-   ```javascript
-   if (inventory.getTag("global", "playerFaction") === 4)
-     inventory.addMods(gwaioTech.clusterCommanders);
-   ```
-
-## Compatible Tech Cards
-
-If you are adding new tech cards to the game and want to be compatible, then you will need to do the following:
-
-1. Add the following to the gw_play scene:
-
-   ```javascript
-   if (!model.gwaioDeck) model.gwaioDeck = [];
-   if (!model.gwaioCardsToUnits) model.gwaioCardsToUnits = [];
-   model.gwaioDeck.push("YOUR_TECH_ID");
-   model.gwaioCardsToUnits.push({
-     id: "YOUR_TECH_ID",
-     // Use the base_commander for commander and always the use unit, not the ammo, etc.
-     units: ["AFFECTED_UNIT_PATH"],
-   });
-   ```
-
-2. Ensure your cards are in `coui://ui/main/game/galactic_war/cards/`
-
-## How to Report a Bug
-
-Use the template below:
-
-### Attestation
-
-[ ] I have verified this bug with all other mods disabled
-
-[ ] I did not create this war while using one of the documented incompatible mods
-
-### Describe the bug
-
-A clear and concise description of what the bug is.
-
-### To Reproduce
-
-Steps to reproduce the behaviour:
-
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-### Expected behaviour
-
-A clear and concise description of what you expected to happen.
-
-### Screenshots
-
-If applicable, add screenshots to help explain your problem.
-
-### GWO Info
-
-Taken from the top-right GWO panel:
-
-- Version:
-- Difficulty:
-- Size:
-- AI:
-- Options:
-
-### Additional context
-
-Add any other context about the problem here.
-
-### Logs
-
-Please attach the most recent [client and server log](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring.
+To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/).
 
 ## FAQ
 
@@ -237,7 +151,9 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 ## Known Issues
 
-None.
+- More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
+- Selection and combat grouping mods e.g. Air Scout Select, can cause the AI to use these units incorrectly.
+- Modifiers are not applied to weapons and ammo not in use in the base game e.g. Skitter ammo
 
 ## Recommended mods
 
@@ -245,13 +161,12 @@ None.
 
 ## Incompatible mods
 
-- Enemy ramp for galactic war
+- Aurora Artillery
 - Challenge Levels for galactic war
+- Enemy ramp for galactic war
+- Galactic War Unique Loadouts
 - Section of Foreign Intelligence for galactic war
 - Unique Commander Loadouts
-- Galactic War Unique Loadouts
-- Combat Fabricator Group Deselect
-- Aurora Artillery
 
 ## Thanks to
 

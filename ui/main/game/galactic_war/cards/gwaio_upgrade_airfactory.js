@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,29 +17,56 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.airFactory) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoGroup.airAdvancedMobile);
+
       inventory.addMods([
         {
-          file: gwaioUnits.airFactory,
+          file: gwoUnit.airFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Air & Mobile & FactoryBuild)",
         },
       ]);
 
-      inventory.addAIMods([
+      var units = [
+        "AdvancedBomber",
+        "AdvancedGunship",
+        "AdvancedFighter",
+        "Strafer",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "BasicAirFactory",
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 97,
+            },
+          ];
+        })
+      );
+      aiMods.push([
         {
           type: "factory",
           op: "load",
@@ -61,63 +89,8 @@ define([
             boolean: true,
           },
         },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedBomber",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedGunship",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedFighter",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "Strafer",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedBomber",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedGunship",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedFighter",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "Strafer",
-          idToMod: "priority",
-          value: 97,
-        },
       ]);
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

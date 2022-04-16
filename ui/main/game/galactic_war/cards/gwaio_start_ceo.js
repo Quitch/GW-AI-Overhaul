@@ -2,16 +2,15 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:CEO Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons."
@@ -22,33 +21,32 @@ define([
         description: "!LOC:CEO Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
           inventory.addMods([
             {
-              file: gwaioUnits.commander,
+              file: gwoUnit.commander,
               path: "buildable_types",
               op: "add",
               value: " | SupportCommander",
             },
             {
-              file: gwaioUnits.colonel,
+              file: gwoUnit.colonel,
               path: "tools",
               op: "push",
               value: {
-                spec_id: gwaioUnits.commanderSecondary,
+                spec_id: gwoUnit.commanderSecondary,
                 aim_bone: "bone_turret",
                 muzzle_bone: "socket_rightMuzzle",
                 secondary_weapon: true,
               },
             },
             {
-              file: gwaioUnits.colonel,
+              file: gwoUnit.colonel,
               path: "command_caps",
               op: "push",
               value: "ORDER_FireSecondaryWeapon",
@@ -59,7 +57,7 @@ define([
             {
               type: "fabber",
               op: "load",
-              value: "gwaio_start_ceo.json",
+              value: CARD.id + ".json",
             },
           ]);
         } else {
@@ -69,11 +67,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

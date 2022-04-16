@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,31 +16,30 @@ define([
         found: "/VO/Computer/gw/board_tech_available_speed",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.zeus)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.zeus)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.zeus,
+          file: gwoUnit.zeus,
           path: "system_velocity_multiplier",
           op: "replace",
           value: 15,
         },
         {
-          file: gwaioUnits.zeus,
+          file: gwoUnit.zeus,
           path: "gravwell_velocity_multiplier",
           op: "replace",
           value: 6,
         },
         {
-          file: gwaioUnits.zeus,
+          file: gwoUnit.zeus,
           path: "navigation.inter_planetary_type",
           op: "replace",
           value: "system",

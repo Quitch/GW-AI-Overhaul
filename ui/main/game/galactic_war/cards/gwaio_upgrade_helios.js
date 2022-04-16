@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders."
+      "!LOC:Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders and increases its health by 50%."
     ),
     summarize: _.constant("!LOC:Helios Upgrade Tech"),
     icon: _.constant(
@@ -16,22 +16,27 @@ define([
         found: "/VO/Computer/gw/board_tech_available_armor",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.helios)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.helios)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.helios,
+          file: gwoUnit.helios,
           path: "planetary_arrival_cooldown_time",
           op: "replace",
           value: 0,
+        },
+        {
+          file: gwoUnit.helios,
+          path: "max_health",
+          op: "multiply",
+          value: 1.5,
         },
       ]);
     },

@@ -1,8 +1,9 @@
 define([
   "shared/gw_factions",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GWFactions, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -40,23 +41,31 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
+
       if (
-        (!gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
-          !gwaioFunctions.hasUnit(gwaioUnits.botFactory) &&
-          !gwaioFunctions.hasUnit(gwaioUnits.airFactory)) ||
+        (!gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory) &&
+          !gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory) &&
+          !gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)) ||
         inventory.hasCard("nem_start_deepspace")
       ) {
-        chance = 0;
+        return {
+          params: {
+            minion: {},
+            unique: Math.random(),
+          },
+          chance: 0,
+        };
       } else if (inventory.minions) {
         chance = chance / (inventory.minions().length + 1);
       }
+
       var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
-      var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-      if (gwaioSettings) {
-        var ai = gwaioSettings.ai;
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      if (gwoSettings) {
+        var ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwaioFunctions.penchants();
+          var penchantValues = gwoAI.penchants();
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
@@ -65,12 +74,13 @@ define([
             );
         }
       }
+
       return {
         params: {
           minion: minion,
           unique: Math.random(),
         },
-        chance: system.distance() > 0 ? chance : 0,
+        chance: chance,
       };
     },
     buff: function (inventory, params) {

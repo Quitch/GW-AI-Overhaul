@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,31 +16,30 @@ define([
         found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.teleporter)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.teleporter)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.teleporter,
+          file: gwoUnit.teleporter,
           path: "energy_efficiency_requirement",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.teleporter,
+          file: gwoUnit.teleporter,
           path: "teleporter.energy_demand",
           op: "replace",
           value: 0,
         },
         {
-          file: gwaioUnits.teleporter,
+          file: gwoUnit.teleporter,
           path: "recon.observable.ignore_radar",
           op: "replace",
           value: true,

@@ -1,18 +1,19 @@
-var gwaioRefereeChangesLoaded;
+var gwoRefereeChangesLoaded;
 
-if (!gwaioRefereeChangesLoaded) {
-  gwaioRefereeChangesLoaded = true;
+if (!gwoRefereeChangesLoaded) {
+  gwoRefereeChangesLoaded = true;
 
-  function gwaioRefereeChanges() {
+  function gwoRefereeChanges() {
     try {
       requireGW(
         [
           "shared/gw_common",
           "pages/gw_play/gw_referee",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
         ],
-        function (GW, GWReferee, gwaioFunctions) {
-          var gwaioReferee = function (game) {
+        function (GW, GWReferee, gwoColour, gwoUnit) {
+          var gwoReferee = function (game) {
             var self = this;
 
             self.game = ko.observable(game);
@@ -22,7 +23,7 @@ if (!gwaioRefereeChangesLoaded) {
             self.config = ko.observable();
           };
 
-          gwaioReferee.prototype.stripSystems = function () {
+          gwoReferee.prototype.stripSystems = function () {
             var self = this;
 
             // remove the systems from the galaxy
@@ -30,21 +31,22 @@ if (!gwaioRefereeChangesLoaded) {
             GW.Game.saveSystems(gw);
           };
 
-          gwaioReferee.prototype.mountFiles = function () {
+          gwoReferee.prototype.mountFiles = function () {
             var self = this;
 
             var deferred = $.Deferred();
 
             var allFiles = _.cloneDeep(self.files());
             // The player unit list needs to be the superset of units for proper UI behavior
-            var playerUnits = allFiles["/pa/units/unit_list.json.player"];
-            var aiUnits = allFiles["/pa/units/unit_list.json.ai"];
+            var unitList = "/pa/units/unit_list.json";
+            var playerUnits = allFiles[unitList + ".player"];
+            var aiUnits = allFiles[unitList + ".ai"];
             if (playerUnits) {
               var allUnits = _.cloneDeep(playerUnits);
               if (aiUnits && allUnits.units) {
                 allUnits.units = allUnits.units.concat(aiUnits.units);
               }
-              allFiles["/pa/units/unit_list.json"] = allUnits;
+              allFiles[unitList] = allUnits;
             }
 
             if (self.localFiles()) {
@@ -69,8 +71,44 @@ if (!gwaioRefereeChangesLoaded) {
             return deferred.promise();
           };
 
-          gwaioReferee.prototype.tagGame = function () {
+          gwoReferee.prototype.tagGame = function () {
             api.game.setUnitSpecTag(".player");
+          };
+
+          var aiInUse = function () {
+            var galaxy = model.game().galaxy();
+            var originSystem = galaxy.stars()[galaxy.origin()].system();
+            if (originSystem.gwaio) {
+              return originSystem.gwaio.ai;
+            }
+            return "Titans";
+          };
+          var aiBrain = aiInUse();
+
+          var findAIPath = function (type) {
+            var game = model.game();
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
+            var inventory = game.inventory();
+            var quellerPath = "/pa/ai_personalities/queller/";
+            // the order of path assignments must match .player unit_map assignments in generateGameFiles()
+            if (aiBrain === "Queller") {
+              if (type === "all") {
+                return quellerPath;
+              } else if (type === "enemy") {
+                return quellerPath + "q_uber/";
+              } else if (type === "subcommander") {
+                return quellerPath + "q_gold/";
+              }
+            } else if (
+              type === "subcommander" &&
+              !_.isEmpty(inventory.aiMods()) &&
+              ai.mirrorMode !== true
+            ) {
+              return "/pa/ai_tech/";
+            } else if (aiBrain === "Penchant") {
+              return "/pa/ai_personalities/penchant/";
+            }
+            return "/pa/ai/";
           };
 
           var generateGameFiles = function () {
@@ -97,16 +135,15 @@ if (!gwaioRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var aiEnabled = gwaioFunctions.aiEnabled();
               var aiUnitMapPath = "";
               var aiUnitMapTitansPath = "";
 
-              if (aiEnabled === "Queller") {
+              if (aiBrain === "Queller") {
                 aiUnitMapPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
                   "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
-              } else if (aiEnabled === "Penchant") {
+              } else if (aiBrain === "Penchant") {
                 aiUnitMapPath =
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
@@ -241,11 +278,12 @@ if (!gwaioRefereeChangesLoaded) {
                     var spec = load(mod.file);
                     if (!spec) {
                       return console.warn(
-                        "Warning: File not found in mod " + mod
+                        "Warning: File not found in mod",
+                        mod
                       );
                     }
                     if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
-                      return console.error("Invalid operation in mod " + mod);
+                      return console.error("Invalid operation in mod", mod);
                     }
 
                     var originalPath = (mod.path || "").split(".");
@@ -253,15 +291,14 @@ if (!gwaioRefereeChangesLoaded) {
 
                     var reportError = function (error, step) {
                       console.error(
-                        error +
-                          " " +
-                          spec[step] +
-                          " spec " +
-                          spec +
-                          " mod " +
-                          mod +
-                          " path " +
-                          originalPath.slice(0, -path.length).join(".")
+                        error,
+                        spec[step],
+                        "spec",
+                        spec,
+                        "mod",
+                        mod,
+                        "path",
+                        originalPath.slice(0, -path.length).join(".")
                       );
                       return undefined;
                     };
@@ -317,6 +354,23 @@ if (!gwaioRefereeChangesLoaded) {
                 };
                 /* end of gw_spec.js replacements */
 
+                // allow for specs not assigned to units to still be processed
+                var combineSpecs = function (baseSpecs, newSpecs) {
+                  return baseSpecs.concat(newSpecs);
+                };
+
+                // global for modder compatibility
+                if (!model.gwoSpecs) {
+                  model.gwoSpecs = [];
+                }
+                // files not assigned by default that we wish to mod
+                model.gwoSpecs.push(
+                  gwoUnit.fireflyAmmo,
+                  gwoUnit.orcaTorpedo,
+                  gwoUnit.orcaTorpedoAmmo,
+                  gwoUnit.skitterAmmo
+                );
+
                 var inventory = self.game().inventory();
 
                 var units = parse(unitsGet[0]).units;
@@ -332,9 +386,10 @@ if (!gwaioRefereeChangesLoaded) {
                     aiX1UnitMap,
                     aiTag[n]
                   );
+                  var aiSpecs = combineSpecs(units, model.gwoSpecs);
 
                   GW.specs
-                    .genUnitSpecs(units, aiTag[n])
+                    .genUnitSpecs(aiSpecs, aiTag[n])
                     .then(function (aiSpecFiles) {
                       var enemyAIUnitMapFile = aiUnitMapPath + aiTag[n];
                       var enemyAIUnitMapPair = {};
@@ -375,14 +430,18 @@ if (!gwaioRefereeChangesLoaded) {
                 var playerX1AIUnitMap = titans
                   ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
+                var playerSpecs = combineSpecs(
+                  inventory.units(),
+                  model.gwoSpecs
+                );
 
                 GW.specs
-                  .genUnitSpecs(inventory.units(), playerTag)
+                  .genUnitSpecs(playerSpecs, playerTag)
                   .then(function (playerSpecFiles) {
                     var playerFilesClassic = {};
                     var playerFilesX1 = {};
-                    // the order of unit_map assignments must match aiPath() in function.js
-                    if (gwaioFunctions.aiEnabled() === "Queller") {
+                    // the order of unit_map assignments must match findAIPath()
+                    if (aiBrain === "Queller") {
                       playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
@@ -419,7 +478,7 @@ if (!gwaioRefereeChangesLoaded) {
                             playerSpecFiles
                           )
                         : {};
-                    } else if (gwaioFunctions.aiEnabled() === "Penchant") {
+                    } else if (aiBrain === "Penchant") {
                       playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json.player":
@@ -476,6 +535,7 @@ if (!gwaioRefereeChangesLoaded) {
             return done.promise();
           };
 
+          // parse AI mods and load the results into self.files()
           var generateAI = function () {
             var self = this;
 
@@ -490,13 +550,15 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = build[idToMod].concat(value);
                       } else if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] += value;
@@ -522,13 +584,15 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod] &&
                         _.isArray(build[idToMod])
                       ) {
                         build[idToMod] = value.concat(build[idToMod]);
                       } else if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value + build[idToMod];
@@ -554,7 +618,8 @@ if (!gwaioRefereeChangesLoaded) {
                   _.forEach(json.build_list, function (build) {
                     if (build.to_build === toBuild) {
                       if (
-                        (_.isUndefined(refId) || build[refId] === refValue) &&
+                        (_.isUndefined(refId) ||
+                          _.isEqual(build[refId], refValue)) &&
                         build[idToMod]
                       ) {
                         build[idToMod] = value;
@@ -620,13 +685,8 @@ if (!gwaioRefereeChangesLoaded) {
               });
             };
 
-            var quellerEnabled = false;
-
-            if (gwaioFunctions.aiEnabled() === "Queller") {
-              quellerEnabled = true;
-            }
+            var isQueller = aiBrain === "Queller";
             var aiTechPath = "/pa/ai_tech/";
-
             var game = self.game();
             var inventory = game.inventory();
 
@@ -652,13 +712,13 @@ if (!gwaioRefereeChangesLoaded) {
                     } else if (aiMod.type === "template") {
                       managerPath = "platoon_templates/";
                     } else {
-                      console.error("Invalid op in " + aiMod);
+                      console.error("Invalid op in", aiMod);
                     }
                     fileList.push(aiTechPath + managerPath + aiMod.value);
                   });
                 }
 
-                var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+                var subcommanderAIPath = findAIPath("subcommander");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -668,10 +728,10 @@ if (!gwaioRefereeChangesLoaded) {
                   ) {
                     var deferred2 = $.Deferred();
 
+                    var aiBuildOps = [];
                     var quellerSubCommander = false;
-
                     if (
-                      quellerEnabled &&
+                      isQueller &&
                       inventory.minions().length > 0 &&
                       (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
@@ -679,12 +739,10 @@ if (!gwaioRefereeChangesLoaded) {
                       quellerSubCommander = true;
                     }
 
-                    var aiBuildOps = [];
-
                     if (
                       aiToModify !== "None" &&
                       !_.isEmpty(aiMods[1]) &&
-                      (!quellerEnabled ||
+                      (!isQueller ||
                         quellerSubCommander ||
                         aiToModify === "All")
                     ) {
@@ -714,10 +772,9 @@ if (!gwaioRefereeChangesLoaded) {
                           }
                           // Put "load" files where the AI expects them to be
                           if (_.startsWith(filePath, aiTechPath)) {
-                            if (quellerEnabled) {
+                            if (isQueller) {
                               // We don't know if the aiPath contains q_uber
-                              var quellerEnemyPath =
-                                gwaioFunctions.aiPath("enemy");
+                              var quellerEnemyPath = findAIPath("enemy");
                               filePath =
                                 quellerEnemyPath +
                                 filePath.slice(aiTechPath.length);
@@ -778,15 +835,13 @@ if (!gwaioRefereeChangesLoaded) {
             };
 
             var subcommanders = inventory.minions();
-            var aiFilePath = "";
-
-            if (subcommanders.length > 0) {
-              aiFilePath = gwaioFunctions.aiPath("all");
-            } else {
-              aiFilePath = gwaioFunctions.aiPath("enemy");
-            }
-
             var ai = game.galaxy().stars()[game.currentStar()].ai();
+            var aiFilePath = "";
+            if (subcommanders.length > 0) {
+              aiFilePath = findAIPath("all");
+            } else {
+              aiFilePath = findAIPath("enemy");
+            }
 
             if (_.isEmpty(inventory.aiMods())) {
               parseFiles(aiFilePath, deferredAIFiles, "None");
@@ -803,6 +858,20 @@ if (!gwaioRefereeChangesLoaded) {
             });
 
             return deferred.promise();
+          };
+
+          var armyCommander = function (ai, name, commander) {
+            var aiLandingOptions = [
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ];
+            return {
+              ai: ai,
+              name: name,
+              commander: commander,
+              landing_policy: _.sample(aiLandingOptions),
+            };
           };
 
           var generateConfig = function () {
@@ -822,14 +891,9 @@ if (!gwaioRefereeChangesLoaded) {
                 alliance_group: 1,
               },
             ];
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
-            ];
-            var subcommanderAIPath = gwaioFunctions.aiPath("subcommander");
+            var subcommanderAIPath = findAIPath("subcommander");
 
-            _.forEach(inventory.minions(), function (subcommander) {
+            _.forEach(inventory.minions(), function (subcommander, index) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
@@ -865,17 +929,19 @@ if (!gwaioRefereeChangesLoaded) {
                 : 1;
 
               var slotsArraySubCommander = [];
+
               _.times(subcommanderCommanders, function () {
-                slotsArraySubCommander.push({
-                  ai: true,
-                  name: subcommander.name,
-                  commander: subcommander.commander,
-                  landing_policy: _.sample(aiLandingOptions),
-                });
+                slotsArraySubCommander.push(
+                  armyCommander(true, subcommander.name, subcommander.commander)
+                );
               });
               armies.push({
                 slots: slotsArraySubCommander,
-                color: subcommander.color,
+                color: gwoColour.pick(
+                  inventory.getTag("global", "playerFaction"),
+                  subcommander.color + 1,
+                  index + 1 // player has colour 0
+                ),
                 econ_rate: 1,
                 personality: subcommander.personality,
                 spec_tag: playerTag,
@@ -899,7 +965,7 @@ if (!gwaioRefereeChangesLoaded) {
             ai.personality.adv_eco_mod *= ai.econ_rate;
             ai.personality.adv_eco_mod_alone *= ai.econ_rate;
 
-            var enemyAIPath = gwaioFunctions.aiPath("enemy");
+            var enemyAIPath = findAIPath("enemy");
 
             // Avoid breaking enemies from earlier versions
             ai.personality.ai_path = enemyAIPath;
@@ -908,27 +974,23 @@ if (!gwaioRefereeChangesLoaded) {
             _.times(
               ai.bossCommanders ||
                 ai.commanderCount ||
-                // legacy GWAIO support
+                // legacy GWO support
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
               function () {
-                slotsArrayAI.push({
-                  ai: true,
-                  name: ai.name,
-                  commander: ai.commander,
-                  landing_policy: _.sample(aiLandingOptions),
-                });
+                slotsArrayAI.push(armyCommander(true, ai.name, ai.commander));
               }
             );
             armies.push({
               slots: slotsArrayAI,
-              color: ai.color,
+              color: gwoColour.pick(ai.faction, ai.color, 0),
               econ_rate: ai.econ_rate,
               personality: ai.personality,
               spec_tag: aiTag[0],
               alliance_group: 2,
             });
-            _.forEach(ai.minions, function (minion) {
+            _.forEach(ai.minions, function (minion, index) {
+              // Avoid AI teching too early/late due to eco modifiers
               minion.personality.adv_eco_mod *= minion.econ_rate;
               minion.personality.adv_eco_mod_alone *= minion.econ_rate;
 
@@ -938,21 +1000,18 @@ if (!gwaioRefereeChangesLoaded) {
               var slotsArrayMinions = [];
               _.times(
                 minion.commanderCount ||
-                  // legacy GWAIO support
+                  // legacy GWO support
                   (minion.landing_policy && minion.landing_policy.length) ||
                   1,
                 function () {
-                  slotsArrayMinions.push({
-                    ai: true,
-                    name: minion.name,
-                    commander: minion.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
+                  slotsArrayMinions.push(
+                    armyCommander(true, minion.name, minion.commander)
+                  );
                 }
               );
               armies.push({
                 slots: slotsArrayMinions,
-                color: minion.color,
+                color: gwoColour.pick(ai.faction, minion.color, index + 1), // primary AI has colour 0
                 econ_rate: minion.econ_rate,
                 personality: minion.personality,
                 spec_tag: aiTag[0],
@@ -962,10 +1021,9 @@ if (!gwaioRefereeChangesLoaded) {
 
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              foe.personality.adv_eco_mod =
-                foe.personality.adv_eco_mod * foe.econ_rate;
-              foe.personality.adv_eco_mod_alone =
-                foe.personality.adv_eco_mod_alone * foe.econ_rate;
+              // Avoid AI teching too early/late due to eco modifiers
+              foe.personality.adv_eco_mod *= foe.econ_rate;
+              foe.personality.adv_eco_mod_alone *= foe.econ_rate;
 
               // Avoid breaking enemies from earlier versions
               foe.personality.ai_path = enemyAIPath;
@@ -973,21 +1031,18 @@ if (!gwaioRefereeChangesLoaded) {
               var slotsArrayFoes = [];
               _.times(
                 foe.commanderCount ||
-                  // legacy GWAIO support
+                  // legacy GWO support
                   (foe.landing_policy && foe.landing_policy.length) ||
                   1,
                 function () {
-                  slotsArrayFoes.push({
-                    ai: true,
-                    name: foe.name,
-                    commander: foe.commander,
-                    landing_policy: _.sample(aiLandingOptions),
-                  });
+                  slotsArrayFoes.push(
+                    armyCommander(true, foe.name, foe.commander)
+                  );
                 }
               );
               armies.push({
                 slots: slotsArrayFoes,
-                color: foe.color,
+                color: gwoColour.pick(foe.faction, foe.color, 0),
                 econ_rate: foe.econ_rate,
                 personality: foe.personality,
                 spec_tag: aiTag[index + 1], // 0 taken by primary AI
@@ -1027,7 +1082,7 @@ if (!gwaioRefereeChangesLoaded) {
 
           GWReferee.hire = function (game) {
             // call our own gw_referee implementation
-            var ref = new gwaioReferee(game);
+            var ref = new gwoReferee(game);
             return _.bind(generateGameFiles, ref)()
               .then(_.bind(generateAI, ref))
               .then(_.bind(generateConfig, ref))
@@ -1042,5 +1097,5 @@ if (!gwaioRefereeChangesLoaded) {
       console.error(JSON.stringify(e));
     }
   }
-  gwaioRefereeChanges();
+  gwoRefereeChanges();
 }

@@ -1,24 +1,32 @@
-var gwaioSystemChangesLoaded;
+var gwoSystemChangesLoaded;
 
-if (!gwaioSystemChangesLoaded) {
-  gwaioSystemChangesLoaded = true;
+if (!gwoSystemChangesLoaded) {
+  gwoSystemChangesLoaded = true;
 
-  function gwaioSystemChanges() {
+  function gwoSystemChanges() {
     try {
       var game = model.game();
 
       if (!game.isTutorial()) {
         var galaxy = game.galaxy();
-        var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-        if (gwaioSettings) {
+        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        if (gwoSettings) {
           console.log(
-            "War created using Galactic War Overhaul v" + gwaioSettings.version
+            "War created using Galactic War Overhaul v" + gwoSettings.version
           );
         } else {
           console.log(
             "War created using Galactic War Overhaul v4.12.1 or earlier"
           );
         }
+
+        // Don't allow starting zoom higher than maximum zoom
+        _.defer(function () {
+          model.galaxy.zoom(
+            Math.max(model.galaxy.zoom(), model.galaxy.minZoom())
+          );
+          model.centerOnPlayer();
+        });
 
         function createBitmap(params) {
           if (!params.url) {
@@ -45,6 +53,7 @@ if (!gwaioSystemChangesLoaded) {
             if (params.noCache) {
               throw new Error("noCache incompatible with color");
             }
+
             var updateFilters = function () {
               var color = result.color();
               result.filters = [];
@@ -60,6 +69,7 @@ if (!gwaioSystemChangesLoaded) {
               }
             };
             updateFilters();
+
             result.color.subscribe(function () {
               updateFilters();
               result.updateCache();
@@ -94,6 +104,7 @@ if (!gwaioSystemChangesLoaded) {
           });
         }
 
+        // Add tooltips, starting planet, and thruster icons on planet intelligence icons
         $(".all-planets").replaceWith(
           loadHtml(
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
@@ -102,7 +113,6 @@ if (!gwaioSystemChangesLoaded) {
 
         function SelectionViewModel(config) {
           var self = this;
-
           var galaxyView = config.galaxy;
           var hover = !!config.hover;
           var iconUrl = config.iconUrl;
@@ -137,8 +147,8 @@ if (!gwaioSystemChangesLoaded) {
             return ko.pureComputed(function () {
               var system = self.system();
               if (system) {
-                var ai = system.star.ai();
-                return loc(system[field]() || (ai && ai[field]) || ""); // GWAIO - use system information before AI information
+                // Display system description in intelligence panel
+                return loc(system[field]() || "");
               } else {
                 return "";
               }
@@ -148,7 +158,6 @@ if (!gwaioSystemChangesLoaded) {
           self.name = extractor("name");
           self.html = extractor("html");
           self.description = extractor("description");
-
           self.scale = new createjs.Container();
           self.scale.scaleY = 0.5;
           self.scale.z = -1;
@@ -192,6 +201,7 @@ if (!gwaioSystemChangesLoaded) {
               "beforeChange"
             );
 
+            // Create planets' tooltips for intelligence panel
             self.system.subscribe(function () {
               var newSystem = self.system();
 
@@ -203,34 +213,20 @@ if (!gwaioSystemChangesLoaded) {
                 var metalClusters = loc("!LOC:Metal Clusters:");
                 var metalDensity = loc("!LOC:Metal Density:");
                 var temperature = loc("!LOC:Temperature:");
-                var waterDepth = loc("!LOC:Water Depth:");
                 var waterHeight = loc("!LOC:Water Height:");
 
-                model.gwaioPlanetData = _.map(
+                model.gwoPlanetData = _.map(
                   self.system().planets(),
                   function (planet) {
+                    var tooltip = radius + " " + planet.generator.radius;
                     if (planet.generator.biome === "gas") {
-                      return radius + " " + planet.generator.radius;
-                    } else if (
-                      planet.generator.biome === "metal" ||
-                      planet.generator.biome === "metal_boss" ||
-                      planet.generator.biome === "moon"
-                    ) {
+                      return tooltip;
+                    } else {
                       if (planet.metal_spots) {
-                        return (
-                          radius +
-                          " " +
-                          planet.generator.radius +
-                          "<br>" +
-                          metalSpots +
-                          " " +
-                          planet.metal_spots.length
-                        );
+                        tooltip +=
+                          "<br>" + metalSpots + " " + planet.metal_spots.length;
                       } else {
-                        return (
-                          radius +
-                          " " +
-                          planet.generator.radius +
+                        tooltip +=
                           "<br>" +
                           metalClusters +
                           " " +
@@ -238,78 +234,24 @@ if (!gwaioSystemChangesLoaded) {
                           "<br>" +
                           metalDensity +
                           " " +
-                          Math.round(planet.generator.metalDensity)
-                        );
+                          Math.round(planet.generator.metalDensity);
                       }
-                    } else if (
-                      planet.metal_spots &&
-                      planet.generator.waterDepth
-                    ) {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalSpots +
-                        " " +
-                        planet.metal_spots.length +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterDepth +
-                        " " +
-                        Math.round(planet.generator.waterDepth) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
-                    } else if (planet.metal_spots) {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalSpots +
-                        " " +
-                        planet.metal_spots.length +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
-                    } else {
-                      return (
-                        radius +
-                        " " +
-                        planet.generator.radius +
-                        "<br>" +
-                        metalClusters +
-                        " " +
-                        Math.round(planet.generator.metalClusters) +
-                        "<br>" +
-                        metalDensity +
-                        " " +
-                        Math.round(planet.generator.metalDensity) +
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterDepth +
-                        " " +
-                        Math.round(planet.generator.waterDepth) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight)
-                      );
+                      if (
+                        planet.generator.biome !== "metal" &&
+                        planet.generator.biome !== "metal_boss" &&
+                        planet.generator.biome !== "moon"
+                      ) {
+                        tooltip +=
+                          "<br>" +
+                          temperature +
+                          " " +
+                          Math.round(planet.generator.temperature) +
+                          "<br>" +
+                          waterHeight +
+                          " " +
+                          Math.round(planet.generator.waterHeight);
+                      }
+                      return tooltip;
                     }
                   }
                 );
@@ -318,9 +260,8 @@ if (!gwaioSystemChangesLoaded) {
           }
         }
 
-        // turn off the icon before replacing model.selection()
+        // Turn off the original selection icon before replacing model.selection()
         model.selection.visible(false);
-
         model.selection = new SelectionViewModel({
           galaxy: model.galaxy,
           hover: false,
@@ -336,22 +277,17 @@ if (!gwaioSystemChangesLoaded) {
           if (model.player.moving()) {
             return false;
           }
-
           var from = game.currentStar();
           var to = model.selection.star();
-
           if (to < 0 || to > galaxy.stars().length) {
             return false;
           }
-
           if (!model.canSelectOrMovePrefix()) {
             return false;
           }
-
           if (from === to) {
             return false;
           }
-
           return galaxy.pathBetween(from, to, model.cheats.noFog());
         });
 
@@ -367,55 +303,52 @@ if (!gwaioSystemChangesLoaded) {
           );
         });
 
-        requireGW(["shared/gw_factions"], function (GWFactions) {
-          _.forEach(model.galaxy.systems(), function (system) {
-            ko.computed(function () {
-              var ai = system.star.ai();
-              var normalizedColor = [];
-              if (!ai) {
-                return;
-              } else if (ai.treasurePlanet !== true) {
-                var faction = GWFactions[ai.faction];
-                // Ensures we assign faction colour, not minion colour, to each system
-                normalizedColor = _.map(faction.color[0], function (c) {
-                  return c / 255;
-                });
-              }
-              system.ownerColor(normalizedColor.concat(3));
-              // Dependencies. These will cause the base code that updates color to rerun
-              // so we have to run under the same conditions, and pray we run later than that code.
-              system.connected();
-              model.cheats.noFog();
-              system.star.hasCard();
+        requireGW(
+          [
+            "shared/gw_factions",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+          ],
+          function (GWFactions, gwoSave) {
+            _.forEach(model.galaxy.systems(), function (system) {
+              ko.computed(function () {
+                var ai = system.star.ai();
+                var normalizedColor = [];
+                if (!ai) {
+                  return;
+                } else if (ai.treasurePlanet !== true) {
+                  var faction = GWFactions[ai.faction];
+                  // Ensures we assign faction colour, not minion colour, to each system
+                  normalizedColor = _.map(faction.color[0], function (c) {
+                    return c / 255;
+                  });
+                }
+                system.ownerColor(normalizedColor.concat(3));
+                // Dependencies. These will cause the base code that updates color to rerun
+                // so we have to run under the same conditions, and pray we run later than that code.
+                system.connected();
+                model.cheats.noFog();
+                system.star.hasCard();
+              });
             });
-          });
-        });
 
-        // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-        requireGW(["shared/gw_common"], function (GW) {
-          if (
-            gwaioSettings &&
-            _.isUndefined(gwaioSettings.treasurePlanetFixed)
-          ) {
-            for (var i = 0; i < galaxy.stars().length; i++) {
-              if (_.includes(galaxy.stars()[i].cardList(), undefined)) {
-                galaxy.stars()[i].cardList([]);
-                break;
+            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+            if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
+              for (var star of galaxy.stars()) {
+                if (_.includes(star.cardList(), undefined)) {
+                  star.cardList([]);
+                  break;
+                }
               }
+              gwoSettings.treasurePlanetFixed = true;
+              gwoSave(game, true);
             }
-            gwaioSettings.treasurePlanetFixed = true;
-            game.saved(false);
-            model.driveAccessInProgress(true);
-            GW.manifest.saveGame(game).then(function () {
-              model.driveAccessInProgress(false);
-            });
           }
-        });
+        );
       }
     } catch (e) {
       console.error(e);
       console.error(JSON.stringify(e));
     }
   }
-  gwaioSystemChanges();
+  gwoSystemChanges();
 }

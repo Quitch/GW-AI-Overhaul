@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,65 +16,60 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.angel) &&
-        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory"))
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.angel)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.angel,
+          file: gwoUnit.angel,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Attack"],
         },
         {
-          file: gwaioUnits.angel,
+          file: gwoUnit.angel,
           path: "unit_types",
           op: "push",
           value: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
         },
         {
-          file: gwaioUnits.angelBeam,
+          file: gwoUnit.angelBeam,
           path: "target_layers",
           op: "pull",
           value: ["WL_Orbital"],
         },
         {
-          file: gwaioUnits.angelBeam,
+          file: gwoUnit.angelBeam,
           path: "target_layers",
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: gwaioUnits.angelBeam,
+          file: gwoUnit.angelBeam,
           path: "auto_task_type",
           op: "replace",
           value: null,
         },
         {
-          file: gwaioUnits.angelBeam,
+          file: gwoUnit.angelBeam,
           path: "manual_fire",
           op: "replace",
           value: false,
         },
         {
-          file: "/pa/units/air/support_platform/support_platform_interception_ammo.json",
+          file: gwoUnit.angelAmmo,
           path: "collision_check",
           op: "replace",
           value: "enemies",
         },
         {
-          file: "/pa/units/air/support_platform/support_platform_interception_ammo.json",
+          file: gwoUnit.angelAmmo,
           path: "collision_response",
           op: "replace",
           value: "impact",

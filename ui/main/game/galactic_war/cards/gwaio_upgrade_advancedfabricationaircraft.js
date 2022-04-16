@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,27 +16,22 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit(gwaioUnits.airFabberAdvanced)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.airFabberAdvanced,
+          file: gwoUnit.airFabberAdvanced,
           path: "tools",
           op: "push",
           value: {
-            spec_id: gwaioUnits.angelBeam,
+            spec_id: gwoUnit.angelBeam,
             aim_bone: "bone_turret",
             record_index: 0,
             muzzle_bone: "socket_muzzle",

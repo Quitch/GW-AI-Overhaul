@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,51 +16,57 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioFunctions.hasUnit(gwaioUnits.botFactoryAdvanced) ||
-          inventory.hasCard("gwaio_start_paratrooper") ||
-          inventory.hasCard("gwaio_upgrade_botfactory")) &&
-        gwaioFunctions.hasUnit(gwaioUnits.slammer)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.slammer)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.slammerTorpedo,
+          file: gwoUnit.slammer,
+          path: "tools.1.show_range",
+          op: "replace",
+          value: true,
+        },
+        {
+          file: gwoUnit.slammerTorpedo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: gwaioUnits.slammerTorpedo,
+          file: gwoUnit.slammerTorpedo,
           path: "target_layers",
           op: "replace",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwoUnit.slammerTorpedo,
+          path: "target_priorities",
+          op: "replace",
+          value: ["Mobile", "Structure - Wall", "Wall"],
+        },
+        {
+          file: gwoUnit.slammerTorpedoAmmo,
           path: "flight_layer",
           op: "replace",
           value: "Air",
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwoUnit.slammerTorpedoAmmo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: gwaioUnits.torpedoLauncherAmmo,
+          file: gwoUnit.slammerTorpedoAmmo,
           path: "cruise_height",
           op: "replace",
-          value: 75,
+          value: 200,
         },
       ]);
     },

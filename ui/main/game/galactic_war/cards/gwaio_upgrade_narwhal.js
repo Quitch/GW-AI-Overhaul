@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Narwhal Upgrade Tech adds a torpedo launcher to the frigate."
+      "!LOC:Narwhal Upgrade Tech doubles the rate of fire of all weapons."
     ),
     summarize: _.constant("!LOC:Narwhal Upgrade Tech"),
     icon: _.constant(
@@ -16,32 +16,33 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwaioFunctions.hasUnit(gwaioUnits.navalFactory) &&
-        gwaioFunctions.hasUnit(gwaioUnits.narwhal)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.narwhal)) {
         chance = 30;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.narwhal,
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id: gwaioUnits.narwhalTorpedo,
-            record_index: 2,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-            fire_event: "fired2",
-            show_range: false,
-          },
+          file: gwoUnit.narwhalWeapon,
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwoUnit.narwhalAA,
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 2,
+        },
+        {
+          file: gwoUnit.narwhalTorpedo,
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 2,
         },
       ]);
     },

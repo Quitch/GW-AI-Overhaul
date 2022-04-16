@@ -1,11 +1,11 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 100%."
+      "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
     ),
     summarize: _.constant("!LOC:Kraken Upgrade Tech"),
     icon: _.constant(
@@ -16,26 +16,21 @@ define([
         found: "/VO/Computer/gw/board_tech_available_combat",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioFunctions.hasUnit(gwaioUnits.navalFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_navalfactory")) &&
-        gwaioFunctions.hasUnit(gwaioUnits.kraken)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.kraken)) {
         chance = 30;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwaioUnits.krakenMissile,
+          file: gwoUnit.krakenMissile,
           path: "max_range",
           op: "multiply",
-          value: 2,
+          value: 3,
         },
       ]);
     },

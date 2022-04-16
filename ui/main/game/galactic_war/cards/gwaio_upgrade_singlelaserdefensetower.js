@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,36 +16,35 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.singleLaserDefenseTower)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.singleLaserDefenseTower)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       var mods = [
         {
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "tools",
           op: "replace",
           value: [
             {
-              spec_id: gwaioUnits.mendBuildArm,
+              spec_id: gwoUnit.mendBuildArm,
               aim_bone: "bone_pitch",
             },
           ],
         },
         {
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "command_caps",
           op: "replace",
           value: ["ORDER_Reclaim", "ORDER_Repair"],
         },
         {
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "fx_offsets",
           op: "replace",
           value: {
@@ -57,7 +56,7 @@ define([
           },
         },
         {
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "audio",
           op: "replace",
           value: {
@@ -72,7 +71,7 @@ define([
           },
         },
         {
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Construction",
@@ -81,7 +80,7 @@ define([
       // Reinstate the Nomad Commander loadout's structure movement
       if (inventory.hasCard("gwaio_start_nomad")) {
         mods.push({
-          file: gwaioUnits.singleLaserDefenseTower,
+          file: gwoUnit.singleLaserDefenseTower,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
@@ -131,7 +130,7 @@ define([
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
-          value: 0, // Turn off for Queller Guardians
+          value: 0, // Turn off for Queller
           refId: "name",
           refValue: "Single Laser Defense Tower - Snipe",
         },

@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,23 +16,22 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.stinger)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: "/pa/units/land/bot_aa/bot_aa_weapon.json",
+          file: gwoUnit.stingerWeapon,
           path: "tools",
           op: "replace",
           value: {
-            spec_id: gwaioUnits.flakWeapon,
+            spec_id: gwoUnit.flakWeapon,
             aim_bone: "bone_turret",
             projectiles_per_fire: 2,
             muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],

@@ -1,7 +1,7 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,26 +16,23 @@ define([
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced) ||
-          inventory.hasCard("gwaio_upgrade_airfactory")) &&
-        gwaioFunctions.hasUnit(gwaioUnits.wyrm)
-      ) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.wyrm)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoUnit.squall);
+
       inventory.addMods([
         {
-          file: gwaioUnits.wyrm,
+          file: gwoUnit.wyrm,
           path: "tools.0.spec_id",
           op: "replace",
-          value: gwaioUnits.typhoonWeapon,
+          value: gwoUnit.typhoonWeapon,
         },
       ]);
     },

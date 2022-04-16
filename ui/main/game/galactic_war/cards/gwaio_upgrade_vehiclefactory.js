@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,29 +17,60 @@ define([
         found: "/VO/Computer/gw/board_tech_available_vehicle",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
       if (
-        gwaioFunctions.hasUnit(gwaioUnits.vehicleFactory) &&
-        !inventory.hasCard("gwaio_start_rapid")
+        !inventory.hasCard("gwaio_start_rapid") &&
+        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
       ) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.addUnits(gwoGroup.vehiclesAdvancedMobile);
+
       inventory.addMods([
         {
-          file: gwaioUnits.vehicleFactory,
+          file: gwoUnit.vehicleFactory,
           path: "buildable_types",
           op: "add",
           value: " | (Tank & Mobile & FactoryBuild)",
         },
       ]);
 
-      inventory.addAIMods([
+      var units = [
+        "AdvancedArmorTank",
+        "AdvancedArtilleryVehicle",
+        "AdvancedLaserTank",
+        "FlakTank",
+      ];
+      var aiMods = _.flatten(
+        _.map(units, function (unit) {
+          return [
+            {
+              type: "factory",
+              op: "append",
+              toBuild: unit,
+              idToMod: "builders",
+              value: "BasicVehicleFactory",
+              refId: "builders",
+              refValue: ["AdvancedVehicleFactory"],
+            },
+            {
+              type: "factory",
+              op: "replace",
+              toBuild: unit,
+              idToMod: "priority",
+              value: 97,
+              refId: "builders",
+              refValue: ["AdvancedVehicleFactory"],
+            },
+          ];
+        })
+      );
+      aiMods.push(
         {
           type: "factory",
           op: "append",
@@ -55,68 +87,9 @@ define([
             test_type: "HaveEcoForAdvanced",
             boolean: true,
           },
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedLaserTank",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
-          refId: "priority", // avoid modifying Leveler upgrade
-          refValue: 199,
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedArmorTank",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedArtilleryVehicle",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
-        },
-        {
-          type: "factory",
-          op: "append",
-          toBuild: "FlakTank",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedLaserTank",
-          idToMod: "priority",
-          value: 97,
-          refId: "priority", // avoid modifying Leveler upgrade
-          refValue: 199,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedArmorTank",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "AdvancedArtilleryVehicle",
-          idToMod: "priority",
-          value: 97,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: "FlakTank",
-          idToMod: "priority",
-          value: 97,
-        },
-      ]);
+        }
+      );
+      inventory.addAIMods(aiMods);
     },
     dull: function () {
       //empty

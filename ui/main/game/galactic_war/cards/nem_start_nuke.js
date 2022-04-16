@@ -2,16 +2,15 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Tactical Nuke Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence."
@@ -22,98 +21,90 @@ define([
         description: "!LOC:Tactical Nuke Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
           inventory.addUnits([
-            gwaioUnits.nukeLauncher,
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFactory,
+            gwoUnit.ant,
+            gwoUnit.nukeLauncher,
+            gwoUnit.skitter,
+            gwoUnit.vehicleFabber,
+            gwoUnit.vehicleFactory,
           ]);
-          var nukes = [
-            gwaioUnits.nukeLauncherAmmo,
-            "/pa/units/land/nuke_launcher/nuke_launcher_inter_ammo.json",
-          ];
-          var mods = [];
-          nukes.forEach(function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "replace",
-                value: 300,
-              },
-              {
-                file: unit,
-                path: "damage",
-                op: "replace",
-                value: 750,
-              },
-              {
-                file: unit,
-                path: "splash_damage",
-                op: "replace",
-                value: 750,
-              },
-              {
-                file: unit,
-                path: "full_damage_splash_radius",
-                op: "replace",
-                value: 50,
-              },
-              {
-                file: unit,
-                path: "splash_radius",
-                op: "replace",
-                value: 45,
-              },
-              {
-                file: unit,
-                path: "description",
-                op: "replace",
-                value:
-                  "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
-              }
-            );
-          });
-          mods.push(
+
+          inventory.addMods([
             {
-              file: gwaioUnits.nukeLauncher,
+              file: gwoUnit.nukeLauncher,
               path: "build_metal_cost",
               op: "replace",
               value: 2500,
             },
             {
-              file: gwaioUnits.nukeLauncher,
+              file: gwoUnit.nukeLauncher,
               path: "unit_types",
               op: "push",
               value: "UNITTYPE_FabBuild",
             },
             {
-              file: gwaioUnits.nukeLauncher,
+              file: gwoUnit.nukeLauncher,
               path: "description",
               op: "replace",
               value:
                 "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
             },
             {
-              file: gwaioUnits.nukeLauncherBuildArm,
+              file: gwoUnit.nukeLauncherBuildArm,
               path: "construction_demand.metal",
               op: "replace",
               value: 15,
             },
             {
-              file: gwaioUnits.nukeLauncherBuildArm,
+              file: gwoUnit.nukeLauncherBuildArm,
               path: "construction_demand.energy",
               op: "replace",
               value: 2250,
-            }
-          );
-          inventory.addMods(mods);
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "build_metal_cost",
+              op: "replace",
+              value: 300,
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "damage",
+              op: "replace",
+              value: 750,
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "splash_damage",
+              op: "replace",
+              value: 750,
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "full_damage_splash_radius",
+              op: "replace",
+              value: 50,
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "splash_radius",
+              op: "replace",
+              value: 45,
+            },
+            {
+              file: gwoUnit.nukeLauncherAmmo,
+              path: "description",
+              op: "replace",
+              value:
+                "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
+            },
+          ]);
 
           inventory.addAIMods([
             {
@@ -131,19 +122,19 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
       var units = [
-        gwaioUnits.flak,
-        gwaioUnits.laserDefenseTowerAdvanced,
-        gwaioUnits.laserDefenseTower,
-        gwaioUnits.catapult,
-        gwaioUnits.anchor,
-        gwaioUnits.torpedoLauncherAdvanced,
+        gwoUnit.flak,
+        gwoUnit.laserDefenseTowerAdvanced,
+        gwoUnit.laserDefenseTower,
+        gwoUnit.catapult,
+        gwoUnit.anchor,
+        gwoUnit.torpedoLauncherAdvanced,
       ];
-      gwaioFunctions.applyDulls(CARD, inventory, units);
+      gwoCard.applyDulls(CARD, inventory, units);
     },
   };
 });

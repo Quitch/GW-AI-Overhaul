@@ -2,16 +2,15 @@ define([
   "module",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwaioBank, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
-
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Buff Commander"),
     icon: function () {
-      return gwaioFunctions.loadoutIcon(CARD.id);
+      return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:This Commander prefers quality over quantity and has modified its units to that end. 30% more health, 30% more damage and splash, but 25% slower, and with 30% higher build costs."
@@ -22,92 +21,16 @@ define([
         description: "!LOC:Buff Commander",
       };
     },
-    deal: gwaioFunctions.startCard,
+    deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          gwaioFunctions.setupCluster(inventory);
-          inventory.addUnits([
-            gwaioUnits.spinner,
-            gwaioUnits.stryker,
-            gwaioUnits.inferno,
-            gwaioUnits.drifter,
-            gwaioUnits.ant,
-            gwaioUnits.vehicleFactory,
-          ]);
+          inventory.addUnits(gwoGroup.vehiclesBasic);
+
           var mods = [];
-          var units = [
-            gwaioUnits.firefly,
-            gwaioUnits.hornet,
-            gwaioUnits.wyrm,
-            gwaioUnits.bumblebee,
-            gwaioUnits.airFabberAdvanced,
-            gwaioUnits.airFabber,
-            gwaioUnits.phoenix,
-            gwaioUnits.hummingbird,
-            gwaioUnits.kestrel,
-            gwaioUnits.icarus,
-            gwaioUnits.horsefly,
-            gwaioUnits.angel,
-            gwaioUnits.zeus,
-            gwaioUnits.pelican,
-            gwaioUnits.spinner,
-            gwaioUnits.slammer,
-            gwaioUnits.dox,
-            gwaioUnits.stryker,
-            gwaioUnits.stinger,
-            gwaioUnits.boom,
-            gwaioUnits.grenadier,
-            gwaioUnits.locusts,
-            gwaioUnits.gilE,
-            gwaioUnits.colonel,
-            gwaioUnits.bluehawk,
-            gwaioUnits.spark,
-            gwaioUnits.botFabberAdvanced,
-            gwaioUnits.mend,
-            gwaioUnits.stitch,
-            gwaioUnits.botFabber,
-            gwaioUnits.vehicleFabberAdvanced,
-            gwaioUnits.vehicleFabber,
-            gwaioUnits.skitter,
-            gwaioUnits.inferno,
-            gwaioUnits.storm,
-            gwaioUnits.vanguard,
-            gwaioUnits.sheller,
-            gwaioUnits.drifter,
-            gwaioUnits.leveler,
-            gwaioUnits.ant,
-            gwaioUnits.manhattan,
-            gwaioUnits.atlas,
-            gwaioUnits.ares,
-            gwaioUnits.omega,
-            gwaioUnits.orbitalFabber,
-            gwaioUnits.avenger,
-            gwaioUnits.astraeus,
-            gwaioUnits.sxx,
-            gwaioUnits.hermes,
-            gwaioUnits.artemis,
-            gwaioUnits.radarSatelliteAdvanced,
-            gwaioUnits.arkyd,
-            gwaioUnits.solarArray,
-            gwaioUnits.helios,
-            gwaioUnits.barracuda,
-            gwaioUnits.leviathan,
-            gwaioUnits.orca,
-            gwaioUnits.typhoon,
-            gwaioUnits.squall,
-            gwaioUnits.barnacle,
-            gwaioUnits.navalFabberAdvanced,
-            gwaioUnits.navalFabber,
-            gwaioUnits.narwhal,
-            gwaioUnits.kaiju,
-            gwaioUnits.stingray,
-            gwaioUnits.kraken,
-            gwaioUnits.piranha,
-          ];
-          units.forEach(function (unit) {
+          _.forEach(gwoGroup.mobile, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -147,79 +70,7 @@ define([
               }
             );
           });
-          var ammos = [
-            gwaioUnits.landMineAmmo,
-            gwaioUnits.hornetAmmo,
-            gwaioUnits.wyrmAmmo,
-            gwaioUnits.bumblebeeAmmo,
-            gwaioUnits.phoenixAmmo,
-            gwaioUnits.hummingbirdAmmo,
-            gwaioUnits.kestrelAmmo,
-            gwaioUnits.icarusAmmo,
-            gwaioUnits.horseflyAmmo,
-            gwaioUnits.zeusAmmo,
-            gwaioUnits.spinnerAmmo,
-            gwaioUnits.flakAmmo,
-            gwaioUnits.galataAmmo,
-            gwaioUnits.antiNukeLauncherAmmo,
-            gwaioUnits.holkinsAmmo,
-            gwaioUnits.pelterAmmo,
-            gwaioUnits.slammerAmmo,
-            gwaioUnits.doxAmmo,
-            gwaioUnits.stingerAmmo,
-            gwaioUnits.boomAmmo,
-            gwaioUnits.locustsAmmo,
-            gwaioUnits.gilEAmmo,
-            gwaioUnits.colonelAmmo,
-            gwaioUnits.bluehawkAmmo,
-            gwaioUnits.sparkAmmo,
-            gwaioUnits.skitterAmmo,
-            gwaioUnits.laserDefenseTowerAdvancedAmmo,
-            gwaioUnits.singleLaserDefenseTowerAmmo,
-            gwaioUnits.laserDefenseTowerAmmo,
-            gwaioUnits.nukeLauncherAmmo,
-            gwaioUnits.catapultAmmo,
-            gwaioUnits.infernoAmmo,
-            gwaioUnits.stormAmmo,
-            gwaioUnits.vanguardAmmo,
-            gwaioUnits.drifterAmmo,
-            gwaioUnits.levelerAmmo,
-            gwaioUnits.antAmmo,
-            gwaioUnits.atlasAmmo,
-            gwaioUnits.aresAmmo,
-            gwaioUnits.aresSecondaryAmmo,
-            gwaioUnits.aresStompAmmo,
-            gwaioUnits.anchorAmmoAG,
-            gwaioUnits.anchorAmmoAO,
-            gwaioUnits.umbrellaAmmo,
-            gwaioUnits.omegaAmmoAG,
-            gwaioUnits.avengerAmmo,
-            gwaioUnits.sxxAmmo,
-            gwaioUnits.artemisAmmo,
-            gwaioUnits.barracudaAmmo,
-            gwaioUnits.leviathanAmmo,
-            gwaioUnits.orcaAmmo,
-            gwaioUnits.orcaTorpedoAmmo,
-            gwaioUnits.squallTorpedoAmmo,
-            gwaioUnits.squallAmmo,
-            gwaioUnits.narwhalAAAmmo,
-            gwaioUnits.narwhalAmmo,
-            gwaioUnits.narwhalTorpedoAmmo,
-            gwaioUnits.kaijuSecondaryAmmo,
-            gwaioUnits.kaijuAmmo,
-            gwaioUnits.stingrayAAAmmo,
-            gwaioUnits.stingrayAmmo,
-            gwaioUnits.krakenMissileAmmo,
-            gwaioUnits.krakenWeaponAmmo,
-            gwaioUnits.piranhaAmmo,
-            gwaioUnits.torpedoLauncherAdvancedLandAmmo,
-            gwaioUnits.torpedoLauncherAdvancedWaterAmmo,
-            gwaioUnits.torpedoLauncherAdvancedAmmo,
-            gwaioUnits.torpedoLauncherLandAmmo,
-            gwaioUnits.torpedoLauncherWaterAmmo,
-            gwaioUnits.torpedoLauncherAmmo,
-          ];
-          ammos.forEach(function (ammo) {
+          _.forEach(gwoGroup.ammo, function (ammo) {
             mods.push(
               {
                 file: ammo,
@@ -235,53 +86,7 @@ define([
               }
             );
           });
-          var structures = [
-            gwaioUnits.airFactoryAdvanced,
-            gwaioUnits.airFactory,
-            gwaioUnits.flak,
-            gwaioUnits.galata,
-            gwaioUnits.antiNukeLauncher,
-            gwaioUnits.holkins,
-            gwaioUnits.pelter,
-            gwaioUnits.lob,
-            gwaioUnits.botFactoryAdvanced,
-            gwaioUnits.botFactory,
-            gwaioUnits.catalyst,
-            gwaioUnits.energyPlantAdvanced,
-            gwaioUnits.energyPlant,
-            gwaioUnits.energyStorage,
-            gwaioUnits.wall,
-            gwaioUnits.landMine,
-            gwaioUnits.laserDefenseTowerAdvanced,
-            gwaioUnits.singleLaserDefenseTower,
-            gwaioUnits.laserDefenseTower,
-            gwaioUnits.metalExtractorAdvanced,
-            gwaioUnits.metalExtractor,
-            gwaioUnits.metalStorage,
-            gwaioUnits.nukeLauncher,
-            gwaioUnits.radarAdvanced,
-            gwaioUnits.radar,
-            gwaioUnits.catapult,
-            gwaioUnits.teleporter,
-            gwaioUnits.ragnarok,
-            gwaioUnits.unitCannon,
-            gwaioUnits.vehicleFactoryAdvanced,
-            gwaioUnits.vehicleFactory,
-            gwaioUnits.deepSpaceOrbitalRadar,
-            gwaioUnits.anchor,
-            gwaioUnits.halley,
-            gwaioUnits.umbrella,
-            gwaioUnits.jig,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.orbitalFactory,
-            gwaioUnits.orbitalLauncher,
-            gwaioUnits.orbitalLauncher,
-            gwaioUnits.navalFactoryAdvanced,
-            gwaioUnits.navalFactory,
-            gwaioUnits.torpedoLauncherAdvanced,
-            gwaioUnits.torpedoLauncher,
-          ];
-          structures.forEach(function (unit) {
+          _.forEach(gwoGroup.notMobile, function (unit) {
             mods.push(
               {
                 file: unit,
@@ -305,11 +110,11 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        gwaioBank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {
-      gwaioFunctions.applyDulls(CARD, inventory);
+      gwoCard.applyDulls(CARD, inventory);
     },
   };
 });

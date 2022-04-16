@@ -1,4 +1,4 @@
-// We want StarSystemTemplates.generate to have players equal to distance so planets scale up with galaxy depth
+// StarSystemTemplates.generate has systems scale with galaxy depth
 define([
   "shared/GalaxyBuilder",
   "shared/gw_star",
@@ -56,8 +56,8 @@ define([
 
         checked[node] = true;
 
-        for (var neighbor = 0; neighbor < nodeNeighbors.length; ++neighbor) {
-          var other = nodeNeighbors[neighbor];
+        for (var neighbor of nodeNeighbors) {
+          var other = neighbor;
 
           if (checked[other]) {
             continue;
@@ -241,8 +241,8 @@ define([
       var starGenerators = _.map(self.stars(), function (star) {
         var systemSize = 0;
         if (
-          model.gwaioDifficultySettings &&
-          !model.gwaioDifficultySettings.systemScaling()
+          model.gwoDifficultySettings &&
+          !model.gwoDifficultySettings.systemScaling()
         ) {
           systemSize = Math.floor(Math.random() * 10 + 1);
         } else {

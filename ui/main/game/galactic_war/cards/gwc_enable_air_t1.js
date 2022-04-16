@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,58 +17,27 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioFunctions.getContext,
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        !(
-          inventory.hasCard("gwc_enable_air_all") ||
-          inventory.hasCard("gwc_start_air") ||
-          inventory.hasCard("gwc_start_allfactory") ||
-          inventory.hasCard("gwaio_start_hoarder")
-        )
-      ) {
+      if (gwoCard.missingUnit(inventory.units(), gwoGroup.airBasic)) {
         var dist = system.distance();
-        if (dist > 0 && !inventory.hasCard("gwaio_start_hoarder")) {
-          if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-            chance = 200;
-            if (dist > 2) {
-              chance = 50;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-            chance = 200;
-            if (dist > 3) {
-              chance = 50;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-            chance = 200;
-            if (dist > 4) {
-              chance = 50;
-            }
-          } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-            chance = 200;
-            if (dist > 5) {
-              chance = 50;
-            }
-          } else {
-            chance = 200;
-            if (dist > 6) {
-              chance = 50;
-            }
-          }
+        if (
+          (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
+          (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
+          (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
+          (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
+          dist > 6
+        ) {
+          chance = 50;
+        } else {
+          chance = 200;
         }
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits([
-        gwaioUnits.airFactory,
-        gwaioUnits.firefly,
-        gwaioUnits.bumblebee,
-        gwaioUnits.hummingbird,
-        gwaioUnits.icarus,
-        gwaioUnits.pelican,
-      ]);
+      inventory.addUnits(gwoGroup.airBasic);
     },
     dull: function () {
       //empty

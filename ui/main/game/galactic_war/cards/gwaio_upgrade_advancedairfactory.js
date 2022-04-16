@@ -1,7 +1,8 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/functions.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwaioFunctions, gwaioUnits) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,26 +17,16 @@ define([
         found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
-    getContext: gwaioFunctions.getContext,
-    deal: function () {
+    getContext: gwoCard.getContext,
+    deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwaioFunctions.hasUnit(gwaioUnits.airFactoryAdvanced)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced)) {
         chance = 60;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = [
-        gwaioUnits.airFabberAdvanced,
-        gwaioUnits.hornet,
-        gwaioUnits.phoenix,
-        gwaioUnits.kestrel,
-        gwaioUnits.wyrm,
-        gwaioUnits.angel,
-        gwaioUnits.horsefly,
-      ];
-      var mods = units.map(function (unit) {
+      var mods = _.map(gwoGroup.airAdvancedMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",
@@ -44,7 +35,7 @@ define([
         };
       });
       mods.push({
-        file: gwaioUnits.airFactoryAdvanced,
+        file: gwoUnit.airFactoryAdvanced,
         path: "max_health",
         op: "multiply",
         value: 0.5,
