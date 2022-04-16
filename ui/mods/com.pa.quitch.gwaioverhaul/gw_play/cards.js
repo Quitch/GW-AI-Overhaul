@@ -474,11 +474,13 @@ if (!gwoCardsLoaded) {
 
             var setCardName = function (system, card) {
               var deferred = $.Deferred();
-              requireGW(["cards/" + card[0].id], function (data) {
-                var cardName = loc(data.summarize());
-                system.star.ai().cardName = cardName;
-                deferred.resolve();
-              });
+              if (!_.isEmpty(card)) {
+                requireGW(["cards/" + card[0].id], function (data) {
+                  var cardName = loc(data.summarize());
+                  system.star.ai().cardName = cardName;
+                  deferred.resolve();
+                });
+              }
               return deferred.promise();
             };
 
