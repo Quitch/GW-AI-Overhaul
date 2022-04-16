@@ -153,7 +153,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 - More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
 - Selection and combat grouping mods e.g. Air Scout Select, can cause the AI to use these units incorrectly.
-- Modifiers are not applied to weapons and ammo not in use in the base game
+- Modifiers are not applied to weapons and ammo not in use in the base game e.g. Skitter ammo
 
 ## Recommended mods
 
