@@ -8,8 +8,7 @@
     "browser": true,
     "jquery": true,
     "amd": true,
-    // PA uses Chrome 40 which supports a subset of ES6
-    "es6": true
+    "es6": true // PA uses Chrome 40 which supports a subset of ES6
   },
   "extends": ["eslint:recommended", "plugin:lodash/v3", "prettier"],
   "globals": {
