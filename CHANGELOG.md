@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Sub Commander Tactics Tech further improves non-Queller Sub Commander eco wastage handling
+
 ## v5.28.0 - 2022-04-16
 
 ### Added

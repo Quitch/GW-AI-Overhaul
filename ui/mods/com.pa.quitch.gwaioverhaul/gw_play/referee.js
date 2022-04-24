@@ -909,6 +909,7 @@ if (!gwoRefereeChangesLoaded) {
                   subcommander.personality.personality_tags,
                   "SlowerExpansion"
                 );
+                subcommander.personality.personality_tags.push("PreventsWaste");
               }
 
               // Sub Commander Fabber Tech
