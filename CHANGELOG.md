@@ -6,6 +6,10 @@
 
 - Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
 
+### Fixed
+
+- Jig still being counted as a storage unit for the purpose of tooltips
+
 ## v5.28.0 - 2022-04-16
 
 ### Added
