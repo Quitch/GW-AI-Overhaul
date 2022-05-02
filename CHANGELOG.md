@@ -12,6 +12,7 @@
 - Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
 - Platinum gains slightly less eco as you get deeper into the galaxy
 - Queller updated to version 5.19.0
+- Queller Sub Commanders can operate Unit Cannons correctly even if they don't have T2 units
 
 ### Fixed
 
