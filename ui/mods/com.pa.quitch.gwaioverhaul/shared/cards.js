@@ -34,7 +34,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
         .extend({ local: "gwaio_victory_" + loadoutId });
       switch (highestDifficultyDefeated()) {
         case -1: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/8_custom.png";
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png";
         }
         case 0: {
           return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
