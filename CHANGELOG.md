@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Beginner difficulty below Casual
+
 ### Changed
 
 - Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
