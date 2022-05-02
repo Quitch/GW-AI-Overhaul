@@ -12,7 +12,7 @@
 - Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
 - Platinum gains slightly less eco as you get deeper into the galaxy
 - Queller updated to version 5.20-beta
-- Queller Sub Commanders use the Q-Silver brain
+- Queller Sub Commanders use the Q-Silver brain instead of Q-Gold
 - Sub Commander Tactics Tech upgrades Queller Sub Commanders from Q-Silver to Q-Gold
 
 ### Fixed
