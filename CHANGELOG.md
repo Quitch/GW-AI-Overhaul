@@ -9,6 +9,7 @@
 ### Changed
 
 - Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
+- Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
 
 ### Fixed
 
