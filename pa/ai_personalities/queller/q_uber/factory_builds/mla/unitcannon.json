@@ -39,7 +39,7 @@
       "to_build": "TeslaBot",
       "instance_count": -1,
       "max_num_assisters": 10,
-      "priority": 75,
+      "priority": 50,
       "builders": ["UnitCannon"],
       "build_conditions": [
         [
