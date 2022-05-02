@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v5.29.0 - 2022-05-02
+
+### Added
+
+- Beginner difficulty below Casual
+
+### Changed
+
+- Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
+- Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
+- Platinum gains slightly less eco as you get deeper into the galaxy
+- Queller updated to version 5.20-beta
+- Queller Sub Commanders use the Q-Silver brain instead of Q-Gold
+- Sub Commander Tactics Tech upgrades Queller Sub Commanders from Q-Silver to Q-Gold
+
+### Fixed
+
+- Jig still being counted as a storage unit for the purpose of tooltips
+- Queller AI being selectable if you weren't running TITANS
+
 ## v5.28.0 - 2022-04-16
 
 ### Added

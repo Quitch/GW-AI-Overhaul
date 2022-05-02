@@ -119,6 +119,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": true
           },
@@ -154,6 +159,11 @@
       "builders": ["AdvancedBotFactory"],
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
           {
             "test_type": "BaseThreatened",
             "boolean": false
@@ -250,6 +260,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "AloneOnPlanet",
             "boolean": false
           },
@@ -275,6 +290,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": false
@@ -303,6 +323,11 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "BaseThreatRatio",
             "string0": "Air",
             "string1": "AntiAir",
@@ -311,6 +336,11 @@
           }
         ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
           {
             "test_type": "AloneOnPlanet",
             "boolean": true

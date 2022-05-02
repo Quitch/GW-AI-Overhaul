@@ -96,9 +96,16 @@ if (!gwoRefereeChangesLoaded) {
                 return quellerPath;
               } else if (type === "enemy") {
                 return quellerPath + "q_uber/";
-              } else if (type === "subcommander") {
+              } else if (
+                type === "subcommander" &&
+                _.some(inventory.cards(), {
+                  id: "gwaio_upgrade_subcommander_tactics",
+                })
+              ) {
                 return quellerPath + "q_gold/";
               }
+              // type === "subcommander"
+              return quellerPath + "q_silver/";
             } else if (
               type === "subcommander" &&
               !_.isEmpty(inventory.aiMods()) &&
@@ -441,7 +448,12 @@ if (!gwoRefereeChangesLoaded) {
                     var playerFilesClassic = {};
                     var playerFilesX1 = {};
                     // the order of unit_map assignments must match findAIPath()
-                    if (aiBrain === "Queller") {
+                    if (
+                      aiBrain === "Queller" &&
+                      _.some(inventory.cards(), {
+                        id: "gwaio_upgrade_subcommander_tactics",
+                      })
+                    ) {
                       playerFilesClassic = _.assign(
                         {
                           "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
@@ -453,6 +465,23 @@ if (!gwoRefereeChangesLoaded) {
                         ? _.assign(
                             {
                               "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                                playerX1AIUnitMap,
+                            },
+                            playerSpecFiles
+                          )
+                        : {};
+                    } else if (aiBrain === "Queller") {
+                      playerFilesClassic = _.assign(
+                        {
+                          "/pa/ai_personalities/queller/q_silver/unit_maps/ai_unit_map.json.player":
+                            playerAIUnitMap,
+                        },
+                        playerSpecFiles
+                      );
+                      playerFilesX1 = titans
+                        ? _.assign(
+                            {
+                              "/pa/ai_personalities/queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
                                 playerX1AIUnitMap,
                             },
                             playerSpecFiles
@@ -909,6 +938,7 @@ if (!gwoRefereeChangesLoaded) {
                   subcommander.personality.personality_tags,
                   "SlowerExpansion"
                 );
+                subcommander.personality.personality_tags.push("PreventsWaste");
               }
 
               // Sub Commander Fabber Tech

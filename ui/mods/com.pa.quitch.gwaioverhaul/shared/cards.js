@@ -32,31 +32,38 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
       var highestDifficultyDefeated = ko
         .observable()
         .extend({ local: "gwaio_victory_" + loadoutId });
-      if (highestDifficultyDefeated() === 0) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
+      switch (highestDifficultyDefeated()) {
+        case -1: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png";
+        }
+        case 0: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
+        }
+        case 1: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png";
+        }
+        case 2: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png";
+        }
+        case 3: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png";
+        }
+        case 4: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png";
+        }
+        case 5: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png";
+        }
+        case 6: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png";
+        }
+        case 7: {
+          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
+        }
+        default: {
+          return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
+        }
       }
-      if (highestDifficultyDefeated() === 1) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png";
-      }
-      if (highestDifficultyDefeated() === 2) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png";
-      }
-      if (highestDifficultyDefeated() === 3) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png";
-      }
-      if (highestDifficultyDefeated() === 4) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png";
-      }
-      if (highestDifficultyDefeated() === 5) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png";
-      }
-      if (highestDifficultyDefeated() === 6) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png";
-      }
-      if (highestDifficultyDefeated() === 7) {
-        return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
-      }
-      return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
     },
     setupCluster: function (inventory) {
       if (inventory.getTag("global", "playerFaction") === 4) {

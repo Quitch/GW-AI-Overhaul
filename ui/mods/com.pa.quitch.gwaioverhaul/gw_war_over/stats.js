@@ -11,22 +11,24 @@ if (!gwoWarOverLoadoutStatsLoaded) {
       var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
       if (gwoSettings && game.gameState() === "won") {
-        var difficultyLevelAsInt = _.findIndex(
-          [
-            "!LOC:Casual",
-            "!LOC:Iron",
-            "!LOC:Bronze",
-            "!LOC:Silver",
-            "!LOC:Gold",
-            "!LOC:Platinum",
-            "!LOC:Diamond",
-            "!LOC:Uber",
-          ],
-          function (difficulty) {
-            var warDifficulty = gwoSettings.difficulty;
-            return difficulty === warDifficulty;
-          }
-        );
+        var difficultyLevelAsInt =
+          _.findIndex(
+            [
+              "!LOC:Beginner",
+              "!LOC:Casual",
+              "!LOC:Iron",
+              "!LOC:Bronze",
+              "!LOC:Silver",
+              "!LOC:Gold",
+              "!LOC:Platinum",
+              "!LOC:Diamond",
+              "!LOC:Uber",
+            ],
+            function (difficulty) {
+              var warDifficulty = gwoSettings.difficulty;
+              return difficulty === warDifficulty;
+            }
+          ) - 1; // -1 because we added Beginner later
 
         var loadout = game.inventory().cards()[0].id;
         var highestDifficultyDefeatedWithLoadout = ko
@@ -34,7 +36,7 @@ if (!gwoWarOverLoadoutStatsLoaded) {
           .extend({ local: "gwaio_victory_" + loadout });
         if (
           difficultyLevelAsInt > highestDifficultyDefeatedWithLoadout() ||
-          !highestDifficultyDefeatedWithLoadout()
+          highestDifficultyDefeatedWithLoadout() === undefined
         ) {
           highestDifficultyDefeatedWithLoadout(difficultyLevelAsInt);
         }

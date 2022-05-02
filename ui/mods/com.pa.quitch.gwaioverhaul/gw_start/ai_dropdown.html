@@ -1,8 +1,9 @@
 <div class="form-group" id="difficulty-ai">
   <label id="game-ai-label" for="game-ai"><loc>AI:</loc></label>
+  <!-- ko if: api.content.usingTitans() -->
   <span
     class="info_tip"
-    data-bind="tooltip: '!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of personality and performance<BR>PENCHANT: increased personality'"
+    data-bind="tooltip: '!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of personality and performance<br>PENCHANT: increased personality'"
     >?</span
   >
   <select
@@ -14,4 +15,20 @@
     <option value="1">QUELLER</option>
     <option value="2">PENCHANT</option>
   </select>
+  <!-- /ko -->
+  <!-- ko if: !api.content.usingTitans() -->
+  <span
+    class="info_tip"
+    data-bind="tooltip: '!LOC:TITANS: base game AI<br>PENCHANT: increased personality'"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="game-ai"
+    data-bind="selectPicker: gwoDifficultySettings.ai"
+  >
+    <option value="0">TITANS</option>
+    <option value="2">PENCHANT</option>
+  </select>
+  <!-- /ko -->
 </div>

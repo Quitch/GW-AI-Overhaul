@@ -53,9 +53,11 @@ If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/
 
 Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png) **Casual**: for when you've completed the tutorial and are new to the game.
+![Beginner badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png) **Beginner**: for when you've completed the tutorial and are new to the game.
 
-![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png) **Iron**: for when you've some PA experience under your belt.
+![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png) **Casual**: for when you've some PA experience under your belt.
+
+![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png) **Iron**: for when you've overcome your turtle instincts.
 
 ![Bronze badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 

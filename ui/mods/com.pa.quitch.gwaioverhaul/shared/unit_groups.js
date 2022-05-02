@@ -296,11 +296,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.jig,
     gwoUnit.metalExtractorAdvanced,
   ];
-  var structuresEcoStorage = [
-    gwoUnit.energyStorage,
-    gwoUnit.metalStorage,
-    gwoUnit.jig,
-  ];
+  var structuresEcoStorage = [gwoUnit.energyStorage, gwoUnit.metalStorage];
   var structuresEco = structuresEcoBasic.concat(
     structuresEcoAdvanced,
     structuresEcoStorage
