@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.29.0 - 2022-05-02
 
 ### Added
 
