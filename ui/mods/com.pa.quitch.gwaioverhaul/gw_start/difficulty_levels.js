@@ -182,7 +182,7 @@ define({
       per_expansion_delay: 0,
       personality_tags: ["Default", "PreventsWaste", "queller"],
       econBase: 1,
-      econRatePerDist: 0.175,
+      econRatePerDist: 0.15,
       max_basic_fabbers: 11,
       max_advanced_fabbers: 11,
       ffa_chance: 25,
