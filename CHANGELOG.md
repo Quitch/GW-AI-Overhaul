@@ -18,6 +18,7 @@
 ### Fixed
 
 - Jig still being counted as a storage unit for the purpose of tooltips
+- Queller AI being selectable if you weren't running TITANS
 
 ## v5.28.0 - 2022-04-16
 
