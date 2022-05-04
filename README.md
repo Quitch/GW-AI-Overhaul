@@ -78,7 +78,6 @@ Sub Commanders are not impacted by difficulty. At any difficulty level you can c
 - **Faction Scaling**: the number of factions put into the galaxy depends on its size.
 - **System Scaling**: system size depends on how far into the galaxy you are.
 - **Easier Start**: choose to have four neutral systems to plunder at the start instead of the usual two.
-- **Tougher Commanders**: the AI has Commander Armor Tech.
 
 ## Planetary Intelligence
 
