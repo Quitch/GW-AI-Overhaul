@@ -167,7 +167,6 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 - Enemy ramp for galactic war
 - Galactic War Unique Loadouts
 - Section of Foreign Intelligence for galactic war
-- Unique Commander Loadouts
 
 ## Thanks to
 
