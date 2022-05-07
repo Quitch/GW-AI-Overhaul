@@ -27,6 +27,8 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+          inventory.addUnits(gwoUnit.colonel);
+
           inventory.addMods([
             {
               file: gwoUnit.commander,
