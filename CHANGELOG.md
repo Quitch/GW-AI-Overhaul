@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.29.1 - 2022-05-07
+
+### Fixed
+
+- CEO Commander not being able to build Colonels
+
 ## v5.29.0 - 2022-05-02
 
 ### Added

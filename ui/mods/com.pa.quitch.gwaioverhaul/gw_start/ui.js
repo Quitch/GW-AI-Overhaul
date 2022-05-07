@@ -62,7 +62,7 @@ if (!gwoUILoaded) {
           2: "!LOC:Advanced",
         }),
         microTypeChosen: ko.observable(0),
-        getmicroTypeDescription: function (value) {
+        getMicroTypeDescription: function (value) {
           return loc(model.gwoDifficultySettings.microTypeDescription()[value]);
         },
         mandatoryMinions: ko.observable(0).extend({
@@ -101,7 +101,7 @@ if (!gwoUILoaded) {
           queller: "!LOC:Queller",
         }),
         personalityTagsChosen: ko.observableArray([]),
-        getpersonalityTagsDescription: function (value) {
+        getPersonalityTagsDescription: function (value) {
           return loc(
             model.gwoDifficultySettings.personalityTagsDescription()[value]
           );
