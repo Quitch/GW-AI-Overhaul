@@ -17,7 +17,7 @@ if (!gwoIntelligenceLoaded) {
             $.get(url, function (html) {
               var $fi = $(html);
               $("#system-detail").append($fi);
-              locTree($(".section_of_foreign_intelligence"));
+              locTree($(".section-of-foreign-intelligence"));
               ko.applyBindings(model, $fi[0]);
             });
 

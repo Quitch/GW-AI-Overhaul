@@ -1,18 +1,18 @@
 /* Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul */
 
-.section_of_foreign_intelligence {
+.section-of-foreign-intelligence {
   color: #88dbff;
 }
 
-.section_of_foreign_intelligence h3 {
+.section-of-foreign-intelligence h3 {
   color: white;
 }
 
-.section_of_foreign_intelligence .commander-name {
+.section-of-foreign-intelligence .commander-name {
   margin-left: 18px;
 }
 
-.section_of_foreign_intelligence .data {
+.section-of-foreign-intelligence .data {
   font-weight: bold;
   color: white;
   display: table-cell;
@@ -20,12 +20,12 @@
   vertical-align: bottom;
 }
 
-.section_of_foreign_intelligence .inline {
+.section-of-foreign-intelligence .inline {
   font-weight: bold;
   color: white;
 }
 
-.div_player_icon {
+.div-player-icon {
   height: 16px;
   width: 16px;
   position: absolute;
@@ -40,26 +40,26 @@
   mask: url("#player-mask");
 }
 
-.div_player_icon .fill,
-.div_player_icon .outline {
+.div-player-icon .fill,
+.div-player-icon .outline {
   position: absolute;
 }
 
-.section_of_foreign_intelligence .table {
+.section-of-foreign-intelligence .table {
   display: table;
   table-layout: fixed;
   width: 90%;
   margin-bottom: 0;
 }
 
-.section_of_foreign_intelligence .tablebody {
+.section-of-foreign-intelligence .tablebody {
   display: table-row-group;
 }
 
-.section_of_foreign_intelligence .tr {
+.section-of-foreign-intelligence .tr {
   display: table-row;
 }
 
-.section_of_foreign_intelligence .td {
+.section-of-foreign-intelligence .td {
   display: table-cell;
 }
