@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Beginner loadout victory icon
+
 ## v5.29.1 - 2022-05-07
 
 ### Fixed
