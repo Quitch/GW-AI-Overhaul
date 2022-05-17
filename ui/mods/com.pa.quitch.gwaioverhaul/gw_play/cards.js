@@ -28,7 +28,7 @@ if (!gwoCardsLoaded) {
         model.gwoOfferRerolls = ko.observable(true);
         model.gwoRerollsUsed = ko
           .observable(0)
-          .extend({ session: "gwaio_rerolls_used" }); // prevent UI refresh exploits
+          .extend({ session: "gwo_rerolls_used" }); // prevent UI refresh exploits
         var star = {};
         // Clean start for new games in a single session
         if (game.turnState() === "begin") {
