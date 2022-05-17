@@ -26,9 +26,9 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
@@ -37,9 +37,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js"
     ],
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
