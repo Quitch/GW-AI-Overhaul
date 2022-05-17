@@ -37,9 +37,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ],
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
