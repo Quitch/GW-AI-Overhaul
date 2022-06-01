@@ -6,6 +6,11 @@
 
 - Beginner loadout victory icon
 
+### Fixed
+
+- Paratrooper loadout missing units from Unit Cannon (with thanks to Zarc for the report)
+- AI missing some units that Paratrooper makes available in the Unit Cannon
+
 ## v5.29.1 - 2022-05-07
 
 ### Fixed
