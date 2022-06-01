@@ -13,7 +13,7 @@ if (!gwoIntelligenceLoaded) {
           ],
           function (gwoColour) {
             var url =
-              "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
             $.get(url, function (html) {
               var $fi = $(html);
               $("#system-detail").append($fi);
