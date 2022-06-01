@@ -110,17 +110,19 @@ define([
               }
             );
           });
-          var vehicles = [
+          var mobileLand = [
+            "SupportCommander",
+            "UberSupportCommander",
+            "AdvancedArtilleryBot",
+            "TMLBot",
             "BasicArmorTank",
             "HoverTank",
             "LandScout",
             "AdvancedArmorTank",
             "AdvancedArtilleryVehicle",
-            "FlakTank",
             "NukeTank",
-            "AdvancedArtilleryBot",
           ];
-          _.forEach(vehicles, function (unit) {
+          _.forEach(mobileLand, function (unit) {
             aiMods.push({
               type: "factory",
               op: "append",
