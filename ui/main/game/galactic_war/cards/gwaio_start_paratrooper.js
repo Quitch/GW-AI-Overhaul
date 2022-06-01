@@ -111,8 +111,8 @@ define([
             );
           });
           var mobileLand = [
-            "SupportCommander",
-            "UberSupportCommander",
+            "SupportCommander", // TITANS AI
+            "UberSupportCommander", // Queller AI
             "AdvancedArtilleryBot",
             "TMLBot",
             "BasicArmorTank",
