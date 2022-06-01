@@ -30,15 +30,7 @@ if (!gwoWarInfoPanelLoaded) {
             if (model.gwoSettings) {
               model.gwoDifficulty = loc(model.gwoSettings.difficulty);
               model.gwoSize = loc(model.gwoSettings.galaxySize);
-
-              var aiName = function (aiSetting) {
-                if (aiSetting) {
-                  return model.gwoSettings.ai;
-                }
-                return "Titans";
-              };
-
-              model.gwoAI = aiName(model.gwoSettings.ai);
+              model.gwoAI = model.gwoSettings.ai || "Titans";
 
               var options = function (optionsList, setting, text) {
                 if (setting) {

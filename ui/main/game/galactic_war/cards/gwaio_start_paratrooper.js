@@ -33,51 +33,15 @@ define([
           var units = unitCannons.concat(gwoGroup.unitCannonMobile);
           inventory.addUnits(units);
 
-          // Avoid adding duplicate UNITTYPEs
-          var exclusion = function (unit) {
-            return !_.includes(gwoGroup.unitCannonMobile, unit);
-          };
-
-          var unitCannonUnitsAdditional = [];
-          if (
-            gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced) ||
-            inventory.hasCard("gwaio_upgrade_botfactory")
-          ) {
-            var remainingAdvancedBots = _.filter(
-              gwoGroup.botsAdvancedMobile,
-              exclusion
-            );
-            unitCannonUnitsAdditional.push.apply(
-              unitCannonUnitsAdditional,
-              remainingAdvancedBots
-            );
-          }
-          if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)) {
-            var remainingBasicVehicles = _.filter(
-              gwoGroup.vehiclesBasicMobile,
-              exclusion
-            );
-            unitCannonUnitsAdditional.push.apply(
-              unitCannonUnitsAdditional,
-              remainingBasicVehicles
-            );
-          }
-          if (
-            gwoCard.hasUnit(
-              inventory.units(),
-              gwoUnit.vehicleFactoryAdvanced
-            ) ||
-            inventory.hasCard("gwaio_upgrade_vehiclefactory")
-          ) {
-            var remainingAdvancedVehicles = _.filter(
-              gwoGroup.vehiclesAdvancedMobile,
-              exclusion
-            );
-            unitCannonUnitsAdditional.push.apply(
-              unitCannonUnitsAdditional,
-              remainingAdvancedVehicles
-            );
-          }
+          var mobileLandUnits = gwoGroup.botsMobile.concat(
+            gwoGroup.vehiclesMobile
+          );
+          var landUnitsNotInUnitCannon = _.filter(
+            mobileLandUnits,
+            function (unit) {
+              return !_.includes(gwoGroup.unitCannonMobile, unit);
+            }
+          );
           var mods = _.flatten(
             _.map(unitCannons, function (unit) {
               return [
@@ -96,7 +60,7 @@ define([
               ];
             })
           );
-          _.forEach(unitCannonUnitsAdditional, function (unit) {
+          _.forEach(landUnitsNotInUnitCannon, function (unit) {
             mods.push({
               file: unit,
               path: "unit_types",
@@ -146,17 +110,19 @@ define([
               }
             );
           });
-          var vehicles = [
+          var mobileLand = [
+            "SupportCommander", // TITANS AI
+            "UberSupportCommander", // Queller AI
+            "AdvancedArtilleryBot",
+            "TMLBot",
             "BasicArmorTank",
             "HoverTank",
             "LandScout",
             "AdvancedArmorTank",
             "AdvancedArtilleryVehicle",
-            "FlakTank",
             "NukeTank",
-            "AdvancedArtilleryBot",
           ];
-          _.forEach(vehicles, function (unit) {
+          _.forEach(mobileLand, function (unit) {
             aiMods.push({
               type: "factory",
               op: "append",

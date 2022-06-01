@@ -5,8 +5,8 @@
   "description": "Make Galactic War more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and smarter AI. Start a new war to enjoy all the new features and check out the new war tooltips for more information and difficulty recommendations.",
   "author": "Quitch",
   "version": "5.29.1",
-  "build": "115517",
-  "date": "2022-05-07",
+  "build": "115673",
+  "date": "2022-06-01",
   "signature": " ",
   "forum": "https://steamcommunity.com/app/386070/discussions/0/133259956005401439/",
   "category": [
@@ -26,9 +26,9 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
@@ -38,8 +38,8 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
-      "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
-      "coui://ui/mods/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.js"
     ],
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
