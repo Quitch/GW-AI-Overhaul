@@ -9,6 +9,7 @@
 ### Fixed
 
 - Base game error where Intelligence Fabrication Tech didn't reduce its chance of being dealt in larger galaxies
+- Intelligence Fabrication Tech tooltip displaying the wrong units (thanks to Lula Mae for the report)
 
 ## v5.30.0 - 2022-06-01
 
