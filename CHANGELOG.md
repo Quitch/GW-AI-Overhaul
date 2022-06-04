@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Intelligence Fabrication Tech now applies to Teleporters
+
+### Fixed
+
+- Base game error where Intelligence Fabrication Tech didn't reduce its chance of being dealt in larger galaxies
+
 ## v5.30.0 - 2022-06-01
 
 ### Changed
