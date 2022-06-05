@@ -6,6 +6,7 @@
 
 - Intelligence Fabrication Tech now applies to Teleporters
 - Queller no longer modifies its teching time in accordance with the econ rate modifier
+- Meta penchant reflects changes to meta
 
 ### Fixed
 
