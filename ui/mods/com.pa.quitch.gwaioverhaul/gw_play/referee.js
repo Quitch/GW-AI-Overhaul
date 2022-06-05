@@ -991,9 +991,16 @@ if (!gwoRefereeChangesLoaded) {
               aiTag.push(aiNewTag);
             });
 
+            // Avoid AI teching too early/late due to eco modifiers
+            var adjustAdvEcoMod = function (aiRoot, brain) {
+              if (brain !== "Queller") {
+                aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
+                aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
+              }
+            };
+
             // Setup AI System Owner
-            ai.personality.adv_eco_mod *= ai.econ_rate;
-            ai.personality.adv_eco_mod_alone *= ai.econ_rate;
+            adjustAdvEcoMod(ai, aiBrain);
 
             var enemyAIPath = findAIPath("enemy");
 
@@ -1020,9 +1027,7 @@ if (!gwoRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion, index) {
-              // Avoid AI teching too early/late due to eco modifiers
-              minion.personality.adv_eco_mod *= minion.econ_rate;
-              minion.personality.adv_eco_mod_alone *= minion.econ_rate;
+              adjustAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = enemyAIPath;
@@ -1051,9 +1056,7 @@ if (!gwoRefereeChangesLoaded) {
 
             // Setup Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              // Avoid AI teching too early/late due to eco modifiers
-              foe.personality.adv_eco_mod *= foe.econ_rate;
-              foe.personality.adv_eco_mod_alone *= foe.econ_rate;
+              adjustAdvEcoMod(foe, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               foe.personality.ai_path = enemyAIPath;

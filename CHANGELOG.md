@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v5.31.0 - 2022-06-05
+
+### Changed
+
+- Intelligence Fabrication Tech now applies to Teleporters
+- Queller no longer modifies its teching time in accordance with the econ rate modifier
+- Meta penchant reflects changes to meta
+- Updated faction tooltip to reflect Cluster being unable to build Angels and Colonels
+- Queller AI updated to v5.20.0
+
+### Fixed
+
+- Base game error where Intelligence Fabrication Tech didn't reduce its chance of being dealt in larger galaxies
+- Intelligence Fabrication Tech tooltip displaying the wrong units (thanks to Lula Mae for the report)
+
 ## v5.30.0 - 2022-06-01
 
 ### Changed
