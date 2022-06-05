@@ -8,6 +8,7 @@
 - Queller no longer modifies its teching time in accordance with the econ rate modifier
 - Meta penchant reflects changes to meta
 - Updated faction tooltip to reflect Cluster being unable to build Angels and Colonels
+- Queller AI updated to v5.20.0
 
 ### Fixed
 
