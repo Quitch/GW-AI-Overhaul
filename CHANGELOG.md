@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Queller AI updated to v5.21.0
+
 ## v5.31.0 - 2022-06-05
 
 ### Changed
