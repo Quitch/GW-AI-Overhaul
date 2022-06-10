@@ -261,9 +261,9 @@ if (!gwoRefereeChangesLoaded) {
                       // and I couldn't track down why
                       var cleanAttribute = attribute.slice(
                         0,
-                        attribute.lastIndexOf(".json")
+                        attribute.lastIndexOf(".json") + 5
                       );
-                      return cleanAttribute + ".json" + specTag;
+                      return cleanAttribute + specTag;
                     },
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute)) {
