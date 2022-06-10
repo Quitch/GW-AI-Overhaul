@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Spinner Upgrade Tech changes targeting instead of rate of fire
+
 ### Fixed
 
 - Skitter weapon not receiving correct stats or buffs
