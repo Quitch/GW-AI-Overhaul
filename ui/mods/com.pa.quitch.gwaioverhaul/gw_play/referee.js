@@ -256,7 +256,14 @@ if (!gwoRefereeChangesLoaded) {
                       specs[value + specTag] = loaded || attribute;
                     },
                     tag: function (attribute) {
-                      return attribute + specTag;
+                      // hack fix for mirror mode due to the fact that
+                      // `attribute` was retaining the previous `specTag`s
+                      // and I couldn't track down why
+                      var cleanAttribute = attribute.slice(
+                        0,
+                        attribute.lastIndexOf(".json")
+                      );
+                      return cleanAttribute + ".json" + specTag;
                     },
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute)) {
