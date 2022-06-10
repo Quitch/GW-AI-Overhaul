@@ -32,6 +32,12 @@ define([
           op: "push",
           value: ["WL_LandHorizontal", "WL_WaterSurface"],
         },
+        {
+          file: gwoUnit.spinnerAmmo,
+          path: "armor_damage_map",
+          op: "replace",
+          value: {},
+        },
       ]);
     },
     dull: function () {
