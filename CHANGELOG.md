@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Skitter weapon not receiving correct stats or buffs
+
 ## v5.32.0 - 2022-06-09
 
 ### Changed
