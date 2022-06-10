@@ -256,7 +256,7 @@ if (!gwoRefereeChangesLoaded) {
                       specs[value + specTag] = loaded || attribute;
                     },
                     tag: function (attribute) {
-                      // hack fix for mirror mode due to the fact that
+                      // hack fix for mirrorMode due to the fact that
                       // `attribute` was retaining the previous `specTag`s
                       // and I couldn't track down why
                       var cleanAttribute = attribute.slice(
