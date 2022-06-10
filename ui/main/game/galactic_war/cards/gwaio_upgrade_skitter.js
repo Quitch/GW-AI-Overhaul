@@ -40,6 +40,11 @@ define([
         },
         {
           file: gwoUnit.skitter,
+          path: "tools.0.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.skitter,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",

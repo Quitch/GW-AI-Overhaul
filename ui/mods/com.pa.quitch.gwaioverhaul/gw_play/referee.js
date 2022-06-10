@@ -256,7 +256,14 @@ if (!gwoRefereeChangesLoaded) {
                       specs[value + specTag] = loaded || attribute;
                     },
                     tag: function (attribute) {
-                      return attribute + specTag;
+                      // hack fix for mirrorMode due to the fact that
+                      // `attribute` was retaining the previous `specTag`s
+                      // and I couldn't track down why
+                      var cleanAttribute = attribute.slice(
+                        0,
+                        attribute.lastIndexOf(".json") + 5
+                      );
+                      return cleanAttribute + specTag;
                     },
                     pull: function (attribute, value) {
                       if (!_.isArray(attribute)) {
@@ -373,9 +380,11 @@ if (!gwoRefereeChangesLoaded) {
                 // files not assigned by default that we wish to mod
                 model.gwoSpecs.push(
                   gwoUnit.fireflyAmmo,
+                  gwoUnit.fireflyWeapon,
                   gwoUnit.orcaTorpedo,
                   gwoUnit.orcaTorpedoAmmo,
-                  gwoUnit.skitterAmmo
+                  gwoUnit.skitterAmmo,
+                  gwoUnit.skitterWeapon
                 );
 
                 var inventory = self.game().inventory();
