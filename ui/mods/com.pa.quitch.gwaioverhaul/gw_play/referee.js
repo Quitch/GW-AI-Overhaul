@@ -373,9 +373,11 @@ if (!gwoRefereeChangesLoaded) {
                 // files not assigned by default that we wish to mod
                 model.gwoSpecs.push(
                   gwoUnit.fireflyAmmo,
+                  gwoUnit.fireflyWeapon,
                   gwoUnit.orcaTorpedo,
                   gwoUnit.orcaTorpedoAmmo,
-                  gwoUnit.skitterAmmo
+                  gwoUnit.skitterAmmo,
+                  gwoUnit.skitterWeapon
                 );
 
                 var inventory = self.game().inventory();
