@@ -8,6 +8,10 @@
 - Queller AI uses some of its FFA behaviour for FFAs
 - Queller AI updated to v5.22.0
 
+### Fixed
+
+- Don't deal Sub Commander Fabber Tech if the AI is Queller
+
 ## v5.33.0 - 2022-06-10
 
 ### Changed
