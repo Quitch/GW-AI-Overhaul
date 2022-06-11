@@ -5,6 +5,7 @@
 ### Changed
 
 - Enemy Queller AIs use different behaviours for each faction
+- Queller AI uses some of its FFA behaviour for FFAs
 
 ## v5.33.0 - 2022-06-10
 

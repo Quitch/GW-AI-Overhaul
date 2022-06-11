@@ -656,6 +656,21 @@ if (!gwoSetupLoaded) {
                       ai.foes.push(foeCommander);
                     }
                   });
+
+                  // Setup Queller for FFA
+                  if (difficulty.ai() === 1 && ai.foes) {
+                    var ffaTag = "ffa";
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(ffaTag);
+                    _.forEach(ai.minions, function (minion) {
+                      minion.personality.personality_tags =
+                        minion.personality.personality_tags.concat(ffaTag);
+                    });
+                    _.forEach(ai.foes, function (foe) {
+                      foe.personality.personality_tags =
+                        foe.personality.personality_tags.concat(ffaTag);
+                    });
+                  }
                 });
               });
 
