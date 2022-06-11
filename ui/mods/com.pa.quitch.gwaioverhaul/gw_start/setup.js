@@ -355,7 +355,6 @@ if (!gwoSetupLoaded) {
                 var synchronousTags = ["bot", "lateorbital"];
                 // revenants are differentiated through not using "lateorbital"
                 var clusterTags = ["land", "lateorbital"];
-                ai.personality.personality_tags.push("some_value");
                 switch (aiFaction) {
                   case 0:
                     ai.personality.personality_tags =
