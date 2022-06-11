@@ -179,11 +179,7 @@ define([
       },
       {
         id: "gwc_storage_and_buff",
-        units: gwoGroup.structuresEco.concat(
-          // don't use storage group so as to avoid a duplicate Jig
-          gwoUnit.energyStorage,
-          gwoUnit.metalStorage
-        ),
+        units: gwoGroup.structuresEco.concat(gwoGroup.structuresEcoStorage),
       },
       { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm] },
       { id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.commander] },

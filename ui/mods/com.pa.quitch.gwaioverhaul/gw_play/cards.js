@@ -533,6 +533,8 @@ if (!gwoCardsLoaded) {
               }
             };
 
+            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+
             // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
             if (
               inventory.cards().length === 1 &&
@@ -545,7 +547,7 @@ if (!gwoCardsLoaded) {
                   _.sample(GWFactions[playerFaction].minions)
                 );
                 galaxy = game.galaxy();
-                var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                var ai = gwaioSettings.ai;
                 if (ai === "Penchant") {
                   var penchantValues = gwoAI.penchants();
                   subcommander.character =
@@ -564,14 +566,10 @@ if (!gwoCardsLoaded) {
               });
               inventory.applyCards();
               // This will also trigger a save
-              dealFirstCardSelectableAI(
-                galaxy.stars()[galaxy.origin()].system().gwaio
-              );
+              dealFirstCardSelectableAI(gwaioSettings);
             }
 
-            dealFirstCardSelectableAI(
-              galaxy.stars()[galaxy.origin()].system().gwaio
-            );
+            dealFirstCardSelectableAI(gwaioSettings);
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -650,7 +648,7 @@ if (!gwoCardsLoaded) {
                     var subcommander = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                    var ai = gwaioSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       subcommander.character =
@@ -692,7 +690,7 @@ if (!gwoCardsLoaded) {
                     var minion = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = galaxy.stars()[galaxy.origin()].system().gwaio.ai;
+                    var ai = gwaioSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       minion.character =
