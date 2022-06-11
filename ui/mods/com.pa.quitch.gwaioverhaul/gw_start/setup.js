@@ -269,8 +269,8 @@ if (!gwoSetupLoaded) {
                 canSpread: _.constant(true),
                 spread: function (star, ai) {
                   var team = teams[ai.team];
-                  // GWTeams.makeWorker() replaced because Penchant needs
-                  // _.cloneDeep() to preserve personality_tags
+                  // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
+                  // to preserve personality_tags
                   var makeWorker = function () {
                     if (team.workers) {
                       _.assign(ai, _.cloneDeep(_.sample(team.workers)));
@@ -344,6 +344,39 @@ if (!gwoSetupLoaded) {
                 return eco;
               };
 
+              var aiFaction = 0;
+
+              var setupQuellerAI = function (ai) {
+                // Minions don't have a faction number so use the previous one
+                // which should be from the primary AI and accurate
+                aiFaction = ai.faction ? ai.faction : aiFaction;
+                var legonisMachinaTags = ["tank", "lateorbital"];
+                var foundationTags = ["air", "lateorbital"];
+                var synchronousTags = ["bot", "lateorbital"];
+                // revenants are differentiated through not using "lateorbital"
+                var clusterTags = ["land", "lateorbital"];
+                ai.personality.personality_tags.push("some_value");
+                switch (aiFaction) {
+                  case 0:
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(
+                        legonisMachinaTags
+                      );
+                    break;
+                  case 1:
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(foundationTags);
+                    break;
+                  case 2:
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(synchronousTags);
+                    break;
+                  case 4:
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(clusterTags);
+                }
+              };
+
               var setupPenchantAI = function (ai) {
                 var penchantValues = gwoAI.penchants();
                 ai.personality.personality_tags =
@@ -380,8 +413,12 @@ if (!gwoSetupLoaded) {
                     difficulty.startingLocationEvaluationRadius();
                 }
 
-                if (difficulty.ai() === 2) {
-                  setupPenchantAI(ai);
+                switch (difficulty.ai()) {
+                  case 1:
+                    setupQuellerAI(ai);
+                    break;
+                  case 2:
+                    setupPenchantAI(ai);
                 }
               };
 

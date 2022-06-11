@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Enemy Queller AIs use different behaviours for each faction
+
 ## v5.33.0 - 2022-06-10
 
 ### Changed
