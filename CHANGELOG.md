@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Loadout badges for completing a war in hardcore mode
+
 ## v5.34.0 - 2022-06-11
 
 ### Changed

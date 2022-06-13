@@ -29,38 +29,82 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
     },
     loadoutIcon: function (loadoutId) {
       var highestDifficultyDefeated = ko
-        .observable()
+        .observableArray()
         .extend({ local: "gwaio_victory_" + loadoutId });
-      switch (highestDifficultyDefeated()) {
+      var icon = -1;
+      var hardcore = false;
+
+      if (_.isArray(highestDifficultyDefeated())) {
+        icon = highestDifficultyDefeated()[0];
+        hardcore = highestDifficultyDefeated()[1];
+      } else {
+        icon = highestDifficultyDefeated();
+      }
+
+      var append = ".png";
+      if (hardcore === true) {
+        append = "_hardcore.png";
+      }
+
+      switch (icon) {
         case -1: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner" +
+            append
+          );
         }
         case 0: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual" +
+            append
+          );
         }
         case 1: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron" +
+            append
+          );
         }
         case 2: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze" +
+            append
+          );
         }
         case 3: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver" +
+            append
+          );
         }
         case 4: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold" +
+            append
+          );
         }
         case 5: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum" +
+            append
+          );
         }
         case 6: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond" +
+            append
+          );
         }
         case 7: {
-          return "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png";
+          return (
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber" +
+            append
+          );
         }
         default: {
-          return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
+          return (
+            "coui://ui/main/game/galactic_war/shared/img/red-commander" + append
+          );
         }
       }
     },
