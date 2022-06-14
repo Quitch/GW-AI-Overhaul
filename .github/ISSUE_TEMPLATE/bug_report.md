@@ -10,7 +10,7 @@ assignees: Quitch
 
 [ ] I have verified this bug with all other mods disabled
 
-[ ] I did not create this war while using one of the documented incompatible mods
+[ ] I did not create this war while using one of the documented [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
 
 ## Describe the bug
 
