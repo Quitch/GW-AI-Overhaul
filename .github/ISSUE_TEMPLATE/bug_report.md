@@ -12,6 +12,8 @@ assignees: Quitch
 
 [ ] I did not create this war while using one of the documented [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
 
+[ ] I have confirmed this happens after [verifying the games files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
+
 ## Describe the bug
 
 A clear and concise description of what the bug is.
