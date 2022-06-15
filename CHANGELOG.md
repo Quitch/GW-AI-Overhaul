@@ -9,6 +9,7 @@
 ### Changed
 
 - Queller AI updated to v5.23.0
+- Updated Queller AI personality for Revenants
 
 ## v5.34.0 - 2022-06-11
 

@@ -353,7 +353,7 @@ if (!gwoSetupLoaded) {
                 var legonisMachinaTags = ["tank", "lateorbital"];
                 var foundationTags = ["air", "lateorbital"];
                 var synchronousTags = ["bot", "lateorbital"];
-                // revenants are differentiated through not using "lateorbital"
+                var revenantsTags = ["orbital"];
                 var clusterTags = ["land", "lateorbital"];
                 switch (aiFaction) {
                   case 0:
@@ -369,6 +369,10 @@ if (!gwoSetupLoaded) {
                   case 2:
                     ai.personality.personality_tags =
                       ai.personality.personality_tags.concat(synchronousTags);
+                    break;
+                  case 3:
+                    ai.personality.personality_tags =
+                      ai.personality.personality_tags.concat(revenantsTags);
                     break;
                   case 4:
                     ai.personality.personality_tags =
