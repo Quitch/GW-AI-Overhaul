@@ -350,11 +350,11 @@ if (!gwoSetupLoaded) {
                 // Minions don't have a faction number so use the previous one
                 // which should be from the primary AI and accurate
                 aiFaction = ai.faction ? ai.faction : aiFaction;
-                var legonisMachinaTags = ["tank", "lateorbital"];
-                var foundationTags = ["air", "lateorbital"];
-                var synchronousTags = ["bot", "lateorbital"];
+                var legonisMachinaTags = ["tank"];
+                var foundationTags = ["air"];
+                var synchronousTags = ["bot"];
                 var revenantsTags = ["orbital"];
-                var clusterTags = ["land", "lateorbital"];
+                var clusterTags = ["land"];
                 switch (aiFaction) {
                   case 0:
                     ai.personality.personality_tags =
