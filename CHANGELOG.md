@@ -6,6 +6,10 @@
 
 - Loadout badges for completing a war in hardcore mode
 
+### Changed
+
+- Queller AI updated to v5.23.0
+
 ## v5.34.0 - 2022-06-11
 
 ### Changed
