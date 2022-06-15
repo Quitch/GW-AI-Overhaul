@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.35.0 - 2022-06-15
+
+### Added
+
+- Loadout badges for completing a war in hardcore mode
+
+### Changed
+
+- Queller AI updated to v5.23.0
+- Updated Queller AI personality for Revenants
+- Removed orbital delay from all Queller AIs
+
 ## v5.34.0 - 2022-06-11
 
 ### Changed

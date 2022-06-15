@@ -29,16 +29,28 @@ if (!gwoWarOverLoadoutStatsLoaded) {
               return difficulty === warDifficulty;
             }
           ) - 1; // -1 because we added Beginner later
-
         var loadout = game.inventory().cards()[0].id;
         var highestDifficultyDefeatedWithLoadout = ko
           .observable()
           .extend({ local: "gwaio_victory_" + loadout });
+        var previousBest = -1;
+
+        // Value wasn't an array in v5.34.0 and earlier
+        if (_.isArray(highestDifficultyDefeatedWithLoadout())) {
+          previousBest = highestDifficultyDefeatedWithLoadout()[0];
+        } else {
+          previousBest = highestDifficultyDefeatedWithLoadout();
+        }
+
         if (
-          difficultyLevelAsInt > highestDifficultyDefeatedWithLoadout() ||
-          highestDifficultyDefeatedWithLoadout() === undefined
+          difficultyLevelAsInt > previousBest ||
+          (difficultyLevelAsInt === previousBest && game.hardcore()) ||
+          previousBest === undefined
         ) {
-          highestDifficultyDefeatedWithLoadout(difficultyLevelAsInt);
+          highestDifficultyDefeatedWithLoadout([
+            difficultyLevelAsInt,
+            game.hardcore(),
+          ]);
         }
       }
     } catch (e) {
