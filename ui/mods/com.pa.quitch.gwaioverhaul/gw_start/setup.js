@@ -616,7 +616,7 @@ if (!gwoSetupLoaded) {
                   var availableFactions = _.without(aiFactions, ai.faction);
                   _.times(availableFactions.length, function () {
                     if (gameModeEnabled(difficulty.ffaChance())) {
-                      if (ai.foes === undefined) {
+                      if (_.isUndefined(ai.foes)) {
                         ai.foes = [];
                       }
 

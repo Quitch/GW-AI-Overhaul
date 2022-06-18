@@ -838,7 +838,7 @@ if (!gwoCardsLoaded) {
                 return;
               }
               // Ensure inventory hovers work at the same time as the new tech display
-              if (hoverIndex === undefined) {
+              if (_.isUndefined(hoverIndex)) {
                 hoverIndex = 0;
               } else {
                 hoverIndex += 1;
@@ -848,7 +848,7 @@ if (!gwoCardsLoaded) {
                 id: cardId,
               });
               if (cardIndex === -1) {
-                if (cardId === undefined) {
+                if (_.isUndefined(cardId)) {
                   return;
                 } else {
                   console.warn(
