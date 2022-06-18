@@ -571,8 +571,7 @@ if (!gwoCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              // This will also trigger a save
-              dealFirstCardSelectableAI(gwaioSettings);
+              dealFirstCardSelectableAI(gwaioSettings); // also triggers a save
             }
 
             dealFirstCardSelectableAI(gwaioSettings);
