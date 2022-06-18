@@ -242,9 +242,9 @@ if (!gwoCardsLoaded) {
               "gwc_storage_1",
               "gwc_storage_and_buff"
             );
-            // check in a way that handles wars where the setting doesn't exist
             if (
               gwaioSettings.techCardDeck === "Expanded" ||
+              // support v5.35.0 and earlier
               _.isUndefined(gwaioSettings.techCardDeck)
             ) {
               model.gwoDeck.push(
