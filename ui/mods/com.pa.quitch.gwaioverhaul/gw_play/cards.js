@@ -244,8 +244,8 @@ if (!gwoCardsLoaded) {
             );
             // check in a way that handles wars where the setting doesn't exist
             if (
-              gwaioSettings.techCardSet === "Expanded" ||
-              _.isUndefined(gwaioSettings.techCardSet)
+              gwaioSettings.techCardDeck === "Expanded" ||
+              _.isUndefined(gwaioSettings.techCardDeck)
             ) {
               model.gwoDeck.push(
                 "gwaio_enable_planetaryradar",

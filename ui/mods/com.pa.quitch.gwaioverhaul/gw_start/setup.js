@@ -795,10 +795,10 @@ if (!gwoSetupLoaded) {
                 originSystem.gwaio.ai = "Titans";
               }
               originSystem.gwaio.aiMods = [];
-              if (model.gwoDifficultySettings.techCardSet() === 1) {
-                originSystem.gwaio.techCardSet = "Expanded";
+              if (model.gwoDifficultySettings.techCardDeck() === 1) {
+                originSystem.gwaio.techCardDeck = "Expanded";
               } else {
-                originSystem.gwaio.techCardSet = "Basic";
+                originSystem.gwaio.techCardDeck = "Basic";
               }
 
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
