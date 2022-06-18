@@ -1,0 +1,16 @@
+<div class="form-group" id="difficulty-cards">
+  <label id="game-cards-label" for="game-cards"><loc>TECH:</loc></label>
+  <span
+    class="info_tip"
+    data-bind="tooltip: '!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional tech cards.'"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="game-cards"
+    data-bind="selectPicker: gwoDifficultySettings.techCardSet"
+  >
+    <option value="0">BASIC</option>
+    <option value="1">EXPANDED</option>
+  </select>
+</div>

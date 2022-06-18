@@ -53,6 +53,7 @@ if (!gwoUILoaded) {
         easierStart: ko.observable(false),
         ai: ko.observable(0).extend({ numeric: 0 }),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
+        techCardSet: ko.observable(1).extend({ numeric: 0 }),
         customDifficulty: ko.observable(false),
         goForKill: ko.observable(false),
         microType: ko.observableArray([0, 1, 2]),
@@ -158,6 +159,11 @@ if (!gwoUILoaded) {
       $(gameDifficultyLabelId).before(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
+        )
+      );
+      $(gameDifficultyLabelId).before(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/cards_dropdown.html"
         )
       );
       $(gameDifficultyLabelId).append(
