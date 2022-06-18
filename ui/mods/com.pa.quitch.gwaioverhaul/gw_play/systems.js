@@ -43,7 +43,7 @@ if (!gwoSystemChangesLoaded) {
           result.regY = params.size[1] / 2;
 
           var scale = params.scale;
-          if (scale !== undefined) {
+          if (!_.isUndefined(scale)) {
             result.scaleX = scale;
             result.scaleY = scale;
           }
@@ -76,7 +76,7 @@ if (!gwoSystemChangesLoaded) {
             });
           }
 
-          if (params.alpha !== undefined) {
+          if (!_.isUndefined(params.alpha)) {
             result.alpha = params.alpha;
           }
 

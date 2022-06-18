@@ -219,12 +219,12 @@ if (!gwoRefereeChangesLoaded) {
                   };
                   var ops = {
                     multiply: function (attribute, value) {
-                      return attribute !== undefined
+                      return !_.isUndefined(attribute)
                         ? attribute * value
                         : value;
                     },
                     add: function (attribute, value) {
-                      return attribute !== undefined
+                      return !_.isUndefined(attribute)
                         ? attribute + value
                         : value;
                     },

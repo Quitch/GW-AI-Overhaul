@@ -458,7 +458,7 @@ if (!gwoCardsLoaded) {
                       resultIndex = hand[index].index;
                     }
 
-                    if (resultIndex !== undefined) {
+                    if (!_.isUndefined(resultIndex)) {
                       var resultDeal = fullHand[resultIndex];
                       var cardParams = resultDeal && resultDeal.params;
                       var cardId = deck[resultIndex];
