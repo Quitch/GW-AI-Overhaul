@@ -763,7 +763,7 @@ if (!gwoSetupLoaded) {
             });
 
             var warInfo = finishAis.then(function () {
-              // Hacky way to store war information for GWO Panel
+              // Hacky way to store war information for the gw_play scene
               var galaxy = game.galaxy();
               var originSystem = galaxy.stars()[galaxy.origin()].system();
               originSystem.gwaio = {};
@@ -795,6 +795,12 @@ if (!gwoSetupLoaded) {
                 originSystem.gwaio.ai = "Titans";
               }
               originSystem.gwaio.aiMods = [];
+              if (model.gwoDifficultySettings.techCardSet() === 1) {
+                originSystem.gwaio.techCardSet = "Expanded";
+              } else {
+                originSystem.gwaio.techCardSet = "Basic";
+              }
+
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
             });
