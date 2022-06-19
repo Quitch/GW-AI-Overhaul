@@ -8,7 +8,7 @@
 
 ### Changed
 
-- Diamond has less additional commanders
+- Diamond and Uber have less additional commanders
 
 ## v5.35.0 - 2022-06-15
 
