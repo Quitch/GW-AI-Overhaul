@@ -197,7 +197,6 @@ if (!gwoCardsLoaded) {
               "gwc_cost_bots",
               "gwc_cost_defenses",
               "gwc_cost_economy",
-              "gwc_cost_intel",
               "gwc_cost_orbital",
               "gwc_cost_sea",
               "gwc_cost_super_weapons",
@@ -223,8 +222,6 @@ if (!gwoCardsLoaded) {
               "gwc_enable_vehicles_all",
               "gwc_enable_vehicles_t1",
               "gwc_energy_efficiency_all",
-              "gwc_energy_efficiency_intel",
-              "gwc_energy_efficiency_weapons",
               "gwc_health_air",
               "gwc_health_bots",
               "gwc_health_commander",
@@ -361,7 +358,10 @@ if (!gwoCardsLoaded) {
                 "gwaio_upgrade_vehiclefactory",
                 "gwaio_upgrade_wall",
                 "gwaio_upgrade_wyrm",
-                "gwaio_upgrade_zeus"
+                "gwaio_upgrade_zeus",
+                "gwc_cost_intel",
+                "gwc_energy_efficiency_intel",
+                "gwc_energy_efficiency_weapons"
               );
             }
 
