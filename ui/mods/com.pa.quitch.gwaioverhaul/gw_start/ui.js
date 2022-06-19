@@ -190,6 +190,7 @@ if (!gwoUILoaded) {
       locTree($(gameDifficultyId));
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
+      locTree($("#difficulty-ai"));
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwoFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
