@@ -193,6 +193,9 @@ if (!gwoUILoaded) {
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwoFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
+      // Allow modders to append their deck names
+      model.gwoCardsTooltip =
+        "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
 
       // Track difficulty settings so GW-CUSTOM fields appear and display correct values
       requireGW(
