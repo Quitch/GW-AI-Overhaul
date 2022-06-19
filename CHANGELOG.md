@@ -6,6 +6,10 @@
 
 - Setting to choose between the basic tech deck and the expanded GWO deck
 
+### Changed
+
+- Diamond has less additional commanders
+
 ## v5.35.0 - 2022-06-15
 
 ### Added

@@ -200,7 +200,7 @@ define({
       goForKill: true,
       microType: 2,
       mandatoryMinions: 0,
-      minionMod: 0.5,
+      minionMod: 0.49,
       priority_scout_metal_spots: true,
       useEasierSystemTemplate: false,
       factory_build_delay_min: 0,
