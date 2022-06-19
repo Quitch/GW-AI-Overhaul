@@ -187,6 +187,11 @@ if (!gwoUILoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
         )
       );
+      $("#new-game-left").replaceWith(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html"
+        )
+      );
       locTree($(gameDifficultyId));
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
