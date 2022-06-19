@@ -25,7 +25,7 @@ define({
       suddenDeathChance: 10,
       bountyModeChance: 25,
       bountyModeValue: 0.5,
-      factionTechHandicap: 2,
+      factionTechHandicap: 99,
     },
     {
       difficultyName: "!LOC:Casual",

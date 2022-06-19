@@ -9,6 +9,7 @@
 ### Changed
 
 - Diamond and Uber have less additional commanders
+- Beginner never receives AI tech
 
 ## v5.35.0 - 2022-06-15
 
