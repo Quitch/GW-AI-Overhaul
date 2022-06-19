@@ -16,7 +16,7 @@ define({
       per_expansion_delay: 0,
       personality_tags: ["Default", "SlowerExpansion", "Tutorial", "queller"],
       econBase: 0.35,
-      econRatePerDist: 0.05,
+      econRatePerDist: 0.025,
       max_basic_fabbers: 5,
       max_advanced_fabbers: 5,
       ffa_chance: 25,
