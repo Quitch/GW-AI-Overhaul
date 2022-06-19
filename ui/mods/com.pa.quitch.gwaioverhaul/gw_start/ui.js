@@ -147,6 +147,11 @@ if (!gwoUILoaded) {
 
       $(".info_tip").after(
         loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/commander_selection.html"
+        )
+      );
+      $(".info_tip").after(
+        loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
         )
       );

@@ -1,0 +1,23 @@
+<div class="form-group">
+  <div id="commander-select">
+    <p
+      data-bind="text: CommanderUtility.bySpec.getName(selectedCommander())"
+    ></p>
+    <div
+      id="commander-prev"
+      data-bind="click_sound: 'default', rollover_sound: 'default', click: prevCommander"
+    ></div>
+    <div
+      id="commander-next"
+      data-bind="click_sound: 'default', rollover_sound: 'default', click: nextCommander"
+    ></div>
+    <p id="game-commander-preview">
+      <img
+        src=""
+        data-bind="attr: { src: CommanderUtility.bySpec.getImage(selectedCommander()) }"
+        height="265"
+        width="265"
+      />
+    </p>
+  </div>
+</div>
