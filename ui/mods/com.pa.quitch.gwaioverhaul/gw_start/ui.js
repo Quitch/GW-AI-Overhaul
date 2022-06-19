@@ -145,6 +145,11 @@ if (!gwoUILoaded) {
         }),
       };
 
+      $(".info_tip").after(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
+        )
+      );
       $("#faction-select").before(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tooltip.html"
@@ -178,11 +183,6 @@ if (!gwoUILoaded) {
         )
       );
       locTree($(gameDifficultyId));
-      $(gameDifficultyId).after(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
-        )
-      );
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
       // Because PA Inc wants to avoid escaping characters in HTML
