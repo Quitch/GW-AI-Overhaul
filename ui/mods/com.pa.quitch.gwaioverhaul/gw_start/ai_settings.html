@@ -390,39 +390,6 @@
         </select>
       </div>
 
-      <label id="gwo-personality-label">
-        <loc>PERSONALITY MODIFIERS:</loc>
-      </label>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Tweaks to how the AI plays.'"
-        >?</span
-      >
-      <div class="form-group" id="gwo-personality">
-        <select class="form-control" id="gwo-personality-picker" multiple>
-          <optgroup label="TITANS/PENCHANT">
-            <option value="SlowerExpansion">SLOWER EXPANSION</option>
-            <option value="Tutorial">LOBOTOMY</option>
-            <option value="PreventsWaste">PREVENT ECO FLOAT</option>
-          </optgroup>
-
-          <optgroup label="QUELLER">
-            <option value="air">LOVES AIR</option>
-            <option value="bot">LOVES BOTS</option>
-            <option value="land">LOVES LAND</option>
-            <option value="orbital">LOVES ORBITAL</option>
-            <option value="tank">LOVES TANKS</option>
-            <option value="ffa">FFA BEHAVIOUR</option>
-            <option value="lateorbital">LATE ORBITAL</option>
-          </optgroup>
-
-          <optgroup label="Required">
-            <option value="Default" disabled>DEFAULT</option>
-            <option value="queller" disabled>QUELLER</option>
-          </optgroup>
-        </select>
-      </div>
-
       <label id="gwo-ffa-chance-label">
         <loc>FFA CHANCE:</loc>
       </label>
@@ -541,6 +508,39 @@
           <option value="0.40">0.4</option>
           <option value="0.45">0.45</option>
           <option value="0.50">0.5</option>
+        </select>
+      </div>
+
+      <label id="gwo-personality-label">
+        <loc>PERSONALITY MODIFIERS:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Tweaks to how the AI plays.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-personality">
+        <select class="form-control" id="gwo-personality-picker" multiple>
+          <optgroup label="TITANS/PENCHANT">
+            <option value="SlowerExpansion">SLOWER EXPANSION</option>
+            <option value="Tutorial">LOBOTOMY</option>
+            <option value="PreventsWaste">PREVENT ECO FLOAT</option>
+          </optgroup>
+
+          <optgroup label="QUELLER">
+            <option value="air">LOVES AIR</option>
+            <option value="bot">LOVES BOTS</option>
+            <option value="land">LOVES LAND</option>
+            <option value="orbital">LOVES ORBITAL</option>
+            <option value="tank">LOVES TANKS</option>
+            <option value="ffa">FFA BEHAVIOUR</option>
+            <option value="lateorbital">LATE ORBITAL</option>
+          </optgroup>
+
+          <optgroup label="Required">
+            <option value="Default" disabled>DEFAULT</option>
+            <option value="queller" disabled>QUELLER</option>
+          </optgroup>
         </select>
       </div>
     </div>
