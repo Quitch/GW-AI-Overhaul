@@ -77,11 +77,6 @@ if (!gwoUILoaded) {
 
       $(".info_tip").after(
         loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/commander_selection.html"
-        )
-      );
-      $(".info_tip").after(
-        loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
         )
       );
@@ -117,8 +112,7 @@ if (!gwoUILoaded) {
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
         )
       );
-
-      $("#new-game-left").replaceWith(
+      $("#new-game-right").after(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html"
         )

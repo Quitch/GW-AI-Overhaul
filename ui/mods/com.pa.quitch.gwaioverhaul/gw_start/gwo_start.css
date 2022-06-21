@@ -28,3 +28,7 @@
 #custom-difficulty-settings select:disabled {
   color: #666;
 }
+
+#loadouts.col {
+  width: calc(100% - 900px);
+}
