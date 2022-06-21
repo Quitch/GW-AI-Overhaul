@@ -52,6 +52,11 @@ if (!gwoWarInfoPanelLoaded) {
               );
               options(
                 model.gwoOptions,
+                model.gwoSettings.simpleSystems,
+                "!LOC:Simple systems"
+              );
+              options(
+                model.gwoOptions,
                 model.gwoSettings.easierStart,
                 "!LOC:Easier start"
               );

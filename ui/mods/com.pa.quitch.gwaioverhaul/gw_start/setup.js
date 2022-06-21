@@ -35,6 +35,8 @@ if (!gwoSetupLoaded) {
           // Remove System Scaling feature as this mod can't use it
           $("#system-scaling").remove();
           model.gwoDifficultySettings.systemScaling(false);
+          $("#gwo-system-size").remove();
+          model.gwoDifficultySettings.simpleSystems(false);
         }
       });
 
@@ -149,10 +151,7 @@ if (!gwoSetupLoaded) {
             game.content(api.content.activeContent());
 
             var selectedDifficulty = model.newGameDifficultyIndex();
-            var useEasySystems =
-              gwoDifficulty.difficulties[selectedDifficulty]
-                .useEasierSystemTemplate;
-            var systemTemplates = useEasySystems
+            var systemTemplates = model.gwoDifficultySettings.simpleSystems()
               ? easySystemTemplates
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
@@ -792,6 +791,8 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.factionScaling();
               originSystem.gwaio.systemScaling =
                 model.gwoDifficultySettings.systemScaling();
+              originSystem.gwaio.simpleSystems =
+                model.gwoDifficultySettings.simpleSystems();
               originSystem.gwaio.easierStart =
                 model.gwoDifficultySettings.easierStart();
               if (model.gwoDifficultySettings.ai() === 1) {

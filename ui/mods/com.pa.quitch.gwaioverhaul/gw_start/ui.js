@@ -9,6 +9,7 @@ if (!gwoUILoaded) {
       model.gwoDifficultySettings = {
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
+        simpleSystems: ko.observable(false),
         easierStart: ko.observable(false),
         ai: ko.observable(0).extend({ numeric: 0 }),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
@@ -23,7 +24,6 @@ if (!gwoUILoaded) {
           numeric: 2,
         }),
         priorityScoutMetalSpots: ko.observable(false),
-        useEasierSystemTemplate: ko.observable(false),
         factoryBuildDelayMin: ko.observable(0).extend({
           numeric: 0,
         }),
@@ -168,9 +168,6 @@ if (!gwoUILoaded) {
                 convertBooleanToString(
                   difficulties[selectedDifficulty].priority_scout_metal_spots
                 )
-              );
-              difficultySettings.useEasierSystemTemplate(
-                difficulties[selectedDifficulty].useEasierSystemTemplate
               );
               difficultySettings.factoryBuildDelayMin(
                 difficulties[selectedDifficulty].factory_build_delay_min
