@@ -5,6 +5,7 @@
 ### Added
 
 - Setting to choose between the basic tech deck and the expanded GWO deck
+- New and improved interface for customising AI difficulty settings
 
 ### Changed
 
