@@ -413,8 +413,9 @@ if (!gwoSetupLoaded) {
                 ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
                 ai.personality.max_advanced_fabbers =
                   difficulty.maxAdvancedFabbers();
-                ai.personality.personality_tags =
-                  difficulty.personalityTagsChosen();
+                ai.personality.personality_tags = $("#gwo-personality-picker")
+                  .val()
+                  .concat("Default", "queller");
                 // We treat 0 as undefined, which means the AI examines the
                 // radius of the spawn zone
                 if (difficulty.startingLocationEvaluationRadius() > 0) {
