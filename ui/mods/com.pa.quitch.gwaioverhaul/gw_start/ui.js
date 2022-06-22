@@ -5,13 +5,12 @@ if (!gwoUILoaded) {
 
   function gwoUI() {
     try {
-      model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
-
       // gw_start uses ko.applyBindings(model)
       model.gwoDifficultySettings = {
         previousSettings: ko
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
+        newGameDifficultyIndex: ko.observable(0).extend({ numeric: 0 }),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -80,8 +79,9 @@ if (!gwoUILoaded) {
         }),
       };
 
+      var difficultySettings = model.gwoDifficultySettings;
+
       if (!_.isEmpty(model.gwoDifficultySettings.previousSettings())) {
-        var difficultySettings = model.gwoDifficultySettings;
         var previousSettings = difficultySettings.previousSettings();
         var settingNames = _.keys(model.gwoDifficultySettings);
         _.pull(settingNames, "previousSettings");
@@ -165,8 +165,8 @@ if (!gwoUILoaded) {
         ],
         function (gwoDifficulty) {
           ko.computed(function () {
-            var selectedDifficulty = model.newGameDifficultyIndex();
-            var difficultySettings = model.gwoDifficultySettings;
+            var selectedDifficulty =
+              difficultySettings.newGameDifficultyIndex();
             var difficulties = gwoDifficulty.difficulties;
             if (difficulties[selectedDifficulty].customDifficulty) {
               $("#custom-difficulty-settings select").attr("disabled", false);
