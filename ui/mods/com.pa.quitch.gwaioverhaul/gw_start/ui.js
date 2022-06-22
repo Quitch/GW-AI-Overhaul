@@ -10,7 +10,7 @@ if (!gwoUILoaded) {
         previousSettings: ko
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
-        newGameDifficultyIndex: ko.observable(0).extend({ numeric: 0 }),
+        difficultyLevel: ko.observable(0).extend({ numeric: 0 }),
         galaxySize: ko
           .observable(model.newGameSizeIndex())
           .extend({ numeric: 0 }),
@@ -84,6 +84,7 @@ if (!gwoUILoaded) {
 
       var difficultySettings = model.gwoDifficultySettings;
 
+      // duplicate settings we don't own in our view model
       model.newGameSizeIndex.subscribe(function () {
         difficultySettings.galaxySize(model.newGameSizeIndex());
       });
@@ -95,7 +96,7 @@ if (!gwoUILoaded) {
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
         });
-        model.newGameSizeIndex(difficultySettings.newGameSizeIndex());
+        model.newGameSizeIndex(difficultySettings.galaxySize());
       }
 
       // Because PA Inc wants to avoid escaping characters in HTML
@@ -173,8 +174,7 @@ if (!gwoUILoaded) {
         ],
         function (gwoDifficulty) {
           ko.computed(function () {
-            var selectedDifficulty =
-              difficultySettings.newGameDifficultyIndex();
+            var selectedDifficulty = difficultySettings.difficultyLevel();
             var difficulties = gwoDifficulty.difficulties;
             if (difficulties[selectedDifficulty].customDifficulty) {
               $("#custom-difficulty-settings select").attr("disabled", false);
