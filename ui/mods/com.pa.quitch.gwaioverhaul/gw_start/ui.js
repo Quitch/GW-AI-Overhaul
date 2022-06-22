@@ -75,6 +75,17 @@ if (!gwoUILoaded) {
         }),
       };
 
+      // Because PA Inc wants to avoid escaping characters in HTML
+      model.gwoFactionScalingTooltip =
+        "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
+      model.gwoBossCommandersTooltip =
+        "!LOC:Number of Commanders in the boss's army.";
+      // Allow modders to append their deck names
+      model.gwoCardsTooltip =
+        "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
+      model.factionTooltip =
+        "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital<br>";
+
       $(".info_tip").after(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
@@ -121,20 +132,13 @@ if (!gwoUILoaded) {
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
       locTree($("#difficulty-ai"));
-      // Because PA Inc wants to avoid escaping characters in HTML
-      model.gwoFactionScalingTooltip =
-        "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
-      model.gwoBossCommandersTooltip =
-        "!LOC:Number of Commanders in the boss's army.";
-      // Allow modders to append their deck names
-      model.gwoCardsTooltip =
-        "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
-      model.factionTooltip =
-        "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital<br>";
+
       if (api.content.usingTitans()) {
         model.factionTooltip =
           model.factionTooltip +
-          "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.";
+          loc(
+            "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
+          );
       } else {
         $("select option[value*='Queller']").prop("disabled", true);
       }
