@@ -16,6 +16,7 @@
 - Beginner grows its eco bonus slower
 - Casual through Platinum start gaining AI tech slightly later
 - Cluster is disabled if TITANS is not enabled
+- Commander Upgrade Tech improved
 
 ## v5.35.0 - 2022-06-15
 

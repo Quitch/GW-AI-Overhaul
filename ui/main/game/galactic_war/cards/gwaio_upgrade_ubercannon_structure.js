@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Commander Upgrade Tech increases Uber Cannon damage to structures and commanders by 300%."
+      "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300%."
     ),
     summarize: _.constant("!LOC:Commander Upgrade Tech"),
     icon: _.constant(
@@ -24,13 +24,19 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.commanderSecondaryAmmo,
-          path: "armor_damage_map.AT_Structure",
+          path: "damage",
           op: "multiply",
           value: 4,
         },
         {
           file: gwoUnit.commanderSecondaryAmmo,
-          path: "armor_damage_map.AT_Commander",
+          path: "splash_damage",
+          op: "multiply",
+          value: 4,
+        },
+        {
+          file: gwoUnit.commanderSecondaryAmmo,
+          path: "burn_damage",
           op: "multiply",
           value: 4,
         },
