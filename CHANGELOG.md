@@ -17,6 +17,7 @@
 - Casual through Platinum start gaining AI tech slightly later
 - Cluster is disabled if TITANS is not enabled
 - Commander Upgrade Tech improved
+- General Commander starts with the Skitter
 
 ## v5.35.0 - 2022-06-15
 
