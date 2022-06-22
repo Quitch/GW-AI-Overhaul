@@ -87,7 +87,6 @@ if (!gwoUILoaded) {
         _.pull(settingNames, "previousSettings");
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
-          console.log(difficultySettings[name]());
         });
       }
 
