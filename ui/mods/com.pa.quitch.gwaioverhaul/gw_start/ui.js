@@ -15,7 +15,7 @@ if (!gwoUILoaded) {
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
-        goForKill: ko.observable(false),
+        goForKill: ko.observable("false"),
         microType: ko.observableArray(0).extend({ numeric: 0 }),
         mandatoryMinions: ko.observable(0).extend({
           numeric: 0,
@@ -23,7 +23,7 @@ if (!gwoUILoaded) {
         minionMod: ko.observable(0).extend({
           numeric: 2,
         }),
-        priorityScoutMetalSpots: ko.observable(false),
+        priorityScoutMetalSpots: ko.observable("false"),
         factoryBuildDelayMin: ko.observable(0).extend({
           numeric: 0,
         }),
@@ -33,7 +33,7 @@ if (!gwoUILoaded) {
         unableToExpandDelay: ko.observable(0).extend({
           numeric: 0,
         }),
-        enableCommanderDangerResponses: ko.observable(false),
+        enableCommanderDangerResponses: ko.observable("false"),
         perExpansionDelay: ko.observable(0).extend({
           numeric: 0,
         }),
