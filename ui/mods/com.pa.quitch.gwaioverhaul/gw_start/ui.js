@@ -124,6 +124,8 @@ if (!gwoUILoaded) {
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwoFactionScalingTooltip =
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
+      model.gwoBossCommandersTooltip =
+        "!LOC:Number of Commanders in the boss's army.";
       // Allow modders to append their deck names
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
