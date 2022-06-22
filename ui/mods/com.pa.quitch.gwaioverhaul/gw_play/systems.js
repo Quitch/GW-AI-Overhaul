@@ -43,7 +43,7 @@ if (!gwoSystemChangesLoaded) {
           result.regY = params.size[1] / 2;
 
           var scale = params.scale;
-          if (scale !== undefined) {
+          if (!_.isUndefined(scale)) {
             result.scaleX = scale;
             result.scaleY = scale;
           }
@@ -76,7 +76,7 @@ if (!gwoSystemChangesLoaded) {
             });
           }
 
-          if (params.alpha !== undefined) {
+          if (!_.isUndefined(params.alpha)) {
             result.alpha = params.alpha;
           }
 
@@ -92,12 +92,12 @@ if (!gwoSystemChangesLoaded) {
 
         function sortContainer(container) {
           container.sortChildren(function (a, b) {
-            if (a.z === undefined) {
-              if (b.z === undefined) {
+            if (_.isUndefined(a.z)) {
+              if (_.isUndefined(b.z)) {
                 return 0;
               }
               return -1;
-            } else if (b.z === undefined) {
+            } else if (_.isUndefined(b.z)) {
               return 1;
             }
             return a.z - b.z;

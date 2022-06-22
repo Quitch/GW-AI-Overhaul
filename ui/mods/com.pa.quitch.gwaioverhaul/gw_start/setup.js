@@ -10,8 +10,6 @@ if (!gwoSetupLoaded) {
         //empty
       };
 
-      model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
-
       // We change how we monitor model.ready() to prevent
       // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
@@ -32,9 +30,11 @@ if (!gwoSetupLoaded) {
               enableGoToWar(true);
             }
           });
-          // Remove System Scaling feature as this mod can't use it
+          // Remove features this mod can't use
           $("#system-scaling").remove();
           model.gwoDifficultySettings.systemScaling(false);
+          $("#gwo-system-size").remove();
+          model.gwoDifficultySettings.simpleSystems(false);
         }
       });
 
@@ -148,11 +148,9 @@ if (!gwoSetupLoaded) {
             game.hardcore(model.newGameHardcore());
             game.content(api.content.activeContent());
 
-            var selectedDifficulty = model.newGameDifficultyIndex();
-            var useEasySystems =
-              gwoDifficulty.difficulties[selectedDifficulty]
-                .useEasierSystemTemplate;
-            var systemTemplates = useEasySystems
+            var selectedDifficulty =
+              model.gwoDifficultySettings.difficultyLevel();
+            var systemTemplates = model.gwoDifficultySettings.simpleSystems()
               ? easySystemTemplates
               : star_system_templates;
             var sizes = GW.balance.numberOfSystems;
@@ -389,26 +387,35 @@ if (!gwoSetupLoaded) {
                 ai.penchantName = penchantValues.penchantName;
               };
 
+              var parseBoolean = function (string) {
+                return string === "true";
+              };
+
               var setAIPersonality = function (ai, difficulty) {
-                ai.personality.micro_type = difficulty.microTypeChosen();
-                ai.personality.go_for_the_kill = difficulty.goForKill();
-                ai.personality.priority_scout_metal_spots =
-                  difficulty.priorityScoutMetalSpots();
+                ai.personality.micro_type = difficulty.microType();
+                ai.personality.go_for_the_kill = parseBoolean(
+                  difficulty.goForKill()
+                );
+                ai.personality.priority_scout_metal_spots = parseBoolean(
+                  difficulty.priorityScoutMetalSpots()
+                );
                 ai.personality.factory_build_delay_min =
                   difficulty.factoryBuildDelayMin();
                 ai.personality.factory_build_delay_max =
                   difficulty.factoryBuildDelayMax();
                 ai.personality.unable_to_expand_delay =
                   difficulty.unableToExpandDelay();
-                ai.personality.enable_commander_danger_responses =
-                  difficulty.enableCommanderDangerResponses();
+                ai.personality.enable_commander_danger_responses = parseBoolean(
+                  difficulty.enableCommanderDangerResponses()
+                );
                 ai.personality.per_expansion_delay =
                   difficulty.perExpansionDelay();
                 ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
                 ai.personality.max_advanced_fabbers =
                   difficulty.maxAdvancedFabbers();
-                ai.personality.personality_tags =
-                  difficulty.personalityTagsChosen();
+                ai.personality.personality_tags = $("#gwo-personality-picker")
+                  .val()
+                  .concat("Default", "queller");
                 // We treat 0 as undefined, which means the AI examines the
                 // radius of the spawn zone
                 if (difficulty.startingLocationEvaluationRadius() > 0) {
@@ -417,10 +424,10 @@ if (!gwoSetupLoaded) {
                 }
 
                 switch (difficulty.ai()) {
-                  case 1:
+                  case "Queller":
                     setupQuellerAI(ai);
                     break;
-                  case 2:
+                  case "Penchant":
                     setupPenchantAI(ai);
                 }
               };
@@ -475,13 +482,14 @@ if (!gwoSetupLoaded) {
               _.forEach(teamInfo, function (info) {
                 var boss = info.boss;
                 var difficulty = model.gwoDifficultySettings;
-                var econBase = difficulty.econBase();
-                var econRatePerDist = difficulty.econRatePerDist();
+                var econBase = parseFloat(difficulty.econBase());
+                var econRatePerDist = parseFloat(difficulty.econRatePerDist());
 
                 // Setup boss system
                 setAIPersonality(boss, difficulty);
                 boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
-                boss.bossCommanders = difficulty.bossCommanders();
+                var bossCommanders = difficulty.bossCommanders();
+                boss.bossCommanders = bossCommanders;
 
                 boss.inventory = [];
                 // Setup Cluster commanders
@@ -489,7 +497,9 @@ if (!gwoSetupLoaded) {
                   boss.inventory = gwoTech.clusterCommanders;
                 }
 
-                var factionTechHandicap = difficulty.factionTechHandicap();
+                var factionTechHandicap = parseFloat(
+                  difficulty.factionTechHandicap()
+                );
                 // Setup boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 boss.typeOfBuffs = bossBuffs; // for intelligence reports
@@ -501,7 +511,7 @@ if (!gwoSetupLoaded) {
                 );
 
                 var mandatoryMinions = difficulty.mandatoryMinions();
-                var minionMod = difficulty.minionMod();
+                var minionMod = parseFloat(difficulty.minionMod());
                 var minions = GWFactions[info.faction].minions;
                 var clusterType = "";
                 // Setup boss minions
@@ -548,7 +558,7 @@ if (!gwoSetupLoaded) {
                   ai.bountyMode = gameModeEnabled(
                     difficulty.bountyModeChance()
                   );
-                  ai.bountyModeValue = difficulty.bountyModeValue();
+                  ai.bountyModeValue = parseFloat(difficulty.bountyModeValue());
 
                   var dist = worker.star.distance();
 
@@ -587,7 +597,7 @@ if (!gwoSetupLoaded) {
                       clusterType = "Worker";
                       totalMinions = clusterCommanderCount(
                         numMinions,
-                        difficulty.bossCommanders()
+                        bossCommanders
                       );
                     }
 
@@ -616,7 +626,7 @@ if (!gwoSetupLoaded) {
                   var availableFactions = _.without(aiFactions, ai.faction);
                   _.times(availableFactions.length, function () {
                     if (gameModeEnabled(difficulty.ffaChance())) {
-                      if (ai.foes === undefined) {
+                      if (_.isUndefined(ai.foes)) {
                         ai.foes = [];
                       }
 
@@ -638,7 +648,7 @@ if (!gwoSetupLoaded) {
                       if (foeCommander.name === "Worker") {
                         numFoes = clusterCommanderCount(
                           numMinions,
-                          difficulty.bossCommanders()
+                          bossCommanders
                         );
                       }
                       foeCommander.commanderCount = numFoes;
@@ -662,7 +672,7 @@ if (!gwoSetupLoaded) {
                   });
 
                   // Setup Queller for FFA
-                  if (difficulty.ai() === 1 && ai.foes) {
+                  if (difficulty.ai() === "Queller" && ai.foes) {
                     var ffaTag = "ffa";
                     ai.personality.personality_tags =
                       ai.personality.personality_tags.concat(ffaTag);
@@ -717,9 +727,13 @@ if (!gwoSetupLoaded) {
                       ai.boss = true; // otherwise it won't display its icon
                       ai.mirrorMode = true;
                       ai.treasurePlanet = true;
+                      var econBase = parseFloat(difficulty.econBase());
+                      var econRatePerDist = parseFloat(
+                        difficulty.econRatePerDist()
+                      );
                       ai.econ_rate = aiEconRate(
-                        difficulty.econBase(),
-                        difficulty.econRatePerDist(),
+                        econBase,
+                        econRatePerDist,
                         maxDist
                       );
                       ai.bossCommanders = difficulty.bossCommanders();
@@ -763,7 +777,7 @@ if (!gwoSetupLoaded) {
             });
 
             var warInfo = finishAis.then(function () {
-              // Hacky way to store war information for GWO Panel
+              // Hacky way to store war information for the gw_play scene
               var galaxy = game.galaxy();
               var originSystem = galaxy.stars()[galaxy.origin()].system();
               originSystem.gwaio = {};
@@ -785,16 +799,15 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.factionScaling();
               originSystem.gwaio.systemScaling =
                 model.gwoDifficultySettings.systemScaling();
+              originSystem.gwaio.simpleSystems =
+                model.gwoDifficultySettings.simpleSystems();
               originSystem.gwaio.easierStart =
                 model.gwoDifficultySettings.easierStart();
-              if (model.gwoDifficultySettings.ai() === 1) {
-                originSystem.gwaio.ai = "Queller";
-              } else if (model.gwoDifficultySettings.ai() === 2) {
-                originSystem.gwaio.ai = "Penchant";
-              } else {
-                originSystem.gwaio.ai = "Titans";
-              }
+              originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
               originSystem.gwaio.aiMods = [];
+              originSystem.gwaio.techCardDeck =
+                model.gwoDifficultySettings.techCardDeck();
+
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
             });
@@ -810,8 +823,16 @@ if (!gwoSetupLoaded) {
               return game;
             });
 
-            // the original model.navToNewGame()
             finishSetup.then(function () {
+              var difficultySettings = model.gwoDifficultySettings;
+              var previousSettings = difficultySettings.previousSettings();
+              var settingNames = _.keys(model.gwoDifficultySettings);
+              _.pull(settingNames, "previousSettings");
+              _.forEach(settingNames, function (name, i) {
+                previousSettings[i] = difficultySettings[name]();
+              });
+              difficultySettings.previousSettings.valueHasMutated();
+
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);
               save.then(function () {

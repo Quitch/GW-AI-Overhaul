@@ -1,0 +1,544 @@
+<div id="gwo-ai-settings" class="col">
+  <div class="header">
+    <loc>AI Settings</loc>
+  </div>
+  <div class="col-padding">
+    <div class="form-group" id="custom-difficulty-settings">
+      <label id="gwo-economy-label">
+        <loc>ECONOMY:</loc>
+      </label>
+      <span class="info_tip" data-bind="tooltip: '!LOC:Starting economy.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-economy">
+        <select
+          class="form-control"
+          id="gwo-economy-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.econBase"
+        >
+          <option value="0.35">DIRE</option>
+          <option value="0.425">TERRIBLE</option>
+          <option value="0.500">POOR</option>
+          <option value="0.600">WEAK</option>
+          <option value="0.700">UNHEALTHY</option>
+          <option value="1">NORMAL</option>
+          <option value="1.200">HEALTHY</option>
+          <option value="10">INCREDIBLE</option>
+        </select>
+      </div>
+
+      <label id="gwo-economy-growth-label">
+        <loc>ECONOMIC GROWTH:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Speed the economy grows as you get deeper into the galaxy.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-economy-growth">
+        <select
+          class="form-control"
+          id="gwo-economy-growth-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.econRatePerDist"
+        >
+          <option value="0">NONE</option>
+          <option value="0.025">SLOWEST</option>
+          <option value="0.050">SLOWER</option>
+          <option value="0.075">SLOW</option>
+          <option value="0.100">AVERAGE</option>
+          <option value="0.150">FAST</option>
+          <option value="0.200">FASTER</option>
+          <option value="1">FASTEST</option>
+        </select>
+      </div>
+
+      <label id="gwo-boss-commanders-label">
+        <loc>BOSS COMMANDERS:</loc>
+      </label>
+      <span class="info_tip" data-bind="tooltip: $root.gwoBossCommandersTooltip"
+        >?</span
+      >
+      <div class="form-group" id="gwo-boss-commanders-chance">
+        <select
+          class="form-control"
+          id="gwo-boss-commanders-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.bossCommanders"
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <label id="gwo-base-minions-label">
+        <loc>ARMIES/COMMANDERS:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Minimum number of armies/Commanders per faction in every system irrespective of distance.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-base-minions">
+        <select
+          class="form-control"
+          id="gwo-base-minions-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.mandatoryMinions"
+        >
+          <option value="0">1</option>
+          <option value="1">2</option>
+          <option value="2">3</option>
+          <option value="3">4</option>
+          <option value="4">5</option>
+        </select>
+      </div>
+
+      <label id="gwo-minion-ramp-label">
+        <loc>REINFORCEMENT SYSTEM:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Number of systems until additional armies/Commanders appear per faction.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-minion-ramp">
+        <select
+          class="form-control"
+          id="gwo-minion-ramp-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.minionMod"
+        >
+          <option value="0.0">NEVER</option>
+          <option value="0.16">7</option>
+          <option value="0.19">6</option>
+          <option value="0.24">5</option>
+          <option value="0.28">4</option>
+          <option value="0.39">3</option>
+          <option value="0.49">3 - FASTER RAMP UP</option>
+          <option value="0.5">2</option>
+          <option value="1">IMMEDIATELY</option>
+        </select>
+      </div>
+
+      <label id="gwo-tech-label">
+        <loc>TECH SYSTEM:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Number of systems until AI tech appears.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-tech">
+        <select
+          class="form-control"
+          id="gwo-tech-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.factionTechHandicap"
+        >
+          <option value="99">NONE</option>
+          <option value="2.5">7</option>
+          <option value="2">6</option>
+          <option value="1.5">5</option>
+          <option value="1">4</option>
+          <option value="0.5">3</option>
+          <option value="0">2</option>
+          <option value="-0.5">IMMEDIATELY</option>
+        </select>
+      </div>
+
+      <label id="gwo-basic-fabbers-label">
+        <loc>BASIC FABBERS:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Maximum number of basic fabbers per army.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-basic-fabbers">
+        <select
+          class="form-control"
+          id="gwo-basic-fabbers-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.maxBasicFabbers"
+        >
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+
+      <label id="gwo-basic-fabbers-label">
+        <loc>ADVANCED FABBERS:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Maximum number of advanced fabbers per army.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-basic-fabbers">
+        <select
+          class="form-control"
+          id="gwo-basic-fabbers-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.maxAdvancedFabbers"
+        >
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+
+      <label id="micro-type-label">
+        <loc>MICRO:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:How well the AI handles its armies in combat.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-micro-type">
+        <select
+          class="form-control"
+          id="gwo-micro-type-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.microType"
+        >
+          <option value="0">POOR</option>
+          <option value="1">AVERAGE</option>
+          <option value="2">GOOD</option>
+        </select>
+      </div>
+
+      <label id="gwo-scouting-label">
+        <loc>SCOUTING:</loc>
+      </label>
+      <span class="info_tip" data-bind="tooltip: '!LOC:How well the AI scouts.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-scouting">
+        <select
+          class="form-control"
+          id="gwo-scouting-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.priorityScoutMetalSpots"
+        >
+          <option value="false">POOR</option>
+          <option value="true">GOOD</option>
+        </select>
+      </div>
+
+      <label id="gwo-target-selection-label">
+        <loc>TARGET SELECTION:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:How well the AI picks who to attack.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-target-selection">
+        <select
+          class="form-control"
+          id="gwo-target-selection-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.goForKill"
+        >
+          <option value="false">POOR</option>
+          <option value="true">GOOD</option>
+        </select>
+      </div>
+
+      <label id="gwo-landing-evaluation-label">
+        <loc>LANDING EVALUATION:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Distance examined when choosing spawn.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-landing-evaluation">
+        <select
+          class="form-control"
+          id="gwo-landing-evaluation-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.startingLocationEvaluationRadius"
+        >
+          <option value="0">SPAWN ONLY</option>
+          <option value="100">TINY</option>
+          <option value="150">SMALL</option>
+          <option value="200">MEDIUM</option>
+          <option value="250">LARGE</option>
+          <option value="300">HUGE</option>
+          <option value="400">IMMENSE</option>
+        </select>
+      </div>
+
+      <label id="gwo-scouting-label">
+        <loc>COMMANDER TRANSPORT:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Allow Commanders to travel by orbital transport and teleporter.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-scouting">
+        <select
+          class="form-control"
+          id="gwo-scouting-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.enableCommanderDangerResponses"
+        >
+          <option value="false">DISABLED</option>
+          <option value="true">ENABLED</option>
+        </select>
+      </div>
+
+      <label id="gwo-unit-delay-min-label">
+        <loc>UNIT DELAY (MIN):</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Minimum delay between units produced from a factory.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-unit-delay-min">
+        <select
+          class="form-control"
+          id="gwo-unit-delay-min-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.factoryBuildDelayMin"
+        >
+          <option value="0">NONE</option>
+          <option value="3">SHORT</option>
+          <option value="6">MEDIUM</option>
+          <option value="12">LONG</option>
+        </select>
+      </div>
+
+      <label id="gwo-unit-delay-max-label">
+        <loc>UNIT DELAY (MAX):</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Maximum delay between units produced from a factory.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-unit-delay-max">
+        <select
+          class="form-control"
+          id="gwo-unit-delay-max-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.factoryBuildDelayMax"
+        >
+          <option value="0">NONE</option>
+          <option value="12">SHORT</option>
+          <option value="30">MEDIUM</option>
+          <option value="60">LONG</option>
+        </select>
+      </div>
+
+      <label id="gwo-base-delay-label">
+        <loc>NEW BASE DELAY:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Delay in creating new bases.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-base-delay">
+        <select
+          class="form-control"
+          id="gwo-base-delay-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.perExpansionDelay"
+        >
+          <option value="0">NONE</option>
+          <option value="60">SHORT</option>
+          <option value="120">MEDIUM</option>
+          <option value="900">LONG</option>
+        </select>
+      </div>
+
+      <label id="gwo-expand-delay-label">
+        <loc>UNABLE TO EXPAND DELAY:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Delay before AI realises it cannot expand.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-expand-delay">
+        <select
+          class="form-control"
+          id="gwo-expand-delay-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.unableToExpandDelay"
+        >
+          <option value="0">NONE</option>
+          <option value="60">SHORT</option>
+          <option value="120">MEDIUM</option>
+          <option value="900">LONG</option>
+        </select>
+      </div>
+
+      <label id="gwo-ffa-chance-label">
+        <loc>FFA CHANCE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Chance of more than one faction being present in a system.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-ffa-chance">
+        <select
+          class="form-control"
+          id="gwo-ffa-chance-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.ffaChance"
+        >
+          <option value="0">0%</option>
+          <option value="10">10%</option>
+          <option value="20">20%</option>
+          <option value="25">25%</option>
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+        </select>
+      </div>
+
+      <label id="gwo-land-anywhere-chance-label">
+        <loc>LAND ANYWHERE CHANCE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Chance of a system allowing you to land outside spawn zones.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-land-anywhere-chance">
+        <select
+          class="form-control"
+          id="gwo-land-anywhere-chance-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.landAnywhereChance"
+        >
+          <option value="0">0%</option>
+          <option value="10">10%</option>
+          <option value="20">20%</option>
+          <option value="25">25%</option>
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+        </select>
+      </div>
+
+      <label id="gwo-sudden-death-chance-label">
+        <loc>SUDDEN DEATH CHANCE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-sudden-death-chance">
+        <select
+          class="form-control"
+          id="gwo-bounties-chance-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.suddenDeathChance"
+        >
+          <option value="0">0%</option>
+          <option value="10">10%</option>
+          <option value="20">20%</option>
+          <option value="25">25%</option>
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+        </select>
+      </div>
+
+      <label id="gwo-sudden-death-chance-label">
+        <loc>BOUNTIES CHANCE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Chance of a system awarding bounties for army kills.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-bounties-chance">
+        <select
+          class="form-control"
+          id="gwo-bounties-chance-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.bountyModeChance"
+        >
+          <option value="0">0%</option>
+          <option value="10">10%</option>
+          <option value="20">20%</option>
+          <option value="25">25%</option>
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+        </select>
+      </div>
+
+      <label id="gwo-bounty-value-label">
+        <loc>BOUNTY VALUE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Eco bonus per army kill.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-bounty-value">
+        <select
+          class="form-control"
+          id="gwo-bounty-value-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.bountyModeValue"
+        >
+          <option value="0.10">0.1</option>
+          <option value="0.20">0.2</option>
+          <option value="0.25">0.25</option>
+          <option value="0.30">0.3</option>
+          <option value="0.35">0.35</option>
+          <option value="0.40">0.4</option>
+          <option value="0.45">0.45</option>
+          <option value="0.50">0.5</option>
+        </select>
+      </div>
+
+      <label id="gwo-personality-label">
+        <loc>PERSONALITY MODIFIERS:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Tweaks to how the AI plays.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-personality">
+        <select class="form-control" id="gwo-personality-picker" multiple>
+          <optgroup label="TITANS/PENCHANT">
+            <option value="Tutorial">LOBOTOMY</option>
+            <option value="SlowerExpansion">SLOWER EXPANSION</option>
+            <option value="PreventsWaste">AVOID ECO WASTE</option>
+          </optgroup>
+
+          <optgroup label="QUELLER">
+            <option value="air">LOVES AIR</option>
+            <option value="bot">LOVES BOTS</option>
+            <option value="land">LOVES LAND</option>
+            <option value="orbital">LOVES ORBITAL</option>
+            <option value="tank">LOVES TANKS</option>
+            <option value="ffa">FFA BEHAVIOUR</option>
+            <option value="lateorbital">LATE ORBITAL</option>
+          </optgroup>
+
+          <optgroup label="Required">
+            <option value="Default" disabled>DEFAULT</option>
+            <option value="queller" disabled>QUELLER</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

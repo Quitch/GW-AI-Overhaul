@@ -4,7 +4,39 @@
   max-height: 100%;
 }
 
+#new-game-right .header {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+
 #new-game-right .header + * {
   overflow-y: auto;
   flex-grow: 1;
+}
+
+#gwo-ai-settings {
+  width: 300px;
+}
+
+#gwo-ai-settings.col {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+#gwo-ai-settings .header {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+#gwo-ai-settings .header + * {
+  overflow-y: auto;
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+#custom-difficulty-settings select:disabled {
+  color: #666;
+}
+
+#loadouts.col {
+  width: calc(100% - 900px);
 }

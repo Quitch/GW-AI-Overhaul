@@ -45,7 +45,7 @@ if (!gwoWarOverLoadoutStatsLoaded) {
         if (
           difficultyLevelAsInt > previousBest ||
           (difficultyLevelAsInt === previousBest && game.hardcore()) ||
-          previousBest === undefined
+          _.isUndefined(previousBest)
         ) {
           highestDifficultyDefeatedWithLoadout([
             difficultyLevelAsInt,

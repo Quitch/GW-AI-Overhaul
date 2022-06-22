@@ -174,126 +174,14 @@ if (!gwoCardsLoaded) {
 
             var inventory = game.inventory();
             var playerFaction = 0;
+            var galaxy = model.game().galaxy();
+            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
             if (!model.gwoDeck) {
               model.gwoDeck = [];
             }
             model.gwoDeck.push(
-              "gwaio_enable_planetaryradar",
-              "gwaio_upgrade_advancedairfactory",
-              "gwaio_upgrade_advancedbotfactory",
-              "gwaio_upgrade_advancedenergyplant",
-              "gwaio_upgrade_advancedfabricationaircraft",
-              "gwaio_upgrade_advancedfabricationbot",
-              "gwaio_upgrade_advancedfabricationship",
-              "gwaio_upgrade_advancedfabricationvehicle",
-              "gwaio_upgrade_advancedlaserdefensetower",
-              "gwaio_upgrade_advancedmetalextractor",
-              "gwaio_upgrade_advancednavalfactory",
-              "gwaio_upgrade_advancedradar",
-              "gwaio_upgrade_advancedradarsatellite",
-              "gwaio_upgrade_advancedtorpedolauncher",
-              "gwaio_upgrade_advancedvehiclefactory",
-              "gwaio_upgrade_airfactory",
-              "gwaio_upgrade_anchor",
-              "gwaio_upgrade_angel",
-              "gwaio_upgrade_ant",
-              "gwaio_upgrade_antinuke",
-              "gwaio_upgrade_ares",
-              "gwaio_upgrade_arkyd",
-              "gwaio_upgrade_artemis",
-              "gwaio_upgrade_astraeus",
-              "gwaio_upgrade_atlas",
-              "gwaio_upgrade_avenger",
-              "gwaio_upgrade_barnacle",
-              "gwaio_upgrade_barracuda",
-              "gwaio_upgrade_bluehawk",
-              "gwaio_upgrade_boom",
-              "gwaio_upgrade_botfactory",
-              "gwaio_upgrade_bumblebee",
-              "gwaio_upgrade_catalyst",
-              "gwaio_upgrade_catapult",
-              "gwaio_upgrade_colonel",
-              "gwaio_upgrade_dox",
-              "gwaio_upgrade_drifter",
-              "gwaio_upgrade_energyplant",
-              "gwaio_upgrade_energystorage",
-              "gwaio_upgrade_fabricationaircraft",
-              "gwaio_upgrade_fabricationbot",
-              "gwaio_upgrade_fabricationship",
-              "gwaio_upgrade_fabricationvehicle",
-              "gwaio_upgrade_firefly",
-              "gwaio_upgrade_flak",
-              "gwaio_upgrade_galata",
-              "gwaio_upgrade_gile",
-              "gwaio_upgrade_grenadier",
-              "gwaio_upgrade_halley",
-              "gwaio_upgrade_helios",
-              "gwaio_upgrade_hermes",
-              "gwaio_upgrade_holkins",
-              "gwaio_upgrade_hornet",
-              "gwaio_upgrade_horsefly",
-              "gwaio_upgrade_hummingbird",
-              "gwaio_upgrade_icarus",
-              "gwaio_upgrade_inferno",
-              "gwaio_upgrade_jig",
-              "gwaio_upgrade_kaiju",
-              "gwaio_upgrade_kestrel",
-              "gwaio_upgrade_kraken",
-              "gwaio_upgrade_laserdefensetower",
-              "gwaio_upgrade_leveler",
-              "gwaio_upgrade_leviathan",
-              "gwaio_upgrade_lob",
-              "gwaio_upgrade_locusts",
-              "gwaio_upgrade_manhattan",
-              "gwaio_upgrade_mend",
-              "gwaio_upgrade_metalextractor",
-              "gwaio_upgrade_metalstorage",
-              "gwaio_upgrade_mine",
-              "gwaio_upgrade_narwhal",
-              "gwaio_upgrade_navalfactory",
-              "gwaio_upgrade_nukes",
-              "gwaio_upgrade_omega",
-              "gwaio_upgrade_orbitalfabricationbot",
-              "gwaio_upgrade_orbitalfactory",
-              "gwaio_upgrade_orbitallauncher",
-              "gwaio_upgrade_orca",
-              "gwaio_upgrade_pelican",
-              "gwaio_upgrade_pelter",
-              "gwaio_upgrade_phoenix",
-              "gwaio_upgrade_piranha",
-              "gwaio_upgrade_planetaryradar",
-              "gwaio_upgrade_radar",
-              "gwaio_upgrade_ragnarok",
-              "gwaio_upgrade_sheller",
-              "gwaio_upgrade_singlelaserdefensetower",
-              "gwaio_upgrade_skitter",
-              "gwaio_upgrade_slammer",
-              "gwaio_upgrade_solararray",
-              "gwaio_upgrade_spark",
-              "gwaio_upgrade_spinner",
-              "gwaio_upgrade_squall",
-              "gwaio_upgrade_stinger",
-              "gwaio_upgrade_stingray",
-              "gwaio_upgrade_stitch",
-              "gwaio_upgrade_storm",
-              "gwaio_upgrade_stryker",
-              "gwaio_upgrade_subcommander_duplication",
-              "gwaio_upgrade_subcommander_fabber",
-              "gwaio_upgrade_subcommander_tactics",
-              "gwaio_upgrade_sxx",
-              "gwaio_upgrade_teleporter",
-              "gwaio_upgrade_torpedolauncher",
-              "gwaio_upgrade_typhoon",
-              "gwaio_upgrade_ubercannon_structure",
-              "gwaio_upgrade_umbrella",
-              "gwaio_upgrade_unitcannon",
-              "gwaio_upgrade_vanguard",
-              "gwaio_upgrade_vehiclefactory",
-              "gwaio_upgrade_wall",
-              "gwaio_upgrade_wyrm",
-              "gwaio_upgrade_zeus",
               "gwc_add_card_slot",
               "gwc_bld_efficiency_cdr",
               "gwc_bld_efficiency_fabs",
@@ -309,7 +197,6 @@ if (!gwoCardsLoaded) {
               "gwc_cost_bots",
               "gwc_cost_defenses",
               "gwc_cost_economy",
-              "gwc_cost_intel",
               "gwc_cost_orbital",
               "gwc_cost_sea",
               "gwc_cost_super_weapons",
@@ -335,8 +222,6 @@ if (!gwoCardsLoaded) {
               "gwc_enable_vehicles_all",
               "gwc_enable_vehicles_t1",
               "gwc_energy_efficiency_all",
-              "gwc_energy_efficiency_intel",
-              "gwc_energy_efficiency_weapons",
               "gwc_health_air",
               "gwc_health_bots",
               "gwc_health_commander",
@@ -354,6 +239,131 @@ if (!gwoCardsLoaded) {
               "gwc_storage_1",
               "gwc_storage_and_buff"
             );
+            if (
+              gwaioSettings.techCardDeck === "Expanded" ||
+              // support v5.35.0 and earlier
+              _.isUndefined(gwaioSettings.techCardDeck)
+            ) {
+              model.gwoDeck.push(
+                "gwaio_enable_planetaryradar",
+                "gwaio_upgrade_advancedairfactory",
+                "gwaio_upgrade_advancedbotfactory",
+                "gwaio_upgrade_advancedenergyplant",
+                "gwaio_upgrade_advancedfabricationaircraft",
+                "gwaio_upgrade_advancedfabricationbot",
+                "gwaio_upgrade_advancedfabricationship",
+                "gwaio_upgrade_advancedfabricationvehicle",
+                "gwaio_upgrade_advancedlaserdefensetower",
+                "gwaio_upgrade_advancedmetalextractor",
+                "gwaio_upgrade_advancednavalfactory",
+                "gwaio_upgrade_advancedradar",
+                "gwaio_upgrade_advancedradarsatellite",
+                "gwaio_upgrade_advancedtorpedolauncher",
+                "gwaio_upgrade_advancedvehiclefactory",
+                "gwaio_upgrade_airfactory",
+                "gwaio_upgrade_anchor",
+                "gwaio_upgrade_angel",
+                "gwaio_upgrade_ant",
+                "gwaio_upgrade_antinuke",
+                "gwaio_upgrade_ares",
+                "gwaio_upgrade_arkyd",
+                "gwaio_upgrade_artemis",
+                "gwaio_upgrade_astraeus",
+                "gwaio_upgrade_atlas",
+                "gwaio_upgrade_avenger",
+                "gwaio_upgrade_barnacle",
+                "gwaio_upgrade_barracuda",
+                "gwaio_upgrade_bluehawk",
+                "gwaio_upgrade_boom",
+                "gwaio_upgrade_botfactory",
+                "gwaio_upgrade_bumblebee",
+                "gwaio_upgrade_catalyst",
+                "gwaio_upgrade_catapult",
+                "gwaio_upgrade_colonel",
+                "gwaio_upgrade_dox",
+                "gwaio_upgrade_drifter",
+                "gwaio_upgrade_energyplant",
+                "gwaio_upgrade_energystorage",
+                "gwaio_upgrade_fabricationaircraft",
+                "gwaio_upgrade_fabricationbot",
+                "gwaio_upgrade_fabricationship",
+                "gwaio_upgrade_fabricationvehicle",
+                "gwaio_upgrade_firefly",
+                "gwaio_upgrade_flak",
+                "gwaio_upgrade_galata",
+                "gwaio_upgrade_gile",
+                "gwaio_upgrade_grenadier",
+                "gwaio_upgrade_halley",
+                "gwaio_upgrade_helios",
+                "gwaio_upgrade_hermes",
+                "gwaio_upgrade_holkins",
+                "gwaio_upgrade_hornet",
+                "gwaio_upgrade_horsefly",
+                "gwaio_upgrade_hummingbird",
+                "gwaio_upgrade_icarus",
+                "gwaio_upgrade_inferno",
+                "gwaio_upgrade_jig",
+                "gwaio_upgrade_kaiju",
+                "gwaio_upgrade_kestrel",
+                "gwaio_upgrade_kraken",
+                "gwaio_upgrade_laserdefensetower",
+                "gwaio_upgrade_leveler",
+                "gwaio_upgrade_leviathan",
+                "gwaio_upgrade_lob",
+                "gwaio_upgrade_locusts",
+                "gwaio_upgrade_manhattan",
+                "gwaio_upgrade_mend",
+                "gwaio_upgrade_metalextractor",
+                "gwaio_upgrade_metalstorage",
+                "gwaio_upgrade_mine",
+                "gwaio_upgrade_narwhal",
+                "gwaio_upgrade_navalfactory",
+                "gwaio_upgrade_nukes",
+                "gwaio_upgrade_omega",
+                "gwaio_upgrade_orbitalfabricationbot",
+                "gwaio_upgrade_orbitalfactory",
+                "gwaio_upgrade_orbitallauncher",
+                "gwaio_upgrade_orca",
+                "gwaio_upgrade_pelican",
+                "gwaio_upgrade_pelter",
+                "gwaio_upgrade_phoenix",
+                "gwaio_upgrade_piranha",
+                "gwaio_upgrade_planetaryradar",
+                "gwaio_upgrade_radar",
+                "gwaio_upgrade_ragnarok",
+                "gwaio_upgrade_sheller",
+                "gwaio_upgrade_singlelaserdefensetower",
+                "gwaio_upgrade_skitter",
+                "gwaio_upgrade_slammer",
+                "gwaio_upgrade_solararray",
+                "gwaio_upgrade_spark",
+                "gwaio_upgrade_spinner",
+                "gwaio_upgrade_squall",
+                "gwaio_upgrade_stinger",
+                "gwaio_upgrade_stingray",
+                "gwaio_upgrade_stitch",
+                "gwaio_upgrade_storm",
+                "gwaio_upgrade_stryker",
+                "gwaio_upgrade_subcommander_duplication",
+                "gwaio_upgrade_subcommander_fabber",
+                "gwaio_upgrade_subcommander_tactics",
+                "gwaio_upgrade_sxx",
+                "gwaio_upgrade_teleporter",
+                "gwaio_upgrade_torpedolauncher",
+                "gwaio_upgrade_typhoon",
+                "gwaio_upgrade_ubercannon_structure",
+                "gwaio_upgrade_umbrella",
+                "gwaio_upgrade_unitcannon",
+                "gwaio_upgrade_vanguard",
+                "gwaio_upgrade_vehiclefactory",
+                "gwaio_upgrade_wall",
+                "gwaio_upgrade_wyrm",
+                "gwaio_upgrade_zeus",
+                "gwc_cost_intel",
+                "gwc_energy_efficiency_intel",
+                "gwc_energy_efficiency_weapons"
+              );
+            }
 
             var cards = [];
             var cardContexts = {};
@@ -373,8 +383,6 @@ if (!gwoCardsLoaded) {
                 }
               });
             });
-
-            var galaxy = model.game().galaxy();
 
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
@@ -450,7 +458,7 @@ if (!gwoCardsLoaded) {
                       resultIndex = hand[index].index;
                     }
 
-                    if (resultIndex !== undefined) {
+                    if (!_.isUndefined(resultIndex)) {
                       var resultDeal = fullHand[resultIndex];
                       var cardParams = resultDeal && resultDeal.params;
                       var cardId = deck[resultIndex];
@@ -533,8 +541,6 @@ if (!gwoCardsLoaded) {
               }
             };
 
-            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-
             // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
             if (
               inventory.cards().length === 1 &&
@@ -565,8 +571,7 @@ if (!gwoCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              // This will also trigger a save
-              dealFirstCardSelectableAI(gwaioSettings);
+              dealFirstCardSelectableAI(gwaioSettings); // also triggers a save
             }
 
             dealFirstCardSelectableAI(gwaioSettings);
@@ -833,7 +838,7 @@ if (!gwoCardsLoaded) {
                 return;
               }
               // Ensure inventory hovers work at the same time as the new tech display
-              if (hoverIndex === undefined) {
+              if (_.isUndefined(hoverIndex)) {
                 hoverIndex = 0;
               } else {
                 hoverIndex += 1;
@@ -843,7 +848,7 @@ if (!gwoCardsLoaded) {
                 id: cardId,
               });
               if (cardIndex === -1) {
-                if (cardId === undefined) {
+                if (_.isUndefined(cardId)) {
                   return;
                 } else {
                   console.warn(

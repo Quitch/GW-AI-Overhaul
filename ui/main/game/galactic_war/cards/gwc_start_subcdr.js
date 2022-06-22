@@ -35,6 +35,7 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits([
             gwoUnit.ant,
+            gwoUnit.skitter,
             gwoUnit.vehicleFabber,
             gwoUnit.vehicleFactory,
           ]);
