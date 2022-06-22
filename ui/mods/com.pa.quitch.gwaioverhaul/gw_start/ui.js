@@ -91,11 +91,10 @@ if (!gwoUILoaded) {
 
       var difficultySettings = model.gwoDifficultySettings;
 
+      // duplicate settings we don't own in our view model
       model.newGameSizeIndex = difficultySettings.galaxySize;
       model.newGameHardcore = difficultySettings.hardcore;
       model.activeStartCardIndex = difficultySettings.chosenLoadout;
-
-      // duplicate settings we don't own in our view model
       model.playerFactionIndex.subscribe(function () {
         difficultySettings.playerFaction(model.playerFactionIndex());
       });
