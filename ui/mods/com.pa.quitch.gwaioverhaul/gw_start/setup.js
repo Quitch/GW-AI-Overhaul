@@ -425,10 +425,10 @@ if (!gwoSetupLoaded) {
                 }
 
                 switch (difficulty.ai()) {
-                  case 1:
+                  case "Queller":
                     setupQuellerAI(ai);
                     break;
-                  case 2:
+                  case "Penchant":
                     setupPenchantAI(ai);
                 }
               };
@@ -673,7 +673,7 @@ if (!gwoSetupLoaded) {
                   });
 
                   // Setup Queller for FFA
-                  if (difficulty.ai() === 1 && ai.foes) {
+                  if (difficulty.ai() === "Queller" && ai.foes) {
                     var ffaTag = "ffa";
                     ai.personality.personality_tags =
                       ai.personality.personality_tags.concat(ffaTag);
@@ -804,13 +804,7 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.simpleSystems();
               originSystem.gwaio.easierStart =
                 model.gwoDifficultySettings.easierStart();
-              if (model.gwoDifficultySettings.ai() === 1) {
-                originSystem.gwaio.ai = "Queller";
-              } else if (model.gwoDifficultySettings.ai() === 2) {
-                originSystem.gwaio.ai = "Penchant";
-              } else {
-                originSystem.gwaio.ai = "Titans";
-              }
+              originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
               originSystem.gwaio.aiMods = [];
               if (model.gwoDifficultySettings.techCardDeck() === 1) {
                 originSystem.gwaio.techCardDeck = "Expanded";

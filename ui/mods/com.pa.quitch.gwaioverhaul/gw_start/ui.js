@@ -11,7 +11,7 @@ if (!gwoUILoaded) {
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
         easierStart: ko.observable(false),
-        ai: ko.observable(0).extend({ numeric: 0 }),
+        ai: ko.observable("Titans"),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
         techCardDeck: ko.observable(1),
         customDifficulty: ko.observable(false),
