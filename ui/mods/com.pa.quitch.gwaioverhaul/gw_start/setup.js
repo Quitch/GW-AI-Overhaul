@@ -388,16 +388,16 @@ if (!gwoSetupLoaded) {
                 ai.penchantName = penchantValues.penchantName;
               };
 
-              var stringToBoolean = function (string) {
+              var parseBoolean = function (string) {
                 return string === "true";
               };
 
               var setAIPersonality = function (ai, difficulty) {
                 ai.personality.micro_type = difficulty.microType();
-                ai.personality.go_for_the_kill = stringToBoolean(
+                ai.personality.go_for_the_kill = parseBoolean(
                   difficulty.goForKill()
                 );
-                ai.personality.priority_scout_metal_spots = stringToBoolean(
+                ai.personality.priority_scout_metal_spots = parseBoolean(
                   difficulty.priorityScoutMetalSpots()
                 );
                 ai.personality.factory_build_delay_min =
@@ -406,8 +406,9 @@ if (!gwoSetupLoaded) {
                   difficulty.factoryBuildDelayMax();
                 ai.personality.unable_to_expand_delay =
                   difficulty.unableToExpandDelay();
-                ai.personality.enable_commander_danger_responses =
-                  stringToBoolean(difficulty.enableCommanderDangerResponses());
+                ai.personality.enable_commander_danger_responses = parseBoolean(
+                  difficulty.enableCommanderDangerResponses()
+                );
                 ai.personality.per_expansion_delay =
                   difficulty.perExpansionDelay();
                 ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
