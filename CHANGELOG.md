@@ -16,10 +16,6 @@
 - Casual through Platinum start gaining AI tech slightly later
 - Cluster is disabled if TITANS is not enabled
 
-### Fixed
-
-- Beginner and Casual spawning additional Commanders if selected after a higher difficulty
-
 ## v5.35.0 - 2022-06-15
 
 ### Added
