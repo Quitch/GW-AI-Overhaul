@@ -23,6 +23,10 @@
   max-height: 100%;
 }
 
+#gwo-ai-settings .header {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 #gwo-ai-settings .header + * {
   overflow-y: auto;
   flex-grow: 1;
