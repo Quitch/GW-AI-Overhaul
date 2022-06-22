@@ -7,9 +7,7 @@
       <label id="gwo-economy-label">
         <loc>ECONOMY:</loc>
       </label>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Economy modifier applied.'"
+      <span class="info_tip" data-bind="tooltip: '!LOC:Starting economy.'"
         >?</span
       >
       <div class="form-group" id="gwo-economy">
@@ -34,7 +32,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Economy increase over distance.'"
+        data-bind="tooltip: '!LOC:Speed the economy grows as you get deeper into the galaxy.'"
         >?</span
       >
       <div class="form-group" id="gwo-economy-growth">
@@ -123,7 +121,7 @@
       </div>
 
       <label id="gwo-tech-label">
-        <loc>AI BUFF SYSTEM:</loc>
+        <loc>TECH SYSTEM:</loc>
       </label>
       <span
         class="info_tip"
@@ -136,7 +134,7 @@
           id="gwo-tech-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.factionTechHandicap"
         >
-          <option value="99">NEVER</option>
+          <option value="99">NONE</option>
           <option value="2.5">7</option>
           <option value="2">6</option>
           <option value="1.5">5</option>
@@ -219,7 +217,7 @@
           id="gwo-micro-type-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.microType"
         >
-          <option value="0">BASIC</option>
+          <option value="0">POOR</option>
           <option value="1">AVERAGE</option>
           <option value="2">GOOD</option>
         </select>
@@ -247,7 +245,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:The army the AI is focusing its attacks against.'"
+        data-bind="tooltip: '!LOC:How well the AI picks who to attack.'"
         >?</span
       >
       <div class="form-group" id="gwo-target-selection">
@@ -256,8 +254,8 @@
           id="gwo-target-selection-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.goForKill"
         >
-          <option value="false">ANYONE</option>
-          <option value="true">WEAKEST</option>
+          <option value="false">POOR</option>
+          <option value="true">GOOD</option>
         </select>
       </div>
 
@@ -286,7 +284,7 @@
       </div>
 
       <label id="gwo-scouting-label">
-        <loc>COMMANDER MOVEMENT:</loc>
+        <loc>COMMANDER TRANSPORT:</loc>
       </label>
       <span
         class="info_tip"
@@ -299,8 +297,8 @@
           id="gwo-scouting-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.enableCommanderDangerResponses"
         >
-          <option value="false">SINGLE-PLANET</option>
-          <option value="true">MULTI-PLANET</option>
+          <option value="false">DISABLED</option>
+          <option value="true">ENABLED</option>
         </select>
       </div>
 
@@ -417,7 +415,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Percentage chance per system of land anywhere being enabled.'"
+        data-bind="tooltip: '!LOC:Chance of a system allowing you to land outside spawn zones.'"
         >?</span
       >
       <div class="form-group" id="gwo-land-anywhere-chance">
@@ -441,7 +439,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Percentage chance per system of bounty mode being enabled.'"
+        data-bind="tooltip: '!LOC:Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.'"
         >?</span
       >
       <div class="form-group" id="gwo-sudden-death-chance">
@@ -465,7 +463,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Percentage chance per system of bounty mode being enabled.'"
+        data-bind="tooltip: '!LOC:Chance of a system awarding bounties for army kills.'"
         >?</span
       >
       <div class="form-group" id="gwo-bounties-chance">
