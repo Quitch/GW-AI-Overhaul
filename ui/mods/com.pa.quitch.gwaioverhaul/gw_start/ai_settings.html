@@ -59,7 +59,7 @@
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Number of Commanders in the bosses army.'"
+        data-bind="tooltip: '!LOC:Number of Commanders in the boss\'s army.'"
         >?</span
       >
       <div class="form-group" id="gwo-boss-commanders-chance">
@@ -77,11 +77,11 @@
       </div>
 
       <label id="gwo-base-minions-label">
-        <loc>COMMANDERS/ARMIES:</loc>
+        <loc>ARMIES/COMMANDERS:</loc>
       </label>
       <span
         class="info_tip"
-        data-bind="tooltip: '!LOC:Baseline number of armies/Commanders per faction in every system irrespective of distance.'"
+        data-bind="tooltip: '!LOC:Minimum number of armies/Commanders per faction in every system irrespective of distance.'"
         >?</span
       >
       <div class="form-group" id="gwo-base-minions">
@@ -258,8 +258,8 @@
           id="gwo-target-selection-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.goForKill"
         >
-          <option value="false">POOR</option>
-          <option value="true">GOOD</option>
+          <option value="false">ANYONE</option>
+          <option value="true">WEAKEST</option>
         </select>
       </div>
 
@@ -370,7 +370,7 @@
       </div>
 
       <label id="gwo-expand-delay-label">
-        <loc>EXPANSION DELAY:</loc>
+        <loc>UNABLE TO EXPAND DELAY:</loc>
       </label>
       <span
         class="info_tip"
@@ -522,9 +522,9 @@
       <div class="form-group" id="gwo-personality">
         <select class="form-control" id="gwo-personality-picker" multiple>
           <optgroup label="TITANS/PENCHANT">
-            <option value="SlowerExpansion">SLOWER EXPANSION</option>
             <option value="Tutorial">LOBOTOMY</option>
-            <option value="PreventsWaste">PREVENT ECO FLOAT</option>
+            <option value="SlowerExpansion">SLOWER EXPANSION</option>
+            <option value="PreventsWaste">AVOID ECO WASTE</option>
           </optgroup>
 
           <optgroup label="QUELLER">
