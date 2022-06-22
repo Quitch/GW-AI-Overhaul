@@ -32,7 +32,7 @@ if (!gwoSetupLoaded) {
               enableGoToWar(true);
             }
           });
-          // Remove System Scaling feature as this mod can't use it
+          // Remove features this mod can't use
           $("#system-scaling").remove();
           model.gwoDifficultySettings.systemScaling(false);
           $("#gwo-system-size").remove();
