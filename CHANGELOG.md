@@ -7,6 +7,7 @@
 - Setting to choose between the basic tech deck and the expanded GWO deck
 - New and improved interface for customising AI difficulty settings
 - System complexity now decoupled from difficulty and selectable as the war option Simple Systems
+- Your previous war settings are remembered when configuring a war
 
 ### Changed
 
