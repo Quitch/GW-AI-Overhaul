@@ -153,7 +153,7 @@ if (!gwoUILoaded) {
               $("select").selectpicker("refresh");
               difficultySettings.customDifficulty(false);
               difficultySettings.goForKill(
-                String(difficulties[selectedDifficulty].goForKill)
+                difficulties[selectedDifficulty].goForKill
               );
               difficultySettings.microType(
                 difficulties[selectedDifficulty].microType
@@ -165,9 +165,7 @@ if (!gwoUILoaded) {
                 difficulties[selectedDifficulty].minionMod
               );
               difficultySettings.priorityScoutMetalSpots(
-                String(
-                  difficulties[selectedDifficulty].priority_scout_metal_spots
-                )
+                difficulties[selectedDifficulty].priority_scout_metal_spots
               );
               difficultySettings.factoryBuildDelayMin(
                 difficulties[selectedDifficulty].factory_build_delay_min
@@ -179,10 +177,8 @@ if (!gwoUILoaded) {
                 difficulties[selectedDifficulty].unable_to_expand_delay
               );
               difficultySettings.enableCommanderDangerResponses(
-                String(
-                  difficulties[selectedDifficulty]
-                    .enable_commander_danger_responses
-                )
+                difficulties[selectedDifficulty]
+                  .enable_commander_danger_responses
               );
               difficultySettings.perExpansionDelay(
                 difficulties[selectedDifficulty].per_expansion_delay
