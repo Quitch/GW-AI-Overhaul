@@ -4,6 +4,10 @@
   max-height: 100%;
 }
 
+#new-game-right .header {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+
 #new-game-right .header + * {
   overflow-y: auto;
   flex-grow: 1;
