@@ -88,13 +88,10 @@ if (!gwoUILoaded) {
 
       var difficultySettings = model.gwoDifficultySettings;
 
+      model.newGameSizeIndex = difficultySettings.galaxySize;
+      model.newGameHardcore = difficultySettings.hardcore;
+
       // duplicate settings we don't own in our view model
-      model.newGameSizeIndex.subscribe(function () {
-        difficultySettings.galaxySize(model.newGameSizeIndex());
-      });
-      model.newGameHardcore.subscribe(function () {
-        difficultySettings.hardcore(model.newGameHardcore());
-      });
       model.playerFactionIndex.subscribe(function () {
         difficultySettings.playerFaction(model.playerFactionIndex());
       });
@@ -106,8 +103,6 @@ if (!gwoUILoaded) {
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
         });
-        model.newGameSizeIndex(difficultySettings.galaxySize());
-        model.newGameHardcore(difficultySettings.hardcore());
         model.playerFactionIndex(difficultySettings.playerFaction());
       }
 
