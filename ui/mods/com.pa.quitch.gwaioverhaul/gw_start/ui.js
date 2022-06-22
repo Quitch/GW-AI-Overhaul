@@ -14,6 +14,7 @@ if (!gwoUILoaded) {
         galaxySize: ko
           .observable(model.newGameSizeIndex())
           .extend({ numeric: 0 }),
+        hardcore: ko.observable(model.newGameHardcore()), // boolean
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -88,6 +89,9 @@ if (!gwoUILoaded) {
       model.newGameSizeIndex.subscribe(function () {
         difficultySettings.galaxySize(model.newGameSizeIndex());
       });
+      model.newGameHardcore.subscribe(function () {
+        difficultySettings.hardcore(model.newGameHardcore());
+      });
 
       if (!_.isEmpty(difficultySettings.previousSettings())) {
         var previousSettings = difficultySettings.previousSettings();
@@ -97,6 +101,7 @@ if (!gwoUILoaded) {
           difficultySettings[name](previousSettings[i]);
         });
         model.newGameSizeIndex(difficultySettings.galaxySize());
+        model.newGameHardcore(difficultySettings.hardcore());
       }
 
       // Because PA Inc wants to avoid escaping characters in HTML
