@@ -129,8 +129,13 @@ if (!gwoUILoaded) {
       // Allow modders to append their deck names
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
-
-      if (!api.content.usingTitans()) {
+      model.factionTooltip =
+        "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital<br>";
+      if (api.content.usingTitans()) {
+        model.factionTooltip =
+          model.factionTooltip +
+          "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.";
+      } else {
         $("select option[value*='Queller']").prop("disabled", true);
       }
 
