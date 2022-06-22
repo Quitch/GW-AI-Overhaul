@@ -482,13 +482,14 @@ if (!gwoSetupLoaded) {
               _.forEach(teamInfo, function (info) {
                 var boss = info.boss;
                 var difficulty = model.gwoDifficultySettings;
-                var econBase = difficulty.econBase();
-                var econRatePerDist = difficulty.econRatePerDist();
+                var econBase = parseFloat(difficulty.econBase());
+                var econRatePerDist = parseFloat(difficulty.econRatePerDist());
 
                 // Setup boss system
                 setAIPersonality(boss, difficulty);
                 boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
-                boss.bossCommanders = difficulty.bossCommanders();
+                var bossCommanders = difficulty.bossCommanders();
+                boss.bossCommanders = bossCommanders;
 
                 boss.inventory = [];
                 // Setup Cluster commanders
@@ -496,7 +497,9 @@ if (!gwoSetupLoaded) {
                   boss.inventory = gwoTech.clusterCommanders;
                 }
 
-                var factionTechHandicap = difficulty.factionTechHandicap();
+                var factionTechHandicap = parseFloat(
+                  difficulty.factionTechHandicap()
+                );
                 // Setup boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 boss.typeOfBuffs = bossBuffs; // for intelligence reports
@@ -508,7 +511,7 @@ if (!gwoSetupLoaded) {
                 );
 
                 var mandatoryMinions = difficulty.mandatoryMinions();
-                var minionMod = difficulty.minionMod();
+                var minionMod = parseFloat(difficulty.minionMod());
                 var minions = GWFactions[info.faction].minions;
                 var clusterType = "";
                 // Setup boss minions
@@ -555,7 +558,7 @@ if (!gwoSetupLoaded) {
                   ai.bountyMode = gameModeEnabled(
                     difficulty.bountyModeChance()
                   );
-                  ai.bountyModeValue = difficulty.bountyModeValue();
+                  ai.bountyModeValue = parseFloat(difficulty.bountyModeValue());
 
                   var dist = worker.star.distance();
 
@@ -594,7 +597,7 @@ if (!gwoSetupLoaded) {
                       clusterType = "Worker";
                       totalMinions = clusterCommanderCount(
                         numMinions,
-                        difficulty.bossCommanders()
+                        bossCommanders
                       );
                     }
 
@@ -645,7 +648,7 @@ if (!gwoSetupLoaded) {
                       if (foeCommander.name === "Worker") {
                         numFoes = clusterCommanderCount(
                           numMinions,
-                          difficulty.bossCommanders()
+                          bossCommanders
                         );
                       }
                       foeCommander.commanderCount = numFoes;
@@ -724,9 +727,13 @@ if (!gwoSetupLoaded) {
                       ai.boss = true; // otherwise it won't display its icon
                       ai.mirrorMode = true;
                       ai.treasurePlanet = true;
+                      var econBase = parseFloat(difficulty.econBase());
+                      var econRatePerDist = parseFloat(
+                        difficulty.econRatePerDist()
+                      );
                       ai.econ_rate = aiEconRate(
-                        difficulty.econBase(),
-                        difficulty.econRatePerDist(),
+                        econBase,
+                        econRatePerDist,
                         maxDist
                       );
                       ai.bossCommanders = difficulty.bossCommanders();
