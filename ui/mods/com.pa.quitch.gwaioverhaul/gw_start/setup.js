@@ -822,8 +822,16 @@ if (!gwoSetupLoaded) {
               return game;
             });
 
-            // the original model.navToNewGame()
             finishSetup.then(function () {
+              var difficultySettings = model.gwoDifficultySettings;
+              var previousSettings = difficultySettings.previousSettings();
+              var settingNames = _.keys(model.gwoDifficultySettings);
+              _.pull(settingNames, "previousSettings");
+              _.forEach(settingNames, function (name, i) {
+                previousSettings[i] = difficultySettings[name]();
+              });
+              difficultySettings.previousSettings.valueHasMutated();
+
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);
               save.then(function () {

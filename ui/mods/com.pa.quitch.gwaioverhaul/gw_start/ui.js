@@ -9,6 +9,9 @@ if (!gwoUILoaded) {
 
       // gw_start uses ko.applyBindings(model)
       model.gwoDifficultySettings = {
+        previousSettings: ko
+          .observableArray()
+          .extend({ local: "gwo_previous_settings" }),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -76,6 +79,17 @@ if (!gwoUILoaded) {
           numeric: 1,
         }),
       };
+
+      if (!_.isEmpty(model.gwoDifficultySettings.previousSettings())) {
+        var difficultySettings = model.gwoDifficultySettings;
+        var previousSettings = difficultySettings.previousSettings();
+        var settingNames = _.keys(model.gwoDifficultySettings);
+        _.pull(settingNames, "previousSettings");
+        _.forEach(settingNames, function (name, i) {
+          difficultySettings[name](previousSettings[i]);
+          console.log(difficultySettings[name]());
+        });
+      }
 
       // Because PA Inc wants to avoid escaping characters in HTML
       model.gwoFactionScalingTooltip =
