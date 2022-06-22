@@ -7,13 +7,13 @@
 - Setting to choose between the basic tech deck and the expanded GWO deck
 - New and improved interface for customising AI difficulty settings
 - System complexity now decoupled from difficulty and selectable as the war option Simple Systems
-- Your previous war settings are remembered when configuring a war
+- Your previous war settings are remembered
 
 ### Changed
 
 - Diamond and Uber have less additional commanders
 - Beginner never receives AI tech
-- Beginner grows its eco bonus slower
+- Beginner grows its eco slower
 - Casual through Platinum start gaining AI tech slightly later
 - Cluster is disabled if TITANS is not enabled
 - Commander Upgrade Tech improved
