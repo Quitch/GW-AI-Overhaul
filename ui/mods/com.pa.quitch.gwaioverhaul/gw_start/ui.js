@@ -5,6 +5,8 @@ if (!gwoUILoaded) {
 
   function gwoUI() {
     try {
+      model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
+
       // gw_start uses ko.applyBindings(model)
       model.gwoDifficultySettings = {
         factionScaling: ko.observable(true),

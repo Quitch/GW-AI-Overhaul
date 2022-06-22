@@ -10,8 +10,6 @@ if (!gwoSetupLoaded) {
         //empty
       };
 
-      model.newGameDifficultyIndex(0); // set the lowest difficulty as the default
-
       // We change how we monitor model.ready() to prevent
       // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
