@@ -11,6 +11,9 @@ if (!gwoUILoaded) {
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
         newGameDifficultyIndex: ko.observable(0).extend({ numeric: 0 }),
+        galaxySize: ko
+          .observable(model.newGameSizeIndex())
+          .extend({ numeric: 0 }),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -81,13 +84,18 @@ if (!gwoUILoaded) {
 
       var difficultySettings = model.gwoDifficultySettings;
 
-      if (!_.isEmpty(model.gwoDifficultySettings.previousSettings())) {
+      model.newGameSizeIndex.subscribe(function () {
+        difficultySettings.galaxySize(model.newGameSizeIndex());
+      });
+
+      if (!_.isEmpty(difficultySettings.previousSettings())) {
         var previousSettings = difficultySettings.previousSettings();
-        var settingNames = _.keys(model.gwoDifficultySettings);
+        var settingNames = _.keys(difficultySettings);
         _.pull(settingNames, "previousSettings");
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
         });
+        model.newGameSizeIndex(difficultySettings.newGameSizeIndex());
       }
 
       // Because PA Inc wants to avoid escaping characters in HTML
