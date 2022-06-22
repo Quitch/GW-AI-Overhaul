@@ -18,6 +18,9 @@ if (!gwoUILoaded) {
           .observable(model.newGameSizeIndex())
           .extend({ numeric: 0 }),
         hardcore: ko.observable(model.newGameHardcore()), // boolean
+        chosenLoadout: ko.observable(model.activeStartCardIndex()).extend({
+          numeric: 0,
+        }),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -90,6 +93,7 @@ if (!gwoUILoaded) {
 
       model.newGameSizeIndex = difficultySettings.galaxySize;
       model.newGameHardcore = difficultySettings.hardcore;
+      model.activeStartCardIndex = difficultySettings.chosenLoadout;
 
       // duplicate settings we don't own in our view model
       model.playerFactionIndex.subscribe(function () {
