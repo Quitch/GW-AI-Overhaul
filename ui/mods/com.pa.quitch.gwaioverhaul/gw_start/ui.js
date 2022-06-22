@@ -128,6 +128,10 @@ if (!gwoUILoaded) {
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
 
+      if (!api.content.usingTitans()) {
+        $("select option[value*='Queller']").prop("disabled", true);
+      }
+
       // Track difficulty settings so GW-CUSTOM fields appear and display correct values
       requireGW(
         [
