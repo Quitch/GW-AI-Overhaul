@@ -14,8 +14,11 @@
 - Beginner never receives AI tech
 - Beginner grows its eco bonus slower
 - Casual through Platinum start gaining AI tech slightly later
-- Beginner and Casual spawning additional Commanders if selected after a higher difficulty
 - Cluster is disabled if TITANS is not enabled
+
+### Fixed
+
+- Beginner and Casual spawning additional Commanders if selected after a higher difficulty
 
 ## v5.35.0 - 2022-06-15
 
