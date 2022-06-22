@@ -149,7 +149,7 @@ if (!gwoSetupLoaded) {
             game.content(api.content.activeContent());
 
             var selectedDifficulty =
-              model.gwoDifficultySettings.newGameDifficultyIndex();
+              model.gwoDifficultySettings.difficultyLevel();
             var systemTemplates = model.gwoDifficultySettings.simpleSystems()
               ? easySystemTemplates
               : star_system_templates;
