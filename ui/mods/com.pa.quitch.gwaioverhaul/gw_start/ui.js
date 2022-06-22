@@ -13,7 +13,7 @@ if (!gwoUILoaded) {
         easierStart: ko.observable(false),
         ai: ko.observable("Titans"),
         paLore: ko.observable(true).extend({ local: "gwaio_lore_enabled" }),
-        techCardDeck: ko.observable(1),
+        techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
         goForKill: ko.observable(false),
         microType: ko.observableArray(0).extend({ numeric: 0 }),
