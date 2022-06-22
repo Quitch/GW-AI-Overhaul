@@ -20,7 +20,7 @@ if (!gwoUILoaded) {
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
         goForKill: ko.observable("false"),
-        microType: ko.observableArray(0).extend({ numeric: 0 }),
+        microType: ko.observable(0).extend({ numeric: 0 }),
         mandatoryMinions: ko.observable(0).extend({
           numeric: 0,
         }),
