@@ -10,6 +10,9 @@ if (!gwoUILoaded) {
         previousSettings: ko
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
+        playerFaction: ko
+          .observable(model.playerFactionIndex())
+          .extend({ numeric: 0 }),
         difficultyLevel: ko.observable(0).extend({ numeric: 0 }),
         galaxySize: ko
           .observable(model.newGameSizeIndex())
@@ -92,6 +95,9 @@ if (!gwoUILoaded) {
       model.newGameHardcore.subscribe(function () {
         difficultySettings.hardcore(model.newGameHardcore());
       });
+      model.playerFactionIndex.subscribe(function () {
+        difficultySettings.playerFaction(model.playerFactionIndex());
+      });
 
       if (!_.isEmpty(difficultySettings.previousSettings())) {
         var previousSettings = difficultySettings.previousSettings();
@@ -102,6 +108,7 @@ if (!gwoUILoaded) {
         });
         model.newGameSizeIndex(difficultySettings.galaxySize());
         model.newGameHardcore(difficultySettings.hardcore());
+        model.playerFactionIndex(difficultySettings.playerFaction());
       }
 
       // Because PA Inc wants to avoid escaping characters in HTML
