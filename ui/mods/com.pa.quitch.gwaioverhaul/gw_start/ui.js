@@ -128,10 +128,6 @@ if (!gwoUILoaded) {
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
 
-      var convertBooleanToString = function (boolean) {
-        return boolean.toString();
-      };
-
       // Track difficulty settings so GW-CUSTOM fields appear and display correct values
       requireGW(
         [
@@ -151,9 +147,7 @@ if (!gwoUILoaded) {
               $("select").selectpicker("refresh");
               difficultySettings.customDifficulty(false);
               difficultySettings.goForKill(
-                convertBooleanToString(
-                  difficulties[selectedDifficulty].goForKill
-                )
+                String(difficulties[selectedDifficulty].goForKill)
               );
               difficultySettings.microType(
                 difficulties[selectedDifficulty].microType
@@ -165,7 +159,7 @@ if (!gwoUILoaded) {
                 difficulties[selectedDifficulty].minionMod
               );
               difficultySettings.priorityScoutMetalSpots(
-                convertBooleanToString(
+                String(
                   difficulties[selectedDifficulty].priority_scout_metal_spots
                 )
               );
@@ -179,7 +173,7 @@ if (!gwoUILoaded) {
                 difficulties[selectedDifficulty].unable_to_expand_delay
               );
               difficultySettings.enableCommanderDangerResponses(
-                convertBooleanToString(
+                String(
                   difficulties[selectedDifficulty]
                     .enable_commander_danger_responses
                 )
