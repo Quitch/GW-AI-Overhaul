@@ -806,11 +806,8 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.easierStart();
               originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
               originSystem.gwaio.aiMods = [];
-              if (model.gwoDifficultySettings.techCardDeck() === 1) {
-                originSystem.gwaio.techCardDeck = "Expanded";
-              } else {
-                originSystem.gwaio.techCardDeck = "Basic";
-              }
+              originSystem.gwaio.techCardDeck =
+                model.gwoDifficultySettings.techCardDeck();
 
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
