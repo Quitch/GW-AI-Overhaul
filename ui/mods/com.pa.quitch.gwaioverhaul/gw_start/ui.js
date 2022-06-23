@@ -177,7 +177,7 @@ if (!gwoUILoaded) {
         $("select option[value*='Queller']").prop("disabled", true);
       }
 
-      // Track difficulty settings so GW-CUSTOM fields appear and display correct values
+      // Track difficulty settings so AI Settings fields display correct values
       requireGW(
         [
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
