@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.36.2 - 2022-06-24
+
+### Fixed
+
+- AI not building fabbers from bot and vehicle factories if the player had the Bot or Vehicle Factory Upgrade Tech
+
 ## v5.36.1 - 2022-06-23
 
 ### Fixed

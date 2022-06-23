@@ -53,19 +53,19 @@ define([
           return [
             {
               type: "factory",
-              op: "append",
+              op: "replace",
               toBuild: unit,
-              idToMod: "builders",
-              value: "BasicBotFactory",
+              idToMod: "priority",
+              value: 97,
               refId: "builders",
               refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
             },
             {
               type: "factory",
-              op: "replace",
+              op: "append",
               toBuild: unit,
-              idToMod: "priority",
-              value: 97,
+              idToMod: "builders",
+              value: "BasicBotFactory",
               refId: "builders",
               refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
             },
