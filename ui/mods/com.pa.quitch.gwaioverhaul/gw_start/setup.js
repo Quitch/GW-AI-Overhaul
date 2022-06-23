@@ -790,6 +790,7 @@ if (!gwoSetupLoaded) {
                 "!LOC:Large",
                 "!LOC:Epic",
                 "!LOC:Uber",
+                // Support Bigger Galactic War mod
                 "!LOC:Vast",
                 "!LOC:Gigantic",
                 "!LOC:Ridiculous",
@@ -824,6 +825,7 @@ if (!gwoSetupLoaded) {
             });
 
             finishSetup.then(function () {
+              // Save war settings so they're the default next time
               var difficultySettings = model.gwoDifficultySettings;
               var previousSettings = difficultySettings.previousSettings();
               var settingNames = _.keys(model.gwoDifficultySettings);
