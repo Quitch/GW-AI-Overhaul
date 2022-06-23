@@ -178,10 +178,10 @@ if (!gwoCardsLoaded) {
             var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
-            if (!model.gwoDeck) {
-              model.gwoDeck = [];
+            if (!model.gwoCards) {
+              model.gwoCards = [];
             }
-            model.gwoDeck.push(
+            model.gwoCards.push(
               "gwc_add_card_slot",
               "gwc_bld_efficiency_cdr",
               "gwc_bld_efficiency_fabs",
@@ -244,7 +244,7 @@ if (!gwoCardsLoaded) {
               // support v5.35.0 and earlier
               _.isUndefined(gwaioSettings.techCardDeck)
             ) {
-              model.gwoDeck.push(
+              model.gwoCards.push(
                 "gwaio_enable_planetaryradar",
                 "gwaio_upgrade_advancedairfactory",
                 "gwaio_upgrade_advancedbotfactory",
@@ -368,11 +368,11 @@ if (!gwoCardsLoaded) {
             var cards = [];
             var cardContexts = {};
 
-            var loadCount = model.gwoDeck.length;
+            var loadCount = model.gwoCards.length;
             var loaded = $.Deferred();
 
             var deck = [];
-            _.forEach(model.gwoDeck, function (cardId) {
+            _.forEach(model.gwoCards, function (cardId) {
               requireGW(["cards/" + cardId], function (card) {
                 card.id = cardId;
                 cards.push(card);
@@ -580,7 +580,7 @@ if (!gwoCardsLoaded) {
             var dealCard = function (params) {
               var result = $.Deferred();
               loaded.then(function () {
-                var card = _.find(model.gwoDeck, function (cardId) {
+                var card = _.find(model.gwoCards, function (cardId) {
                   return cardId === params.id;
                 });
 
@@ -607,7 +607,7 @@ if (!gwoCardsLoaded) {
             // We need cheats to deal from our deck
             model.cheats.testCards = function () {
               star = game.galaxy().stars()[game.currentStar()];
-              _.forEach(model.gwoDeck, function (cardId) {
+              _.forEach(model.gwoCards, function (cardId) {
                 console.log("Testing " + cardId);
                 dealCard({
                   id: cardId,
@@ -675,7 +675,7 @@ if (!gwoCardsLoaded) {
 
             model.cheats.giveCard = function () {
               var id = model.cheats.giveCardId();
-              var cardId = _.find(model.gwoDeck, function (card) {
+              var cardId = _.find(model.gwoCards, function (card) {
                 return card === id;
               });
               galaxy = game.galaxy();
