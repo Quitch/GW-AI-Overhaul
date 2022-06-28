@@ -129,7 +129,7 @@ From easiest to hardest:
 - Godlike
 - Titan
 
-## Compatible Loadouts
+## Compatible Loadouts & Tech Cards
 
 To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/).
 
