@@ -679,6 +679,9 @@ if (!gwoSetupLoaded) {
                     );
                     allyCommander.faction = playerFaction;
                     ai.ally = allyCommander;
+                    if (difficulty.ai() === "Penchant") {
+                      setupPenchantAI(ai.ally);
+                    }
                   }
 
                   // Set up Queller for FFA
