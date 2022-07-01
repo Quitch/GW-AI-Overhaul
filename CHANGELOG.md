@@ -6,10 +6,6 @@
 
 - Systems will sometimes feature an allied commander
 
-### Changed
-
-- Removed GW prefix from difficulty levels
-
 ### Fixed
 
 - Personality tags not being correctly restored if the last war used Custom difficulty
