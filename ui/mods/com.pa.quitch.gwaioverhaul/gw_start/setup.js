@@ -679,7 +679,7 @@ if (!gwoSetupLoaded) {
                     );
                     allyCommander.faction = playerFaction;
 
-                    ai.allies = allyCommander;
+                    ai.ally = allyCommander;
                   }
 
                   // Setup Queller for FFA
