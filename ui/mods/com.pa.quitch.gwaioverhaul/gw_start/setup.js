@@ -678,7 +678,6 @@ if (!gwoSetupLoaded) {
                       GWFactions[playerFaction].minions
                     );
                     allyCommander.faction = playerFaction;
-
                     ai.ally = allyCommander;
                   }
 
