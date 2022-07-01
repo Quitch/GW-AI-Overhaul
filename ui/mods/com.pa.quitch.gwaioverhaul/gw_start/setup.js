@@ -601,7 +601,7 @@ if (!gwoSetupLoaded) {
                       );
                     }
 
-                    // Workers have additional commanders not minions
+                    // Cluster Workers get additional commanders in place of minions
                     if (ai.name === "Worker") {
                       ai.commanderCount = Math.max(totalMinions, 2);
                     } else {
@@ -644,7 +644,7 @@ if (!gwoSetupLoaded) {
                         numMinions
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
-                      // Cluster Workers get additional commanders
+                      // Cluster Workers get additional commanders in place of armies
                       if (foeCommander.name === "Worker") {
                         numFoes = clusterCommanderCount(
                           numMinions,
