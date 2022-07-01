@@ -6,11 +6,6 @@ define(function () {
       );
     },
     pick: function (faction, minionColour, count) {
-      if (count > factions[faction].length - 1) {
-        // We ran out of colours
-        return minionColour;
-      }
-
       var legonisColours = [
         [0, 176, 255],
         [153, 204, 255],
@@ -59,9 +54,14 @@ define(function () {
         revenantsColours,
         clusterColours,
       ];
+
+      if (count > factions[faction].length - 1) {
+        // We ran out of colours
+        return minionColour;
+      }
+
       var guardianColour = [255, 255, 255];
       var secondaryColour = [192, 192, 192];
-
       if (_.isEmpty(_.xor(minionColour[0], guardianColour))) {
         return [guardianColour, secondaryColour];
       }
