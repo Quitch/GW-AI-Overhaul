@@ -90,6 +90,7 @@ if (!gwoUILoaded) {
         alliedCommanderChance: ko.observable(0).extend({
           numeric: 0,
         }),
+        personalityTags: ko.observableArray(["Default", "Queller"]),
       };
 
       var difficultySettings = model.gwoDifficultySettings;
@@ -108,6 +109,11 @@ if (!gwoUILoaded) {
         _.pull(settingNames, "previousSettings");
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
+        });
+        _.defer(function () {
+          $("#gwo-personality-picker")
+            .selectpicker("val", model.gwoDifficultySettings.personalityTags())
+            .trigger("change");
         });
         model.playerFactionIndex(difficultySettings.playerFaction());
       }
@@ -228,12 +234,6 @@ if (!gwoUILoaded) {
               difficultySettings.perExpansionDelay(
                 difficulties[selectedDifficulty].per_expansion_delay
               );
-              $("#gwo-personality-picker")
-                .selectpicker(
-                  "val",
-                  difficulties[selectedDifficulty].personality_tags
-                )
-                .trigger("change");
               difficultySettings.econBase(
                 difficulties[selectedDifficulty].econBase
               );
@@ -274,6 +274,12 @@ if (!gwoUILoaded) {
               difficultySettings.alliedCommanderChance(
                 difficulties[selectedDifficulty].alliedCommanderChance
               );
+              difficultySettings.personalityTags(
+                difficulties[selectedDifficulty].personality_tags
+              );
+              $("#gwo-personality-picker")
+                .selectpicker("val", difficultySettings.personalityTags())
+                .trigger("change");
             }
           });
         }

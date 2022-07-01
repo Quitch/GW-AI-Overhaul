@@ -10,6 +10,10 @@
 
 - Removed GW prefix from difficulty levels
 
+### Fixed
+
+- Personality tags not being correctly restored if the last war used Custom difficulty
+
 ## v5.36.2 - 2022-06-24
 
 ### Fixed
