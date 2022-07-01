@@ -671,7 +671,7 @@ if (!gwoSetupLoaded) {
                     }
                   });
 
-                  // Setup allied Commander
+                  // Setup allied commander
                   if (gameModeEnabled(difficulty.alliedCommanderChance())) {
                     var playerFaction = model.playerFactionIndex();
                     var allyCommander = selectMinion(
