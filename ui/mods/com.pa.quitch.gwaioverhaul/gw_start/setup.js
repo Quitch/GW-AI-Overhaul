@@ -734,6 +734,7 @@ if (!gwoSetupLoaded) {
                       delete ai.commanderCount;
                       delete ai.minions;
                       delete ai.foes;
+                      delete ai.ally;
                       delete ai.team;
                       delete ai.penchantName;
                       ai.icon =
