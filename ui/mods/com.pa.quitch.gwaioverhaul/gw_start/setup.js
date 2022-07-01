@@ -695,6 +695,10 @@ if (!gwoSetupLoaded) {
                       foe.personality.personality_tags =
                         foe.personality.personality_tags.concat(ffaTag);
                     });
+                    if (ai.ally) {
+                      ai.ally.personality.personality_tags =
+                        ai.ally.personality.personality_tags.concat(ffaTag);
+                    }
                   }
                 });
               });
