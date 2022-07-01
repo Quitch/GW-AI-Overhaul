@@ -64,9 +64,8 @@ define(function () {
 
       if (_.isEmpty(_.xor(minionColour[0], guardianColour))) {
         return [guardianColour, secondaryColour];
-      } else {
-        return [factions[faction][count], secondaryColour];
       }
+      return [factions[faction][count], secondaryColour];
     },
   };
 });
