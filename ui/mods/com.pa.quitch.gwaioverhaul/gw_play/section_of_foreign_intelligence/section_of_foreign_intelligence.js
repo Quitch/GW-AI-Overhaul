@@ -76,9 +76,9 @@ if (!gwoIntelligenceLoaded) {
               ];
               var faction = factionNames[commander.faction];
               // Minions aren't assigned a faction number so use the previous one
-              factionIndex = commander.faction
-                ? commander.faction
-                : factionIndex;
+              factionIndex = _.isUndefined(commander.faction)
+                ? factionIndex
+                : commander.faction;
               index = commander.faction ? 0 : index + 1;
               var numCommanders = 0;
               if (commander.bossCommanders > 1) {
@@ -335,6 +335,14 @@ if (!gwoIntelligenceLoaded) {
               var commanders = [];
               if (primary && primary.foes) {
                 commanders = _.map(primary.foes, intelligence);
+              }
+              return commanders;
+            });
+            model.gwoAlly = ko.computed(function () {
+              var primary = model.selection.system().star.ai();
+              var commanders = [];
+              if (primary && primary.ally) {
+                commanders = [intelligence(primary.ally, 0)];
               }
               return commanders;
             });
