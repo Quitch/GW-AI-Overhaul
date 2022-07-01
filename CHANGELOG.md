@@ -6,6 +6,10 @@
 
 - Systems will sometimes feature an allied commander
 
+### Changed
+
+- Removed GW prefix from difficulty levels
+
 ## v5.36.2 - 2022-06-24
 
 ### Fixed
