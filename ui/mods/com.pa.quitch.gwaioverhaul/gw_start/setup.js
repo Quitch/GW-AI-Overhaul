@@ -671,6 +671,17 @@ if (!gwoSetupLoaded) {
                     }
                   });
 
+                  // Setup allied Commander
+                  if (gameModeEnabled(difficulty.alliedCommanderChance())) {
+                    var playerFaction = model.playerFactionIndex();
+                    var allyCommander = selectMinion(
+                      GWFactions[playerFaction].minions
+                    );
+                    allyCommander.faction = playerFaction;
+
+                    ai.allies = allyCommander;
+                  }
+
                   // Setup Queller for FFA
                   if (difficulty.ai() === "Queller" && ai.foes) {
                     var ffaTag = "ffa";
