@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Systems will sometimes feature an allied commander
+
 ## v5.36.2 - 2022-06-24
 
 ### Fixed
