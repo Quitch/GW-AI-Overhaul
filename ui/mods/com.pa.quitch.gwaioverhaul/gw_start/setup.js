@@ -848,6 +848,9 @@ if (!gwoSetupLoaded) {
               var previousSettings = difficultySettings.previousSettings();
               var settingNames = _.keys(model.gwoDifficultySettings);
               _.pull(settingNames, "previousSettings");
+              difficultySettings.personalityTags(
+                $("#gwo-personality-picker").val().concat("Default", "queller")
+              );
               _.forEach(settingNames, function (name, i) {
                 previousSettings[i] = difficultySettings[name]();
               });
