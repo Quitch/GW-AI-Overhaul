@@ -9,6 +9,7 @@
 ### Fixed
 
 - Personality tags not being correctly restored if the last war used Custom difficulty
+- The Guardians commander colour on the strategic map
 
 ## v5.36.2 - 2022-06-24
 
