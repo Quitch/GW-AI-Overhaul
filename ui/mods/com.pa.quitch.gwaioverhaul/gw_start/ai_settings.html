@@ -108,7 +108,7 @@
           id="gwo-minion-ramp-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.minionMod"
         >
-          <option value="0.0">NEVER</option>
+          <option value="0">NEVER</option>
           <option value="0.16">7</option>
           <option value="0.19">6</option>
           <option value="0.24">5</option>
@@ -410,6 +410,32 @@
         </select>
       </div>
 
+      <label id="gwo-ffa-chance-label">
+        <loc>ALLY CHANCE:</loc>
+      </label>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Chance of an allied Commander being present in a system.'"
+        >?</span
+      >
+      <div class="form-group" id="gwo-ffa-chance">
+        <select
+          class="form-control"
+          id="gwo-ffa-chance-picker"
+          data-bind="selectPicker: $root.gwoDifficultySettings.alliedCommanderChance"
+        >
+          <option value="0">0%</option>
+          <option value="5">5%</option>
+          <option value="10">10%</option>
+          <option value="15">15%</option>
+          <option value="20">20%</option>
+          <option value="25">25%</option>
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+        </select>
+      </div>
+
       <label id="gwo-land-anywhere-chance-label">
         <loc>LAND ANYWHERE CHANCE:</loc>
       </label>
@@ -522,7 +548,6 @@
             <option value="SlowerExpansion">SLOWER EXPANSION</option>
             <option value="PreventsWaste">AVOID ECO WASTE</option>
           </optgroup>
-
           <optgroup label="QUELLER">
             <option value="air">LOVES AIR</option>
             <option value="bot">LOVES BOTS</option>
@@ -532,7 +557,6 @@
             <option value="ffa">FFA BEHAVIOUR</option>
             <option value="lateorbital">LATE ORBITAL</option>
           </optgroup>
-
           <optgroup label="Required">
             <option value="Default" disabled>DEFAULT</option>
             <option value="queller" disabled>QUELLER</option>

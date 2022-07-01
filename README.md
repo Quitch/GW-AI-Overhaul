@@ -12,7 +12,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
   - Unique personality
   - Unique colour
   - Fight according to their faction's preferred style
-- Eight new difficulties suitable for anyone from a new player to a veteran of the game
+- Nine new difficulties suitable for anyone from a new player to a veteran of the game
 - Reduced Sub Commander effectiveness
 - Adds the possibility of multiple factions in a system and an FFA occurring
 - Adds support for shared army enemies
@@ -23,7 +23,6 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
   - Bounty mode
   - Land anywhere
   - Sudden death
-- You can give the enemy tougher commander units
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
@@ -130,7 +129,7 @@ From easiest to hardest:
 - Godlike
 - Titan
 
-## Compatible Loadouts
+## Compatible Loadouts & Tech Cards
 
 To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/).
 

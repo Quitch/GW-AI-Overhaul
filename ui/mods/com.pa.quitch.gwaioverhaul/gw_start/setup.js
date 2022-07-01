@@ -478,21 +478,21 @@ if (!gwoSetupLoaded) {
                 return Math.random() * 100 <= gameModeChance;
               };
 
-              // Setup the AI
+              // Set up the AI
               _.forEach(teamInfo, function (info) {
                 var boss = info.boss;
                 var difficulty = model.gwoDifficultySettings;
                 var econBase = parseFloat(difficulty.econBase());
                 var econRatePerDist = parseFloat(difficulty.econRatePerDist());
 
-                // Setup boss system
+                // Set up boss system
                 setAIPersonality(boss, difficulty);
                 boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
                 var bossCommanders = difficulty.bossCommanders();
                 boss.bossCommanders = bossCommanders;
 
                 boss.inventory = [];
-                // Setup Cluster commanders
+                // Set up Cluster commanders
                 if (boss.isCluster === true) {
                   boss.inventory = gwoTech.clusterCommanders;
                 }
@@ -500,7 +500,7 @@ if (!gwoSetupLoaded) {
                 var factionTechHandicap = parseFloat(
                   difficulty.factionTechHandicap()
                 );
-                // Setup boss AI Buffs
+                // Set up boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 boss.typeOfBuffs = bossBuffs; // for intelligence reports
                 boss.inventory = aiTech(
@@ -514,7 +514,7 @@ if (!gwoSetupLoaded) {
                 var minionMod = parseFloat(difficulty.minionMod());
                 var minions = GWFactions[info.faction].minions;
                 var clusterType = "";
-                // Setup boss minions
+                // Set up boss minions
                 var numMinions = countMinions(
                   mandatoryMinions,
                   minionMod,
@@ -544,7 +544,7 @@ if (!gwoSetupLoaded) {
                   });
                 }
 
-                // Setup non-boss AI system
+                // Set up non-boss AI system
                 _.forEach(info.workers, function (worker) {
                   var ai = worker.ai;
 
@@ -573,12 +573,12 @@ if (!gwoSetupLoaded) {
                   );
 
                   ai.inventory = [];
-                  // Setup Cluster commanders
+                  // Set up Cluster commanders
                   if (ai.isCluster === true) {
                     ai.inventory = gwoTech.clusterCommanders;
                   }
 
-                  // Setup non-boss AI buffs
+                  // Set up non-boss AI buffs
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                   ai.typeOfBuffs = workerBuffs; // for intelligence reports
                   ai.inventory = aiTech(
@@ -588,7 +588,7 @@ if (!gwoSetupLoaded) {
                     gwoTech.factionTechs
                   );
 
-                  // Setup non-boss minions
+                  // Set up non-boss minions
                   if (numMinions > 0) {
                     ai.minions = [];
 
@@ -601,7 +601,7 @@ if (!gwoSetupLoaded) {
                       );
                     }
 
-                    // Workers have additional commanders not minions
+                    // Cluster Workers get additional commanders in place of minions
                     if (ai.name === "Worker") {
                       ai.commanderCount = Math.max(totalMinions, 2);
                     } else {
@@ -622,7 +622,7 @@ if (!gwoSetupLoaded) {
                     }
                   }
 
-                  // Setup additional factions for FFA
+                  // Set up additional factions for FFA
                   var availableFactions = _.without(aiFactions, ai.faction);
                   _.times(availableFactions.length, function () {
                     if (gameModeEnabled(difficulty.ffaChance())) {
@@ -644,7 +644,7 @@ if (!gwoSetupLoaded) {
                         numMinions
                       );
                       var numFoes = Math.round((numMinions + 1) / 2);
-                      // Cluster Workers get additional commanders
+                      // Cluster Workers get additional commanders in place of armies
                       if (foeCommander.name === "Worker") {
                         numFoes = clusterCommanderCount(
                           numMinions,
@@ -654,12 +654,12 @@ if (!gwoSetupLoaded) {
                       foeCommander.commanderCount = numFoes;
 
                       foeCommander.inventory = [];
-                      // Setup Cluster commanders
+                      // Set up Cluster commanders
                       if (foeCommander.isCluster === true) {
                         foeCommander.inventory = gwoTech.clusterCommanders;
                       }
 
-                      // Setup additional faction AI buffs
+                      // Set up additional faction AI buffs
                       foeCommander.inventory = aiTech(
                         workerBuffs,
                         foeCommander.inventory,
@@ -671,7 +671,20 @@ if (!gwoSetupLoaded) {
                     }
                   });
 
-                  // Setup Queller for FFA
+                  // Set up allied commander
+                  if (gameModeEnabled(difficulty.alliedCommanderChance())) {
+                    var playerFaction = model.playerFactionIndex();
+                    var allyCommander = selectMinion(
+                      GWFactions[playerFaction].minions
+                    );
+                    allyCommander.faction = playerFaction;
+                    ai.ally = allyCommander;
+                    if (difficulty.ai() === "Penchant") {
+                      setupPenchantAI(ai.ally);
+                    }
+                  }
+
+                  // Set up Queller for FFA
                   if (difficulty.ai() === "Queller" && ai.foes) {
                     var ffaTag = "ffa";
                     ai.personality.personality_tags =
@@ -684,11 +697,15 @@ if (!gwoSetupLoaded) {
                       foe.personality.personality_tags =
                         foe.personality.personality_tags.concat(ffaTag);
                     });
+                    if (ai.ally) {
+                      ai.ally.personality.personality_tags =
+                        ai.ally.personality.personality_tags.concat(ffaTag);
+                    }
                   }
                 });
               });
 
-              // Setup lore and the treasure planet
+              // Set up lore and the treasure planet
               var treasurePlanetSetup = false;
               var loreEntry = 0;
               var optionalLoreEntry = 0;
@@ -714,12 +731,13 @@ if (!gwoSetupLoaded) {
                   if (!ai.bossCommanders) {
                     var difficulty = model.gwoDifficultySettings;
 
-                    // Setup The Guardians' treasure planet
+                    // Set up The Guardians' treasure planet
                     if (treasurePlanetSetup === false) {
                       treasurePlanetSetup = true;
                       delete ai.commanderCount;
                       delete ai.minions;
                       delete ai.foes;
+                      delete ai.ally;
                       delete ai.team;
                       delete ai.penchantName;
                       ai.icon =
@@ -790,6 +808,7 @@ if (!gwoSetupLoaded) {
                 "!LOC:Large",
                 "!LOC:Epic",
                 "!LOC:Uber",
+                // Support Bigger Galactic War mod
                 "!LOC:Vast",
                 "!LOC:Gigantic",
                 "!LOC:Ridiculous",
@@ -824,10 +843,14 @@ if (!gwoSetupLoaded) {
             });
 
             finishSetup.then(function () {
+              // Save war settings so they're the default next time
               var difficultySettings = model.gwoDifficultySettings;
               var previousSettings = difficultySettings.previousSettings();
               var settingNames = _.keys(model.gwoDifficultySettings);
               _.pull(settingNames, "previousSettings");
+              difficultySettings.personalityTags(
+                $("#gwo-personality-picker").val().concat("Default", "queller")
+              );
               _.forEach(settingNames, function (name, i) {
                 previousSettings[i] = difficultySettings[name]();
               });

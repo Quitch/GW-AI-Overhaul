@@ -75,11 +75,18 @@ if (!gwoIntelligenceLoaded) {
                 "Cluster",
               ];
               var faction = factionNames[commander.faction];
+              var inventory = model.game().inventory();
+              var playerFaction = inventory.getTag("global", "playerFaction");
               // Minions aren't assigned a faction number so use the previous one
-              factionIndex = commander.faction
-                ? commander.faction
-                : factionIndex;
-              index = commander.faction ? 0 : index + 1;
+              factionIndex = _.isUndefined(commander.faction)
+                ? factionIndex
+                : commander.faction;
+              if (factionIndex === playerFaction) {
+                // allies appear after player and sub commanders in colour
+                index += inventory.minions().length + 1;
+              } else {
+                index = commander.faction ? 0 : index + 1;
+              }
               var numCommanders = 0;
               if (commander.bossCommanders > 1) {
                 numCommanders = commander.bossCommanders;
@@ -335,6 +342,14 @@ if (!gwoIntelligenceLoaded) {
               var commanders = [];
               if (primary && primary.foes) {
                 commanders = _.map(primary.foes, intelligence);
+              }
+              return commanders;
+            });
+            model.gwoAlly = ko.computed(function () {
+              var primary = model.selection.system().star.ai();
+              var commanders = [];
+              if (primary && primary.ally) {
+                commanders = [intelligence(primary.ally, 0)];
               }
               return commanders;
             });

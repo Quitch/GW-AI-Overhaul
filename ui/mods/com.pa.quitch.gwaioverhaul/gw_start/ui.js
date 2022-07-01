@@ -87,6 +87,10 @@ if (!gwoUILoaded) {
         factionTechHandicap: ko.observable(0).extend({
           numeric: 1,
         }),
+        alliedCommanderChance: ko.observable(0).extend({
+          numeric: 0,
+        }),
+        personalityTags: ko.observableArray(["Default", "Queller"]),
       };
 
       var difficultySettings = model.gwoDifficultySettings;
@@ -105,6 +109,11 @@ if (!gwoUILoaded) {
         _.pull(settingNames, "previousSettings");
         _.forEach(settingNames, function (name, i) {
           difficultySettings[name](previousSettings[i]);
+        });
+        _.defer(function () {
+          $("#gwo-personality-picker")
+            .selectpicker("val", model.gwoDifficultySettings.personalityTags())
+            .trigger("change");
         });
         model.playerFactionIndex(difficultySettings.playerFaction());
       }
@@ -177,7 +186,7 @@ if (!gwoUILoaded) {
         $("select option[value*='Queller']").prop("disabled", true);
       }
 
-      // Track difficulty settings so GW-CUSTOM fields appear and display correct values
+      // Track difficulty settings so AI Settings fields display correct values
       requireGW(
         [
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
@@ -225,12 +234,6 @@ if (!gwoUILoaded) {
               difficultySettings.perExpansionDelay(
                 difficulties[selectedDifficulty].per_expansion_delay
               );
-              $("#gwo-personality-picker")
-                .selectpicker(
-                  "val",
-                  difficulties[selectedDifficulty].personality_tags
-                )
-                .trigger("change");
               difficultySettings.econBase(
                 difficulties[selectedDifficulty].econBase
               );
@@ -268,6 +271,15 @@ if (!gwoUILoaded) {
               difficultySettings.factionTechHandicap(
                 difficulties[selectedDifficulty].factionTechHandicap
               );
+              difficultySettings.alliedCommanderChance(
+                difficulties[selectedDifficulty].alliedCommanderChance
+              );
+              difficultySettings.personalityTags(
+                difficulties[selectedDifficulty].personality_tags
+              );
+              $("#gwo-personality-picker")
+                .selectpicker("val", difficultySettings.personalityTags())
+                .trigger("change");
             }
           });
         }

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.37.0 - 2022-07-01
+
+### Added
+
+- Systems will sometimes feature an allied commander
+
+### Fixed
+
+- Personality tags not being correctly restored if the last war used Custom difficulty
+
 ## v5.36.2 - 2022-06-24
 
 ### Fixed
