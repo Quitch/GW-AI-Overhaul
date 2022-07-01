@@ -832,11 +832,11 @@ if (!gwoRefereeChangesLoaded) {
                             configFiles[filePath] = json;
                           }
                         } else if (aiToModify === "SubCommanders") {
-                          // Setup enemy AI first
+                          // Set up enemy AI first
                           if (!_.startsWith(filePath, aiTechPath)) {
                             configFiles[filePath] = _.cloneDeep(json);
                           }
-                          // Setup Sub Commanders
+                          // Set up Sub Commanders
                           if (!_.isEmpty(aiBuildOps)) {
                             addTechToAI(json, aiBuildOps);
                           }
@@ -915,7 +915,7 @@ if (!gwoRefereeChangesLoaded) {
           var generateConfig = function () {
             var self = this;
 
-            // Setup the player
+            // Set up the player
             var game = self.game();
             var inventory = game.inventory();
             var playerName = ko.observable().extend({ session: "displayName" });
@@ -988,7 +988,7 @@ if (!gwoRefereeChangesLoaded) {
               });
             });
 
-            // Setup the AI
+            // Set up the AI
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
@@ -1008,7 +1008,7 @@ if (!gwoRefereeChangesLoaded) {
               }
             };
 
-            // Setup AI System Owner
+            // Set up AI System Owner
             adjustAdvEcoMod(ai, aiBrain);
 
             var enemyAIPath = findAIPath("enemy");
@@ -1063,7 +1063,7 @@ if (!gwoRefereeChangesLoaded) {
               });
             });
 
-            // Setup Additional AI Factions
+            // Set up Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
               adjustAdvEcoMod(foe, aiBrain);
 
