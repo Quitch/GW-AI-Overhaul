@@ -62,11 +62,11 @@ define(function () {
 
       var guardianColour = [255, 255, 255];
       var secondaryColour = [192, 192, 192];
+
       if (_.isEmpty(_.xor(minionColour[0], guardianColour))) {
         return [guardianColour, secondaryColour];
-      } else {
-        return [(factions[faction][count], secondaryColour)];
       }
+      return [factions[faction][count], secondaryColour];
     },
   };
 });
