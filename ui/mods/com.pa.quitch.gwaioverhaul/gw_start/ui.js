@@ -87,6 +87,9 @@ if (!gwoUILoaded) {
         factionTechHandicap: ko.observable(0).extend({
           numeric: 1,
         }),
+        alliedCommanderChance: ko.observable(0).extend({
+          numeric: 0,
+        }),
       };
 
       var difficultySettings = model.gwoDifficultySettings;
@@ -267,6 +270,9 @@ if (!gwoUILoaded) {
               );
               difficultySettings.factionTechHandicap(
                 difficulties[selectedDifficulty].factionTechHandicap
+              );
+              difficultySettings.alliedCommanderChance(
+                difficulties[selectedDifficulty].alliedCommanderChance
               );
             }
           });
