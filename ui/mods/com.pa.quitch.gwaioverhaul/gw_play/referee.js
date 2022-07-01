@@ -446,9 +446,12 @@ if (!gwoRefereeChangesLoaded) {
                 var playerX1AIUnitMap = titans
                   ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
                   : {};
+                var additionalPlayerSpecs = _.isUndefined(ai.ally)
+                  ? model.gwoSpecs
+                  : model.gwoSpecs.concat(ai.ally.commander);
                 var playerSpecs = combineSpecs(
                   inventory.units(),
-                  model.gwoSpecs
+                  additionalPlayerSpecs
                 );
 
                 GW.specs
@@ -727,6 +730,11 @@ if (!gwoRefereeChangesLoaded) {
             var aiTechPath = "/pa/ai_tech/";
             var game = self.game();
             var inventory = game.inventory();
+            var currentStar = game.galaxy().stars()[game.currentStar()];
+            var ai = currentStar.ai();
+            var alliedCommanders = _.isUndefined(ai.ally)
+              ? inventory.minions()
+              : inventory.minions().concat(ai.ally);
 
             var parseFiles = function (aiPath, promise, aiToModify) {
               api.file.list(aiPath, true).then(function (fileList) {
@@ -770,7 +778,7 @@ if (!gwoRefereeChangesLoaded) {
                     var quellerSubCommander = false;
                     if (
                       isQueller &&
-                      inventory.minions().length > 0 &&
+                      alliedCommanders.length > 0 &&
                       (_.startsWith(filePath, subcommanderAIPath) ||
                         _.startsWith(filePath, aiTechPath))
                     ) {
@@ -872,10 +880,8 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
-            var subcommanders = inventory.minions();
-            var ai = game.galaxy().stars()[game.currentStar()].ai();
             var aiFilePath = "";
-            if (subcommanders.length > 0) {
+            if (alliedCommanders.length > 0) {
               aiFilePath = findAIPath("all");
             } else {
               aiFilePath = findAIPath("enemy");
@@ -885,7 +891,7 @@ if (!gwoRefereeChangesLoaded) {
               parseFiles(aiFilePath, deferredAIFiles, "None");
             } else if (ai.mirrorMode === true) {
               parseFiles(aiFilePath, deferredAIFiles, "All");
-            } else if (subcommanders.length > 0) {
+            } else if (alliedCommanders.length > 0) {
               parseFiles(aiFilePath, deferredAIFiles, "SubCommanders");
             } else {
               parseFiles(aiFilePath, deferredAIFiles, "None");
@@ -931,7 +937,13 @@ if (!gwoRefereeChangesLoaded) {
             ];
             var subcommanderAIPath = findAIPath("subcommander");
 
-            _.forEach(inventory.minions(), function (subcommander, index) {
+            var currentStar = game.galaxy().stars()[game.currentStar()];
+            var ai = currentStar.ai();
+            var alliedCommanders = _.isUndefined(ai.ally)
+              ? inventory.minions()
+              : inventory.minions().concat(ai.ally);
+
+            _.forEach(alliedCommanders, function (subcommander, index) {
               // Avoid breaking Sub Commanders from earlier versions
               subcommander.personality.ai_path = subcommanderAIPath;
 
@@ -989,8 +1001,6 @@ if (!gwoRefereeChangesLoaded) {
             });
 
             // Set up the AI
-            var currentStar = game.galaxy().stars()[game.currentStar()];
-            var ai = currentStar.ai();
             var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
             var aiTag = [];
             _.times(aiFactionCount, function (n) {
