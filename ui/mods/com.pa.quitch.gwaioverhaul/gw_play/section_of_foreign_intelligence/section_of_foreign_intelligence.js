@@ -143,6 +143,9 @@ if (!gwoIntelligenceLoaded) {
                       totalEco += 0.5;
                   }
                 });
+                if (primary.mirrorMode === true) {
+                  totalEco += 1.6;
+                }
                 if (primary.ally) {
                   totalEco -= primary.ally.econ_rate || 1;
                 }
