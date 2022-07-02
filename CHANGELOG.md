@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.37.1 - 2022-07-02
+
+### Fixed
+
+- Deals sometimes containing duplicate cards
+
 ## v5.37.0 - 2022-07-01
 
 ### Added
