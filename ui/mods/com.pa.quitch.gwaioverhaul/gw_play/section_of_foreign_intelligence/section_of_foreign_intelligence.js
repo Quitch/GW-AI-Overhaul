@@ -100,6 +100,7 @@ if (!gwoIntelligenceLoaded) {
             model.gwoSystemThreat = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
+              var totalEco = 0;
               if (primary) {
                 commanders.push(intelligence(primary, 0));
                 if (primary.minions) {
@@ -112,13 +113,12 @@ if (!gwoIntelligenceLoaded) {
                     _.map(primary.foes, intelligence)
                   );
                 }
-              }
-              var totalEco = 0;
-              _.times(commanders.length, function (n) {
-                totalEco += commanders[n].eco;
-              });
-              if (primary.ally) {
-                totalEco -= primary.ally.econ_rate || 1;
+                _.times(commanders.length, function (n) {
+                  totalEco += commanders[n].eco;
+                });
+                if (primary.ally) {
+                  totalEco -= primary.ally.econ_rate || 1;
+                }
               }
               return totalEco.toPrecision(2);
             });
