@@ -112,6 +112,16 @@ if (!gwoIntelligenceLoaded) {
                   commanders = commanders.concat(
                     _.map(primary.foes, intelligence)
                   );
+                  _.forEach(primary.foes, function (army) {
+                    var commanderCount = 1;
+                    if (army.commanderCount) {
+                      commanderCount = army.commanderCount;
+                    } else if (army.landing_policy) {
+                      // legacy GWO support
+                      commanderCount = army.landing_policy.length;
+                    }
+                    totalEco += army.econ_rate * 0.4 * (commanderCount - 1);
+                  });
                 }
                 _.times(commanders.length, function (n) {
                   totalEco += commanders[n].eco;

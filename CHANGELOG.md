@@ -8,6 +8,7 @@
 - Removed individual army threat assessments
 - Factor system ally into threat assessment
 - AI Tech is approximated into the system threat rating
+- Multiple commanders being in an army is factored into the system threat rating
 
 ### Fixed
 
