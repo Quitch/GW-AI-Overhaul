@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Threat Level is now numerical
+
 ## v5.37.1 - 2022-07-02
 
 ### Fixed

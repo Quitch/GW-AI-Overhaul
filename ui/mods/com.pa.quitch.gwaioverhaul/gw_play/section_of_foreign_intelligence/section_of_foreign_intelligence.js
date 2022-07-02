@@ -139,33 +139,6 @@ if (!gwoIntelligenceLoaded) {
               return formattedString(area);
             });
 
-            var totalThreat = function (totalRate) {
-              if (!totalRate) {
-                return "!LOC:None";
-              } else if (totalRate <= 0.6) {
-                return "!LOC:Very Low";
-              } else if (totalRate <= 0.9) {
-                return "!LOC:Low";
-              } else if (totalRate <= 1.6) {
-                return "!LOC:Moderate";
-              } else if (totalRate <= 2.05) {
-                return "!LOC:High";
-              } else if (totalRate <= 2.9) {
-                return "!LOC:Very High";
-              } else if (totalRate <= 3.975) {
-                return "!LOC:Extreme";
-              } else if (totalRate <= 5.625) {
-                return "!LOC:Critical";
-              } else if (totalRate <= 7.2) {
-                return "!LOC:Suicidal";
-              } else if (totalRate <= 10) {
-                return "!LOC:Apocalyptic";
-              } else if (totalRate <= 20) {
-                return "!LOC:Impossible";
-              }
-              return "!LOC:Skynet";
-            };
-
             model.gwoSystemThreat = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
@@ -186,7 +159,7 @@ if (!gwoIntelligenceLoaded) {
               _.times(commanders.length, function (n) {
                 totalEco += commanders[n].eco;
               });
-              return loc(totalThreat(totalEco));
+              return totalEco.toPrecision(2);
             });
 
             // Available Technology
