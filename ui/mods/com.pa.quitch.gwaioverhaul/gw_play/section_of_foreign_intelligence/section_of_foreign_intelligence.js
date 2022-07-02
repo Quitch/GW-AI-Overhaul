@@ -117,6 +117,9 @@ if (!gwoIntelligenceLoaded) {
               _.times(commanders.length, function (n) {
                 totalEco += commanders[n].eco;
               });
+              if (primary.ally) {
+                totalEco -= primary.ally.econ_rate || 1;
+              }
               return totalEco.toPrecision(2);
             });
 

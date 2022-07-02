@@ -6,6 +6,7 @@
 
 - Threat Level is now numerical
 - Removed individual army threat assessments
+- Factor system ally into threat assessment
 
 ### Fixed
 
