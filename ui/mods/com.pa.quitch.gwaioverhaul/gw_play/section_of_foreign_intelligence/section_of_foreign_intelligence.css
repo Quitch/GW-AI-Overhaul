@@ -62,4 +62,5 @@
 
 .section-of-foreign-intelligence .td {
   display: table-cell;
+  padding: 1px 0;
 }

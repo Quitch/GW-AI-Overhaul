@@ -7,6 +7,10 @@
 - Threat Level is now numerical
 - Removed individual army threat assessments
 
+### Fixed
+
+- Table rows and data not aligning
+
 ## v5.37.1 - 2022-07-02
 
 ### Fixed

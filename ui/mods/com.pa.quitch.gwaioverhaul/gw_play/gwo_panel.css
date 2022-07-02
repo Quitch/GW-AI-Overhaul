@@ -48,6 +48,7 @@
 
 .gwo-info .td {
   display: table-cell;
+  padding: 1px 0;
   padding-bottom: 2px;
 }
 
