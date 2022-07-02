@@ -402,6 +402,11 @@ if (!gwoCardsLoaded) {
                 });
 
                 var list = [];
+                var preDealtCard = _.isUndefined(
+                  model.currentSystemCardList()[0]
+                )
+                  ? ""
+                  : model.currentSystemCardList()[0].id();
 
                 _.times(count, function () {
                   var fullHand = [];
@@ -412,6 +417,7 @@ if (!gwoCardsLoaded) {
 
                     var match =
                       inventory.hasCard(card.id) ||
+                      card.id === preDealtCard ||
                       _.some(list, { id: card.id }) ||
                       // Never deal Additional Data Bank as a system's pre-dealt card
                       (card.id === "gwc_add_card_slot" &&
