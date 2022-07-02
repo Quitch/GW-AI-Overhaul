@@ -21,47 +21,6 @@ if (!gwoIntelligenceLoaded) {
               ko.applyBindings(model, $fi[0]);
             });
 
-            var threat = function (rate) {
-              if (!rate) {
-                return "!LOC:Unknown";
-              } else if (rate <= 0.5) {
-                return "!LOC:Worthless";
-              } else if (rate <= 0.6) {
-                return "!LOC:Helpless";
-              } else if (rate <= 0.725) {
-                return "!LOC:Weakling";
-              } else if (rate <= 0.85) {
-                return "!LOC:Inexperienced";
-              } else if (rate <= 0.95) {
-                return "!LOC:Competent";
-              } else if (rate <= 1.1) {
-                return "!LOC:Skilled";
-              } else if (rate <= 1.2) {
-                return "!LOC:Experienced";
-              } else if (rate <= 1.325) {
-                return "!LOC:Veteran";
-              } else if (rate <= 1.45) {
-                return "!LOC:Masterful";
-              } else if (rate <= 1.6) {
-                return "!LOC:Hardcore";
-              } else if (rate <= 1.8) {
-                return "!LOC:Dangerous";
-              } else if (rate <= 2) {
-                return "!LOC:Deadly";
-              } else if (rate <= 2.225) {
-                return "!LOC:Inhuman";
-              } else if (rate <= 2.5) {
-                return "!LOC:Genocidal";
-              } else if (rate <= 2.75) {
-                return "!LOC:Nightmare";
-              } else if (rate <= 3) {
-                return "!LOC:Demigod";
-              } else if (rate < 9) {
-                return "!LOC:Godlike";
-              }
-              return "!LOC:Titan";
-            };
-
             var factionIndex = 0;
 
             var intelligence = function (commander, index) {
@@ -105,7 +64,6 @@ if (!gwoIntelligenceLoaded) {
               }
               return {
                 name: name,
-                threat: loc(threat(eco)),
                 color: gwoColour.rgb(
                   gwoColour.pick(factionIndex, commander.color, index)
                 ),

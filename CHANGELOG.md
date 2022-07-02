@@ -5,6 +5,7 @@
 ### Changed
 
 - Threat Level is now numerical
+- Removed individual army threat assessments
 
 ## v5.37.1 - 2022-07-02
 
