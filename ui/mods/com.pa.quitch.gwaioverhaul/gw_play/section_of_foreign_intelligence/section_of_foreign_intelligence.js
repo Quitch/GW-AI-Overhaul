@@ -116,6 +116,23 @@ if (!gwoIntelligenceLoaded) {
                 _.times(commanders.length, function (n) {
                   totalEco += commanders[n].eco;
                 });
+                _.forEach(primary.typeOfBuffs, function (buff) {
+                  switch (buff) {
+                    case 0: // cost
+                    case 4: // build
+                      totalEco += 0.3;
+                      break;
+                    case 1: // damage
+                    case 2: // health
+                      totalEco += 0.2;
+                      break;
+                    case 3: // speed
+                      totalEco += 0.1;
+                      break;
+                    case 6: // combat
+                      totalEco += 0.5;
+                  }
+                });
                 if (primary.ally) {
                   totalEco -= primary.ally.econ_rate || 1;
                 }

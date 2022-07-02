@@ -7,6 +7,7 @@
 - Threat Level is now numerical
 - Removed individual army threat assessments
 - Factor system ally into threat assessment
+- AI Tech is approximated into the system threat rating
 
 ### Fixed
 
