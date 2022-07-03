@@ -240,9 +240,8 @@ if (!gwoCardsLoaded) {
               "gwc_storage_and_buff"
             );
             if (
-              // support v5.35.0 and earlier and non-GWO saves
-              !gwoSettings ||
-              !gwoSettings.techCardDeck ||
+              !gwoSettings || // non-GWO saves
+              !gwoSettings.techCardDeck || // v5.35.0 and earlier
               gwoSettings.techCardDeck === "Expanded"
             ) {
               model.gwoCards.push(
