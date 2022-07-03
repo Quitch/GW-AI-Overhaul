@@ -240,9 +240,10 @@ if (!gwoCardsLoaded) {
               "gwc_storage_and_buff"
             );
             if (
-              gwaioSettings.techCardDeck === "Expanded" ||
               // support v5.35.0 and earlier
-              _.isUndefined(gwaioSettings.techCardDeck)
+              _.isUndefined(gwaioSettings) ||
+              _.isUndefined(gwaioSettings.techCardDeck) ||
+              gwaioSettings.techCardDeck === "Expanded"
             ) {
               model.gwoCards.push(
                 "gwaio_enable_planetaryradar",
