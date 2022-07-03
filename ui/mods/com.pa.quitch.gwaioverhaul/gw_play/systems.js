@@ -339,12 +339,9 @@ if (!gwoSystemChangesLoaded) {
                       scale: 0.71,
                       alpha: 1,
                     });
-                    innerRing.visible = false;
-                    ko.computed(function () {
-                      innerRing.visible =
-                        (system.connected() && !!system.ownerColor()) ||
-                        model.cheats.noFog();
-                    });
+                    innerRing.visible =
+                      (system.connected() && !!system.ownerColor()) ||
+                      model.cheats.noFog();
                     var scaleInnerRing = new createjs.Container();
                     scaleInnerRing.addChild(innerRing);
                     scaleInnerRing.z = 0;
