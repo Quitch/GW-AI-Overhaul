@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v5.38.0 - 2022-07-03
+
+### Added
+
+- The inner ring of a system indicates whether any other factions are present
+
+### Changed
+
+- Threat Level is now numerical
+- Removed individual army threat assessments
+- Factor system ally into threat assessment
+- AI Tech is approximated into the system threat rating
+- Multiple commanders being in an army is factored into the system threat rating
+
+### Fixed
+
+- Table rows and data not aligning
+
 ## v5.37.1 - 2022-07-02
 
 ### Fixed

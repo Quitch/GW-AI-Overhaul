@@ -303,26 +303,57 @@ if (!gwoSystemChangesLoaded) {
           );
         });
 
+        // System colours
         requireGW(
           [
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
           ],
           function (GWFactions, gwoSave) {
+            var normalizedColor = function (faction) {
+              return _.map(faction.color[0], function (c) {
+                return c / 255;
+              });
+            };
+
             _.forEach(model.galaxy.systems(), function (system) {
               ko.computed(function () {
                 var ai = system.star.ai();
-                var normalizedColor = [];
                 if (!ai) {
                   return;
                 } else if (ai.treasurePlanet !== true) {
-                  var faction = GWFactions[ai.faction];
-                  // Ensures we assign faction colour, not minion colour, to each system
-                  normalizedColor = _.map(faction.color[0], function (c) {
-                    return c / 255;
-                  });
+                  // Assign faction colour, not minion colour, to each system
+                  var outerColour = [];
+                  outerColour = normalizedColor(GWFactions[ai.faction]);
+                  system.ownerColor(outerColour.concat(3));
+
+                  // Colour inner ring to match ally or other faction present
+                  if (ai.ally || ai.foes) {
+                    var innerColour = ai.ally
+                      ? normalizedColor(GWFactions[ai.ally.faction])
+                      : normalizedColor(GWFactions[ai.foes[0].faction]);
+                    var innerRing = createBitmap({
+                      url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+                      size: [240, 240],
+                      color: innerColour.concat(3),
+                      scale: 0.71,
+                      alpha: 1,
+                    });
+                    innerRing.visible = false;
+                    ko.computed(function () {
+                      innerRing.visible =
+                        (system.connected() && !!system.ownerColor()) ||
+                        model.cheats.noFog();
+                    });
+                    var scaleInnerRing = new createjs.Container();
+                    scaleInnerRing.addChild(innerRing);
+                    scaleInnerRing.z = 0;
+                    system.systemDisplay.addChild(scaleInnerRing);
+                    // Fix Z axis issues
+                    system.mouseOver(1);
+                    system.mouseOver(0);
+                  }
                 }
-                system.ownerColor(normalizedColor.concat(3));
                 // Dependencies. These will cause the base code that updates color to rerun
                 // so we have to run under the same conditions, and pray we run later than that code.
                 system.connected();

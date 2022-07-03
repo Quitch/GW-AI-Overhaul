@@ -21,47 +21,6 @@ if (!gwoIntelligenceLoaded) {
               ko.applyBindings(model, $fi[0]);
             });
 
-            var threat = function (rate) {
-              if (!rate) {
-                return "!LOC:Unknown";
-              } else if (rate <= 0.5) {
-                return "!LOC:Worthless";
-              } else if (rate <= 0.6) {
-                return "!LOC:Helpless";
-              } else if (rate <= 0.725) {
-                return "!LOC:Weakling";
-              } else if (rate <= 0.85) {
-                return "!LOC:Inexperienced";
-              } else if (rate <= 0.95) {
-                return "!LOC:Competent";
-              } else if (rate <= 1.1) {
-                return "!LOC:Skilled";
-              } else if (rate <= 1.2) {
-                return "!LOC:Experienced";
-              } else if (rate <= 1.325) {
-                return "!LOC:Veteran";
-              } else if (rate <= 1.45) {
-                return "!LOC:Masterful";
-              } else if (rate <= 1.6) {
-                return "!LOC:Hardcore";
-              } else if (rate <= 1.8) {
-                return "!LOC:Dangerous";
-              } else if (rate <= 2) {
-                return "!LOC:Deadly";
-              } else if (rate <= 2.225) {
-                return "!LOC:Inhuman";
-              } else if (rate <= 2.5) {
-                return "!LOC:Genocidal";
-              } else if (rate <= 2.75) {
-                return "!LOC:Nightmare";
-              } else if (rate <= 3) {
-                return "!LOC:Demigod";
-              } else if (rate < 9) {
-                return "!LOC:Godlike";
-              }
-              return "!LOC:Titan";
-            };
-
             var factionIndex = 0;
 
             var intelligence = function (commander, index) {
@@ -105,7 +64,6 @@ if (!gwoIntelligenceLoaded) {
               }
               return {
                 name: name,
-                threat: loc(threat(eco)),
                 color: gwoColour.rgb(
                   gwoColour.pick(factionIndex, commander.color, index)
                 ),
@@ -139,36 +97,10 @@ if (!gwoIntelligenceLoaded) {
               return formattedString(area);
             });
 
-            var totalThreat = function (totalRate) {
-              if (!totalRate) {
-                return "!LOC:None";
-              } else if (totalRate <= 0.6) {
-                return "!LOC:Very Low";
-              } else if (totalRate <= 0.9) {
-                return "!LOC:Low";
-              } else if (totalRate <= 1.6) {
-                return "!LOC:Moderate";
-              } else if (totalRate <= 2.05) {
-                return "!LOC:High";
-              } else if (totalRate <= 2.9) {
-                return "!LOC:Very High";
-              } else if (totalRate <= 3.975) {
-                return "!LOC:Extreme";
-              } else if (totalRate <= 5.625) {
-                return "!LOC:Critical";
-              } else if (totalRate <= 7.2) {
-                return "!LOC:Suicidal";
-              } else if (totalRate <= 10) {
-                return "!LOC:Apocalyptic";
-              } else if (totalRate <= 20) {
-                return "!LOC:Impossible";
-              }
-              return "!LOC:Skynet";
-            };
-
             model.gwoSystemThreat = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
+              var totalEco = 0;
               if (primary) {
                 commanders.push(intelligence(primary, 0));
                 if (primary.minions) {
@@ -180,13 +112,45 @@ if (!gwoIntelligenceLoaded) {
                   commanders = commanders.concat(
                     _.map(primary.foes, intelligence)
                   );
+                  _.forEach(primary.foes, function (army) {
+                    var commanderCount = 1;
+                    if (army.commanderCount) {
+                      commanderCount = army.commanderCount;
+                    } else if (army.landing_policy) {
+                      // legacy GWO support
+                      commanderCount = army.landing_policy.length;
+                    }
+                    totalEco += army.econ_rate * 0.4 * (commanderCount - 1);
+                  });
+                }
+                _.times(commanders.length, function (n) {
+                  totalEco += commanders[n].eco;
+                });
+                _.forEach(primary.typeOfBuffs, function (buff) {
+                  switch (buff) {
+                    case 0: // cost
+                    case 4: // build
+                      totalEco += 0.3;
+                      break;
+                    case 1: // damage
+                    case 2: // health
+                      totalEco += 0.2;
+                      break;
+                    case 3: // speed
+                      totalEco += 0.1;
+                      break;
+                    case 6: // combat
+                      totalEco += 0.5;
+                  }
+                });
+                if (primary.mirrorMode === true) {
+                  totalEco += 1.6;
+                }
+                if (primary.ally) {
+                  totalEco -= primary.ally.econ_rate || 1;
                 }
               }
-              var totalEco = 0;
-              _.times(commanders.length, function (n) {
-                totalEco += commanders[n].eco;
-              });
-              return loc(totalThreat(totalEco));
+              return totalEco.toPrecision(2);
             });
 
             // Available Technology

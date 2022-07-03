@@ -16,7 +16,6 @@
   font-weight: bold;
   color: white;
   display: table-cell;
-  padding: 1px 0;
   vertical-align: bottom;
 }
 
@@ -62,4 +61,8 @@
 
 .section-of-foreign-intelligence .td {
   display: table-cell;
+}
+
+.section-of-foreign-intelligence .pad {
+  padding: 1px 0;
 }
