@@ -560,7 +560,7 @@ if (!gwoCardsLoaded) {
                   _.sample(GWFactions[playerFaction].minions)
                 );
                 galaxy = game.galaxy();
-                var ai = gwaioSettings.ai;
+                var ai = gwaioSettings && gwaioSettings.ai;
                 if (ai === "Penchant") {
                   var penchantValues = gwoAI.penchants();
                   subcommander.character =
@@ -660,7 +660,7 @@ if (!gwoCardsLoaded) {
                     var subcommander = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = gwaioSettings.ai;
+                    var ai = gwaioSettings && gwaioSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       subcommander.character =
@@ -702,7 +702,7 @@ if (!gwoCardsLoaded) {
                     var minion = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = gwaioSettings.ai;
+                    var ai = gwaioSettings && gwaioSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       minion.character =
