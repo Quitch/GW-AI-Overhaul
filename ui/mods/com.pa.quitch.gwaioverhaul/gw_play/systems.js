@@ -317,8 +317,18 @@ if (!gwoSystemChangesLoaded) {
             };
 
             _.forEach(model.galaxy.systems(), function (system) {
+              var ai = system.star.ai();
+              if (ai.ally || ai.foes) {
+                var innerRing = createBitmap({
+                  url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+                  size: [240, 240],
+                  color: [1, 1, 1],
+                  scale: 0.71,
+                  alpha: 1,
+                });
+              }
+
               ko.computed(function () {
-                var ai = system.star.ai();
                 if (!ai) {
                   return;
                 } else if (ai.treasurePlanet !== true) {
@@ -332,13 +342,7 @@ if (!gwoSystemChangesLoaded) {
                     var innerColour = ai.ally
                       ? normalizedColor(GWFactions[ai.ally.faction])
                       : normalizedColor(GWFactions[ai.foes[0].faction]);
-                    var innerRing = createBitmap({
-                      url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-                      size: [240, 240],
-                      color: innerColour.concat(3),
-                      scale: 0.71,
-                      alpha: 1,
-                    });
+                    innerRing.color(innerColour.concat(3));
                     innerRing.visible =
                       (system.connected() && !!system.ownerColor()) ||
                       model.cheats.noFog();
