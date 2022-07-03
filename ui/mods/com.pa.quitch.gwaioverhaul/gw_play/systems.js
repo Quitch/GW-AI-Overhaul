@@ -331,6 +331,14 @@ if (!gwoSystemChangesLoaded) {
                   scale: 0.71,
                   alpha: 1,
                 });
+                var innerColour = ai.ally
+                  ? normalizedColor(GWFactions[ai.ally.faction])
+                  : normalizedColor(GWFactions[ai.foes[0].faction]);
+                innerRing.color(innerColour.concat(3));
+                var scaleInnerRing = new createjs.Container();
+                scaleInnerRing.addChild(innerRing);
+                scaleInnerRing.z = 0;
+                system.systemDisplay.addChild(scaleInnerRing);
               }
 
               ko.computed(function () {
@@ -342,17 +350,9 @@ if (!gwoSystemChangesLoaded) {
 
                   // Colour inner ring to match ally or other faction present
                   if (ai.ally || ai.foes) {
-                    var innerColour = ai.ally
-                      ? normalizedColor(GWFactions[ai.ally.faction])
-                      : normalizedColor(GWFactions[ai.foes[0].faction]);
-                    innerRing.color(innerColour.concat(3));
                     innerRing.visible =
                       (system.connected() && !!system.ownerColor()) ||
                       model.cheats.noFog();
-                    var scaleInnerRing = new createjs.Container();
-                    scaleInnerRing.addChild(innerRing);
-                    scaleInnerRing.z = 0;
-                    system.systemDisplay.addChild(scaleInnerRing);
                     // Fix Z axis issues
                     system.mouseOver(1);
                     system.mouseOver(0);
