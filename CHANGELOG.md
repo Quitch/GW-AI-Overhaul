@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- The inner ring of a system indicates whether any other factions are present
+
 ### Changed
 
 - Threat Level is now numerical
