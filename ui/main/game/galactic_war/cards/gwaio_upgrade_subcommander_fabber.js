@@ -19,10 +19,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     deal: function (system, context, inventory) {
       var chance = 0;
       var galaxy = model.game().galaxy();
-      var gwaio = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
       if (
         inventory.minions().length > 0 &&
-        (!gwaio || gwaio.ai !== "Queller")
+        (!gwoSettings || gwoSettings.ai !== "Queller")
       ) {
         chance = 30;
       }
