@@ -318,6 +318,10 @@ if (!gwoSystemChangesLoaded) {
 
             _.forEach(model.galaxy.systems(), function (system) {
               var ai = system.star.ai();
+              if (!ai) {
+                return;
+              }
+
               var innerRing = [];
               if (ai.ally || ai.foes) {
                 innerRing = createBitmap({
@@ -330,9 +334,7 @@ if (!gwoSystemChangesLoaded) {
               }
 
               ko.computed(function () {
-                if (!ai) {
-                  return;
-                } else if (ai.treasurePlanet !== true) {
+                if (ai.treasurePlanet !== true) {
                   // Assign faction colour, not minion colour, to each system
                   var outerColour = [];
                   outerColour = normalizedColor(GWFactions[ai.faction]);
