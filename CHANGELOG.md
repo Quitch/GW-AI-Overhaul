@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Duplicate inner ring bitmaps being created
+
 ## v5.38.0 - 2022-07-03
 
 ### Added
