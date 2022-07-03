@@ -318,8 +318,9 @@ if (!gwoSystemChangesLoaded) {
 
             _.forEach(model.galaxy.systems(), function (system) {
               var ai = system.star.ai();
+              var innerRing = [];
               if (ai.ally || ai.foes) {
-                var innerRing = createBitmap({
+                innerRing = createBitmap({
                   url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
                   size: [240, 240],
                   color: [1, 1, 1],
