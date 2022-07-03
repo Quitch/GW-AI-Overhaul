@@ -13,6 +13,7 @@
 - Mouse hover sometimes on the wrong system after a planet with an ally or FFA is displayed
 - Tech not being deletable if GWO was applied to a non-GWO save
 - Expanded tech not being dealt if GWO was applied to a non-GWO save
+- Tech deals breaking if GWO was applied to a non-GWO save
 
 ## v5.38.0 - 2022-07-03
 
