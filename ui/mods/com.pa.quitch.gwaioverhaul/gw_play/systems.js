@@ -329,12 +329,12 @@ if (!gwoSystemChangesLoaded) {
                   size: [240, 240],
                   color: [1, 1, 1],
                   scale: 0.71,
-                  alpha: 1,
+                  alpha: 0.8,
                 });
                 var innerColour = ai.ally
                   ? normalizedColor(GWFactions[ai.ally.faction])
                   : normalizedColor(GWFactions[ai.foes[0].faction]);
-                innerRing.color(innerColour.concat(3));
+                innerRing.color(innerColour.concat(10));
                 var scaleInnerRing = new createjs.Container();
                 scaleInnerRing.addChild(innerRing);
                 scaleInnerRing.z = 0;

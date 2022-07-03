@@ -5,6 +5,7 @@
 ### Changed
 
 - Reduced bounty values to one decimal place at all levels so the UI will never lie about your eco bonus
+- Bolding of inner rings indicating an ally or FFA
 
 ### Fixed
 
