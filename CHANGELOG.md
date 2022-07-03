@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Reduced bounty values to one decimal place at all levels so the UI will never lie about your eco bonus
+
 ### Fixed
 
 - Duplicate inner ring bitmaps being created
