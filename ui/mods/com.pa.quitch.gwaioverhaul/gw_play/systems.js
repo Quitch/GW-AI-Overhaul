@@ -322,6 +322,7 @@ if (!gwoSystemChangesLoaded) {
                 return;
               }
 
+              // Colour inner ring to match ally or other faction present
               var innerRing = [];
               if (ai.ally || ai.foes) {
                 innerRing = createBitmap({
@@ -348,7 +349,6 @@ if (!gwoSystemChangesLoaded) {
                   outerColour = normalizedColor(GWFactions[ai.faction]);
                   system.ownerColor(outerColour.concat(3));
 
-                  // Colour inner ring to match ally or other faction present
                   if (ai.ally || ai.foes) {
                     innerRing.visible =
                       (system.connected() && !!system.ownerColor()) ||
