@@ -5,6 +5,7 @@
 ### Fixed
 
 - Duplicate inner ring bitmaps being created
+- Mouse hover sometimes on the wrong system after a planet with an ally or FFA is displayed
 
 ## v5.38.0 - 2022-07-03
 

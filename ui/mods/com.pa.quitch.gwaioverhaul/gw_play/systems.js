@@ -357,6 +357,7 @@ if (!gwoSystemChangesLoaded) {
                     if (innerRing.visible === true) {
                       system.mouseOver(1);
                       system.mouseOver(0);
+                      system.mouseOut(0);
                     }
                   }
                 }
