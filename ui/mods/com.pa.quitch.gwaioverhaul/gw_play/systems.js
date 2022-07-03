@@ -354,8 +354,10 @@ if (!gwoSystemChangesLoaded) {
                       (system.connected() && !!system.ownerColor()) ||
                       model.cheats.noFog();
                     // Fix Z axis issues
-                    system.mouseOver(1);
-                    system.mouseOver(0);
+                    if (innerRing.visible === true) {
+                      system.mouseOver(1);
+                      system.mouseOver(0);
+                    }
                   }
                 }
                 // Dependencies. These will cause the base code that updates color to rerun
