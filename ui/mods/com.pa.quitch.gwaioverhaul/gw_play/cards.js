@@ -240,9 +240,9 @@ if (!gwoCardsLoaded) {
               "gwc_storage_and_buff"
             );
             if (
-              // support v5.35.0 and earlier
-              _.isUndefined(gwaioSettings) ||
-              _.isUndefined(gwaioSettings.techCardDeck) ||
+              // support v5.35.0 and earlier and non-GWO saves
+              !gwaioSettings ||
+              !gwaioSettings.techCardDeck ||
               gwaioSettings.techCardDeck === "Expanded"
             ) {
               model.gwoCards.push(
