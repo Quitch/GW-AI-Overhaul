@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.38.0 - 2022-07-03
 
 ### Added
 
