@@ -175,7 +175,7 @@ if (!gwoCardsLoaded) {
             var inventory = game.inventory();
             var playerFaction = 0;
             var galaxy = model.game().galaxy();
-            var gwaioSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+            var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
             if (!model.gwoCards) {
@@ -240,9 +240,9 @@ if (!gwoCardsLoaded) {
               "gwc_storage_and_buff"
             );
             if (
-              gwaioSettings.techCardDeck === "Expanded" ||
-              // support v5.35.0 and earlier
-              _.isUndefined(gwaioSettings.techCardDeck)
+              !gwoSettings || // non-GWO saves
+              !gwoSettings.techCardDeck || // v5.35.0 and earlier
+              gwoSettings.techCardDeck === "Expanded"
             ) {
               model.gwoCards.push(
                 "gwaio_enable_planetaryradar",
@@ -559,7 +559,7 @@ if (!gwoCardsLoaded) {
                   _.sample(GWFactions[playerFaction].minions)
                 );
                 galaxy = game.galaxy();
-                var ai = gwaioSettings.ai;
+                var ai = gwoSettings && gwoSettings.ai;
                 if (ai === "Penchant") {
                   var penchantValues = gwoAI.penchants();
                   subcommander.character =
@@ -577,10 +577,10 @@ if (!gwoCardsLoaded) {
                 });
               });
               inventory.applyCards();
-              dealFirstCardSelectableAI(gwaioSettings); // also triggers a save
+              dealFirstCardSelectableAI(gwoSettings); // also triggers a save
             }
 
-            dealFirstCardSelectableAI(gwaioSettings);
+            dealFirstCardSelectableAI(gwoSettings);
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -659,7 +659,7 @@ if (!gwoCardsLoaded) {
                     var subcommander = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = gwaioSettings.ai;
+                    var ai = gwoSettings && gwoSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       subcommander.character =
@@ -701,7 +701,7 @@ if (!gwoCardsLoaded) {
                     var minion = _.cloneDeep(
                       _.sample(GWFactions[playerFaction].minions)
                     );
-                    var ai = gwaioSettings.ai;
+                    var ai = gwoSettings && gwoSettings.ai;
                     if (ai === "Penchant") {
                       var penchantValues = gwoAI.penchants();
                       minion.character =

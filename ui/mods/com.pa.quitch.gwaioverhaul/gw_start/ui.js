@@ -82,7 +82,7 @@ if (!gwoUILoaded) {
           numeric: 0,
         }),
         bountyModeValue: ko.observable(0).extend({
-          numeric: 2,
+          numeric: 1,
         }),
         factionTechHandicap: ko.observable(0).extend({
           numeric: 1,

@@ -317,41 +317,48 @@ if (!gwoSystemChangesLoaded) {
             };
 
             _.forEach(model.galaxy.systems(), function (system) {
+              var ai = system.star.ai();
+              if (!ai) {
+                return;
+              }
+
+              // Colour inner ring to match ally or other faction present
+              var innerRing = [];
+              if (ai.ally || ai.foes) {
+                innerRing = createBitmap({
+                  url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+                  size: [240, 240],
+                  color: [1, 1, 1],
+                  scale: 0.71,
+                  alpha: 0.8,
+                });
+                var innerColour = ai.ally
+                  ? normalizedColor(GWFactions[ai.ally.faction])
+                  : normalizedColor(GWFactions[ai.foes[0].faction]);
+                innerRing.color(innerColour.concat(7));
+                var scaleInnerRing = new createjs.Container();
+                scaleInnerRing.addChild(innerRing);
+                scaleInnerRing.z = 0;
+                system.systemDisplay.addChild(scaleInnerRing);
+              }
+
               ko.computed(function () {
-                var ai = system.star.ai();
-                if (!ai) {
-                  return;
-                } else if (ai.treasurePlanet !== true) {
+                if (ai.treasurePlanet !== true) {
                   // Assign faction colour, not minion colour, to each system
                   var outerColour = [];
                   outerColour = normalizedColor(GWFactions[ai.faction]);
                   system.ownerColor(outerColour.concat(3));
 
-                  // Colour inner ring to match ally or other faction present
                   if (ai.ally || ai.foes) {
-                    var innerColour = ai.ally
-                      ? normalizedColor(GWFactions[ai.ally.faction])
-                      : normalizedColor(GWFactions[ai.foes[0].faction]);
-                    var innerRing = createBitmap({
-                      url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-                      size: [240, 240],
-                      color: innerColour.concat(3),
-                      scale: 0.71,
-                      alpha: 1,
-                    });
-                    innerRing.visible = false;
-                    ko.computed(function () {
-                      innerRing.visible =
-                        (system.connected() && !!system.ownerColor()) ||
-                        model.cheats.noFog();
-                    });
-                    var scaleInnerRing = new createjs.Container();
-                    scaleInnerRing.addChild(innerRing);
-                    scaleInnerRing.z = 0;
-                    system.systemDisplay.addChild(scaleInnerRing);
+                    innerRing.visible =
+                      (system.connected() && !!system.ownerColor()) ||
+                      model.cheats.noFog();
                     // Fix Z axis issues
-                    system.mouseOver(1);
-                    system.mouseOver(0);
+                    if (innerRing.visible === true) {
+                      system.mouseOver(1);
+                      system.mouseOver(0);
+                      system.mouseOut(0);
+                    }
                   }
                 }
                 // Dependencies. These will cause the base code that updates color to rerun
