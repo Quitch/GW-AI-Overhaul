@@ -768,8 +768,8 @@ if (!gwoRefereeChangesLoaded) {
 
                 _.forEach(fileList, function (filePath) {
                   if (
-                    !_.endsWith(filePath, ".json") &&
-                    _.includes(filePath, "/neural_networks/") &&
+                    !_.endsWith(filePath, ".json") ||
+                    _.includes(filePath, "/neural_networks/") ||
                     _.endsWith(filePath, "ai_config.json")
                   ) {
                     return;
