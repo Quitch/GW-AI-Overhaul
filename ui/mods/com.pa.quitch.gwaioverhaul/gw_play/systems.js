@@ -325,17 +325,16 @@ if (!gwoSystemChangesLoaded) {
               // Colour inner ring to match ally or other faction present
               var innerRing = [];
               if (ai.ally || ai.foes) {
-                innerRing = createBitmap({
-                  url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-                  size: [240, 240],
-                  color: [1, 1, 1],
-                  scale: 0.71,
-                  alpha: 0.8,
-                });
                 var innerColour = ai.ally
                   ? normalizedColor(GWFactions[ai.ally.faction])
                   : normalizedColor(GWFactions[ai.foes[0].faction]);
-                innerRing.color(innerColour.concat(7));
+                innerRing = createBitmap({
+                  url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+                  size: [240, 240],
+                  color: innerColour.concat(7),
+                  scale: 0.71,
+                  alpha: 0.8,
+                });
                 var scaleInnerRing = new createjs.Container();
                 scaleInnerRing.addChild(innerRing);
                 scaleInnerRing.z = 0;
