@@ -635,7 +635,7 @@ if (!gwoSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      foeCommander.faction = parseInt(foeFaction);
+                      foeCommander.faction = foeFaction;
                       setAIPersonality(foeCommander, difficulty);
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
