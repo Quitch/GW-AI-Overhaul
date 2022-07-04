@@ -593,19 +593,21 @@ if (!gwoSetupLoaded) {
                     ai.minions = [];
 
                     var totalMinions = numMinions;
+                    var clusterWorkers = 0;
                     if (ai.isCluster === true) {
                       clusterType = "Worker";
-                      totalMinions = clusterCommanderCount(
+                      clusterWorkers = clusterCommanderCount(
                         numMinions,
                         bossCommanders
                       );
+                      totalMinions = 1;
                     }
 
                     // Cluster Workers get additional commanders in place of minions
                     if (ai.name === "Worker") {
-                      ai.commanderCount = Math.max(totalMinions, 2);
+                      ai.commanderCount = Math.max(clusterWorkers, 2);
                     } else {
-                      _.times(numMinions, function () {
+                      _.times(totalMinions, function () {
                         var minion = selectMinion(minions, clusterType);
                         setAIPersonality(minion, difficulty);
                         minion.econ_rate = aiEconRate(
@@ -615,7 +617,7 @@ if (!gwoSetupLoaded) {
                           numMinions
                         );
                         if (ai.isCluster === true) {
-                          minion.commanderCount = totalMinions;
+                          minion.commanderCount = clusterWorkers;
                         }
                         ai.minions.push(minion);
                       });
