@@ -880,12 +880,10 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
-            var aiFilePath = "";
-            if (alliedCommanders.length > 0) {
-              aiFilePath = findAIPath("all");
-            } else {
-              aiFilePath = findAIPath("enemy");
-            }
+            var aiFilePath =
+              alliedCommanders.length > 0
+                ? findAIPath("all")
+                : findAIPath("enemy");
 
             if (_.isEmpty(inventory.aiMods())) {
               parseFiles(aiFilePath, deferredAIFiles, "None");
