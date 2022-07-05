@@ -603,10 +603,13 @@ if (!gwoRefereeChangesLoaded) {
             return done.promise();
           };
 
-          var isClusterPresent = function (inventory, ai) {
-            if (inventory.getTag("global", "playerFaction") === 4) {
+          var isClusterAIPresent = function (inventory, ai, subcommanders) {
+            if (
+              inventory.getTag("global", "playerFaction") === 4 &&
+              subcommanders > 0
+            ) {
               return "Player";
-            } else if (ai.faction === 4 && ai.mirrorMode !== true) {
+            } else if (ai.faction === 4) {
               return "Enemy";
             } else if (ai.foes) {
               for (var foe of ai.foes) {
@@ -797,7 +800,7 @@ if (!gwoRefereeChangesLoaded) {
               aiPath,
               promise,
               aiToModify,
-              clusterPresent
+              clusterAIPresent
             ) {
               api.file.list(aiPath, true).then(function (fileList) {
                 var configFiles = self.files();
@@ -839,8 +842,6 @@ if (!gwoRefereeChangesLoaded) {
 
                   var deferred2 = $.Deferred();
 
-                  var aiBuildOps = [];
-                  var aiClusterOps = [];
                   var quellerSubCommander = false;
                   if (
                     isQueller &&
@@ -850,6 +851,9 @@ if (!gwoRefereeChangesLoaded) {
                   ) {
                     quellerSubCommander = true;
                   }
+
+                  var aiBuildOps = [];
+                  var clusterOps = [];
 
                   // Only mods associated with the file's AI manager are loaded
                   if (
@@ -871,11 +875,12 @@ if (!gwoRefereeChangesLoaded) {
                       });
                     }
                   }
+
                   if (_.includes(filePath, "/factory_builds/")) {
-                    if (clusterPresent === "Enemy") {
-                      aiClusterOps = clusterAIMods;
-                    } else if (clusterPresent === "Player") {
-                      aiBuildOps = aiBuildOps.concat(clusterAIMods);
+                    if (clusterAIPresent === "Enemy") {
+                      clusterOps = clusterAIMods;
+                    } else if (clusterAIPresent === "Player") {
+                      clusterOps = aiBuildOps.concat(clusterAIMods);
                     }
                   }
 
@@ -883,14 +888,14 @@ if (!gwoRefereeChangesLoaded) {
 
                   $.getJSON("coui:/" + filePath)
                     .then(function (json) {
-                      if (clusterPresent === "Enemy") {
+                      if (clusterAIPresent === "Enemy") {
                         aiFilePath = aiPathCreation(
                           clusterAIPath,
                           filePath,
                           findAIPath("enemy").length
                         );
                         var clusterJson = _.cloneDeep(json);
-                        addTechToAI(clusterJson, aiClusterOps);
+                        addTechToAI(clusterJson, clusterOps);
                         configFiles[aiFilePath] = clusterJson;
                       }
 
@@ -927,6 +932,17 @@ if (!gwoRefereeChangesLoaded) {
                           }
                         } else {
                           configFiles[filePath] = json;
+                          // Give player separate files if they're Cluster
+                          // and lack a unique ai path
+                          if (clusterAIPresent === "Player" && !isQueller) {
+                            addTechToAI(json, clusterOps);
+                            aiFilePath = aiPathCreation(
+                              clusterAIPath,
+                              filePath,
+                              findAIPath("all").length
+                            );
+                            configFiles[aiFilePath] = json;
+                          }
                         }
                       } else if (aiToModify === "SubCommanders") {
                         aiFilePath = filePath;
@@ -936,6 +952,9 @@ if (!gwoRefereeChangesLoaded) {
                         }
                         configFiles[aiFilePath] = _.cloneDeep(json);
                         // Set up Sub Commanders
+                        if (clusterAIPresent === "Player") {
+                          aiBuildOps = aiBuildOps.concat(clusterOps);
+                        }
                         if (!_.isEmpty(aiBuildOps)) {
                           addTechToAI(json, aiBuildOps);
                         }
@@ -976,7 +995,11 @@ if (!gwoRefereeChangesLoaded) {
               alliedCommanders.length > 0
                 ? findAIPath("all")
                 : findAIPath("enemy");
-            var clusterPresence = isClusterPresent(inventory, ai);
+            var clusterPresence = isClusterAIPresent(
+              inventory,
+              ai,
+              alliedCommanders.length
+            );
 
             if (_.isEmpty(inventory.aiMods() && clusterPresence !== "Player")) {
               parseFiles(aiFilePath, deferredAIFiles, "None", clusterPresence);
