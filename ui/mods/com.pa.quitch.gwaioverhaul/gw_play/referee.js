@@ -631,7 +631,10 @@ if (!gwoRefereeChangesLoaded) {
               return "Enemy";
             } else if (ai.foes) {
               for (var foe of ai.foes) {
-                if (foe.faction === 4) {
+                var foeIsCluster = _.isArray(foe.faction)
+                  ? foe.faction[0] === 4
+                  : foe.faction === 4;
+                if (foeIsCluster) {
                   return "Enemy";
                 }
               }
