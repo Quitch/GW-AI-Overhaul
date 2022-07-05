@@ -120,6 +120,27 @@ if (!gwoRefereeChangesLoaded) {
             return "/pa/ai/";
           };
 
+          var isClusterAIPresent = function (inventory, ai, subcommanders) {
+            if (
+              inventory.getTag("global", "playerFaction") === 4 &&
+              subcommanders > 0
+            ) {
+              return "Player";
+            } else if (ai.faction === 4) {
+              return "Enemy";
+            } else if (ai.foes) {
+              for (var foe of ai.foes) {
+                var foeIsCluster = _.isArray(foe.faction)
+                  ? foe.faction[0] === 4
+                  : foe.faction === 4;
+                if (foeIsCluster) {
+                  return "Enemy";
+                }
+              }
+            }
+            return "None";
+          };
+
           var generateGameFiles = function () {
             var self = this;
 
@@ -393,7 +414,7 @@ if (!gwoRefereeChangesLoaded) {
                   if (ai.faction === 4) {
                     return 0;
                   } else if (ai.foes) {
-                    var index = _.findIndex(ai.foes, { faction: 4 });
+                    var index = _.findIndex(ai.foes, { faction: [4] });
                     if (index !== -1) {
                       return index + 1;
                     }
@@ -619,27 +640,6 @@ if (!gwoRefereeChangesLoaded) {
               });
             });
             return done.promise();
-          };
-
-          var isClusterAIPresent = function (inventory, ai, subcommanders) {
-            if (
-              inventory.getTag("global", "playerFaction") === 4 &&
-              subcommanders > 0
-            ) {
-              return "Player";
-            } else if (ai.faction === 4) {
-              return "Enemy";
-            } else if (ai.foes) {
-              for (var foe of ai.foes) {
-                var foeIsCluster = _.isArray(foe.faction)
-                  ? foe.faction[0] === 4
-                  : foe.faction === 4;
-                if (foeIsCluster) {
-                  return "Enemy";
-                }
-              }
-            }
-            return "None";
           };
 
           // parse AI mods and load the results into self.files()
