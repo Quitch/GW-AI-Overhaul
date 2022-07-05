@@ -939,7 +939,7 @@ if (!gwoRefereeChangesLoaded) {
                         }
                       } else if (aiToModify === "SubCommanders") {
                         // Make a clean copy of files for enemy AIs
-                        if (!_.startsWith(filePath, aiTechPath)) {
+                        if (_.startsWith(filePath, enemyAIPath)) {
                           configFiles[updatedFilePath] = _.cloneDeep(json);
                         }
                         addTechToAI(json, aiBuildOps);
