@@ -398,6 +398,7 @@ if (!gwoRefereeChangesLoaded) {
                       return index + 1;
                     }
                   }
+                  return -1;
                 };
 
                 var inventory = self.game().inventory();
