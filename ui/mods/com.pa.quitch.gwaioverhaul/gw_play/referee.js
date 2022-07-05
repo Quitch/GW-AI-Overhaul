@@ -961,8 +961,6 @@ if (!gwoRefereeChangesLoaded) {
                         configFiles[updatedFilePath] = json;
                       }
 
-                      configFiles[filePath] = json;
-
                       if (clusterAIPresent !== "None") {
                         var slice = aiPath;
                         if (isQueller) {
@@ -984,6 +982,8 @@ if (!gwoRefereeChangesLoaded) {
                         addTechToAI(clusterJson, clusterOps);
                         configFiles[updatedFilePath] = clusterJson;
                       }
+
+                      configFiles[filePath] = json;
                     })
                     .always(function () {
                       deferred2.resolve();
