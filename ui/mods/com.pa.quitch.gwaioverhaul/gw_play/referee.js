@@ -847,6 +847,7 @@ if (!gwoRefereeChangesLoaded) {
                 }
 
                 var subcommanderAIPath = findAIPath("subcommander");
+                var enemyAIPath = findAIPath("enemy");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -963,10 +964,21 @@ if (!gwoRefereeChangesLoaded) {
                       configFiles[filePath] = json;
 
                       if (clusterAIPresent !== "None") {
+                        var slice = aiPath;
+                        if (isQueller) {
+                          var quellerPaths = [
+                            enemyAIPath,
+                            subcommanderAIPath,
+                            aiTechPath,
+                          ];
+                          slice = _.filter(quellerPaths, function (path) {
+                            return _.startsWith(filePath, path);
+                          }).toString();
+                        }
                         updatedFilePath = aiPathCreation(
                           clusterAIPath,
                           filePath,
-                          aiPath.length
+                          slice.length
                         );
                         var clusterJson = _.cloneDeep(json);
                         addTechToAI(clusterJson, clusterOps);
