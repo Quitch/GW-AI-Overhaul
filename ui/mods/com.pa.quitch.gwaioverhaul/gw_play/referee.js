@@ -1222,7 +1222,9 @@ if (!gwoRefereeChangesLoaded) {
               adjustAdvEcoMod(foe, aiBrain);
 
               // Avoid breaking enemies from earlier versions
-              var foeIsCluster = foe.faction === 4;
+              var foeIsCluster = _.isArray(foe.faction)
+                ? foe.faction[0] === 4
+                : foe.faction === 4;
               if (foeIsCluster) {
                 foe.personality.ai_path = clusterAIPath;
               } else {
