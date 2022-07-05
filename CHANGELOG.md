@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Updated Penchant AI to v2.1.1
+
 ### Fixed
 
 - Cluster systems having more than one Worker army
