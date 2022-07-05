@@ -960,6 +960,8 @@ if (!gwoRefereeChangesLoaded) {
                           }
                         }
                         configFiles[updatedFilePath] = json;
+                      } else {
+                        configFiles[filePath] = json;
                       }
 
                       if (clusterAIPresent !== "None") {
@@ -983,8 +985,6 @@ if (!gwoRefereeChangesLoaded) {
                         addTechToAI(clusterJson, clusterOps);
                         configFiles[updatedFilePath] = clusterJson;
                       }
-
-                      configFiles[filePath] = json;
                     })
                     .always(function () {
                       deferred2.resolve();
