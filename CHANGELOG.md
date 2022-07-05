@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+### Changed
+
+- Updated Penchant AI to v2.1.1
+
 ### Fixed
 
 - Cluster systems having more than one Worker army
+- Cluster AIs attempting to build Angels and Colonels
 
 ## v5.39.0 - 2022-07-04
 
