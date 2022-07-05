@@ -936,6 +936,8 @@ if (!gwoRefereeChangesLoaded) {
                             );
                             configFiles[updatedFilePath] = json;
                           }
+                        } else {
+                          configFiles[filePath] = json;
                         }
                       } else if (aiToModify === "SubCommanders") {
                         // Make a clean copy of files for enemy AIs
