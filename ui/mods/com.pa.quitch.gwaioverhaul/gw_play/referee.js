@@ -799,7 +799,11 @@ if (!gwoRefereeChangesLoaded) {
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
-            var clusterCommanders = ["SupportPlatform", "SupportCommander"];
+            var clusterCommanders = [
+              "SupportPlatform",
+              "SupportCommander",
+              "UberSupportCommander", // Queller AI
+            ];
             var clusterAIMods = _.map(clusterCommanders, function (commander) {
               return {
                 type: "factory",

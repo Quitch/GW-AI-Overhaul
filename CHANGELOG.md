@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Queller AI attempting to build Colonels as Cluster
+
 ## v5.39.1 - 2022-07-06
 
 ### Changed
