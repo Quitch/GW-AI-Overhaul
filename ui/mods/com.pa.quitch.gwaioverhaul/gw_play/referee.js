@@ -1086,6 +1086,7 @@ if (!gwoRefereeChangesLoaded) {
               var cards = inventory.cards();
 
               // Sub Commander Tactics Tech
+              // also upgrades Queller to the Gold brain
               if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
                 subcommander.personality.micro_type = 2;
                 subcommander.personality.go_for_the_kill = true;
