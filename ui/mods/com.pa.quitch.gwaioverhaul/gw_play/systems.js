@@ -148,7 +148,7 @@ if (!gwoSystemChangesLoaded) {
               var system = self.system();
               if (system) {
                 // Display system description in intelligence panel
-                return loc(system[field]() || "");
+                return loc(system[field]()) || "";
               } else {
                 return "";
               }
