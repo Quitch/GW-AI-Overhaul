@@ -163,8 +163,8 @@ if (!gwoRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var aiUnitMapPath = "";
-              var aiUnitMapTitansPath = "";
+              var aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
+              var aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
 
               if (aiBrain === "Queller") {
                 aiUnitMapPath =
@@ -176,9 +176,6 @@ if (!gwoRefereeChangesLoaded) {
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json";
-              } else {
-                aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
-                aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
               }
 
               var unitsLoad = $.get("spec://pa/units/unit_list.json");
