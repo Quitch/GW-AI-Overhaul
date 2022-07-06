@@ -42,6 +42,14 @@ You should download and install this mod via the Planetary Annihilation: TITANS 
 
 If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the mod from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 
+## Report a Bug
+
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
+
+## Discussion
+
+Join the [Planetary Annihilation official Discord](https://discord.gg/pa).
+
 ## In Action
 
 [![Dreadnought fights Uber difficulty](https://i3.ytimg.com/vi/0S9D-8toEo4/hqdefault.jpg)](https://www.youtube.com/watch?v=0S9D-8toEo4&list=PLQJ47Ozz5Z8cVOG_LodEWRHtHcFSKBA3e)
