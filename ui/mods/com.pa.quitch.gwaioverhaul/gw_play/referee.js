@@ -1158,10 +1158,9 @@ if (!gwoRefereeChangesLoaded) {
             // Set up AI System Owner
             adjustAdvEcoMod(ai, aiBrain);
 
+            // Avoid breaking enemies from earlier versions
             var enemyAIPath = findAIPath("enemy");
             var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
-
-            // Avoid breaking enemies from earlier versions
             if (aiIsCluster) {
               ai.personality.ai_path = clusterAIPath;
             } else {
