@@ -163,8 +163,8 @@ if (!gwoRefereeChangesLoaded) {
               var playerFileGen = $.Deferred();
               var filesToProcess = [playerFileGen];
 
-              var aiUnitMapPath = "";
-              var aiUnitMapTitansPath = "";
+              var aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
+              var aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
 
               if (aiBrain === "Queller") {
                 aiUnitMapPath =
@@ -176,9 +176,6 @@ if (!gwoRefereeChangesLoaded) {
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
                 aiUnitMapTitansPath =
                   "/pa/ai_personalities/penchant/unit_maps/ai_unit_map_x1.json";
-              } else {
-                aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
-                aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
               }
 
               var unitsLoad = $.get("spec://pa/units/unit_list.json");
@@ -799,7 +796,11 @@ if (!gwoRefereeChangesLoaded) {
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
-            var clusterCommanders = ["SupportPlatform", "SupportCommander"];
+            var clusterCommanders = [
+              "SupportPlatform",
+              "SupportCommander",
+              "UberSupportCommander", // Queller AI
+            ];
             var clusterAIMods = _.map(clusterCommanders, function (commander) {
               return {
                 type: "factory",
@@ -854,8 +855,7 @@ if (!gwoRefereeChangesLoaded) {
                 _.forEach(fileList, function (filePath) {
                   if (
                     !_.endsWith(filePath, ".json") ||
-                    _.includes(filePath, "/neural_networks/") ||
-                    _.endsWith(filePath, "ai_config.json")
+                    _.includes(filePath, "/neural_networks/")
                   ) {
                     return;
                   }
@@ -1086,6 +1086,7 @@ if (!gwoRefereeChangesLoaded) {
               var cards = inventory.cards();
 
               // Sub Commander Tactics Tech
+              // also upgrades Queller to the Gold brain
               if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
                 subcommander.personality.micro_type = 2;
                 subcommander.personality.go_for_the_kill = true;
@@ -1157,10 +1158,9 @@ if (!gwoRefereeChangesLoaded) {
             // Set up AI System Owner
             adjustAdvEcoMod(ai, aiBrain);
 
+            // Avoid breaking enemies from earlier versions
             var enemyAIPath = findAIPath("enemy");
             var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
-
-            // Avoid breaking enemies from earlier versions
             if (aiIsCluster) {
               ai.personality.ai_path = clusterAIPath;
             } else {

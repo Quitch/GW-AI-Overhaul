@@ -16,7 +16,7 @@ if (!gwoSystemChangesLoaded) {
           );
         } else {
           console.log(
-            "War created using Galactic War Overhaul v4.12.1 or earlier"
+            "War created using base game, or Galactic War Overhaul v4.12.1 or earlier"
           );
         }
 
@@ -148,7 +148,7 @@ if (!gwoSystemChangesLoaded) {
               var system = self.system();
               if (system) {
                 // Display system description in intelligence panel
-                return loc(system[field]() || "");
+                return loc(system[field]()) || "";
               } else {
                 return "";
               }
