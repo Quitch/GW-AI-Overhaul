@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.39.2 - 2022-07-07
 
 ### Fixed
 
