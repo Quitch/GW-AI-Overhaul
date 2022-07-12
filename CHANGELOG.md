@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Disabled units being present in the player's inventory if multiple cards added them
+
 ## v5.39.2 - 2022-07-07
 
 ### Fixed
