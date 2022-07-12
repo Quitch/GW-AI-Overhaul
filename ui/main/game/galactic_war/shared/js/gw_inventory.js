@@ -36,23 +36,12 @@ define(function () {
       var self = this;
       self.units(self.units().concat(add));
     },
+    // GWO - updated to remove multiple copies of a unit
     removeUnits: function (remove) {
-      // Note: Explicitly does not perform set removes.  Multiple adds
-      // of a given unit and a single remove should resolve to the unit
-      // being available.
       var self = this;
-      var units = self.units().slice(0);
-      var removeCount = 0;
       _.forEach(remove, function (unit) {
-        var index = units.indexOf(unit);
-        if (index >= 0) {
-          units.splice(index, 1);
-          ++removeCount;
-        }
+        _.pull(self.units(), unit);
       });
-      if (removeCount) {
-        self.units(units);
-      }
     },
     addAIMods: function (aiMods) {
       var self = this;
