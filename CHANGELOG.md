@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.39.3
 
 ### Changed
 
