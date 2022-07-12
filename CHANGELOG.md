@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Update Queller AI to v5.23.1
+
 ### Fixed
 
 - Disabled units being present in the player's inventory if multiple cards added them
