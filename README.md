@@ -114,29 +114,6 @@ These buffs are applied to commanders and then on a per-faction basis:
 - **Revenants**: orbital units, orbital and superweapon structures
 - **Cluster**: all structures
 
-### Commander Threat Scale
-
-From easiest to hardest:
-
-- Worthless
-- Helpless
-- Weakling
-- Inexperienced
-- Competent
-- Skilled
-- Experienced
-- Veteran
-- Masterful
-- Hardcore
-- Dangerous
-- Deadly
-- Inhuman
-- Genocidal
-- Nightmare
-- Demigod
-- Godlike
-- Titan
-
 ## Compatible Loadouts & Tech Cards
 
 To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/).
