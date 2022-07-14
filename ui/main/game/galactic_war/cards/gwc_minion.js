@@ -41,11 +41,13 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
-
+      var aiOpeningFactories = [
+        gwoUnit.vehicleFactory,
+        gwoUnit.botFactory,
+        gwoUnit.airFactory,
+      ];
       if (
-        (!gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory) &&
-          !gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory) &&
-          !gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)) ||
+        !gwoCard.hasUnit(inventory.units(), aiOpeningFactories) ||
         inventory.hasCard("nem_start_deepspace")
       ) {
         return {

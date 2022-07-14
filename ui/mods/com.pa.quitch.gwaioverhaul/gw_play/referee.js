@@ -1066,8 +1066,8 @@ if (!gwoRefereeChangesLoaded) {
             ];
             var subcommanderAIPath = findAIPath("subcommander");
             var clusterAIPath = findAIPath("cluster");
-            var playerIsCluster =
-              inventory.getTag("global", "playerFaction") === 4;
+            var playerFaction = inventory.getTag("global", "playerFaction");
+            var playerIsCluster = playerFaction === 4;
 
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
@@ -1126,7 +1126,7 @@ if (!gwoRefereeChangesLoaded) {
               armies.push({
                 slots: slotsArraySubCommander,
                 color: gwoColour.pick(
-                  inventory.getTag("global", "playerFaction"),
+                  playerFaction,
                   subcommander.color + 1,
                   index + 1 // player has colour 0
                 ),
