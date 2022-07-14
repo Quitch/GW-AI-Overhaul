@@ -68,21 +68,23 @@ define([
               value: "UNITTYPE_CannonBuildable",
             });
           });
-          mods.push({
-            file: gwoUnit.manhattan,
-            path: "transportable.size",
-            op: "replace",
-            value: 1,
-          });
-          mods.push({
-            file: gwoUnit.manhattan,
-            path: "attachable.offsets",
-            op: "replace",
-            value: {
-              root: [0, 0, 0],
-              head: [0, 0, 7],
+          mods.push(
+            {
+              file: gwoUnit.manhattan,
+              path: "transportable.size",
+              op: "replace",
+              value: 1,
             },
-          });
+            {
+              file: gwoUnit.manhattan,
+              path: "attachable.offsets",
+              op: "replace",
+              value: {
+                root: [0, 0, 0],
+                head: [0, 0, 7],
+              },
+            }
+          );
           // Don't let the Pelican carry the Manhattan
           mods.push({
             file: gwoUnit.pelican,
