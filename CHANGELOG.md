@@ -6,7 +6,7 @@
 
 - Paratrooper Commander being unable to build the Manhattan in the Unit Cannon
 
-## v5.39.3
+## v5.39.3 - 2022-07-12
 
 ### Changed
 
