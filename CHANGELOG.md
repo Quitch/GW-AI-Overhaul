@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Cards which grant access to advanced units correctly show all the advanced units that are unlocked
+
 ## v5.39.4 - 2022-07-14
 
 ### Fixed
