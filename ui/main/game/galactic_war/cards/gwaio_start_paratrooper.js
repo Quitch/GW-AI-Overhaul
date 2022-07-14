@@ -83,6 +83,13 @@ define([
               head: [0, 0, 7],
             },
           });
+          // Don't let the Pelican carry the Manhattan
+          mods.push({
+            file: gwoUnit.pelican,
+            path: "transporter.transportable_unit_types",
+            op: "add",
+            value: " - Important",
+          });
           inventory.addMods(mods);
 
           var aiMods = [
