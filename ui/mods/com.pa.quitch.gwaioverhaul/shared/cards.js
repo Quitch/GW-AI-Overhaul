@@ -135,5 +135,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js"], function (
         chance: 0,
       };
     },
+    hasAdvancedFabbers: function (inventory) {
+      return _.some(inventory.cards(), function (card) {
+        return _.some(model.cardsGrantingAdvancedTech, function (t2Card) {
+          return card.id === t2Card;
+        });
+      });
+    },
   };
 });
