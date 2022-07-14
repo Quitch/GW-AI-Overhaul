@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Paratrooper Commander being unable to build the Manhattan in the Unit Cannon
+
 ## v5.39.3
 
 ### Changed
