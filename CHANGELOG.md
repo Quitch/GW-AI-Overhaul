@@ -6,6 +6,7 @@
 
 - Cards which grant access to advanced units correctly show all the advanced units that are unlocked
 - Advanced Defense Technology being offered when the player doesn't have access to T2
+- Catalyst Upgrade Technology not allowing for all routes to access the Catalyst
 
 ## v5.39.4 - 2022-07-14
 
