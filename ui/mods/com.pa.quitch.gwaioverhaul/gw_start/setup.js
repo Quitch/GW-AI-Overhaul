@@ -524,11 +524,13 @@ if (!gwoSetupLoaded) {
                 if (numMinions > 0) {
                   boss.minions = [];
 
+                  var totalMinions = numMinions;
                   if (boss.isCluster === true) {
                     clusterType = "Security";
+                    totalMinions = 1;
                   }
 
-                  _.times(numMinions, function () {
+                  _.times(totalMinions, function () {
                     var minion = selectMinion(minions, clusterType);
                     setAIPersonality(minion, difficulty);
                     minion.econ_rate = aiEconRate(
@@ -592,7 +594,7 @@ if (!gwoSetupLoaded) {
                   if (numMinions > 0) {
                     ai.minions = [];
 
-                    var totalMinions = numMinions;
+                    totalMinions = numMinions;
                     var clusterWorkers = 0;
                     if (ai.isCluster === true) {
                       clusterType = "Worker";
