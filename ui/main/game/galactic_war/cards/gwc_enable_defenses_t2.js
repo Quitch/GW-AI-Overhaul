@@ -19,12 +19,12 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwoCard.missingUnit(
-          inventory.units(),
-          gwoGroup.structuresDefencesAdvanced
-        )
-      ) {
+      var hasAdvancedFabbers = gwoCard.hasAdvancedFabbers(inventory);
+      var missingUnit = gwoCard.missingUnit(
+        inventory.units(),
+        gwoGroup.structuresDefencesAdvanced
+      );
+      if (missingUnit && hasAdvancedFabbers) {
         chance = 100;
       }
       return { chance: chance };

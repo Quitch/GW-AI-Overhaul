@@ -20,9 +20,14 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
+      var hasAdvancedFabbers = gwoCard.hasAdvancedFabbers(inventory);
+      var hasUnit = gwoCard.hasUnit(
+        inventory.units(),
+        gwoGroup.fabbersAdvanced
+      );
       // Player starts with Catalyst to avoid AI log errors
       // so we check for advanced fabbers instead
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
+      if (hasAdvancedFabbers && hasUnit) {
         chance = 60;
       }
       return { chance: chance };

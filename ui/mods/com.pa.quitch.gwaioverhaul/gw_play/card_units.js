@@ -99,14 +99,20 @@ define([
           gwoUnit.vanguard,
         ],
       },
-      { id: "gwc_enable_air_all", units: gwoGroup.air },
+      {
+        id: "gwc_enable_air_all",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.air),
+      },
       { id: "gwc_enable_air_t1", units: gwoGroup.airBasic },
       {
         id: "gwc_enable_air_t2", // not used
         units: gwoGroup.airAdvanced,
       },
       { id: "gwc_enable_artillery", units: gwoGroup.structuresArtillery },
-      { id: "gwc_enable_bots_all", units: gwoGroup.bot },
+      {
+        id: "gwc_enable_bots_all",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.bot),
+      },
       { id: "gwc_enable_bots_t1", units: gwoGroup.botsBasic },
       {
         id: "gwc_enable_bots_t2", // not used
@@ -135,7 +141,7 @@ define([
       },
       {
         id: "gwc_enable_sea_all",
-        units: gwoGroup.navalAdvanced, // basic starts unlocked
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.navalAdvanced), // basic starts unlocked
       },
       {
         id: "gwc_enable_sea_t1", // not used
@@ -150,7 +156,10 @@ define([
         units: gwoGroup.structuresSuperWeapons,
       },
       { id: "gwc_enable_titans", units: gwoGroup.titans },
-      { id: "gwc_enable_vehicles_all", units: gwoGroup.vehicles },
+      {
+        id: "gwc_enable_vehicles_all",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.vehicles),
+      },
       { id: "gwc_enable_vehicles_t1", units: gwoGroup.vehiclesBasic },
       {
         id: "gwc_enable_vehicles_t2", // not used
@@ -284,13 +293,22 @@ define([
       { id: "gwaio_upgrade_helios", units: [gwoUnit.helios] },
       { id: "gwaio_upgrade_ares", units: [gwoUnit.ares] },
       { id: "gwaio_upgrade_solararray", units: [gwoUnit.solarArray] },
-      { id: "gwaio_upgrade_fabricationbot", units: [gwoUnit.botFabber] },
+      {
+        id: "gwaio_upgrade_fabricationbot",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.botFabber),
+      },
       {
         id: "gwaio_upgrade_fabricationvehicle",
-        units: [gwoUnit.vehicleFabber],
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.vehicleFabber),
       },
-      { id: "gwaio_upgrade_fabricationaircraft", units: [gwoUnit.airFabber] },
-      { id: "gwaio_upgrade_fabricationship", units: [gwoUnit.navalFabber] },
+      {
+        id: "gwaio_upgrade_fabricationaircraft",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.airFabber),
+      },
+      {
+        id: "gwaio_upgrade_fabricationship",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.navalFabber),
+      },
       {
         id: "gwaio_upgrade_advancedfabricationaircraft",
         units: [gwoUnit.airFabberAdvanced],
