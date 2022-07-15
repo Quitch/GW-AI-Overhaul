@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.39.6 - 2022-07-15
+
+### Fixed
+
+- Cluster Boss having too many minions
+
 ## v5.39.5 - 2022-07-15
 
 ### Fixed
