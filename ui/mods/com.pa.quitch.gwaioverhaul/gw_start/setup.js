@@ -521,10 +521,12 @@ if (!gwoSetupLoaded) {
                   maxDist
                 );
 
+                var totalMinions = 0;
+
                 if (numMinions > 0) {
                   boss.minions = [];
 
-                  var totalMinions = numMinions;
+                  totalMinions = numMinions;
                   if (boss.isCluster === true) {
                     clusterType = "Security";
                     totalMinions = 1;
