@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Allies never appear if you're playing as Space Excavation Commander
+
 ## v5.39.6 - 2022-07-15
 
 ### Fixed

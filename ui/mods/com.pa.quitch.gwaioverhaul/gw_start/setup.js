@@ -676,7 +676,22 @@ if (!gwoSetupLoaded) {
                   });
 
                   // Set up allied commander
-                  if (gameModeEnabled(difficulty.alliedCommanderChance())) {
+                  if (!model.gwoStarCardsWhichBreakAllies) {
+                    model.gwoStarCardsWhichBreakAllies = [];
+                  }
+                  model.gwoStarCardsWhichBreakAllies.push(
+                    "nem_start_deepspace"
+                  );
+                  var startCardBreaksAllies = _.some(
+                    model.gwoStarCardsWhichBreakAllies,
+                    function (card) {
+                      return card === game.inventory().cards()[0].id;
+                    }
+                  );
+                  if (
+                    !startCardBreaksAllies &&
+                    gameModeEnabled(difficulty.alliedCommanderChance())
+                  ) {
                     var playerFaction = model.playerFactionIndex();
                     var allyCommander = selectMinion(
                       GWFactions[playerFaction].minions
