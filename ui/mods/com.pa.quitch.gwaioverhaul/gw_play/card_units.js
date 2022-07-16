@@ -267,12 +267,24 @@ define([
         units: [gwoUnit.laserDefenseTowerAdvanced],
       },
       { id: "gwaio_upgrade_catapult", units: [gwoUnit.catapult] },
-      { id: "gwaio_upgrade_airfactory", units: [gwoUnit.airFactory] },
-      { id: "gwaio_upgrade_botfactory", units: [gwoUnit.botFactory] },
-      { id: "gwaio_upgrade_navalfactory", units: [gwoUnit.navalFactory] },
+      {
+        id: "gwaio_upgrade_airfactory",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.airFactory),
+      },
+      {
+        id: "gwaio_upgrade_botfactory",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.botFactory),
+      },
+      {
+        id: "gwaio_upgrade_navalfactory",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.navalFactory),
+      },
       { id: "gwaio_upgrade_orbitallauncher", units: [gwoUnit.orbitalLauncher] },
       { id: "gwaio_upgrade_unitcannon", units: [gwoUnit.unitCannon] },
-      { id: "gwaio_upgrade_vehiclefactory", units: [gwoUnit.vehicleFactory] },
+      {
+        id: "gwaio_upgrade_vehiclefactory",
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.vehicleFactory),
+      },
       { id: "gwaio_upgrade_hermes", units: [gwoUnit.hermes] },
       {
         id: "gwaio_upgrade_advancedradarsatellite",

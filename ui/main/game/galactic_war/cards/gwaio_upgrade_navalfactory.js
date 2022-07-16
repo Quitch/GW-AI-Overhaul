@@ -29,7 +29,10 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwoGroup.navalAdvancedMobile);
+      var newUnits = gwoGroup.starterUnitsAdvanced.concat(
+        gwoGroup.navalAdvancedMobile
+      );
+      inventory.addUnits(newUnits);
 
       inventory.addMods([
         {
