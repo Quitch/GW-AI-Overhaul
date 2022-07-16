@@ -94,7 +94,6 @@ define([
             "BasicAirFactory",
             "BasicArtillery",
             "BasicBotFactory",
-            "BasicEnergyGenerator",
             "BasicLandDefense",
             "BasicLandDefenseSingle",
             "BasicRadar",

@@ -139,7 +139,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.39.6";
+            var version = "5.39.7";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -520,11 +520,11 @@ if (!gwoSetupLoaded) {
                   minionMod,
                   maxDist
                 );
+                var totalMinions = numMinions;
 
                 if (numMinions > 0) {
                   boss.minions = [];
 
-                  var totalMinions = numMinions;
                   if (boss.isCluster === true) {
                     clusterType = "Security";
                     totalMinions = 1;
@@ -676,7 +676,22 @@ if (!gwoSetupLoaded) {
                   });
 
                   // Set up allied commander
-                  if (gameModeEnabled(difficulty.alliedCommanderChance())) {
+                  if (!model.gwoStarCardsWhichBreakAllies) {
+                    model.gwoStarCardsWhichBreakAllies = [];
+                  }
+                  model.gwoStarCardsWhichBreakAllies.push(
+                    "nem_start_deepspace"
+                  );
+                  var startCardBreaksAllies = _.some(
+                    model.gwoStarCardsWhichBreakAllies,
+                    function (card) {
+                      return card === game.inventory().cards()[0].id;
+                    }
+                  );
+                  if (
+                    !startCardBreaksAllies &&
+                    gameModeEnabled(difficulty.alliedCommanderChance())
+                  ) {
                     var playerFaction = model.playerFactionIndex();
                     var allyCommander = selectMinion(
                       GWFactions[playerFaction].minions

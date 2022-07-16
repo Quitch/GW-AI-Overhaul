@@ -29,7 +29,10 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwoGroup.botsAdvancedMobile);
+      var newUnits = gwoGroup.starterUnitsAdvanced.concat(
+        gwoGroup.botsAdvancedMobile
+      );
+      inventory.addUnits(newUnits);
 
       inventory.addMods([
         {
