@@ -9,7 +9,7 @@
 ### Fixed
 
 - Factory upgrade techs' tooltip's unit list
-- Vehicle Factory Upgrade unlocking the wrong units
+- Vehicle Factory Upgrade Tech unlocking the wrong units
 
 ## v5.39.8 - 2022-07-17
 
