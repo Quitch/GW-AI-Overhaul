@@ -85,7 +85,7 @@ if (!gwoRefereeChangesLoaded) {
           };
           var aiBrain = aiInUse();
 
-          var findAIPath = function (type) {
+          var getAIPath = function (type) {
             var game = model.game();
             var ai = game.galaxy().stars()[game.currentStar()].ai();
             var inventory = game.inventory();
@@ -137,6 +137,11 @@ if (!gwoRefereeChangesLoaded) {
               }
             }
             return "None";
+          };
+
+          // allow for specs not assigned to units to still be processed
+          var combineSpecs = function (baseSpecs, newSpecs) {
+            return baseSpecs.concat(newSpecs);
           };
 
           var generateGameFiles = function () {
@@ -386,11 +391,6 @@ if (!gwoRefereeChangesLoaded) {
                 };
                 /* end of gw_spec.js replacements */
 
-                // allow for specs not assigned to units to still be processed
-                var combineSpecs = function (baseSpecs, newSpecs) {
-                  return baseSpecs.concat(newSpecs);
-                };
-
                 // global for modder compatibility
                 if (!model.gwoSpecs) {
                   model.gwoSpecs = [];
@@ -503,7 +503,7 @@ if (!gwoRefereeChangesLoaded) {
                     var playerFilesX1 = {};
                     var playerIsCluster =
                       inventory.getTag("global", "playerFaction") === 4;
-                    // the order of unit_map assignments must match findAIPath()
+                    // the order of unit_map assignments must match getAIPath()
                     if (playerIsCluster) {
                       playerFilesClassic = _.assign(
                         {
@@ -637,189 +637,166 @@ if (!gwoRefereeChangesLoaded) {
             return done.promise();
           };
 
-          // parse AI mods and load the results into self.files()
-          var generateAI = function () {
-            var self = this;
-
-            var deferred = $.Deferred();
-            var deferredAIFiles = $.Deferred();
-
-            var addTechToAI = function (json, mods) {
-              var ops = {
-                // fabber/factory/platoon only
-                append: function (value, toBuild, idToMod, refId, refValue) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
-                      if (
-                        (_.isUndefined(refId) ||
-                          _.isEqual(build[refId], refValue)) &&
-                        build[idToMod] &&
-                        _.isArray(build[idToMod])
-                      ) {
-                        build[idToMod] = build[idToMod].concat(value);
-                      } else if (
-                        (_.isUndefined(refId) ||
-                          _.isEqual(build[refId], refValue)) &&
-                        build[idToMod]
-                      ) {
-                        build[idToMod] += value;
-                      } else {
-                        _.forEach(build.build_conditions, function (testArray) {
-                          _.forEach(testArray, function (test) {
-                            if (test[refId] === refValue) {
-                              if (_.isArray(test[idToMod])) {
-                                test[idToMod] = test[idToMod].concat(value);
-                              } else if (test[idToMod]) {
-                                test[idToMod] += value;
-                              }
-                            }
-                          });
-                        });
-                      }
-                    }
-                  });
-                },
-                // fabber/factory/platoon only
-                prepend: function (value, toBuild, idToMod, refId, refValue) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
-                      if (
-                        (_.isUndefined(refId) ||
-                          _.isEqual(build[refId], refValue)) &&
-                        build[idToMod] &&
-                        _.isArray(build[idToMod])
-                      ) {
-                        build[idToMod] = value.concat(build[idToMod]);
-                      } else if (
-                        (_.isUndefined(refId) ||
-                          _.isEqual(build[refId], refValue)) &&
-                        build[idToMod]
-                      ) {
-                        build[idToMod] = value + build[idToMod];
-                      } else {
-                        _.forEach(build.build_conditions, function (testArray) {
-                          _.forEach(testArray, function (test) {
-                            if (test[refId] === refValue) {
-                              if (_.isArray(test[idToMod])) {
-                                test[idToMod] = value.concat(test[idToMod]);
-                              } else if (test[idToMod]) {
-                                test[idToMod] = value + test[idToMod];
-                              }
-                            }
-                          });
-                        });
-                      }
-                    }
-                  });
-                },
-                // fabber/factory/platoon only
-                replace: function (value, toBuild, idToMod, refId, refValue) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
-                      if (
-                        (_.isUndefined(refId) ||
-                          _.isEqual(build[refId], refValue)) &&
-                        build[idToMod]
-                      ) {
-                        build[idToMod] = value;
-                      } else {
-                        _.forEach(build.build_conditions, function (testArray) {
-                          _.forEach(testArray, function (test) {
-                            if (test[refId] === refValue && test[idToMod]) {
-                              test[idToMod] = value;
-                            }
-                          });
-                        });
-                      }
-                    }
-                  });
-                },
-                // fabber/factory/platoon only
-                remove: function (value, toBuild) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
+          var addTechToAI = function (json, mods) {
+            var ops = {
+              // fabber/factory/platoon only
+              append: function (value, toBuild, idToMod, refId, refValue) {
+                // eslint-disable-next-line lodash/prefer-filter
+                _.forEach(json.build_list, function (build) {
+                  if (build.to_build === toBuild) {
+                    if (
+                      (_.isUndefined(refId) ||
+                        _.isEqual(build[refId], refValue)) &&
+                      build[idToMod] &&
+                      _.isArray(build[idToMod])
+                    ) {
+                      build[idToMod] = build[idToMod].concat(value);
+                    } else if (
+                      (_.isUndefined(refId) ||
+                        _.isEqual(build[refId], refValue)) &&
+                      build[idToMod]
+                    ) {
+                      build[idToMod] += value;
+                    } else {
                       _.forEach(build.build_conditions, function (testArray) {
-                        _.remove(testArray, function (object) {
-                          if (_.isEqual(object, value)) {
-                            return object;
+                        _.forEach(testArray, function (test) {
+                          if (test[refId] === refValue) {
+                            if (_.isArray(test[idToMod])) {
+                              test[idToMod] = test[idToMod].concat(value);
+                            } else if (test[idToMod]) {
+                              test[idToMod] += value;
+                            }
                           }
-                          return null;
                         });
                       });
                     }
-                  });
-                },
-                // fabber/factory/platoon only
-                new: function (value, toBuild, idToMod) {
-                  // eslint-disable-next-line lodash/prefer-filter
-                  _.forEach(json.build_list, function (build) {
-                    if (build.to_build === toBuild) {
-                      if (_.isUndefined(idToMod)) {
-                        build.build_conditions.push(value);
-                      } else {
-                        _.forEach(build.build_conditions, function (testArray) {
-                          testArray.push(value);
-                        });
-                      }
-                    }
-                  });
-                },
-                // template only
-                squad: function (value, toBuild) {
-                  if (json.platoon_templates[toBuild]) {
-                    json.platoon_templates[toBuild].units.push(value);
                   }
-                },
-              };
-
-              _.forEach(mods, function (mod) {
-                ops[mod.op](
-                  mod.value,
-                  mod.toBuild,
-                  mod.idToMod,
-                  mod.refId,
-                  mod.refValue
-                );
-              });
+                });
+              },
+              // fabber/factory/platoon only
+              prepend: function (value, toBuild, idToMod, refId, refValue) {
+                // eslint-disable-next-line lodash/prefer-filter
+                _.forEach(json.build_list, function (build) {
+                  if (build.to_build === toBuild) {
+                    if (
+                      (_.isUndefined(refId) ||
+                        _.isEqual(build[refId], refValue)) &&
+                      build[idToMod] &&
+                      _.isArray(build[idToMod])
+                    ) {
+                      build[idToMod] = value.concat(build[idToMod]);
+                    } else if (
+                      (_.isUndefined(refId) ||
+                        _.isEqual(build[refId], refValue)) &&
+                      build[idToMod]
+                    ) {
+                      build[idToMod] = value + build[idToMod];
+                    } else {
+                      _.forEach(build.build_conditions, function (testArray) {
+                        _.forEach(testArray, function (test) {
+                          if (test[refId] === refValue) {
+                            if (_.isArray(test[idToMod])) {
+                              test[idToMod] = value.concat(test[idToMod]);
+                            } else if (test[idToMod]) {
+                              test[idToMod] = value + test[idToMod];
+                            }
+                          }
+                        });
+                      });
+                    }
+                  }
+                });
+              },
+              // fabber/factory/platoon only
+              replace: function (value, toBuild, idToMod, refId, refValue) {
+                // eslint-disable-next-line lodash/prefer-filter
+                _.forEach(json.build_list, function (build) {
+                  if (build.to_build === toBuild) {
+                    if (
+                      (_.isUndefined(refId) ||
+                        _.isEqual(build[refId], refValue)) &&
+                      build[idToMod]
+                    ) {
+                      build[idToMod] = value;
+                    } else {
+                      _.forEach(build.build_conditions, function (testArray) {
+                        _.forEach(testArray, function (test) {
+                          if (test[refId] === refValue && test[idToMod]) {
+                            test[idToMod] = value;
+                          }
+                        });
+                      });
+                    }
+                  }
+                });
+              },
+              // fabber/factory/platoon only
+              remove: function (value, toBuild) {
+                // eslint-disable-next-line lodash/prefer-filter
+                _.forEach(json.build_list, function (build) {
+                  if (build.to_build === toBuild) {
+                    _.forEach(build.build_conditions, function (testArray) {
+                      _.remove(testArray, function (object) {
+                        if (_.isEqual(object, value)) {
+                          return object;
+                        }
+                        return null;
+                      });
+                    });
+                  }
+                });
+              },
+              // fabber/factory/platoon only
+              new: function (value, toBuild, idToMod) {
+                // eslint-disable-next-line lodash/prefer-filter
+                _.forEach(json.build_list, function (build) {
+                  if (build.to_build === toBuild) {
+                    if (_.isUndefined(idToMod)) {
+                      build.build_conditions.push(value);
+                    } else {
+                      _.forEach(build.build_conditions, function (testArray) {
+                        testArray.push(value);
+                      });
+                    }
+                  }
+                });
+              },
+              // template only
+              squad: function (value, toBuild) {
+                if (json.platoon_templates[toBuild]) {
+                  json.platoon_templates[toBuild].units.push(value);
+                }
+              },
             };
 
-            var isQueller = aiBrain === "Queller";
-            var aiTechPath = "/pa/ai_tech/";
-            var game = self.game();
-            var inventory = game.inventory();
-            var currentStar = game.galaxy().stars()[game.currentStar()];
-            var ai = currentStar.ai();
-            var alliedCommanders = _.isUndefined(ai.ally)
-              ? inventory.minions()
-              : inventory.minions().concat(ai.ally);
-            var clusterCommanders = [
-              "SupportPlatform",
-              "SupportCommander",
-              "UberSupportCommander", // Queller AI
-            ];
-            var clusterAIMods = _.map(clusterCommanders, function (commander) {
-              return {
-                type: "factory",
-                op: "replace",
-                toBuild: commander,
-                idToMod: "priority",
-                value: 0,
-              };
+            _.forEach(mods, function (mod) {
+              ops[mod.op](
+                mod.value,
+                mod.toBuild,
+                mod.idToMod,
+                mod.refId,
+                mod.refValue
+              );
             });
-            var clusterAIPath = findAIPath("cluster");
+          };
 
-            var aiPathCreation = function (aiPath, filePath, cullLength) {
-              return aiPath + filePath.slice(cullLength);
-            };
+          var aiPathCreation = function (aiPath, filePath, cullLength) {
+            return aiPath + filePath.slice(cullLength);
+          };
+
+          // parse AI mods and load the results into self.files()
+          var generateAI = function () {
+            var self = this;
+            var game = self.game();
+
+            var deferred = $.Deferred();
+            var deferredAIFiles = $.Deferred();
 
             var parseFiles = function (
               aiPath,
               promise,
               aiToModify,
+              allyCount,
               clusterAIPresent
             ) {
               api.file.list(aiPath, true).then(function (fileList) {
@@ -827,6 +804,7 @@ if (!gwoRefereeChangesLoaded) {
                 var queue = [];
 
                 var aiMods = game.inventory().aiMods();
+                var aiTechPath = "/pa/ai_tech/";
 
                 if (aiToModify !== "None") {
                   aiMods = _.partition(aiMods, { op: "load" });
@@ -849,8 +827,8 @@ if (!gwoRefereeChangesLoaded) {
                   });
                 }
 
-                var subcommanderAIPath = findAIPath("subcommander");
-                var enemyAIPath = findAIPath("enemy");
+                var subcommanderAIPath = getAIPath("subcommander");
+                var enemyAIPath = getAIPath("enemy");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -861,11 +839,12 @@ if (!gwoRefereeChangesLoaded) {
                   }
 
                   var deferred2 = $.Deferred();
+                  var isQueller = aiBrain === "Queller";
 
                   var quellerSubCommander = false;
                   if (
                     isQueller &&
-                    alliedCommanders.length > 0 &&
+                    allyCount > 0 &&
                     (_.startsWith(filePath, subcommanderAIPath) ||
                       _.startsWith(filePath, aiTechPath))
                   ) {
@@ -874,6 +853,24 @@ if (!gwoRefereeChangesLoaded) {
 
                   var aiBuildOps = [];
                   var clusterOps = [];
+                  var clusterCommanders = [
+                    "SupportPlatform",
+                    "SupportCommander",
+                    "UberSupportCommander", // Queller AI
+                  ];
+                  var clusterAIMods = _.map(
+                    clusterCommanders,
+                    function (commander) {
+                      return {
+                        type: "factory",
+                        op: "replace",
+                        toBuild: commander,
+                        idToMod: "priority",
+                        value: 0,
+                      };
+                    }
+                  );
+                  var clusterAIPath = getAIPath("cluster");
 
                   // Only mods associated with the file's AI manager are loaded
                   if (
@@ -914,7 +911,7 @@ if (!gwoRefereeChangesLoaded) {
                         if (_.startsWith(filePath, aiTechPath)) {
                           if (isQueller) {
                             // We don't know if the aiPath contains q_uber
-                            var quellerEnemyPath = findAIPath("enemy");
+                            var quellerEnemyPath = getAIPath("enemy");
                             updatedFilePath = aiPathCreation(
                               quellerEnemyPath,
                               filePath,
@@ -1001,29 +998,49 @@ if (!gwoRefereeChangesLoaded) {
               });
             };
 
+            var inventory = game.inventory();
+            var currentStar = game.galaxy().stars()[game.currentStar()];
+            var ai = currentStar.ai();
+            var alliedCommanders = _.isUndefined(ai.ally)
+              ? inventory.minions()
+              : inventory.minions().concat(ai.ally);
             var aiFilePath =
               alliedCommanders.length > 0
-                ? findAIPath("all")
-                : findAIPath("enemy");
+                ? getAIPath("all")
+                : getAIPath("enemy");
             var clusterPresence = isClusterAIPresent(
               inventory,
               ai,
               alliedCommanders.length
             );
 
-            if (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") {
-              parseFiles(aiFilePath, deferredAIFiles, "None", clusterPresence);
+            if (
+              (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") ||
+              (ai.mirrorMode !== true && _.isEmpty(alliedCommanders))
+            ) {
+              parseFiles(
+                aiFilePath,
+                deferredAIFiles,
+                "None",
+                alliedCommanders.length,
+                clusterPresence
+              );
             } else if (ai.mirrorMode === true) {
-              parseFiles(aiFilePath, deferredAIFiles, "All");
-            } else if (alliedCommanders.length > 0) {
+              parseFiles(
+                aiFilePath,
+                deferredAIFiles,
+                "All",
+                alliedCommanders.length,
+                clusterPresence
+              );
+            } else {
               parseFiles(
                 aiFilePath,
                 deferredAIFiles,
                 "SubCommanders",
+                alliedCommanders.length,
                 clusterPresence
               );
-            } else {
-              parseFiles(aiFilePath, deferredAIFiles, "None", clusterPresence);
             }
 
             $.when(deferredAIFiles).then(function () {
@@ -1047,6 +1064,53 @@ if (!gwoRefereeChangesLoaded) {
             };
           };
 
+          var setAIPath = function (isCluster, isPlayer) {
+            if (isCluster) {
+              return getAIPath("cluster");
+            } else if (isPlayer) {
+              return getAIPath("subcommander");
+            }
+            return getAIPath("enemy");
+          };
+
+          var applySubcommanderTacticsTech = function (personality, cards) {
+            if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
+              personality.micro_type = 2;
+              personality.go_for_the_kill = true;
+              personality.priority_scout_metal_spots = true;
+              personality.enable_commander_danger_responses = true;
+              _.pull(personality.personality_tags, "SlowerExpansion");
+              personality.personality_tags.push("PreventsWaste");
+            }
+            return personality;
+          };
+
+          var applySubcommanderFabberTech = function (personality, cards) {
+            if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
+              personality.max_basic_fabbers = Math.round(
+                personality.max_basic_fabbers * 1.5
+              );
+              personality.max_advanced_fabbers = Math.round(
+                personality.max_advanced_fabbers * 1.5
+              );
+            }
+            return personality;
+          };
+
+          var hasSubcommanderDuplicationTech = function (cards) {
+            return _.some(cards, {
+              id: "gwaio_upgrade_subcommander_duplication",
+            });
+          };
+
+          var setAdvEcoMod = function (aiRoot, brain) {
+            if (brain !== "Queller") {
+              aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
+              aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
+            }
+            return aiRoot;
+          };
+
           var generateConfig = function () {
             var self = this;
 
@@ -1064,57 +1128,33 @@ if (!gwoRefereeChangesLoaded) {
                 alliance_group: 1,
               },
             ];
-            var subcommanderAIPath = findAIPath("subcommander");
-            var clusterAIPath = findAIPath("cluster");
-            var playerFaction = inventory.getTag("global", "playerFaction");
-            var playerIsCluster = playerFaction === 4;
 
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
+            var playerFaction = inventory.getTag("global", "playerFaction");
 
             _.forEach(alliedCommanders, function (subcommander, index) {
               // Avoid breaking Sub Commanders from earlier versions
-              if (playerIsCluster) {
-                subcommander.personality.ai_path = clusterAIPath;
-              } else {
-                subcommander.personality.ai_path = subcommanderAIPath;
-              }
+              var isCluster = playerFaction === 4;
+              subcommander.personality.ai_path = setAIPath(isCluster, true);
 
               var cards = inventory.cards();
+              var subcommanderCommanders = 1;
 
-              // Sub Commander Tactics Tech
-              // also upgrades Queller to the Gold brain
-              if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
-                subcommander.personality.micro_type = 2;
-                subcommander.personality.go_for_the_kill = true;
-                subcommander.personality.priority_scout_metal_spots = true;
-                subcommander.personality.enable_commander_danger_responses = true;
-                _.pull(
-                  subcommander.personality.personality_tags,
-                  "SlowerExpansion"
-                );
-                subcommander.personality.personality_tags.push("PreventsWaste");
+              subcommander.personality = applySubcommanderTacticsTech(
+                subcommander.personality,
+                cards
+              );
+              subcommander.personality = applySubcommanderFabberTech(
+                subcommander.personality,
+                cards
+              );
+              if (hasSubcommanderDuplicationTech(cards)) {
+                subcommanderCommanders = 2;
               }
-
-              // Sub Commander Fabber Tech
-              if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
-                subcommander.personality.max_basic_fabbers = Math.round(
-                  subcommander.personality.max_basic_fabbers * 1.5
-                );
-                subcommander.personality.max_advanced_fabbers = Math.round(
-                  subcommander.personality.max_advanced_fabbers * 1.5
-                );
-              }
-
-              // Sub Commander Duplication Tech
-              var subcommanderCommanders = _.some(cards, {
-                id: "gwaio_upgrade_subcommander_duplication",
-              })
-                ? 2
-                : 1;
 
               var slotsArraySubCommander = [];
 
@@ -1127,7 +1167,7 @@ if (!gwoRefereeChangesLoaded) {
                 slots: slotsArraySubCommander,
                 color: gwoColour.pick(
                   playerFaction,
-                  subcommander.color + 1,
+                  subcommander.color,
                   index + 1 // player has colour 0
                 ),
                 econ_rate: 1,
@@ -1147,25 +1187,13 @@ if (!gwoRefereeChangesLoaded) {
               aiTag.push(aiNewTag);
             });
 
-            // Avoid AI teching too early/late due to eco modifiers
-            var adjustAdvEcoMod = function (aiRoot, brain) {
-              if (brain !== "Queller") {
-                aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
-                aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
-              }
-            };
-
             // Set up AI System Owner
-            adjustAdvEcoMod(ai, aiBrain);
+            ai = setAdvEcoMod(ai, aiBrain);
 
             // Avoid breaking enemies from earlier versions
-            var enemyAIPath = findAIPath("enemy");
             var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
-            if (aiIsCluster) {
-              ai.personality.ai_path = clusterAIPath;
-            } else {
-              ai.personality.ai_path = enemyAIPath;
-            }
+            var aiPath = setAIPath(aiIsCluster, false);
+            ai.personality.ai_path = aiPath;
 
             var slotsArrayAI = [];
             _.times(
@@ -1187,14 +1215,10 @@ if (!gwoRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion, index) {
-              adjustAdvEcoMod(minion, aiBrain);
+              minion = setAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
-              if (aiIsCluster) {
-                minion.personality.ai_path = clusterAIPath;
-              } else {
-                minion.personality.ai_path = enemyAIPath;
-              }
+              minion.personality.ai_path = aiPath;
 
               var slotsArrayMinions = [];
               _.times(
@@ -1220,15 +1244,11 @@ if (!gwoRefereeChangesLoaded) {
 
             // Set up Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              adjustAdvEcoMod(foe, aiBrain);
+              foe = setAdvEcoMod(foe, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               var foeIsCluster = foe.faction[0] === 4;
-              if (foeIsCluster) {
-                foe.personality.ai_path = clusterAIPath;
-              } else {
-                foe.personality.ai_path = enemyAIPath;
-              }
+              foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
               var slotsArrayFoes = [];
               _.times(

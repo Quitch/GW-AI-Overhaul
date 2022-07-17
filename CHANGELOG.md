@@ -1,11 +1,17 @@
 # CHANGELOG
 
+## v5.39.8 - 2022-07-17
+
+### Fixed
+
+- Enemies failing to spawn if the player had more commanders than the faction had unique colours
+
 ## v5.39.7 - 2022-07-16
 
 ### Fixed
 
-- Allies never appear if you're playing as Space Excavation Commander
-- Basic Factory upgrades unlock the same structures for the advanced fabricator as any other tech which provides advanced tech access
+- Allies appearing if you're playing as Space Excavation Commander
+- Basic Factory upgrades not unlocking structures for the advanced fabricator
 
 ## v5.39.6 - 2022-07-15
 
