@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Enemies failing to spawn if the player had more commanders than the faction had unique colours
+
 ## v5.39.7 - 2022-07-16
 
 ### Fixed

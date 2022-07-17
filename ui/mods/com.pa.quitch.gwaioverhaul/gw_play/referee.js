@@ -1167,7 +1167,7 @@ if (!gwoRefereeChangesLoaded) {
                 slots: slotsArraySubCommander,
                 color: gwoColour.pick(
                   playerFaction,
-                  subcommander.color + 1,
+                  subcommander.color,
                   index + 1 // player has colour 0
                 ),
                 econ_rate: 1,
