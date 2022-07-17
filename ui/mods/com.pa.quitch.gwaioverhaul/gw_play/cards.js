@@ -185,7 +185,7 @@ if (!gwoCardsLoaded) {
             };
 
             var inventory = game.inventory();
-            var playerFaction = 0;
+            var playerFaction = inventory.getTag("global", "playerFaction");
             var galaxy = model.game().galaxy();
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
@@ -566,7 +566,6 @@ if (!gwoCardsLoaded) {
               !inventory.cards()[0].minions
             ) {
               _.times(2, function () {
-                playerFaction = inventory.getTag("global", "playerFaction");
                 var subcommander = _.cloneDeep(
                   _.sample(GWFactions[playerFaction].minions)
                 );
