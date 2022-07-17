@@ -269,21 +269,36 @@ define([
       { id: "gwaio_upgrade_catapult", units: [gwoUnit.catapult] },
       {
         id: "gwaio_upgrade_airfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.airFactory),
+        units: gwoGroup.starterUnitsAdvanced.concat(
+          gwoUnit.airFactory,
+          gwoGroup.airAdvancedMobile
+        ),
       },
       {
         id: "gwaio_upgrade_botfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.botFactory),
+        units: gwoGroup.starterUnitsAdvanced.concat(
+          gwoUnit.botFactory,
+          gwoGroup.botAdvancedMobile
+        ),
       },
       {
         id: "gwaio_upgrade_navalfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.navalFactory),
+        units: gwoGroup.starterUnitsAdvanced.concat(
+          gwoUnit.navalFactory,
+          gwoGroup.navalAdvancedMobile
+        ),
       },
-      { id: "gwaio_upgrade_orbitallauncher", units: [gwoUnit.orbitalLauncher] },
+      {
+        id: "gwaio_upgrade_orbitallauncher",
+        units: gwoGroup.orbitalAdvancedMobile.concat(gwoUnit.orbitalLauncher),
+      },
       { id: "gwaio_upgrade_unitcannon", units: [gwoUnit.unitCannon] },
       {
         id: "gwaio_upgrade_vehiclefactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoUnit.vehicleFactory),
+        units: gwoGroup.starterUnitsAdvanced.concat(
+          gwoUnit.vehicleFactory,
+          gwoGroup.vehicleAdvancedMobile
+        ),
       },
       { id: "gwaio_upgrade_hermes", units: [gwoUnit.hermes] },
       {

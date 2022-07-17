@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Factory upgrade techs' tooltip's unit list
+
 ## v5.39.8 - 2022-07-17
 
 ### Fixed
