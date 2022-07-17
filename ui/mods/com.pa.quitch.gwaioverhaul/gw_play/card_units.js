@@ -278,7 +278,7 @@ define([
         id: "gwaio_upgrade_botfactory",
         units: gwoGroup.starterUnitsAdvanced.concat(
           gwoUnit.botFactory,
-          gwoGroup.botAdvancedMobile
+          gwoGroup.botsAdvancedMobile
         ),
       },
       {
@@ -297,7 +297,7 @@ define([
         id: "gwaio_upgrade_vehiclefactory",
         units: gwoGroup.starterUnitsAdvanced.concat(
           gwoUnit.vehicleFactory,
-          gwoGroup.vehicleAdvancedMobile
+          gwoGroup.vehiclesAdvancedMobile
         ),
       },
       { id: "gwaio_upgrade_hermes", units: [gwoUnit.hermes] },
