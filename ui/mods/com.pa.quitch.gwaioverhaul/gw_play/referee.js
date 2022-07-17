@@ -1084,6 +1084,7 @@ if (!gwoRefereeChangesLoaded) {
               }
 
               var cards = inventory.cards();
+              var subcommanderCommanders = 1;
 
               // Sub Commander Tactics Tech
               // also upgrades Queller to the Gold brain
@@ -1110,11 +1111,13 @@ if (!gwoRefereeChangesLoaded) {
               }
 
               // Sub Commander Duplication Tech
-              var subcommanderCommanders = _.some(cards, {
-                id: "gwaio_upgrade_subcommander_duplication",
-              })
-                ? 2
-                : 1;
+              if (
+                _.some(cards, {
+                  id: "gwaio_upgrade_subcommander_duplication",
+                })
+              ) {
+                subcommanderCommanders = 2;
+              }
 
               var slotsArraySubCommander = [];
 
