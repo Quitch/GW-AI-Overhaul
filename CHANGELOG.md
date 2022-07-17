@@ -4,8 +4,8 @@
 
 ### Fixed
 
-- Allies never appear if you're playing as Space Excavation Commander
-- Basic Factory upgrades unlock the same structures for the advanced fabricator as any other tech which provides advanced tech access
+- Allies appearing if you're playing as Space Excavation Commander
+- Basic Factory upgrades not unlocking structures for the advanced fabricator
 
 ## v5.39.6 - 2022-07-15
 
