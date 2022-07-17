@@ -139,6 +139,11 @@ if (!gwoRefereeChangesLoaded) {
             return "None";
           };
 
+          // allow for specs not assigned to units to still be processed
+          var combineSpecs = function (baseSpecs, newSpecs) {
+            return baseSpecs.concat(newSpecs);
+          };
+
           var generateGameFiles = function () {
             var self = this;
 
@@ -385,11 +390,6 @@ if (!gwoRefereeChangesLoaded) {
                   _.forEach(mods, applyMod);
                 };
                 /* end of gw_spec.js replacements */
-
-                // allow for specs not assigned to units to still be processed
-                var combineSpecs = function (baseSpecs, newSpecs) {
-                  return baseSpecs.concat(newSpecs);
-                };
 
                 // global for modder compatibility
                 if (!model.gwoSpecs) {
