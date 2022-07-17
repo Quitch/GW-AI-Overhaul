@@ -30,7 +30,7 @@ define([
     },
     buff: function (inventory) {
       var newUnits = gwoGroup.starterUnitsAdvanced.concat(
-        gwoGroup.airAdvancedMobile
+        gwoGroup.vehiclesAdvancedMobile
       );
       inventory.addUnits(newUnits);
 

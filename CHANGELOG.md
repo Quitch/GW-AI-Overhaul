@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.40.0 - 2022-07-17
+
+### Changed
+
+- Orbital Launder Upgrade Tech grants access to the Jig
+
+### Fixed
+
+- Factory upgrade techs' tooltip's unit list
+- Vehicle Factory Upgrade Tech unlocking the wrong units
+
 ## v5.39.8 - 2022-07-17
 
 ### Fixed
