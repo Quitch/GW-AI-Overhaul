@@ -85,7 +85,7 @@ if (!gwoRefereeChangesLoaded) {
           };
           var aiBrain = aiInUse();
 
-          var findAIPath = function (type) {
+          var getAIPath = function (type) {
             var game = model.game();
             var ai = game.galaxy().stars()[game.currentStar()].ai();
             var inventory = game.inventory();
@@ -503,7 +503,7 @@ if (!gwoRefereeChangesLoaded) {
                     var playerFilesX1 = {};
                     var playerIsCluster =
                       inventory.getTag("global", "playerFaction") === 4;
-                    // the order of unit_map assignments must match findAIPath()
+                    // the order of unit_map assignments must match getAIPath()
                     if (playerIsCluster) {
                       playerFilesClassic = _.assign(
                         {
@@ -810,7 +810,7 @@ if (!gwoRefereeChangesLoaded) {
                 value: 0,
               };
             });
-            var clusterAIPath = findAIPath("cluster");
+            var clusterAIPath = getAIPath("cluster");
 
             var aiPathCreation = function (aiPath, filePath, cullLength) {
               return aiPath + filePath.slice(cullLength);
@@ -849,8 +849,8 @@ if (!gwoRefereeChangesLoaded) {
                   });
                 }
 
-                var subcommanderAIPath = findAIPath("subcommander");
-                var enemyAIPath = findAIPath("enemy");
+                var subcommanderAIPath = getAIPath("subcommander");
+                var enemyAIPath = getAIPath("enemy");
 
                 _.forEach(fileList, function (filePath) {
                   if (
@@ -914,7 +914,7 @@ if (!gwoRefereeChangesLoaded) {
                         if (_.startsWith(filePath, aiTechPath)) {
                           if (isQueller) {
                             // We don't know if the aiPath contains q_uber
-                            var quellerEnemyPath = findAIPath("enemy");
+                            var quellerEnemyPath = getAIPath("enemy");
                             updatedFilePath = aiPathCreation(
                               quellerEnemyPath,
                               filePath,
@@ -1003,8 +1003,8 @@ if (!gwoRefereeChangesLoaded) {
 
             var aiFilePath =
               alliedCommanders.length > 0
-                ? findAIPath("all")
-                : findAIPath("enemy");
+                ? getAIPath("all")
+                : getAIPath("enemy");
             var clusterPresence = isClusterAIPresent(
               inventory,
               ai,
@@ -1047,6 +1047,45 @@ if (!gwoRefereeChangesLoaded) {
             };
           };
 
+          var setAIPath = function (isCluster, isPlayer) {
+            if (isCluster) {
+              return getAIPath("cluster");
+            } else if (isPlayer) {
+              return getAIPath("subcommander");
+            }
+            return getAIPath("enemy");
+          };
+
+          var applySubcommanderTacticsTech = function (personality, cards) {
+            if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
+              personality.micro_type = 2;
+              personality.go_for_the_kill = true;
+              personality.priority_scout_metal_spots = true;
+              personality.enable_commander_danger_responses = true;
+              _.pull(personality.personality_tags, "SlowerExpansion");
+              personality.personality_tags.push("PreventsWaste");
+            }
+            return personality;
+          };
+
+          var applySubcommanderFabberTech = function (personality, cards) {
+            if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
+              personality.max_basic_fabbers = Math.round(
+                personality.max_basic_fabbers * 1.5
+              );
+              personality.max_advanced_fabbers = Math.round(
+                personality.max_advanced_fabbers * 1.5
+              );
+            }
+            return personality;
+          };
+
+          var hasSubcommanderDuplicationTech = function (cards) {
+            return _.some(cards, {
+              id: "gwaio_upgrade_subcommander_duplication",
+            });
+          };
+
           var generateConfig = function () {
             var self = this;
 
@@ -1064,58 +1103,31 @@ if (!gwoRefereeChangesLoaded) {
                 alliance_group: 1,
               },
             ];
-            var subcommanderAIPath = findAIPath("subcommander");
-            var clusterAIPath = findAIPath("cluster");
-            var playerFaction = inventory.getTag("global", "playerFaction");
-            var playerIsCluster = playerFaction === 4;
 
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
+            var playerFaction = inventory.getTag("global", "playerFaction");
 
             _.forEach(alliedCommanders, function (subcommander, index) {
               // Avoid breaking Sub Commanders from earlier versions
-              if (playerIsCluster) {
-                subcommander.personality.ai_path = clusterAIPath;
-              } else {
-                subcommander.personality.ai_path = subcommanderAIPath;
-              }
+              var isCluster = playerFaction === 4;
+              subcommander.personality.ai_path = setAIPath(isCluster, true);
 
               var cards = inventory.cards();
               var subcommanderCommanders = 1;
 
-              // Sub Commander Tactics Tech
-              // also upgrades Queller to the Gold brain
-              if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
-                subcommander.personality.micro_type = 2;
-                subcommander.personality.go_for_the_kill = true;
-                subcommander.personality.priority_scout_metal_spots = true;
-                subcommander.personality.enable_commander_danger_responses = true;
-                _.pull(
-                  subcommander.personality.personality_tags,
-                  "SlowerExpansion"
-                );
-                subcommander.personality.personality_tags.push("PreventsWaste");
-              }
-
-              // Sub Commander Fabber Tech
-              if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
-                subcommander.personality.max_basic_fabbers = Math.round(
-                  subcommander.personality.max_basic_fabbers * 1.5
-                );
-                subcommander.personality.max_advanced_fabbers = Math.round(
-                  subcommander.personality.max_advanced_fabbers * 1.5
-                );
-              }
-
-              // Sub Commander Duplication Tech
-              if (
-                _.some(cards, {
-                  id: "gwaio_upgrade_subcommander_duplication",
-                })
-              ) {
+              subcommander.personality = applySubcommanderTacticsTech(
+                subcommander.personality,
+                cards
+              );
+              subcommander.personality = applySubcommanderFabberTech(
+                subcommander.personality,
+                cards
+              );
+              if (hasSubcommanderDuplicationTech(cards)) {
                 subcommanderCommanders = 2;
               }
 
@@ -1162,13 +1174,9 @@ if (!gwoRefereeChangesLoaded) {
             adjustAdvEcoMod(ai, aiBrain);
 
             // Avoid breaking enemies from earlier versions
-            var enemyAIPath = findAIPath("enemy");
             var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
-            if (aiIsCluster) {
-              ai.personality.ai_path = clusterAIPath;
-            } else {
-              ai.personality.ai_path = enemyAIPath;
-            }
+            var aiPath = setAIPath(aiIsCluster, false);
+            ai.personality.ai_path = aiPath;
 
             var slotsArrayAI = [];
             _.times(
@@ -1193,11 +1201,7 @@ if (!gwoRefereeChangesLoaded) {
               adjustAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
-              if (aiIsCluster) {
-                minion.personality.ai_path = clusterAIPath;
-              } else {
-                minion.personality.ai_path = enemyAIPath;
-              }
+              minion.personality.ai_path = aiPath;
 
               var slotsArrayMinions = [];
               _.times(
@@ -1227,11 +1231,7 @@ if (!gwoRefereeChangesLoaded) {
 
               // Avoid breaking enemies from earlier versions
               var foeIsCluster = foe.faction[0] === 4;
-              if (foeIsCluster) {
-                foe.personality.ai_path = clusterAIPath;
-              } else {
-                foe.personality.ai_path = enemyAIPath;
-              }
+              foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
               var slotsArrayFoes = [];
               _.times(
