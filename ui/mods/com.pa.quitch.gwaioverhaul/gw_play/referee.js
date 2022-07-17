@@ -1016,7 +1016,10 @@ if (!gwoRefereeChangesLoaded) {
               alliedCommanders.length
             );
 
-            if (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") {
+            if (
+              (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") ||
+              (ai.mirrorMode !== true && _.isEmpty(alliedCommanders))
+            ) {
               parseFiles(
                 aiFilePath,
                 deferredAIFiles,
@@ -1029,13 +1032,6 @@ if (!gwoRefereeChangesLoaded) {
                 aiFilePath,
                 deferredAIFiles,
                 "All",
-                alliedCommanders.length
-              );
-            } else if (alliedCommanders.length > 0) {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "SubCommanders",
                 alliedCommanders.length,
                 clusterPresence
               );
@@ -1043,7 +1039,7 @@ if (!gwoRefereeChangesLoaded) {
               parseFiles(
                 aiFilePath,
                 deferredAIFiles,
-                "None",
+                "SubCommanders",
                 alliedCommanders.length,
                 clusterPresence
               );
