@@ -1086,6 +1086,14 @@ if (!gwoRefereeChangesLoaded) {
             });
           };
 
+          var setAdvEcoMod = function (aiRoot, brain) {
+            if (brain !== "Queller") {
+              aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
+              aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
+            }
+            return aiRoot;
+          };
+
           var generateConfig = function () {
             var self = this;
 
@@ -1162,16 +1170,8 @@ if (!gwoRefereeChangesLoaded) {
               aiTag.push(aiNewTag);
             });
 
-            // Avoid AI teching too early/late due to eco modifiers
-            var adjustAdvEcoMod = function (aiRoot, brain) {
-              if (brain !== "Queller") {
-                aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
-                aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
-              }
-            };
-
             // Set up AI System Owner
-            adjustAdvEcoMod(ai, aiBrain);
+            ai = setAdvEcoMod(ai, aiBrain);
 
             // Avoid breaking enemies from earlier versions
             var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
@@ -1198,7 +1198,7 @@ if (!gwoRefereeChangesLoaded) {
               alliance_group: 2,
             });
             _.forEach(ai.minions, function (minion, index) {
-              adjustAdvEcoMod(minion, aiBrain);
+              minion = setAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = aiPath;
@@ -1227,7 +1227,7 @@ if (!gwoRefereeChangesLoaded) {
 
             // Set up Additional AI Factions
             _.forEach(ai.foes, function (foe, index) {
-              adjustAdvEcoMod(foe, aiBrain);
+              foe = setAdvEcoMod(foe, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               var foeIsCluster = foe.faction[0] === 4;
