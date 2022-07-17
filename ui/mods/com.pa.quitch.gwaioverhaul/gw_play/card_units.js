@@ -290,7 +290,7 @@ define([
       },
       {
         id: "gwaio_upgrade_orbitallauncher",
-        units: gwoGroup.orbitalAdvancedMobile.concat(gwoUnit.orbitalLauncher),
+        units: gwoGroup.orbitalAdvanced.concat(gwoUnit.orbitalLauncher),
       },
       { id: "gwaio_upgrade_unitcannon", units: [gwoUnit.unitCannon] },
       {

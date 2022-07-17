@@ -29,7 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      inventory.addUnits(gwoGroup.orbitalAdvancedMobile);
+      inventory.addUnits(gwoGroup.orbitalAdvanced);
 
       inventory.addMods([
         {

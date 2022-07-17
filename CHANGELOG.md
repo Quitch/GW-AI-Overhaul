@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Orbital Launder Upgrade Tech grants access to the Jig
+
 ### Fixed
 
 - Factory upgrade techs' tooltip's unit list
