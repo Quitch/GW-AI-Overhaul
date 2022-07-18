@@ -1093,12 +1093,35 @@ if (!gwoRefereeChangesLoaded) {
             return aiRoot;
           };
 
+          var addAIArmy = function (ai, armies, index, specTag, alliance) {
+            var slotsArray = [];
+            _.times(
+              ai.bossCommanders ||
+                ai.commanderCount ||
+                // legacy GWO support
+                (ai.landing_policy && ai.landing_policy.length) ||
+                1,
+              function () {
+                slotsArray.push(armyCommander(true, ai.name, ai.commander));
+              }
+            );
+            armies.push({
+              slots: slotsArray,
+              color: gwoColour.pick(ai.faction, ai.color, index),
+              econ_rate: ai.econ_rate,
+              personality: ai.personality,
+              spec_tag: specTag,
+              alliance_group: alliance,
+            });
+          };
+
           var generateConfig = function () {
             var self = this;
 
             // Set up the player
             var game = self.game();
             var inventory = game.inventory();
+            var cards = inventory.cards();
             var playerName = ko.observable().extend({ session: "displayName" });
             var playerTag = ".player";
             var armies = [
@@ -1110,53 +1133,33 @@ if (!gwoRefereeChangesLoaded) {
                 alliance_group: 1,
               },
             ];
-
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
             var playerFaction = inventory.getTag("global", "playerFaction");
+            var isCluster = playerFaction === 4;
 
-            _.forEach(alliedCommanders, function (subcommander, index) {
+            _.forEach(alliedCommanders, function (ally, index) {
               // Avoid breaking Sub Commanders from earlier versions
-              var isCluster = playerFaction === 4;
-              subcommander.personality.ai_path = setAIPath(isCluster, true);
+              ally.personality.ai_path = setAIPath(isCluster, true);
 
-              var cards = inventory.cards();
-              var subcommanderCommanders = 1;
-
-              subcommander.personality = applySubcommanderTacticsTech(
-                subcommander.personality,
+              ally.personality = applySubcommanderTacticsTech(
+                ally.personality,
                 cards
               );
-              subcommander.personality = applySubcommanderFabberTech(
-                subcommander.personality,
+              ally.personality = applySubcommanderFabberTech(
+                ally.personality,
                 cards
               );
               if (hasSubcommanderDuplicationTech(cards)) {
-                subcommanderCommanders = 2;
+                ally.commanderCount = 2;
               }
+              ally.faction = playerFaction;
+              var allyIndex = index + 1;
 
-              var slotsArraySubCommander = [];
-
-              _.times(subcommanderCommanders, function () {
-                slotsArraySubCommander.push(
-                  armyCommander(true, subcommander.name, subcommander.commander)
-                );
-              });
-              armies.push({
-                slots: slotsArraySubCommander,
-                color: gwoColour.pick(
-                  playerFaction,
-                  subcommander.color,
-                  index + 1 // player has colour 0
-                ),
-                econ_rate: 1,
-                personality: subcommander.personality,
-                spec_tag: playerTag,
-                alliance_group: 1,
-              });
+              addAIArmy(ally, armies, allyIndex, playerTag, 1);
             });
 
             // Set up the AI
@@ -1177,51 +1180,18 @@ if (!gwoRefereeChangesLoaded) {
             var aiPath = setAIPath(aiIsCluster, false);
             ai.personality.ai_path = aiPath;
 
-            var slotsArrayAI = [];
-            _.times(
-              ai.bossCommanders ||
-                ai.commanderCount ||
-                // legacy GWO support
-                (ai.landing_policy && ai.landing_policy.length) ||
-                1,
-              function () {
-                slotsArrayAI.push(armyCommander(true, ai.name, ai.commander));
-              }
-            );
-            armies.push({
-              slots: slotsArrayAI,
-              color: gwoColour.pick(ai.faction, ai.color, 0),
-              econ_rate: ai.econ_rate,
-              personality: ai.personality,
-              spec_tag: aiTag[0],
-              alliance_group: 2,
-            });
+            addAIArmy(ai, armies, 0, aiTag[0], 2);
+
             _.forEach(ai.minions, function (minion, index) {
               minion = setAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = aiPath;
 
-              var slotsArrayMinions = [];
-              _.times(
-                minion.commanderCount ||
-                  // legacy GWO support
-                  (minion.landing_policy && minion.landing_policy.length) ||
-                  1,
-                function () {
-                  slotsArrayMinions.push(
-                    armyCommander(true, minion.name, minion.commander)
-                  );
-                }
-              );
-              armies.push({
-                slots: slotsArrayMinions,
-                color: gwoColour.pick(ai.faction, minion.color, index + 1), // primary AI has colour 0
-                econ_rate: minion.econ_rate,
-                personality: minion.personality,
-                spec_tag: aiTag[0],
-                alliance_group: 2,
-              });
+              minion.faction = ai.faction;
+              var minionIndex = index + 1; // primary AI has colour 0
+
+              addAIArmy(ai, armies, minionIndex, aiTag[0], 2);
             });
 
             // Set up Additional AI Factions
@@ -1232,26 +1202,9 @@ if (!gwoRefereeChangesLoaded) {
               var foeIsCluster = foe.faction[0] === 4;
               foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
-              var slotsArrayFoes = [];
-              _.times(
-                foe.commanderCount ||
-                  // legacy GWO support
-                  (foe.landing_policy && foe.landing_policy.length) ||
-                  1,
-                function () {
-                  slotsArrayFoes.push(
-                    armyCommander(true, foe.name, foe.commander)
-                  );
-                }
-              );
-              armies.push({
-                slots: slotsArrayFoes,
-                color: gwoColour.pick(foe.faction, foe.color, 0),
-                econ_rate: foe.econ_rate,
-                personality: foe.personality,
-                spec_tag: aiTag[index + 1], // 0 taken by primary AI
-                alliance_group: index + 3, //  1 & 2 taken by player and primary AI
-              });
+              var foeTag = index + 1; // 0 taken by primary AI
+              var foeAlliance = index + 3; //  1 & 2 taken by player and primary AI
+              addAIArmy(foe, armies, 0, aiTag[foeTag], foeAlliance);
             });
 
             var config = {
