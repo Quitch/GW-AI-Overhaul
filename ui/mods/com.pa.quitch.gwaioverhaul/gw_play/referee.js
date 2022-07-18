@@ -788,263 +788,230 @@ if (!gwoRefereeChangesLoaded) {
           var generateAI = function () {
             var self = this;
             var game = self.game();
-
-            var deferred = $.Deferred();
-            var deferredAIFiles = $.Deferred();
-
-            var parseFiles = function (
-              aiPath,
-              promise,
-              aiToModify,
-              allyCount,
-              clusterAIPresent
-            ) {
-              api.file.list(aiPath, true).then(function (fileList) {
-                var configFiles = self.files();
-                var queue = [];
-
-                var aiMods = game.inventory().aiMods();
-                var aiTechPath = "/pa/ai_tech/";
-
-                if (aiToModify !== "None") {
-                  aiMods = _.partition(aiMods, { op: "load" });
-
-                  // process ai load ops
-                  _.forEach(aiMods[0], function (aiMod) {
-                    var managerPath = "";
-                    if (aiMod.type === "fabber") {
-                      managerPath = "fabber_builds/";
-                    } else if (aiMod.type === "factory") {
-                      managerPath = "factory_builds/";
-                    } else if (aiMod.type === "platoon") {
-                      managerPath = "platoon_builds/";
-                    } else if (aiMod.type === "template") {
-                      managerPath = "platoon_templates/";
-                    } else {
-                      console.error("Invalid op in", aiMod);
-                    }
-                    fileList.push(aiTechPath + managerPath + aiMod.value);
-                  });
-                }
-
-                var subcommanderAIPath = getAIPath("subcommander");
-                var enemyAIPath = getAIPath("enemy");
-
-                _.forEach(fileList, function (filePath) {
-                  if (
-                    !_.endsWith(filePath, ".json") ||
-                    _.includes(filePath, "/neural_networks/")
-                  ) {
-                    return;
-                  }
-
-                  var deferred2 = $.Deferred();
-                  var isQueller = aiBrain === "Queller";
-
-                  var quellerSubCommander = false;
-                  if (
-                    isQueller &&
-                    allyCount > 0 &&
-                    (_.startsWith(filePath, subcommanderAIPath) ||
-                      _.startsWith(filePath, aiTechPath))
-                  ) {
-                    quellerSubCommander = true;
-                  }
-
-                  var aiBuildOps = [];
-                  var clusterOps = [];
-                  var clusterCommanders = [
-                    "SupportPlatform",
-                    "SupportCommander",
-                    "UberSupportCommander", // Queller AI
-                  ];
-                  var clusterAIMods = _.map(
-                    clusterCommanders,
-                    function (commander) {
-                      return {
-                        type: "factory",
-                        op: "replace",
-                        toBuild: commander,
-                        idToMod: "priority",
-                        value: 0,
-                      };
-                    }
-                  );
-                  var clusterAIPath = getAIPath("cluster");
-
-                  // Only mods associated with the file's AI manager are loaded
-                  if (
-                    aiToModify !== "None" &&
-                    !_.isEmpty(aiMods[1]) &&
-                    (!isQueller || quellerSubCommander || aiToModify === "All")
-                  ) {
-                    if (_.includes(filePath, "/fabber_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], {
-                        type: "fabber",
-                      });
-                    } else if (_.includes(filePath, "/factory_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], { type: "factory" });
-                    } else if (_.includes(filePath, "/platoon_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
-                    } else if (_.includes(filePath, "/platoon_templates/")) {
-                      aiBuildOps = _.filter(aiMods[1], {
-                        type: "template",
-                      });
-                    }
-                  }
-                  if (
-                    _.includes(filePath, "/factory_builds/") &&
-                    clusterAIPresent !== "None"
-                  ) {
-                    clusterOps = clusterAIMods;
-                  }
-
-                  queue.push(deferred2);
-
-                  $.getJSON("coui:/" + filePath)
-                    .then(function (json) {
-                      var updatedFilePath = filePath;
-
-                      if (aiToModify === "All") {
-                        addTechToAI(json, aiBuildOps);
-                        // Put "load" files where the AI expects them to be
-                        if (_.startsWith(filePath, aiTechPath)) {
-                          if (isQueller) {
-                            // We don't know if the aiPath contains q_uber
-                            var quellerEnemyPath = getAIPath("enemy");
-                            updatedFilePath = aiPathCreation(
-                              quellerEnemyPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                            configFiles[updatedFilePath] = json;
-                            if (quellerSubCommander) {
-                              updatedFilePath = aiPathCreation(
-                                subcommanderAIPath,
-                                filePath,
-                                quellerEnemyPath.length
-                              );
-                              configFiles[updatedFilePath] = json;
-                            }
-                          } else {
-                            updatedFilePath = aiPathCreation(
-                              aiPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                            configFiles[updatedFilePath] = json;
-                          }
-                        } else {
-                          configFiles[filePath] = json;
-                        }
-                      } else if (aiToModify === "SubCommanders") {
-                        // Make a clean copy of files for enemy AIs
-                        if (_.startsWith(filePath, enemyAIPath)) {
-                          configFiles[filePath] = _.cloneDeep(json);
-                        }
-                        addTechToAI(json, aiBuildOps);
-                        if (quellerSubCommander) {
-                          // Put "load" files where Queller expects them to be
-                          if (_.startsWith(filePath, aiTechPath)) {
-                            updatedFilePath = aiPathCreation(
-                              subcommanderAIPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                          }
-                        } else {
-                          // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
-                          if (_.startsWith(filePath, aiPath)) {
-                            updatedFilePath =
-                              aiTechPath + filePath.slice(aiPath.length);
-                          }
-                        }
-                        configFiles[updatedFilePath] = json;
-                      } else {
-                        configFiles[filePath] = json;
-                      }
-
-                      if (clusterAIPresent !== "None") {
-                        var slice = aiPath;
-                        if (isQueller) {
-                          var quellerPaths = [
-                            enemyAIPath,
-                            subcommanderAIPath,
-                            aiTechPath,
-                          ];
-                          slice = _.filter(quellerPaths, function (path) {
-                            return _.startsWith(filePath, path);
-                          }).toString();
-                        }
-                        updatedFilePath = aiPathCreation(
-                          clusterAIPath,
-                          filePath,
-                          slice.length
-                        );
-                        var clusterJson = _.cloneDeep(json);
-                        addTechToAI(clusterJson, clusterOps);
-                        configFiles[updatedFilePath] = clusterJson;
-                      }
-                    })
-                    .always(function () {
-                      deferred2.resolve();
-                    });
-                });
-
-                $.when.apply($, queue).then(function () {
-                  self.files.valueHasMutated();
-                  promise.resolve();
-                });
-              });
-            };
-
             var inventory = game.inventory();
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
+            var numberOfAllies = alliedCommanders.length;
             var aiFilePath =
-              alliedCommanders.length > 0
-                ? getAIPath("all")
-                : getAIPath("enemy");
+              numberOfAllies > 0 ? getAIPath("all") : getAIPath("enemy");
             var clusterPresence = isClusterAIPresent(
               inventory,
               ai,
-              alliedCommanders.length
+              numberOfAllies
             );
+            var aiToModify = "None";
+
+            var deferred = $.Deferred();
 
             if (
-              (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") ||
-              (ai.mirrorMode !== true && _.isEmpty(alliedCommanders))
+              !_.isEmpty(inventory.aiMods()) ||
+              clusterPresence === "Player"
             ) {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "None",
-                alliedCommanders.length,
-                clusterPresence
-              );
-            } else if (ai.mirrorMode === true) {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "All",
-                alliedCommanders.length,
-                clusterPresence
-              );
-            } else {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "SubCommanders",
-                alliedCommanders.length,
-                clusterPresence
-              );
+              if (ai.mirrorMode === true) {
+                aiToModify = "All";
+              } else {
+                aiToModify = "SubCommanders";
+              }
             }
 
-            $.when(deferredAIFiles).then(function () {
-              deferred.resolve();
+            api.file.list(aiFilePath, true).then(function (fileList) {
+              var configFiles = self.files();
+              var aiFiles = [];
+
+              var aiMods = game.inventory().aiMods();
+              var aiTechPath = "/pa/ai_tech/";
+
+              if (aiToModify !== "None") {
+                aiMods = _.partition(aiMods, { op: "load" });
+
+                // process ai load ops
+                _.forEach(aiMods[0], function (aiMod) {
+                  var managerPath = "";
+                  if (aiMod.type === "fabber") {
+                    managerPath = "fabber_builds/";
+                  } else if (aiMod.type === "factory") {
+                    managerPath = "factory_builds/";
+                  } else if (aiMod.type === "platoon") {
+                    managerPath = "platoon_builds/";
+                  } else if (aiMod.type === "template") {
+                    managerPath = "platoon_templates/";
+                  } else {
+                    console.error("Invalid op in", aiMod);
+                  }
+                  fileList.push(aiTechPath + managerPath + aiMod.value);
+                });
+              }
+
+              var subcommanderAIPath = getAIPath("subcommander");
+              var enemyAIPath = getAIPath("enemy");
+              var isQueller = aiBrain === "Queller";
+
+              _.forEach(fileList, function (filePath) {
+                if (
+                  !_.endsWith(filePath, ".json") ||
+                  _.includes(filePath, "/neural_networks/")
+                ) {
+                  return;
+                }
+
+                var aiFile = $.Deferred();
+
+                var aiBuildOps = [];
+                var clusterOps = [];
+                var clusterCommanders = [
+                  "SupportPlatform",
+                  "SupportCommander",
+                  "UberSupportCommander", // Queller AI
+                ];
+                var clusterAIMods = _.map(
+                  clusterCommanders,
+                  function (commander) {
+                    return {
+                      type: "factory",
+                      op: "replace",
+                      toBuild: commander,
+                      idToMod: "priority",
+                      value: 0,
+                    };
+                  }
+                );
+                var clusterAIPath = getAIPath("cluster");
+                var quellerSubCommander = false;
+                if (
+                  isQueller &&
+                  numberOfAllies > 0 &&
+                  (_.startsWith(filePath, subcommanderAIPath) ||
+                    _.startsWith(filePath, aiTechPath))
+                ) {
+                  quellerSubCommander = true;
+                }
+
+                // Only mods associated with the file's AI manager are loaded
+                if (
+                  aiToModify !== "None" &&
+                  !_.isEmpty(aiMods[1]) &&
+                  (!isQueller || quellerSubCommander || aiToModify === "All")
+                ) {
+                  if (_.includes(filePath, "/fabber_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], {
+                      type: "fabber",
+                    });
+                  } else if (_.includes(filePath, "/factory_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], { type: "factory" });
+                  } else if (_.includes(filePath, "/platoon_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                  } else if (_.includes(filePath, "/platoon_templates/")) {
+                    aiBuildOps = _.filter(aiMods[1], {
+                      type: "template",
+                    });
+                  }
+                }
+                if (
+                  _.includes(filePath, "/factory_builds/") &&
+                  clusterPresence !== "None"
+                ) {
+                  clusterOps = clusterAIMods;
+                }
+
+                aiFiles.push(aiFile);
+
+                $.getJSON("coui:/" + filePath)
+                  .then(function (json) {
+                    var updatedFilePath = filePath;
+
+                    if (aiToModify === "All") {
+                      addTechToAI(json, aiBuildOps);
+                      // Put "load" files where the AI expects them to be
+                      if (_.startsWith(filePath, aiTechPath)) {
+                        if (isQueller) {
+                          // We don't know if the aiFilePath contains q_uber
+                          var quellerEnemyPath = getAIPath("enemy");
+                          updatedFilePath = aiPathCreation(
+                            quellerEnemyPath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                          configFiles[updatedFilePath] = json;
+                          if (quellerSubCommander) {
+                            updatedFilePath = aiPathCreation(
+                              subcommanderAIPath,
+                              filePath,
+                              quellerEnemyPath.length
+                            );
+                            configFiles[updatedFilePath] = json;
+                          }
+                        } else {
+                          updatedFilePath = aiPathCreation(
+                            aiFilePath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                          configFiles[updatedFilePath] = json;
+                        }
+                      } else {
+                        configFiles[filePath] = json;
+                      }
+                    } else if (aiToModify === "SubCommanders") {
+                      // Make a clean copy of the files for enemy AIs
+                      if (_.startsWith(filePath, enemyAIPath)) {
+                        configFiles[filePath] = _.cloneDeep(json);
+                      }
+                      addTechToAI(json, aiBuildOps);
+                      if (quellerSubCommander) {
+                        // Put "load" files where Queller expects them to be
+                        if (_.startsWith(filePath, aiTechPath)) {
+                          updatedFilePath = aiPathCreation(
+                            subcommanderAIPath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                        }
+                      } else {
+                        // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
+                        if (_.startsWith(filePath, aiFilePath)) {
+                          updatedFilePath =
+                            aiTechPath + filePath.slice(aiFilePath.length);
+                        }
+                      }
+                      configFiles[updatedFilePath] = json;
+                    } else {
+                      configFiles[filePath] = json;
+                    }
+
+                    if (clusterPresence !== "None") {
+                      var slice = aiFilePath;
+                      if (isQueller) {
+                        var quellerPaths = [
+                          enemyAIPath,
+                          subcommanderAIPath,
+                          aiTechPath,
+                        ];
+                        slice = _.filter(quellerPaths, function (path) {
+                          return _.startsWith(filePath, path);
+                        }).toString();
+                      }
+                      updatedFilePath = aiPathCreation(
+                        clusterAIPath,
+                        filePath,
+                        slice.length
+                      );
+                      var clusterJson = _.cloneDeep(json);
+                      addTechToAI(clusterJson, clusterOps);
+                      configFiles[updatedFilePath] = clusterJson;
+                    }
+                  })
+                  .always(function () {
+                    aiFile.resolve();
+                  });
+              });
+
+              $.when.apply($, aiFiles).then(function () {
+                self.files.valueHasMutated();
+                deferred.resolve();
+              });
             });
 
             return deferred.promise();
