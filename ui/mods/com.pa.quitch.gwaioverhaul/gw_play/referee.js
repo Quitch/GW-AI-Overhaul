@@ -784,6 +784,20 @@ if (!gwoRefereeChangesLoaded) {
             return aiPath + filePath.slice(cullLength);
           };
 
+          var aiToMod = function (inventory, mirrorMode, clusterPresence) {
+            if (
+              !_.isEmpty(inventory.aiMods()) ||
+              clusterPresence === "Player"
+            ) {
+              if (mirrorMode) {
+                return "All";
+              } else {
+                return "SubCommanders";
+              }
+            }
+            return "None";
+          };
+
           // parse AI mods and load the results into self.files()
           var generateAI = function () {
             var self = this;
@@ -802,20 +816,9 @@ if (!gwoRefereeChangesLoaded) {
               ai,
               numberOfAllies
             );
-            var aiToModify = "None";
+            var aiToModify = aiToMod(inventory, ai.mirrorMode, clusterPresence);
 
             var deferred = $.Deferred();
-
-            if (
-              !_.isEmpty(inventory.aiMods()) ||
-              clusterPresence === "Player"
-            ) {
-              if (ai.mirrorMode === true) {
-                aiToModify = "All";
-              } else {
-                aiToModify = "SubCommanders";
-              }
-            }
 
             api.file.list(aiFilePath, true).then(function (fileList) {
               var configFiles = self.files();
