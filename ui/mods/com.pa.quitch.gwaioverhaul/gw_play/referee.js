@@ -1032,20 +1032,6 @@ if (!gwoRefereeChangesLoaded) {
             return deferred.promise();
           };
 
-          var armyCommander = function (ai, name, commander) {
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
-            ];
-            return {
-              ai: ai,
-              name: name,
-              commander: commander,
-              landing_policy: _.sample(aiLandingOptions),
-            };
-          };
-
           var setAIPath = function (isCluster, isPlayer) {
             if (isCluster) {
               return getAIPath("cluster");
@@ -1091,6 +1077,20 @@ if (!gwoRefereeChangesLoaded) {
               aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
             }
             return aiRoot;
+          };
+
+          var armyCommander = function (ai, name, commander) {
+            var aiLandingOptions = [
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ];
+            return {
+              ai: ai,
+              name: name,
+              commander: commander,
+              landing_policy: _.sample(aiLandingOptions),
+            };
           };
 
           var addAIArmy = function (ai, armies, index, specTag, alliance) {
