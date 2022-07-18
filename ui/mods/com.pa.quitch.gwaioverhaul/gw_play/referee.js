@@ -824,7 +824,7 @@ if (!gwoRefereeChangesLoaded) {
               var configFiles = self.files();
               var aiFiles = [];
 
-              var aiMods = game.inventory().aiMods();
+              var aiMods = inventory.aiMods();
               var aiTechPath = "/pa/ai_tech/";
 
               if (aiToModify !== "None") {
