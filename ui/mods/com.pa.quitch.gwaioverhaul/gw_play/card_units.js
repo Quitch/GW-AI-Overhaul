@@ -188,7 +188,7 @@ define([
       },
       {
         id: "gwc_storage_and_buff",
-        units: gwoGroup.structuresEco.concat(gwoGroup.structuresEcoStorage),
+        units: gwoGroup.structuresEco,
       },
       { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm] },
       { id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.commander] },

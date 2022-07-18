@@ -6,6 +6,10 @@
 
 - Improved distinctiveness of Cluster colours
 
+### Fixed
+
+- Efficiency Tech tooltip listing storage structures twice
+
 ## v5.40.0 - 2022-07-17
 
 ### Changed
