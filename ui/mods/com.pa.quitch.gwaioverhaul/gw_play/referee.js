@@ -798,8 +798,12 @@ if (!gwoRefereeChangesLoaded) {
             return "None";
           };
 
-          var processAILoadFiles = function (aiMods, aiToModify, fileList) {
-            var aiTechPath = "/pa/ai_tech/";
+          var processAILoadFiles = function (
+            aiMods,
+            aiToModify,
+            fileList,
+            aiTechPath
+          ) {
             if (aiToModify !== "None") {
               aiMods = _.partition(aiMods, { op: "load" });
 
@@ -853,7 +857,7 @@ if (!gwoRefereeChangesLoaded) {
               var enemyAIPath = getAIPath("enemy");
               var isQueller = aiBrain === "Queller";
 
-              processAILoadFiles(aiMods, aiToModify, fileList);
+              processAILoadFiles(aiMods, aiToModify, fileList, aiTechPath);
 
               _.forEach(fileList, function (filePath) {
                 if (
