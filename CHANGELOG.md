@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Improved distinctiveness of Cluster colours
+
 ## v5.40.0 - 2022-07-17
 
 ### Changed
