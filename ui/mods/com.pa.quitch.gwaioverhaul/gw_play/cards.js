@@ -20,52 +20,24 @@ if (!gwoCardsLoaded) {
           "gwaio_upgrade_fabricationvehicle",
         ];
 
-        // Allow player to delete tech cards whenever they want and add tooltips
-        // showing units affected by the cards
-        $("#hover-card").replaceWith(
-          loadHtml(
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
-          )
-        );
-        locTree($("#hover-card"));
-        $("#system-card").replaceWith(
-          loadHtml(
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
-          )
-        );
-        locTree($("#system-card"));
+        var setupInventoryTechDeletion = function () {
+          $("#hover-card").replaceWith(
+            loadHtml(
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
+            )
+          );
+          locTree($("#hover-card"));
+          $("#system-card").replaceWith(
+            loadHtml(
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
+            )
+          );
+          locTree($("#system-card"));
+        };
+        setupInventoryTechDeletion();
 
         var numCardsToOffer = 3;
 
-        model.gwoOfferRerolls = ko.observable(true);
-        model.gwoRerollsUsed = ko
-          .observable(0)
-          .extend({ session: "gwo_rerolls_used" }); // prevent UI refresh exploits
-        var star = {};
-        // Clean start for new games in a single session
-        if (game.turnState() === "begin") {
-          model.gwoRerollsUsed(0);
-        }
-        // Avoid incorrect rerolls when loading an exploration save game
-        else if (game.turnState() === "explore") {
-          star = game.galaxy().stars()[game.currentStar()];
-          model.gwoRerollsUsed = ko.observable(
-            numCardsToOffer - star.cardList().length
-          );
-          if (
-            model.gwoRerollsUsed() >= numCardsToOffer - 1 ||
-            (self.isLoadout && self.isLoadout())
-          ) {
-            model.gwoOfferRerolls(false);
-          }
-        }
-        ko.computed(function () {
-          game.turnState();
-          if (game.turnState() === "end") {
-            model.gwoRerollsUsed(0);
-            model.gwoOfferRerolls(true);
-          }
-        });
         model.rerollTech = function () {
           var cardsOffered = 0;
           if (game.inventory().handIsFull()) {
@@ -73,7 +45,7 @@ if (!gwoCardsLoaded) {
           } else {
             cardsOffered = numCardsToOffer;
           }
-          star = game.galaxy().stars()[game.currentStar()];
+          var star = game.galaxy().stars()[game.currentStar()];
           model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
           if (model.gwoRerollsUsed() >= cardsOffered - 1) {
             model.gwoOfferRerolls(false);
@@ -82,12 +54,341 @@ if (!gwoCardsLoaded) {
           game.turnState("begin");
           model.explore();
         };
-        $(".div_options_bar").replaceWith(
-          loadHtml(
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
-          )
-        );
-        locTree($(".div_options_bar"));
+
+        var setupTechRerolls = function () {
+          model.gwoOfferRerolls = ko.observable(true);
+          model.gwoRerollsUsed = ko
+            .observable(0)
+            .extend({ session: "gwo_rerolls_used" }); // prevent UI refresh exploits
+
+          // Clean start for new games in a single session
+          if (game.turnState() === "begin") {
+            model.gwoRerollsUsed(0);
+          }
+          // Avoid incorrect rerolls when loading an exploration save game
+          else if (game.turnState() === "explore") {
+            var star = game.galaxy().stars()[game.currentStar()];
+            model.gwoRerollsUsed = ko.observable(
+              numCardsToOffer - star.cardList().length
+            );
+            if (
+              model.gwoRerollsUsed() >= numCardsToOffer - 1 ||
+              (self.isLoadout && self.isLoadout())
+            ) {
+              model.gwoOfferRerolls(false);
+            }
+          }
+
+          ko.computed(function () {
+            game.turnState();
+            if (game.turnState() === "end") {
+              model.gwoRerollsUsed(0);
+              model.gwoOfferRerolls(true);
+            }
+          });
+
+          $(".div_options_bar").replaceWith(
+            loadHtml(
+              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
+            )
+          );
+          locTree($(".div_options_bar"));
+        };
+        setupTechRerolls();
+
+        globals.CardViewModel = function (params) {
+          var self = this;
+
+          self.params = ko.observable(params);
+          self.id = ko.computed(function () {
+            var p = self.params();
+            return _.isObject(p) ? p.id : p;
+          });
+
+          self.visible = ko.observable(false);
+          self.desc = ko.observable();
+          self.locDesc = ko.computed(function () {
+            return loc(self.desc());
+          });
+          self.summary = ko.observable();
+          self.icon = ko.observable();
+          self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
+          self.audio = ko.observable();
+
+          self.isEmpty = ko.computed(function () {
+            return !self.id();
+          });
+          // Recognise loadouts introduced by mods as loadouts
+          self.isLoadout = ko.computed(function () {
+            return _.includes(self.id(), "_start_");
+          });
+
+          var completed = $.Deferred();
+          self.card = completed.promise();
+
+          var loadCard = function (card, data) {
+            if (_.isEmpty(card)) {
+              self.desc(
+                "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
+              );
+              self.summary("!LOC:Empty Data Bank");
+              self.icon(
+                "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png"
+              );
+              self.iconPlaceholder(undefined);
+              self.visible(true);
+            } else {
+              self.desc(card.describe && card.describe(data));
+              self.summary(card.summarize && card.summarize(data));
+              self.icon(card.icon && card.icon(data));
+              self.iconPlaceholder(
+                !self.icon() && (self.summary() || self.desc())
+              );
+              self.audio(card.audio && card.audio(data));
+              self.visible(
+                card.visible === true || !!(card.visible && card.visible(data))
+              );
+            }
+            completed.resolve(card);
+          };
+
+          var loadToken = 0;
+          ko.computed(function () {
+            var data = self.params();
+            ++loadToken;
+            var myToken = loadToken;
+            var cardId = self.id();
+            if (cardId) {
+              requireGW(["cards/" + cardId], function (card) {
+                if (loadToken !== myToken) {
+                  return;
+                }
+                loadCard(card, data);
+              });
+            } else {
+              loadCard({}, data);
+            }
+          });
+        };
+
+        var setupGwoCards = function (gwoSettings) {
+          var basicCards = [
+            "gwc_add_card_slot",
+            "gwc_bld_efficiency_cdr",
+            "gwc_bld_efficiency_fabs",
+            "gwc_combat_air",
+            "gwc_combat_bots",
+            "gwc_combat_commander",
+            "gwc_combat_orbital",
+            "gwc_combat_sea",
+            "gwc_combat_structures",
+            "gwc_combat_vehicles",
+            "gwc_cost_air",
+            "gwc_cost_artillery",
+            "gwc_cost_bots",
+            "gwc_cost_defenses",
+            "gwc_cost_economy",
+            "gwc_cost_orbital",
+            "gwc_cost_sea",
+            "gwc_cost_super_weapons",
+            "gwc_cost_titans",
+            "gwc_cost_vehicles",
+            "gwc_damage_air",
+            "gwc_damage_artillery",
+            "gwc_damage_bots",
+            "gwc_damage_commander",
+            "gwc_damage_defenses",
+            "gwc_damage_orbital",
+            "gwc_damage_sea",
+            "gwc_damage_vehicles",
+            "gwc_enable_air_all",
+            "gwc_enable_air_t1",
+            "gwc_enable_artillery",
+            "gwc_enable_bots_all",
+            "gwc_enable_bots_t1",
+            "gwc_enable_defenses_t2",
+            "gwc_enable_orbital_all",
+            "gwc_enable_sea_all",
+            "gwc_enable_titans",
+            "gwc_enable_vehicles_all",
+            "gwc_enable_vehicles_t1",
+            "gwc_energy_efficiency_all",
+            "gwc_health_air",
+            "gwc_health_bots",
+            "gwc_health_commander",
+            "gwc_health_orbital",
+            "gwc_health_sea",
+            "gwc_health_structures",
+            "gwc_health_vehicles",
+            "gwc_minion",
+            "gwc_speed_air",
+            "gwc_speed_bots",
+            "gwc_speed_commander",
+            "gwc_speed_orbital",
+            "gwc_speed_sea",
+            "gwc_speed_vehicles",
+            "gwc_storage_1",
+            "gwc_storage_and_buff",
+          ];
+          var expandedCards = [
+            "gwaio_enable_planetaryradar",
+            "gwaio_upgrade_advancedairfactory",
+            "gwaio_upgrade_advancedbotfactory",
+            "gwaio_upgrade_advancedenergyplant",
+            "gwaio_upgrade_advancedfabricationaircraft",
+            "gwaio_upgrade_advancedfabricationbot",
+            "gwaio_upgrade_advancedfabricationship",
+            "gwaio_upgrade_advancedfabricationvehicle",
+            "gwaio_upgrade_advancedlaserdefensetower",
+            "gwaio_upgrade_advancedmetalextractor",
+            "gwaio_upgrade_advancednavalfactory",
+            "gwaio_upgrade_advancedradar",
+            "gwaio_upgrade_advancedradarsatellite",
+            "gwaio_upgrade_advancedtorpedolauncher",
+            "gwaio_upgrade_advancedvehiclefactory",
+            "gwaio_upgrade_airfactory",
+            "gwaio_upgrade_anchor",
+            "gwaio_upgrade_angel",
+            "gwaio_upgrade_ant",
+            "gwaio_upgrade_antinuke",
+            "gwaio_upgrade_ares",
+            "gwaio_upgrade_arkyd",
+            "gwaio_upgrade_artemis",
+            "gwaio_upgrade_astraeus",
+            "gwaio_upgrade_atlas",
+            "gwaio_upgrade_avenger",
+            "gwaio_upgrade_barnacle",
+            "gwaio_upgrade_barracuda",
+            "gwaio_upgrade_bluehawk",
+            "gwaio_upgrade_boom",
+            "gwaio_upgrade_botfactory",
+            "gwaio_upgrade_bumblebee",
+            "gwaio_upgrade_catalyst",
+            "gwaio_upgrade_catapult",
+            "gwaio_upgrade_colonel",
+            "gwaio_upgrade_dox",
+            "gwaio_upgrade_drifter",
+            "gwaio_upgrade_energyplant",
+            "gwaio_upgrade_energystorage",
+            "gwaio_upgrade_fabricationaircraft",
+            "gwaio_upgrade_fabricationbot",
+            "gwaio_upgrade_fabricationship",
+            "gwaio_upgrade_fabricationvehicle",
+            "gwaio_upgrade_firefly",
+            "gwaio_upgrade_flak",
+            "gwaio_upgrade_galata",
+            "gwaio_upgrade_gile",
+            "gwaio_upgrade_grenadier",
+            "gwaio_upgrade_halley",
+            "gwaio_upgrade_helios",
+            "gwaio_upgrade_hermes",
+            "gwaio_upgrade_holkins",
+            "gwaio_upgrade_hornet",
+            "gwaio_upgrade_horsefly",
+            "gwaio_upgrade_hummingbird",
+            "gwaio_upgrade_icarus",
+            "gwaio_upgrade_inferno",
+            "gwaio_upgrade_jig",
+            "gwaio_upgrade_kaiju",
+            "gwaio_upgrade_kestrel",
+            "gwaio_upgrade_kraken",
+            "gwaio_upgrade_laserdefensetower",
+            "gwaio_upgrade_leveler",
+            "gwaio_upgrade_leviathan",
+            "gwaio_upgrade_lob",
+            "gwaio_upgrade_locusts",
+            "gwaio_upgrade_manhattan",
+            "gwaio_upgrade_mend",
+            "gwaio_upgrade_metalextractor",
+            "gwaio_upgrade_metalstorage",
+            "gwaio_upgrade_mine",
+            "gwaio_upgrade_narwhal",
+            "gwaio_upgrade_navalfactory",
+            "gwaio_upgrade_nukes",
+            "gwaio_upgrade_omega",
+            "gwaio_upgrade_orbitalfabricationbot",
+            "gwaio_upgrade_orbitalfactory",
+            "gwaio_upgrade_orbitallauncher",
+            "gwaio_upgrade_orca",
+            "gwaio_upgrade_pelican",
+            "gwaio_upgrade_pelter",
+            "gwaio_upgrade_phoenix",
+            "gwaio_upgrade_piranha",
+            "gwaio_upgrade_planetaryradar",
+            "gwaio_upgrade_radar",
+            "gwaio_upgrade_ragnarok",
+            "gwaio_upgrade_sheller",
+            "gwaio_upgrade_singlelaserdefensetower",
+            "gwaio_upgrade_skitter",
+            "gwaio_upgrade_slammer",
+            "gwaio_upgrade_solararray",
+            "gwaio_upgrade_spark",
+            "gwaio_upgrade_spinner",
+            "gwaio_upgrade_squall",
+            "gwaio_upgrade_stinger",
+            "gwaio_upgrade_stingray",
+            "gwaio_upgrade_stitch",
+            "gwaio_upgrade_storm",
+            "gwaio_upgrade_stryker",
+            "gwaio_upgrade_subcommander_duplication",
+            "gwaio_upgrade_subcommander_fabber",
+            "gwaio_upgrade_subcommander_tactics",
+            "gwaio_upgrade_sxx",
+            "gwaio_upgrade_teleporter",
+            "gwaio_upgrade_torpedolauncher",
+            "gwaio_upgrade_typhoon",
+            "gwaio_upgrade_ubercannon_structure",
+            "gwaio_upgrade_umbrella",
+            "gwaio_upgrade_unitcannon",
+            "gwaio_upgrade_vanguard",
+            "gwaio_upgrade_vehiclefactory",
+            "gwaio_upgrade_wall",
+            "gwaio_upgrade_wyrm",
+            "gwaio_upgrade_zeus",
+            "gwc_cost_intel",
+            "gwc_energy_efficiency_intel",
+            "gwc_energy_efficiency_weapons",
+          ];
+
+          if (!model.gwoCards) {
+            model.gwoCards = [];
+          }
+          if (
+            !gwoSettings || // non-GWO saves
+            !gwoSettings.techCardDeck || // v5.35.0 and earlier
+            gwoSettings.techCardDeck === "Expanded"
+          ) {
+            model.gwoCards = model.gwoCards.concat(basicCards, expandedCards);
+          } else {
+            model.gwoCards = model.gwoCards.concat(basicCards);
+          }
+        };
+
+        var setupGwoDeck = function (cards, deck, cardsRemaining, promise) {
+          _.forEach(model.gwoCards, function (cardId) {
+            requireGW(["cards/" + cardId], function (card) {
+              card.id = cardId;
+              cards.push(card);
+              deck.push(cardId);
+              --cardsRemaining;
+              if (cardsRemaining === 0) {
+                promise.resolve();
+              }
+            });
+          });
+        };
+
+        var setCardName = function (system, card) {
+          var deferred = $.Deferred();
+          if (!_.isEmpty(card)) {
+            requireGW(["cards/" + card[0].id], function (data) {
+              var cardName = loc(data.summarize());
+              system.star.ai().cardName = cardName;
+              deferred.resolve();
+            });
+          }
+          return deferred.promise();
+        };
 
         requireGW(
           [
@@ -108,302 +409,30 @@ if (!gwoCardsLoaded) {
             gwoSave,
             gwoBank
           ) {
-            globals.CardViewModel = function (params) {
-              var self = this;
-
-              self.params = ko.observable(params);
-              self.id = ko.computed(function () {
-                var p = self.params();
-                return _.isObject(p) ? p.id : p;
-              });
-
-              self.visible = ko.observable(false);
-              self.desc = ko.observable();
-              self.locDesc = ko.computed(function () {
-                return loc(self.desc());
-              });
-              self.summary = ko.observable();
-              self.icon = ko.observable();
-              self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
-              self.audio = ko.observable();
-
-              self.isEmpty = ko.computed(function () {
-                return !self.id();
-              });
-              // Recognise loadouts introduced by mods as loadouts
-              self.isLoadout = ko.computed(function () {
-                return _.includes(self.id(), "_start_");
-              });
-
-              var completed = $.Deferred();
-              self.card = completed.promise();
-
-              var loadCard = function (card, data) {
-                if (_.isEmpty(card)) {
-                  self.desc(
-                    "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
-                  );
-                  self.summary("!LOC:Empty Data Bank");
-                  self.icon(
-                    "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png"
-                  );
-                  self.iconPlaceholder(undefined);
-                  self.visible(true);
-                } else {
-                  self.desc(card.describe && card.describe(data));
-                  self.summary(card.summarize && card.summarize(data));
-                  self.icon(card.icon && card.icon(data));
-                  self.iconPlaceholder(
-                    !self.icon() && (self.summary() || self.desc())
-                  );
-                  self.audio(card.audio && card.audio(data));
-                  self.visible(
-                    card.visible === true ||
-                      !!(card.visible && card.visible(data))
-                  );
-                }
-                completed.resolve(card);
-              };
-
-              var loadToken = 0;
-              ko.computed(function () {
-                var data = self.params();
-                ++loadToken;
-                var myToken = loadToken;
-                var cardId = self.id();
-                if (cardId) {
-                  requireGW(["cards/" + cardId], function (card) {
-                    if (loadToken !== myToken) {
-                      return;
-                    }
-                    loadCard(card, data);
-                  });
-                } else {
-                  loadCard({}, data);
-                }
-              });
-            };
-
             var inventory = game.inventory();
             var playerFaction = inventory.getTag("global", "playerFaction");
             var galaxy = model.game().galaxy();
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
-            if (!model.gwoCards) {
-              model.gwoCards = [];
-            }
-            model.gwoCards.push(
-              "gwc_add_card_slot",
-              "gwc_bld_efficiency_cdr",
-              "gwc_bld_efficiency_fabs",
-              "gwc_combat_air",
-              "gwc_combat_bots",
-              "gwc_combat_commander",
-              "gwc_combat_orbital",
-              "gwc_combat_sea",
-              "gwc_combat_structures",
-              "gwc_combat_vehicles",
-              "gwc_cost_air",
-              "gwc_cost_artillery",
-              "gwc_cost_bots",
-              "gwc_cost_defenses",
-              "gwc_cost_economy",
-              "gwc_cost_orbital",
-              "gwc_cost_sea",
-              "gwc_cost_super_weapons",
-              "gwc_cost_titans",
-              "gwc_cost_vehicles",
-              "gwc_damage_air",
-              "gwc_damage_artillery",
-              "gwc_damage_bots",
-              "gwc_damage_commander",
-              "gwc_damage_defenses",
-              "gwc_damage_orbital",
-              "gwc_damage_sea",
-              "gwc_damage_vehicles",
-              "gwc_enable_air_all",
-              "gwc_enable_air_t1",
-              "gwc_enable_artillery",
-              "gwc_enable_bots_all",
-              "gwc_enable_bots_t1",
-              "gwc_enable_defenses_t2",
-              "gwc_enable_orbital_all",
-              "gwc_enable_sea_all",
-              "gwc_enable_titans",
-              "gwc_enable_vehicles_all",
-              "gwc_enable_vehicles_t1",
-              "gwc_energy_efficiency_all",
-              "gwc_health_air",
-              "gwc_health_bots",
-              "gwc_health_commander",
-              "gwc_health_orbital",
-              "gwc_health_sea",
-              "gwc_health_structures",
-              "gwc_health_vehicles",
-              "gwc_minion",
-              "gwc_speed_air",
-              "gwc_speed_bots",
-              "gwc_speed_commander",
-              "gwc_speed_orbital",
-              "gwc_speed_sea",
-              "gwc_speed_vehicles",
-              "gwc_storage_1",
-              "gwc_storage_and_buff"
-            );
-            if (
-              !gwoSettings || // non-GWO saves
-              !gwoSettings.techCardDeck || // v5.35.0 and earlier
-              gwoSettings.techCardDeck === "Expanded"
-            ) {
-              model.gwoCards.push(
-                "gwaio_enable_planetaryradar",
-                "gwaio_upgrade_advancedairfactory",
-                "gwaio_upgrade_advancedbotfactory",
-                "gwaio_upgrade_advancedenergyplant",
-                "gwaio_upgrade_advancedfabricationaircraft",
-                "gwaio_upgrade_advancedfabricationbot",
-                "gwaio_upgrade_advancedfabricationship",
-                "gwaio_upgrade_advancedfabricationvehicle",
-                "gwaio_upgrade_advancedlaserdefensetower",
-                "gwaio_upgrade_advancedmetalextractor",
-                "gwaio_upgrade_advancednavalfactory",
-                "gwaio_upgrade_advancedradar",
-                "gwaio_upgrade_advancedradarsatellite",
-                "gwaio_upgrade_advancedtorpedolauncher",
-                "gwaio_upgrade_advancedvehiclefactory",
-                "gwaio_upgrade_airfactory",
-                "gwaio_upgrade_anchor",
-                "gwaio_upgrade_angel",
-                "gwaio_upgrade_ant",
-                "gwaio_upgrade_antinuke",
-                "gwaio_upgrade_ares",
-                "gwaio_upgrade_arkyd",
-                "gwaio_upgrade_artemis",
-                "gwaio_upgrade_astraeus",
-                "gwaio_upgrade_atlas",
-                "gwaio_upgrade_avenger",
-                "gwaio_upgrade_barnacle",
-                "gwaio_upgrade_barracuda",
-                "gwaio_upgrade_bluehawk",
-                "gwaio_upgrade_boom",
-                "gwaio_upgrade_botfactory",
-                "gwaio_upgrade_bumblebee",
-                "gwaio_upgrade_catalyst",
-                "gwaio_upgrade_catapult",
-                "gwaio_upgrade_colonel",
-                "gwaio_upgrade_dox",
-                "gwaio_upgrade_drifter",
-                "gwaio_upgrade_energyplant",
-                "gwaio_upgrade_energystorage",
-                "gwaio_upgrade_fabricationaircraft",
-                "gwaio_upgrade_fabricationbot",
-                "gwaio_upgrade_fabricationship",
-                "gwaio_upgrade_fabricationvehicle",
-                "gwaio_upgrade_firefly",
-                "gwaio_upgrade_flak",
-                "gwaio_upgrade_galata",
-                "gwaio_upgrade_gile",
-                "gwaio_upgrade_grenadier",
-                "gwaio_upgrade_halley",
-                "gwaio_upgrade_helios",
-                "gwaio_upgrade_hermes",
-                "gwaio_upgrade_holkins",
-                "gwaio_upgrade_hornet",
-                "gwaio_upgrade_horsefly",
-                "gwaio_upgrade_hummingbird",
-                "gwaio_upgrade_icarus",
-                "gwaio_upgrade_inferno",
-                "gwaio_upgrade_jig",
-                "gwaio_upgrade_kaiju",
-                "gwaio_upgrade_kestrel",
-                "gwaio_upgrade_kraken",
-                "gwaio_upgrade_laserdefensetower",
-                "gwaio_upgrade_leveler",
-                "gwaio_upgrade_leviathan",
-                "gwaio_upgrade_lob",
-                "gwaio_upgrade_locusts",
-                "gwaio_upgrade_manhattan",
-                "gwaio_upgrade_mend",
-                "gwaio_upgrade_metalextractor",
-                "gwaio_upgrade_metalstorage",
-                "gwaio_upgrade_mine",
-                "gwaio_upgrade_narwhal",
-                "gwaio_upgrade_navalfactory",
-                "gwaio_upgrade_nukes",
-                "gwaio_upgrade_omega",
-                "gwaio_upgrade_orbitalfabricationbot",
-                "gwaio_upgrade_orbitalfactory",
-                "gwaio_upgrade_orbitallauncher",
-                "gwaio_upgrade_orca",
-                "gwaio_upgrade_pelican",
-                "gwaio_upgrade_pelter",
-                "gwaio_upgrade_phoenix",
-                "gwaio_upgrade_piranha",
-                "gwaio_upgrade_planetaryradar",
-                "gwaio_upgrade_radar",
-                "gwaio_upgrade_ragnarok",
-                "gwaio_upgrade_sheller",
-                "gwaio_upgrade_singlelaserdefensetower",
-                "gwaio_upgrade_skitter",
-                "gwaio_upgrade_slammer",
-                "gwaio_upgrade_solararray",
-                "gwaio_upgrade_spark",
-                "gwaio_upgrade_spinner",
-                "gwaio_upgrade_squall",
-                "gwaio_upgrade_stinger",
-                "gwaio_upgrade_stingray",
-                "gwaio_upgrade_stitch",
-                "gwaio_upgrade_storm",
-                "gwaio_upgrade_stryker",
-                "gwaio_upgrade_subcommander_duplication",
-                "gwaio_upgrade_subcommander_fabber",
-                "gwaio_upgrade_subcommander_tactics",
-                "gwaio_upgrade_sxx",
-                "gwaio_upgrade_teleporter",
-                "gwaio_upgrade_torpedolauncher",
-                "gwaio_upgrade_typhoon",
-                "gwaio_upgrade_ubercannon_structure",
-                "gwaio_upgrade_umbrella",
-                "gwaio_upgrade_unitcannon",
-                "gwaio_upgrade_vanguard",
-                "gwaio_upgrade_vehiclefactory",
-                "gwaio_upgrade_wall",
-                "gwaio_upgrade_wyrm",
-                "gwaio_upgrade_zeus",
-                "gwc_cost_intel",
-                "gwc_energy_efficiency_intel",
-                "gwc_energy_efficiency_weapons"
-              );
-            }
+            setupGwoCards(gwoSettings);
 
             var cards = [];
-            var cardContexts = {};
-
-            var loadCount = model.gwoCards.length;
+            var deck = [];
+            var numberOfCards = model.gwoCards.length;
             var loaded = $.Deferred();
 
-            var deck = [];
-            _.forEach(model.gwoCards, function (cardId) {
-              requireGW(["cards/" + cardId], function (card) {
-                card.id = cardId;
-                cards.push(card);
-                deck.push(cardId);
-                --loadCount;
-                if (loadCount === 0) {
-                  loaded.resolve();
-                }
-              });
-            });
+            setupGwoDeck(cards, deck, numberOfCards, loaded);
 
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
               inventory = params.inventory;
               var rng = params.rng || new Math.seedrandom();
               var count = params.count;
-              star = params.star;
+              var star = params.star;
               galaxy = params.galaxy;
               var dealAddSlot = params.addSlot;
+              var cardContexts = {};
 
               var result = $.Deferred();
               loaded.then(function () {
@@ -496,18 +525,6 @@ if (!gwoCardsLoaded) {
                 result.resolve(list);
               });
               return result;
-            };
-
-            var setCardName = function (system, card) {
-              var deferred = $.Deferred();
-              if (!_.isEmpty(card)) {
-                requireGW(["cards/" + card[0].id], function (data) {
-                  var cardName = loc(data.summarize());
-                  system.star.ai().cardName = cardName;
-                  deferred.resolve();
-                });
-              }
-              return deferred.promise();
             };
 
             var dealCardSelectableAI = function (win, turnState) {
@@ -623,7 +640,7 @@ if (!gwoCardsLoaded) {
 
             // We need cheats to deal from our deck
             model.cheats.testCards = function () {
-              star = game.galaxy().stars()[game.currentStar()];
+              var star = game.galaxy().stars()[game.currentStar()];
               _.forEach(model.gwoCards, function (cardId) {
                 console.log("Testing " + cardId);
                 dealCard({
@@ -756,7 +773,7 @@ if (!gwoCardsLoaded) {
               } else {
                 cardsOffered = numCardsToOffer;
               }
-              star = game.galaxy().stars()[game.currentStar()];
+              var star = game.galaxy().stars()[game.currentStar()];
               var dealStarCards = chooseCards({
                 inventory: inventory,
                 count:
