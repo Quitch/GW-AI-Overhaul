@@ -798,6 +798,30 @@ if (!gwoRefereeChangesLoaded) {
             return "None";
           };
 
+          var processAILoadFiles = function (aiMods, aiToModify, fileList) {
+            var aiTechPath = "/pa/ai_tech/";
+            if (aiToModify !== "None") {
+              aiMods = _.partition(aiMods, { op: "load" });
+
+              // process ai load ops
+              _.forEach(aiMods[0], function (aiMod) {
+                var managerPath = "";
+                if (aiMod.type === "fabber") {
+                  managerPath = "fabber_builds/";
+                } else if (aiMod.type === "factory") {
+                  managerPath = "factory_builds/";
+                } else if (aiMod.type === "platoon") {
+                  managerPath = "platoon_builds/";
+                } else if (aiMod.type === "template") {
+                  managerPath = "platoon_templates/";
+                } else {
+                  console.error("Invalid op in", aiMod);
+                }
+                fileList.push(aiTechPath + managerPath + aiMod.value);
+              });
+            }
+          };
+
           // parse AI mods and load the results into self.files()
           var generateAI = function () {
             var self = this;
@@ -823,34 +847,13 @@ if (!gwoRefereeChangesLoaded) {
             api.file.list(aiFilePath, true).then(function (fileList) {
               var configFiles = self.files();
               var aiFiles = [];
-
               var aiMods = inventory.aiMods();
               var aiTechPath = "/pa/ai_tech/";
-
-              if (aiToModify !== "None") {
-                aiMods = _.partition(aiMods, { op: "load" });
-
-                // process ai load ops
-                _.forEach(aiMods[0], function (aiMod) {
-                  var managerPath = "";
-                  if (aiMod.type === "fabber") {
-                    managerPath = "fabber_builds/";
-                  } else if (aiMod.type === "factory") {
-                    managerPath = "factory_builds/";
-                  } else if (aiMod.type === "platoon") {
-                    managerPath = "platoon_builds/";
-                  } else if (aiMod.type === "template") {
-                    managerPath = "platoon_templates/";
-                  } else {
-                    console.error("Invalid op in", aiMod);
-                  }
-                  fileList.push(aiTechPath + managerPath + aiMod.value);
-                });
-              }
-
               var subcommanderAIPath = getAIPath("subcommander");
               var enemyAIPath = getAIPath("enemy");
               var isQueller = aiBrain === "Queller";
+
+              processAILoadFiles(aiMods, aiToModify, fileList);
 
               _.forEach(fileList, function (filePath) {
                 if (
