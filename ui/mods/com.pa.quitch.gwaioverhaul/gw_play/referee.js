@@ -1093,7 +1093,7 @@ if (!gwoRefereeChangesLoaded) {
             };
           };
 
-          var addAIArmy = function (ai, armies, index, specTag, alliance) {
+          var setupAIArmy = function (ai, index, specTag, alliance) {
             var slotsArray = [];
             _.times(
               ai.bossCommanders ||
@@ -1105,14 +1105,14 @@ if (!gwoRefereeChangesLoaded) {
                 slotsArray.push(aiCommander(ai.name, ai.commander));
               }
             );
-            armies.push({
+            return {
               slots: slotsArray,
               color: gwoColour.pick(ai.faction, ai.color, index),
               econ_rate: ai.econ_rate,
               personality: ai.personality,
               spec_tag: specTag,
               alliance_group: alliance,
-            });
+            };
           };
 
           var generateConfig = function () {
@@ -1158,8 +1158,8 @@ if (!gwoRefereeChangesLoaded) {
               }
               ally.faction = playerFaction;
               var allyIndex = index + 1;
-
-              addAIArmy(ally, armies, allyIndex, playerTag, 1);
+              var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
+              armies.push(subcommanderArmy);
             });
 
             // Set up the AI
@@ -1180,7 +1180,8 @@ if (!gwoRefereeChangesLoaded) {
             var aiPath = setAIPath(aiIsCluster, false);
             ai.personality.ai_path = aiPath;
 
-            addAIArmy(ai, armies, 0, aiTag[0], 2);
+            var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
+            armies.push(aiArmy);
 
             _.forEach(ai.minions, function (minion, index) {
               minion = setAdvEcoMod(minion, aiBrain);
@@ -1190,8 +1191,8 @@ if (!gwoRefereeChangesLoaded) {
 
               minion.faction = ai.faction;
               var minionIndex = index + 1; // primary AI has colour 0
-
-              addAIArmy(ai, armies, minionIndex, aiTag[0], 2);
+              aiArmy = setupAIArmy(ai, minionIndex, aiTag[0], 2);
+              armies.push(aiArmy);
             });
 
             // Set up Additional AI Factions
@@ -1204,7 +1205,8 @@ if (!gwoRefereeChangesLoaded) {
 
               var foeTag = index + 1; // 0 taken by primary AI
               var foeAlliance = index + 3; //  1 & 2 taken by player and primary AI
-              addAIArmy(foe, armies, 0, aiTag[foeTag], foeAlliance);
+              aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
+              armies.push(aiArmy);
             });
 
             var config = {
