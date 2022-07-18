@@ -1079,14 +1079,14 @@ if (!gwoRefereeChangesLoaded) {
             return aiRoot;
           };
 
-          var armyCommander = function (ai, name, commander) {
+          var aiCommander = function (name, commander) {
             var aiLandingOptions = [
               "off_player_planet",
               "on_player_planet",
               "no_restriction",
             ];
             return {
-              ai: ai,
+              ai: true,
               name: name,
               commander: commander,
               landing_policy: _.sample(aiLandingOptions),
@@ -1102,7 +1102,7 @@ if (!gwoRefereeChangesLoaded) {
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
               function () {
-                slotsArray.push(armyCommander(true, ai.name, ai.commander));
+                slotsArray.push(aiCommander(ai.name, ai.commander));
               }
             );
             armies.push({
