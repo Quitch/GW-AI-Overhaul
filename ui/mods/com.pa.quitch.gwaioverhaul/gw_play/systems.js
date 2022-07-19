@@ -323,7 +323,7 @@ if (!gwoSystemChangesLoaded) {
               }
 
               // Colour inner ring to match ally or other faction present
-              var innerRing = [];
+              var innerRing = {};
               if (ai.ally || ai.foes) {
                 var innerColour = ai.ally
                   ? normalizedColor(GWFactions[ai.ally.faction])
@@ -340,8 +340,13 @@ if (!gwoSystemChangesLoaded) {
                 scaleInnerRing.z = 0;
                 system.systemDisplay.addChild(scaleInnerRing);
               }
+              innerRing.visible = false;
 
               ko.computed(function () {
+                innerRing.visible =
+                  (system.connected() && !!system.ownerColor()) ||
+                  model.cheats.noFog();
+
                 if (ai.treasurePlanet !== true) {
                   // Assign faction colour, not minion colour, to each system
                   var outerColour = [];
@@ -349,9 +354,6 @@ if (!gwoSystemChangesLoaded) {
                   system.ownerColor(outerColour.concat(3));
 
                   if (ai.ally || ai.foes) {
-                    innerRing.visible =
-                      (system.connected() && !!system.ownerColor()) ||
-                      model.cheats.noFog();
                     // Fix Z axis issues
                     if (innerRing.visible === true) {
                       system.mouseOver(1);
