@@ -111,7 +111,7 @@ define([
       { id: "gwc_enable_artillery", units: gwoGroup.structuresArtillery },
       {
         id: "gwc_enable_bots_all",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.bot),
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.bots),
       },
       { id: "gwc_enable_bots_t1", units: gwoGroup.botsBasic },
       {
