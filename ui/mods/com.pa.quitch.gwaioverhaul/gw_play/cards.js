@@ -14,6 +14,7 @@ if (!gwoCardsLoaded) {
           _.forEach(game.galaxy().stars(), function (star) {
             var ai = star.ai();
             if (ai && ai.team === team) {
+              star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
               star.cardList([]);
             } else {
