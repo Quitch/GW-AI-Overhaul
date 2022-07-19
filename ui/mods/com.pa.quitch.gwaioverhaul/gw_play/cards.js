@@ -16,7 +16,9 @@ if (!gwoCardsLoaded) {
             if (ai && ai.team === team) {
               star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
-              star.cardList([]);
+              if (ai.mirrorMode !== true) {
+                star.cardList([]);
+              }
             } else {
               ++aiCount;
             }
