@@ -1,8 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoUnit, gwoGroup) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,14 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      var hasT2Access = gwoCard.hasT2Access(inventory);
-      var hasAdvancedFabber = gwoCard.hasUnit(
-        inventory.units(),
-        gwoGroup.fabbersAdvanced
-      );
-      // Player starts with Catalyst to avoid AI log errors
-      // so we check for advanced fabbers instead
-      if (hasT2Access && hasAdvancedFabber) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.catalyst)) {
         chance = 60;
       }
       return { chance: chance };
