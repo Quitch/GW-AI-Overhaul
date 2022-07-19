@@ -13,20 +13,22 @@ if (!gwoCardsLoaded) {
           api.tally.incStatInt("gw_eliminate_faction");
           _.forEach(game.galaxy().stars(), function (star) {
             var ai = star.ai();
-            if (ai && ai.team === team) {
-              star.ai(undefined);
-              // Delete pre-dealt cards when boss defeated
-              if (ai.mirrorMode !== true) {
-                star.cardList([]);
+            if (ai) {
+              if (ai.team === team) {
+                star.ai(undefined);
+                // Delete pre-dealt cards when boss defeated
+                if (ai.mirrorMode !== true) {
+                  star.cardList([]);
+                }
+              } else {
+                ++aiCount;
               }
-            } else {
-              ++aiCount;
             }
           });
 
           if (!aiCount) {
             requireGW(["shared/gw_game"], function (GWGame) {
-              model.gameState(GWGame.gameStates.won);
+              game.gameState(GWGame.gameStates.won);
             });
           }
         };
