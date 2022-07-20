@@ -8,41 +8,6 @@ if (!gwoCardsLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
-        game.defeatTeam = function (team) {
-          var aiCount = 0;
-          api.tally.incStatInt("gw_eliminate_faction");
-          _.forEach(game.galaxy().stars(), function (star) {
-            var ai = star.ai();
-            if (ai) {
-              if (ai.team === team) {
-                // Delete pre-dealt cards when boss defeated
-                if (ai.foes) {
-                  var newAI = ai.foes[0];
-                  var foeBackup = ai.foes.slice(1);
-                  var foeKeys = _.keys(newAI);
-                  _.forEach(foeKeys, function (key) {
-                    star.ai()[key] = ai.foes[0][key];
-                  });
-                  star.ai().foes = foeBackup;
-                } else {
-                  star.ai(undefined);
-                }
-                if (ai.mirrorMode !== true) {
-                  star.cardList([]);
-                }
-              } else {
-                ++aiCount;
-              }
-            }
-          });
-
-          if (!aiCount) {
-            requireGW(["shared/gw_game"], function (GWGame) {
-              game.gameState(GWGame.gameStates.won);
-            });
-          }
-        };
-
         // Used to by cards checking for T2 access - global var for modders
         model.cardsGrantingAdvancedTech = [
           "gwc_enable_air_all",
