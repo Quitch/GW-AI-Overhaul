@@ -338,10 +338,10 @@ if (!gwoSystemChangesLoaded) {
                       star.ai().foes = foeBackup;
                     } else {
                       star.ai(undefined);
-                    }
-                    // Delete pre-dealt cards when boss defeated
-                    if (ai.mirrorMode !== true) {
-                      star.cardList([]);
+                      // Delete pre-dealt cards when boss defeated
+                      if (ai.mirrorMode !== true) {
+                        star.cardList([]);
+                      }
                     }
                   } else {
                     ++aiCount;
