@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Minions being incorrectly inherited when a system is taken over.
+- Minions being incorrectly inherited when a system is taken over
 
 ## v5.41.0 - 2022-07-20
 
