@@ -412,17 +412,20 @@ if (!gwoSystemChangesLoaded) {
               });
             });
 
-            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-            if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
-              for (var star of galaxy.stars()) {
-                if (_.includes(star.cardList(), undefined)) {
-                  star.cardList([]);
-                  break;
+            var bugfixes = function () {
+              // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+              if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
+                for (var star of galaxy.stars()) {
+                  if (_.includes(star.cardList(), undefined)) {
+                    star.cardList([]);
+                    break;
+                  }
                 }
+                gwoSettings.treasurePlanetFixed = true;
+                gwoSave(game, true);
               }
-              gwoSettings.treasurePlanetFixed = true;
-              gwoSave(game, true);
-            }
+            };
+            bugfixes();
           }
         );
       }
