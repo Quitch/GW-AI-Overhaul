@@ -26,8 +26,7 @@ define([
         gwoGroup.structuresIntelBasic,
         gwoGroup.navalBasic,
         gwoGroup.orbitalBasic,
-        commander,
-        gwoUnit.catalyst // prevents AI log errors
+        commander
       );
       inventory.addUnits(starterUnits);
     },

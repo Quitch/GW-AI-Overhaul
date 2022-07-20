@@ -316,6 +316,46 @@ if (!gwoSystemChangesLoaded) {
               });
             };
 
+            game.defeatTeam = function (team) {
+              var aiCount = 0;
+              api.tally.incStatInt("gw_eliminate_faction");
+              _.forEach(model.galaxy.systems(), function (system) {
+                var star = system.star;
+                var ai = star.ai();
+                if (ai) {
+                  if (ai.team === team) {
+                    if (ai.foes) {
+                      var newAI = ai.foes[0];
+                      var foeBackup = ai.foes.slice(1);
+                      var foeKeys = _.keys(newAI);
+                      _.forEach(foeKeys, function (key) {
+                        star.ai()[key] = ai.foes[0][key];
+                      });
+                      var systemColour = normalizedColor(
+                        GWFactions[ai.faction]
+                      );
+                      system.ownerColor(systemColour.concat(3));
+                      star.ai().foes = foeBackup;
+                    } else {
+                      star.ai(undefined);
+                      // Delete pre-dealt cards when boss defeated
+                      if (ai.mirrorMode !== true) {
+                        star.cardList([]);
+                      }
+                    }
+                  } else {
+                    ++aiCount;
+                  }
+                }
+              });
+
+              if (!aiCount) {
+                requireGW(["shared/gw_game"], function (GWGame) {
+                  game.gameState(GWGame.gameStates.won);
+                });
+              }
+            };
+
             _.forEach(model.galaxy.systems(), function (system) {
               var ai = system.star.ai();
               if (!ai) {
@@ -323,7 +363,7 @@ if (!gwoSystemChangesLoaded) {
               }
 
               // Colour inner ring to match ally or other faction present
-              var innerRing = [];
+              var innerRing = {};
               if (ai.ally || ai.foes) {
                 var innerColour = ai.ally
                   ? normalizedColor(GWFactions[ai.ally.faction])
@@ -340,26 +380,30 @@ if (!gwoSystemChangesLoaded) {
                 scaleInnerRing.z = 0;
                 system.systemDisplay.addChild(scaleInnerRing);
               }
+              innerRing.visible = false;
 
               ko.computed(function () {
-                if (ai.treasurePlanet !== true) {
+                innerRing.visible =
+                  (system.connected() || model.cheats.noFog()) &&
+                  !!system.ownerColor();
+
+                // Fix Z axis issues
+                if (innerRing.visible === true) {
+                  system.mouseOver(1);
+                  system.mouseOver(0);
+                  system.mouseOut(0);
+                }
+
+                if (
+                  system.star.ai() &&
+                  system.star.ai().treasurePlanet !== true
+                ) {
                   // Assign faction colour, not minion colour, to each system
                   var outerColour = [];
                   outerColour = normalizedColor(GWFactions[ai.faction]);
                   system.ownerColor(outerColour.concat(3));
-
-                  if (ai.ally || ai.foes) {
-                    innerRing.visible =
-                      (system.connected() && !!system.ownerColor()) ||
-                      model.cheats.noFog();
-                    // Fix Z axis issues
-                    if (innerRing.visible === true) {
-                      system.mouseOver(1);
-                      system.mouseOver(0);
-                      system.mouseOut(0);
-                    }
-                  }
                 }
+
                 // Dependencies. These will cause the base code that updates color to rerun
                 // so we have to run under the same conditions, and pray we run later than that code.
                 system.connected();
@@ -368,17 +412,20 @@ if (!gwoSystemChangesLoaded) {
               });
             });
 
-            // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-            if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
-              for (var star of galaxy.stars()) {
-                if (_.includes(star.cardList(), undefined)) {
-                  star.cardList([]);
-                  break;
+            var bugfixes = function () {
+              // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+              if (gwoSettings && !gwoSettings.treasurePlanetFixed) {
+                for (var star of galaxy.stars()) {
+                  if (_.includes(star.cardList(), undefined)) {
+                    star.cardList([]);
+                    break;
+                  }
                 }
+                gwoSettings.treasurePlanetFixed = true;
+                gwoSave(game, true);
               }
-              gwoSettings.treasurePlanetFixed = true;
-              gwoSave(game, true);
-            }
+            };
+            bugfixes();
           }
         );
       }

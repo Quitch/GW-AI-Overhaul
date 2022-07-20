@@ -111,7 +111,7 @@ define([
       { id: "gwc_enable_artillery", units: gwoGroup.structuresArtillery },
       {
         id: "gwc_enable_bots_all",
-        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.bot),
+        units: gwoGroup.starterUnitsAdvanced.concat(gwoGroup.bots),
       },
       { id: "gwc_enable_bots_t1", units: gwoGroup.botsBasic },
       {
@@ -188,7 +188,7 @@ define([
       },
       {
         id: "gwc_storage_and_buff",
-        units: gwoGroup.structuresEco.concat(gwoGroup.structuresEcoStorage),
+        units: gwoGroup.structuresEco,
       },
       { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm] },
       { id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.commander] },

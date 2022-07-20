@@ -784,284 +784,252 @@ if (!gwoRefereeChangesLoaded) {
             return aiPath + filePath.slice(cullLength);
           };
 
+          var aiToMod = function (inventory, mirrorMode, clusterPresence) {
+            if (
+              !_.isEmpty(inventory.aiMods()) ||
+              clusterPresence === "Player"
+            ) {
+              if (mirrorMode) {
+                return "All";
+              } else {
+                return "SubCommanders";
+              }
+            }
+            return "None";
+          };
+
+          var addAILoadFilesToFileList = function (
+            aiMods,
+            aiToModify,
+            fileList,
+            aiTechPath
+          ) {
+            if (aiToModify !== "None") {
+              aiMods = _.partition(aiMods, { op: "load" });
+
+              // process ai load ops
+              _.forEach(aiMods[0], function (aiMod) {
+                var managerPath = "";
+                if (aiMod.type === "fabber") {
+                  managerPath = "fabber_builds/";
+                } else if (aiMod.type === "factory") {
+                  managerPath = "factory_builds/";
+                } else if (aiMod.type === "platoon") {
+                  managerPath = "platoon_builds/";
+                } else if (aiMod.type === "template") {
+                  managerPath = "platoon_templates/";
+                } else {
+                  console.error("Invalid op in", aiMod);
+                }
+                fileList.push(aiTechPath + managerPath + aiMod.value);
+              });
+            }
+          };
+
           // parse AI mods and load the results into self.files()
           var generateAI = function () {
             var self = this;
             var game = self.game();
-
-            var deferred = $.Deferred();
-            var deferredAIFiles = $.Deferred();
-
-            var parseFiles = function (
-              aiPath,
-              promise,
-              aiToModify,
-              allyCount,
-              clusterAIPresent
-            ) {
-              api.file.list(aiPath, true).then(function (fileList) {
-                var configFiles = self.files();
-                var queue = [];
-
-                var aiMods = game.inventory().aiMods();
-                var aiTechPath = "/pa/ai_tech/";
-
-                if (aiToModify !== "None") {
-                  aiMods = _.partition(aiMods, { op: "load" });
-
-                  // process ai load ops
-                  _.forEach(aiMods[0], function (aiMod) {
-                    var managerPath = "";
-                    if (aiMod.type === "fabber") {
-                      managerPath = "fabber_builds/";
-                    } else if (aiMod.type === "factory") {
-                      managerPath = "factory_builds/";
-                    } else if (aiMod.type === "platoon") {
-                      managerPath = "platoon_builds/";
-                    } else if (aiMod.type === "template") {
-                      managerPath = "platoon_templates/";
-                    } else {
-                      console.error("Invalid op in", aiMod);
-                    }
-                    fileList.push(aiTechPath + managerPath + aiMod.value);
-                  });
-                }
-
-                var subcommanderAIPath = getAIPath("subcommander");
-                var enemyAIPath = getAIPath("enemy");
-
-                _.forEach(fileList, function (filePath) {
-                  if (
-                    !_.endsWith(filePath, ".json") ||
-                    _.includes(filePath, "/neural_networks/")
-                  ) {
-                    return;
-                  }
-
-                  var deferred2 = $.Deferred();
-                  var isQueller = aiBrain === "Queller";
-
-                  var quellerSubCommander = false;
-                  if (
-                    isQueller &&
-                    allyCount > 0 &&
-                    (_.startsWith(filePath, subcommanderAIPath) ||
-                      _.startsWith(filePath, aiTechPath))
-                  ) {
-                    quellerSubCommander = true;
-                  }
-
-                  var aiBuildOps = [];
-                  var clusterOps = [];
-                  var clusterCommanders = [
-                    "SupportPlatform",
-                    "SupportCommander",
-                    "UberSupportCommander", // Queller AI
-                  ];
-                  var clusterAIMods = _.map(
-                    clusterCommanders,
-                    function (commander) {
-                      return {
-                        type: "factory",
-                        op: "replace",
-                        toBuild: commander,
-                        idToMod: "priority",
-                        value: 0,
-                      };
-                    }
-                  );
-                  var clusterAIPath = getAIPath("cluster");
-
-                  // Only mods associated with the file's AI manager are loaded
-                  if (
-                    aiToModify !== "None" &&
-                    !_.isEmpty(aiMods[1]) &&
-                    (!isQueller || quellerSubCommander || aiToModify === "All")
-                  ) {
-                    if (_.includes(filePath, "/fabber_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], {
-                        type: "fabber",
-                      });
-                    } else if (_.includes(filePath, "/factory_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], { type: "factory" });
-                    } else if (_.includes(filePath, "/platoon_builds/")) {
-                      aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
-                    } else if (_.includes(filePath, "/platoon_templates/")) {
-                      aiBuildOps = _.filter(aiMods[1], {
-                        type: "template",
-                      });
-                    }
-                  }
-                  if (
-                    _.includes(filePath, "/factory_builds/") &&
-                    clusterAIPresent !== "None"
-                  ) {
-                    clusterOps = clusterAIMods;
-                  }
-
-                  queue.push(deferred2);
-
-                  $.getJSON("coui:/" + filePath)
-                    .then(function (json) {
-                      var updatedFilePath = filePath;
-
-                      if (aiToModify === "All") {
-                        addTechToAI(json, aiBuildOps);
-                        // Put "load" files where the AI expects them to be
-                        if (_.startsWith(filePath, aiTechPath)) {
-                          if (isQueller) {
-                            // We don't know if the aiPath contains q_uber
-                            var quellerEnemyPath = getAIPath("enemy");
-                            updatedFilePath = aiPathCreation(
-                              quellerEnemyPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                            configFiles[updatedFilePath] = json;
-                            if (quellerSubCommander) {
-                              updatedFilePath = aiPathCreation(
-                                subcommanderAIPath,
-                                filePath,
-                                quellerEnemyPath.length
-                              );
-                              configFiles[updatedFilePath] = json;
-                            }
-                          } else {
-                            updatedFilePath = aiPathCreation(
-                              aiPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                            configFiles[updatedFilePath] = json;
-                          }
-                        } else {
-                          configFiles[filePath] = json;
-                        }
-                      } else if (aiToModify === "SubCommanders") {
-                        // Make a clean copy of files for enemy AIs
-                        if (_.startsWith(filePath, enemyAIPath)) {
-                          configFiles[filePath] = _.cloneDeep(json);
-                        }
-                        addTechToAI(json, aiBuildOps);
-                        if (quellerSubCommander) {
-                          // Put "load" files where Queller expects them to be
-                          if (_.startsWith(filePath, aiTechPath)) {
-                            updatedFilePath = aiPathCreation(
-                              subcommanderAIPath,
-                              filePath,
-                              aiTechPath.length
-                            );
-                          }
-                        } else {
-                          // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
-                          if (_.startsWith(filePath, aiPath)) {
-                            updatedFilePath =
-                              aiTechPath + filePath.slice(aiPath.length);
-                          }
-                        }
-                        configFiles[updatedFilePath] = json;
-                      } else {
-                        configFiles[filePath] = json;
-                      }
-
-                      if (clusterAIPresent !== "None") {
-                        var slice = aiPath;
-                        if (isQueller) {
-                          var quellerPaths = [
-                            enemyAIPath,
-                            subcommanderAIPath,
-                            aiTechPath,
-                          ];
-                          slice = _.filter(quellerPaths, function (path) {
-                            return _.startsWith(filePath, path);
-                          }).toString();
-                        }
-                        updatedFilePath = aiPathCreation(
-                          clusterAIPath,
-                          filePath,
-                          slice.length
-                        );
-                        var clusterJson = _.cloneDeep(json);
-                        addTechToAI(clusterJson, clusterOps);
-                        configFiles[updatedFilePath] = clusterJson;
-                      }
-                    })
-                    .always(function () {
-                      deferred2.resolve();
-                    });
-                });
-
-                $.when.apply($, queue).then(function () {
-                  self.files.valueHasMutated();
-                  promise.resolve();
-                });
-              });
-            };
-
             var inventory = game.inventory();
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
+            var numberOfAllies = alliedCommanders.length;
             var aiFilePath =
-              alliedCommanders.length > 0
-                ? getAIPath("all")
-                : getAIPath("enemy");
+              numberOfAllies > 0 ? getAIPath("all") : getAIPath("enemy");
             var clusterPresence = isClusterAIPresent(
               inventory,
               ai,
-              alliedCommanders.length
+              numberOfAllies
             );
+            var aiToModify = aiToMod(inventory, ai.mirrorMode, clusterPresence);
 
-            if (
-              (_.isEmpty(inventory.aiMods()) && clusterPresence !== "Player") ||
-              (ai.mirrorMode !== true && _.isEmpty(alliedCommanders))
-            ) {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "None",
-                alliedCommanders.length,
-                clusterPresence
-              );
-            } else if (ai.mirrorMode === true) {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "All",
-                alliedCommanders.length,
-                clusterPresence
-              );
-            } else {
-              parseFiles(
-                aiFilePath,
-                deferredAIFiles,
-                "SubCommanders",
-                alliedCommanders.length,
-                clusterPresence
-              );
-            }
+            var deferred = $.Deferred();
 
-            $.when(deferredAIFiles).then(function () {
-              deferred.resolve();
+            api.file.list(aiFilePath, true).then(function (fileList) {
+              var configFiles = self.files();
+              var aiFiles = [];
+              var aiMods = inventory.aiMods();
+              var aiTechPath = "/pa/ai_tech/";
+              var subcommanderAIPath = getAIPath("subcommander");
+              var enemyAIPath = getAIPath("enemy");
+              var isQueller = aiBrain === "Queller";
+
+              addAILoadFilesToFileList(
+                aiMods,
+                aiToModify,
+                fileList,
+                aiTechPath
+              );
+
+              _.forEach(fileList, function (filePath) {
+                if (
+                  !_.endsWith(filePath, ".json") ||
+                  _.includes(filePath, "/neural_networks/")
+                ) {
+                  return;
+                }
+
+                var aiFile = $.Deferred();
+
+                var aiBuildOps = [];
+                var clusterOps = [];
+                var clusterCommanders = [
+                  "SupportPlatform",
+                  "SupportCommander",
+                  "UberSupportCommander", // Queller AI
+                ];
+                var clusterAIMods = _.map(
+                  clusterCommanders,
+                  function (commander) {
+                    return {
+                      type: "factory",
+                      op: "replace",
+                      toBuild: commander,
+                      idToMod: "priority",
+                      value: 0,
+                    };
+                  }
+                );
+                var clusterAIPath = getAIPath("cluster");
+                var quellerSubCommander = false;
+                if (
+                  isQueller &&
+                  numberOfAllies > 0 &&
+                  (_.startsWith(filePath, subcommanderAIPath) ||
+                    _.startsWith(filePath, aiTechPath))
+                ) {
+                  quellerSubCommander = true;
+                }
+
+                // Only mods associated with the file's AI manager are loaded
+                if (
+                  aiToModify !== "None" &&
+                  !_.isEmpty(aiMods[1]) &&
+                  (!isQueller || quellerSubCommander || aiToModify === "All")
+                ) {
+                  if (_.includes(filePath, "/fabber_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], {
+                      type: "fabber",
+                    });
+                  } else if (_.includes(filePath, "/factory_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], { type: "factory" });
+                  } else if (_.includes(filePath, "/platoon_builds/")) {
+                    aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+                  } else if (_.includes(filePath, "/platoon_templates/")) {
+                    aiBuildOps = _.filter(aiMods[1], {
+                      type: "template",
+                    });
+                  }
+                }
+                if (
+                  _.includes(filePath, "/factory_builds/") &&
+                  clusterPresence !== "None"
+                ) {
+                  clusterOps = clusterAIMods;
+                }
+
+                aiFiles.push(aiFile);
+
+                $.getJSON("coui:/" + filePath)
+                  .then(function (json) {
+                    var updatedFilePath = filePath;
+
+                    if (aiToModify === "All") {
+                      addTechToAI(json, aiBuildOps);
+                      // Put "load" files where the AI expects them to be
+                      if (_.startsWith(filePath, aiTechPath)) {
+                        if (isQueller) {
+                          // We don't know if the aiFilePath contains q_uber
+                          var quellerEnemyPath = getAIPath("enemy");
+                          updatedFilePath = aiPathCreation(
+                            quellerEnemyPath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                          configFiles[updatedFilePath] = json;
+                          if (quellerSubCommander) {
+                            updatedFilePath = aiPathCreation(
+                              subcommanderAIPath,
+                              filePath,
+                              quellerEnemyPath.length
+                            );
+                            configFiles[updatedFilePath] = json;
+                          }
+                        } else {
+                          updatedFilePath = aiPathCreation(
+                            aiFilePath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                          configFiles[updatedFilePath] = json;
+                        }
+                      } else {
+                        configFiles[filePath] = json;
+                      }
+                    } else if (aiToModify === "SubCommanders") {
+                      // Make a clean copy of the files for enemy AIs
+                      if (_.startsWith(filePath, enemyAIPath)) {
+                        configFiles[filePath] = _.cloneDeep(json);
+                      }
+                      addTechToAI(json, aiBuildOps);
+                      if (quellerSubCommander) {
+                        // Put "load" files where Queller expects them to be
+                        if (_.startsWith(filePath, aiTechPath)) {
+                          updatedFilePath = aiPathCreation(
+                            subcommanderAIPath,
+                            filePath,
+                            aiTechPath.length
+                          );
+                        }
+                      } else {
+                        // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
+                        if (_.startsWith(filePath, aiFilePath)) {
+                          updatedFilePath =
+                            aiTechPath + filePath.slice(aiFilePath.length);
+                        }
+                      }
+                      configFiles[updatedFilePath] = json;
+                    } else {
+                      configFiles[filePath] = json;
+                    }
+
+                    if (clusterPresence !== "None") {
+                      var slice = aiFilePath;
+                      if (isQueller) {
+                        var quellerPaths = [
+                          enemyAIPath,
+                          subcommanderAIPath,
+                          aiTechPath,
+                        ];
+                        slice = _.filter(quellerPaths, function (path) {
+                          return _.startsWith(filePath, path);
+                        }).toString();
+                      }
+                      updatedFilePath = aiPathCreation(
+                        clusterAIPath,
+                        filePath,
+                        slice.length
+                      );
+                      var clusterJson = _.cloneDeep(json);
+                      addTechToAI(clusterJson, clusterOps);
+                      configFiles[updatedFilePath] = clusterJson;
+                    }
+                  })
+                  .always(function () {
+                    aiFile.resolve();
+                  });
+              });
+
+              $.when.apply($, aiFiles).then(function () {
+                self.files.valueHasMutated();
+                deferred.resolve();
+              });
             });
 
             return deferred.promise();
-          };
-
-          var armyCommander = function (ai, name, commander) {
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
-            ];
-            return {
-              ai: ai,
-              name: name,
-              commander: commander,
-              landing_policy: _.sample(aiLandingOptions),
-            };
           };
 
           var setAIPath = function (isCluster, isPlayer) {
@@ -1111,12 +1079,49 @@ if (!gwoRefereeChangesLoaded) {
             return aiRoot;
           };
 
+          var aiCommander = function (name, commander) {
+            var aiLandingOptions = [
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ];
+            return {
+              ai: true,
+              name: name,
+              commander: commander,
+              landing_policy: _.sample(aiLandingOptions),
+            };
+          };
+
+          var setupAIArmy = function (ai, index, specTag, alliance) {
+            var slotsArray = [];
+            _.times(
+              ai.bossCommanders ||
+                ai.commanderCount ||
+                // legacy GWO support
+                (ai.landing_policy && ai.landing_policy.length) ||
+                1,
+              function () {
+                slotsArray.push(aiCommander(ai.name, ai.commander));
+              }
+            );
+            return {
+              slots: slotsArray,
+              color: gwoColour.pick(ai.faction, ai.color, index),
+              econ_rate: ai.econ_rate,
+              personality: ai.personality,
+              spec_tag: specTag,
+              alliance_group: alliance,
+            };
+          };
+
           var generateConfig = function () {
             var self = this;
 
             // Set up the player
             var game = self.game();
             var inventory = game.inventory();
+            var cards = inventory.cards();
             var playerName = ko.observable().extend({ session: "displayName" });
             var playerTag = ".player";
             var armies = [
@@ -1128,53 +1133,33 @@ if (!gwoRefereeChangesLoaded) {
                 alliance_group: 1,
               },
             ];
-
             var currentStar = game.galaxy().stars()[game.currentStar()];
             var ai = currentStar.ai();
             var alliedCommanders = _.isUndefined(ai.ally)
               ? inventory.minions()
               : inventory.minions().concat(ai.ally);
             var playerFaction = inventory.getTag("global", "playerFaction");
+            var isCluster = playerFaction === 4;
 
-            _.forEach(alliedCommanders, function (subcommander, index) {
+            _.forEach(alliedCommanders, function (ally, index) {
               // Avoid breaking Sub Commanders from earlier versions
-              var isCluster = playerFaction === 4;
-              subcommander.personality.ai_path = setAIPath(isCluster, true);
+              ally.personality.ai_path = setAIPath(isCluster, true);
 
-              var cards = inventory.cards();
-              var subcommanderCommanders = 1;
-
-              subcommander.personality = applySubcommanderTacticsTech(
-                subcommander.personality,
+              ally.personality = applySubcommanderTacticsTech(
+                ally.personality,
                 cards
               );
-              subcommander.personality = applySubcommanderFabberTech(
-                subcommander.personality,
+              ally.personality = applySubcommanderFabberTech(
+                ally.personality,
                 cards
               );
               if (hasSubcommanderDuplicationTech(cards)) {
-                subcommanderCommanders = 2;
+                ally.commanderCount = 2;
               }
-
-              var slotsArraySubCommander = [];
-
-              _.times(subcommanderCommanders, function () {
-                slotsArraySubCommander.push(
-                  armyCommander(true, subcommander.name, subcommander.commander)
-                );
-              });
-              armies.push({
-                slots: slotsArraySubCommander,
-                color: gwoColour.pick(
-                  playerFaction,
-                  subcommander.color,
-                  index + 1 // player has colour 0
-                ),
-                econ_rate: 1,
-                personality: subcommander.personality,
-                spec_tag: playerTag,
-                alliance_group: 1,
-              });
+              ally.faction = playerFaction;
+              var allyIndex = index + 1;
+              var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
+              armies.push(subcommanderArmy);
             });
 
             // Set up the AI
@@ -1195,51 +1180,19 @@ if (!gwoRefereeChangesLoaded) {
             var aiPath = setAIPath(aiIsCluster, false);
             ai.personality.ai_path = aiPath;
 
-            var slotsArrayAI = [];
-            _.times(
-              ai.bossCommanders ||
-                ai.commanderCount ||
-                // legacy GWO support
-                (ai.landing_policy && ai.landing_policy.length) ||
-                1,
-              function () {
-                slotsArrayAI.push(armyCommander(true, ai.name, ai.commander));
-              }
-            );
-            armies.push({
-              slots: slotsArrayAI,
-              color: gwoColour.pick(ai.faction, ai.color, 0),
-              econ_rate: ai.econ_rate,
-              personality: ai.personality,
-              spec_tag: aiTag[0],
-              alliance_group: 2,
-            });
+            var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
+            armies.push(aiArmy);
+
             _.forEach(ai.minions, function (minion, index) {
               minion = setAdvEcoMod(minion, aiBrain);
 
               // Avoid breaking enemies from earlier versions
               minion.personality.ai_path = aiPath;
 
-              var slotsArrayMinions = [];
-              _.times(
-                minion.commanderCount ||
-                  // legacy GWO support
-                  (minion.landing_policy && minion.landing_policy.length) ||
-                  1,
-                function () {
-                  slotsArrayMinions.push(
-                    armyCommander(true, minion.name, minion.commander)
-                  );
-                }
-              );
-              armies.push({
-                slots: slotsArrayMinions,
-                color: gwoColour.pick(ai.faction, minion.color, index + 1), // primary AI has colour 0
-                econ_rate: minion.econ_rate,
-                personality: minion.personality,
-                spec_tag: aiTag[0],
-                alliance_group: 2,
-              });
+              minion.faction = ai.faction;
+              var minionIndex = index + 1; // primary AI has colour 0
+              aiArmy = setupAIArmy(ai, minionIndex, aiTag[0], 2);
+              armies.push(aiArmy);
             });
 
             // Set up Additional AI Factions
@@ -1250,26 +1203,10 @@ if (!gwoRefereeChangesLoaded) {
               var foeIsCluster = foe.faction[0] === 4;
               foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
-              var slotsArrayFoes = [];
-              _.times(
-                foe.commanderCount ||
-                  // legacy GWO support
-                  (foe.landing_policy && foe.landing_policy.length) ||
-                  1,
-                function () {
-                  slotsArrayFoes.push(
-                    armyCommander(true, foe.name, foe.commander)
-                  );
-                }
-              );
-              armies.push({
-                slots: slotsArrayFoes,
-                color: gwoColour.pick(foe.faction, foe.color, 0),
-                econ_rate: foe.econ_rate,
-                personality: foe.personality,
-                spec_tag: aiTag[index + 1], // 0 taken by primary AI
-                alliance_group: index + 3, //  1 & 2 taken by player and primary AI
-              });
+              var foeTag = index + 1; // 0 taken by primary AI
+              var foeAlliance = index + 3; //  1 & 2 taken by player and primary AI
+              aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
+              armies.push(aiArmy);
             });
 
             var config = {

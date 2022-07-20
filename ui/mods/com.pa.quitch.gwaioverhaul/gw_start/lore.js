@@ -35,6 +35,11 @@ define({
       description:
         "!LOC:A neural network thought to have originally been used to train new commanders, it has continued its training cycles while they slumbered and is now the deadliest force in the galaxy.",
     },
+    {
+      name: "!LOC:Bugs",
+      description:
+        "!LOC:Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.",
+    },
   ]),
   aiSystems: _.shuffle([
     "Named for the famed Progenitor explorer Johan Thrale, the system was known to be rich in minerals, especially plentiful in diamonds and other precious gems. However, the only way to access the area was to navigate through the extensive asteroid fields that had made up the system. Thrale was able to do just that, successfully surveying the area, which he named after himself. Unfortunately, he would later die on a return trip through the system when his ship lost engine power and drifted into a nearby asteroid, killing all on board.",

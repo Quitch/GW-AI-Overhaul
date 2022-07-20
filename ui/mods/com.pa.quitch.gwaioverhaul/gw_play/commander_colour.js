@@ -44,8 +44,8 @@ define(function () {
       ];
       var clusterColours = [
         [128, 128, 128],
-        [216, 216, 216],
-        [187, 187, 187],
+        [166, 166, 166],
+        [90, 90, 90],
       ];
       var factions = [
         legonisColours,

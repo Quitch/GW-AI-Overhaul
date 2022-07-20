@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v5.41.0 - 2022-07-20
+
+### Added
+
+- Bugs lore to the opening systems
+- When a faction is defeated any systems they owned with other factions present will be taken over by one of those factions
+
+### Changed
+
+- Improved distinctiveness of Cluster colours
+
+### Fixed
+
+- Efficiency Tech tooltip listing storage structures twice
+- Systems from a faction whose boss you have defeated offering you tech you already have
+- AI colours not being removed on defeat from systems with an ally or additional factions present
+- Super Weapon Fabrication Tech being offered before you have access to advanced tech
+
 ## v5.40.0 - 2022-07-17
 
 ### Changed
