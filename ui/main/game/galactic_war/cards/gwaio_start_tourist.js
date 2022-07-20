@@ -46,7 +46,11 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
+      var units = [
+        gwoUnit.metalExtractorAdvanced,
+        gwoUnit.metalExtractor,
+        gwoUnit.jig,
+      ];
       gwoCard.applyDulls(CARD, inventory, units);
     },
   };

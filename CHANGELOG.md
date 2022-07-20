@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Tourist Commander no longer has access to the Jig
+
 ## v5.41.1 - 2022-07-20
 
 ### Fixed
