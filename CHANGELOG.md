@@ -10,6 +10,7 @@
 
 - Efficiency Tech tooltip listing storage structures twice
 - Systems from a faction whose boss you have defeated offering you tech you already have
+- AI colours not being removed on defeat from systems with an ally or additional factions present
 
 ## v5.40.0 - 2022-07-17
 

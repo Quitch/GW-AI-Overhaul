@@ -344,24 +344,26 @@ if (!gwoSystemChangesLoaded) {
 
               ko.computed(function () {
                 innerRing.visible =
-                  (system.connected() && !!system.ownerColor()) ||
-                  model.cheats.noFog();
+                  (system.connected() || model.cheats.noFog()) &&
+                  !!system.ownerColor();
 
-                if (ai.treasurePlanet !== true) {
+                // Fix Z axis issues
+                if (innerRing.visible === true) {
+                  system.mouseOver(1);
+                  system.mouseOver(0);
+                  system.mouseOut(0);
+                }
+
+                if (
+                  system.star.ai() &&
+                  system.star.ai().treasurePlanet !== true
+                ) {
                   // Assign faction colour, not minion colour, to each system
                   var outerColour = [];
                   outerColour = normalizedColor(GWFactions[ai.faction]);
                   system.ownerColor(outerColour.concat(3));
-
-                  if (ai.ally || ai.foes) {
-                    // Fix Z axis issues
-                    if (innerRing.visible === true) {
-                      system.mouseOver(1);
-                      system.mouseOver(0);
-                      system.mouseOut(0);
-                    }
-                  }
                 }
+
                 // Dependencies. These will cause the base code that updates color to rerun
                 // so we have to run under the same conditions, and pray we run later than that code.
                 system.connected();
