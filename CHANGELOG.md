@@ -5,6 +5,7 @@
 ### Added
 
 - Bugs lore to the opening systems
+- When a faction is defeated any systems they owned with other factions present will be taken over by one of those factions
 
 ### Changed
 

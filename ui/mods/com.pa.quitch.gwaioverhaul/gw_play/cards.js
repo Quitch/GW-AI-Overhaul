@@ -15,8 +15,18 @@ if (!gwoCardsLoaded) {
             var ai = star.ai();
             if (ai) {
               if (ai.team === team) {
-                star.ai(undefined);
                 // Delete pre-dealt cards when boss defeated
+                if (ai.foes) {
+                  var newAI = ai.foes[0];
+                  var foeBackup = ai.foes.slice(1);
+                  var foeKeys = _.keys(newAI);
+                  _.forEach(foeKeys, function (key) {
+                    star.ai()[key] = ai.foes[0][key];
+                  });
+                  star.ai().foes = foeBackup;
+                } else {
+                  star.ai(undefined);
+                }
                 if (ai.mirrorMode !== true) {
                   star.cardList([]);
                 }
