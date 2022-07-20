@@ -336,6 +336,7 @@ if (!gwoSystemChangesLoaded) {
                       );
                       system.ownerColor(systemColour.concat(3));
                       star.ai().foes = foeBackup;
+                      delete star.ai().minions;
                     } else {
                       star.ai(undefined);
                       // Delete pre-dealt cards when boss defeated
