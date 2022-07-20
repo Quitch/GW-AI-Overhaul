@@ -53,4 +53,4 @@ Add any other context about the problem here.
 
 ## Logs
 
-Please attach the most recent [client and server log](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring.
+Please attach the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring.
