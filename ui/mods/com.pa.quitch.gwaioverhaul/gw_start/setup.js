@@ -351,34 +351,27 @@ if (!gwoSetupLoaded) {
                   aiFaction = parseInt(ai.faction);
                 }
 
-                var legonisMachinaTags = ["tank"];
-                var foundationTags = ["air"];
-                var synchronousTags = ["bot"];
-                var revenantsTags = ["orbital"];
-                var clusterTags = ["land"];
+                var legonisMachinaTag = "tank";
+                var foundationTag = "air";
+                var synchronousTag = "bot";
+                var revenantsTag = "orbital";
+                var clusterTag = "land";
 
                 switch (aiFaction) {
                   case 0:
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(
-                        legonisMachinaTags
-                      );
+                    ai.personality.personality_tags.push(legonisMachinaTag);
                     break;
                   case 1:
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(foundationTags);
+                    ai.personality.personality_tags.push(foundationTag);
                     break;
                   case 2:
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(synchronousTags);
+                    ai.personality.personality_tags.push(synchronousTag);
                     break;
                   case 3:
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(revenantsTags);
+                    ai.personality.personality_tags.push(revenantsTag);
                     break;
                   case 4:
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(clusterTags);
+                    ai.personality.personality_tags.push(clusterTag);
                 }
               };
 
