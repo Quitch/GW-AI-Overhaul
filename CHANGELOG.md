@@ -6,6 +6,7 @@
 
 - Tourist Commander no longer has access to the Jig
 - Revert Spinner upgrade to a rate-of-fire buff
+- AI Bugfixes and Enhancements updated to v2.11.0
 
 ## v5.41.1 - 2022-07-20
 
