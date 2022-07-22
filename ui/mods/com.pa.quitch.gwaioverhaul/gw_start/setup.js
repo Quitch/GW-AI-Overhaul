@@ -347,12 +347,16 @@ if (!gwoSetupLoaded) {
               var setupQuellerAI = function (ai) {
                 // Minions don't have a faction number so use the previous one
                 // which should be from the primary AI and accurate
-                aiFaction = ai.faction ? ai.faction : aiFaction;
+                if (!_.isUndefined(ai.faction)) {
+                  aiFaction = parseInt(ai.faction);
+                }
+
                 var legonisMachinaTags = ["tank"];
                 var foundationTags = ["air"];
                 var synchronousTags = ["bot"];
                 var revenantsTags = ["orbital"];
                 var clusterTags = ["land"];
+
                 switch (aiFaction) {
                   case 0:
                     ai.personality.personality_tags =

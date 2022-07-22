@@ -8,6 +8,10 @@
 - Revert Spinner upgrade to a rate-of-fire buff
 - AI Bugfixes and Enhancements updated to v2.11.0
 
+### Fixed
+
+- Queller AI faction personalities not always being correctly set
+
 ## v5.41.1 - 2022-07-20
 
 ### Fixed
