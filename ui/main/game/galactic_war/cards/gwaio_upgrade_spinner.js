@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Spinner Upgrade Tech enables the targeting of land and surface naval units by mobile anti-air."
+      "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%."
     ),
     summarize: _.constant("!LOC:Spinner Upgrade Tech"),
     icon: _.constant(
@@ -28,15 +28,9 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.spinnerWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.spinnerAmmo,
-          path: "armor_damage_map",
-          op: "replace",
-          value: {},
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 3,
         },
       ]);
     },

@@ -1,10 +1,22 @@
 # CHANGELOG
 
+## v5.42.0 - 2022-07-23
+
+### Changed
+
+- Tourist Commander no longer has access to the Jig
+- Revert Spinner upgrade to a rate-of-fire buff
+- AI Bugfixes and Enhancements updated to v2.11.0
+
+### Fixed
+
+- Queller AI faction personalities not always being correctly set
+
 ## v5.41.1 - 2022-07-20
 
 ### Fixed
 
-- Minions being incorrectly inherited when a system is taken over.
+- Minions being incorrectly inherited when a system is taken over
 
 ## v5.41.0 - 2022-07-20
 
