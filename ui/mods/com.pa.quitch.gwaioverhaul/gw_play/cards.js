@@ -858,8 +858,7 @@ if (!gwoCardsLoaded) {
             };
 
             if (model.gwoCardsToUnits) {
-              model.gwoCardsToUnits.push.apply(
-                model.gwoCardsToUnits,
+              model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
                 gwoCardsToUnits.cards
               );
             } else {
