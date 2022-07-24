@@ -30,9 +30,6 @@ define([
   var revenantsUnits = inventory.revenantsUnitsMobile.concat(
     inventory.revenantsUnitsNotMobile
   );
-  var clusterUnitsNotStructure = inventory.commanderUnits.concat(
-    inventory.clusterCommanders
-  );
   var factionUnits = [
     legonisUnits,
     foundationUnits,
@@ -228,6 +225,9 @@ define([
     revenantsTech,
     clusterTech,
   ];
+  var clusterUnitsNotStructure = inventory.commanderUnits.concat(
+    inventory.clusterCommanders
+  );
   var factionUnitsNoAir = [
     inventory.legonisUnitsMobile,
     inventory.foundationUnitsMobileNotAir,
