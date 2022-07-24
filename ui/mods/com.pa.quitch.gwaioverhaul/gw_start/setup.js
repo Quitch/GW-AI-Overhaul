@@ -83,12 +83,15 @@ if (!gwoSetupLoaded) {
             { id: "gwaio_start_backpacker" },
             { id: "gwaio_start_hoarder" }
           );
-          var startingCards = [
+          if (!model.gwoStartingCards) {
+            model.gwoStartingCards = [];
+          }
+          model.gwoStartingCards.push(
             { id: "gwc_start_vehicle" },
             { id: "gwc_start_air" },
             { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" },
-          ];
+            { id: "gwc_start_bot" }
+          );
           var lockedBaseCards = [
             { id: "gwc_start_artillery" },
             { id: "gwc_start_subcdr" },
@@ -96,14 +99,14 @@ if (!gwoSetupLoaded) {
             { id: "gwc_start_allfactory" },
             { id: "gwc_start_storage" },
           ];
-          var allCards = startingCards.concat(
+          var allCards = model.gwoStartingCards.concat(
             lockedBaseCards,
             model.gwoNewStartCards
           );
           // Determine which start cards are available and which are locked
           var startCards = _.map(allCards, function (cardData) {
             if (
-              _.includes(startingCards, cardData) ||
+              _.includes(model.gwoStartingCards, cardData) ||
               GW.bank.hasStartCard(cardData) ||
               gwoBank.hasStartCard(cardData)
             ) {
