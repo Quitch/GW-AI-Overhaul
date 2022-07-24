@@ -566,16 +566,6 @@ if (!gwoCardsLoaded) {
               return deferred.promise();
             };
 
-            // Deal some cards when the war starts
-            var dealFirstCardSelectableAI = function (settings) {
-              if (settings && !settings.firstDealComplete) {
-                settings.firstDealComplete = true;
-                dealCardSelectableAI(false).then(function () {
-                  gwoSave(game, true);
-                });
-              }
-            };
-
             var setupGeneralCommander = function () {
               if (
                 inventory.cards().length === 1 &&
@@ -608,6 +598,16 @@ if (!gwoCardsLoaded) {
               }
             };
             setupGeneralCommander();
+
+            // Deal some cards when the war starts
+            var dealFirstCardSelectableAI = function (settings) {
+              if (settings && !settings.firstDealComplete) {
+                settings.firstDealComplete = true;
+                dealCardSelectableAI(false).then(function () {
+                  gwoSave(game, true);
+                });
+              }
+            };
 
             dealFirstCardSelectableAI(gwoSettings);
 
