@@ -576,37 +576,38 @@ if (!gwoCardsLoaded) {
               }
             };
 
-            // Deal the General Commander's minions as cards to the inventory for GWO v4.3.0+
-            if (
-              inventory.cards().length === 1 &&
-              inventory.cards()[0].id === "gwc_start_subcdr" &&
-              !inventory.cards()[0].minions
-            ) {
-              _.times(2, function () {
-                var subcommander = _.cloneDeep(
-                  _.sample(GWFactions[playerFaction].minions)
-                );
-                galaxy = game.galaxy();
-                var ai = gwoSettings && gwoSettings.ai;
-                if (ai === "Penchant") {
-                  var penchantValues = gwoAI.penchants();
-                  subcommander.character =
-                    subcommander.character +
-                    (" " + loc(penchantValues.penchantName));
-                  subcommander.personality.personality_tags =
-                    subcommander.personality.personality_tags.concat(
-                      penchantValues.penchants
-                    );
-                }
-                inventory.cards().push({
-                  id: "gwc_minion",
-                  minion: subcommander,
-                  unique: Math.random(),
+            var setupGeneralCommander = function () {
+              if (
+                inventory.cards().length === 1 &&
+                inventory.cards()[0].id === "gwc_start_subcdr" &&
+                !inventory.cards()[0].minions
+              ) {
+                _.times(2, function () {
+                  var subcommander = _.cloneDeep(
+                    _.sample(GWFactions[playerFaction].minions)
+                  );
+                  galaxy = game.galaxy();
+                  var ai = gwoSettings && gwoSettings.ai;
+                  if (ai === "Penchant") {
+                    var penchantValues = gwoAI.penchants();
+                    subcommander.character =
+                      subcommander.character +
+                      (" " + loc(penchantValues.penchantName));
+                    subcommander.personality.personality_tags =
+                      subcommander.personality.personality_tags.concat(
+                        penchantValues.penchants
+                      );
+                  }
+                  inventory.cards().push({
+                    id: "gwc_minion",
+                    minion: subcommander,
+                    unique: Math.random(),
+                  });
                 });
-              });
-              inventory.applyCards();
-              dealFirstCardSelectableAI(gwoSettings); // also triggers a save
-            }
+                inventory.applyCards();
+              }
+            };
+            setupGeneralCommander();
 
             dealFirstCardSelectableAI(gwoSettings);
 
