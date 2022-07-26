@@ -102,7 +102,6 @@ if (!gwoSetupLoaded) {
             lockedBaseCards,
             model.gwoNewStartCards
           );
-          // Determine which start cards are available and which are locked
           var startCards = _.map(allCards, function (cardData) {
             if (
               _.includes(model.gwoStartingCards, cardData) ||
@@ -325,7 +324,6 @@ if (!gwoSetupLoaded) {
           var warGenerationAttempts = 0;
 
           var saveDifficultySettings = function () {
-            // Save war settings so they're the default next time
             var difficultySettings = model.gwoDifficultySettings;
             var previousSettings = difficultySettings.previousSettings();
             var settingNames = _.keys(model.gwoDifficultySettings);
@@ -552,7 +550,7 @@ if (!gwoSetupLoaded) {
                 boss.bossCommanders = bossCommanders;
 
                 boss.inventory = [];
-                // Set up Cluster commanders
+
                 if (boss.isCluster === true) {
                   boss.inventory = gwoTech.clusterCommanders;
                 }
@@ -560,7 +558,6 @@ if (!gwoSetupLoaded) {
                 var factionTechHandicap = parseFloat(
                   difficulty.factionTechHandicap()
                 );
-                // Set up boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 boss.typeOfBuffs = bossBuffs; // for intelligence reports
                 boss.inventory = aiTech(
@@ -610,7 +607,6 @@ if (!gwoSetupLoaded) {
                 _.forEach(info.workers, function (worker) {
                   var ai = worker.ai;
 
-                  // Determine game modes in use for this system
                   ai.landAnywhere = gameModeEnabled(
                     difficulty.landAnywhereChance()
                   );
@@ -635,12 +631,11 @@ if (!gwoSetupLoaded) {
                   );
 
                   ai.inventory = [];
-                  // Set up Cluster commanders
+
                   if (ai.isCluster === true) {
                     ai.inventory = gwoTech.clusterCommanders;
                   }
 
-                  // Set up non-boss AI buffs
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                   ai.typeOfBuffs = workerBuffs; // for intelligence reports
                   ai.inventory = aiTech(
@@ -718,12 +713,10 @@ if (!gwoSetupLoaded) {
                       foeCommander.commanderCount = numFoes;
 
                       foeCommander.inventory = [];
-                      // Set up Cluster commanders
                       if (foeCommander.isCluster === true) {
                         foeCommander.inventory = gwoTech.clusterCommanders;
                       }
 
-                      // Set up additional faction AI buffs
                       foeCommander.inventory = aiTech(
                         workerBuffs,
                         foeCommander.inventory,
@@ -753,7 +746,6 @@ if (!gwoSetupLoaded) {
                     }
                   }
 
-                  // Set up Queller for FFA
                   if (difficulty.ai() === "Queller" && ai.foes) {
                     setupQuellerFFATag(ai);
                     setupQuellerFFATag(ai.minions);
