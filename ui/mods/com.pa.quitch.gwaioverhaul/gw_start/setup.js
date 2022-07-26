@@ -487,7 +487,11 @@ if (!gwoSetupLoaded) {
                 var boss = info.boss;
 
                 if (!boss) {
-                  console.warn("No AI boss found, terminating war generation");
+                  console.warn(
+                    "No AI boss found for faction " +
+                      info.faction +
+                      ", terminating war generation"
+                  );
                   warGenerationFailed = true;
                   return;
                 }
@@ -866,7 +870,10 @@ if (!gwoSetupLoaded) {
             });
 
             var finishSetup = warInfo.then(function () {
-              if (model.makeGameBusy() !== busyToken) {
+              if (
+                model.makeGameBusy() !== busyToken ||
+                warGenerationFailed === true
+              ) {
                 return null;
               }
 
@@ -877,6 +884,22 @@ if (!gwoSetupLoaded) {
             });
 
             finishSetup.then(function () {
+              if (warGenerationFailed === true) {
+                model.makeGameBusy(false);
+                console.log(enableGoToWar(), model.ready());
+                enableGoToWar(true);
+                if (warGenerationAttempts < 5) {
+                  model.newGameSeed(
+                    Math.floor(Math.random() * 1000000).toString()
+                  );
+                  model.navToNewGame();
+                } else {
+                  warGenerationAttempts = 0;
+                  console.error("Failed to generate valid war");
+                }
+                return;
+              }
+
               // Save war settings so they're the default next time
               var difficultySettings = model.gwoDifficultySettings;
               var previousSettings = difficultySettings.previousSettings();
@@ -893,22 +916,11 @@ if (!gwoSetupLoaded) {
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);
               save.then(function () {
-                if (warGenerationFailed === false) {
-                  model.lastSceneUrl(
-                    "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
-                  );
-                  window.location.href =
-                    "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
-                } else if (warGenerationAttempts < 5) {
-                  model.newGameSeed(
-                    Math.floor(Math.random() * 1000000).toString()
-                  );
-                  enableGoToWar(true);
-                  model.navToNewGame();
-                } else {
-                  console.error("Failed to generate valid war");
-                  enableGoToWar(true);
-                }
+                model.lastSceneUrl(
+                  "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+                );
+                window.location.href =
+                  "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
               });
             });
           };
