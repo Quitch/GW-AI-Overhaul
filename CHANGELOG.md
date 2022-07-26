@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- War failing to start if the number of factions needed to be reduced to fit the number of available stars
+
 ## v5.42.0 - 2022-07-23
 
 ### Changed
