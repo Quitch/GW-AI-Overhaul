@@ -883,23 +883,7 @@ if (!gwoSetupLoaded) {
               return game;
             });
 
-            finishSetup.then(function () {
-              if (warGenerationFailed === true) {
-                model.makeGameBusy(false);
-                console.log(enableGoToWar(), model.ready());
-                enableGoToWar(true);
-                if (warGenerationAttempts < 5) {
-                  model.newGameSeed(
-                    Math.floor(Math.random() * 1000000).toString()
-                  );
-                  model.navToNewGame();
-                } else {
-                  warGenerationAttempts = 0;
-                  console.error("Failed to generate valid war");
-                }
-                return;
-              }
-
+            var saveDifficultySettings = function () {
               // Save war settings so they're the default next time
               var difficultySettings = model.gwoDifficultySettings;
               var previousSettings = difficultySettings.previousSettings();
@@ -912,6 +896,29 @@ if (!gwoSetupLoaded) {
                 previousSettings[i] = difficultySettings[name]();
               });
               difficultySettings.previousSettings.valueHasMutated();
+            };
+
+            var warFailure = function () {
+              model.makeGameBusy(false);
+              enableGoToWar(true);
+              if (warGenerationAttempts < 5) {
+                model.newGameSeed(
+                  Math.floor(Math.random() * 1000000).toString()
+                );
+                model.navToNewGame();
+              } else {
+                warGenerationAttempts = 0;
+                console.error("Failed to generate valid war");
+              }
+            };
+
+            finishSetup.then(function () {
+              if (warGenerationFailed === true) {
+                warFailure();
+                return;
+              }
+
+              saveDifficultySettings();
 
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);
