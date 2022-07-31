@@ -36,6 +36,12 @@ define([
             muzzle_bone: "bone_root",
           },
         },
+        {
+          file: gwoUnit.stryker,
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_SelfDestruct",
+        },
       ]);
     },
     dull: function () {
