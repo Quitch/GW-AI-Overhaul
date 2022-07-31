@@ -1191,7 +1191,7 @@ if (!gwoRefereeChangesLoaded) {
 
               minion.faction = ai.faction;
               var minionIndex = index + 1; // primary AI has colour 0
-              aiArmy = setupAIArmy(ai, minionIndex, aiTag[0], 2);
+              aiArmy = setupAIArmy(minion, minionIndex, aiTag[0], 2);
               armies.push(aiArmy);
             });
 
