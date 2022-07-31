@@ -310,6 +310,17 @@ if (!gwoRefereeChangesLoaded) {
                       }
                       return attribute.replace(value[0], value[1]);
                     },
+                    // New op to prepend to arrays
+                    prepend: function prepend(attribute, value) {
+                      if (!_.isArray(attribute)) {
+                        attribute = _.isEmpty(attribute) ? [] : [attribute];
+                      }
+                      attribute.unshift(value);
+                      if (_.isArray(value)) {
+                        attribute = _.flatten(attribute);
+                      }
+                      return attribute;
+                    },
                   };
                   var applyMod = function (mod) {
                     var spec = load(mod.file);
