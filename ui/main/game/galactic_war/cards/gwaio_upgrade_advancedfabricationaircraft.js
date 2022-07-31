@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for fighters to move between planets."
+      "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets."
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Aircraft Upgrade Tech"),
     icon: _.constant(
