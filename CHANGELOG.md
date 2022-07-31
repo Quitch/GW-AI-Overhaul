@@ -5,6 +5,8 @@
 ### Changed
 
 - Armies with multiple commanders are more likely to spawn on multiple worlds if possible
+- Upgrade Techs
+  - Advanced Fabrication Aircraft
 
 ### Fixed
 

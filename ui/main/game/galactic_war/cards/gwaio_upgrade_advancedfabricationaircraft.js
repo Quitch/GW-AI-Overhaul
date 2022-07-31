@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Fabrication Aircraft Upgrade Tech attaches the Angel AA interception beam to the advanced air fabricator."
+      "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for fighters to move between planets."
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Aircraft Upgrade Tech"),
     icon: _.constant(
@@ -28,14 +28,27 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.airFabberAdvanced,
-          path: "tools",
+          path: "system_velocity_multiplier",
+          op: "replace",
+          value: 15,
+        },
+        {
+          file: gwoUnit.airFabberAdvanced,
+          path: "gravwell_velocity_multiplier",
+          op: "replace",
+          value: 6,
+        },
+        {
+          file: gwoUnit.airFabberAdvanced,
+          path: "navigation.inter_planetary_type",
+          op: "replace",
+          value: "system",
+        },
+        {
+          file: gwoUnit.airFabberAdvanced,
+          path: "unit_types",
           op: "push",
-          value: {
-            spec_id: gwoUnit.angelBeam,
-            aim_bone: "bone_turret",
-            record_index: 0,
-            muzzle_bone: "socket_muzzle",
-          },
+          value: "UNITTYPE_Interplanetary",
         },
       ]);
     },
