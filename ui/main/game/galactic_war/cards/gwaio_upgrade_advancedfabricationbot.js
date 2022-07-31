@@ -38,6 +38,12 @@ define([
             primary_weapon: true,
           },
         },
+        {
+          file: gwoUnit.botFabberAdvancedBuildArm,
+          path: "command_caps",
+          op: "push",
+          value: "ORDER_Attack",
+        },
       ]);
     },
     dull: function () {
