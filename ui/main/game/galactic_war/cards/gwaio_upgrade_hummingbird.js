@@ -44,6 +44,12 @@ define([
           op: "replace",
           value: "system",
         },
+        {
+          file: gwoUnit.hummingbird,
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Interplanetary",
+        },
       ]);
     },
     dull: function () {
