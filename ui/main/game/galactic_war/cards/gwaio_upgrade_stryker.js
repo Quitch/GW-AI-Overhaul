@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Stryker Upgrade Tech increases the rate of fire of the attack vehicle by 300%, but it fires in bursts and requires energy to recharge."
+      "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(
@@ -27,46 +27,20 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwoUnit.strykerWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 4,
+          file: gwoUnit.stryker,
+          path: "tools",
+          op: "prepend",
+          value: {
+            spec_id: "/pa/units/land/bot_bomb/bot_bomb_tool_weapon.json",
+            aim_bone: "bone_root",
+            muzzle_bone: "bone_root",
+          },
         },
         {
-          file: gwoUnit.strykerWeapon,
-          path: "ammo_source",
-          op: "replace",
-          value: "energy",
-        },
-        {
-          file: gwoUnit.strykerWeapon,
-          path: "ammo_capacity",
-          op: "replace",
-          value: 100,
-        },
-        {
-          file: gwoUnit.strykerWeapon,
-          path: "ammo_demand",
-          op: "replace",
-          value: 50,
-        },
-        {
-          file: gwoUnit.strykerWeapon,
-          path: "ammo_per_shot",
-          op: "replace",
-          value: 25,
-        },
-        {
-          file: gwoUnit.strykerWeapon,
-          path: "carpet_fire",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.strykerWeapon,
-          path: "carpet_wait_for_full_ammo",
-          op: "replace",
-          value: true,
+          file: gwoUnit.stryker,
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_SelfDestruct",
         },
       ]);
     },

@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v5.43.0 - 2022-07-31
+
+### Changed
+
+- Armies with multiple commanders are more likely to spawn on multiple worlds if possible
+- Upgrade Techs
+  - Advanced Fabrication Aircraft
+  - Advanced Fabrication Bot
+  - Stryker
+
+### Fixed
+
+- War failing to start if the number of factions needed to be reduced to fit the number of available stars
+- Minions of the primary faction AI spawning as copies of the primary AI instead of themselves
+- Hummingbird Upgrade Tech not adding the appropriate unit type tag
+
 ## v5.42.0 - 2022-07-23
 
 ### Changed

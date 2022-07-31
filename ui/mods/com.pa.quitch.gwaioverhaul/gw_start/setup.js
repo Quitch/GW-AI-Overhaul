@@ -5,9 +5,8 @@ if (!gwoSetupLoaded) {
 
   function gwoSetup() {
     try {
-      // Prevent changes to settings creating new galaxies
       model.makeGame = function () {
-        //empty
+        // Prevent changes to settings creating new galaxies
       };
 
       // We change how we monitor model.ready() to prevent
@@ -83,12 +82,15 @@ if (!gwoSetupLoaded) {
             { id: "gwaio_start_backpacker" },
             { id: "gwaio_start_hoarder" }
           );
-          var startingCards = [
+          if (!model.gwoStartingCards) {
+            model.gwoStartingCards = [];
+          }
+          model.gwoStartingCards.push(
             { id: "gwc_start_vehicle" },
             { id: "gwc_start_air" },
             { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" },
-          ];
+            { id: "gwc_start_bot" }
+          );
           var lockedBaseCards = [
             { id: "gwc_start_artillery" },
             { id: "gwc_start_subcdr" },
@@ -96,14 +98,13 @@ if (!gwoSetupLoaded) {
             { id: "gwc_start_allfactory" },
             { id: "gwc_start_storage" },
           ];
-          var allCards = startingCards.concat(
+          var allCards = model.gwoStartingCards.concat(
             lockedBaseCards,
             model.gwoNewStartCards
           );
-          // Determine which start cards are available and which are locked
           var startCards = _.map(allCards, function (cardData) {
             if (
-              _.includes(startingCards, cardData) ||
+              _.includes(model.gwoStartingCards, cardData) ||
               GW.bank.hasStartCard(cardData) ||
               gwoBank.hasStartCard(cardData)
             ) {
@@ -128,18 +129,241 @@ if (!gwoSetupLoaded) {
             });
           });
 
+          var gwoDealStartCard = function (params) {
+            var result = $.Deferred();
+            loaded.then(function () {
+              var card = _.find(processedStartCards, { id: params.id });
+              if (_.isUndefined(card)) {
+                console.error("No matching start card ID found");
+              }
+              var context =
+                card.getContext &&
+                card.getContext(params.galaxy, params.inventory);
+              var deal = card.deal && card.deal(params.star, context);
+              var product = { id: params.id };
+              var cardParams = deal && deal.params;
+              if (cardParams && _.isObject(cardParams)) {
+                _.assign(product, cardParams);
+              }
+              card.keep && card.keep(deal, context);
+              card.releaseContext && card.releaseContext(context);
+              result.resolve(product, deal);
+            });
+            return result;
+          };
+
+          var randomPercentageAdjustment = function (min, max) {
+            return Math.random() * (max - min) + min;
+          };
+
+          var aiEcoMinionReduction = function (eco, ecoStep, minions) {
+            return eco - minions * ecoStep;
+          };
+
+          var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
+            var eco =
+              (ecoBase + distance * ecoStep) *
+              randomPercentageAdjustment(0.9, 1.1);
+            if (minions) {
+              eco = aiEcoMinionReduction(eco, ecoStep, minions);
+            }
+            return eco;
+          };
+
+          var aiFaction = 0;
+
+          var setupQuellerAI = function (ai) {
+            // Minions don't have a faction number so use the previous one
+            // which should be from the primary AI and accurate
+            if (!_.isUndefined(ai.faction)) {
+              aiFaction = parseInt(ai.faction);
+            }
+
+            var legonisMachinaTag = "tank";
+            var foundationTag = "air";
+            var synchronousTag = "bot";
+            var revenantsTag = "orbital";
+            var clusterTag = "land";
+
+            switch (aiFaction) {
+              case 0:
+                ai.personality.personality_tags.push(legonisMachinaTag);
+                break;
+              case 1:
+                ai.personality.personality_tags.push(foundationTag);
+                break;
+              case 2:
+                ai.personality.personality_tags.push(synchronousTag);
+                break;
+              case 3:
+                ai.personality.personality_tags.push(revenantsTag);
+                break;
+              case 4:
+                ai.personality.personality_tags.push(clusterTag);
+            }
+          };
+
+          var setupPenchantAI = function (ai) {
+            var penchantValues = gwoAI.penchants();
+            ai.personality.personality_tags =
+              ai.personality.personality_tags.concat(penchantValues.penchants);
+            ai.penchantName = penchantValues.penchantName;
+          };
+
+          var parseBoolean = function (string) {
+            return string === "true";
+          };
+
+          var setAIPersonality = function (ai, difficulty) {
+            ai.personality.micro_type = difficulty.microType();
+            ai.personality.go_for_the_kill = parseBoolean(
+              difficulty.goForKill()
+            );
+            ai.personality.priority_scout_metal_spots = parseBoolean(
+              difficulty.priorityScoutMetalSpots()
+            );
+            ai.personality.factory_build_delay_min =
+              difficulty.factoryBuildDelayMin();
+            ai.personality.factory_build_delay_max =
+              difficulty.factoryBuildDelayMax();
+            ai.personality.unable_to_expand_delay =
+              difficulty.unableToExpandDelay();
+            ai.personality.enable_commander_danger_responses = parseBoolean(
+              difficulty.enableCommanderDangerResponses()
+            );
+            ai.personality.per_expansion_delay = difficulty.perExpansionDelay();
+            ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
+            ai.personality.max_advanced_fabbers =
+              difficulty.maxAdvancedFabbers();
+            ai.personality.personality_tags = $("#gwo-personality-picker")
+              .val()
+              .concat("Default", "queller");
+            // We treat 0 as undefined, which means the AI examines the
+            // radius of the spawn zone
+            if (difficulty.startingLocationEvaluationRadius() > 0) {
+              ai.personality.starting_location_evaluation_radius =
+                difficulty.startingLocationEvaluationRadius();
+            }
+
+            switch (difficulty.ai()) {
+              case "Queller":
+                setupQuellerAI(ai);
+                break;
+              case "Penchant":
+                setupPenchantAI(ai);
+            }
+          };
+
+          var selectAIBuffs = function (numberBuffs) {
+            var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
+            return _.sample(buffType, numberBuffs);
+          };
+
+          var setupAIBuffs = function (distance, buffDistanceDelay) {
+            var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
+            return selectAIBuffs(numberBuffs);
+          };
+
+          var aiTech = function (buffs, inventory, faction, tech) {
+            _.times(buffs.length, function (n) {
+              inventory = inventory.concat(tech[faction][buffs[n]]);
+            });
+            return inventory;
+          };
+
+          var countMinions = function (minionBase, minionStep, distance) {
+            return Math.floor(minionBase + distance * minionStep);
+          };
+
+          var clusterCommanderCount = function (minionCount, bossCommanders) {
+            return minionCount + Math.floor(bossCommanders / 2);
+          };
+
+          var selectMinion = function (minions, minionName) {
+            // Cluster
+            if (minionName === "Worker" || minionName === "Security") {
+              return _.cloneDeep(
+                _.sample(
+                  _.filter(minions, {
+                    name: minionName,
+                  })
+                )
+              );
+            }
+            return _.cloneDeep(_.sample(minions));
+          };
+
+          var gameModeEnabled = function (gameModeChance) {
+            return Math.random() * 100 <= gameModeChance;
+          };
+
+          var startCardAllyCompatibility = function (game) {
+            if (!model.gwoStarCardsWhichBreakAllies) {
+              model.gwoStarCardsWhichBreakAllies = [];
+            }
+            model.gwoStarCardsWhichBreakAllies.push("nem_start_deepspace");
+            return _.some(model.gwoStarCardsWhichBreakAllies, function (card) {
+              return card === game.inventory().cards()[0].id;
+            });
+          };
+
+          var setupQuellerFFATag = function (ais) {
+            if (_.isUndefined(ais)) {
+              return;
+            }
+
+            if (_.isArray(ais)) {
+              _.forEach(ais, function (ai) {
+                ai.personality.personality_tags.push("ffa");
+              });
+            } else if (ais) {
+              ais.personality.personality_tags.push("ffa");
+            }
+          };
+
+          var warGenerationAttempts = 0;
+
+          var saveDifficultySettings = function () {
+            var difficultySettings = model.gwoDifficultySettings;
+            var previousSettings = difficultySettings.previousSettings();
+            var settingNames = _.keys(model.gwoDifficultySettings);
+            _.pull(settingNames, "previousSettings");
+            difficultySettings.personalityTags(
+              $("#gwo-personality-picker").val().concat("Default", "queller")
+            );
+            _.forEach(settingNames, function (name, i) {
+              previousSettings[i] = difficultySettings[name]();
+            });
+            difficultySettings.previousSettings.valueHasMutated();
+          };
+
+          var warFailure = function () {
+            model.makeGameBusy(false);
+            enableGoToWar(true);
+            if (warGenerationAttempts < 5) {
+              model.newGameSeed(Math.floor(Math.random() * 1000000).toString());
+              model.navToNewGame();
+            } else {
+              warGenerationAttempts = 0;
+              console.error("Failed to generate valid war");
+            }
+          };
+
           // replicates the functionality of model.makeGame() but
           // only generates the galaxy once the player clicks Go To War
           model.navToNewGame = function () {
             if (!model.ready()) {
               return;
             }
+
             enableGoToWar(false);
+            var warGenerationFailed = false;
+            warGenerationAttempts++;
 
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.42.0";
+            var version = "5.43.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -186,29 +410,6 @@ if (!gwoSetupLoaded) {
               if (model.makeGameBusy() !== busyToken) {
                 return null;
               }
-
-              var gwoDealStartCard = function (params) {
-                var result = $.Deferred();
-                loaded.then(function () {
-                  var card = _.find(processedStartCards, { id: params.id });
-                  if (_.isUndefined(card)) {
-                    console.error("No matching start card ID found");
-                  }
-                  var context =
-                    card.getContext &&
-                    card.getContext(params.galaxy, params.inventory);
-                  var deal = card.deal && card.deal(params.star, context);
-                  var product = { id: params.id };
-                  var cardParams = deal && deal.params;
-                  if (cardParams && _.isObject(cardParams)) {
-                    _.assign(product, cardParams);
-                  }
-                  card.keep && card.keep(deal, context);
-                  card.releaseContext && card.releaseContext(context);
-                  result.resolve(product, deal);
-                });
-                return result;
-              };
 
               return gwoDealStartCard({
                 id: model.activeStartCard().id(),
@@ -324,160 +525,20 @@ if (!gwoSetupLoaded) {
                 0
               );
 
-              var randomPercentageAdjustment = function (min, max) {
-                return Math.random() * (max - min) + min;
-              };
-
-              var aiEcoMinionReduction = function (eco, ecoStep, minions) {
-                return eco - minions * ecoStep;
-              };
-
-              var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
-                var eco =
-                  (ecoBase + distance * ecoStep) *
-                  randomPercentageAdjustment(0.9, 1.1);
-                if (minions) {
-                  eco = aiEcoMinionReduction(eco, ecoStep, minions);
-                }
-                return eco;
-              };
-
-              var aiFaction = 0;
-
-              var setupQuellerAI = function (ai) {
-                // Minions don't have a faction number so use the previous one
-                // which should be from the primary AI and accurate
-                if (!_.isUndefined(ai.faction)) {
-                  aiFaction = parseInt(ai.faction);
-                }
-
-                var legonisMachinaTag = "tank";
-                var foundationTag = "air";
-                var synchronousTag = "bot";
-                var revenantsTag = "orbital";
-                var clusterTag = "land";
-
-                switch (aiFaction) {
-                  case 0:
-                    ai.personality.personality_tags.push(legonisMachinaTag);
-                    break;
-                  case 1:
-                    ai.personality.personality_tags.push(foundationTag);
-                    break;
-                  case 2:
-                    ai.personality.personality_tags.push(synchronousTag);
-                    break;
-                  case 3:
-                    ai.personality.personality_tags.push(revenantsTag);
-                    break;
-                  case 4:
-                    ai.personality.personality_tags.push(clusterTag);
-                }
-              };
-
-              var setupPenchantAI = function (ai) {
-                var penchantValues = gwoAI.penchants();
-                ai.personality.personality_tags =
-                  ai.personality.personality_tags.concat(
-                    penchantValues.penchants
-                  );
-                ai.penchantName = penchantValues.penchantName;
-              };
-
-              var parseBoolean = function (string) {
-                return string === "true";
-              };
-
-              var setAIPersonality = function (ai, difficulty) {
-                ai.personality.micro_type = difficulty.microType();
-                ai.personality.go_for_the_kill = parseBoolean(
-                  difficulty.goForKill()
-                );
-                ai.personality.priority_scout_metal_spots = parseBoolean(
-                  difficulty.priorityScoutMetalSpots()
-                );
-                ai.personality.factory_build_delay_min =
-                  difficulty.factoryBuildDelayMin();
-                ai.personality.factory_build_delay_max =
-                  difficulty.factoryBuildDelayMax();
-                ai.personality.unable_to_expand_delay =
-                  difficulty.unableToExpandDelay();
-                ai.personality.enable_commander_danger_responses = parseBoolean(
-                  difficulty.enableCommanderDangerResponses()
-                );
-                ai.personality.per_expansion_delay =
-                  difficulty.perExpansionDelay();
-                ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
-                ai.personality.max_advanced_fabbers =
-                  difficulty.maxAdvancedFabbers();
-                ai.personality.personality_tags = $("#gwo-personality-picker")
-                  .val()
-                  .concat("Default", "queller");
-                // We treat 0 as undefined, which means the AI examines the
-                // radius of the spawn zone
-                if (difficulty.startingLocationEvaluationRadius() > 0) {
-                  ai.personality.starting_location_evaluation_radius =
-                    difficulty.startingLocationEvaluationRadius();
-                }
-
-                switch (difficulty.ai()) {
-                  case "Queller":
-                    setupQuellerAI(ai);
-                    break;
-                  case "Penchant":
-                    setupPenchantAI(ai);
-                }
-              };
-
-              var selectAIBuffs = function (numberBuffs) {
-                var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
-                return _.sample(buffType, numberBuffs);
-              };
-
-              var setupAIBuffs = function (distance, buffDistanceDelay) {
-                var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
-                return selectAIBuffs(numberBuffs);
-              };
-
-              var aiTech = function (buffs, inventory, faction, tech) {
-                _.times(buffs.length, function (n) {
-                  inventory = inventory.concat(tech[faction][buffs[n]]);
-                });
-                return inventory;
-              };
-
-              var countMinions = function (minionBase, minionStep, distance) {
-                return Math.floor(minionBase + distance * minionStep);
-              };
-
-              var clusterCommanderCount = function (
-                minionCount,
-                bossCommanders
-              ) {
-                return minionCount + Math.floor(bossCommanders / 2);
-              };
-
-              var selectMinion = function (minions, minionName) {
-                // Cluster
-                if (minionName === "Worker" || minionName === "Security") {
-                  return _.cloneDeep(
-                    _.sample(
-                      _.filter(minions, {
-                        name: minionName,
-                      })
-                    )
-                  );
-                }
-                return _.cloneDeep(_.sample(minions));
-              };
-
-              var gameModeEnabled = function (gameModeChance) {
-                return Math.random() * 100 <= gameModeChance;
-              };
-
               // Set up the AI
               _.forEach(teamInfo, function (info) {
                 var boss = info.boss;
+
+                if (!boss) {
+                  console.warn(
+                    "No AI boss found for faction " +
+                      info.faction +
+                      ", terminating war generation"
+                  );
+                  warGenerationFailed = true;
+                  return;
+                }
+
                 var difficulty = model.gwoDifficultySettings;
                 var econBase = parseFloat(difficulty.econBase());
                 var econRatePerDist = parseFloat(difficulty.econRatePerDist());
@@ -489,7 +550,7 @@ if (!gwoSetupLoaded) {
                 boss.bossCommanders = bossCommanders;
 
                 boss.inventory = [];
-                // Set up Cluster commanders
+
                 if (boss.isCluster === true) {
                   boss.inventory = gwoTech.clusterCommanders;
                 }
@@ -497,7 +558,6 @@ if (!gwoSetupLoaded) {
                 var factionTechHandicap = parseFloat(
                   difficulty.factionTechHandicap()
                 );
-                // Set up boss AI Buffs
                 var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
                 boss.typeOfBuffs = bossBuffs; // for intelligence reports
                 boss.inventory = aiTech(
@@ -547,7 +607,6 @@ if (!gwoSetupLoaded) {
                 _.forEach(info.workers, function (worker) {
                   var ai = worker.ai;
 
-                  // Determine game modes in use for this system
                   ai.landAnywhere = gameModeEnabled(
                     difficulty.landAnywhereChance()
                   );
@@ -572,12 +631,11 @@ if (!gwoSetupLoaded) {
                   );
 
                   ai.inventory = [];
-                  // Set up Cluster commanders
+
                   if (ai.isCluster === true) {
                     ai.inventory = gwoTech.clusterCommanders;
                   }
 
-                  // Set up non-boss AI buffs
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                   ai.typeOfBuffs = workerBuffs; // for intelligence reports
                   ai.inventory = aiTech(
@@ -655,12 +713,10 @@ if (!gwoSetupLoaded) {
                       foeCommander.commanderCount = numFoes;
 
                       foeCommander.inventory = [];
-                      // Set up Cluster commanders
                       if (foeCommander.isCluster === true) {
                         foeCommander.inventory = gwoTech.clusterCommanders;
                       }
 
-                      // Set up additional faction AI buffs
                       foeCommander.inventory = aiTech(
                         workerBuffs,
                         foeCommander.inventory,
@@ -673,18 +729,8 @@ if (!gwoSetupLoaded) {
                   });
 
                   // Set up allied commander
-                  if (!model.gwoStarCardsWhichBreakAllies) {
-                    model.gwoStarCardsWhichBreakAllies = [];
-                  }
-                  model.gwoStarCardsWhichBreakAllies.push(
-                    "nem_start_deepspace"
-                  );
-                  var startCardBreaksAllies = _.some(
-                    model.gwoStarCardsWhichBreakAllies,
-                    function (card) {
-                      return card === game.inventory().cards()[0].id;
-                    }
-                  );
+                  var startCardBreaksAllies = startCardAllyCompatibility(game);
+
                   if (
                     !startCardBreaksAllies &&
                     gameModeEnabled(difficulty.alliedCommanderChance())
@@ -700,23 +746,11 @@ if (!gwoSetupLoaded) {
                     }
                   }
 
-                  // Set up Queller for FFA
                   if (difficulty.ai() === "Queller" && ai.foes) {
-                    var ffaTag = "ffa";
-                    ai.personality.personality_tags =
-                      ai.personality.personality_tags.concat(ffaTag);
-                    _.forEach(ai.minions, function (minion) {
-                      minion.personality.personality_tags =
-                        minion.personality.personality_tags.concat(ffaTag);
-                    });
-                    _.forEach(ai.foes, function (foe) {
-                      foe.personality.personality_tags =
-                        foe.personality.personality_tags.concat(ffaTag);
-                    });
-                    if (ai.ally) {
-                      ai.ally.personality.personality_tags =
-                        ai.ally.personality.personality_tags.concat(ffaTag);
-                    }
+                    setupQuellerFFATag(ai);
+                    setupQuellerFFATag(ai.minions);
+                    setupQuellerFFATag(ai.foes);
+                    setupQuellerFFATag(ai.ally);
                   }
                 });
               });
@@ -811,6 +845,10 @@ if (!gwoSetupLoaded) {
             });
 
             var warInfo = finishAis.then(function () {
+              if (warGenerationFailed === true) {
+                return;
+              }
+
               // Hacky way to store war information for the gw_play scene
               var galaxy = game.galaxy();
               var originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -848,7 +886,10 @@ if (!gwoSetupLoaded) {
             });
 
             var finishSetup = warInfo.then(function () {
-              if (model.makeGameBusy() !== busyToken) {
+              if (
+                model.makeGameBusy() !== busyToken ||
+                warGenerationFailed === true
+              ) {
                 return null;
               }
 
@@ -859,18 +900,12 @@ if (!gwoSetupLoaded) {
             });
 
             finishSetup.then(function () {
-              // Save war settings so they're the default next time
-              var difficultySettings = model.gwoDifficultySettings;
-              var previousSettings = difficultySettings.previousSettings();
-              var settingNames = _.keys(model.gwoDifficultySettings);
-              _.pull(settingNames, "previousSettings");
-              difficultySettings.personalityTags(
-                $("#gwo-personality-picker").val().concat("Default", "queller")
-              );
-              _.forEach(settingNames, function (name, i) {
-                previousSettings[i] = difficultySettings[name]();
-              });
-              difficultySettings.previousSettings.valueHasMutated();
+              if (warGenerationFailed === true) {
+                warFailure();
+                return;
+              }
+
+              saveDifficultySettings();
 
               var save = GW.manifest.saveGame(model.newGame());
               model.activeGameId(model.newGame().id);

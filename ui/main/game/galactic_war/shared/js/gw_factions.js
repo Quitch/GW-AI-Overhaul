@@ -1,3 +1,4 @@
+// Adds Cluster
 define([
   "shared/gw_faction_0",
   "shared/gw_faction_1",
