@@ -27,7 +27,7 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwoUnit.botFabberAdvancedBuildArm,
+          file: gwoUnit.botFabberAdvanced,
           path: "tools",
           op: "push",
           value: {
@@ -39,7 +39,7 @@ define([
           },
         },
         {
-          file: gwoUnit.botFabberAdvancedBuildArm,
+          file: gwoUnit.botFabberAdvanced,
           path: "command_caps",
           op: "push",
           value: "ORDER_Attack",
