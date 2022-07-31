@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Fabrication Bot Upgrade Tech equips the Advanced Fabricator with the Support Commander's weapon."
+      "!LOC:Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon."
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Bot Upgrade Tech"),
     icon: _.constant(
