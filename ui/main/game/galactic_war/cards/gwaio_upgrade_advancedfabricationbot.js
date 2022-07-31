@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Fabrication Bot Upgrade Tech increases the build range of the advanced bot fabricator by 150%."
+      "!LOC:Advanced Fabrication Bot Upgrade Tech equips the Advanced Fabricator with the Support Commander's weapon."
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Bot Upgrade Tech"),
     icon: _.constant(
@@ -28,9 +28,15 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.botFabberAdvancedBuildArm,
-          path: "max_range",
-          op: "multiply",
-          value: 2.5,
+          path: "tools",
+          op: "push",
+          value: {
+            spec_id:
+              "/pa/units/land/bot_support_commander/bot_support_commander_tool_weapon.json",
+            aim_bone: "bone_turret",
+            muzzle_bone: "socket_rightMuzzle",
+            primary_weapon: true,
+          },
         },
       ]);
     },
