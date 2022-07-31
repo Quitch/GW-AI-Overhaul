@@ -8,6 +8,7 @@
 - Upgrade Techs
   - Advanced Fabrication Aircraft
   - Advanced Fabrication Bot
+  - Stryker
 
 ### Fixed
 
