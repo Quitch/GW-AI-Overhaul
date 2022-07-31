@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Armies with multiple commanders are more likely to spawn on multiple worlds if possible
+
 ### Fixed
 
 - War failing to start if the number of factions needed to be reduced to fit the number of available stars

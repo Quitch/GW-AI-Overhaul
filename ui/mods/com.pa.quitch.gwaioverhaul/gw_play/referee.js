@@ -1079,30 +1079,40 @@ if (!gwoRefereeChangesLoaded) {
             return aiRoot;
           };
 
-          var aiCommander = function (name, commander) {
-            var aiLandingOptions = [
-              "off_player_planet",
-              "on_player_planet",
-              "no_restriction",
-            ];
+          var aiCommander = function (
+            name,
+            commander,
+            landingOptions,
+            commanderNumber
+          ) {
+            if (commanderNumber > landingOptions.length - 1) {
+              commanderNumber -= landingOptions.length;
+            }
             return {
               ai: true,
               name: name,
               commander: commander,
-              landing_policy: _.sample(aiLandingOptions),
+              landing_policy: landingOptions[commanderNumber],
             };
           };
 
           var setupAIArmy = function (ai, index, specTag, alliance) {
             var slotsArray = [];
+            var aiLandingOptions = _.shuffle([
+              "off_player_planet",
+              "on_player_planet",
+              "no_restriction",
+            ]);
             _.times(
               ai.bossCommanders ||
                 ai.commanderCount ||
                 // legacy GWO support
                 (ai.landing_policy && ai.landing_policy.length) ||
                 1,
-              function () {
-                slotsArray.push(aiCommander(ai.name, ai.commander));
+              function (count) {
+                slotsArray.push(
+                  aiCommander(ai.name, ai.commander, aiLandingOptions, count)
+                );
               }
             );
             return {
