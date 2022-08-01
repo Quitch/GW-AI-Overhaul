@@ -100,7 +100,8 @@ define([
     revenantsWeapons: [gwoUnit.sxxWeapon, gwoUnit.artemisWeapon],
     revenantsAmmo: gwoGroup.orbitalAmmo.concat(
       gwoUnit.anchorAmmoAG,
-      gwoUnit.anchorAmmoAO
+      gwoUnit.anchorAmmoAO,
+      gwoUnit.heliosAmmo
     ),
     revenantsBuildArms: [
       gwoUnit.nukeLauncherBuildArm,
