@@ -299,19 +299,14 @@ if (!gwoIntelligenceLoaded) {
               return commanders;
             });
 
-            // Additional Factions
+            // Additional Factions & Allies
 
-            model.gwoFfaOpponents = ko.computed(function () {
+            model.gwoAdditionalFactions = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
               if (primary && primary.foes) {
                 commanders = _.map(primary.foes, intelligence);
               }
-              return commanders;
-            });
-            model.gwoAlly = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
-              var commanders = [];
               if (primary && primary.ally) {
                 commanders = [intelligence(primary.ally, 0)];
               }
