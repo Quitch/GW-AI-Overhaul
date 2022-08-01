@@ -21,8 +21,7 @@ define([
     legonisWeapons: [],
     legonisAmmo: gwoGroup.vehiclesAmmo.concat(
       gwoUnit.aresAmmo,
-      gwoUnit.aresSecondaryAmmo,
-      gwoUnit.aresStompAmmo
+      gwoUnit.aresSecondaryAmmo
     ),
     legonisBuildArms: [
       gwoUnit.vehicleFabberAdvancedBuildArm,
