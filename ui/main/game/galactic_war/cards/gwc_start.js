@@ -1,8 +1,8 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
-], function (GW, gwoGroup, gwoTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
+], function (GW, gwoGroup, gwoCluster) {
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
@@ -18,7 +18,7 @@ define([
 
       var isCluster = inventory.getTag("global", "playerFaction") === 4;
       if (isCluster) {
-        inventory.addMods(gwoTech.clusterCommanders);
+        inventory.addMods(gwoCluster.clusterCommanders);
       }
 
       var commander = inventory.getTag("global", "commander");

@@ -45,6 +45,7 @@ if (!gwoSetupLoaded) {
           "pages/gw_start/gw_teams",
           "main/shared/js/star_system_templates",
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
@@ -58,6 +59,7 @@ if (!gwoSetupLoaded) {
           GWTeams,
           normalSystemTemplates, // window.star_system_templates is set instead
           easySystemTemplates,
+          gwoCluster,
           gwoTech,
           gwoBank,
           gwoLore,
@@ -552,7 +554,7 @@ if (!gwoSetupLoaded) {
                 boss.inventory = [];
 
                 if (boss.isCluster === true) {
-                  boss.inventory = gwoTech.clusterCommanders;
+                  boss.inventory = gwoCluster.clusterCommanders;
                 }
 
                 var factionTechHandicap = parseFloat(
@@ -633,7 +635,7 @@ if (!gwoSetupLoaded) {
                   ai.inventory = [];
 
                   if (ai.isCluster === true) {
-                    ai.inventory = gwoTech.clusterCommanders;
+                    ai.inventory = gwoCluster.clusterCommanders;
                   }
 
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
@@ -714,7 +716,7 @@ if (!gwoSetupLoaded) {
 
                       foeCommander.inventory = [];
                       if (foeCommander.isCluster === true) {
-                        foeCommander.inventory = gwoTech.clusterCommanders;
+                        foeCommander.inventory = gwoCluster.clusterCommanders;
                       }
 
                       foeCommander.inventory = aiTech(
