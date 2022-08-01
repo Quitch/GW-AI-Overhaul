@@ -8,6 +8,7 @@
 - Revenant Unit Cannons not receiving the build speed buff
 - Foundation air factories not receiving the build speed buff
 - Cluster not receiving build speed buffs on all factories
+- Available Technology renamed to Available Tech to be consistent with Galactic War terminology
 
 ## v5.43.0 - 2022-07-31
 
