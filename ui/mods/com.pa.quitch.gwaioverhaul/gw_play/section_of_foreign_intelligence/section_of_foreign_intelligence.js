@@ -309,7 +309,7 @@ if (!gwoIntelligenceLoaded) {
                   commanders = _.map(primary.foes, intelligence);
                 }
                 if (primary.ally) {
-                  commanders = [intelligence(primary.ally, 0)];
+                  commanders.push(intelligence(primary.ally, 0));
                 }
               }
               return commanders;
