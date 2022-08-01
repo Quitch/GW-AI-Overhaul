@@ -20,7 +20,7 @@
     </div>
   </div>
   <div data-bind="visible: $root.gwoCardAvailable">
-    <h3><loc>Available Technology</loc></h3>
+    <h3><loc>Available Tech</loc></h3>
     <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
   <div data-bind="visible: $root.gwoGameOptions">
@@ -63,39 +63,7 @@
       </li>
     </ul>
   </div>
-  <!-- ko if: $root.selection.system().star.ai() && !$root.selection.system().star.ai().treasurePlanet && $root.gwoSystemOwner() -->
-  <h3><span data-bind="text: $root.gwoSystemOwner()[0].faction"></span></h3>
-  <!-- /ko -->
-  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().treasurePlanet && $root.gwoSystemOwner() -->
-  <h3><loc>Unknown Faction</loc></h3>
-  <!-- /ko -->
-  <ul data-bind="foreach: $root.gwoSystemOwner">
-    <li class="commander">
-      <div class="div-player-icon">
-        <div
-          class="fill player-masked"
-          data-bind="style: { backgroundColor: color }"
-        ></div>
-        <div class="outline">
-          <img
-            src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png"
-          />
-        </div>
-      </div>
-      <h4><span class="commander-name" data-bind="text: name"></span></h4>
-      <div class="table">
-        <div class="tr">
-          <div class="td"><loc>Personality:</loc></div>
-          <div class="data" data-bind="text: character"></div>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <!-- ko if: $root.selection.system().star.ai() && $root.selection.system().star.ai().foes && !$root.selection.system().star.ai().foes[0].faction -->
-  <!-- header for versions prior to v4.15.0 -->
-  <h3><loc>Additional Factions</loc></h3>
-  <!-- /ko -->
-  <ul data-bind="foreach: $root.gwoFfaOpponents">
+  <ul data-bind="foreach: $root.gwoAIs">
     <h3><span data-bind="text: faction"></span></h3>
     <li class="commander">
       <div class="div-player-icon">
@@ -114,31 +82,6 @@
         <div class="tr">
           <div class="td"><loc>Personality:</loc></div>
           <div class="data" data-bind="text: character"></div>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <ul data-bind="foreach: $root.gwoAlly">
-    <h3><span data-bind="text: faction"></span></h3>
-    <li class="commander">
-      <div class="div-player-icon">
-        <div
-          class="fill player-masked"
-          data-bind="style: { backgroundColor: color }"
-        ></div>
-        <div class="outline">
-          <img
-            src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png"
-          />
-        </div>
-      </div>
-      <h4><span class="commander-name" data-bind="text: name"></span></h4>
-      <div class="table">
-        <div class="tablebody">
-          <div class="tr">
-            <div class="td"><loc>Personality:</loc></div>
-            <div class="data" data-bind="text: character"></div>
-          </div>
         </div>
       </div>
     </li>

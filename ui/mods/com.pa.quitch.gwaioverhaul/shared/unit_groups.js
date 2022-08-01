@@ -343,14 +343,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var titansAmmo = [
     gwoUnit.aresAmmo,
     gwoUnit.aresSecondaryAmmo,
-    gwoUnit.aresStompAmmo,
     gwoUnit.atlasAmmo,
     gwoUnit.heliosAmmo,
     gwoUnit.zeusAmmo,
   ];
   var titansWeapons = [
     gwoUnit.aresSecondary,
-    gwoUnit.aresStomp,
     gwoUnit.aresWeapon,
     gwoUnit.atlasWeapon,
     gwoUnit.heliosWeapon,

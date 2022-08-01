@@ -43,6 +43,7 @@ if (!gwoIntelligenceLoaded) {
               if (factionIndex === playerFaction) {
                 // allies appear after player and sub commanders in colour
                 index += inventory.minions().length + 1;
+                faction += " (" + loc("!LOC:ALLY") + ")";
               } else {
                 index = commander.faction ? 0 : index + 1;
               }
@@ -283,37 +284,23 @@ if (!gwoIntelligenceLoaded) {
               );
             });
 
-            // System Faction
-
-            model.gwoSystemOwner = ko.computed(function () {
+            model.gwoAIs = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
               if (primary) {
                 commanders.push(intelligence(primary, 0));
                 if (primary.minions) {
-                  commanders = commanders.concat(
-                    _.map(primary.minions, intelligence)
-                  );
+                  var minions = _.map(primary.minions, intelligence);
+                  commanders = commanders.concat(minions);
                 }
-              }
-              return commanders;
-            });
-
-            // Additional Factions
-
-            model.gwoFfaOpponents = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
-              var commanders = [];
-              if (primary && primary.foes) {
-                commanders = _.map(primary.foes, intelligence);
-              }
-              return commanders;
-            });
-            model.gwoAlly = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
-              var commanders = [];
-              if (primary && primary.ally) {
-                commanders = [intelligence(primary.ally, 0)];
+                if (primary.foes) {
+                  var foes = _.map(primary.foes, intelligence);
+                  commanders = commanders.concat(foes);
+                }
+                if (primary.ally) {
+                  var commander = intelligence(primary.ally, 0);
+                  commanders.push(commander);
+                }
               }
               return commanders;
             });

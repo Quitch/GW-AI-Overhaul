@@ -45,6 +45,7 @@ if (!gwoSetupLoaded) {
           "pages/gw_start/gw_teams",
           "main/shared/js/star_system_templates",
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
@@ -58,6 +59,7 @@ if (!gwoSetupLoaded) {
           GWTeams,
           normalSystemTemplates, // window.star_system_templates is set instead
           easySystemTemplates,
+          gwoCluster,
           gwoTech,
           gwoBank,
           gwoLore,
@@ -172,11 +174,11 @@ if (!gwoSetupLoaded) {
 
           var aiFaction = 0;
 
-          var setupQuellerAI = function (ai) {
+          var getQuellerAITag = function (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
-            if (!_.isUndefined(ai.faction)) {
-              aiFaction = parseInt(ai.faction);
+            if (!_.isUndefined(faction)) {
+              aiFaction = parseInt(faction);
             }
 
             var legonisMachinaTag = "tank";
@@ -187,19 +189,15 @@ if (!gwoSetupLoaded) {
 
             switch (aiFaction) {
               case 0:
-                ai.personality.personality_tags.push(legonisMachinaTag);
-                break;
+                return legonisMachinaTag;
               case 1:
-                ai.personality.personality_tags.push(foundationTag);
-                break;
+                return foundationTag;
               case 2:
-                ai.personality.personality_tags.push(synchronousTag);
-                break;
+                return synchronousTag;
               case 3:
-                ai.personality.personality_tags.push(revenantsTag);
-                break;
+                return revenantsTag;
               case 4:
-                ai.personality.personality_tags.push(clusterTag);
+                return clusterTag;
             }
           };
 
@@ -247,7 +245,9 @@ if (!gwoSetupLoaded) {
 
             switch (difficulty.ai()) {
               case "Queller":
-                setupQuellerAI(ai);
+                ai.personality.personality_tags.push(
+                  getQuellerAITag(ai.faction)
+                );
                 break;
               case "Penchant":
                 setupPenchantAI(ai);
@@ -363,7 +363,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.43.0";
+            var version = "5.44.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -552,7 +552,7 @@ if (!gwoSetupLoaded) {
                 boss.inventory = [];
 
                 if (boss.isCluster === true) {
-                  boss.inventory = gwoTech.clusterCommanders;
+                  boss.inventory = gwoCluster.clusterCommanders;
                 }
 
                 var factionTechHandicap = parseFloat(
@@ -633,7 +633,7 @@ if (!gwoSetupLoaded) {
                   ai.inventory = [];
 
                   if (ai.isCluster === true) {
-                    ai.inventory = gwoTech.clusterCommanders;
+                    ai.inventory = gwoCluster.clusterCommanders;
                   }
 
                   var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
@@ -694,7 +694,7 @@ if (!gwoSetupLoaded) {
                       var foeCommander = selectMinion(
                         GWFactions[foeFaction].minions
                       );
-                      foeCommander.faction = foeFaction;
+                      foeCommander.faction = parseInt(foeFaction);
                       setAIPersonality(foeCommander, difficulty);
                       foeCommander.econ_rate = aiEconRate(
                         econBase,
@@ -714,7 +714,7 @@ if (!gwoSetupLoaded) {
 
                       foeCommander.inventory = [];
                       if (foeCommander.isCluster === true) {
-                        foeCommander.inventory = gwoTech.clusterCommanders;
+                        foeCommander.inventory = gwoCluster.clusterCommanders;
                       }
 
                       foeCommander.inventory = aiTech(
