@@ -283,9 +283,7 @@ if (!gwoIntelligenceLoaded) {
               );
             });
 
-            // System Faction
-
-            model.gwoSystemOwner = ko.computed(function () {
+            model.gwoAIs = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
               if (primary) {
@@ -295,18 +293,9 @@ if (!gwoIntelligenceLoaded) {
                     _.map(primary.minions, intelligence)
                   );
                 }
-              }
-              return commanders;
-            });
-
-            // Additional Factions & Allies
-
-            model.gwoAdditionalFactions = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
-              var commanders = [];
-              if (primary) {
                 if (primary.foes) {
-                  commanders = _.map(primary.foes, intelligence);
+                  var foes = _.map(primary.foes, intelligence);
+                  commanders = commanders.concat(foes);
                 }
                 if (primary.ally) {
                   commanders.push(intelligence(primary.ally, 0));
