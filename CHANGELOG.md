@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Foundation Squall receiving air buffs instead of naval buffs
+- Revenant Omegas not receiving buffs to all their ammos
+- Revenant Unit Cannons not receiving the build speed buff
+- Foundation air factories not receiving the build speed buff
+- Cluster not receiving build speed buffs on all factories
+
 ## v5.43.0 - 2022-07-31
 
 ### Changed
