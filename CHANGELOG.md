@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Allies are identified by Ally appearing next to the faction name
+
 ### Fixed
 
 - Revenant Omegas not receiving buffs to all their ammos

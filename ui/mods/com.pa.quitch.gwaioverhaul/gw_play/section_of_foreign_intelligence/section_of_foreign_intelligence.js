@@ -43,6 +43,7 @@ if (!gwoIntelligenceLoaded) {
               if (factionIndex === playerFaction) {
                 // allies appear after player and sub commanders in colour
                 index += inventory.minions().length + 1;
+                faction += " (" + loc("!LOC:Ally") + ")";
               } else {
                 index = commander.faction ? 0 : index + 1;
               }
