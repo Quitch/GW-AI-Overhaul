@@ -2,7 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (inventory, gwoUnit) {
-  // Cluster commander setup
   var clusterCommanderTech = [
     {
       file: gwoUnit.colonel,

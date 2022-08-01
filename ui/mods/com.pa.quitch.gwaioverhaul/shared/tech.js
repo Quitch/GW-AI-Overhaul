@@ -1,7 +1,6 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
 ], function (inventory) {
-  // AI Buffs
   var legonisTech = [];
   var foundationTech = [];
   var synchronousTech = [];
