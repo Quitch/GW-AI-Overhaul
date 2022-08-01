@@ -174,11 +174,11 @@ if (!gwoSetupLoaded) {
 
           var aiFaction = 0;
 
-          var setupQuellerAI = function (ai) {
+          var getQuellerAITag = function (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
-            if (!_.isUndefined(ai.faction)) {
-              aiFaction = parseInt(ai.faction);
+            if (!_.isUndefined(faction)) {
+              aiFaction = parseInt(faction);
             }
 
             var legonisMachinaTag = "tank";
@@ -189,19 +189,15 @@ if (!gwoSetupLoaded) {
 
             switch (aiFaction) {
               case 0:
-                ai.personality.personality_tags.push(legonisMachinaTag);
-                break;
+                return legonisMachinaTag;
               case 1:
-                ai.personality.personality_tags.push(foundationTag);
-                break;
+                return foundationTag;
               case 2:
-                ai.personality.personality_tags.push(synchronousTag);
-                break;
+                return synchronousTag;
               case 3:
-                ai.personality.personality_tags.push(revenantsTag);
-                break;
+                return revenantsTag;
               case 4:
-                ai.personality.personality_tags.push(clusterTag);
+                return clusterTag;
             }
           };
 
@@ -249,7 +245,9 @@ if (!gwoSetupLoaded) {
 
             switch (difficulty.ai()) {
               case "Queller":
-                setupQuellerAI(ai);
+                ai.personality.personality_tags.push(
+                  getQuellerAITag(ai.faction)
+                );
                 break;
               case "Penchant":
                 setupPenchantAI(ai);
