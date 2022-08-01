@@ -290,16 +290,16 @@ if (!gwoIntelligenceLoaded) {
               if (primary) {
                 commanders.push(intelligence(primary, 0));
                 if (primary.minions) {
-                  commanders = commanders.concat(
-                    _.map(primary.minions, intelligence)
-                  );
+                  var minions = _.map(primary.minions, intelligence);
+                  commanders = commanders.concat(minions);
                 }
                 if (primary.foes) {
                   var foes = _.map(primary.foes, intelligence);
                   commanders = commanders.concat(foes);
                 }
                 if (primary.ally) {
-                  commanders.push(intelligence(primary.ally, 0));
+                  var commander = intelligence(primary.ally, 0);
+                  commanders.push(commander);
                 }
               }
               return commanders;
