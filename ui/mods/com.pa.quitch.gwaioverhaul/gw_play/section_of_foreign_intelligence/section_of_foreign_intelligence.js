@@ -304,11 +304,13 @@ if (!gwoIntelligenceLoaded) {
             model.gwoAdditionalFactions = ko.computed(function () {
               var primary = model.selection.system().star.ai();
               var commanders = [];
-              if (primary && primary.foes) {
-                commanders = _.map(primary.foes, intelligence);
-              }
-              if (primary && primary.ally) {
-                commanders = [intelligence(primary.ally, 0)];
+              if (primary) {
+                if (primary.foes) {
+                  commanders = _.map(primary.foes, intelligence);
+                }
+                if (primary.ally) {
+                  commanders = [intelligence(primary.ally, 0)];
+                }
               }
               return commanders;
             });
