@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Allies are identified by Ally appearing next to the faction name
+- Allies are identified by ALLY appearing next to the faction name
 
 ### Fixed
 
