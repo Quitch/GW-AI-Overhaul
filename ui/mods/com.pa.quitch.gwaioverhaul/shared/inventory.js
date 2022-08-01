@@ -37,8 +37,14 @@ define([
       gwoUnit.navalFactory,
       gwoUnit.navalFactoryAdvanced,
     ],
-    foundationUnitsMobileAir: gwoGroup.airMobile.concat(gwoUnit.zeus),
-    foundationUnitsMobileNotAir: gwoGroup.navalMobile,
+    foundationUnitsMobileAir: gwoGroup.airMobile.concat(
+      gwoUnit.zeus,
+      gwoUnit.squall
+    ),
+    foundationUnitsMobileNotAir: _.without(
+      gwoGroup.navalMobile,
+      gwoUnit.squall
+    ),
     foundationWeapons: [
       gwoUnit.bumblebeeWeapon,
       gwoUnit.hornetWeapon,

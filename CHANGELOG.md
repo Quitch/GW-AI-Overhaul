@@ -4,7 +4,6 @@
 
 ### Fixed
 
-- Foundation Squall receiving air buffs instead of naval buffs
 - Revenant Omegas not receiving buffs to all their ammos
 - Revenant Unit Cannons not receiving the build speed buff
 - Foundation air factories not receiving the build speed buff
