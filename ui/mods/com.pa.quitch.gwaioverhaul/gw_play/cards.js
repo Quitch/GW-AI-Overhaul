@@ -367,20 +367,11 @@ if (!gwoCardsLoaded) {
             "shared/gw_common",
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           ],
-          function (
-            GW,
-            GWFactions,
-            gwoCardsToUnits,
-            gwoUnitToNames,
-            gwoAI,
-            gwoSave,
-            gwoBank
-          ) {
+          function (GW, GWFactions, gwoCardsToUnits, gwoAI, gwoSave, gwoBank) {
             var inventory = game.inventory();
             var playerFaction = inventory.getTag("global", "playerFaction");
             var galaxy = model.game().galaxy();
