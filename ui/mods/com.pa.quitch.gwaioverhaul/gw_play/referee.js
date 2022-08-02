@@ -83,7 +83,6 @@ if (!gwoRefereeChangesLoaded) {
             }
             return "Titans";
           };
-          var aiBrain = aiInUse();
 
           // allow for specs not assigned to units to still be processed
           var combineSpecs = function (baseSpecs, newSpecs) {
@@ -116,6 +115,7 @@ if (!gwoRefereeChangesLoaded) {
 
               var aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
               var aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
+              var aiBrain = aiInUse();
 
               if (aiBrain === "Queller") {
                 aiUnitMapPath =
@@ -787,6 +787,7 @@ if (!gwoRefereeChangesLoaded) {
             var game = model.game();
             var ai = game.galaxy().stars()[game.currentStar()].ai();
             var inventory = game.inventory();
+            var aiBrain = aiInUse();
             var quellerPath = "/pa/ai_personalities/queller/";
             // the order of path assignments must match .player unit_map assignments in generateGameFiles()
             if (type === "cluster") {
@@ -866,6 +867,7 @@ if (!gwoRefereeChangesLoaded) {
               var aiTechPath = "/pa/ai_tech/";
               var subcommanderAIPath = getAIPath("subcommander");
               var enemyAIPath = getAIPath("enemy");
+              var aiBrain = aiInUse();
               var isQueller = aiBrain === "Queller";
 
               addAILoadFilesToFileList(
@@ -1192,6 +1194,7 @@ if (!gwoRefereeChangesLoaded) {
               aiNewTag = aiNewTag + n;
               aiTag.push(aiNewTag);
             });
+            var aiBrain = aiInUse();
 
             // Set up AI System Owner
             ai = setAdvEcoMod(ai, aiBrain);
