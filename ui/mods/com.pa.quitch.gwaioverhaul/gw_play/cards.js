@@ -362,18 +362,6 @@ if (!gwoCardsLoaded) {
           });
         };
 
-        var setCardName = function (system, card) {
-          var deferred = $.Deferred();
-          if (!_.isEmpty(card)) {
-            requireGW(["cards/" + card[0].id], function (data) {
-              var cardName = loc(data.summarize());
-              system.star.ai().cardName = cardName;
-              deferred.resolve();
-            });
-          }
-          return deferred.promise();
-        };
-
         requireGW(
           [
             "shared/gw_common",
@@ -509,6 +497,18 @@ if (!gwoCardsLoaded) {
                 result.resolve(list);
               });
               return result;
+            };
+
+            var setCardName = function (system, card) {
+              var deferred = $.Deferred();
+              if (!_.isEmpty(card)) {
+                requireGW(["cards/" + card[0].id], function (data) {
+                  var cardName = loc(data.summarize());
+                  system.star.ai().cardName = cardName;
+                  deferred.resolve();
+                });
+              }
+              return deferred.promise();
             };
 
             var dealCardToSelectableAI = function (win, turnState) {
