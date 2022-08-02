@@ -358,9 +358,9 @@ if (!gwoCardsLoaded) {
             !gwoSettings.techCardDeck || // v5.35.0 and earlier
             gwoSettings.techCardDeck === "Expanded"
           ) {
-            model.gwoCards = model.gwoCards.concat(basicCards, expandedCards);
+            return model.gwoCards.concat(basicCards, expandedCards);
           } else {
-            model.gwoCards = model.gwoCards.concat(basicCards);
+            return model.gwoCards.concat(basicCards);
           }
         };
 
@@ -415,7 +415,7 @@ if (!gwoCardsLoaded) {
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
-            setupGwoCards(gwoSettings);
+            model.gwoCards = setupGwoCards(gwoSettings);
 
             var cards = [];
             var deck = [];
