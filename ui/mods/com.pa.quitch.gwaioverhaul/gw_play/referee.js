@@ -85,60 +85,6 @@ if (!gwoRefereeChangesLoaded) {
           };
           var aiBrain = aiInUse();
 
-          var getAIPath = function (type) {
-            var game = model.game();
-            var ai = game.galaxy().stars()[game.currentStar()].ai();
-            var inventory = game.inventory();
-            var quellerPath = "/pa/ai_personalities/queller/";
-            // the order of path assignments must match .player unit_map assignments in generateGameFiles()
-            if (type === "cluster") {
-              return "/pa/ai_cluster/";
-            } else if (aiBrain === "Queller") {
-              if (type === "all") {
-                return quellerPath;
-              } else if (type === "enemy") {
-                return quellerPath + "q_uber/";
-              } else if (
-                type === "subcommander" &&
-                _.some(inventory.cards(), {
-                  id: "gwaio_upgrade_subcommander_tactics",
-                })
-              ) {
-                return quellerPath + "q_gold/";
-              }
-              // type === "subcommander"
-              return quellerPath + "q_silver/";
-            } else if (
-              type === "subcommander" &&
-              !_.isEmpty(inventory.aiMods()) &&
-              ai.mirrorMode !== true
-            ) {
-              return "/pa/ai_tech/";
-            } else if (aiBrain === "Penchant") {
-              return "/pa/ai_personalities/penchant/";
-            }
-            return "/pa/ai/";
-          };
-
-          var isClusterAIPresent = function (inventory, ai, subcommanders) {
-            if (
-              inventory.getTag("global", "playerFaction") === 4 &&
-              subcommanders > 0
-            ) {
-              return "Player";
-            } else if (ai.faction === 4) {
-              return "Enemy";
-            } else if (ai.foes) {
-              for (var foe of ai.foes) {
-                var foeIsCluster = foe.faction[0] === 4;
-                if (foeIsCluster) {
-                  return "Enemy";
-                }
-              }
-            }
-            return "None";
-          };
-
           // allow for specs not assigned to units to still be processed
           var combineSpecs = function (baseSpecs, newSpecs) {
             return baseSpecs.concat(newSpecs);
@@ -835,6 +781,60 @@ if (!gwoRefereeChangesLoaded) {
                 fileList.push(aiTechPath + managerPath + aiMod.value);
               });
             }
+          };
+
+          var getAIPath = function (type) {
+            var game = model.game();
+            var ai = game.galaxy().stars()[game.currentStar()].ai();
+            var inventory = game.inventory();
+            var quellerPath = "/pa/ai_personalities/queller/";
+            // the order of path assignments must match .player unit_map assignments in generateGameFiles()
+            if (type === "cluster") {
+              return "/pa/ai_cluster/";
+            } else if (aiBrain === "Queller") {
+              if (type === "all") {
+                return quellerPath;
+              } else if (type === "enemy") {
+                return quellerPath + "q_uber/";
+              } else if (
+                type === "subcommander" &&
+                _.some(inventory.cards(), {
+                  id: "gwaio_upgrade_subcommander_tactics",
+                })
+              ) {
+                return quellerPath + "q_gold/";
+              }
+              // type === "subcommander"
+              return quellerPath + "q_silver/";
+            } else if (
+              type === "subcommander" &&
+              !_.isEmpty(inventory.aiMods()) &&
+              ai.mirrorMode !== true
+            ) {
+              return "/pa/ai_tech/";
+            } else if (aiBrain === "Penchant") {
+              return "/pa/ai_personalities/penchant/";
+            }
+            return "/pa/ai/";
+          };
+
+          var isClusterAIPresent = function (inventory, ai, subcommanders) {
+            if (
+              inventory.getTag("global", "playerFaction") === 4 &&
+              subcommanders > 0
+            ) {
+              return "Player";
+            } else if (ai.faction === 4) {
+              return "Enemy";
+            } else if (ai.foes) {
+              for (var foe of ai.foes) {
+                var foeIsCluster = foe.faction[0] === 4;
+                if (foeIsCluster) {
+                  return "Enemy";
+                }
+              }
+            }
+            return "None";
           };
 
           // parse AI mods and load the results into self.files()
