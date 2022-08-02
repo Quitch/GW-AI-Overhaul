@@ -599,8 +599,7 @@ if (!gwoCardsLoaded) {
             };
             setupGeneralCommander();
 
-            // Deal some cards when the war starts
-            var dealFirstCardToSelectableAI = function (settings) {
+            var dealCardToSelectableAIWhenWarStarts = function (settings) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
                 dealCardToSelectableAI(false).then(function () {
@@ -608,7 +607,7 @@ if (!gwoCardsLoaded) {
                 });
               }
             };
-            dealFirstCardToSelectableAI(gwoSettings);
+            dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
             // Cheats use our deck
             var dealCard = function (params) {
