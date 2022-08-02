@@ -527,7 +527,7 @@ if (!gwoCardsLoaded) {
               return result;
             };
 
-            var dealCardSelectableAI = function (win, turnState) {
+            var dealCardToSelectableAI = function (win, turnState) {
               var deferred = $.Deferred();
 
               // Avoid running twice after winning a fight
@@ -600,16 +600,15 @@ if (!gwoCardsLoaded) {
             setupGeneralCommander();
 
             // Deal some cards when the war starts
-            var dealFirstCardSelectableAI = function (settings) {
+            var dealFirstCardToSelectableAI = function (settings) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
-                dealCardSelectableAI(false).then(function () {
+                dealCardToSelectableAI(false).then(function () {
                   gwoSave(game, true);
                 });
               }
             };
-
-            dealFirstCardSelectableAI(gwoSettings);
+            dealFirstCardToSelectableAI(gwoSettings);
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -749,7 +748,7 @@ if (!gwoCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
-                  dealCardSelectableAI(false).then(function () {
+                  dealCardToSelectableAI(false).then(function () {
                     gwoSave(game, true);
                   });
                 });
@@ -812,7 +811,7 @@ if (!gwoCardsLoaded) {
               });
             };
 
-            // call dealCardSelectableAI() so system cards update when player acquires a card
+            // call dealCardToSelectableAI() so system cards update when player acquires a card
             model.win = function (selectedCardIndex) {
               model.exitGate($.Deferred());
 
@@ -829,7 +828,7 @@ if (!gwoCardsLoaded) {
 
                 model.maybePlayCaptureSound();
 
-                dealCardSelectableAI(true, game.turnState())
+                dealCardToSelectableAI(true, game.turnState())
                   .then(function () {
                     return gwoSave(game, true);
                   })
