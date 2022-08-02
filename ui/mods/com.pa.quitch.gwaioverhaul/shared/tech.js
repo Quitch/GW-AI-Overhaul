@@ -14,28 +14,27 @@ define([
     clusterTech,
   ];
 
-  var legonisUnits = inventory.legonisUnitsMobile.concat(
-    inventory.legonisUnitsNotMobile
-  );
-  var foundationUnits = inventory.foundationUnitsMobileAir.concat(
-    inventory.foundationUnitsMobileNotAir,
-    inventory.foundationUnitsNotMobile
-  );
-  var synchronousUnits = inventory.synchronousUnitsMobile.concat(
-    inventory.synchronousUnitsNotMobile
-  );
-  var revenantsUnits = inventory.revenantsUnitsMobile.concat(
-    inventory.revenantsUnitsNotMobile
-  );
-  var factionUnits = [
-    legonisUnits,
-    foundationUnits,
-    synchronousUnits,
-    revenantsUnits,
-    inventory.clusterUnits,
-  ];
-
   var setupAITech0FabricationTech = function () {
+    var legonisUnits = inventory.legonisUnitsMobile.concat(
+      inventory.legonisUnitsNotMobile
+    );
+    var foundationUnits = inventory.foundationUnitsMobileAir.concat(
+      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsNotMobile
+    );
+    var synchronousUnits = inventory.synchronousUnitsMobile.concat(
+      inventory.synchronousUnitsNotMobile
+    );
+    var revenantsUnits = inventory.revenantsUnitsMobile.concat(
+      inventory.revenantsUnitsNotMobile
+    );
+    var factionUnits = [
+      legonisUnits,
+      foundationUnits,
+      synchronousUnits,
+      revenantsUnits,
+      inventory.clusterUnits,
+    ];
     _.forEach(factionUnits, function (faction, i) {
       factionsTech[i][0] = _.map(faction, function (unit) {
         return {
@@ -69,7 +68,6 @@ define([
       revenantsAmmo,
       clusterAmmo,
     ];
-
     _.forEach(factionAmmo, function (faction, i) {
       factionsTech[i][1] = _.flatten(
         _.map(faction, function (ammo) {
@@ -115,7 +113,6 @@ define([
       revenantsWeapons,
       clusterWeapons,
     ];
-
     _.forEach(factionWeapons, function (faction, i) {
       factionsTech[i][1] = factionsTech[i][1].concat(
         _.flatten(
@@ -153,6 +150,26 @@ define([
   setupAITech1AmmunitionTech();
 
   var setupUnitArmour = function () {
+    var legonisUnits = inventory.legonisUnitsMobile.concat(
+      inventory.legonisUnitsNotMobile
+    );
+    var foundationUnits = inventory.foundationUnitsMobileAir.concat(
+      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsNotMobile
+    );
+    var synchronousUnits = inventory.synchronousUnitsMobile.concat(
+      inventory.synchronousUnitsNotMobile
+    );
+    var revenantsUnits = inventory.revenantsUnitsMobile.concat(
+      inventory.revenantsUnitsNotMobile
+    );
+    var factionUnits = [
+      legonisUnits,
+      foundationUnits,
+      synchronousUnits,
+      revenantsUnits,
+      inventory.clusterUnits,
+    ];
     _.forEach(factionUnits, function (faction, i) {
       factionsTech[i][2] = _.map(faction, function (unit) {
         return {
@@ -165,18 +182,17 @@ define([
     });
   };
 
-  var clusterCommanders = inventory.commanderUnits.concat(
-    inventory.clusterCommanders
-  );
-  var factionCommanders = [
-    inventory.commanderUnits, // Legonis Machina
-    inventory.commanderUnits, // Foundation
-    inventory.commanderUnits, // Synchronous
-    inventory.commanderUnits, // Revenants
-    clusterCommanders,
-  ];
-
   var setupCommanderArmour = function () {
+    var clusterCommanders = inventory.commanderUnits.concat(
+      inventory.clusterCommanders
+    );
+    var factionCommanders = [
+      inventory.commanderUnits, // Legonis Machina
+      inventory.commanderUnits, // Foundation
+      inventory.commanderUnits, // Synchronous
+      inventory.commanderUnits, // Revenants
+      clusterCommanders,
+    ];
     _.forEach(factionCommanders, function (faction, i) {
       factionsTech[i][2] = factionsTech[i][2].concat(
         _.map(faction, function (unit) {
@@ -197,52 +213,29 @@ define([
   };
   setupAITech2ArmourTech();
 
-  var factionsTechNoAir = [
-    legonisTech,
-    foundationTech,
-    synchronousTech,
-    revenantsTech,
-    clusterTech,
-  ];
-  var clusterUnitsNotStructure = inventory.commanderUnits.concat(
-    inventory.clusterCommanders
-  );
-  var factionUnitsNoAir = [
-    inventory.legonisUnitsMobile,
-    inventory.foundationUnitsMobileNotAir,
-    inventory.synchronousUnitsMobile,
-    inventory.revenantsUnitsMobile,
-    clusterUnitsNotStructure,
-  ];
-
-  var moveSpeed = "navigation.move_speed";
-  var brake = "navigation.brake";
-  var acceleration = "navigation.acceleration";
-  var turnSpeed = "navigation.turn_speed";
-
   var airSpeedBoost = function (unit) {
     return [
       {
         file: unit,
-        path: moveSpeed,
+        path: "navigation.move_speed",
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: brake,
+        path: "navigation.brake",
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: acceleration,
+        path: "navigation.acceleration",
         op: "multiply",
         value: 1.25,
       },
       {
         file: unit,
-        path: turnSpeed,
+        path: "navigation.turn_speed",
         op: "multiply",
         value: 1.25,
       },
@@ -253,25 +246,25 @@ define([
     return [
       {
         file: unit,
-        path: moveSpeed,
+        path: "navigation.move_speed",
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: brake,
+        path: "navigation.brake",
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: acceleration,
+        path: "navigation.acceleration",
         op: "multiply",
         value: 1.5,
       },
       {
         file: unit,
-        path: turnSpeed,
+        path: "navigation.turn_speed",
         op: "multiply",
         value: 1.5,
       },
@@ -287,6 +280,23 @@ define([
   };
 
   var setupNotAirEngineTech = function () {
+    var factionsTechNoAir = [
+      legonisTech,
+      foundationTech,
+      synchronousTech,
+      revenantsTech,
+      clusterTech,
+    ];
+    var clusterUnitsNotStructure = inventory.commanderUnits.concat(
+      inventory.clusterCommanders
+    );
+    var factionUnitsNoAir = [
+      inventory.legonisUnitsMobile,
+      inventory.foundationUnitsMobileNotAir,
+      inventory.synchronousUnitsMobile,
+      inventory.revenantsUnitsMobile,
+      clusterUnitsNotStructure,
+    ];
     _.forEach(factionUnitsNoAir, function (faction, i) {
       if (_.isUndefined(factionsTechNoAir[i][3])) {
         factionsTechNoAir[i][3] = [];
@@ -302,6 +312,16 @@ define([
   };
 
   var setupCommanderEngineTech = function () {
+    var clusterCommanders = inventory.commanderUnits.concat(
+      inventory.clusterCommanders
+    );
+    var factionCommanders = [
+      inventory.commanderUnits, // Legonis Machina
+      inventory.commanderUnits, // Foundation
+      inventory.commanderUnits, // Synchronous
+      inventory.commanderUnits, // Revenants
+      clusterCommanders,
+    ];
     _.forEach(factionCommanders, function (faction, i) {
       factionsTech[i][3] = factionsTech[i][3].concat(
         _.flatten(
@@ -309,25 +329,25 @@ define([
             return [
               {
                 file: unit,
-                path: moveSpeed,
+                path: "navigation.move_speed",
                 op: "multiply",
                 value: 2,
               },
               {
                 file: unit,
-                path: brake,
+                path: "navigation.brake",
                 op: "multiply",
                 value: 2,
               },
               {
                 file: unit,
-                path: acceleration,
+                path: "navigation.acceleration",
                 op: "multiply",
                 value: 2,
               },
               {
                 file: unit,
-                path: turnSpeed,
+                path: "navigation.turn_speed",
                 op: "multiply",
                 value: 2,
               },
@@ -403,6 +423,23 @@ define([
 
   // we redo the speed tech because Combat Commander Tech uses different values
   var setupNotAirEngineCombatTech = function () {
+    var factionsTechNoAir = [
+      legonisTech,
+      foundationTech,
+      synchronousTech,
+      revenantsTech,
+      clusterTech,
+    ];
+    var clusterUnitsNotStructure = inventory.commanderUnits.concat(
+      inventory.clusterCommanders
+    );
+    var factionUnitsNoAir = [
+      inventory.legonisUnitsMobile,
+      inventory.foundationUnitsMobileNotAir,
+      inventory.synchronousUnitsMobile,
+      inventory.revenantsUnitsMobile,
+      clusterUnitsNotStructure,
+    ];
     _.forEach(factionUnitsNoAir, function (faction, i) {
       if (_.isUndefined(factionsTechNoAir[i][6])) {
         factionsTechNoAir[i][6] = [];
@@ -418,6 +455,16 @@ define([
   };
 
   var setupCommanderEngineCombatTech = function () {
+    var clusterCommanders = inventory.commanderUnits.concat(
+      inventory.clusterCommanders
+    );
+    var factionCommanders = [
+      inventory.commanderUnits, // Legonis Machina
+      inventory.commanderUnits, // Foundation
+      inventory.commanderUnits, // Synchronous
+      inventory.commanderUnits, // Revenants
+      clusterCommanders,
+    ];
     _.forEach(factionCommanders, function (faction, i) {
       factionsTech[i][6] = factionsTech[i][6].concat(
         _.flatten(
@@ -425,25 +472,25 @@ define([
             return [
               {
                 file: unit,
-                path: moveSpeed,
+                path: "navigation.move_speed",
                 op: "multiply",
                 value: 3,
               },
               {
                 file: unit,
-                path: brake,
+                path: "navigation.brake",
                 op: "multiply",
                 value: 3,
               },
               {
                 file: unit,
-                path: acceleration,
+                path: "navigation.acceleration",
                 op: "multiply",
                 value: 3,
               },
               {
                 file: unit,
-                path: turnSpeed,
+                path: "navigation.turn_speed",
                 op: "multiply",
                 value: 3,
               },
