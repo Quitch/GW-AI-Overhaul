@@ -19,8 +19,8 @@ if (!gwoMenuLoaded) {
             tutorial(game.isTutorial());
           });
 
-          var getMenuString = function (boolean, stringTrue, stringFalse) {
-            return boolean ? stringTrue : stringFalse;
+          var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
+            return boolean ? stringIfTrue : stringIfFalse;
           };
 
           model.menuConfigGenerator = ko.observable(function () {
