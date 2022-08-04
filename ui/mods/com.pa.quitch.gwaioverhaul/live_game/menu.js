@@ -51,7 +51,7 @@ if (!gwoMenuLoaded) {
               playerLost = true;
             }
 
-            var list = [
+            var menu = [
               {
                 label: "!LOC:Pause Game",
                 action: "menuPauseGame",
@@ -89,22 +89,22 @@ if (!gwoMenuLoaded) {
             ];
 
             if (model.canSave()) {
-              list.splice(6, 0, {
+              menu.splice(6, 0, {
                 label: "Save Game ",
                 action: "menuSaveWar",
               });
             }
 
-            list = _.map(list, function (entry) {
+            var translatedMenu = _.map(menu, function (entry) {
               return {
                 label: loc(entry.label),
                 action: entry.action,
                 game_over: loc(entry.game_over),
               };
             });
-            api.Panel.message("", "menu_config", list);
+            api.Panel.message("", "menu_config", translatedMenu);
 
-            return list;
+            return translatedMenu;
           });
         });
       }
