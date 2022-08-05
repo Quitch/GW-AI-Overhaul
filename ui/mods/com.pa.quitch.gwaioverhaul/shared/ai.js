@@ -104,9 +104,18 @@ define({
     var penchantIndex = _.indexOf(penchantTags, penchantTag);
     var personalityTags = penchantExclusions[penchantIndex].concat(penchantTag);
     var penchantName = loc(penchantNames[penchantIndex]);
+
     return {
       penchants: personalityTags,
       penchantName: penchantName,
+      aiInUse: function () {
+        var galaxy = model.game().galaxy();
+        var originSystem = galaxy.stars()[galaxy.origin()].system();
+        if (originSystem.gwaio) {
+          return originSystem.gwaio.ai;
+        }
+        return "Titans";
+      },
     };
   },
 });
