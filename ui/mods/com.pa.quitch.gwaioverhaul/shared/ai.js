@@ -108,14 +108,14 @@ define({
     return {
       penchants: personalityTags,
       penchantName: penchantName,
-      aiInUse: function () {
-        var galaxy = model.game().galaxy();
-        var originSystem = galaxy.stars()[galaxy.origin()].system();
-        if (originSystem.gwaio) {
-          return originSystem.gwaio.ai;
-        }
-        return "Titans";
-      },
     };
+  },
+  aiInUse: function () {
+    var galaxy = model.game().galaxy();
+    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    if (originSystem.gwaio) {
+      return originSystem.gwaio.ai;
+    }
+    return "Titans";
   },
 });
