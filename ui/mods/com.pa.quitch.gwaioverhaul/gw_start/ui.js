@@ -5,22 +5,20 @@ if (!gwoUILoaded) {
 
   function gwoUI() {
     try {
+      var koNumeric = function (value, precision) {
+        return ko.observable(value).extend({ numeric: precision });
+      };
+
       // gw_start uses ko.applyBindings(model)
       model.gwoDifficultySettings = {
         previousSettings: ko
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
-        playerFaction: ko
-          .observable(model.playerFactionIndex())
-          .extend({ numeric: 0 }),
-        difficultyLevel: ko.observable(0).extend({ numeric: 0 }),
-        galaxySize: ko
-          .observable(model.newGameSizeIndex())
-          .extend({ numeric: 0 }),
+        playerFaction: koNumeric(model.playerFactionIndex(), 0),
+        difficultyLevel: koNumeric(0, 0),
+        galaxySize: koNumeric(model.newGameSizeIndex(), 0),
         hardcore: ko.observable(model.newGameHardcore()), // boolean
-        chosenLoadout: ko.observable(model.activeStartCardIndex()).extend({
-          numeric: 0,
-        }),
+        chosenLoadout: koNumeric(model.activeStartCardIndex(), 0),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -30,66 +28,28 @@ if (!gwoUILoaded) {
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
         goForKill: ko.observable("false"),
-        microType: ko.observable(0).extend({ numeric: 0 }),
-        mandatoryMinions: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        minionMod: ko.observable(0).extend({
-          numeric: 2,
-        }),
+        microType: koNumeric(0, 0),
+        mandatoryMinions: koNumeric(0, 0),
+        minionMod: koNumeric(0, 2),
         priorityScoutMetalSpots: ko.observable("false"),
-        factoryBuildDelayMin: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        factoryBuildDelayMax: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        unableToExpandDelay: ko.observable(0).extend({
-          numeric: 0,
-        }),
+        factoryBuildDelayMin: koNumeric(0, 0),
+        factoryBuildDelayMax: koNumeric(0, 0),
+        unableToExpandDelay: koNumeric(0, 0),
         enableCommanderDangerResponses: ko.observable("false"),
-        perExpansionDelay: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        econBase: ko.observable(0).extend({
-          numeric: 3,
-        }),
-        econRatePerDist: ko.observable(0).extend({
-          numeric: 3,
-        }),
-        maxBasicFabbers: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        maxAdvancedFabbers: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        startingLocationEvaluationRadius: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        ffaChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bossCommanders: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        landAnywhereChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        suddenDeathChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bountyModeChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bountyModeValue: ko.observable(0).extend({
-          numeric: 1,
-        }),
-        factionTechHandicap: ko.observable(0).extend({
-          numeric: 1,
-        }),
-        alliedCommanderChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
+        perExpansionDelay: koNumeric(0, 0),
+        econBase: koNumeric(0, 3),
+        econRatePerDist: koNumeric(0, 3),
+        maxBasicFabbers: koNumeric(0, 0),
+        maxAdvancedFabbers: koNumeric(0, 0),
+        startingLocationEvaluationRadius: koNumeric(0, 0),
+        ffaChance: koNumeric(0, 0),
+        bossCommanders: koNumeric(0, 0),
+        landAnywhereChance: koNumeric(0, 0),
+        suddenDeathChance: koNumeric(0, 0),
+        bountyModeChance: koNumeric(0, 0),
+        bountyModeValue: koNumeric(0, 1),
+        factionTechHandicap: koNumeric(0, 1),
+        alliedCommanderChance: koNumeric(0, 0),
         personalityTags: ko.observableArray(["Default", "Queller"]),
       };
 
