@@ -157,7 +157,6 @@ define({
     var penchantIndex = _.indexOf(penchantTags, penchantTag);
     var personalityTags = penchantExclusions[penchantIndex].concat(penchantTag);
     var penchantName = loc(penchantNames[penchantIndex]);
-
     return {
       penchants: personalityTags,
       penchantName: penchantName,
