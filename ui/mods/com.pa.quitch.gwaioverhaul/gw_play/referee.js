@@ -302,12 +302,13 @@ if (!gwoRefereeChangesLoaded) {
           };
 
           var isClusterAIPresent = function (inventory, ai, subcommanders) {
+            var aiIsCluster = ai.faction === 4;
             if (
               inventory.getTag("global", "playerFaction") === 4 &&
               subcommanders > 0
             ) {
               return "Player";
-            } else if (ai.faction === 4) {
+            } else if (aiIsCluster) {
               return "Enemy";
             } else if (ai.foes) {
               for (var foe of ai.foes) {
