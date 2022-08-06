@@ -89,48 +89,37 @@ if (!gwoUILoaded) {
       model.factionTooltip =
         "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
-      $(".info_tip").after(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
-        )
-      );
-      $("#faction-select").before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tooltip.html"
-        )
-      );
-      $("#game-size").before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/size_tooltip.html"
-        )
-      );
+      var loadHtmlBefore = function (classOrId, file) {
+        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
+        $(classOrId).before(loadHtml(path + file));
+      };
+
+      var loadHtmlAfter = function (classOrId, file) {
+        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
+        $(classOrId).after(loadHtml(path + file));
+      };
+
+      var loadHtmlAppend = function (classOrId, file) {
+        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
+        $(classOrId).append(loadHtml(path + file));
+      };
+
+      var loadHtmlReplace = function (classOrId, file) {
+        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
+        $(classOrId).replaceWith(loadHtml(path + file));
+      };
+
       var gameDifficultyLabelId = "#game-difficulty-label";
-      $(gameDifficultyLabelId).before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
-        )
-      );
-      $(gameDifficultyLabelId).before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/cards_dropdown.html"
-        )
-      );
-      $(gameDifficultyLabelId).append(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
-        )
-      );
       var gameDifficultyId = "#game-difficulty";
-      $(gameDifficultyId).replaceWith(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
-        )
-      );
-      $("#new-game-right").after(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html"
-        )
-      );
+
+      loadHtmlAfter(".info_tip", "difficulty_options.html");
+      loadHtmlBefore("#faction-select", "faction_tooltip.html");
+      loadHtmlBefore("#game-size", "size_tooltip.html");
+      loadHtmlBefore(gameDifficultyLabelId, "ai_dropdown.html");
+      loadHtmlBefore(gameDifficultyLabelId, "cards_dropdown.html");
+      loadHtmlAppend(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
+      loadHtmlReplace(gameDifficultyId, "difficulty_levels.html");
+      loadHtmlAfter("#new-game-right", "ai_settings.html");
       locTree($(gameDifficultyId));
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
