@@ -7,6 +7,7 @@ define({
     }
     return "Titans";
   },
+
   getAIPath: function (type) {
     var game = model.game();
     var ai = game.galaxy().stars()[game.currentStar()].ai();
@@ -42,6 +43,7 @@ define({
     }
     return "/pa/ai/";
   },
+
   penchants: function () {
     var penchantTags = [
       "Vanilla",
@@ -157,6 +159,7 @@ define({
     var penchantIndex = _.indexOf(penchantTags, penchantTag);
     var personalityTags = penchantExclusions[penchantIndex].concat(penchantTag);
     var penchantName = loc(penchantNames[penchantIndex]);
+
     return {
       penchants: personalityTags,
       penchantName: penchantName,
