@@ -178,10 +178,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
   var isClusterAIPresent = function (inventory, ai, subcommanders) {
     var aiIsCluster = ai.faction === 4;
-    if (
-      inventory.getTag("global", "playerFaction") === 4 &&
-      subcommanders > 0
-    ) {
+    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    if (playerIsCluster && subcommanders > 0) {
       return "Player";
     } else if (aiIsCluster) {
       return "Enemy";

@@ -16,8 +16,8 @@ define([
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
 
-      var isCluster = inventory.getTag("global", "playerFaction") === 4;
-      if (isCluster) {
+      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+      if (playerIsCluster) {
         inventory.addMods(gwoCluster.clusterCommanders);
       }
 
