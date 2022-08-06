@@ -320,8 +320,6 @@ if (!gwoSetupLoaded) {
             }
           };
 
-          var warGenerationAttempts = 0;
-
           var saveDifficultySettings = function () {
             var difficultySettings = model.gwoDifficultySettings;
             var previousSettings = difficultySettings.previousSettings();
@@ -335,6 +333,8 @@ if (!gwoSetupLoaded) {
             });
             difficultySettings.previousSettings.valueHasMutated();
           };
+
+          var warGenerationAttempts = 0;
 
           var warFailure = function () {
             model.makeGameBusy(false);
