@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Updated Penchant AI to v2.4.0
+
 ### Fixed
 
 - Cluster trying to build things it couldn't if it wasn't the primary faction in the system
