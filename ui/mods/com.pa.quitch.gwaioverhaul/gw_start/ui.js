@@ -89,37 +89,33 @@ if (!gwoUILoaded) {
       model.factionTooltip =
         "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
-      var loadHtmlBefore = function (classOrId, file) {
-        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
-        $(classOrId).before(loadHtml(path + file));
-      };
-
-      var loadHtmlAfter = function (classOrId, file) {
-        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
-        $(classOrId).after(loadHtml(path + file));
-      };
-
-      var loadHtmlAppend = function (classOrId, file) {
-        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
-        $(classOrId).append(loadHtml(path + file));
-      };
-
-      var loadHtmlReplace = function (classOrId, file) {
-        var path = "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/";
-        $(classOrId).replaceWith(loadHtml(path + file));
+      var addHtml = {
+        path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
+        before: function (classOrId, file) {
+          $(classOrId).before(loadHtml(this.path + file));
+        },
+        after: function (classOrId, file) {
+          $(classOrId).after(loadHtml(this.path + file));
+        },
+        append: function (classOrId, file) {
+          $(classOrId).append(loadHtml(this.path + file));
+        },
+        replace: function (classOrId, file) {
+          $(classOrId).replaceWith(loadHtml(this.path + file));
+        },
       };
 
       var gameDifficultyLabelId = "#game-difficulty-label";
       var gameDifficultyId = "#game-difficulty";
 
-      loadHtmlAfter(".info_tip", "difficulty_options.html");
-      loadHtmlBefore("#faction-select", "faction_tooltip.html");
-      loadHtmlBefore("#game-size", "size_tooltip.html");
-      loadHtmlBefore(gameDifficultyLabelId, "ai_dropdown.html");
-      loadHtmlBefore(gameDifficultyLabelId, "cards_dropdown.html");
-      loadHtmlAppend(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
-      loadHtmlReplace(gameDifficultyId, "difficulty_levels.html");
-      loadHtmlAfter("#new-game-right", "ai_settings.html");
+      addHtml.after(".info_tip", "difficulty_options.html");
+      addHtml.before("#faction-select", "faction_tooltip.html");
+      addHtml.before("#game-size", "size_tooltip.html");
+      addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
+      addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
+      addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
+      addHtml.replace(gameDifficultyId, "difficulty_levels.html");
+      addHtml.after("#new-game-right", "ai_settings.html");
       locTree($(gameDifficultyId));
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));
