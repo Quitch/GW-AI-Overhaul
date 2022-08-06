@@ -11,6 +11,7 @@ define({
     }
     return false;
   },
+
   // !hasUnit() matches on AND; missingUnit() matches on OR
   missingUnit: function (inventoryUnits, units) {
     if (_.isArray(units)) {
@@ -24,6 +25,7 @@ define({
     }
     return false;
   },
+
   loadoutIcon: function (loadoutId) {
     var highestDifficultyDefeated = ko
       .observableArray()
@@ -102,6 +104,7 @@ define({
       }
     }
   },
+
   applyDulls: function (card, inventory, units) {
     if (inventory.lookupCard(card) === 0) {
       var buffCount = inventory.getTag("", "buffCount", 0);
@@ -111,11 +114,13 @@ define({
       }
     }
   },
+
   getContext: function (galaxy) {
     return {
       totalSize: galaxy.stars().length,
     };
   },
+
   startCard: function () {
     return {
       params: {
@@ -124,6 +129,7 @@ define({
       chance: 0,
     };
   },
+
   hasT2Access: function (inventory) {
     return _.some(inventory.cards(), function (card) {
       return _.some(model.cardsGrantingAdvancedTech, function (t2Card) {

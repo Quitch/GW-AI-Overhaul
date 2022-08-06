@@ -173,7 +173,6 @@ if (!gwoSetupLoaded) {
           };
 
           var aiFaction = 0;
-
           var getQuellerAITag = function (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
@@ -321,8 +320,6 @@ if (!gwoSetupLoaded) {
             }
           };
 
-          var warGenerationAttempts = 0;
-
           var saveDifficultySettings = function () {
             var difficultySettings = model.gwoDifficultySettings;
             var previousSettings = difficultySettings.previousSettings();
@@ -336,6 +333,8 @@ if (!gwoSetupLoaded) {
             });
             difficultySettings.previousSettings.valueHasMutated();
           };
+
+          var warGenerationAttempts = 0;
 
           var warFailure = function () {
             model.makeGameBusy(false);
@@ -363,7 +362,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.44.0";
+            var version = "5.45.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();

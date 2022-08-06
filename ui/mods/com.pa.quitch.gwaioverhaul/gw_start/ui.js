@@ -5,22 +5,20 @@ if (!gwoUILoaded) {
 
   function gwoUI() {
     try {
+      var koNumeric = function (value, precision) {
+        return ko.observable(value).extend({ numeric: precision });
+      };
+
       // gw_start uses ko.applyBindings(model)
       model.gwoDifficultySettings = {
         previousSettings: ko
           .observableArray()
           .extend({ local: "gwo_previous_settings" }),
-        playerFaction: ko
-          .observable(model.playerFactionIndex())
-          .extend({ numeric: 0 }),
-        difficultyLevel: ko.observable(0).extend({ numeric: 0 }),
-        galaxySize: ko
-          .observable(model.newGameSizeIndex())
-          .extend({ numeric: 0 }),
+        playerFaction: koNumeric(model.playerFactionIndex(), 0),
+        difficultyLevel: koNumeric(0, 0),
+        galaxySize: koNumeric(model.newGameSizeIndex(), 0),
         hardcore: ko.observable(model.newGameHardcore()), // boolean
-        chosenLoadout: ko.observable(model.activeStartCardIndex()).extend({
-          numeric: 0,
-        }),
+        chosenLoadout: koNumeric(model.activeStartCardIndex(), 0),
         factionScaling: ko.observable(true),
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
@@ -30,66 +28,28 @@ if (!gwoUILoaded) {
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
         goForKill: ko.observable("false"),
-        microType: ko.observable(0).extend({ numeric: 0 }),
-        mandatoryMinions: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        minionMod: ko.observable(0).extend({
-          numeric: 2,
-        }),
+        microType: koNumeric(0, 0),
+        mandatoryMinions: koNumeric(0, 0),
+        minionMod: koNumeric(0, 2),
         priorityScoutMetalSpots: ko.observable("false"),
-        factoryBuildDelayMin: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        factoryBuildDelayMax: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        unableToExpandDelay: ko.observable(0).extend({
-          numeric: 0,
-        }),
+        factoryBuildDelayMin: koNumeric(0, 0),
+        factoryBuildDelayMax: koNumeric(0, 0),
+        unableToExpandDelay: koNumeric(0, 0),
         enableCommanderDangerResponses: ko.observable("false"),
-        perExpansionDelay: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        econBase: ko.observable(0).extend({
-          numeric: 3,
-        }),
-        econRatePerDist: ko.observable(0).extend({
-          numeric: 3,
-        }),
-        maxBasicFabbers: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        maxAdvancedFabbers: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        startingLocationEvaluationRadius: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        ffaChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bossCommanders: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        landAnywhereChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        suddenDeathChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bountyModeChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
-        bountyModeValue: ko.observable(0).extend({
-          numeric: 1,
-        }),
-        factionTechHandicap: ko.observable(0).extend({
-          numeric: 1,
-        }),
-        alliedCommanderChance: ko.observable(0).extend({
-          numeric: 0,
-        }),
+        perExpansionDelay: koNumeric(0, 0),
+        econBase: koNumeric(0, 3),
+        econRatePerDist: koNumeric(0, 3),
+        maxBasicFabbers: koNumeric(0, 0),
+        maxAdvancedFabbers: koNumeric(0, 0),
+        startingLocationEvaluationRadius: koNumeric(0, 0),
+        ffaChance: koNumeric(0, 0),
+        bossCommanders: koNumeric(0, 0),
+        landAnywhereChance: koNumeric(0, 0),
+        suddenDeathChance: koNumeric(0, 0),
+        bountyModeChance: koNumeric(0, 0),
+        bountyModeValue: koNumeric(0, 1),
+        factionTechHandicap: koNumeric(0, 1),
+        alliedCommanderChance: koNumeric(0, 0),
         personalityTags: ko.observableArray(["Default", "Queller"]),
       };
 
@@ -129,48 +89,33 @@ if (!gwoUILoaded) {
       model.factionTooltip =
         "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
-      $(".info_tip").after(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_options.html"
-        )
-      );
-      $("#faction-select").before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/faction_tooltip.html"
-        )
-      );
-      $("#game-size").before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/size_tooltip.html"
-        )
-      );
+      var addHtml = {
+        path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
+        before: function (classOrId, file) {
+          $(classOrId).before(loadHtml(this.path + file));
+        },
+        after: function (classOrId, file) {
+          $(classOrId).after(loadHtml(this.path + file));
+        },
+        append: function (classOrId, file) {
+          $(classOrId).append(loadHtml(this.path + file));
+        },
+        replace: function (classOrId, file) {
+          $(classOrId).replaceWith(loadHtml(this.path + file));
+        },
+      };
+
       var gameDifficultyLabelId = "#game-difficulty-label";
-      $(gameDifficultyLabelId).before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_dropdown.html"
-        )
-      );
-      $(gameDifficultyLabelId).before(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/cards_dropdown.html"
-        )
-      );
-      $(gameDifficultyLabelId).append(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels_tooltip.html"
-        )
-      );
       var gameDifficultyId = "#game-difficulty";
-      $(gameDifficultyId).replaceWith(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html"
-        )
-      );
-      $("#new-game-right").after(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html"
-        )
-      );
+
+      addHtml.after(".info_tip", "difficulty_options.html");
+      addHtml.before("#faction-select", "faction_tooltip.html");
+      addHtml.before("#game-size", "size_tooltip.html");
+      addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
+      addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
+      addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
+      addHtml.replace(gameDifficultyId, "difficulty_levels.html");
+      addHtml.after("#new-game-right", "ai_settings.html");
       locTree($(gameDifficultyId));
       locTree($("#difficulty-options"));
       locTree($("#custom-difficulty-settings"));

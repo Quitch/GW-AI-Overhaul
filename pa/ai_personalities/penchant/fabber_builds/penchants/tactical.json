@@ -1,0 +1,343 @@
+{
+  "build_list": [
+    {
+      "name": "Tactical - TML",
+      "to_build": "TML",
+      "instance_count": 1,
+      "min_num_assisters": 2,
+      "max_num_assisters": 5,
+      "priority": 255,
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & Advanced & SurfaceDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Land & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "TML"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & Advanced & SurfaceDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Tactical | Artillery)",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Land & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "TML"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBaseCenter",
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
+      "name": "Tactical - TML - Threat",
+      "to_build": "TML",
+      "instance_count": 1,
+      "min_num_assisters": 2,
+      "max_num_assisters": 5,
+      "priority": 379,
+      "base_sort": "FromPerimeter",
+      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Artillery | Tactical)",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreatRatio",
+            "string0": "Land",
+            "string1": "AntiSurface",
+            "compare0": ">",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Land & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "TML"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Structure & (EnergyProduction | Factory | Tactical | Artillery)",
+            "alliance": "Ally",
+            "compare_type": ">=",
+            "range": 50,
+            "count": 1
+          },
+          {
+            "unit_type_string": "Structure & (Artillery | Tactical)",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 75,
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tactical - Advanced Air Defense",
+      "to_build": "AdvancedAirDefense",
+      "instance_count": 1,
+      "priority": 255,
+      "base_sort": "FromPerimeter",
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & Advanced & AirDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Air & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "AdvancedAirDefense"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Air",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & Advanced & AirDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Tactical | Artillery)",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Air & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "AdvancedAirDefense"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Structure & (EnergyProduction | Factory | Tactical | Artillery)",
+            "alliance": "Ally",
+            "compare_type": ">=",
+            "range": 50,
+            "count": 1
+          },
+          {
+            "unit_type_string": "Structure & Advanced & AirDefense",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 50,
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tactical - Advanced Air Defense - Threat",
+      "to_build": "AdvancedAirDefense",
+      "instance_count": 1,
+      "priority": 379,
+      "base_sort": "FromPerimeter",
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tactical",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & Advanced & AirDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreatRatio",
+            "string0": "Air",
+            "string1": "AntiAir",
+            "compare0": ">",
+            "value0": 1.0
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Mobile & Air & Advanced",
+            "boolean": true
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "AdvancedAirDefense"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBaseCenter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Structure & (EnergyProduction | Factory | Tactical | Artillery)",
+            "alliance": "Ally",
+            "compare_type": ">=",
+            "range": 50,
+            "count": 1
+          },
+          {
+            "unit_type_string": "Structure & Advanced & AirDefense",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 75,
+            "count": 2
+          }
+        ]
+      }
+    }
+  ]
+}

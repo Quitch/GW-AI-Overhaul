@@ -20,22 +20,6 @@ if (!gwoCardsLoaded) {
           "gwaio_upgrade_fabricationvehicle",
         ];
 
-        var setupInventoryTechDeletion = function () {
-          $("#hover-card").replaceWith(
-            loadHtml(
-              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
-            )
-          );
-          locTree($("#hover-card"));
-          $("#system-card").replaceWith(
-            loadHtml(
-              "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
-            )
-          );
-          locTree($("#system-card"));
-        };
-        setupInventoryTechDeletion();
-
         var numCardsToOffer = 3;
 
         model.rerollTech = function () {
@@ -358,9 +342,9 @@ if (!gwoCardsLoaded) {
             !gwoSettings.techCardDeck || // v5.35.0 and earlier
             gwoSettings.techCardDeck === "Expanded"
           ) {
-            model.gwoCards = model.gwoCards.concat(basicCards, expandedCards);
+            return model.gwoCards.concat(basicCards, expandedCards);
           } else {
-            model.gwoCards = model.gwoCards.concat(basicCards);
+            return model.gwoCards.concat(basicCards);
           }
         };
 
@@ -378,44 +362,23 @@ if (!gwoCardsLoaded) {
           });
         };
 
-        var setCardName = function (system, card) {
-          var deferred = $.Deferred();
-          if (!_.isEmpty(card)) {
-            requireGW(["cards/" + card[0].id], function (data) {
-              var cardName = loc(data.summarize());
-              system.star.ai().cardName = cardName;
-              deferred.resolve();
-            });
-          }
-          return deferred.promise();
-        };
-
         requireGW(
           [
             "shared/gw_common",
             "shared/gw_factions",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           ],
-          function (
-            GW,
-            GWFactions,
-            gwoCardsToUnits,
-            gwoUnitToNames,
-            gwoAI,
-            gwoSave,
-            gwoBank
-          ) {
+          function (GW, GWFactions, gwoCardsToUnits, gwoAI, gwoSave, gwoBank) {
             var inventory = game.inventory();
             var playerFaction = inventory.getTag("global", "playerFaction");
             var galaxy = model.game().galaxy();
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
-            setupGwoCards(gwoSettings);
+            model.gwoCards = setupGwoCards(gwoSettings);
 
             var cards = [];
             var deck = [];
@@ -527,7 +490,19 @@ if (!gwoCardsLoaded) {
               return result;
             };
 
-            var dealCardSelectableAI = function (win, turnState) {
+            var setCardName = function (system, card) {
+              var deferred = $.Deferred();
+              if (!_.isEmpty(card)) {
+                requireGW(["cards/" + card[0].id], function (data) {
+                  var cardName = loc(data.summarize());
+                  system.star.ai().cardName = cardName;
+                  deferred.resolve();
+                });
+              }
+              return deferred.promise();
+            };
+
+            var dealCardToSelectableAI = function (win, turnState) {
               var deferred = $.Deferred();
 
               // Avoid running twice after winning a fight
@@ -599,17 +574,15 @@ if (!gwoCardsLoaded) {
             };
             setupGeneralCommander();
 
-            // Deal some cards when the war starts
-            var dealFirstCardSelectableAI = function (settings) {
+            var dealCardToSelectableAIWhenWarStarts = function (settings) {
               if (settings && !settings.firstDealComplete) {
                 settings.firstDealComplete = true;
-                dealCardSelectableAI(false).then(function () {
+                dealCardToSelectableAI(false).then(function () {
                   gwoSave(game, true);
                 });
               }
             };
-
-            dealFirstCardSelectableAI(gwoSettings);
+            dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
             // Cheats use our deck
             var dealCard = function (params) {
@@ -749,7 +722,7 @@ if (!gwoCardsLoaded) {
                   }
                   game.inventory().cards.push(product);
                   inventory.applyCards();
-                  dealCardSelectableAI(false).then(function () {
+                  dealCardToSelectableAI(false).then(function () {
                     gwoSave(game, true);
                   });
                 });
@@ -812,7 +785,7 @@ if (!gwoCardsLoaded) {
               });
             };
 
-            // call dealCardSelectableAI() so system cards update when player acquires a card
+            // call dealCardToSelectableAI() so system cards update when player acquires a card
             model.win = function (selectedCardIndex) {
               model.exitGate($.Deferred());
 
@@ -829,7 +802,7 @@ if (!gwoCardsLoaded) {
 
                 model.maybePlayCaptureSound();
 
-                dealCardSelectableAI(true, game.turnState())
+                dealCardToSelectableAI(true, game.turnState())
                   .then(function () {
                     return gwoSave(game, true);
                   })
@@ -864,106 +837,6 @@ if (!gwoCardsLoaded) {
             } else {
               model.gwoCardsToUnits = gwoCardsToUnits.cards;
             }
-
-            model.gwoTechCardTooltip = ko.observableArray([]);
-
-            var makeCardTooltip = function (card, hoverIndex) {
-              if (card.isLoadout()) {
-                return;
-              }
-              // Ensure inventory hovers work at the same time as the new tech display
-              if (_.isUndefined(hoverIndex)) {
-                hoverIndex = 0;
-              } else {
-                hoverIndex += 1;
-              }
-              var cardId = card.id();
-              var cardIndex = _.findIndex(model.gwoCardsToUnits, {
-                id: cardId,
-              });
-              if (cardIndex === -1) {
-                if (_.isUndefined(cardId)) {
-                  return;
-                } else {
-                  console.warn(
-                    cardId + " is invalid or missing from model.gwoCardsToUnits"
-                  );
-                }
-              } else {
-                var units = model.gwoCardsToUnits[cardIndex].units;
-                if (units) {
-                  var affectedUnits = [];
-                  _.forEach(units, function (unit) {
-                    cardIndex = _.findIndex(gwoUnitToNames.units, {
-                      path: unit,
-                    });
-                    if (cardIndex === -1) {
-                      console.warn(
-                        unit + " is invalid or missing from GWO unit_names.js"
-                      );
-                    } else {
-                      var name = loc(gwoUnitToNames.units[cardIndex].name);
-                      affectedUnits = affectedUnits.concat(name);
-                    }
-                  });
-                  affectedUnits = affectedUnits.sort();
-                  model.gwoTechCardTooltip()[hoverIndex] = _.map(
-                    affectedUnits,
-                    function (unit, index) {
-                      if (affectedUnits.length < 13) {
-                        return unit.concat("<br>");
-                      } else if (index < affectedUnits.length - 1) {
-                        return unit.concat("; ");
-                      } else {
-                        return unit;
-                      }
-                    }
-                  );
-                } else {
-                  model.gwoTechCardTooltip()[hoverIndex] = undefined;
-                }
-              }
-            };
-
-            model.showSystemCard.subscribe(function () {
-              if (model.showSystemCard()) {
-                _.forEach(model.currentSystemCardList(), makeCardTooltip);
-              }
-            });
-            // Ensure the tooltip is shown even if the UI is refreshed
-            if (model.showSystemCard()) {
-              _.forEach(model.currentSystemCardList(), makeCardTooltip);
-            }
-
-            var hoverCount = 0;
-            model.setHoverCard = function (card, hoverEvent) {
-              if (card === model.hoverCard()) {
-                card = undefined;
-              }
-              ++hoverCount;
-
-              if (!card) {
-                // Delay clears for a bit to avoid flashing
-                var oldCount = hoverCount;
-                _.delay(function () {
-                  if (oldCount !== hoverCount) {
-                    return;
-                  }
-                  model.hoverCard(undefined);
-                }, 300);
-                return;
-              } else {
-                makeCardTooltip(card);
-              }
-
-              var $block = $(hoverEvent.target);
-              if (!$block.is(".one-card")) {
-                $block = $block.parent(".one-card");
-              }
-              var left = $block.offset().left + $block.width() / 2;
-              model.hoverOffset(left.toString() + "px");
-              model.hoverCard(card);
-            };
           }
         );
       }

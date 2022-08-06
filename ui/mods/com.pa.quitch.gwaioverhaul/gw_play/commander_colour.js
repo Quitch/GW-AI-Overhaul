@@ -5,6 +5,7 @@ define(function () {
         "rgb(" + colour[0][0] + "," + colour[0][1] + "," + colour[0][2] + ")"
       );
     },
+
     pick: function (faction, minionColour, count) {
       var legonisColours = [
         [0, 176, 255],

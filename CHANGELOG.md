@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.45.0 - 2022-08-06
+
+### Changed
+
+- Updated Penchant AI to v2.4.0
+
+### Fixed
+
+- Cluster trying to build things it couldn't if it wasn't the primary faction in the system
+
 ## v5.44.0 - 2022-08-01
 
 ### Changed
