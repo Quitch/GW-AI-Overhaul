@@ -312,7 +312,7 @@ if (!gwoRefereeChangesLoaded) {
               return "Enemy";
             } else if (ai.foes) {
               for (var foe of ai.foes) {
-                var foeIsCluster = foe.faction[0] === 4;
+                var foeIsCluster = parseInt(foe.faction[0]) === 4; // was an array before v5.44.0
                 if (foeIsCluster) {
                   return "Enemy";
                 }
@@ -707,7 +707,7 @@ if (!gwoRefereeChangesLoaded) {
               foe = setAdvEcoMod(foe, aiBrain);
 
               // Avoid breaking enemies from earlier versions
-              var foeIsCluster = foe.faction[0] === 4;
+              var foeIsCluster = parseInt(foe.faction[0]) === 4; // was an array before v5.44.0
               foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
               var foeTag = index + 1; // 0 taken by primary AI

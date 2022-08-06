@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Cluster trying to build things it couldn't if it wasn't the primary faction in the system
+
 ## v5.44.0 - 2022-08-01
 
 ### Changed
