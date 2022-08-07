@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Modifiers from Tech cards not being applied
+
 ## v5.45.0 - 2022-08-06
 
 ### Changed
