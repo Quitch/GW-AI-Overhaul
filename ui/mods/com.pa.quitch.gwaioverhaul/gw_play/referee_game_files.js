@@ -3,223 +3,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GW, gwoUnit, gwoAI) {
-  var flattenBaseSpecs = function (spec, specs, tag) {
-    if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
-      return spec;
-    }
-
-    var base = specs[spec.base_spec];
-    if (!base) {
-      base = specs[spec.base_spec + tag];
-      if (!base) {
-        return spec;
-      }
-    }
-
-    spec = _.cloneDeep(spec);
-    delete spec.base_spec;
-
-    base = flattenBaseSpecs(base, specs, tag);
-
-    return _.merge({}, base, spec);
-  };
-
-  var cookStep = function (step, spec, path) {
-    if (_.isArray(spec)) {
-      if (step === "+") {
-        step = spec.length;
-        spec.push({});
-      } else {
-        step = Number(step);
-      }
-    } else if (
-      path.length &&
-      !Object.prototype.hasOwnProperty.call(spec, step)
-    ) {
-      spec[step] = {};
-    }
-    return step;
-  };
-
-  var reportError = function (error, step, spec, mod, originalPath, path) {
-    console.error(
-      error,
-      spec[step],
-      "spec",
-      spec,
-      "mod",
-      mod,
-      "path",
-      originalPath.slice(0, -path.length).join(".")
-    );
-    return undefined;
-  };
-
-  var load = function (specId, specs, specTag) {
-    var taggedId = specId;
-    if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
-      taggedId = specId + specs;
-      if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
-        return null;
-      }
-    }
-    var result = specs[taggedId];
-    if (result) {
-      specs[taggedId] = result = flattenBaseSpecs(result, specs, specTag);
-    }
-    return result;
-  };
-
-  var modSpecs = function (specs, mods, specTag) {
-    var ops = {
-      multiply: function (attribute, value) {
-        return !_.isUndefined(attribute) ? attribute * value : value;
-      },
-      add: function (attribute, value) {
-        return !_.isUndefined(attribute) ? attribute + value : value;
-      },
-      replace: function (attribute, value) {
-        return value;
-      },
-      merge: function (attribute, value) {
-        return _.assign({}, attribute, value);
-      },
-      push: function (attribute, value) {
-        if (!_.isArray(attribute)) {
-          attribute = _.isEmpty(attribute) ? [] : [attribute];
-        }
-        if (_.isArray(value)) {
-          attribute = attribute.concat(value);
-        } else {
-          attribute.push(value);
-        }
-        return attribute;
-      },
-      eval: function (attribute, value) {
-        return new Function("attribute", value)(attribute);
-      },
-      clone: function (attribute, value) {
-        var loaded = load(attribute, specs, specTag);
-        if (loaded) {
-          loaded = _.cloneDeep(loaded);
-        }
-        specs[value + specTag] = loaded || attribute;
-      },
-      tag: function (attribute) {
-        // hack fix for mirrorMode due to the fact that
-        // `attribute` was retaining the previous `specTag`s
-        // and I couldn't track down why
-        var cleanAttribute = attribute.slice(
-          0,
-          attribute.lastIndexOf(".json") + 5
-        );
-        return cleanAttribute + specTag;
-      },
-      pull: function (attribute, value) {
-        if (!_.isArray(attribute)) {
-          attribute = _.isEmpty(attribute) ? [] : [attribute];
-        }
-        var args = [];
-        if (_.isArray(value)) {
-          args = [attribute].concat(value);
-        } else {
-          args = [attribute, value];
-        }
-        return _.pull.apply(this, args);
-      },
-      // New op to remove text in a string
-      wipe: function (attribute, value) {
-        if (!_.isString(attribute)) {
-          attribute = attribute.toString();
-        }
-        if (!_.isArray(value)) {
-          value = [value, ""];
-        }
-        return attribute.replace(value[0], value[1]);
-      },
-      // New op to prepend to arrays
-      prepend: function prepend(attribute, value) {
-        if (!_.isArray(attribute)) {
-          attribute = _.isEmpty(attribute) ? [] : [attribute];
-        }
-        attribute.unshift(value);
-        if (_.isArray(value)) {
-          attribute = _.flatten(attribute);
-        }
-        return attribute;
-      },
-    };
-
-    var applyMod = function (mod) {
-      var spec = load(mod.file, specs, specTag);
-      if (!spec) {
-        return console.warn("Warning: File not found in mod", mod);
-      }
-      if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
-        return console.error("Invalid operation in mod", mod);
-      }
-
-      var originalPath = (mod.path || "").split(".");
-      var path = originalPath.reverse();
-
-      while (path.length > 1) {
-        var level = path.pop();
-        cookStep(level, spec, path);
-
-        if (_.isString(spec[level])) {
-          var newSpec = load(spec[level], specs, specTag);
-          if (!newSpec) {
-            return reportError(
-              "Undefined mod spec encountered,",
-              level,
-              spec,
-              mod,
-              originalPath,
-              path
-            );
-          }
-          spec = newSpec;
-        } else if (_.isObject(spec[level])) {
-          spec = spec[level];
-        } else {
-          return reportError(
-            "Invalid attribute encountered,",
-            level,
-            spec,
-            mod,
-            originalPath,
-            path
-          );
-        }
-      }
-
-      if (path.length && path[0]) {
-        var leaf = cookStep(path[0], spec, path);
-        spec[leaf] = ops[mod.op](spec[leaf], mod.value);
-      } else {
-        ops[mod.op](spec, mod.value);
-      }
-    };
-    _.forEach(mods, applyMod);
-  };
-
-  // allow for specs not assigned to units to still be processed
-  var combineSpecs = function (baseSpecs, newSpecs) {
-    return baseSpecs.concat(newSpecs);
-  };
-
-  var clusterArmyIndex = function (ai) {
-    if (ai.faction === 4) {
-      return 0;
-    } else if (ai.foes) {
-      var index = _.findIndex(ai.foes, { faction: [4] });
-      if (index !== -1) {
-        return index + 1;
-      }
-    }
-    return -1;
-  };
-
   return function () {
     var self = this;
 
@@ -268,6 +51,196 @@ define([
         aiMapGet,
         aiX1MapGet
       ) {
+        /* start of gw_spec.js replacements */
+        var flattenBaseSpecs = function (spec, specs, tag) {
+          if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
+            return spec;
+          }
+
+          var base = specs[spec.base_spec];
+          if (!base) {
+            base = specs[spec.base_spec + tag];
+            if (!base) {
+              return spec;
+            }
+          }
+
+          spec = _.cloneDeep(spec);
+          delete spec.base_spec;
+
+          base = flattenBaseSpecs(base, specs, tag);
+
+          return _.merge({}, base, spec);
+        };
+
+        var modSpecs = function (specs, mods, specTag) {
+          var load = function (specId) {
+            var taggedId = specId;
+            if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
+              taggedId = specId + specTag;
+              if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
+                return null;
+              }
+            }
+            var result = specs[taggedId];
+            if (result) {
+              specs[taggedId] = result = flattenBaseSpecs(
+                result,
+                specs,
+                specTag
+              );
+            }
+            return result;
+          };
+          var ops = {
+            multiply: function (attribute, value) {
+              return !_.isUndefined(attribute) ? attribute * value : value;
+            },
+            add: function (attribute, value) {
+              return !_.isUndefined(attribute) ? attribute + value : value;
+            },
+            replace: function (attribute, value) {
+              return value;
+            },
+            merge: function (attribute, value) {
+              return _.assign({}, attribute, value);
+            },
+            push: function (attribute, value) {
+              if (!_.isArray(attribute)) {
+                attribute = _.isEmpty(attribute) ? [] : [attribute];
+              }
+              if (_.isArray(value)) {
+                attribute = attribute.concat(value);
+              } else {
+                attribute.push(value);
+              }
+              return attribute;
+            },
+            eval: function (attribute, value) {
+              return new Function("attribute", value)(attribute);
+            },
+            clone: function (attribute, value) {
+              var loaded = load(attribute);
+              if (loaded) {
+                loaded = _.cloneDeep(loaded);
+              }
+              specs[value + specTag] = loaded || attribute;
+            },
+            tag: function (attribute) {
+              // hack fix for mirrorMode due to the fact that
+              // `attribute` was retaining the previous `specTag`s
+              // and I couldn't track down why
+              var cleanAttribute = attribute.slice(
+                0,
+                attribute.lastIndexOf(".json") + 5
+              );
+              return cleanAttribute + specTag;
+            },
+            pull: function (attribute, value) {
+              if (!_.isArray(attribute)) {
+                attribute = _.isEmpty(attribute) ? [] : [attribute];
+              }
+              var args = [];
+              if (_.isArray(value)) {
+                args = [attribute].concat(value);
+              } else {
+                args = [attribute, value];
+              }
+              return _.pull.apply(this, args);
+            },
+            // New op to remove text in a string
+            wipe: function (attribute, value) {
+              if (!_.isString(attribute)) {
+                attribute = attribute.toString();
+              }
+              if (!_.isArray(value)) {
+                value = [value, ""];
+              }
+              return attribute.replace(value[0], value[1]);
+            },
+            // New op to prepend to arrays
+            prepend: function prepend(attribute, value) {
+              if (!_.isArray(attribute)) {
+                attribute = _.isEmpty(attribute) ? [] : [attribute];
+              }
+              attribute.unshift(value);
+              if (_.isArray(value)) {
+                attribute = _.flatten(attribute);
+              }
+              return attribute;
+            },
+          };
+          var applyMod = function (mod) {
+            var spec = load(mod.file);
+            if (!spec) {
+              return console.warn("Warning: File not found in mod", mod);
+            }
+            if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
+              return console.error("Invalid operation in mod", mod);
+            }
+
+            var originalPath = (mod.path || "").split(".");
+            var path = originalPath.reverse();
+
+            var reportError = function (error, step) {
+              console.error(
+                error,
+                spec[step],
+                "spec",
+                spec,
+                "mod",
+                mod,
+                "path",
+                originalPath.slice(0, -path.length).join(".")
+              );
+              return undefined;
+            };
+
+            var cookStep = function (step) {
+              if (_.isArray(spec)) {
+                if (step === "+") {
+                  step = spec.length;
+                  spec.push({});
+                } else {
+                  step = Number(step);
+                }
+              } else if (
+                path.length &&
+                !Object.prototype.hasOwnProperty.call(spec, step)
+              ) {
+                spec[step] = {};
+              }
+              return step;
+            };
+
+            while (path.length > 1) {
+              var level = path.pop();
+              cookStep(level);
+
+              if (_.isString(spec[level])) {
+                var newSpec = load(spec[level]);
+                if (!newSpec) {
+                  return reportError("Undefined mod spec encountered,", level);
+                }
+                spec = newSpec;
+              } else if (_.isObject(spec[level])) {
+                spec = spec[level];
+              } else {
+                return reportError("Invalid attribute encountered,", level);
+              }
+            }
+
+            if (path.length && path[0]) {
+              var leaf = cookStep(path[0]);
+              spec[leaf] = ops[mod.op](spec[leaf], mod.value);
+            } else {
+              ops[mod.op](spec, mod.value);
+            }
+          };
+          _.forEach(mods, applyMod);
+        };
+        /* end of gw_spec.js replacements */
+
         // global for modder compatibility
         if (!model.gwoSpecs) {
           model.gwoSpecs = [];
@@ -282,14 +255,30 @@ define([
           gwoUnit.skitterWeapon
         );
 
+        var clusterArmyIndex = function () {
+          if (ai.faction === 4) {
+            return 0;
+          } else if (ai.foes) {
+            var index = _.findIndex(ai.foes, { faction: [4] });
+            if (index !== -1) {
+              return index + 1;
+            }
+          }
+          return -1;
+        };
+
+        var combineSpecs = function (baseSpecs, newSpecs) {
+          return baseSpecs.concat(newSpecs);
+        };
+
         var inventory = self.game().inventory();
+
         var units = parse(unitsGet[0]).units;
         var aiUnitMap = parse(aiMapGet[0]);
         var aiX1UnitMap = parse(aiX1MapGet[0]);
         var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
         var clusterUnitMapTitansPath =
           "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
-
         _.times(aiFactionCount, function (n) {
           var currentCount = n;
           var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
@@ -299,7 +288,7 @@ define([
           GW.specs.genUnitSpecs(aiSpecs, aiTag[n]).then(function (aiSpecFiles) {
             var unitMapPath = aiUnitMapPath;
             var unitMapTitansPath = aiUnitMapTitansPath;
-            if (clusterArmyIndex(ai) === currentCount) {
+            if (clusterArmyIndex() === currentCount) {
               unitMapPath = clusterUnitMapPath;
               unitMapTitansPath = clusterUnitMapTitansPath;
             }
@@ -332,6 +321,7 @@ define([
         });
 
         var playerTag = ".player";
+
         var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
         var playerX1AIUnitMap = titans
           ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)

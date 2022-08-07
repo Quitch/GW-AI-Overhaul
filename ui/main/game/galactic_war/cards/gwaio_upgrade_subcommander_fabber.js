@@ -29,7 +29,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       return { chance: chance };
     },
     buff: function () {
-      // performed in referee.js
+      // performed in referee_config.js
     },
     dull: function () {
       //empty
