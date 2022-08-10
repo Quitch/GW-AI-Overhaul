@@ -46,7 +46,7 @@ if (!gwoSetupLoaded) {
           "main/shared/js/star_system_templates",
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tech.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
