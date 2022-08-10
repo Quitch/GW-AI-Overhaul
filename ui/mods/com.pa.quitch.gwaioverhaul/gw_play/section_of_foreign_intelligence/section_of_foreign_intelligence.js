@@ -99,21 +99,19 @@ if (!gwoIntelligenceLoaded) {
             });
 
             model.gwoSystemThreat = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
+              var ai = model.selection.system().star.ai();
               var commanders = [];
               var totalEco = 0;
-              if (primary) {
-                commanders.push(intelligence(primary, 0));
-                if (primary.minions) {
+              if (ai) {
+                commanders.push(intelligence(ai, 0));
+                if (ai.minions) {
                   commanders = commanders.concat(
-                    _.map(primary.minions, intelligence)
+                    _.map(ai.minions, intelligence)
                   );
                 }
-                if (primary.foes) {
-                  commanders = commanders.concat(
-                    _.map(primary.foes, intelligence)
-                  );
-                  _.forEach(primary.foes, function (army) {
+                if (ai.foes) {
+                  commanders = commanders.concat(_.map(ai.foes, intelligence));
+                  _.forEach(ai.foes, function (army) {
                     var commanderCount = 1;
                     if (army.commanderCount) {
                       commanderCount = army.commanderCount;
@@ -127,7 +125,7 @@ if (!gwoIntelligenceLoaded) {
                 _.times(commanders.length, function (n) {
                   totalEco += commanders[n].eco;
                 });
-                _.forEach(primary.typeOfBuffs, function (buff) {
+                _.forEach(ai.typeOfBuffs, function (buff) {
                   switch (buff) {
                     case 0: // cost
                     case 4: // build
@@ -144,11 +142,11 @@ if (!gwoIntelligenceLoaded) {
                       totalEco += 0.5;
                   }
                 });
-                if (primary.mirrorMode === true) {
+                if (ai.mirrorMode === true) {
                   totalEco += 1.6;
                 }
-                if (primary.ally) {
-                  totalEco -= primary.ally.econ_rate || 1;
+                if (ai.ally) {
+                  totalEco -= ai.ally.econ_rate || 1;
                 }
               }
               return totalEco.toPrecision(2);
@@ -285,20 +283,20 @@ if (!gwoIntelligenceLoaded) {
             });
 
             model.gwoAIs = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
+              var ai = model.selection.system().star.ai();
               var commanders = [];
-              if (primary) {
-                commanders.push(intelligence(primary, 0));
-                if (primary.minions) {
-                  var minions = _.map(primary.minions, intelligence);
+              if (ai) {
+                commanders.push(intelligence(ai, 0));
+                if (ai.minions) {
+                  var minions = _.map(ai.minions, intelligence);
                   commanders = commanders.concat(minions);
                 }
-                if (primary.foes) {
-                  var foes = _.map(primary.foes, intelligence);
+                if (ai.foes) {
+                  var foes = _.map(ai.foes, intelligence);
                   commanders = commanders.concat(foes);
                 }
-                if (primary.ally) {
-                  var commander = intelligence(primary.ally, 0);
+                if (ai.ally) {
+                  var commander = intelligence(ai.ally, 0);
                   commanders.push(commander);
                 }
               }
