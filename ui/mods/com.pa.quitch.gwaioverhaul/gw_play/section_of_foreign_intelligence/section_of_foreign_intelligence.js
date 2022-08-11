@@ -22,7 +22,6 @@ if (!gwoIntelligenceLoaded) {
             });
 
             var factionIndex = 0;
-
             var intelligence = function (commander, index) {
               var name = commander.name;
               var eco = commander.econ_rate;
@@ -40,6 +39,7 @@ if (!gwoIntelligenceLoaded) {
               factionIndex = _.isUndefined(commander.faction)
                 ? factionIndex
                 : commander.faction;
+
               if (factionIndex === playerFaction) {
                 // allies appear after player and sub commanders in colour
                 index += inventory.minions().length + 1;
@@ -47,22 +47,26 @@ if (!gwoIntelligenceLoaded) {
               } else {
                 index = commander.faction ? 0 : index + 1;
               }
+
               var numCommanders = 1;
               if (commander.bossCommanders) {
                 numCommanders = commander.bossCommanders;
               } else if (commander.commanderCount) {
                 numCommanders = commander.commanderCount;
               }
+
               if (numCommanders > 1) {
                 name = name.concat(" x", numCommanders);
                 eco = eco * ((numCommanders + 1) / 2);
               }
+
               var character = commander.character
                 ? loc(commander.character)
                 : loc("!LOC:None");
               if (commander.penchantName) {
                 character = character + " " + loc(commander.penchantName);
               }
+
               return {
                 name: name,
                 color: gwoColour.rgb(
