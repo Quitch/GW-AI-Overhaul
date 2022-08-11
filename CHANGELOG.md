@@ -2,14 +2,14 @@
 
 ## Unreleased
 
-### Bugfix
+### Fixed
 
 - Base game error where modifiers fom Tech cards were not applied to spawned units (such as Dox from a Lob)
 - Base game error where spawned units were not treated as the same type for the purpose of selection as built copies of the unit
 
 ## v5.45.1 - 2022-08-07
 
-### Bugfix
+### Fixed
 
 - Modifiers from Tech cards not being applied
 
