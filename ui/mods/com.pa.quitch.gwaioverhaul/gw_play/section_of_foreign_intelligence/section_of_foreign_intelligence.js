@@ -47,13 +47,13 @@ if (!gwoIntelligenceLoaded) {
               } else {
                 index = commander.faction ? 0 : index + 1;
               }
-              var numCommanders = 0;
-              if (commander.bossCommanders > 1) {
+              var numCommanders = 1;
+              if (commander.bossCommanders) {
                 numCommanders = commander.bossCommanders;
-              } else if (commander.commanderCount > 1) {
+              } else if (commander.commanderCount) {
                 numCommanders = commander.commanderCount;
               }
-              if (numCommanders) {
+              if (numCommanders > 1) {
                 name = name.concat(" x", numCommanders);
                 eco = eco * ((numCommanders + 1) / 2);
               }
