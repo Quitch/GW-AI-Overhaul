@@ -1,3 +1,4 @@
+/* eslint-disable lodash/prefer-filter */
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
   gwoAI
 ) {
@@ -5,7 +6,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     var ops = {
       // fabber/factory/platoon only
       append: function (value, toBuild, idToMod, refId, refValue) {
-        // eslint-disable-next-line lodash/prefer-filter
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
             if (
@@ -37,7 +37,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       },
       // fabber/factory/platoon only
       prepend: function (value, toBuild, idToMod, refId, refValue) {
-        // eslint-disable-next-line lodash/prefer-filter
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
             if (
@@ -69,7 +68,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       },
       // fabber/factory/platoon only
       replace: function (value, toBuild, idToMod, refId, refValue) {
-        // eslint-disable-next-line lodash/prefer-filter
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
             if (
@@ -91,7 +89,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       },
       // fabber/factory/platoon only
       remove: function (value, toBuild) {
-        // eslint-disable-next-line lodash/prefer-filter
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
             _.forEach(build.build_conditions, function (testArray) {
@@ -107,7 +104,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       },
       // fabber/factory/platoon only
       new: function (value, toBuild, idToMod) {
-        // eslint-disable-next-line lodash/prefer-filter
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
             if (_.isUndefined(idToMod)) {

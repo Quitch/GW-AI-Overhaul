@@ -149,6 +149,17 @@ define([
   };
   setupAITech1AmmunitionTech();
 
+  var healthBoost = function (units, value) {
+    return _.map(units, function (unit) {
+      return {
+        file: unit,
+        path: "max_health",
+        op: "multiply",
+        value: value,
+      };
+    });
+  };
+
   var setupUnitArmour = function () {
     var legonisUnits = inventory.legonisUnitsMobile.concat(
       inventory.legonisUnitsNotMobile
@@ -170,15 +181,8 @@ define([
       revenantsUnits,
       inventory.clusterUnits,
     ];
-    _.forEach(factionUnits, function (faction, i) {
-      factionsTech[i][2] = _.map(faction, function (unit) {
-        return {
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        };
-      });
+    _.forEach(factionUnits, function (units, i) {
+      factionsTech[i][2] = healthBoost(units, 1.5);
     });
   };
 
@@ -193,16 +197,9 @@ define([
       inventory.commanderUnits, // Revenants
       clusterCommanders,
     ];
-    _.forEach(factionCommanders, function (faction, i) {
+    _.forEach(factionCommanders, function (commanders, i) {
       factionsTech[i][2] = factionsTech[i][2].concat(
-        _.map(faction, function (unit) {
-          return {
-            file: unit,
-            path: "max_health",
-            op: "multiply",
-            value: 2,
-          };
-        })
+        healthBoost(commanders, 2)
       );
     });
   };
@@ -213,70 +210,41 @@ define([
   };
   setupAITech2ArmourTech();
 
-  var airSpeedBoost = function (unit) {
-    return [
-      {
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.25,
-      },
-      {
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.25,
-      },
-    ];
-  };
-
-  var speedBoost = function (unit) {
-    return [
-      {
-        file: unit,
-        path: "navigation.move_speed",
-        op: "multiply",
-        value: 1.5,
-      },
-      {
-        file: unit,
-        path: "navigation.brake",
-        op: "multiply",
-        value: 1.5,
-      },
-      {
-        file: unit,
-        path: "navigation.acceleration",
-        op: "multiply",
-        value: 1.5,
-      },
-      {
-        file: unit,
-        path: "navigation.turn_speed",
-        op: "multiply",
-        value: 1.5,
-      },
-    ];
+  var speedBoost = function (units, value) {
+    return _.flatten(
+      _.map(units, function (unit) {
+        return [
+          {
+            file: unit,
+            path: "navigation.move_speed",
+            op: "multiply",
+            value: value,
+          },
+          {
+            file: unit,
+            path: "navigation.brake",
+            op: "multiply",
+            value: value,
+          },
+          {
+            file: unit,
+            path: "navigation.acceleration",
+            op: "multiply",
+            value: value,
+          },
+          {
+            file: unit,
+            path: "navigation.turn_speed",
+            op: "multiply",
+            value: value,
+          },
+        ];
+      })
+    );
   };
 
   var setupAirEngineTech = function () {
-    foundationTech[3] = _.flatten(
-      _.map(inventory.foundationUnitsMobileAir, function (unit) {
-        return airSpeedBoost(unit);
-      })
-    );
+    foundationTech[3] = speedBoost(inventory.foundationUnitsMobileAir, 1.25);
   };
 
   var setupNotAirEngineTech = function () {
@@ -297,16 +265,12 @@ define([
       inventory.revenantsUnitsMobile,
       clusterUnitsNotStructure,
     ];
-    _.forEach(factionUnitsNoAir, function (faction, i) {
+    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
       if (_.isUndefined(factionsTechNoAir[i][3])) {
         factionsTechNoAir[i][3] = [];
       }
       factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
-        _.flatten(
-          _.map(faction, function (unit) {
-            return speedBoost(unit);
-          })
-        )
+        speedBoost(factionUnits, 1.5)
       );
     });
   };
@@ -322,38 +286,9 @@ define([
       inventory.commanderUnits, // Revenants
       clusterCommanders,
     ];
-    _.forEach(factionCommanders, function (faction, i) {
+    _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][3] = factionsTech[i][3].concat(
-        _.flatten(
-          _.map(faction, function (unit) {
-            return [
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 2,
-              },
-            ];
-          })
-        )
+        speedBoost(factionUnits, 2)
       );
     });
   };
@@ -414,11 +349,7 @@ define([
 
   // we redo the speed tech because Combat Commander Tech uses different values
   var setupAirEngineCombatTech = function () {
-    foundationTech[6] = _.flatten(
-      _.map(inventory.foundationUnitsMobileAir, function (unit) {
-        return airSpeedBoost(unit);
-      })
-    );
+    foundationTech[6] = speedBoost(inventory.foundationUnitsMobileAir, 1.25);
   };
 
   // we redo the speed tech because Combat Commander Tech uses different values
@@ -440,16 +371,12 @@ define([
       inventory.revenantsUnitsMobile,
       clusterUnitsNotStructure,
     ];
-    _.forEach(factionUnitsNoAir, function (faction, i) {
+    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
       if (_.isUndefined(factionsTechNoAir[i][6])) {
         factionsTechNoAir[i][6] = [];
       }
       factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
-        _.flatten(
-          _.map(faction, function (unit) {
-            return speedBoost(unit);
-          })
-        )
+        speedBoost(factionUnits, 1.5)
       );
     });
   };
@@ -465,38 +392,9 @@ define([
       inventory.commanderUnits, // Revenants
       clusterCommanders,
     ];
-    _.forEach(factionCommanders, function (faction, i) {
+    _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][6] = factionsTech[i][6].concat(
-        _.flatten(
-          _.map(faction, function (unit) {
-            return [
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 3,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 3,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 3,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 3,
-              },
-            ];
-          })
-        )
+        speedBoost(factionUnits, 3)
       );
     });
   };

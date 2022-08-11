@@ -21,11 +21,44 @@ if (!gwoIntelligenceLoaded) {
               ko.applyBindings(model, $fi[0]);
             });
 
+            var getNumberOfCommanders = function (commander) {
+              if (commander.bossCommanders) {
+                return commander.bossCommanders;
+              } else if (commander.commanderCount) {
+                return commander.commanderCount;
+              }
+              return 1;
+            };
+
+            var getCommanderCharacter = function (commander) {
+              var character = commander.character
+                ? loc(commander.character)
+                : loc("!LOC:None");
+              if (commander.penchantName) {
+                character = character + " " + loc(commander.penchantName);
+              }
+              return character;
+            };
+
             var factionIndex = 0;
 
-            var intelligence = function (commander, index) {
-              var name = commander.name;
-              var eco = commander.econ_rate;
+            var getFactionColourIndex = function (commander, index) {
+              var inventory = model.game().inventory();
+              var playerFaction = inventory.getTag("global", "playerFaction");
+              factionIndex = _.isUndefined(commander.faction)
+                ? factionIndex
+                : commander.faction;
+
+              if (factionIndex === playerFaction) {
+                // allies appear after the player and sub commanders in colour
+                return index + inventory.minions().length + 1;
+              }
+              return commander.faction ? 0 : index + 1;
+            };
+
+            var getFactionName = function (commander) {
+              var inventory = model.game().inventory();
+              var playerFaction = inventory.getTag("global", "playerFaction");
               var factionNames = [
                 "Legonis Machina",
                 "Foundation",
@@ -34,43 +67,31 @@ if (!gwoIntelligenceLoaded) {
                 "Cluster",
               ];
               var faction = factionNames[commander.faction];
-              var inventory = model.game().inventory();
-              var playerFaction = inventory.getTag("global", "playerFaction");
-              // Minions aren't assigned a faction number so use the previous one
-              factionIndex = _.isUndefined(commander.faction)
-                ? factionIndex
-                : commander.faction;
               if (factionIndex === playerFaction) {
-                // allies appear after player and sub commanders in colour
-                index += inventory.minions().length + 1;
                 faction += " (" + loc("!LOC:ALLY") + ")";
-              } else {
-                index = commander.faction ? 0 : index + 1;
               }
-              var numCommanders = 0;
-              if (commander.bossCommanders > 1) {
-                numCommanders = commander.bossCommanders;
-              } else if (commander.commanderCount > 1) {
-                numCommanders = commander.commanderCount;
-              }
-              if (numCommanders) {
+              return faction;
+            };
+
+            var intelligence = function (commander, index) {
+              var adjustedIndex = getFactionColourIndex(commander, index);
+              var name = commander.name;
+              var eco = commander.econ_rate;
+              var numCommanders = getNumberOfCommanders(commander);
+
+              if (numCommanders > 1) {
                 name = name.concat(" x", numCommanders);
                 eco = eco * ((numCommanders + 1) / 2);
               }
-              var character = commander.character
-                ? loc(commander.character)
-                : loc("!LOC:None");
-              if (commander.penchantName) {
-                character = character + " " + loc(commander.penchantName);
-              }
+
               return {
                 name: name,
                 color: gwoColour.rgb(
-                  gwoColour.pick(factionIndex, commander.color, index)
+                  gwoColour.pick(factionIndex, commander.color, adjustedIndex)
                 ),
-                character: character,
+                character: getCommanderCharacter(commander),
                 eco: eco,
-                faction: faction,
+                faction: getFactionName(commander),
               };
             };
 
@@ -99,21 +120,19 @@ if (!gwoIntelligenceLoaded) {
             });
 
             model.gwoSystemThreat = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
+              var ai = model.selection.system().star.ai();
               var commanders = [];
               var totalEco = 0;
-              if (primary) {
-                commanders.push(intelligence(primary, 0));
-                if (primary.minions) {
+              if (ai) {
+                commanders.push(intelligence(ai, 0));
+                if (ai.minions) {
                   commanders = commanders.concat(
-                    _.map(primary.minions, intelligence)
+                    _.map(ai.minions, intelligence)
                   );
                 }
-                if (primary.foes) {
-                  commanders = commanders.concat(
-                    _.map(primary.foes, intelligence)
-                  );
-                  _.forEach(primary.foes, function (army) {
+                if (ai.foes) {
+                  commanders = commanders.concat(_.map(ai.foes, intelligence));
+                  _.forEach(ai.foes, function (army) {
                     var commanderCount = 1;
                     if (army.commanderCount) {
                       commanderCount = army.commanderCount;
@@ -127,7 +146,7 @@ if (!gwoIntelligenceLoaded) {
                 _.times(commanders.length, function (n) {
                   totalEco += commanders[n].eco;
                 });
-                _.forEach(primary.typeOfBuffs, function (buff) {
+                _.forEach(ai.typeOfBuffs, function (buff) {
                   switch (buff) {
                     case 0: // cost
                     case 4: // build
@@ -144,11 +163,11 @@ if (!gwoIntelligenceLoaded) {
                       totalEco += 0.5;
                   }
                 });
-                if (primary.mirrorMode === true) {
+                if (ai.mirrorMode === true) {
                   totalEco += 1.6;
                 }
-                if (primary.ally) {
-                  totalEco -= primary.ally.econ_rate || 1;
+                if (ai.ally) {
+                  totalEco -= ai.ally.econ_rate || 1;
                 }
               }
               return totalEco.toPrecision(2);
@@ -285,20 +304,20 @@ if (!gwoIntelligenceLoaded) {
             });
 
             model.gwoAIs = ko.computed(function () {
-              var primary = model.selection.system().star.ai();
+              var ai = model.selection.system().star.ai();
               var commanders = [];
-              if (primary) {
-                commanders.push(intelligence(primary, 0));
-                if (primary.minions) {
-                  var minions = _.map(primary.minions, intelligence);
+              if (ai) {
+                commanders.push(intelligence(ai, 0));
+                if (ai.minions) {
+                  var minions = _.map(ai.minions, intelligence);
                   commanders = commanders.concat(minions);
                 }
-                if (primary.foes) {
-                  var foes = _.map(primary.foes, intelligence);
+                if (ai.foes) {
+                  var foes = _.map(ai.foes, intelligence);
                   commanders = commanders.concat(foes);
                 }
-                if (primary.ally) {
-                  var commander = intelligence(primary.ally, 0);
+                if (ai.ally) {
+                  var commander = intelligence(ai.ally, 0);
                   commanders.push(commander);
                 }
               }

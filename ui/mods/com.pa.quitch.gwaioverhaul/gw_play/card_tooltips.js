@@ -20,9 +20,20 @@ if (!gwoCardTooltipsLoaded) {
       locTree($("#system-card"));
 
       requireGW(
-        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js"],
-        function (gwoUnitToNames) {
+        [
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
+        ],
+        function (gwoUnitToNames, gwoCardsToUnits) {
           model.gwoTechCardTooltip = ko.observableArray([]);
+
+          if (model.gwoCardsToUnits) {
+            model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
+              gwoCardsToUnits.cards
+            );
+          } else {
+            model.gwoCardsToUnits = gwoCardsToUnits.cards;
+          }
 
           var makeCardTooltip = function (card, hoverIndex) {
             if (card.isLoadout()) {
