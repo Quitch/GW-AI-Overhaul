@@ -85,9 +85,11 @@ define([
     if (!tag) {
       return;
     }
+
     var result = $.Deferred();
     var results = {};
     var work = units.slice(0);
+
     var step = function () {
       var item;
       var pending = 0;
@@ -133,6 +135,7 @@ define([
         _.delay(finish);
       }
     };
+
     var finish = _.once(function () {
       results["/pa/units/unit_list.json" + tag] = {
         units: _.map(units, function (unit) {
@@ -141,7 +144,9 @@ define([
       };
       result.resolve(results);
     });
+
     step();
+
     return result;
   };
 
