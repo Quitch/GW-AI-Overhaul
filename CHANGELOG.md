@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Modifiers fom Tech cards not being applied to spawned units (such as Dox from a Lob)
+- Spawned units not be treated as the type for selection as built copies of the unit
+
 ## v5.45.1 - 2022-08-07
 
 ### Bugfix
