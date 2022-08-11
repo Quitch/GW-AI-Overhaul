@@ -185,6 +185,7 @@ define([
       }
       return result;
     };
+
     var ops = {
       multiply: function (attribute, value) {
         return !_.isUndefined(attribute) ? attribute * value : value;
@@ -263,6 +264,7 @@ define([
         return attribute;
       },
     };
+
     var applyMod = function (mod) {
       var spec = load(mod.file);
       if (!spec) {
