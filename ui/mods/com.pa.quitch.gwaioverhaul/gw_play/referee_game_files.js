@@ -83,7 +83,7 @@ define([
 
   var genUnitSpecs = function (units, tag) {
     if (!tag) {
-      return;
+      return null;
     }
 
     var result = $.Deferred();
