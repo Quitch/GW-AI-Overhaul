@@ -90,6 +90,15 @@ define([
     var results = {};
     var work = units.slice(0);
 
+    var finish = _.once(function () {
+      results["/pa/units/unit_list.json" + tag] = {
+        units: _.map(units, function (unit) {
+          return unit + tag;
+        }),
+      };
+      result.resolve(results);
+    });
+
     var step = function () {
       var item;
       var pending = 0;
@@ -135,16 +144,6 @@ define([
         _.delay(finish);
       }
     };
-
-    var finish = _.once(function () {
-      results["/pa/units/unit_list.json" + tag] = {
-        units: _.map(units, function (unit) {
-          return unit + tag;
-        }),
-      };
-      result.resolve(results);
-    });
-
     step();
 
     return result;
