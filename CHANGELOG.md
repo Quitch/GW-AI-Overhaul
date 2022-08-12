@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Tech modifications to the AI's behaviour not being loaded
+
 ## v5.45.2 - 2022-08-11
 
 ### Fixed
