@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.45.4 - 2022-08-12
+
+### Fixed
+
+- Cleaner implementation of the previous fix
+
 ## v5.45.3 - 2022-08-12
 
 ### Fixed
