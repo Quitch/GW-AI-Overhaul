@@ -2,6 +2,41 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
   gwoAI
 ) {
+  var filterAIMods = function (aiMods, opType) {
+    var load = "load";
+    return _.filter(aiMods, function (mod) {
+      if (opType === load) {
+        return mod.op === load;
+      }
+      return mod.op !== load;
+    });
+  };
+
+  var addAILoadFilesToFileList = function (
+    newAIFile,
+    aiToModify,
+    fileList,
+    aiTechPath
+  ) {
+    if (aiToModify !== "None") {
+      _.forEach(newAIFile, function (aiFile) {
+        var managerPath = "";
+        if (aiFile.type === "fabber") {
+          managerPath = "fabber_builds/";
+        } else if (aiFile.type === "factory") {
+          managerPath = "factory_builds/";
+        } else if (aiFile.type === "platoon") {
+          managerPath = "platoon_builds/";
+        } else if (aiFile.type === "template") {
+          managerPath = "platoon_templates/";
+        } else {
+          console.error("Invalid op in", aiFile);
+        }
+        fileList.push(aiTechPath + managerPath + aiFile.value);
+      });
+    }
+  };
+
   var addTechToAI = function (json, mods) {
     var ops = {
       // fabber/factory/platoon only
@@ -144,34 +179,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     return "None";
   };
 
-  var addAILoadFilesToFileList = function (
-    aiMods,
-    aiToModify,
-    fileList,
-    aiTechPath
-  ) {
-    if (aiToModify !== "None") {
-      aiMods = _.partition(aiMods, { op: "load" });
-
-      // process ai load ops
-      _.forEach(aiMods[0], function (aiMod) {
-        var managerPath = "";
-        if (aiMod.type === "fabber") {
-          managerPath = "fabber_builds/";
-        } else if (aiMod.type === "factory") {
-          managerPath = "factory_builds/";
-        } else if (aiMod.type === "platoon") {
-          managerPath = "platoon_builds/";
-        } else if (aiMod.type === "template") {
-          managerPath = "platoon_templates/";
-        } else {
-          console.error("Invalid op in", aiMod);
-        }
-        fileList.push(aiTechPath + managerPath + aiMod.value);
-      });
-    }
-  };
-
   var isClusterAIPresent = function (inventory, ai, subcommanders) {
     var aiIsCluster = ai.faction === 4;
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -212,13 +219,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       var configFiles = self.files();
       var aiFiles = [];
       var aiMods = inventory.aiMods();
+      var aiNewFiles = filterAIMods(aiMods, "load");
+      var aiJsonMods = filterAIMods(aiMods);
       var aiTechPath = "/pa/ai_tech/";
       var subcommanderAIPath = gwoAI.getAIPath("subcommander");
       var enemyAIPath = gwoAI.getAIPath("enemy");
       var aiBrain = gwoAI.aiInUse();
       var isQueller = aiBrain === "Queller";
 
-      addAILoadFilesToFileList(aiMods, aiToModify, fileList, aiTechPath);
+      addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
 
       _.forEach(fileList, function (filePath) {
         if (
@@ -257,24 +266,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           quellerSubCommander = true;
         }
 
-        // Only mods associated with the file's AI manager are loaded
         if (
           aiToModify !== "None" &&
-          !_.isEmpty(aiMods[1]) &&
+          !_.isEmpty(aiJsonMods) &&
           (!isQueller || quellerSubCommander || aiToModify === "All")
         ) {
           if (_.includes(filePath, "/fabber_builds/")) {
-            aiBuildOps = _.filter(aiMods[1], {
-              type: "fabber",
-            });
+            aiBuildOps = _.filter(aiJsonMods, { type: "fabber" });
           } else if (_.includes(filePath, "/factory_builds/")) {
-            aiBuildOps = _.filter(aiMods[1], { type: "factory" });
+            aiBuildOps = _.filter(aiJsonMods, { type: "factory" });
           } else if (_.includes(filePath, "/platoon_builds/")) {
-            aiBuildOps = _.filter(aiMods[1], { type: "platoon" });
+            aiBuildOps = _.filter(aiJsonMods, { type: "platoon" });
           } else if (_.includes(filePath, "/platoon_templates/")) {
-            aiBuildOps = _.filter(aiMods[1], {
-              type: "template",
-            });
+            aiBuildOps = _.filter(aiJsonMods, { type: "template" });
           }
         }
         if (
