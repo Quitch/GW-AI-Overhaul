@@ -151,9 +151,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     aiTechPath
   ) {
     if (aiToModify !== "None") {
-      aiMods = _.partition(aiMods, { op: "load" });
-
-      // process ai load ops
       _.forEach(aiMods[0], function (aiMod) {
         var managerPath = "";
         if (aiMod.type === "fabber") {
@@ -211,7 +208,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     api.file.list(aiFilePath, true).then(function (fileList) {
       var configFiles = self.files();
       var aiFiles = [];
-      var aiMods = inventory.aiMods();
+      var aiMods = _.partition(inventory.aiMods(), { op: "load" });
       var aiTechPath = "/pa/ai_tech/";
       var subcommanderAIPath = gwoAI.getAIPath("subcommander");
       var enemyAIPath = gwoAI.getAIPath("enemy");
