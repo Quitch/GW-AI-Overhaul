@@ -336,7 +336,7 @@ if (!gwoSetupLoaded) {
 
           var warGenerationAttempts = 0;
 
-          var warFailure = function () {
+          var warGenerationFailure = function () {
             model.makeGameBusy(false);
             enableGoToWar(true);
             if (warGenerationAttempts < 5) {
@@ -900,7 +900,7 @@ if (!gwoSetupLoaded) {
 
             finishSetup.then(function () {
               if (warGenerationFailed === true) {
-                warFailure();
+                warGenerationFailure();
                 return;
               }
 
