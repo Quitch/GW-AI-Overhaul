@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Planetary Radar no longer triggers build notifications
+- Planetary Radar no longer triggers alerts
 
 ## v5.45.4 - 2022-08-12
 
