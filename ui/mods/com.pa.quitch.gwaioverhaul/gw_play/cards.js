@@ -373,7 +373,7 @@ if (!gwoCardsLoaded) {
           function (GW, GWFactions, gwoAI, gwoSave, gwoBank) {
             var inventory = game.inventory();
             var playerFaction = inventory.getTag("global", "playerFaction");
-            var galaxy = model.game().galaxy();
+            var galaxy = game.galaxy();
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
