@@ -71,9 +71,7 @@ if (!gwoCardTooltipsLoaded) {
                   } else {
                     return loc(gwoUnitToNames.units[cardIndex].name);
                   }
-                });
-
-                affectedUnits = affectedUnits.sort();
+                }).sort();
 
                 model.gwoTechCardTooltip()[hoverIndex] = _.map(
                   affectedUnits,
