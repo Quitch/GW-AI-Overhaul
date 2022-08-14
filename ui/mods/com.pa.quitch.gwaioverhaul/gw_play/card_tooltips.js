@@ -68,6 +68,7 @@ if (!gwoCardTooltipsLoaded) {
                     console.warn(
                       unit + " is invalid or missing from GWO unit_names.js"
                     );
+                    return loc("!LOC:Unknown Unit");
                   } else {
                     return loc(gwoUnitToNames.units[cardIndex].name);
                   }
