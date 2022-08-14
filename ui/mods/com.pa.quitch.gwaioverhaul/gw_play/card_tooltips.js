@@ -51,6 +51,7 @@ if (!gwoCardTooltipsLoaded) {
             var cardIndex = _.findIndex(model.gwoCardsToUnits, {
               id: cardId,
             });
+
             if (cardIndex === -1) {
               if (!_.isUndefined(cardId)) {
                 console.warn(
