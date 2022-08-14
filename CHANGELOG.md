@@ -6,6 +6,10 @@
 
 - Planetary Radar no longer triggers alerts
 
+### Fixed
+
+- GWO Panel not displaying army information for vanilla GW saves
+
 ## v5.45.4 - 2022-08-12
 
 ### Fixed
