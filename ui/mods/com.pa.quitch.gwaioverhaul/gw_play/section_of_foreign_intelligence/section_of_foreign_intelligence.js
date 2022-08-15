@@ -119,6 +119,11 @@ if (!gwoIntelligenceLoaded) {
               return formattedString(area);
             });
 
+            var toFixedIfNecessary = function (value, dp) {
+              // + converts the string output of toFixed() back to a float
+              return +parseFloat(value).toFixed(dp);
+            };
+
             model.gwoSystemThreat = ko.computed(function () {
               var ai = model.selection.system().star.ai();
               var commanders = [];
@@ -170,7 +175,7 @@ if (!gwoIntelligenceLoaded) {
                   totalEco -= ai.ally.econ_rate || 1;
                 }
               }
-              return totalEco.toPrecision(2);
+              return toFixedIfNecessary(totalEco, 2);
             });
 
             // Available Technology

@@ -11,6 +11,7 @@
 ### Fixed
 
 - GWO Panel not displaying army information for vanilla GW saves
+- Large threats using scientific notation
 
 ## v5.45.4 - 2022-08-12
 
