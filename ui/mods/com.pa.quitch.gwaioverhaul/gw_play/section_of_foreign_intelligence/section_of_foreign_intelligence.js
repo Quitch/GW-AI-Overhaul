@@ -150,17 +150,17 @@ if (!gwoIntelligenceLoaded) {
                   switch (buff) {
                     case 0: // cost
                     case 4: // build
-                      totalEco += 0.3;
+                      totalEco *= 1.3;
                       break;
                     case 1: // damage
                     case 2: // health
-                      totalEco += 0.2;
+                      totalEco *= 1.2;
                       break;
                     case 3: // speed
-                      totalEco += 0.1;
+                      totalEco *= 1.1;
                       break;
                     case 6: // combat
-                      totalEco += 0.5;
+                      totalEco *= 1.5;
                   }
                 });
                 if (ai.mirrorMode === true) {

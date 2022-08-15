@@ -5,6 +5,7 @@
 ### Changed
 
 - Planetary Radar no longer triggers alerts
+- AI Tech additions to the threat level better handle multiple commanders
 
 ### Fixed
 
