@@ -140,6 +140,7 @@ if (!gwoWarInfoPanelLoaded) {
               _.forEach(subcommanders, function (subcommander, index) {
                 commanders.push(intelligence(subcommander, index));
               });
+
               return commanders;
             });
           }
