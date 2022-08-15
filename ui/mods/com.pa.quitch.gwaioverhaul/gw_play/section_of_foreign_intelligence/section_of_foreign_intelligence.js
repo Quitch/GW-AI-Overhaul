@@ -119,9 +119,9 @@ if (!gwoIntelligenceLoaded) {
               return formattedString(area);
             });
 
-            var toFixedIfNecessary = function (value, dp) {
+            var toFixedIfNecessary = function (value, decimals) {
               // + converts the string output of toFixed() back to a float
-              return +parseFloat(value).toFixed(dp);
+              return +parseFloat(value).toFixed(decimals);
             };
 
             model.gwoSystemThreat = ko.computed(function () {
