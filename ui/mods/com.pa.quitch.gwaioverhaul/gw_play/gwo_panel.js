@@ -127,7 +127,6 @@ if (!gwoWarInfoPanelLoaded) {
               var playerColor = gwoColour.rgb(
                 inventory.getTag("global", "playerColor")
               );
-
               var commanders = [
                 {
                   name: playerName,
@@ -135,12 +134,10 @@ if (!gwoWarInfoPanelLoaded) {
                   character: loc("!LOC:Human"),
                 },
               ];
-
               var subcommanders = inventory.minions();
               _.forEach(subcommanders, function (subcommander, index) {
                 commanders.push(intelligence(subcommander, index));
               });
-
               return commanders;
             });
           }
