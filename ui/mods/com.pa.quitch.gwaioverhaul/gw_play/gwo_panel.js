@@ -32,7 +32,8 @@ if (!gwoWarInfoPanelLoaded) {
               model.gwoSize = loc(model.gwoSettings.galaxySize);
               model.gwoAI = model.gwoSettings.ai || "Titans";
               model.gwoDeck =
-                "!LOC:" + model.gwoSettings.techCardDeck || "!LOC:Expanded";
+                loc("!LOC:" + model.gwoSettings.techCardDeck) ||
+                "!LOC:Expanded";
 
               var options = function (optionsList, setting, text) {
                 if (setting) {
