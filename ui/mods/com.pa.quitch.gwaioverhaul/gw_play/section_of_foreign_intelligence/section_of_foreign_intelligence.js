@@ -164,7 +164,7 @@ if (!gwoIntelligenceLoaded) {
                   }
                 });
                 if (ai.mirrorMode === true) {
-                  totalEco += 1.6;
+                  totalEco *= 2;
                 }
                 if (ai.ally) {
                   totalEco -= ai.ally.econ_rate || 1;
