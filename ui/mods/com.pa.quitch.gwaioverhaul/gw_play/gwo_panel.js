@@ -62,6 +62,7 @@ if (!gwoWarInfoPanelLoaded) {
                 model.gwoSettings.easierStart,
                 "!LOC:Easier start"
               );
+              // deprecated - pre-v5.27.0 support only
               options(
                 model.gwoOptions,
                 model.gwoSettings.tougherCommanders,
