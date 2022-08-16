@@ -568,6 +568,7 @@ if (!gwoCardsLoaded) {
                   });
                 });
                 inventory.applyCards();
+                gwoSave(game, false);
               }
             };
             setupGeneralCommander();
