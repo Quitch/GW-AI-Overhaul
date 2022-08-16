@@ -172,7 +172,11 @@ if (!gwoIntelligenceLoaded) {
                   totalEco *= 2;
                 }
                 if (ai.ally) {
-                  totalEco -= ai.ally.econ_rate || 1;
+                  if (ai.ally.econ_rate) {
+                    totalEco /= ai.ally.econ_rate + 1;
+                  } else {
+                    totalEco /= 2;
+                  }
                 }
               }
               return toFixedIfNecessary(totalEco, 2);

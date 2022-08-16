@@ -7,6 +7,7 @@
 - Planetary Radar no longer triggers alerts
 - AI Tech additions to the threat level better handle multiple commanders
 - Tech mirroring has a larger threat bonus
+- Adjusted how allies are factored into the threat value
 
 ### Fixed
 
