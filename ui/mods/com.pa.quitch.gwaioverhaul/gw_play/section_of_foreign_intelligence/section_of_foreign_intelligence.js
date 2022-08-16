@@ -127,7 +127,7 @@ if (!gwoIntelligenceLoaded) {
             model.gwoSystemThreat = ko.computed(function () {
               var ai = model.selection.system().star.ai();
               var commanders = [];
-              var totalEco = 0;
+              var totalThreat = 0;
               if (ai) {
                 commanders.push(intelligence(ai, 0));
                 if (ai.minions) {
@@ -145,41 +145,41 @@ if (!gwoIntelligenceLoaded) {
                       // legacy GWO support
                       commanderCount = army.landing_policy.length;
                     }
-                    totalEco += army.econ_rate * 0.4 * (commanderCount - 1);
+                    totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
                   });
                 }
                 _.times(commanders.length, function (n) {
-                  totalEco += commanders[n].eco;
+                  totalThreat += commanders[n].eco;
                 });
                 _.forEach(ai.typeOfBuffs, function (buff) {
                   switch (buff) {
                     case 0: // cost
                     case 4: // build
-                      totalEco *= 1.3;
+                      totalThreat *= 1.3;
                       break;
                     case 1: // damage
                     case 2: // health
-                      totalEco *= 1.2;
+                      totalThreat *= 1.2;
                       break;
                     case 3: // speed
-                      totalEco *= 1.1;
+                      totalThreat *= 1.1;
                       break;
                     case 6: // combat
-                      totalEco *= 1.5;
+                      totalThreat *= 1.5;
                   }
                 });
                 if (ai.mirrorMode === true) {
-                  totalEco *= 2;
+                  totalThreat *= 2;
                 }
                 if (ai.ally) {
                   if (ai.ally.econ_rate) {
-                    totalEco /= ai.ally.econ_rate + 1;
+                    totalThreat /= ai.ally.econ_rate + 1;
                   } else {
-                    totalEco /= 2;
+                    totalThreat /= 2;
                   }
                 }
               }
-              return toFixedIfNecessary(totalEco, 2);
+              return toFixedIfNecessary(totalThreat, 2);
             });
 
             // Available Technology
