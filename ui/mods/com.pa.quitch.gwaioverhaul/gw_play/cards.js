@@ -373,7 +373,7 @@ if (!gwoCardsLoaded) {
           function (GW, GWFactions, gwoAI, gwoSave, gwoBank) {
             var inventory = game.inventory();
             var playerFaction = inventory.getTag("global", "playerFaction");
-            var galaxy = model.game().galaxy();
+            var galaxy = game.galaxy();
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
@@ -546,12 +546,11 @@ if (!gwoCardsLoaded) {
                 inventory.cards()[0].id === "gwc_start_subcdr" &&
                 !inventory.cards()[0].minions
               ) {
+                var ai = gwoSettings && gwoSettings.ai;
                 _.times(2, function () {
                   var subcommander = _.cloneDeep(
                     _.sample(GWFactions[playerFaction].minions)
                   );
-                  galaxy = game.galaxy();
-                  var ai = gwoSettings && gwoSettings.ai;
                   if (ai === "Penchant") {
                     var penchantValues = gwoAI.penchants();
                     subcommander.character =

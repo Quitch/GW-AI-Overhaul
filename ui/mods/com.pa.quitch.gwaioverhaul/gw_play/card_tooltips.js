@@ -39,20 +39,21 @@ if (!gwoCardTooltipsLoaded) {
             if (card.isLoadout()) {
               return;
             }
+
             // Ensure inventory hovers work at the same time as the new tech display
             if (_.isUndefined(hoverIndex)) {
               hoverIndex = 0;
             } else {
               hoverIndex += 1;
             }
+
             var cardId = card.id();
             var cardIndex = _.findIndex(model.gwoCardsToUnits, {
               id: cardId,
             });
+
             if (cardIndex === -1) {
-              if (_.isUndefined(cardId)) {
-                return;
-              } else {
+              if (!_.isUndefined(cardId)) {
                 console.warn(
                   cardId + " is invalid or missing from model.gwoCardsToUnits"
                 );
@@ -60,8 +61,7 @@ if (!gwoCardTooltipsLoaded) {
             } else {
               var units = model.gwoCardsToUnits[cardIndex].units;
               if (units) {
-                var affectedUnits = [];
-                _.forEach(units, function (unit) {
+                var affectedUnits = _.map(units, function (unit) {
                   cardIndex = _.findIndex(gwoUnitToNames.units, {
                     path: unit,
                   });
@@ -69,12 +69,12 @@ if (!gwoCardTooltipsLoaded) {
                     console.warn(
                       unit + " is invalid or missing from GWO unit_names.js"
                     );
+                    return loc("!LOC:Unknown Unit");
                   } else {
-                    var name = loc(gwoUnitToNames.units[cardIndex].name);
-                    affectedUnits = affectedUnits.concat(name);
+                    return loc(gwoUnitToNames.units[cardIndex].name);
                   }
-                });
-                affectedUnits = affectedUnits.sort();
+                }).sort();
+
                 model.gwoTechCardTooltip()[hoverIndex] = _.map(
                   affectedUnits,
                   function (unit, index) {

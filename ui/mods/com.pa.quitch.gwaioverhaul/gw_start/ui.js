@@ -63,8 +63,8 @@ if (!gwoUILoaded) {
         difficultySettings.playerFaction(model.playerFactionIndex());
       });
 
-      if (!_.isEmpty(difficultySettings.previousSettings())) {
-        var previousSettings = difficultySettings.previousSettings();
+      var previousSettings = difficultySettings.previousSettings();
+      if (!_.isEmpty(previousSettings)) {
         var settingNames = _.keys(difficultySettings);
         _.pull(settingNames, "previousSettings");
         _.forEach(settingNames, function (name, i) {

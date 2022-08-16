@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v5.46.0 - 2022-008-16
+
+### Changed
+
+- Planetary Radar no longer triggers alerts
+- AI Tech additions to the threat level better handle multiple commanders
+- Tech mirroring has a larger threat bonus
+- Adjusted how allies are factored into the threat value
+
+### Fixed
+
+- GWO Panel not displaying army information for vanilla GW saves
+- Large threats using scientific notation
+
 ## v5.45.4 - 2022-08-12
 
 ### Fixed

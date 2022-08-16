@@ -433,8 +433,7 @@ define([
             var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
             if (ai.inventory) {
-              var aiInventory = [];
-              aiInventory =
+              var aiInventory =
                 currentCount === 0
                   ? ai.inventory
                   : ai.foes[currentCount - 1].inventory;

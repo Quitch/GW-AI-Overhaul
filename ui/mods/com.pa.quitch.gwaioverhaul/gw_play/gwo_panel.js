@@ -31,7 +31,9 @@ if (!gwoWarInfoPanelLoaded) {
               model.gwoDifficulty = loc(model.gwoSettings.difficulty);
               model.gwoSize = loc(model.gwoSettings.galaxySize);
               model.gwoAI = model.gwoSettings.ai || "Titans";
-              model.gwoDeck = model.gwoSettings.techCardDeck || "Expanded";
+              model.gwoDeck =
+                loc("!LOC:" + model.gwoSettings.techCardDeck) ||
+                "!LOC:Expanded";
 
               var options = function (optionsList, setting, text) {
                 if (setting) {
@@ -60,85 +62,84 @@ if (!gwoWarInfoPanelLoaded) {
                 model.gwoSettings.easierStart,
                 "!LOC:Easier start"
               );
+              // deprecated - pre-v5.27.0 support only
               options(
                 model.gwoOptions,
                 model.gwoSettings.tougherCommanders,
                 "!LOC:Tougher commanders"
               );
               options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
-
-              // Player Information
-              var inventory = game.inventory();
-
-              var factions = [
-                "Legonis Machina",
-                "Foundation",
-                "Synchronous",
-                "Revenants",
-                "Cluster",
-              ];
-              var factionIndex = inventory.getTag("global", "playerFaction");
-              model.gwoFactionName = factions[factionIndex];
-
-              var cards = inventory.cards();
-
-              var loadoutId = cards[0].id;
-              model.gwoLoadout = ko.observable("");
-              requireGW(["cards/" + loadoutId], function (card) {
-                model.gwoLoadout(loc(card.summarize()));
-              });
-
-              var intelligence = function (subcommander, index) {
-                var personality = subcommander.character
-                  ? loc(subcommander.character)
-                  : loc("!LOC:None");
-                if (subcommander.penchant) {
-                  personality = personality + " " + loc(subcommander.penchant);
-                }
-                var subcommanderName = subcommander.name;
-                if (
-                  _.some(cards, {
-                    id: "gwaio_upgrade_subcommander_duplication",
-                  })
-                ) {
-                  subcommanderName = subcommanderName.concat(" x2");
-                }
-                return {
-                  name: subcommanderName,
-                  color: gwoColour.rgb(
-                    gwoColour.pick(
-                      factionIndex,
-                      subcommander.color,
-                      index + 1 // player uses the primary faction colour
-                    )
-                  ),
-                  character: personality,
-                };
-              };
-
-              model.gwoPlayer = ko.computed(function () {
-                var playerName = ko
-                  .observable()
-                  .extend({ session: "displayName" });
-                var playerColor = gwoColour.rgb(
-                  inventory.getTag("global", "playerColor")
-                );
-
-                var commanders = [
-                  {
-                    name: playerName,
-                    color: playerColor,
-                    character: loc("!LOC:Human"),
-                  },
-                ];
-
-                var subcommanders = inventory.minions();
-                _.forEach(subcommanders, function (subcommander, index) {
-                  commanders.push(intelligence(subcommander, index));
-                });
-                return commanders;
-              });
             }
+
+            // Player Information
+            var inventory = game.inventory();
+
+            var factions = [
+              "Legonis Machina",
+              "Foundation",
+              "Synchronous",
+              "Revenants",
+              "Cluster",
+            ];
+            var factionIndex = inventory.getTag("global", "playerFaction");
+            model.gwoFactionName = factions[factionIndex];
+
+            var cards = inventory.cards();
+
+            var loadoutId = cards[0].id;
+            model.gwoLoadout = ko.observable("");
+            requireGW(["cards/" + loadoutId], function (card) {
+              model.gwoLoadout(loc(card.summarize()));
+            });
+
+            var intelligence = function (subcommander, index) {
+              var personality = subcommander.character
+                ? loc(subcommander.character)
+                : loc("!LOC:None");
+              if (subcommander.penchant) {
+                personality = personality + " " + loc(subcommander.penchant);
+              }
+              var subcommanderName = subcommander.name;
+              if (
+                _.some(cards, {
+                  id: "gwaio_upgrade_subcommander_duplication",
+                })
+              ) {
+                subcommanderName = subcommanderName.concat(" x2");
+              }
+              return {
+                name: subcommanderName,
+                color: gwoColour.rgb(
+                  gwoColour.pick(
+                    factionIndex,
+                    subcommander.color,
+                    index + 1 // player uses the primary faction colour
+                  )
+                ),
+                character: personality,
+              };
+            };
+
+            model.gwoPlayer = ko.computed(function () {
+              var playerName = ko
+                .observable()
+                .extend({ session: "displayName" });
+              var playerColor = gwoColour.rgb(
+                inventory.getTag("global", "playerColor")
+              );
+              var commanders = [
+                {
+                  name: playerName,
+                  color: playerColor,
+                  character: loc("!LOC:Human"),
+                },
+              ];
+              var subcommanders = inventory.minions();
+              _.forEach(subcommanders, function (subcommander, index) {
+                commanders.push(intelligence(subcommander, index));
+              });
+              return commanders;
+            });
           }
         );
       }
