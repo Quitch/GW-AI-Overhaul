@@ -30,13 +30,13 @@ define([
           file: gwoUnit.zeus,
           path: "system_velocity_multiplier",
           op: "replace",
-          value: 15,
+          value: 30,
         },
         {
           file: gwoUnit.zeus,
           path: "gravwell_velocity_multiplier",
           op: "replace",
-          value: 6,
+          value: 10,
         },
         {
           file: gwoUnit.zeus,

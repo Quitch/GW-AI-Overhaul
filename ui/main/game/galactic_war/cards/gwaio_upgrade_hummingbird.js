@@ -30,13 +30,13 @@ define([
           file: gwoUnit.hummingbird,
           path: "system_velocity_multiplier",
           op: "replace",
-          value: 15,
+          value: 30,
         },
         {
           file: gwoUnit.hummingbird,
           path: "gravwell_velocity_multiplier",
           op: "replace",
-          value: 6,
+          value: 10,
         },
         {
           file: gwoUnit.hummingbird,
