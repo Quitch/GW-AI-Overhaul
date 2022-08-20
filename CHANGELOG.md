@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Updated AI, code, and cards for changes in PA 116047
+
 ## v5.46.0 - 2022-08-16
 
 ### Changed
