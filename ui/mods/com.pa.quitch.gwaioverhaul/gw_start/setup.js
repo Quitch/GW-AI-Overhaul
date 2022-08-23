@@ -234,7 +234,7 @@ if (!gwoSetupLoaded) {
               difficulty.maxAdvancedFabbers();
             ai.personality.personality_tags = $("#gwo-personality-picker")
               .val()
-              .concat("Default", "queller");
+              .concat("Default", "queller", "GalacticWar");
             // We treat 0 as undefined, which means the AI examines the
             // radius of the spawn zone
             if (difficulty.startingLocationEvaluationRadius() > 0) {
@@ -326,7 +326,9 @@ if (!gwoSetupLoaded) {
             var settingNames = _.keys(model.gwoDifficultySettings);
             _.pull(settingNames, "previousSettings");
             difficultySettings.personalityTags(
-              $("#gwo-personality-picker").val().concat("Default", "queller")
+              $("#gwo-personality-picker")
+                .val()
+                .concat("Default", "queller", "GalacticWar")
             );
             _.forEach(settingNames, function (name, i) {
               previousSettings[i] = difficultySettings[name]();
