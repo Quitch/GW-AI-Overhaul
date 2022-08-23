@@ -180,30 +180,38 @@ if (!gwoSetupLoaded) {
               aiFaction = parseInt(faction);
             }
 
-            var legonisMachinaTag = "tank";
-            var foundationTag = "air";
-            var synchronousTag = "bot";
-            var revenantsTag = "orbital";
-            var clusterTag = "land";
+            var quellerTag = "queller";
+            var legonisMachinaTags = ["tank", quellerTag];
+            var foundationTags = ["air", quellerTag];
+            var synchronousTags = ["bot", quellerTag];
+            var revenantsTags = ["orbital", quellerTag];
+            var clusterTags = ["land", quellerTag];
 
             switch (aiFaction) {
               case 0:
-                return legonisMachinaTag;
+                return legonisMachinaTags;
               case 1:
-                return foundationTag;
+                return foundationTags;
               case 2:
-                return synchronousTag;
+                return synchronousTags;
               case 3:
-                return revenantsTag;
+                return revenantsTags;
               case 4:
-                return clusterTag;
+                return clusterTags;
             }
+          };
+
+          var getTitansAITags = function () {
+            return ["Default", "GalacticWar"];
           };
 
           var setupPenchantAI = function (ai) {
             var penchantValues = gwoAI.penchants();
             ai.personality.personality_tags =
-              ai.personality.personality_tags.concat(penchantValues.penchants);
+              ai.personality.personality_tags.concat(
+                penchantValues.penchants,
+                getTitansAITags()
+              );
             ai.penchantName = penchantValues.penchantName;
           };
 
@@ -232,9 +240,9 @@ if (!gwoSetupLoaded) {
             ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
             ai.personality.max_advanced_fabbers =
               difficulty.maxAdvancedFabbers();
-            ai.personality.personality_tags = $("#gwo-personality-picker")
-              .val()
-              .concat("Default", "queller", "GalacticWar");
+            ai.personality.personality_tags = $(
+              "#gwo-personality-picker"
+            ).val();
             // We treat 0 as undefined, which means the AI examines the
             // radius of the spawn zone
             if (difficulty.startingLocationEvaluationRadius() > 0) {
@@ -244,12 +252,17 @@ if (!gwoSetupLoaded) {
 
             switch (difficulty.ai()) {
               case "Queller":
-                ai.personality.personality_tags.push(
-                  getQuellerAITag(ai.faction)
-                );
+                ai.personality.personality_tags =
+                  ai.personality.personality_tags.concat(
+                    getQuellerAITag(ai.faction)
+                  );
                 break;
               case "Penchant":
                 setupPenchantAI(ai);
+                break;
+              case "Titans":
+                ai.personality.personality_tags =
+                  ai.personality.personality_tags.concat(getTitansAITags());
             }
           };
 
@@ -326,9 +339,7 @@ if (!gwoSetupLoaded) {
             var settingNames = _.keys(model.gwoDifficultySettings);
             _.pull(settingNames, "previousSettings");
             difficultySettings.personalityTags(
-              $("#gwo-personality-picker")
-                .val()
-                .concat("Default", "queller", "GalacticWar")
+              $("#gwo-personality-picker").val()
             );
             _.forEach(settingNames, function (name, i) {
               previousSettings[i] = difficultySettings[name]();

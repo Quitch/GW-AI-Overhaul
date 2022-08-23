@@ -5,6 +5,7 @@
 ### Changed
 
 - Updated AI, code, and cards for changes in PA 116047
+- Removed mandatory AI personality tags from UI
 
 ## v5.46.0 - 2022-08-16
 
