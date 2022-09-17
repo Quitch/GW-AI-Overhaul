@@ -7,6 +7,7 @@
 - Updated AI, code, and cards for changes in PA 116242
 - Removed mandatory AI personality tags from UI
 - Removed builds designed to stop the TITANS/Penchant AI getting stuck when at low eco due to fixes in the base game
+- TITANS and Penchant AI only build AA in Unit Cannon if air units exist within the system
 
 ## v5.46.0 - 2022-08-16
 
