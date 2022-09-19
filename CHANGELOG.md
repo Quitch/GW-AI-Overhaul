@@ -1,6 +1,14 @@
 # CHANGELOG
 
-## v5.46.0 - 2022-008-16
+## v5.47.0 - 2022-09-19
+
+### Changed
+
+- Updated AI, code, and cards for changes in PA 116242
+- Removed mandatory AI personality tags from UI
+- TITANS and Penchant AI only build AA in Unit Cannon if air units exist within the system
+
+## v5.46.0 - 2022-08-16
 
 ### Changed
 

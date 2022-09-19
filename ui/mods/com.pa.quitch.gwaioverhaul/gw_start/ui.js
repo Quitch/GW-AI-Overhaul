@@ -108,7 +108,7 @@ if (!gwoUILoaded) {
       var gameDifficultyLabelId = "#game-difficulty-label";
       var gameDifficultyId = "#game-difficulty";
 
-      addHtml.after(".info_tip", "difficulty_options.html");
+      addHtml.append("#game-settings-label", "difficulty_options.html");
       addHtml.before("#faction-select", "faction_tooltip.html");
       addHtml.before("#game-size", "size_tooltip.html");
       addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
