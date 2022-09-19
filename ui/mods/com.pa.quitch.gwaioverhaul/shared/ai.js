@@ -39,7 +39,7 @@ define({
     ) {
       return "/pa/ai_tech/";
     } else if (aiBrain === "Penchant") {
-      return "/pa/ai_personalities/penchant/";
+      return "/pa/ai_penchant/";
     }
     return "/pa/ai/";
   },
