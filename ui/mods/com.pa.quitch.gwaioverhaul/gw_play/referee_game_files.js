@@ -379,10 +379,9 @@ define([
       var aiBrain = gwoAI.aiInUse();
 
       if (aiBrain === "Queller") {
-        aiUnitMapPath =
-          "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map.json";
+        aiUnitMapPath = "/pa/ai_queller/q_uber/unit_maps/ai_unit_map.json";
         aiUnitMapTitansPath =
-          "/pa/ai_personalities/queller/q_uber/unit_maps/ai_unit_map_x1.json";
+          "/pa/ai_queller/q_uber/unit_maps/ai_unit_map_x1.json";
       } else if (aiBrain === "Penchant") {
         aiUnitMapPath =
           "/pa/ai_personalities/penchant/unit_maps/ai_unit_map.json";
@@ -491,7 +490,7 @@ define([
           ) {
             playerFilesClassic = _.assign(
               {
-                "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map.json.player":
+                "/pa/ai_queller/q_gold/unit_maps/ai_unit_map.json.player":
                   playerAIUnitMap,
               },
               playerSpecFiles
@@ -499,7 +498,7 @@ define([
             playerFilesX1 = titans
               ? _.assign(
                   {
-                    "/pa/ai_personalities/queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                    "/pa/ai_queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
                       playerX1AIUnitMap,
                   },
                   playerSpecFiles
@@ -508,7 +507,7 @@ define([
           } else if (aiBrain === "Queller") {
             playerFilesClassic = _.assign(
               {
-                "/pa/ai_personalities/queller/q_silver/unit_maps/ai_unit_map.json.player":
+                "/pa/ai_queller/q_silver/unit_maps/ai_unit_map.json.player":
                   playerAIUnitMap,
               },
               playerSpecFiles
@@ -516,7 +515,7 @@ define([
             playerFilesX1 = titans
               ? _.assign(
                   {
-                    "/pa/ai_personalities/queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
+                    "/pa/ai_queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
                       playerX1AIUnitMap,
                   },
                   playerSpecFiles
