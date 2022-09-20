@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- New wars failing to start if Bronze, Silver, or Gold difficulty was chosen
+
 ## v5.47.0 - 2022-09-19
 
 ### Changed
