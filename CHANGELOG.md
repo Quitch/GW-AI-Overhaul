@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.47.1 - 2022-09-20
+
+### Changed
+
+- Removed Queller AI files from the mod, the copy that ships with PA is now used
+
+### Fixed
+
+- New wars failing to start if Bronze, Silver, or Gold difficulty was chosen
+
 ## v5.47.0 - 2022-09-19
 
 ### Changed

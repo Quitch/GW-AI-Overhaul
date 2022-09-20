@@ -13,7 +13,7 @@ define({
     var ai = game.galaxy().stars()[game.currentStar()].ai();
     var inventory = game.inventory();
     var aiBrain = this.aiInUse();
-    var quellerPath = "/pa/ai_personalities/queller/";
+    var quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
     if (type === "cluster") {
       return "/pa/ai_cluster/";
@@ -39,7 +39,7 @@ define({
     ) {
       return "/pa/ai_tech/";
     } else if (aiBrain === "Penchant") {
-      return "/pa/ai_personalities/penchant/";
+      return "/pa/ai_penchant/";
     }
     return "/pa/ai/";
   },

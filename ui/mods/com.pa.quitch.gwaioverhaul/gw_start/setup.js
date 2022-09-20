@@ -219,6 +219,8 @@ if (!gwoSetupLoaded) {
             return string === "true";
           };
 
+          var personalityId = "#gwo-personality-picker";
+
           var setAIPersonality = function (ai, difficulty) {
             ai.personality.micro_type = difficulty.microType();
             ai.personality.go_for_the_kill = parseBoolean(
@@ -240,9 +242,8 @@ if (!gwoSetupLoaded) {
             ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
             ai.personality.max_advanced_fabbers =
               difficulty.maxAdvancedFabbers();
-            ai.personality.personality_tags = $(
-              "#gwo-personality-picker"
-            ).val();
+            ai.personality.personality_tags =
+              $(personalityId).val() === null ? [] : $(personalityId).val();
             // We treat 0 as undefined, which means the AI examines the
             // radius of the spawn zone
             if (difficulty.startingLocationEvaluationRadius() > 0) {
@@ -338,9 +339,7 @@ if (!gwoSetupLoaded) {
             var previousSettings = difficultySettings.previousSettings();
             var settingNames = _.keys(model.gwoDifficultySettings);
             _.pull(settingNames, "previousSettings");
-            difficultySettings.personalityTags(
-              $("#gwo-personality-picker").val()
-            );
+            difficultySettings.personalityTags($(personalityId).val());
             _.forEach(settingNames, function (name, i) {
               previousSettings[i] = difficultySettings[name]();
             });
@@ -375,7 +374,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.47.0";
+            var version = "5.47.1";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
