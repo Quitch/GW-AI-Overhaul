@@ -265,9 +265,9 @@ if (!gwoSetupLoaded) {
             }
           };
 
-          var selectAIBuffs = function (numberBuffs) {
+          var selectAIBuffs = function (numberOfBuffs) {
             var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
-            return _.sample(buffType, numberBuffs);
+            return _.sample(buffType, numberOfBuffs);
           };
 
           var setupAIBuffs = function (distance, buffDistanceDelay) {
