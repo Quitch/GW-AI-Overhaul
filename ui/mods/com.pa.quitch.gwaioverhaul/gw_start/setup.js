@@ -6,7 +6,7 @@ if (!gwoSetupLoaded) {
   function gwoSetup() {
     try {
       model.makeGame = function () {
-        // Prevent changes to settings creating new galaxies
+        // Prevent changes to settings causing creation of new galaxies
       };
 
       // We change how we monitor model.ready() to prevent
