@@ -55,7 +55,7 @@ define([
     landingOptions,
     commanderNumber
   ) {
-    if (commanderNumber > landingOptions.length - 1) {
+    while (commanderNumber > landingOptions.length - 1) {
       commanderNumber -= landingOptions.length;
     }
     return {

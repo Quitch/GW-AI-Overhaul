@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- AI spawn preference not being set correctly when more than six commanders were present for a single army
+
 ## v5.47.1 - 2022-09-20
 
 ### Changed
