@@ -40,6 +40,7 @@ define({
       icon = highestDifficultyDefeated();
     }
 
+    var iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
     var append = ".png";
     if (hardcore === true) {
       append = "_hardcore.png";
@@ -47,55 +48,31 @@ define({
 
     switch (icon) {
       case -1: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner" +
-          append
-        );
+        return iconPath + "-1_beginner" + append;
       }
       case 0: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual" +
-          append
-        );
+        return iconPath + "0_casual" + append;
       }
       case 1: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron" + append
-        );
+        return iconPath + "1_iron" + append;
       }
       case 2: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze" +
-          append
-        );
+        return iconPath + "2_bronze" + append;
       }
       case 3: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver" +
-          append
-        );
+        return iconPath + "3_silver" + append;
       }
       case 4: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold" + append
-        );
+        return iconPath + "4_gold" + append;
       }
       case 5: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum" +
-          append
-        );
+        return iconPath + "5_platinum" + append;
       }
       case 6: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond" +
-          append
-        );
+        return iconPath + "6_diamond" + append;
       }
       case 7: {
-        return (
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber" + append
-        );
+        return iconPath + "7_uber" + append;
       }
       default: {
         return (
