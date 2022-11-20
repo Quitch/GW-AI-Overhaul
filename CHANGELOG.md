@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Intelligence Fabrication Tech applies to mobile scouts
+- Intelligence Fabrication Tech applies to mobile scouts and offensive units with radar
 
 ### Fixed
 

@@ -39,7 +39,9 @@ define([
       var units = gwoGroup.energyIntel.concat(
         gwoUnit.hermes,
         gwoUnit.skitter,
-        gwoUnit.firefly
+        gwoUnit.firefly,
+        gwoUnit.stingray,
+        gwoUnit.vanguard
       );
       var mods = _.map(units, function (unit) {
         return {

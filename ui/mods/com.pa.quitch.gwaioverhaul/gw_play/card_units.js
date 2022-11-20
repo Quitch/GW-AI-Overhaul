@@ -28,7 +28,9 @@ define([
         units: gwoGroup.energyIntel.concat(
           gwoUnit.hermes,
           gwoUnit.skitter,
-          gwoUnit.firefly
+          gwoUnit.firefly,
+          gwoUnit.stingray,
+          gwoUnit.vanguard
         ),
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
