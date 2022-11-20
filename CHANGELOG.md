@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Intelligence Fabrication Tech applies to the Hermes
+- Intelligence Fabrication Tech applies to mobile scouts
 
 ### Fixed
 

@@ -25,7 +25,11 @@ define([
       { id: "gwc_cost_economy", units: gwoGroup.structuresEco },
       {
         id: "gwc_cost_intel",
-        units: gwoGroup.energyIntel.concat(gwoUnit.hermes),
+        units: gwoGroup.energyIntel.concat(
+          gwoUnit.hermes,
+          gwoUnit.skitter,
+          gwoUnit.firefly
+        ),
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
       { id: "gwc_cost_sea", units: gwoGroup.navalMobile },

@@ -36,7 +36,11 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwoGroup.energyIntel.concat(gwoUnit.hermes);
+      var units = gwoGroup.energyIntel.concat(
+        gwoUnit.hermes,
+        gwoUnit.skitter,
+        gwoUnit.firefly
+      );
       var mods = _.map(units, function (unit) {
         return {
           file: unit,
