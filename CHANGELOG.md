@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Intelligence Fabrication Tech applies to the Hermes
+
 ### Fixed
 
 - AI spawn preference not being set correctly when more than six commanders were present for a single army
