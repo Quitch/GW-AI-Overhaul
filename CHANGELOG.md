@@ -9,6 +9,7 @@
 ### Fixed
 
 - AI spawn preference not being set correctly when more than six commanders were present for a single army
+- Improved Intelligence Tech not being applied to Teleporters despite the tooltip saying it was
 
 ## v5.47.1 - 2022-09-20
 
