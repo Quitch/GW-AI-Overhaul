@@ -39,7 +39,10 @@ define([
         gwoUnit.skitter,
         gwoUnit.firefly,
         gwoUnit.stingray,
-        gwoUnit.vanguard
+        gwoUnit.vanguard,
+        gwoUnit.stitch,
+        gwoUnit.mend,
+        gwoUnit.barnacle
       );
       var mods = _.map(units, function (unit) {
         return {

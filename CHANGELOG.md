@@ -5,6 +5,7 @@
 ### Changed
 
 - Intelligence Fabrication Tech applies to mobile scouts and offensive units with radar
+- Intelligence Fabrication Tech applies to all units that can see mines
 
 ### Fixed
 
