@@ -96,7 +96,7 @@ define([
       inventory.addAIMods(aiMods);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

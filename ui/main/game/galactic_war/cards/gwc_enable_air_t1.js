@@ -38,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.airBasic);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

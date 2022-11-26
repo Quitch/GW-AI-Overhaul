@@ -32,7 +32,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       // performed in referee_config.js
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

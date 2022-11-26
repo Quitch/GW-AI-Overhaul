@@ -28,7 +28,7 @@ define([
       inventory.addUnits(gwoGroup.titans);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

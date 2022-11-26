@@ -38,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.botsBasic);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

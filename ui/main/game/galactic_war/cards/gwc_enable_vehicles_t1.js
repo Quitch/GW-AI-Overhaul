@@ -38,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.vehiclesBasic);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

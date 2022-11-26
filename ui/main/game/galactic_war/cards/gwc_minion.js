@@ -96,7 +96,7 @@ define([
       }
     },
     dull: function () {
-      //empty
+      // empty
     },
     keep: function (params, context) {
       context.chance = 50;

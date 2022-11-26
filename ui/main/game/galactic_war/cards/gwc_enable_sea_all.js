@@ -38,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.starterUnitsAdvanced.concat(gwoGroup.naval));
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

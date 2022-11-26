@@ -38,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.orbital);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

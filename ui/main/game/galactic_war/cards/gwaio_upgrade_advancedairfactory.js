@@ -43,7 +43,7 @@ define([
       inventory.addMods(mods);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

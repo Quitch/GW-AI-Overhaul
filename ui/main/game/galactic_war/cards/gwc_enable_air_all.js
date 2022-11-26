@@ -41,7 +41,7 @@ define([
       inventory.addUnits(gwoGroup.starterUnitsAdvanced.concat(gwoGroup.air));
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });
