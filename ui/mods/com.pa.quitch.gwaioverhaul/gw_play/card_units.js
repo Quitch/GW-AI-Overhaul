@@ -23,7 +23,16 @@ define([
       { id: "gwc_cost_bots", units: gwoGroup.botsMobile },
       { id: "gwc_cost_defenses", units: gwoGroup.structuresDefences },
       { id: "gwc_cost_economy", units: gwoGroup.structuresEco },
-      { id: "gwc_cost_intel", units: gwoGroup.energyIntel },
+      {
+        id: "gwc_cost_intel",
+        units: gwoGroup.energyIntel.concat(
+          gwoUnit.hermes,
+          gwoUnit.skitter,
+          gwoUnit.firefly,
+          gwoUnit.stingray,
+          gwoUnit.vanguard
+        ),
+      },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
       { id: "gwc_cost_sea", units: gwoGroup.navalMobile },
       { id: "gwc_cost_super_weapons", units: gwoGroup.structuresSuperWeapons },

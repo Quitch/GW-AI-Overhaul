@@ -138,7 +138,7 @@ define([
       ]);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

@@ -49,19 +49,14 @@ define([
     return aiRoot;
   };
 
-  var aiCommander = function (
-    name,
-    commander,
-    landingOptions,
-    commanderNumber
-  ) {
-    if (commanderNumber > landingOptions.length - 1) {
+  var aiCommander = function (name, unit, landingOptions, commanderNumber) {
+    while (commanderNumber > landingOptions.length - 1) {
       commanderNumber -= landingOptions.length;
     }
     return {
       ai: true,
       name: name,
-      commander: commander,
+      commander: unit,
       landing_policy: landingOptions[commanderNumber],
     };
   };

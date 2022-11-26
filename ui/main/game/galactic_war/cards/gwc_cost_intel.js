@@ -1,8 +1,9 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoGroup) {
+], function (GW, gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,7 +20,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 0;
+      var chance = 100;
       var dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
@@ -29,13 +30,21 @@ define([
         dist > 13
       ) {
         chance = 50;
-      } else {
-        chance = 100;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.energyIntel, function (unit) {
+      var units = gwoGroup.energyIntel.concat(
+        gwoUnit.hermes,
+        gwoUnit.skitter,
+        gwoUnit.firefly,
+        gwoUnit.stingray,
+        gwoUnit.vanguard,
+        gwoUnit.stitch,
+        gwoUnit.mend,
+        gwoUnit.barnacle
+      );
+      var mods = _.map(units, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",
@@ -46,7 +55,7 @@ define([
       inventory.addMods(mods);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

@@ -6,15 +6,15 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Improved Energy Weapons tech reduces energy costs for energy based weapons by 75%"
+      "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%"
     ),
-    summarize: _.constant("!LOC:Improved Energy Weapons"),
+    summarize: _.constant("!LOC:Improved Intelligence Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_weapon_upgrade",
+        found: "/VO/Computer/gw/board_tech_available_efficiency",
       };
     },
     getContext: gwoCard.getContext,
@@ -41,24 +41,19 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      var units = gwoGroup.energyIntel;
       var mods = _.flatten(
-        _.map(gwoGroup.energyWeapons, function (weapon) {
+        _.map(units, function (unit) {
           return [
             {
-              file: weapon,
-              path: "ammo_capacity",
+              file: unit,
+              path: "consumption.energy",
               op: "multiply",
               value: 0.25,
             },
             {
-              file: weapon,
-              path: "ammo_demand",
-              op: "multiply",
-              value: 0.25,
-            },
-            {
-              file: weapon,
-              path: "ammo_per_shot",
+              file: unit,
+              path: "teleporter.energy_demand",
               op: "multiply",
               value: 0.25,
             },

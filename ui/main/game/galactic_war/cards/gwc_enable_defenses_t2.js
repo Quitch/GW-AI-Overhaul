@@ -33,7 +33,7 @@ define([
       inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.48.0 - 2022-11-26
+
+### Changed
+
+- Intelligence Fabrication Tech applies to mobile scouts, radar, and mine vision
+- Nomad Commander treats the Laser Defense Tower and Umbrella as a small structures
+
+### Fixed
+
+- AI spawn preference not being set correctly when more than six commanders were present for a single army
+- Improved Intelligence Tech and Complete Energy Tech not being applied to Teleporters despite the tooltip saying they were
+
 ## v5.47.1 - 2022-09-20
 
 ### Changed

@@ -6,7 +6,7 @@ if (!gwoSetupLoaded) {
   function gwoSetup() {
     try {
       model.makeGame = function () {
-        // Prevent changes to settings creating new galaxies
+        // Prevent changes to settings causing creation of new galaxies
       };
 
       // We change how we monitor model.ready() to prevent
@@ -201,16 +201,14 @@ if (!gwoSetupLoaded) {
             }
           };
 
-          var getTitansAITags = function () {
-            return ["Default", "GalacticWar"];
-          };
+          var titansAITags = ["Default", "GalacticWar"];
 
           var setupPenchantAI = function (ai) {
             var penchantValues = gwoAI.penchants();
             ai.personality.personality_tags =
               ai.personality.personality_tags.concat(
                 penchantValues.penchants,
-                getTitansAITags()
+                titansAITags
               );
             ai.penchantName = penchantValues.penchantName;
           };
@@ -263,13 +261,13 @@ if (!gwoSetupLoaded) {
                 break;
               case "Titans":
                 ai.personality.personality_tags =
-                  ai.personality.personality_tags.concat(getTitansAITags());
+                  ai.personality.personality_tags.concat(titansAITags);
             }
           };
 
-          var selectAIBuffs = function (numberBuffs) {
+          var selectAIBuffs = function (numberOfBuffs) {
             var buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
-            return _.sample(buffType, numberBuffs);
+            return _.sample(buffType, numberOfBuffs);
           };
 
           var setupAIBuffs = function (distance, buffDistanceDelay) {
@@ -374,7 +372,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.47.1";
+            var version = "5.48.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();

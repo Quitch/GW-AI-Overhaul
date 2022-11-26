@@ -11,6 +11,6 @@ define({
     inventory.maxCards(inventory.maxCards() + 1); // avoid taking up a slot
   },
   dull: function () {
-    //empty
+    // empty
   },
 });

@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 0;
+      var chance = 33;
       var dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
@@ -37,20 +37,26 @@ define([
         dist > 7
       ) {
         chance = 333;
-      } else {
-        chance = 33;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
       var mods = [];
       _.forEach(gwoGroup.energyIntel, function (unit) {
-        mods.push({
-          file: unit,
-          path: "consumption.energy",
-          op: "multiply",
-          value: 0.25,
-        });
+        mods.push(
+          {
+            file: unit,
+            path: "consumption.energy",
+            op: "multiply",
+            value: 0.25,
+          },
+          {
+            file: unit,
+            path: "teleporter.energy_demand",
+            op: "multiply",
+            value: 0.25,
+          }
+        );
       });
       _.forEach(gwoGroup.energyWeapons, function (weapon) {
         mods.push(
@@ -77,7 +83,7 @@ define([
       inventory.addMods(mods);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

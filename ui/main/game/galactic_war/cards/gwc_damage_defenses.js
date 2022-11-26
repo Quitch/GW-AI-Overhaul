@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 0;
+      var chance = 24;
       var dist = system.distance();
       if (
         context.totalSize <= GW.balance.numberOfSystems[0] ||
@@ -32,8 +32,6 @@ define([
         dist > 12
       ) {
         chance = 120;
-      } else {
-        chance = 24;
       }
       return { chance: chance };
     },
@@ -49,7 +47,7 @@ define([
       inventory.addMods(mods);
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });

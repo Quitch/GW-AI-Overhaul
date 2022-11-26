@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
+      var chance = 25;
       var dist = system.distance();
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.naval)) {
         if (
@@ -30,8 +30,6 @@ define([
           dist > 6
         ) {
           chance = 200;
-        } else {
-          chance = 25;
         }
       }
       return { chance: chance };
@@ -40,7 +38,7 @@ define([
       inventory.addUnits(gwoGroup.starterUnitsAdvanced.concat(gwoGroup.naval));
     },
     dull: function () {
-      //empty
+      // empty
     },
   };
 });
