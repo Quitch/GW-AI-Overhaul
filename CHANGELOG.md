@@ -5,6 +5,7 @@
 ### Changed
 
 - Intelligence Fabrication Tech applies to mobile scouts, radar, and mine vision
+- Nomad Commander treats the Laser Defense Tower and Umbrella as a small structures
 
 ### Fixed
 

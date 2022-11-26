@@ -35,21 +35,21 @@ define([
             gwoUnit.energyStorage,
             gwoUnit.galata,
             gwoUnit.landMine,
+            gwoUnit.laserDefenseTower,
             gwoUnit.metalStorage,
             gwoUnit.pelter,
             gwoUnit.radar,
             gwoUnit.singleLaserDefenseTower,
             gwoUnit.torpedoLauncher,
+            gwoUnit.umbrella,
             gwoUnit.wall,
           ];
           var mediumStructures = [
             gwoUnit.catapult,
             gwoUnit.energyPlantAdvanced,
             gwoUnit.flak,
-            gwoUnit.laserDefenseTower,
             gwoUnit.laserDefenseTowerAdvanced,
             gwoUnit.torpedoLauncherAdvanced,
-            gwoUnit.umbrella,
           ];
           var largeStructures = [
             gwoUnit.anchor,
