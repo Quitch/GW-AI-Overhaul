@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 25;
+      var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.bots)) {
         var dist = system.distance();
         if (
@@ -30,6 +30,8 @@ define([
           dist > 6
         ) {
           chance = 200;
+        } else {
+          chance = 25;
         }
         if (!gwoCard.hasUnit(inventory.units(), gwoGroup.factoriesAdvanced)) {
           chance *= 3;
