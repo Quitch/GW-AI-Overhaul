@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Some cards being offered with incorrect frequency
+
 ## v5.48.0 - 2022-11-26
 
 ### Changed
