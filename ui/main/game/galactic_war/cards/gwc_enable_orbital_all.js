@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 100;
+      var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.orbital)) {
         var dist = system.distance();
         if (
@@ -30,6 +30,8 @@ define([
           dist > 6
         ) {
           chance = 250;
+        } else {
+          chance = 100;
         }
       }
       return { chance: chance };
