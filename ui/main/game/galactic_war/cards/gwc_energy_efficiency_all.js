@@ -19,7 +19,7 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 0;
+      var chance = 33;
       var dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
@@ -37,8 +37,6 @@ define([
         dist > 7
       ) {
         chance = 333;
-      } else {
-        chance = 33;
       }
       return { chance: chance };
     },
