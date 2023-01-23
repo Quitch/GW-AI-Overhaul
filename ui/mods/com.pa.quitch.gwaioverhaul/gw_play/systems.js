@@ -219,6 +219,7 @@ if (!gwoSystemChangesLoaded) {
                   self.system().planets(),
                   function (planet) {
                     var tooltip = radius + " " + planet.generator.radius;
+
                     if (planet.generator.biome === "gas") {
                       return tooltip;
                     }
