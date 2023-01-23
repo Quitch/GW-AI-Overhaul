@@ -138,9 +138,7 @@ define([
     var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
     var aiTag = [];
     _.times(aiFactionCount, function (n) {
-      var aiNewTag = ".ai";
-      n = n.toString();
-      aiNewTag = aiNewTag + n;
+      var aiNewTag = ".ai" + n.toString();
       aiTag.push(aiNewTag);
     });
     var aiBrain = gwoAI.aiInUse();
