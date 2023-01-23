@@ -35,10 +35,15 @@ define([
     return personality;
   };
 
-  var hasSubcommanderDuplicationTech = function (cards) {
-    return _.some(cards, {
-      id: "gwaio_upgrade_subcommander_duplication",
-    });
+  var applySubcommanderDuplicationTech = function (cards) {
+    if (
+      _.some(cards, {
+        id: "gwaio_upgrade_subcommander_duplication",
+      })
+    ) {
+      return 2;
+    }
+    return 1;
   };
 
   var setAdvEcoMod = function (aiRoot, brain) {
@@ -122,9 +127,7 @@ define([
 
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
-      if (hasSubcommanderDuplicationTech(cards)) {
-        ally.commanderCount = 2;
-      }
+      ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
       var allyIndex = index + 1;
       var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
