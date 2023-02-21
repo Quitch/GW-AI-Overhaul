@@ -704,7 +704,7 @@ if (!gwoCardsLoaded) {
               );
 
               if (!duplicate) {
-                console.warn(card.id, "failed duplication test");
+                console.error(card.id, "failed duplication test");
               }
             };
 
