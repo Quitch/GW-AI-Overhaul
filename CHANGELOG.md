@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Implemented new mechanism to avoid dealing duplicate cards and integrated into test deals to ensure it operates correctly
+
 ## v5.48.1 - 2022-11-29
 
 ### Fixed
