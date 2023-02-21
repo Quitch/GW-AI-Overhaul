@@ -761,7 +761,9 @@ if (!gwoCardsLoaded) {
                     product = setupNewCardSlot(product);
                   }
                   applyCheatCards(product, inventory);
-                  testCardForMatches(inventory, product);
+                  if (!product.unique) {
+                    testCardForMatches(inventory, product);
+                  }
                 });
               });
               expandInventorySize(galaxy, inventory, star, maxCards);
