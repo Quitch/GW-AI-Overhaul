@@ -386,6 +386,33 @@ if (!gwoCardsLoaded) {
 
             setupGwoDeck(cards, deck, numberOfCards, loaded);
 
+            var doNotDealCard = function (
+              inventory,
+              card,
+              cardsDealt,
+              dealAddSlot,
+              testRun
+            ) {
+              // Never deal Additional Data Bank as a system's pre-dealt card
+              if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
+                return true;
+              }
+
+              if (testRun) {
+                return (
+                  inventory.hasCard(card.id) &&
+                  _.some(cardsDealt, { id: card.id }) &&
+                  _.some(model.currentSystemCardList(), { id: card.id })
+                );
+              }
+
+              return (
+                inventory.hasCard(card.id) ||
+                _.some(cardsDealt, { id: card.id }) ||
+                _.some(model.currentSystemCardList(), { id: card.id })
+              );
+            };
+
             // GWDealer.chooseCards - use our deck
             var chooseCards = function (params) {
               inventory = params.inventory;
@@ -405,11 +432,6 @@ if (!gwoCardsLoaded) {
                 });
 
                 var list = [];
-                var preDealtCard = _.isUndefined(
-                  model.currentSystemCardList()[0]
-                )
-                  ? ""
-                  : model.currentSystemCardList()[0].id();
 
                 _.times(count, function () {
                   var fullHand = [];
@@ -417,17 +439,16 @@ if (!gwoCardsLoaded) {
 
                   fullHand = _.map(cards, function (card) {
                     var context = cardContexts[card.id];
-
-                    var match =
-                      inventory.hasCard(card.id) ||
-                      card.id === preDealtCard ||
-                      _.some(list, { id: card.id }) ||
-                      // Never deal Additional Data Bank as a system's pre-dealt card
-                      (card.id === "gwc_add_card_slot" &&
-                        dealAddSlot === false);
-
                     var cardChance =
                       card.deal && card.deal(star, context, inventory);
+                    var match = doNotDealCard(
+                      inventory,
+                      card,
+                      list,
+                      dealAddSlot,
+                      false
+                    );
+
                     if (match) {
                       cardChance.chance = 0;
                     }
@@ -611,73 +632,139 @@ if (!gwoCardsLoaded) {
             };
             /* end of GWO implementation of GWDealer */
 
+            var testMinions = function (product, inventory) {
+              _.forEach(GWFactions, function (faction) {
+                _.forEach(faction.minions, function (minion) {
+                  var minionStock = _.cloneDeep(product);
+                  minionStock.minion = minion;
+                  inventory.cards.push(minionStock);
+                  inventory.cards.pop();
+
+                  if (!minionStock.minion.commander) {
+                    // This will use the player's commander
+                    return;
+                  }
+
+                  require([
+                    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+                  ], function (gwoUnit) {
+                    var clusterSecurity = gwoUnit.colonel;
+                    var clusterWorker = gwoUnit.angel;
+
+                    if (
+                      !CommanderUtility.bySpec.getObjectName(
+                        minionStock.minion.commander
+                      ) &&
+                      minionStock.minion.commander !== clusterSecurity &&
+                      minionStock.minion.commander !== clusterWorker
+                    ) {
+                      console.error(
+                        "Minion commander unit spec " +
+                          minionStock.minion.commander +
+                          " invalid"
+                      );
+                    }
+                  });
+                });
+              });
+            };
+
+            var dealSubCommander = function (product) {
+              var subcommander = _.cloneDeep(
+                _.sample(GWFactions[playerFaction].minions)
+              );
+              var ai = gwoSettings && gwoSettings.ai;
+
+              if (ai === "Penchant") {
+                var penchantValues = gwoAI.penchants();
+                subcommander.character =
+                  subcommander.character +
+                  (" " + loc(penchantValues.penchantName));
+                subcommander.personality.personality_tags =
+                  subcommander.personality.personality_tags.concat(
+                    penchantValues.penchants
+                  );
+              }
+              product.minion = subcommander;
+              product.unique = Math.random();
+
+              return product;
+            };
+
+            var testCardForMatches = function (inventory, card) {
+              model.currentSystemCardList().push(card);
+
+              var cardsDealt = [card];
+              var duplicate = doNotDealCard(
+                inventory,
+                card,
+                cardsDealt,
+                false,
+                true
+              );
+
+              if (!duplicate) {
+                console.warn(card.id, "failed duplication test");
+              }
+            };
+
+            var applyCheatCards = function (product, inventory) {
+              inventory.cards.push(product);
+              inventory.applyCards();
+            };
+
+            var setupNewCardSlot = function (product) {
+              product.allowOverflow = true;
+              product.unique = Math.random();
+
+              return product;
+            };
+
+            var expandInventorySize = function (
+              galaxy,
+              inventory,
+              star,
+              maxCards
+            ) {
+              var sizeDifference = inventory.cards().length - maxCards;
+              _.times(sizeDifference, function () {
+                dealCard({
+                  id: "gwc_add_card_slot",
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: star,
+                }).then(function (product) {
+                  product = setupNewCardSlot(product);
+                  applyCheatCards(product, inventory);
+                });
+              });
+            };
+
             // We need cheats to deal from our deck
             model.cheats.testCards = function () {
-              var star = game.galaxy().stars()[game.currentStar()];
+              galaxy = game.galaxy();
+              var star = galaxy.stars()[game.currentStar()];
+              inventory = game.inventory();
+              var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
+
               _.forEach(model.gwoCards, function (cardId) {
-                console.log("Testing " + cardId);
                 dealCard({
                   id: cardId,
-                  galaxy: game.galaxy(),
-                  inventory: game.inventory(),
+                  galaxy: galaxy,
+                  inventory: inventory,
                   star: star,
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    // 1. test all the minions first
-                    _.forEach(GWFactions, function (faction) {
-                      _.forEach(faction.minions, function (minion) {
-                        var minionStock = _.cloneDeep(product);
-                        minionStock.minion = minion;
-                        game.inventory().cards.push(minionStock);
-                        game.inventory().cards.pop();
-                        if (!minionStock.minion.commander) {
-                          // This will use the player's commander
-                          return;
-                        }
-                        require([
-                          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-                        ], function (gwoUnit) {
-                          var clusterSecurity = gwoUnit.colonel;
-                          var clusterWorker = gwoUnit.angel;
-
-                          if (
-                            !CommanderUtility.bySpec.getObjectName(
-                              minionStock.minion.commander
-                            ) &&
-                            minionStock.minion.commander !== clusterSecurity &&
-                            minionStock.minion.commander !== clusterWorker
-                          ) {
-                            console.error(
-                              "Minion commander unit spec " +
-                                minionStock.minion.commander +
-                                " invalid"
-                            );
-                          }
-                        });
-                      });
-                    });
-                    // 2. then deal a sub commander for battle testing
-                    var subcommander = _.cloneDeep(
-                      _.sample(GWFactions[playerFaction].minions)
-                    );
-                    var ai = gwoSettings && gwoSettings.ai;
-                    if (ai === "Penchant") {
-                      var penchantValues = gwoAI.penchants();
-                      subcommander.character =
-                        subcommander.character +
-                        (" " + loc(penchantValues.penchantName));
-                      subcommander.personality.personality_tags =
-                        subcommander.personality.personality_tags.concat(
-                          penchantValues.penchants
-                        );
-                    }
-                    product.minion = subcommander;
-                    product.unique = Math.random();
+                    testMinions(product, inventory);
+                    product = dealSubCommander(product);
+                  } else if (product.id === "gwc_add_card_slot") {
+                    product = setupNewCardSlot(product);
                   }
-                  game.inventory().cards.push(product);
-                  inventory.applyCards();
+                  applyCheatCards(product, inventory);
+                  testCardForMatches(inventory, product);
                 });
               });
+              expandInventorySize(galaxy, inventory, star, maxCards);
             };
 
             model.cheats.giveCard = function () {
@@ -686,6 +773,7 @@ if (!gwoCardsLoaded) {
                 return card === id;
               });
               galaxy = game.galaxy();
+              inventory = game.inventory();
 
               if (_.isUndefined(cardId)) {
                 console.error(
@@ -695,31 +783,15 @@ if (!gwoCardsLoaded) {
                 dealCard({
                   id: cardId,
                   galaxy: galaxy,
-                  inventory: game.inventory(),
+                  inventory: inventory,
                   star: galaxy.stars()[game.currentStar()],
                 }).then(function (product) {
                   if (product.id === "gwc_minion") {
-                    var minion = _.cloneDeep(
-                      _.sample(GWFactions[playerFaction].minions)
-                    );
-                    var ai = gwoSettings && gwoSettings.ai;
-                    if (ai === "Penchant") {
-                      var penchantValues = gwoAI.penchants();
-                      minion.character =
-                        minion.character +
-                        (" " + loc(penchantValues.penchantName));
-                      minion.personality.personality_tags =
-                        minion.personality.personality_tags.concat(
-                          penchantValues.penchants
-                        );
-                    }
-                    product.minion = minion;
-                    product.unique = Math.random();
+                    product = dealSubCommander(product);
                   } else if (product.id === "gwc_add_card_slot") {
-                    product.allowOverflow = true;
-                    product.unique = Math.random();
+                    product = setupNewCardSlot(product);
                   }
-                  game.inventory().cards.push(product);
+                  inventory.cards.push(product);
                   inventory.applyCards();
                   dealCardToSelectableAI(false).then(function () {
                     gwoSave(game, true);

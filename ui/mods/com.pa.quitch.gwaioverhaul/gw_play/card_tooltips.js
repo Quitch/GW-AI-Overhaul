@@ -5,7 +5,7 @@ if (!gwoCardTooltipsLoaded) {
 
   function gwoCardTooltips() {
     try {
-      // Setup tooltips and tech deletion
+      // Set up tooltips and tech deletion
       $("#hover-card").replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"

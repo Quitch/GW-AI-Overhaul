@@ -150,23 +150,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     fileList,
     aiTechPath
   ) {
-    if (aiToModify !== "None") {
-      _.forEach(aiFiles, function (aiFile) {
-        var managerPath = "";
-        if (aiFile.type === "fabber") {
-          managerPath = "fabber_builds/";
-        } else if (aiFile.type === "factory") {
-          managerPath = "factory_builds/";
-        } else if (aiFile.type === "platoon") {
-          managerPath = "platoon_builds/";
-        } else if (aiFile.type === "template") {
-          managerPath = "platoon_templates/";
-        } else {
-          console.error("Invalid op in", aiFile);
-        }
-        fileList.push(aiTechPath + managerPath + aiFile.value);
-      });
+    if (aiToModify === "None") {
+      return;
     }
+
+    _.forEach(aiFiles, function (aiFile) {
+      var managerPath = "";
+      if (aiFile.type === "fabber") {
+        managerPath = "fabber_builds/";
+      } else if (aiFile.type === "factory") {
+        managerPath = "factory_builds/";
+      } else if (aiFile.type === "platoon") {
+        managerPath = "platoon_builds/";
+      } else if (aiFile.type === "template") {
+        managerPath = "platoon_templates/";
+      } else {
+        console.error("Invalid op in", aiFile);
+      }
+      fileList.push(aiTechPath + managerPath + aiFile.value);
+    });
   };
 
   var isClusterAIPresent = function (inventory, ai, subcommanders) {
