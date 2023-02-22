@@ -16,8 +16,8 @@ if (!gwoCheatDetectionLoaded) {
             if (gwoSettings && !gwoSettings.cheatsUsed) {
               model.gwoOptions.push(loc("!LOC:Cheats used"));
               gwoSettings.cheatsUsed = true;
+              gwoSave(game, true);
             }
-            gwoSave(game, true);
           }
         );
       };
