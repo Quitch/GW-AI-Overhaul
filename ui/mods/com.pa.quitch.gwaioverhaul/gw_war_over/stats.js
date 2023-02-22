@@ -10,7 +10,11 @@ if (!gwoWarOverLoadoutStatsLoaded) {
       var galaxy = game.galaxy();
       var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
-      if (gwoSettings && game.gameState() === "won") {
+      if (
+        gwoSettings &&
+        gwoSettings.cheatsUsed !== true &&
+        game.gameState() === "won"
+      ) {
         var difficultyLevelAsInt =
           _.findIndex(
             [

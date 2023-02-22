@@ -31,9 +31,10 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
     ],
     "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cheats.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
