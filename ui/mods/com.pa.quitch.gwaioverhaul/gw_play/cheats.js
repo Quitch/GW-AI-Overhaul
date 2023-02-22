@@ -13,7 +13,10 @@ if (!gwoCheatDetectionLoaded) {
             var galaxy = game.galaxy();
             var originSystem = galaxy.stars()[galaxy.origin()].system();
             var gwoSettings = originSystem.gwaio;
-            gwoSettings.cheatsUsed = true;
+            if (gwoSettings && !gwoSettings.cheatsUsed) {
+              model.gwoOptions.push(loc("!LOC:Cheats used"));
+              gwoSettings.cheatsUsed = true;
+            }
             gwoSave(game, true);
           }
         );
