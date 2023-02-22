@@ -62,6 +62,11 @@ if (!gwoWarInfoPanelLoaded) {
                 model.gwoSettings.easierStart,
                 "!LOC:Easier start"
               );
+              options(
+                model.gwoOptions,
+                model.gwoSettings.cheatsUsed,
+                "!LOC:Cheats used"
+              );
               // deprecated - pre-v5.27.0 support only
               options(
                 model.gwoOptions,

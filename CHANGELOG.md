@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.49.0 - 2023-02-22
+
+### Changed
+
+- Use of cheats will prevent awarding of loadout badges
+
 ## v5.48.2 - 2023-02-21
 
 ### Changed

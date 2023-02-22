@@ -704,7 +704,7 @@ if (!gwoCardsLoaded) {
               );
 
               if (!duplicate) {
-                console.warn(card.id, "failed duplication test");
+                console.error(card.id, "failed duplication test");
               }
             };
 
@@ -761,7 +761,9 @@ if (!gwoCardsLoaded) {
                     product = setupNewCardSlot(product);
                   }
                   applyCheatCards(product, inventory);
-                  testCardForMatches(inventory, product);
+                  if (!product.unique) {
+                    testCardForMatches(inventory, product);
+                  }
                 });
               });
               expandInventorySize(galaxy, inventory, star, maxCards);

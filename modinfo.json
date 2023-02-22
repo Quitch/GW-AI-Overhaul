@@ -4,9 +4,9 @@
   "display_name": "Galactic War Overhaul",
   "description": "Make Galactic War more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and smarter AI. Start a new war to enjoy all the new features and check out the new war tooltips for more information and difficulty recommendations.",
   "author": "Quitch",
-  "version": "5.48.2",
+  "version": "5.49.0",
   "build": "116400",
-  "date": "2023-02-21",
+  "date": "2023-02-22",
   "signature": " ",
   "forum": "https://steamcommunity.com/app/386070/discussions/0/133259956005401439/",
   "category": [
@@ -31,9 +31,10 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
     ],
     "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cheats.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
