@@ -885,6 +885,9 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.simpleSystems();
               originSystem.gwaio.easierStart =
                 model.gwoDifficultySettings.easierStart();
+              if (model.devMode() === true) {
+                originSystem.gwaio.cheatsUsed = true;
+              }
               originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
               originSystem.gwaio.aiMods = [];
               originSystem.gwaio.techCardDeck =

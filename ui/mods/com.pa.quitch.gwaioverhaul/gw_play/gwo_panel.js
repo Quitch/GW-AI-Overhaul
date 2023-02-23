@@ -96,8 +96,7 @@ if (!gwoWarInfoPanelLoaded) {
                 );
               };
 
-              // A subscription doesn't detect --devmode
-              ko.computed(function () {
+              model.devMode.subscribe(function () {
                 if (model.devMode() === true) {
                   cheatsDetected();
                 }
