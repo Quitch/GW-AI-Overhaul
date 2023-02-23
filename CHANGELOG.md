@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.49.1 - 2023-02-23
+
+### Fixed
+
+- Issues with cheat detection not displaying its status correctly
+
 ## v5.49.0 - 2023-02-22
 
 ### Changed
