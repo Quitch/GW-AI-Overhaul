@@ -74,6 +74,33 @@ if (!gwoWarInfoPanelLoaded) {
                 "!LOC:Tougher commanders"
               );
               options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
+
+              var cheatsDetected = function () {
+                requireGW(
+                  ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
+                  function (gwoSave) {
+                    var game = model.game();
+                    var galaxy = game.galaxy();
+                    var originSystem = galaxy.stars()[galaxy.origin()].system();
+                    var gwoSettings = originSystem.gwaio;
+                    if (gwoSettings && !gwoSettings.cheatsUsed) {
+                      gwoSettings.cheatsUsed = true;
+                      options(
+                        model.gwoOptions,
+                        model.gwoSettings.cheatsUsed,
+                        "!LOC:Cheats used"
+                      );
+                      gwoSave(game, true);
+                    }
+                  }
+                );
+              };
+
+              ko.computed(function () {
+                if (model.devMode() === true) {
+                  cheatsDetected();
+                }
+              });
             }
 
             // Player Information
