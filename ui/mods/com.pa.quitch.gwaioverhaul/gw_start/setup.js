@@ -764,7 +764,6 @@ if (!gwoSetupLoaded) {
                 });
               });
 
-              // Set up lore and the treasure planet
               var treasurePlanetSetup = false;
               var loreEntry = 0;
               var optionalLoreEntry = 0;
@@ -785,6 +784,10 @@ if (!gwoSetupLoaded) {
                 } else {
                   _.forEach(star.system().planets, function (planet) {
                     planet.generator.shuffleLandingZones = true;
+                    // Set up Foundation planets
+                    if (ai.faction === 1 && ai.boss !== true) {
+                      planet.generator.waterHeight = 50;
+                    }
                   });
 
                   if (!ai.bossCommanders) {

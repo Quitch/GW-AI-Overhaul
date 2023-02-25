@@ -5,6 +5,7 @@
 ### Changed
 
 - Cluster Security has increased health
+- Foundation planets feature more water
 
 ## v5.49.1 - 2023-02-23
 
