@@ -12,6 +12,7 @@ if (!gwoSetupLoaded) {
       // We change how we monitor model.ready() to prevent
       // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
+      var sharedSystemsForGalacticWarActive = false;
       model.ready = ko.computed(function () {
         return enableGoToWar() && !!model.activeStartCard();
       });
@@ -21,6 +22,7 @@ if (!gwoSetupLoaded) {
         };
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
+          sharedSystemsForGalacticWarActive = true;
           model.selectedNames.subscribe(function (names) {
             // No systems selected
             if (_.isEmpty(names)) {
@@ -785,7 +787,11 @@ if (!gwoSetupLoaded) {
                   _.forEach(star.system().planets, function (planet) {
                     planet.generator.shuffleLandingZones = true;
                     // Set up Foundation planets
-                    if (ai.faction === 1 && ai.boss !== true) {
+                    if (
+                      sharedSystemsForGalacticWarActive === false &&
+                      ai.faction === 1 &&
+                      ai.boss !== true
+                    ) {
                       planet.generator.waterHeight = 50;
                     }
                   });
