@@ -12,6 +12,7 @@ if (!gwoSetupLoaded) {
       // We change how we monitor model.ready() to prevent
       // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
+      var sharedSystemsForGalacticWarActive = false;
       model.ready = ko.computed(function () {
         return enableGoToWar() && !!model.activeStartCard();
       });
@@ -21,6 +22,7 @@ if (!gwoSetupLoaded) {
         };
         // Shared Systems for Galactic War
         if (modMounted("com.wondible.pa.gw_shared_systems")) {
+          sharedSystemsForGalacticWarActive = true;
           model.selectedNames.subscribe(function (names) {
             // No systems selected
             if (_.isEmpty(names)) {
@@ -372,7 +374,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.49.1";
+            var version = "5.50.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -764,7 +766,6 @@ if (!gwoSetupLoaded) {
                 });
               });
 
-              // Set up lore and the treasure planet
               var treasurePlanetSetup = false;
               var loreEntry = 0;
               var optionalLoreEntry = 0;
@@ -785,6 +786,14 @@ if (!gwoSetupLoaded) {
                 } else {
                   _.forEach(star.system().planets, function (planet) {
                     planet.generator.shuffleLandingZones = true;
+                    // Set up Foundation planets
+                    if (
+                      sharedSystemsForGalacticWarActive === false &&
+                      ai.faction === 1 &&
+                      ai.boss !== true
+                    ) {
+                      planet.generator.waterHeight = 50;
+                    }
                   });
 
                   if (!ai.bossCommanders) {
@@ -885,6 +894,9 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.simpleSystems();
               originSystem.gwaio.easierStart =
                 model.gwoDifficultySettings.easierStart();
+              if (model.devMode() === true) {
+                originSystem.gwaio.cheatsUsed = true;
+              }
               originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
               originSystem.gwaio.aiMods = [];
               originSystem.gwaio.techCardDeck =

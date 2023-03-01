@@ -8,7 +8,7 @@ if (!gwoCardsLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
-        // Used to by cards checking for T2 access - global var for modders
+        // Used by cards checking for T2 access - global var for modders
         model.cardsGrantingAdvancedTech = [
           "gwc_enable_air_all",
           "gwc_enable_bots_all",

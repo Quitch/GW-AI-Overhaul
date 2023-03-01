@@ -11,6 +11,12 @@ define([
     },
     {
       file: gwoUnit.colonel,
+      path: "max_health",
+      op: "multiply",
+      value: 1.5625,
+    },
+    {
+      file: gwoUnit.colonel,
       path: "unit_types",
       op: "replace",
       value: [

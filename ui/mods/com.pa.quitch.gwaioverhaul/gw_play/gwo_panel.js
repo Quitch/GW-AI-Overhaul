@@ -96,7 +96,7 @@ if (!gwoWarInfoPanelLoaded) {
                 );
               };
 
-              ko.computed(function () {
+              model.devMode.subscribe(function () {
                 if (model.devMode() === true) {
                   cheatsDetected();
                 }
