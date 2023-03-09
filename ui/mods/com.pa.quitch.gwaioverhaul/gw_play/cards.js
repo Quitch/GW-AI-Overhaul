@@ -64,7 +64,6 @@ if (!gwoCardsLoaded) {
           }
 
           ko.computed(function () {
-            game.turnState();
             if (game.turnState() === "end") {
               model.gwoRerollsUsed(0);
               model.gwoOfferRerolls(true);
