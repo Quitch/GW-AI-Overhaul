@@ -330,7 +330,7 @@ if (!gwoSetupLoaded) {
               _.forEach(ais, function (ai) {
                 ai.personality.personality_tags.push("ffa");
               });
-            } else if (ais) {
+            } else {
               ais.personality.personality_tags.push("ffa");
             }
           };
