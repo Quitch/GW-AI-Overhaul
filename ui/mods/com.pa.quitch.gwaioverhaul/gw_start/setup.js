@@ -9,10 +9,11 @@ if (!gwoSetupLoaded) {
         // Prevent changes to settings causing creation of new galaxies
       };
 
-      // We change how we monitor model.ready() to prevent
-      // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
       var sharedSystemsForGalacticWarActive = false;
+
+      // We change how we monitor model.ready() to prevent
+      // Shared Systems for Galactic War breaking our new lobby
       model.ready = ko.computed(function () {
         return enableGoToWar() && !!model.activeStartCard();
       });
