@@ -248,15 +248,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           };
         });
         var clusterAIPath = gwoAI.getAIPath("cluster");
-        var quellerSubCommander = false;
-        if (
+        var quellerSubCommander =
           isQueller &&
           numberOfAllies > 0 &&
           (_.startsWith(filePath, subcommanderAIPath) ||
-            _.startsWith(filePath, aiTechPath))
-        ) {
-          quellerSubCommander = true;
-        }
+            _.startsWith(filePath, aiTechPath));
 
         // Only mods associated with the file's AI manager are loaded
         if (
