@@ -81,12 +81,13 @@ define([
     },
   ];
   _.forEach(inventory.clusterCommanders, function (commander) {
+    // match with key Commander stats
     clusterCommanderTech.push(
       {
         file: commander,
         path: "build_metal_cost",
         op: "replace",
-        value: 25000,
+        value: 25000, // because repair/reclaim
       },
       {
         file: commander,
@@ -124,6 +125,7 @@ define([
         op: "replace",
         value: 20,
       },
+      // only required in classic mode - done for safety
       {
         file: commander,
         path: "recon.observer.items",
