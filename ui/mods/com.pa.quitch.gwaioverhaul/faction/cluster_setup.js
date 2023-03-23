@@ -13,7 +13,7 @@ define([
       file: gwoUnit.colonel,
       path: "max_health",
       op: "multiply",
-      value: 1.5625,
+      value: 1.5625, // match Commander health
     },
     {
       file: gwoUnit.colonel,
