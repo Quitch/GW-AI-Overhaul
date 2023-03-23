@@ -1,7 +1,7 @@
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
 ], function (GW, gwoGroup, gwoCluster) {
   return {
     visible: _.constant(false),
