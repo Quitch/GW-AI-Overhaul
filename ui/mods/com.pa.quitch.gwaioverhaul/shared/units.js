@@ -328,7 +328,7 @@ define({
   slammerAmmo: "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
   slammerTorpedo:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
-  // torpedo launcher doesn't use this ammo, only the Slammer does
+  // TITANS torpedo launcher doesn't use this ammo, only the Slammer does
   slammerTorpedoAmmo:
     "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
   slammerWeapon:
