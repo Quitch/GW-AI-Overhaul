@@ -64,7 +64,6 @@ if (!gwoCardsLoaded) {
           }
 
           ko.computed(function () {
-            game.turnState();
             if (game.turnState() === "end") {
               model.gwoRerollsUsed(0);
               model.gwoOfferRerolls(true);
@@ -337,15 +336,16 @@ if (!gwoCardsLoaded) {
           if (!model.gwoCards) {
             model.gwoCards = [];
           }
+
           if (
             !gwoSettings || // non-GWO saves
             !gwoSettings.techCardDeck || // v5.35.0 and earlier
             gwoSettings.techCardDeck === "Expanded"
           ) {
             return model.gwoCards.concat(basicCards, expandedCards);
-          } else {
-            return model.gwoCards.concat(basicCards);
           }
+
+          return model.gwoCards.concat(basicCards);
         };
 
         var setupGwoDeck = function (cards, deck, cardsRemaining, promise) {

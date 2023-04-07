@@ -9,10 +9,11 @@ if (!gwoSetupLoaded) {
         // Prevent changes to settings causing creation of new galaxies
       };
 
-      // We change how we monitor model.ready() to prevent
-      // Shared Systems for Galactic War breaking our new lobby
       var enableGoToWar = ko.observable(true);
       var sharedSystemsForGalacticWarActive = false;
+
+      // We change how we monitor model.ready() to prevent
+      // Shared Systems for Galactic War breaking our new lobby
       model.ready = ko.computed(function () {
         return enableGoToWar() && !!model.activeStartCard();
       });
@@ -47,7 +48,7 @@ if (!gwoSetupLoaded) {
           "pages/gw_start/gw_teams",
           "main/shared/js/star_system_templates",
           "main/game/galactic_war/shared/js/gw_easy_star_systems",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cluster.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
@@ -329,7 +330,7 @@ if (!gwoSetupLoaded) {
               _.forEach(ais, function (ai) {
                 ai.personality.personality_tags.push("ffa");
               });
-            } else if (ais) {
+            } else {
               ais.personality.personality_tags.push("ffa");
             }
           };
@@ -374,7 +375,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.50.0";
+            var version = "5.50.1";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();

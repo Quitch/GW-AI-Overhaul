@@ -24,7 +24,6 @@ if (!gwoRefereeChangesLoaded) {
             var self = this;
 
             self.game = ko.observable(game);
-
             self.files = ko.observable();
             self.localFiles = ko.observable();
             self.config = ko.observable();
