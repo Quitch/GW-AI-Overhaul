@@ -87,7 +87,7 @@ define([
             }
           );
           var weapons = _.filter(
-            gwoGroup.structuresDefences,
+            gwoGroup.structuresDefencesWeapons,
             function (defence) {
               return defence !== gwoUnit.landMineWeapon;
             }

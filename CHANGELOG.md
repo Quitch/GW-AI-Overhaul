@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Defense Tech Commander not applying range, turn, and rate of fire buffs
+
 ## v5.50.1 - 2023-04-07
 
 ### Fixed
