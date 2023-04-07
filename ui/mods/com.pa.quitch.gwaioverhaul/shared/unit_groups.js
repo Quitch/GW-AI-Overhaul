@@ -602,7 +602,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresIntelAdvanced: structuresIntelAdvanced,
     structuresIntelBasic: structuresIntelBasic,
     structuresSuperWeapons: structuresSuperWeapons,
-    teleporter: teleporters,
+    teleporters: teleporters,
     titans: titans,
     titansAmmo: titansAmmo,
     titansWeapons: titansWeapons,
