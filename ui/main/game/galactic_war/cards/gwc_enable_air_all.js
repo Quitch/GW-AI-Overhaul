@@ -29,9 +29,9 @@ define([
           (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
           dist > 6
         ) {
-          chance = 25;
-        } else {
           chance = 200;
+        } else {
+          chance = 25;
         }
         if (!gwoCard.hasUnit(inventory.units(), gwoGroup.factoriesAdvanced)) {
           chance *= 3;
