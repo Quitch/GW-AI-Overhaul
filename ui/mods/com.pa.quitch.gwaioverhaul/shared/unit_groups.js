@@ -314,7 +314,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.vehicleFactory,
     gwoUnit.vehicleFactoryAdvanced,
   ];
-  var structuresIntelBasic = [gwoUnit.radar, gwoUnit.teleporter];
+  var structuresIntelBasic = [gwoUnit.radar];
   var structuresIntelAdvanced = [
     gwoUnit.deepSpaceOrbitalRadar,
     gwoUnit.radarAdvanced,
@@ -330,7 +330,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresSuperWeapons,
     structuresIntel,
     structuresEco,
-    structuresArtillery
+    structuresArtillery,
+    gwoUnit.teleporter
   );
 
   var titans = [
@@ -505,6 +506,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.zeusWeapon,
   ];
 
+  var teleporters = [gwoUnit.teleporter, gwoUnit.helios];
+
   var ammo = airAmmo.concat(
     botsAmmo,
     navalAmmo,
@@ -599,6 +602,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresIntelAdvanced: structuresIntelAdvanced,
     structuresIntelBasic: structuresIntelBasic,
     structuresSuperWeapons: structuresSuperWeapons,
+    teleporter: teleporters,
     titans: titans,
     titansAmmo: titansAmmo,
     titansWeapons: titansWeapons,

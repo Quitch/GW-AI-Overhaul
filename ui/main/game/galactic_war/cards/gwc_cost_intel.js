@@ -42,7 +42,8 @@ define([
         gwoUnit.vanguard,
         gwoUnit.stitch,
         gwoUnit.mend,
-        gwoUnit.barnacle
+        gwoUnit.barnacle,
+        gwoUnit.teleporter
       );
       var mods = _.map(units, function (unit) {
         return {

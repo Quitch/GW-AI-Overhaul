@@ -5,6 +5,7 @@
 ### Fixed
 
 - Defense Tech Commander not applying range, turn, and rate of fire buffs
+- Improved and Complete Intelligence Tech causing radars to default to an off state
 
 ## v5.50.1 - 2023-04-07
 
