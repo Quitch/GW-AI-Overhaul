@@ -43,20 +43,20 @@ define([
     buff: function (inventory) {
       var mods = [];
       _.forEach(gwoGroup.energyIntel, function (unit) {
-        mods.push(
-          {
-            file: unit,
-            path: "consumption.energy",
-            op: "multiply",
-            value: 0.25,
-          },
-          {
-            file: unit,
-            path: "teleporter.energy_demand",
-            op: "multiply",
-            value: 0.25,
-          }
-        );
+        mods.push({
+          file: unit,
+          path: "consumption.energy",
+          op: "multiply",
+          value: 0.25,
+        });
+      });
+      _.forEach(gwoGroup.teleporters, function (unit) {
+        mods.push({
+          file: unit,
+          path: "teleporter.energy_demand",
+          op: "multiply",
+          value: 0.25,
+        });
       });
       _.forEach(gwoGroup.energyWeapons, function (weapon) {
         mods.push(

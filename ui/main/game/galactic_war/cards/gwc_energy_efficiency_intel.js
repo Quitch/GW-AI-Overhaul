@@ -41,25 +41,23 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwoGroup.energyIntel;
-      var mods = _.flatten(
-        _.map(units, function (unit) {
-          return [
-            {
-              file: unit,
-              path: "consumption.energy",
-              op: "multiply",
-              value: 0.25,
-            },
-            {
-              file: unit,
-              path: "teleporter.energy_demand",
-              op: "multiply",
-              value: 0.25,
-            },
-          ];
-        })
-      );
+      var mods = [];
+      _.forEach(gwoGroup.energyIntel, function (unit) {
+        mods.push({
+          file: unit,
+          path: "consumption.energy",
+          op: "multiply",
+          value: 0.25,
+        });
+      });
+      _.forEach(gwoGroup.teleporters, function (unit) {
+        mods.push({
+          file: unit,
+          path: "teleporter.energy_demand",
+          op: "multiply",
+          value: 0.25,
+        });
+      });
       inventory.addMods(mods);
     },
     dull: function () {

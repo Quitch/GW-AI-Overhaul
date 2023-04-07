@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v5.50.2 - 2023-04-07
+
+### Fixed
+
+- Defense Tech Commander not applying range, turn, and rate of fire buffs
+- Improved and Complete Intelligence Tech causing radars to default to an off state
+- Corrected tooltip for Improved and Complete Intelligence Tech
+
 ## v5.50.1 - 2023-04-07
 
 ### Fixed
