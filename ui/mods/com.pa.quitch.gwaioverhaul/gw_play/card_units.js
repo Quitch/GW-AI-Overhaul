@@ -174,8 +174,14 @@ define([
         id: "gwc_enable_vehicles_t2", // not used
         units: gwoGroup.vehiclesAdvanced,
       },
-      { id: "gwc_energy_efficiency_all", units: gwoGroup.energyAll },
-      { id: "gwc_energy_efficiency_intel", units: gwoGroup.energyIntel },
+      {
+        id: "gwc_energy_efficiency_all",
+        units: gwoGroup.energyAll.concat(gwoGroup.teleporters),
+      },
+      {
+        id: "gwc_energy_efficiency_intel",
+        units: gwoGroup.energyIntel.concat(gwoGroup.teleporters),
+      },
       { id: "gwc_energy_efficiency_weapons", units: gwoGroup.energyUnits },
       { id: "gwc_health_air", units: gwoGroup.airMobile },
       { id: "gwc_health_bots", units: gwoGroup.botsMobile },
