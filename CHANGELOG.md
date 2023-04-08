@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.50.3 - 2023-04-08
+
+### Fixed
+
+- Dealing of duplicate cards
+
 ## v5.50.2 - 2023-04-07
 
 ### Fixed
