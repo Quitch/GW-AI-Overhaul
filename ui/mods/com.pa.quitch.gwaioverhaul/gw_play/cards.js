@@ -409,7 +409,9 @@ if (!gwoCardsLoaded) {
               return (
                 inventory.hasCard(card.id) ||
                 _.some(cardsDealt, { id: card.id }) ||
-                _.some(model.currentSystemCardList(), { id: card.id })
+                _.some(model.currentSystemCardList(), function (systemCard) {
+                  return systemCard.id() === card.id;
+                })
               );
             };
 
