@@ -66,15 +66,15 @@ define([
                   type: "factory",
                   op: "append",
                   toBuild: structure,
-                  value: "Commander",
                   idToMod: "builders",
+                  value: "Commander", // TITANS AI
                 },
                 {
                   type: "factory",
                   op: "append",
                   toBuild: structure,
-                  value: "UberCommander", // Queller AI
                   idToMod: "builders",
+                  value: "UberCommander", // Queller AI
                 },
               ];
             })

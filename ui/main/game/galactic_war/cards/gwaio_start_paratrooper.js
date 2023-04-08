@@ -112,7 +112,7 @@ define([
             {
               type: "factory",
               op: "load",
-              value: "gwaio_upgrade_leveler.json",
+              value: "gwaio_upgrade_leveler.json", // Queller AI
             },
           ];
           var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
