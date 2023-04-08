@@ -46,10 +46,7 @@ if (!gwoMenuLoaded) {
               );
             };
 
-            var playerLost = false;
-            if (model.gameOver() || model.defeated()) {
-              playerLost = true;
-            }
+            var playerLost = model.gameOver() || model.defeated();
 
             var menu = [
               {
