@@ -73,7 +73,7 @@ define([
                   type: "factory",
                   op: "append",
                   toBuild: structure,
-                  value: "UberCommander",
+                  value: "UberCommander", // Queller AI
                   idToMod: "builders",
                 },
               ];

@@ -144,7 +144,7 @@ define([
                   op: "append",
                   toBuild: structure,
                   idToMod: "builders",
-                  value: "UberCommander",
+                  value: "UberCommander", // Queller AI
                 },
                 {
                   type: "fabber",
