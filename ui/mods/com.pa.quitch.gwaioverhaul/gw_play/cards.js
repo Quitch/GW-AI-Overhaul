@@ -377,6 +377,7 @@ if (!gwoCardsLoaded) {
             var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
             /* Start of GWO implementation of GWDealer */
+
             model.gwoCards = setupGwoCards(gwoSettings);
 
             var cards = [];
@@ -606,6 +607,8 @@ if (!gwoCardsLoaded) {
             };
             dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
+            /* Cheat code start */
+
             // Cheats use our deck
             var dealCard = function (params) {
               var result = $.Deferred();
@@ -632,6 +635,7 @@ if (!gwoCardsLoaded) {
               });
               return result;
             };
+
             /* end of GWO implementation of GWDealer */
 
             var testMinions = function (product, inventory) {
@@ -803,6 +807,8 @@ if (!gwoCardsLoaded) {
                 });
               }
             };
+
+            /* Cheat code end */
 
             // gw_play self.explore - call our chooseCards function
             model.explore = function () {
