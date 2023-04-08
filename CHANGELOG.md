@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Teleporters not being provided as part of all loadouts
+
 ## v5.50.3 - 2023-04-08
 
 ### Fixed
