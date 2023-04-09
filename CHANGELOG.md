@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Long Which Units? tooltips use a new divider for clarity
+
 ## v5.50.4 - 2023-04-08
 
 ### Fixed

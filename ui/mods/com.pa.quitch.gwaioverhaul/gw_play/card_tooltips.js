@@ -81,7 +81,7 @@ if (!gwoCardTooltipsLoaded) {
                     if (affectedUnits.length < 13) {
                       return unit.concat("<br>");
                     } else if (index < affectedUnits.length - 1) {
-                      return unit.concat("; ");
+                      return unit.concat(" | ");
                     } else {
                       return unit;
                     }
