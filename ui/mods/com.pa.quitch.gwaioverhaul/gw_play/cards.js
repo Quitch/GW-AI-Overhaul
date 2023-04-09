@@ -852,6 +852,7 @@ if (!gwoCardsLoaded) {
                 });
 
                 if (ok) {
+                  // Combine the deal with pre-dealt system card
                   var cardList = result.concat(star.cardList());
                   star.cardList(cardList);
                 }
