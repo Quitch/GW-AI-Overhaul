@@ -84,11 +84,10 @@ if (!gwoCardTooltipsLoaded) {
                   );
                   return loc("!LOC:Unknown Unit");
                 } else {
-                  var playerOwnsUnit = unitInPlayerInventory(unit);
                   var translatedName = loc(
                     gwoUnitToNames.units[cardIndex].name
                   );
-                  var formattedName = playerOwnsUnit
+                  var formattedName = unitInPlayerInventory(unit)
                     ? translatedName
                     : highlightUnitName(translatedName);
                   return formattedName;
