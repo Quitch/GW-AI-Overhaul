@@ -59,11 +59,11 @@ if (!gwoCardTooltipsLoaded) {
             }
 
             var cardId = card.id();
-            var cardIndex = _.findIndex(model.gwoCardsToUnits, {
+            var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
               id: cardId,
             });
 
-            if (cardIndex === -1) {
+            if (cardUnitsIndex === -1) {
               if (cardId) {
                 console.warn(
                   cardId + " is invalid or missing from model.gwoCardsToUnits"
@@ -72,20 +72,20 @@ if (!gwoCardTooltipsLoaded) {
               return;
             }
 
-            var units = model.gwoCardsToUnits[cardIndex].units;
+            var units = model.gwoCardsToUnits[cardUnitsIndex].units;
             if (units) {
               var affectedUnits = _.map(units, function (unit) {
-                cardIndex = _.findIndex(gwoUnitToNames.units, {
+                var unitNameIndex = _.findIndex(gwoUnitToNames.units, {
                   path: unit,
                 });
-                if (cardIndex === -1) {
+                if (unitNameIndex === -1) {
                   console.warn(
                     unit + " is invalid or missing from GWO unit_names.js"
                   );
                   return loc("!LOC:Unknown Unit");
                 } else {
                   var translatedName = loc(
-                    gwoUnitToNames.units[cardIndex].name
+                    gwoUnitToNames.units[unitNameIndex].name
                   );
                   var formattedName = unitInPlayerInventory(unit)
                     ? translatedName
