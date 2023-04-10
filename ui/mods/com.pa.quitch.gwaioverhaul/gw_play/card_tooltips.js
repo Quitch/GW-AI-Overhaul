@@ -35,6 +35,17 @@ if (!gwoCardTooltipsLoaded) {
             model.gwoCardsToUnits = gwoCardsToUnits.cards;
           }
 
+          var unitInPlayerInventory = function (unit) {
+            var playerUnits = model.game().inventory().units();
+            return _.some(playerUnits, function (playerUnit) {
+              return playerUnit === unit;
+            });
+          };
+
+          var highlightUnitName = function (unitName) {
+            return "<mark>" + unitName + "</mark>";
+          };
+
           var makeCardTooltip = function (card, hoverIndex) {
             if (card.isLoadout()) {
               return;
@@ -73,7 +84,14 @@ if (!gwoCardTooltipsLoaded) {
                   );
                   return loc("!LOC:Unknown Unit");
                 } else {
-                  return loc(gwoUnitToNames.units[cardIndex].name);
+                  var playerOwnsUnit = unitInPlayerInventory(unit);
+                  var translatedName = loc(
+                    gwoUnitToNames.units[cardIndex].name
+                  );
+                  var formattedName = playerOwnsUnit
+                    ? translatedName
+                    : highlightUnitName(translatedName);
+                  return formattedName;
                 }
               }).sort();
 
