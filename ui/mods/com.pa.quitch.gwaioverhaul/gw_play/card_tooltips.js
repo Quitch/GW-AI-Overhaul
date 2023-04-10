@@ -52,10 +52,10 @@ if (!gwoCardTooltipsLoaded) {
             }
 
             // Ensure inventory hovers work at the same time as the new tech display
-            if (hoverIndex) {
-              hoverIndex += 1;
-            } else {
+            if (_.isUndefined(hoverIndex)) {
               hoverIndex = 0;
+            } else {
+              hoverIndex += 1;
             }
 
             var cardId = card.id();
@@ -64,7 +64,7 @@ if (!gwoCardTooltipsLoaded) {
             });
 
             if (cardUnitsIndex === -1) {
-              if (cardId) {
+              if (!_.isUndefined(cardId)) {
                 console.warn(
                   cardId + " is invalid or missing from model.gwoCardsToUnits"
                 );
