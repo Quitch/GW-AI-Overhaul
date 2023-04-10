@@ -21,6 +21,7 @@ if (!gwoCardTooltipsLoaded) {
         function (gwoUnitToNames, gwoCardsToUnits) {
           model.gwoTechCardTooltip = ko.observableArray([]);
 
+          // support for modders to add to the tooltip system
           if (model.gwoCardsToUnits) {
             model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
               gwoCardsToUnits.cards
@@ -68,6 +69,7 @@ if (!gwoCardTooltipsLoaded) {
 
             var units = model.gwoCardsToUnits[cardUnitsIndex].units;
             if (units) {
+              // find, sort, and highlight the unit names
               var affectedUnits = _.map(units, function (unit) {
                 var unitNameIndex = _.findIndex(gwoUnitToNames.units, {
                   path: unit,
@@ -88,6 +90,7 @@ if (!gwoCardTooltipsLoaded) {
                 }
               }).sort();
 
+              // set up the final tooltip
               model.gwoTechCardTooltip()[hoverIndex] = _.map(
                 affectedUnits,
                 function (unitName, index) {
@@ -115,6 +118,7 @@ if (!gwoCardTooltipsLoaded) {
             _.forEach(model.currentSystemCardList(), makeCardTooltip);
           }
 
+          // add tooltips to cards
           var hoverCount = 0;
           model.setHoverCard = function (card, hoverEvent) {
             if (card === model.hoverCard()) {
