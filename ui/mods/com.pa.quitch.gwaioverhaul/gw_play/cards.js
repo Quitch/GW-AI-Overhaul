@@ -8,6 +8,14 @@ if (!gwoCardsLoaded) {
       var game = model.game();
 
       if (!game.isTutorial()) {
+        // Allow tech cards to be deleted at any time
+        $("#hover-card").replaceWith(
+          loadHtml(
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
+          )
+        );
+        locTree($("#hover-card"));
+
         // Used by cards checking for T2 access - global var for modders
         model.cardsGrantingAdvancedTech = [
           "gwc_enable_air_all",
