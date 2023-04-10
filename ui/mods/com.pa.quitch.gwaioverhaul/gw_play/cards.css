@@ -10,3 +10,7 @@
 #system-card .tooltip-inner {
   max-width: 400px;
 }
+
+.highlight {
+  color: #00b3ff;
+}

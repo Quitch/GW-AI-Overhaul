@@ -5,13 +5,7 @@ if (!gwoCardTooltipsLoaded) {
 
   function gwoCardTooltips() {
     try {
-      // Set up tooltips and tech deletion
-      $("#hover-card").replaceWith(
-        loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
-        )
-      );
-      locTree($("#hover-card"));
+      // UI for card tooltips
       $("#system-card").replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
@@ -35,6 +29,17 @@ if (!gwoCardTooltipsLoaded) {
             model.gwoCardsToUnits = gwoCardsToUnits.cards;
           }
 
+          var unitInPlayerInventory = function (unit) {
+            var playerUnits = model.game().inventory().units();
+            return _.some(playerUnits, function (playerUnit) {
+              return playerUnit === unit;
+            });
+          };
+
+          var highlightUnitName = function (unitName) {
+            return "<span class='highlight'>" + unitName + "</span>";
+          };
+
           var makeCardTooltip = function (card, hoverIndex) {
             if (card.isLoadout()) {
               return;
@@ -48,48 +53,55 @@ if (!gwoCardTooltipsLoaded) {
             }
 
             var cardId = card.id();
-            var cardIndex = _.findIndex(model.gwoCardsToUnits, {
+            var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
               id: cardId,
             });
 
-            if (cardIndex === -1) {
+            if (cardUnitsIndex === -1) {
               if (!_.isUndefined(cardId)) {
                 console.warn(
                   cardId + " is invalid or missing from model.gwoCardsToUnits"
                 );
               }
-            } else {
-              var units = model.gwoCardsToUnits[cardIndex].units;
-              if (units) {
-                var affectedUnits = _.map(units, function (unit) {
-                  cardIndex = _.findIndex(gwoUnitToNames.units, {
-                    path: unit,
-                  });
-                  if (cardIndex === -1) {
-                    console.warn(
-                      unit + " is invalid or missing from GWO unit_names.js"
-                    );
-                    return loc("!LOC:Unknown Unit");
-                  } else {
-                    return loc(gwoUnitToNames.units[cardIndex].name);
-                  }
-                }).sort();
+              return;
+            }
 
-                model.gwoTechCardTooltip()[hoverIndex] = _.map(
-                  affectedUnits,
-                  function (unit, index) {
-                    if (affectedUnits.length < 13) {
-                      return unit.concat("<br>");
-                    } else if (index < affectedUnits.length - 1) {
-                      return unit.concat("; ");
-                    } else {
-                      return unit;
-                    }
+            var units = model.gwoCardsToUnits[cardUnitsIndex].units;
+            if (units) {
+              var affectedUnits = _.map(units, function (unit) {
+                var unitNameIndex = _.findIndex(gwoUnitToNames.units, {
+                  path: unit,
+                });
+                if (unitNameIndex === -1) {
+                  console.warn(
+                    unit + " is invalid or missing from GWO unit_names.js"
+                  );
+                  return loc("!LOC:Unknown Unit");
+                } else {
+                  var translatedName = loc(
+                    gwoUnitToNames.units[unitNameIndex].name
+                  );
+                  var formattedName = unitInPlayerInventory(unit)
+                    ? translatedName
+                    : highlightUnitName(translatedName);
+                  return formattedName;
+                }
+              }).sort();
+
+              model.gwoTechCardTooltip()[hoverIndex] = _.map(
+                affectedUnits,
+                function (unitName, index) {
+                  if (affectedUnits.length < 13) {
+                    return unitName.concat("<br>");
+                  } else if (index < affectedUnits.length - 1) {
+                    return unitName.concat(" | ");
+                  } else {
+                    return unitName;
                   }
-                );
-              } else {
-                model.gwoTechCardTooltip()[hoverIndex] = undefined;
-              }
+                }
+              );
+            } else {
+              model.gwoTechCardTooltip()[hoverIndex] = undefined;
             }
           };
 

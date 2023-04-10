@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.51.0 - 2023-04-10
+
+### Changed
+
+- Long Which Units? tooltips use a new divider for clarity
+- Tooltips highlight units the player doesn't own
+
 ## v5.50.4 - 2023-04-08
 
 ### Fixed
