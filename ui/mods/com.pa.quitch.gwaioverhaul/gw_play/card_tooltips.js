@@ -43,7 +43,7 @@ if (!gwoCardTooltipsLoaded) {
           };
 
           var highlightUnitName = function (unitName) {
-            return "<mark>" + unitName + "</mark>";
+            return "<span class='highlight'>" + unitName + "</span>";
           };
 
           var makeCardTooltip = function (card, hoverIndex) {
@@ -107,6 +107,7 @@ if (!gwoCardTooltipsLoaded) {
                   }
                 }
               );
+              console.log(model.gwoTechCardTooltip()[hoverIndex]);
             } else {
               model.gwoTechCardTooltip()[hoverIndex] = undefined;
             }
