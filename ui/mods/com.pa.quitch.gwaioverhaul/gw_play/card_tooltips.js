@@ -58,38 +58,39 @@ if (!gwoCardTooltipsLoaded) {
                   cardId + " is invalid or missing from model.gwoCardsToUnits"
                 );
               }
-            } else {
-              var units = model.gwoCardsToUnits[cardIndex].units;
-              if (units) {
-                var affectedUnits = _.map(units, function (unit) {
-                  cardIndex = _.findIndex(gwoUnitToNames.units, {
-                    path: unit,
-                  });
-                  if (cardIndex === -1) {
-                    console.warn(
-                      unit + " is invalid or missing from GWO unit_names.js"
-                    );
-                    return loc("!LOC:Unknown Unit");
-                  } else {
-                    return loc(gwoUnitToNames.units[cardIndex].name);
-                  }
-                }).sort();
+              return;
+            }
 
-                model.gwoTechCardTooltip()[hoverIndex] = _.map(
-                  affectedUnits,
-                  function (unit, index) {
-                    if (affectedUnits.length < 13) {
-                      return unit.concat("<br>");
-                    } else if (index < affectedUnits.length - 1) {
-                      return unit.concat(" | ");
-                    } else {
-                      return unit;
-                    }
+            var units = model.gwoCardsToUnits[cardIndex].units;
+            if (units) {
+              var affectedUnits = _.map(units, function (unit) {
+                cardIndex = _.findIndex(gwoUnitToNames.units, {
+                  path: unit,
+                });
+                if (cardIndex === -1) {
+                  console.warn(
+                    unit + " is invalid or missing from GWO unit_names.js"
+                  );
+                  return loc("!LOC:Unknown Unit");
+                } else {
+                  return loc(gwoUnitToNames.units[cardIndex].name);
+                }
+              }).sort();
+
+              model.gwoTechCardTooltip()[hoverIndex] = _.map(
+                affectedUnits,
+                function (unit, index) {
+                  if (affectedUnits.length < 13) {
+                    return unit.concat("<br>");
+                  } else if (index < affectedUnits.length - 1) {
+                    return unit.concat(" | ");
+                  } else {
+                    return unit;
                   }
-                );
-              } else {
-                model.gwoTechCardTooltip()[hoverIndex] = undefined;
-              }
+                }
+              );
+            } else {
+              model.gwoTechCardTooltip()[hoverIndex] = undefined;
             }
           };
 
