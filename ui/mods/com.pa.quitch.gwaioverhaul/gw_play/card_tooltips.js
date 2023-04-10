@@ -107,7 +107,6 @@ if (!gwoCardTooltipsLoaded) {
                   }
                 }
               );
-              console.log(model.gwoTechCardTooltip()[hoverIndex]);
             } else {
               model.gwoTechCardTooltip()[hoverIndex] = undefined;
             }
