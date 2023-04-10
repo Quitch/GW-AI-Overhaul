@@ -96,13 +96,13 @@ if (!gwoCardTooltipsLoaded) {
 
               model.gwoTechCardTooltip()[hoverIndex] = _.map(
                 affectedUnits,
-                function (unit, index) {
+                function (unitName, index) {
                   if (affectedUnits.length < 13) {
-                    return unit.concat("<br>");
+                    return unitName.concat("<br>");
                   } else if (index < affectedUnits.length - 1) {
-                    return unit.concat(" | ");
+                    return unitName.concat(" | ");
                   } else {
-                    return unit;
+                    return unitName;
                   }
                 }
               );
