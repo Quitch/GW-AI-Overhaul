@@ -87,7 +87,7 @@ if (!gwoCardsLoaded) {
         };
         setupTechRerolls();
 
-        // modified to recognised mod loadouts
+        // modified to recognise mod loadouts
         globals.CardViewModel = function (params) {
           var self = this;
 
