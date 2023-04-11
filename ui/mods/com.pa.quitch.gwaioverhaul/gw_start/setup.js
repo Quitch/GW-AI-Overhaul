@@ -312,6 +312,7 @@ if (!gwoSetupLoaded) {
           };
 
           var startCardAllyCompatibility = function (game) {
+            // global for modder compatibility
             if (!model.gwoStarCardsWhichBreakAllies) {
               model.gwoStarCardsWhichBreakAllies = [];
             }
