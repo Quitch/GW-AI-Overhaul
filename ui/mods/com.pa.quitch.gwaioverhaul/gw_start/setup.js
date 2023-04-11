@@ -262,7 +262,7 @@ if (!gwoSetupLoaded) {
               case "Penchant":
                 setupPenchantAI(ai);
                 break;
-              case "Titans":
+              default: // "Titans"
                 ai.personality.personality_tags =
                   ai.personality.personality_tags.concat(titansAITags);
             }
