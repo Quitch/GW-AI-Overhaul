@@ -47,10 +47,7 @@ define(function () {
   var boss = {
     name: "Inquisitor Nemicus",
     character: "!LOC:Boss",
-    econ_rate: 1,
     personality: {
-      micro_type: 2,
-      go_for_the_kill: true,
       adv_eco_mod: 1,
       fabber_to_factory_ratio_basic: 2,
       fabber_to_factory_ratio_advanced: 2,

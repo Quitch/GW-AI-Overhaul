@@ -50,10 +50,7 @@ define([
     name: "Node",
     character: "!LOC:Boss",
     isCluster: true,
-    econ_rate: 1,
     personality: {
-      micro_type: 2,
-      go_for_the_kill: true,
       adv_eco_mod: 2,
       fabber_to_factory_ratio_basic: 1.5,
       fabber_alone_on_planet_mod: 3,
