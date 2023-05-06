@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- First Seeker Osiris uses standard economic checks
+
 ## v5.51.0 - 2023-04-10
 
 ### Changed

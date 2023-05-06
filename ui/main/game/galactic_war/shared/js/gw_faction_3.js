@@ -48,9 +48,6 @@ define(function () {
     name: "First Seeker Osiris",
     character: "!LOC:Boss",
     personality: {
-      energy_drain_check: 0.57,
-      metal_demand_check: 0.85,
-      energy_demand_check: 0.82,
       adv_eco_mod: 1,
       fabber_to_factory_ratio_basic: 2,
       fabber_to_factory_ratio_advanced: 2,
