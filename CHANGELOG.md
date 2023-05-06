@@ -5,6 +5,7 @@
 ### Changed
 
 - First Seeker Osiris uses standard economic checks
+- Changed how many fabbers bosses start with
 
 ## v5.51.0 - 2023-04-10
 
