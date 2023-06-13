@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v5.52.0 - 2023-06-13
+
+### Changed
+
+- First Seeker Osiris uses standard economic checks
+- Changed how many fabbers bosses start with
+- Removed AI Bugfixes and Enhancements as it's now included with the game
+
 ## v5.51.0 - 2023-04-10
 
 ### Changed

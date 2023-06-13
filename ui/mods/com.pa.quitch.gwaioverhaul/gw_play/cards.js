@@ -87,7 +87,7 @@ if (!gwoCardsLoaded) {
         };
         setupTechRerolls();
 
-        // modified to recognised mod loadouts
+        // modified to recognise mod loadouts
         globals.CardViewModel = function (params) {
           var self = this;
 
@@ -337,6 +337,7 @@ if (!gwoCardsLoaded) {
             "gwaio_upgrade_wall",
             "gwaio_upgrade_wyrm",
             "gwaio_upgrade_zeus",
+            // not enabled in vanilla GW
             "gwc_cost_intel",
             "gwc_energy_efficiency_intel",
             "gwc_energy_efficiency_weapons",

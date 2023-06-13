@@ -55,7 +55,7 @@ define(function () {
       fabber_to_factory_ratio_basic: 2,
       fabber_to_factory_ratio_advanced: 2,
       fabber_alone_on_planet_mod: 3,
-      min_basic_fabbers: 5,
+      min_basic_fabbers: 4,
       min_advanced_fabbers: 1,
     },
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",

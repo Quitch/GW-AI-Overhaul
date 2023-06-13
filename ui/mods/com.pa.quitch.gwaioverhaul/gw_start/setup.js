@@ -262,7 +262,7 @@ if (!gwoSetupLoaded) {
               case "Penchant":
                 setupPenchantAI(ai);
                 break;
-              case "Titans":
+              default: // "Titans"
                 ai.personality.personality_tags =
                   ai.personality.personality_tags.concat(titansAITags);
             }
@@ -312,6 +312,7 @@ if (!gwoSetupLoaded) {
           };
 
           var startCardAllyCompatibility = function (game) {
+            // global for modder compatibility
             if (!model.gwoStarCardsWhichBreakAllies) {
               model.gwoStarCardsWhichBreakAllies = [];
             }
@@ -375,7 +376,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.51.0";
+            var version = "5.52.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
