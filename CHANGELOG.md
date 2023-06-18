@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- TITANS and Penchant AI not building Stingers
+- AI not building Stingers
 - Penchant AI not building landmines
 
 ## v5.52.0 - 2023-06-13
