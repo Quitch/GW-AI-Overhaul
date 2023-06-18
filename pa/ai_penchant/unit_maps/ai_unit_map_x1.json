@@ -1,7 +1,7 @@
 {
   "unit_map": {
     "SupportCommander": {
-      "unit_types": "SupportCommander"
+      "unit_types": "SupportCommander & Custom58"
     },
     "HeavyBomber": {
       "spec_id": "/pa/units/air/bomber_heavy/bomber_heavy.json"
