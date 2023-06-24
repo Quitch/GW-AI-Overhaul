@@ -13,7 +13,8 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Bot Commander loadout contains basic bot factories."
+      "!LOC:The Bot Commander loadout contains basic bot factories." +
+        " WARNING: some players report this loadout can cause battles to freeze. If you experience any freezes during battle, please log a bug report and try another loadout instead."
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {
