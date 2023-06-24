@@ -1,10 +1,17 @@
 # CHANGELOG
 
+## v5.52.2 - 2023-06-24
+
+### Fixed
+
+- Planetary Radar missing from build bar after unlock
+- Cluster Security and Workers not building anything (new wars only)
+
 ## v5.52.1 - 2023-06-18
 
 ### Fixed
 
-- TITANS and Penchant AI not building Stingers
+- AI not building Stingers
 - Penchant AI not building landmines
 
 ## v5.52.0 - 2023-06-13
