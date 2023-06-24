@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Planetary Radar missing from build bar after unlock
+
 ## v5.52.1 - 2023-06-18
 
 ### Fixed
