@@ -17,6 +17,12 @@ define([
     },
     {
       file: gwoUnit.colonel,
+      path: "buildable_types",
+      op: "replace",
+      value: "CmdBuild & Custom58",
+    },
+    {
+      file: gwoUnit.colonel,
       path: "unit_types",
       op: "replace",
       value: [
@@ -26,13 +32,14 @@ define([
         "UNITTYPE_Offense",
         "UNITTYPE_Land",
         "UNITTYPE_NoBuild",
+        "UNITTYPE_Custom58",
       ],
     },
     {
       file: gwoUnit.angel,
       path: "buildable_types",
       op: "replace",
-      value: "CmdBuild",
+      value: "CmdBuild & Custom58",
     },
     {
       file: gwoUnit.angel,
@@ -77,6 +84,7 @@ define([
         "UNITTYPE_Land", // without this the AI won't work right
         "UNITTYPE_Air",
         "UNITTYPE_NoBuild",
+        "UNITTYPE_Custom58",
       ],
     },
   ];

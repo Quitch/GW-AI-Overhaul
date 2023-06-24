@@ -5,6 +5,7 @@
 ### Fixed
 
 - Planetary Radar missing from build bar after unlock
+- Cluster Security and Workers not building anything (new wars only)
 
 ## v5.52.1 - 2023-06-18
 
