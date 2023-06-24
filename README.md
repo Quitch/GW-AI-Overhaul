@@ -136,6 +136,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 - More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
 - Selection and combat grouping mods e.g. Air Scout Select, can cause the AI to use these units incorrectly.
+- Bot Commander loadout [may cause freezes in battle](https://github.com/Quitch/GW-AI-Overhaul/issues/79).
 
 ## Recommended mods
 
