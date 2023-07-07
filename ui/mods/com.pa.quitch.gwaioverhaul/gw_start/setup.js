@@ -905,6 +905,8 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.techCardDeck();
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
+              // We don't need to apply the hotfix as it's for v5.22.1 and earlier
+              originSystem.gwaio.clusterFixed = true;
             });
 
             var finishSetup = warInfo.then(function () {

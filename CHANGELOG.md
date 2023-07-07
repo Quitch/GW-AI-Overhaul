@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Apply the Cluster Security and Worker fix retrospectively to older wars
+
 ## v5.52.2 - 2023-06-24
 
 ### Fixed
