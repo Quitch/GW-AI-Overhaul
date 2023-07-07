@@ -376,7 +376,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.52.2";
+            var version = "5.52.3";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -905,6 +905,8 @@ if (!gwoSetupLoaded) {
                 model.gwoDifficultySettings.techCardDeck();
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
+              // We don't need to apply the hotfix as it's for v5.22.1 and earlier
+              originSystem.gwaio.clusterFixed = true;
             });
 
             var finishSetup = warInfo.then(function () {
