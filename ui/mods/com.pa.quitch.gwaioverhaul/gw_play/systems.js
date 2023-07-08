@@ -416,7 +416,9 @@ if (!gwoSystemChangesLoaded) {
 
             var bugfixes = function () {
               var allFixesApplied =
-                gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed;
+                gwoSettings &&
+                gwoSettings.treasurePlanetFixed &&
+                gwoSettings.clusterFixed;
 
               if (!gwoSettings || allFixesApplied) {
                 return;
