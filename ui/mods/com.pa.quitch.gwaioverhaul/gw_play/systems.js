@@ -500,6 +500,7 @@ if (!gwoSystemChangesLoaded) {
                           }
 
                           if (securityFix === true && workerFix === 2) {
+                            gwoSettings.clusterFixed = true;
                             break;
                           }
                         }
