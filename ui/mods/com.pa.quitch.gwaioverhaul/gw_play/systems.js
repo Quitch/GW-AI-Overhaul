@@ -442,6 +442,7 @@ if (!gwoSystemChangesLoaded) {
                   _.includes(star.cardList(), undefined)
                 ) {
                   star.cardList([]);
+                  gwoSettings.treasurePlanetFixed = true;
                 }
 
                 // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
