@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Queller AI unit maps match those of the TITANS AI
+
 ## v5.52.3 - 2023-07-07
 
 ### Fixed
