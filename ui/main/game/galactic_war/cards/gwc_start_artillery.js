@@ -33,7 +33,6 @@ define([
 
           var mods = [];
           var units = [
-            gwoUnit.holkins,
             gwoUnit.pelter,
             gwoUnit.lob,
             gwoUnit.laserDefenseTower,
