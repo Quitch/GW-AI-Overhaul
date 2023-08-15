@@ -387,7 +387,8 @@ if (!gwoSystemChangesLoaded) {
               ko.computed(function () {
                 innerRing.visible =
                   (system.connected() || model.cheats.noFog()) &&
-                  !!system.ownerColor();
+                  !!system.ownerColor() &&
+                  system.ownerColor()[0] !== model.player.color()[0];
 
                 // Fix Z axis issues
                 if (innerRing.visible === true) {

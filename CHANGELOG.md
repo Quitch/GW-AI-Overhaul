@@ -12,6 +12,7 @@
 ### Bugfix
 
 - Fixed error when creating empty values for push and pull mod operations
+- Systems not always changing the inner ring to your colour when you conquer it
 
 ## v5.52.3 - 2023-07-07
 
