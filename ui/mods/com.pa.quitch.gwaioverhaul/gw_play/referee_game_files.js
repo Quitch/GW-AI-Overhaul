@@ -83,7 +83,7 @@ define([
 
   var genUnitSpecs = function (units, tag) {
     if (!tag) {
-      return null;
+      return;
     }
 
     var result = $.Deferred();
@@ -177,7 +177,7 @@ define([
       if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
         taggedId = specId + specTag;
         if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
-          return null;
+          return;
         }
       }
       var result = specs[taggedId];
