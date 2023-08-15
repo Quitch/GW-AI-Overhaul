@@ -33,7 +33,8 @@ define([
           file: gwoUnit.vehicleFabber,
           path: "buildable_types",
           op: "add",
-          value: " | Structure & Land & Advanced - Factory | FabAdvBuild",
+          value:
+            " | (Structure & Land & Advanced - Factory | FabAdvBuild) & Custom58",
         },
       ]);
 

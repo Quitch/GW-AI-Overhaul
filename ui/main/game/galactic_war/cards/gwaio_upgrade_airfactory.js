@@ -39,7 +39,7 @@ define([
           file: gwoUnit.airFactory,
           path: "buildable_types",
           op: "add",
-          value: " | (Air & Mobile & FactoryBuild)",
+          value: " | (Air & Mobile & FactoryBuild & Custom58)",
         },
       ]);
 

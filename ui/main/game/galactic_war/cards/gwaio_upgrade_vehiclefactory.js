@@ -39,7 +39,7 @@ define([
           file: gwoUnit.vehicleFactory,
           path: "buildable_types",
           op: "add",
-          value: " | (Tank & Mobile & FactoryBuild)",
+          value: " | (Tank & Mobile & FactoryBuild & Custom58)",
         },
       ]);
 

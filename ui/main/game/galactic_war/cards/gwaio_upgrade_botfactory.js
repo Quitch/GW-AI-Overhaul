@@ -39,7 +39,7 @@ define([
           file: gwoUnit.botFactory,
           path: "buildable_types",
           op: "add",
-          value: " | (Bot & Mobile & FactoryBuild)",
+          value: " | (Bot & Mobile & FactoryBuild & Custom58)",
         },
       ]);
 

@@ -34,7 +34,7 @@ define([
               file: gwoUnit.commander,
               path: "buildable_types",
               op: "add",
-              value: " | SupportCommander",
+              value: " | SupportCommander & Custom58",
             },
             {
               file: gwoUnit.colonel,

@@ -39,7 +39,7 @@ define([
           file: gwoUnit.navalFactory,
           path: "buildable_types",
           op: "add",
-          value: " | (Naval & Mobile & FactoryBuild)",
+          value: " | (Naval & Mobile & FactoryBuild & Custom58)",
         },
       ]);
 

@@ -85,7 +85,7 @@ define([
               file: gwoUnit.orbitalFabber,
               path: "buildable_types",
               op: "add",
-              value: " | FabBuild",
+              value: " | FabBuild & Custom58",
             },
           ]);
 

@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v5.53.0 - 2023-08-15
+
+### Added
+
+- Structure Engine Tech that can be found by the Nomad Commander
+- Naval Commander loadout
+
+### Changed
+
+- Queller AI unit maps match those of the TITANS AI
+- Removed warning from Bot Commander description
+- Updated all cards for the MLA faction Custom58 tag
+- Artillery Commander's Commander can no longer build Holkins
+
+### Bugfix
+
+- Fixed error when creating empty values for push and pull mod operations
+- Systems not always changing the inner ring to your colour when you conquer them
+- Cluster sub-commanders causing the incorrect tech cards to be dealt
+
 ## v5.52.3 - 2023-07-07
 
 ### Fixed

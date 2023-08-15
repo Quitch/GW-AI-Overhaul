@@ -50,6 +50,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var airAmmo = airBasicAmmo.concat(airAdvancedAmmo);
   var airWeapons = airBasicWeapons.concat(airAdvancedWeapons);
   var airMobile = airBasicMobile.concat(airAdvancedMobile);
+  var airMobileNoCluster = _.filter(airMobile, function (unit) {
+    return unit !== gwoUnit.angel;
+  });
   var air = airBasic.concat(airAdvanced);
 
   var botsBasicMobile = [
@@ -105,6 +108,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var botsAmmo = botsBasicAmmo.concat(botsAdvancedAmmo);
   var botsWeapons = botsBasicWeapons.concat(botsAdvancedWeapons);
   var botsMobile = botsBasicMobile.concat(botsAdvancedMobile);
+  var botsMobileNoCluster = _.filter(botsMobile, function (unit) {
+    return unit !== gwoUnit.colonel;
+  });
   var bots = botsBasic.concat(botsAdvanced);
 
   var navalBasicMobile = [
@@ -543,6 +549,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     airBasic: airBasic,
     airBasicMobile: airBasicMobile,
     airMobile: airMobile,
+    airMobileNoCluster: airMobileNoCluster,
     airWeapons: airWeapons,
     ammo: ammo,
     bots: bots,
@@ -552,6 +559,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsBasic: botsBasic,
     botsBasicMobile: botsBasicMobile,
     botsMobile: botsMobile,
+    botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
     energyIntel: energyIntel,
     energyUnits: energyUnits,

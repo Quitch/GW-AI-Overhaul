@@ -3,18 +3,17 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
+], function (module, GW, GWCStart, gwoCard, gwoGroup) {
   var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Orbital Commander"),
+    summarize: _.constant("!LOC:Naval Commander"),
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Orbital Commander loadout contains all orbital units and factories."
+      "!LOC:The Naval Commander loadout contains all naval factories."
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {
@@ -23,21 +22,7 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.addUnits(gwoGroup.orbital);
-          inventory.addMods([
-            {
-              file: gwoUnit.deepSpaceOrbitalRadar,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            },
-            {
-              file: gwoUnit.orbitalFabber,
-              path: "buildable_types",
-              op: "add",
-              value: " | FabBuild & Custom58",
-            },
-          ]);
+          inventory.addUnits(gwoGroup.naval);
         } else {
           // Don't clog up a slot.
           inventory.maxCards(inventory.maxCards() + 1);

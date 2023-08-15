@@ -33,7 +33,8 @@ define([
           file: gwoUnit.airFabber,
           path: "buildable_types",
           op: "add",
-          value: " | Land & Structure & Advanced - Factory | FabAdvBuild",
+          value:
+            " | (Land & Structure & Advanced - Factory | FabAdvBuild) & Custom58",
         },
       ]);
 

@@ -224,6 +224,7 @@ if (!gwoCardsLoaded) {
           ];
           var expandedCards = [
             "gwaio_enable_planetaryradar",
+            "gwaio_speed_structure",
             "gwaio_upgrade_advancedairfactory",
             "gwaio_upgrade_advancedbotfactory",
             "gwaio_upgrade_advancedenergyplant",

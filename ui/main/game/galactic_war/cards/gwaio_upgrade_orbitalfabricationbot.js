@@ -36,7 +36,8 @@ define([
           file: gwoUnit.orbitalFabber,
           path: "buildable_types",
           op: "add",
-          value: " | Land & Structure & Basic | Factory & Basic | FabBuild",
+          value:
+            " | (Land & Structure & Basic | Factory & Basic | FabBuild) & Custom58",
         },
       ]);
 
