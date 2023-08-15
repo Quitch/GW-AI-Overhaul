@@ -12,7 +12,7 @@
 - Queller AI unit maps match those of the TITANS AI
 - Removed warning from Bot Commander
 - Updated all cards for the MLA faction Custom58 tag
-- Artillery loadout Commander can no longer build Holkins so as to match the description
+- Artillery Commander's Commander can no longer build Holkins
 
 ### Bugfix
 
