@@ -1,6 +1,108 @@
 {
   "build_list": [
     {
+      "name": "Seismic Titan",
+      "to_build": "SeismicBot",
+      "instance_count": 1,
+      "min_num_assisters": 3,
+      "max_num_assisters": 15,
+      "shared_instance_count": "Titan",
+      "priority": 480,
+      "builders": ["AdvancedBotFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetIsRespawnable",
+            "boolean": false
+          },
+          {
+            "test_type": "PlanetThreat",
+            "string0": "Economy",
+            "compare0": ">",
+            "value0": 5000
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "SeismicBot"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 10,
+        "placement_type": "FromMainBasePerimeter",
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
+      "name": "Rolling Fortress",
+      "to_build": "FortressVehicle",
+      "instance_count": 1,
+      "min_num_assisters": 3,
+      "max_num_assisters": 15,
+      "shared_instance_count": "Titan",
+      "priority": 480,
+      "builders": ["AdvancedVehicleFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetIsRespawnable",
+            "boolean": false
+          },
+          {
+            "test_type": "PlanetThreat",
+            "string0": "Economy",
+            "compare0": ">",
+            "value0": 5000
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Factory - Orbital",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "FortressVehicle"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 10,
+        "placement_type": "FromMainBasePerimeter",
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
       "name": "Tesla Gunship",
       "to_build": "TeslaGunship",
       "instance_count": 1,
@@ -20,11 +122,13 @@
             "boolean": false
           },
           {
-            "test_type": "CanAffordBuildDemand"
+            "test_type": "PlanetThreat",
+            "string0": "Economy",
+            "compare0": ">",
+            "value0": 5000
           },
           {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "TeslaGunship"
+            "test_type": "CanAffordBuildDemand"
           },
           {
             "test_type": "UnitCountOnPlanet",
@@ -59,6 +163,12 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
+          {
+            "test_type": "SystemThreat",
+            "string0": "Economy",
+            "compare0": ">",
+            "value0": 5000
+          },
           {
             "test_type": "CanAffordBuildDemand"
           },
