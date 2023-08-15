@@ -94,7 +94,8 @@ if (!gwoSetupLoaded) {
             { id: "gwc_start_vehicle" },
             { id: "gwc_start_air" },
             { id: "gwc_start_orbital" },
-            { id: "gwc_start_bot" }
+            { id: "gwc_start_bot" },
+            { id: "gwaio_start_naval" }
           );
           var lockedBaseCards = [
             { id: "gwc_start_artillery" },

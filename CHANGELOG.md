@@ -5,6 +5,7 @@
 ### Added
 
 - Structure Engine Tech can be found by the Nomad Commander
+- Naval Commander loadout
 
 ### Changed
 
