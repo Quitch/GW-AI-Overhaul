@@ -13,6 +13,7 @@
 - Removed warning from Bot Commander description
 - Updated all cards for the MLA faction Custom58 tag
 - Artillery Commander's Commander can no longer build Holkins
+- TITANS and Penchant AIs will build land titans again
 
 ### Bugfix
 
