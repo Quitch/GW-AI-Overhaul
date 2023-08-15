@@ -36,7 +36,7 @@ define([
           file: gwoUnit.orbitalLauncher,
           path: "buildable_types",
           op: "add",
-          value: "| (Orbital & FactoryBuild)",
+          value: "| (Orbital & FactoryBuild & Custom58)",
         },
       ]);
 

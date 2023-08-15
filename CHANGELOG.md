@@ -6,6 +6,7 @@
 
 - Queller AI unit maps match those of the TITANS AI
 - Removed warning from Bot Commander
+- Updated all cards for the MLA faction Custom58 tag
 
 ### Bugfix
 

@@ -33,7 +33,7 @@ define([
           file: gwoUnit.navalFabber,
           path: "buildable_types",
           op: "add",
-          value: " | Naval & Structure & Advanced | FabAdvBuild",
+          value: " | (Naval & Structure & Advanced | FabAdvBuild) & Custom58",
         },
       ]);
 

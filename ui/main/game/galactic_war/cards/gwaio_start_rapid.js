@@ -33,124 +33,130 @@ define([
               file: gwoUnit.airFactory,
               path: "buildable_types",
               op: "replace",
-              value: "(Air & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Air & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.airFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
-              value: "(Air & Fabber & Mobile) & FactoryBuild",
+              value: "(Air & Fabber & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.botFactory,
               path: "buildable_types",
               op: "replace",
-              value: "(Bot & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Bot & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.botFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
-              value: "(Bot & Fabber & Mobile) & FactoryBuild",
+              value: "(Bot & Fabber & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.vehicleFactory,
               path: "buildable_types",
               op: "replace",
-              value: "(Tank & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Tank & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.vehicleFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
-              value: "(Tank & Fabber & Mobile) & FactoryBuild",
+              value: "(Tank & Fabber & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.navalFactory,
               path: "buildable_types",
               op: "replace",
-              value: "(Naval & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Naval & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.navalFactoryAdvanced,
               path: "buildable_types",
               op: "replace",
-              value: "(Naval & Fabber & Mobile) & FactoryBuild",
+              value: "(Naval & Fabber & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.orbitalLauncher,
               path: "buildable_types",
               op: "replace",
-              value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Orbital & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.orbitalFactory,
               path: "buildable_types",
               op: "replace",
-              value: "(Orbital & Fabber & Basic & Mobile) & FactoryBuild",
+              value:
+                "(Orbital & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
             {
               file: gwoUnit.airFabber,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory",
+                "(Mobile & Basic & Air | Land & Structure & Basic - Factory | Factory & Advanced & Air | FabBuild - Factory) & Custom58",
             },
             {
               file: gwoUnit.airFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Air | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Air",
+                "(Mobile & Air | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Air) & Custom58",
             },
             {
               file: gwoUnit.botFabber,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Basic & Bot | Land & Structure & Basic - Factory | Factory & Advanced & Bot & Land | FabBuild - Factory",
+                "(Mobile & Basic & Bot | Land & Structure & Basic - Factory | Factory & Advanced & Bot & Land | FabBuild - Factory) & Custom58",
             },
             {
               file: gwoUnit.botFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
+                "(Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58",
             },
             {
               file: gwoUnit.colonel,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot",
+                "(Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58",
             },
             {
               file: gwoUnit.vehicleFabber,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Basic & Tank | Land & Structure & Basic - Factory | Factory & Land & Tank & Advanced | FabBuild - Factory",
+                "(Mobile & Basic & Tank | Land & Structure & Basic - Factory | Factory & Land & Tank & Advanced | FabBuild - Factory) & Custom58",
             },
             {
               file: gwoUnit.vehicleFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Tank | Structure & Land & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & (Tank | Naval)",
+                "(Mobile & Tank | Structure & Land & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & (Tank | Naval)) & Custom58",
             },
             {
               file: gwoUnit.navalFabber,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Basic & Naval | Naval & Structure & Basic - Factory | Naval & Factory & Advanced | FabBuild - Factory",
+                "(Mobile & Basic & Naval | Naval & Structure & Basic - Factory | Naval & Factory & Advanced | FabBuild - Factory) & Custom58",
             },
             {
               file: gwoUnit.navalFabberAdvanced,
               path: "buildable_types",
               op: "replace",
               value:
-                "Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory",
+                "(Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory) & Custom58",
             },
             // fix placement issues
             {
@@ -187,14 +193,16 @@ define([
               file: gwoUnit.orbitalFabber,
               path: "buildable_types",
               op: "replace",
-              value: "Orbital & FactoryBuild | FabOrbBuild - Factory",
+              value:
+                "(Orbital & FactoryBuild | FabOrbBuild - Factory) & Custom58",
             });
           } else {
             mods.push({
               file: gwoUnit.orbitalFabber,
               path: "buildable_types",
               op: "replace",
-              value: "Orbital & FactoryBuild & Basic | FabOrbBuild - Factory",
+              value:
+                "(Orbital & FactoryBuild & Basic | FabOrbBuild - Factory) & Custom58",
             });
           }
           inventory.addMods(mods);
