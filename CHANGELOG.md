@@ -7,6 +7,10 @@
 - Queller AI unit maps match those of the TITANS AI
 - Removed warning from Bot Commander
 
+### Bugfix
+
+- Fixed error where application of a mod to a unit's spec might lead to an object instead of an array
+
 ## v5.52.3 - 2023-07-07
 
 ### Fixed

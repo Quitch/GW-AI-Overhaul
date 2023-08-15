@@ -265,6 +265,7 @@ define([
       },
     };
 
+    // to support custom ops
     var applyMod = function (mod) {
       var spec = load(mod.file);
       if (!spec) {
@@ -291,7 +292,12 @@ define([
         return undefined;
       };
 
-      var cookStep = function (step) {
+      var opDefaults = {
+        push: [],
+        pull: [],
+      };
+
+      var cookStep = function (step, op) {
         if (_.isArray(spec)) {
           if (step === "+") {
             step = spec.length;
@@ -303,7 +309,7 @@ define([
           path.length &&
           !Object.prototype.hasOwnProperty.call(spec, step)
         ) {
-          spec[step] = {};
+          spec[step] = op ? opDefaults[op] || {} : {};
         }
         return step;
       };
@@ -326,7 +332,7 @@ define([
       }
 
       if (path.length && path[0]) {
-        var leaf = cookStep(path[0]);
+        var leaf = cookStep(path[0], mod.op);
         spec[leaf] = ops[mod.op](spec[leaf], mod.value);
       } else {
         ops[mod.op](spec, mod.value);
