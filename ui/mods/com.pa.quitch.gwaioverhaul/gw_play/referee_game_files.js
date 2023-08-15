@@ -170,6 +170,7 @@ define([
     return _.merge({}, base, spec);
   };
 
+  // to support custom ops
   var modSpecs = function (specs, mods, specTag) {
     var load = function (specId) {
       var taggedId = specId;
@@ -265,7 +266,6 @@ define([
       },
     };
 
-    // to support custom ops
     var applyMod = function (mod) {
       var spec = load(mod.file);
       if (!spec) {
