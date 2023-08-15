@@ -390,191 +390,192 @@ define([
       var unitsLoad = $.get("spec://pa/units/unit_list.json");
       var aiMapLoad = $.get("spec:/" + aiUnitMapPath);
       var aiX1MapLoad = titans ? $.get("spec:/" + aiUnitMapTitansPath) : {};
-      $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(function (
-        unitsGet,
-        aiMapGet,
-        aiX1MapGet
-      ) {
-        var inventory = self.game().inventory();
+      $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
+        function (unitsGet, aiMapGet, aiX1MapGet) {
+          var inventory = self.game().inventory();
 
-        var units = parse(unitsGet[0]).units;
-        var aiUnitMap = parse(aiMapGet[0]);
-        var aiX1UnitMap = parse(aiX1MapGet[0]);
-        var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
-        var clusterUnitMapTitansPath =
-          "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
-        _.times(aiFactionCount, function (n) {
-          var currentCount = n;
-          var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
-          var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
-          var aiSpecs = combineSpecs(units, model.gwoSpecs);
+          var units = parse(unitsGet[0]).units;
+          var aiUnitMap = parse(aiMapGet[0]);
+          var aiX1UnitMap = parse(aiX1MapGet[0]);
+          var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
+          var clusterUnitMapTitansPath =
+            "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
+          _.times(aiFactionCount, function (n) {
+            var currentCount = n;
+            var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
+            var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
+            var aiSpecs = combineSpecs(units, model.gwoSpecs);
 
-          genUnitSpecs(aiSpecs, aiTag[n]).then(function (aiSpecFiles) {
-            var unitMapPath = aiUnitMapPath;
-            var unitMapTitansPath = aiUnitMapTitansPath;
-            if (clusterArmyIndex(ai) === currentCount) {
-              unitMapPath = clusterUnitMapPath;
-              unitMapTitansPath = clusterUnitMapTitansPath;
-            }
-
-            var enemyAIUnitMapFile = unitMapPath + aiTag[n];
-            var enemyAIUnitMapPair = {};
-            enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-            var enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[n];
-            var enemyX1AIUnitMapPair = {};
-            enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-            var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-            var aiFilesX1 = titans
-              ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
-              : {};
-            var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-
-            if (ai.inventory) {
-              var aiInventory =
-                currentCount === 0
-                  ? ai.inventory
-                  : ai.foes[currentCount - 1].inventory;
-              if (ai.mirrorMode === true) {
-                aiInventory = aiInventory.concat(inventory.mods());
+            genUnitSpecs(aiSpecs, aiTag[n]).then(function (aiSpecFiles) {
+              var unitMapPath = aiUnitMapPath;
+              var unitMapTitansPath = aiUnitMapTitansPath;
+              if (clusterArmyIndex(ai) === currentCount) {
+                unitMapPath = clusterUnitMapPath;
+                unitMapTitansPath = clusterUnitMapTitansPath;
               }
-              modSpecs(aiFiles, aiInventory, aiTag[n]);
-            }
-            aiFactions[currentCount].resolve(aiFiles);
+
+              var enemyAIUnitMapFile = unitMapPath + aiTag[n];
+              var enemyAIUnitMapPair = {};
+              enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+              var enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[n];
+              var enemyX1AIUnitMapPair = {};
+              enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
+              var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
+              var aiFilesX1 = titans
+                ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
+                : {};
+              var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+
+              if (ai.inventory) {
+                var aiInventory =
+                  currentCount === 0
+                    ? ai.inventory
+                    : ai.foes[currentCount - 1].inventory;
+                if (ai.mirrorMode === true) {
+                  aiInventory = aiInventory.concat(inventory.mods());
+                }
+                modSpecs(aiFiles, aiInventory, aiTag[n]);
+              }
+              aiFactions[currentCount].resolve(aiFiles);
+            });
           });
-        });
 
-        var playerTag = ".player";
+          var playerTag = ".player";
 
-        var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-        var playerX1AIUnitMap = titans
-          ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
-          : {};
-        var additionalPlayerSpecs = _.isUndefined(ai.ally)
-          ? model.gwoSpecs
-          : model.gwoSpecs.concat(ai.ally.commander);
-        var playerSpecs = combineSpecs(
-          inventory.units(),
-          additionalPlayerSpecs
-        );
+          var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
+          var playerX1AIUnitMap = titans
+            ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
+            : {};
+          var additionalPlayerSpecs = _.isUndefined(ai.ally)
+            ? model.gwoSpecs
+            : model.gwoSpecs.concat(ai.ally.commander);
+          var playerSpecs = combineSpecs(
+            inventory.units(),
+            additionalPlayerSpecs
+          );
 
-        genUnitSpecs(playerSpecs, playerTag).then(function (playerSpecFiles) {
-          var playerFilesClassic = {};
-          var playerFilesX1 = {};
-          var playerIsCluster =
-            inventory.getTag("global", "playerFaction") === 4;
-          // the order of unit_map assignments must match getAIPath()
-          if (playerIsCluster) {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai_cluster/unit_maps/ai_unit_map.json.player":
-                  playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          } else if (
-            aiBrain === "Queller" &&
-            _.some(inventory.cards(), {
-              id: "gwaio_upgrade_subcommander_tactics",
-            })
-          ) {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai_queller/q_gold/unit_maps/ai_unit_map.json.player":
-                  playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai_queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          } else if (aiBrain === "Queller") {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai_queller/q_silver/unit_maps/ai_unit_map.json.player":
-                  playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai_queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          } else if (!_.isEmpty(inventory.aiMods()) && ai.mirrorMode !== true) {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
-                  playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          } else if (aiBrain === "Penchant") {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai_penchant/unit_maps/ai_unit_map.json.player":
-                  playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai_penchant/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          } else {
-            playerFilesClassic = _.assign(
-              {
-                "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
-              },
-              playerSpecFiles
-            );
-            playerFilesX1 = titans
-              ? _.assign(
-                  {
-                    "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                      playerX1AIUnitMap,
-                  },
-                  playerSpecFiles
-                )
-              : {};
-          }
-          var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
-          modSpecs(playerFiles, inventory.mods(), playerTag);
-          playerFileGen.resolve(playerFiles);
-        });
-      });
+          genUnitSpecs(playerSpecs, playerTag).then(function (playerSpecFiles) {
+            var playerFilesClassic = {};
+            var playerFilesX1 = {};
+            var playerIsCluster =
+              inventory.getTag("global", "playerFaction") === 4;
+            // the order of unit_map assignments must match getAIPath()
+            if (playerIsCluster) {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai_cluster/unit_maps/ai_unit_map.json.player":
+                    playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            } else if (
+              aiBrain === "Queller" &&
+              _.some(inventory.cards(), {
+                id: "gwaio_upgrade_subcommander_tactics",
+              })
+            ) {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai_queller/q_gold/unit_maps/ai_unit_map.json.player":
+                    playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai_queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            } else if (aiBrain === "Queller") {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai_queller/q_silver/unit_maps/ai_unit_map.json.player":
+                    playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai_queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            } else if (
+              !_.isEmpty(inventory.aiMods()) &&
+              ai.mirrorMode !== true
+            ) {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
+                    playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            } else if (aiBrain === "Penchant") {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai_penchant/unit_maps/ai_unit_map.json.player":
+                    playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai_penchant/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            } else {
+              playerFilesClassic = _.assign(
+                {
+                  "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
+            }
+            var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+            modSpecs(playerFiles, inventory.mods(), playerTag);
+            playerFileGen.resolve(playerFiles);
+          });
+        }
+      );
 
       _.times(aiFactionCount, function (n) {
         filesToProcess.push(aiFactions[n]);
