@@ -9,7 +9,7 @@
 
 ### Bugfix
 
-- Fixed error where application of a mod to a unit's spec might lead to an object instead of an array
+- Fixed error when creating empty values for push and pull mod operations
 
 ## v5.52.3 - 2023-07-07
 
