@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Structure Engine Tech can be found by the Nomad Commander
+
 ### Changed
 
 - Queller AI unit maps match those of the TITANS AI
