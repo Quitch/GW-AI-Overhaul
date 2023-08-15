@@ -13,6 +13,7 @@
 
 - Fixed error when creating empty values for push and pull mod operations
 - Systems not always changing the inner ring to your colour when you conquer it
+- Cluster sub-commanders cause tech cards you didn't otherwise have a use for to appear
 
 ## v5.52.3 - 2023-07-07
 

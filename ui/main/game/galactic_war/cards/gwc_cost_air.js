@@ -19,7 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.airMobile)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster)) {
         chance = 80;
       }
       return { chance: chance };

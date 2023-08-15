@@ -466,6 +466,8 @@ if (!gwoCardsLoaded) {
                       cardChance.chance = 0;
                     }
 
+                    console.log(card.id, cardChance);
+
                     return cardChance;
                   });
 
