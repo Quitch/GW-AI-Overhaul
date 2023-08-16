@@ -16,9 +16,9 @@
 - TITANS and Penchant AIs will build land titans again
 - TITANS and Penchant AIs only build titans when threat is high enough
 
-### Bugfix
+### Fixed
 
-- Fixed error when creating empty values for push and pull mod operations
+- Incorrect variable type when creating empty values for push and pull mod operations
 - Systems not always changing the inner ring to your colour when you conquer them
 - Cluster sub-commanders causing the incorrect tech cards to be dealt
 
