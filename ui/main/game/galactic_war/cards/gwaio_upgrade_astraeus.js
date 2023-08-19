@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200%."
+      "!LOC:Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units."
     ),
     summarize: _.constant("!LOC:Astraeus Upgrade Tech"),
     icon: _.constant(
@@ -37,6 +37,12 @@ define([
           path: "gravwell_velocity_multiplier",
           op: "multiply",
           value: 3,
+        },
+        {
+          file: gwoUnit.astraeus,
+          path: "transporter.capacity",
+          op: "multiply",
+          value: 12,
         },
       ]);
     },

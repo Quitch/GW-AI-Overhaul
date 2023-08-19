@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Astraeus Upgrade Tech now also increases carry capacity
+
 ## v5.53.0 - 2023-08-15
 
 ### Added
