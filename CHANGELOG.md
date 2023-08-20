@@ -5,6 +5,7 @@
 ### Changed
 
 - Astraeus Upgrade Tech now also increases carry capacity
+- Update Queller AI to v5.25.0
 
 ## v5.53.0 - 2023-08-15
 
