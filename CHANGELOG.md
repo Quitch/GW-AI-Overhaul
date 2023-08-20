@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Warp Commander loadout
+
 ### Changed
 
 - Astraeus Upgrade Tech now also increases carry capacity
