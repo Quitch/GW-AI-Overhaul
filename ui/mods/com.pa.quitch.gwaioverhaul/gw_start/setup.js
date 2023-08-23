@@ -86,7 +86,8 @@ if (!gwoSetupLoaded) {
             { id: "gwaio_start_nomad" },
             { id: "gwaio_start_backpacker" },
             { id: "gwaio_start_hoarder" },
-            { id: "gwaio_start_warp" }
+            { id: "gwaio_start_warp" },
+            { id: "gwaio_start_terminal" }
           );
           if (!model.gwoStartingCards) {
             model.gwoStartingCards = [];

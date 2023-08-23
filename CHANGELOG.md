@@ -5,11 +5,13 @@
 ### Added
 
 - Warp Commander loadout
+- Terminal Commander loadout
 
 ### Changed
 
 - Astraeus Upgrade Tech now also increases carry capacity
 - Update Queller AI to v5.25.0
+- The "add" and "multiply" ops can now create attributes that didn't exist before
 
 ## v5.53.0 - 2023-08-15
 
