@@ -40,7 +40,7 @@ define([
               op: "replace",
               value: {
                 radius: 100,
-                phasing_duration: 40,
+                phasing_duration: 30,
                 phasing_health_frac: 0.01,
                 energy_drain: 60000,
                 energy_cost: 600000,
