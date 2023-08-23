@@ -189,10 +189,12 @@ define([
 
     var ops = {
       multiply: function (attribute, value) {
-        return !_.isUndefined(attribute) ? attribute * value : value;
+        return _.isNumber(attribute) ? attribute * value : value;
       },
       add: function (attribute, value) {
-        return !_.isUndefined(attribute) ? attribute + value : value;
+        return _.isNumber(attribute) || _.isString(attribute)
+          ? attribute + value
+          : value;
       },
       replace: function (attribute, value) {
         return value;
