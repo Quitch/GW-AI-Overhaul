@@ -544,6 +544,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var units = mobile.concat(notMobile);
   var unitsNoCluster = mobileNoCluster.concat(mobile);
 
+  var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
+
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
     gwoUnit.antiNukeLauncher,
@@ -573,6 +575,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobile: botsMobile,
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
+    clusterCommanders: clusterCommanders,
     energyIntel: energyIntel,
     energyUnits: energyUnits,
     energyAll: energyAll,
