@@ -28,8 +28,32 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
+
+          var playerIsCluster =
+            inventory.getTag("global", "playerFaction") === 4;
           var mods = [];
           var mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
+
+          if (playerIsCluster) {
+            _.forEach(gwoGroup.unitsNoCluster, function (unit) {
+              mods.push({
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 0.5,
+              });
+            });
+          } else {
+            _.forEach(gwoGroup.units, function (unit) {
+              mods.push({
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 0.5,
+              });
+            });
+          }
+
           mods.push({
             file: gwoUnit.commander,
             path: "passive_health_regen",
@@ -58,14 +82,6 @@ define([
               path: "passive_health_regen",
               op: "add",
               value: -1,
-            });
-          });
-          _.forEach(gwoGroup.units, function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.5,
             });
           });
           _.forEach(mobileUnits, function (unit) {
