@@ -158,3 +158,4 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 - WPMarshall, for the Cluster faction logo and home system
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod
 - Tristan, who created the casual, iron, and diamond icons
+- tatapstar for the mod's icon

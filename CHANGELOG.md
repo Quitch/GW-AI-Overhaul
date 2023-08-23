@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.54.0 - 2023-08-23
+
+### Added
+
+- Warp Commander loadout
+- Terminal Commander loadout
+
+### Changed
+
+- Astraeus Upgrade Tech now also increases carry capacity
+- Update Queller AI to v5.25.0
+- The "add" and "multiply" ops can now create attributes that didn't exist before
+
 ## v5.53.0 - 2023-08-15
 
 ### Added
@@ -16,9 +29,9 @@
 - TITANS and Penchant AIs will build land titans again
 - TITANS and Penchant AIs only build titans when threat is high enough
 
-### Bugfix
+### Fixed
 
-- Fixed error when creating empty values for push and pull mod operations
+- Incorrect variable type when creating empty values for push and pull mod operations
 - Systems not always changing the inner ring to your colour when you conquer them
 - Cluster sub-commanders causing the incorrect tech cards to be dealt
 

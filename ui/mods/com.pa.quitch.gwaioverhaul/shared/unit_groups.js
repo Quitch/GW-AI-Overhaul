@@ -481,6 +481,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.zeus
   );
   var notMobile = structures.concat(gwoUnit.ragnarok);
+  var mobileNoCluster = airMobileNoCluster.concat(
+    botsMobileNoCluster,
+    navalMobile,
+    orbitalMobile,
+    vehiclesMobile,
+    gwoUnit.atlas,
+    gwoUnit.ares,
+    gwoUnit.zeus
+  );
 
   var energyIntel = structuresIntel.concat(
     gwoUnit.arkyd,
@@ -532,6 +541,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesWeapons
   );
 
+  var units = mobile.concat(notMobile);
+  var unitsNoCluster = mobileNoCluster.concat(mobile);
+
+  var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
+
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
     gwoUnit.antiNukeLauncher,
@@ -561,6 +575,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobile: botsMobile,
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
+    clusterCommanders: clusterCommanders,
     energyIntel: energyIntel,
     energyUnits: energyUnits,
     energyAll: energyAll,
@@ -572,6 +587,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,
     mobile: mobile,
+    mobileNoCluster: mobileNoCluster,
     naval: naval,
     navalAdvanced: navalAdvanced,
     navalAdvancedMobile: navalAdvancedMobile,
@@ -624,5 +640,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesMobile: vehiclesMobile,
     vehiclesWeapons: vehiclesWeapons,
     weapons: weapons,
+    units: units,
+    unitsNoCluster: unitsNoCluster,
   };
 });

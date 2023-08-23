@@ -85,7 +85,9 @@ if (!gwoSetupLoaded) {
             { id: "tgw_start_tank" },
             { id: "gwaio_start_nomad" },
             { id: "gwaio_start_backpacker" },
-            { id: "gwaio_start_hoarder" }
+            { id: "gwaio_start_hoarder" },
+            { id: "gwaio_start_warp" },
+            { id: "gwaio_start_terminal" }
           );
           if (!model.gwoStartingCards) {
             model.gwoStartingCards = [];
@@ -377,7 +379,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.53.0";
+            var version = "5.54.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
