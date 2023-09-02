@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Platoon penchant to Penchant AI in new wars
+
 ## v5.54.0 - 2023-08-23
 
 ### Added

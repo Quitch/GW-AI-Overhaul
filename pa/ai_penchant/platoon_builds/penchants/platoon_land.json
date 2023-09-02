@@ -1,125 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Vehicle Scout Platoon",
-      "to_build": "Vehicle_Scout",
-      "instance_count": 5,
-      "shared_instance_count": "VehicleScout",
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "Air & Factory",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Tank & Scout",
-            "compare0": ">=",
-            "value0": 1
-          }
-        ]
-      ],
-      "task_type": "Scout"
-    },
-    {
-      "name": "Bot Scout Platoon",
-      "to_build": "Bot_Scout",
-      "instance_count": 5,
-      "shared_instance_count": "BotScout",
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "Air & Factory",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "(Bot & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - SelfDestruct - Deconstruction - Titan",
-            "compare0": ">=",
-            "value0": 1
-          }
-        ]
-      ],
-      "task_type": "Scout"
-    },
-    {
-      "name": "Land Transfer To Planet - Alone",
-      "to_build": "Land_Attack_Max",
-      "instance_count": -1,
-      "shared_instance_count": "LandTransferToPlanet",
-      "priority": 117,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "OtherPlanetNeedsLandUnitAssistance",
-            "boolean": true
-          },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
-            "compare0": ">=",
-            "value0": 5
-          }
-        ]
-      ],
-      "task_type": "TeleportLandToPlanet"
-    },
-    {
-      "name": "Land Transfer To Planet",
-      "to_build": "Land_Attack_XLarge",
-      "instance_count": 1,
-      "shared_instance_count": "LandTransferToPlanet",
-      "priority": 116,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "OtherPlanetNeedsLandUnitAssistance",
-            "boolean": true
-          },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
-            "compare0": ">=",
-            "value0": 5
-          }
-        ]
-      ],
-      "task_type": "TeleportLandToPlanet"
-    },
-    {
-      "name": "Land Raid Platoon Small",
+      "name": "Platoon - Land Raid Platoon Small",
       "to_build": "Land_Raid_Small",
       "instance_count": 1,
       "priority": 109,
@@ -128,11 +10,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 840
           },
           {
             "test_type": "UnitPoolCount",
@@ -151,7 +39,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Raid Platoon Medium",
+      "name": "Platoon - Land Raid Platoon Medium",
       "to_build": "Land_Raid_Medium",
       "instance_count": 1,
       "priority": 108,
@@ -160,16 +48,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 2800
           },
           {
             "test_type": "UnitPoolCount",
@@ -188,7 +77,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Raid Platoon Large",
+      "name": "Platoon - Land Raid Platoon Large",
       "to_build": "Land_Raid_Large",
       "instance_count": 1,
       "priority": 107,
@@ -197,16 +86,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 5600
           },
           {
             "test_type": "UnitPoolCount",
@@ -225,7 +115,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Raid Platoon XLarge",
+      "name": "Platoon - Land Raid Platoon XLarge",
       "to_build": "Land_Raid_XLarge",
       "instance_count": 1,
       "priority": 106,
@@ -234,16 +124,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 11200
           },
           {
             "test_type": "UnitPoolCount",
@@ -262,39 +153,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Raid Platoon Max",
-      "to_build": "Land_Raid_Max",
-      "instance_count": 1,
-      "priority": 105,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "(Bot & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - SelfDestruct - Deconstruction - Titan",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Swarm Raid Platoon Small",
+      "name": "Platoon - Swarm Raid Platoon Small",
       "to_build": "Swarm_Raid_Small",
       "instance_count": 1,
       "priority": 109,
@@ -303,16 +162,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 840
           },
           {
             "test_type": "UnitPoolCount",
@@ -331,7 +191,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Swarm Raid Platoon Medium",
+      "name": "Platoon - Swarm Raid Platoon Medium",
       "to_build": "Swarm_Raid_Medium",
       "instance_count": 1,
       "priority": 108,
@@ -340,16 +200,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 2800
           },
           {
             "test_type": "UnitPoolCount",
@@ -368,7 +229,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Swarm Raid Platoon Large",
+      "name": "Platoon - Swarm Raid Platoon Large",
       "to_build": "Swarm_Raid_Large",
       "instance_count": 1,
       "priority": 107,
@@ -377,16 +238,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 5600
           },
           {
             "test_type": "UnitPoolCount",
@@ -405,7 +267,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Swarm Raid Platoon XLarge",
+      "name": "Platoon - Swarm Raid Platoon XLarge",
       "to_build": "Swarm_Raid_XLarge",
       "instance_count": 1,
       "priority": 106,
@@ -414,16 +276,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 11200
           },
           {
             "test_type": "UnitPoolCount",
@@ -442,39 +305,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Swarm Raid Platoon Max",
-      "to_build": "Swarm_Raid_Max",
-      "instance_count": 1,
-      "priority": 105,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Bot & Deconstruction",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Boom Raid Platoon Small",
+      "name": "Platoon - Boom Raid Platoon Small",
       "to_build": "Boom_Raid_Small",
       "instance_count": 1,
       "priority": 109,
@@ -483,16 +314,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 840
           },
           {
             "test_type": "UnitPoolCount",
@@ -511,7 +343,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Boom Raid Platoon Medium",
+      "name": "Platoon - Boom Raid Platoon Medium",
       "to_build": "Boom_Raid_Medium",
       "instance_count": 1,
       "priority": 108,
@@ -520,16 +352,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 2800
           },
           {
             "test_type": "UnitPoolCount",
@@ -548,7 +381,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Boom Raid Platoon Large",
+      "name": "Platoon - Boom Raid Platoon Large",
       "to_build": "Boom_Raid_Large",
       "instance_count": 1,
       "priority": 107,
@@ -557,16 +390,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 5600
           },
           {
             "test_type": "UnitPoolCount",
@@ -585,7 +419,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Boom Raid Platoon XLarge",
+      "name": "Platoon - Boom Raid Platoon XLarge",
       "to_build": "Boom_Raid_XLarge",
       "instance_count": 1,
       "priority": 106,
@@ -594,16 +428,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 11200
           },
           {
             "test_type": "UnitPoolCount",
@@ -622,39 +457,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Boom Raid Platoon Max",
-      "to_build": "Boom_Raid_Max",
-      "instance_count": 1,
-      "priority": 105,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Bot & SelfDestruct",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Land Attack Platoon Small",
+      "name": "Platoon - Land Attack Platoon Small",
       "to_build": "Land_Attack_Small",
       "instance_count": -1,
       "priority": 104,
@@ -663,11 +466,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 840
           },
           {
             "test_type": "UnitPoolCount",
@@ -686,7 +495,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Attack Platoon Medium",
+      "name": "Platoon - Land Attack Platoon Medium",
       "to_build": "Land_Attack_Medium",
       "instance_count": -1,
       "priority": 103,
@@ -695,16 +504,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 2800
           },
           {
             "test_type": "UnitPoolCount",
@@ -723,7 +533,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Attack Platoon Large",
+      "name": "Platoon - Land Attack Platoon Large",
       "to_build": "Land_Attack_Large",
       "instance_count": -1,
       "priority": 102,
@@ -732,16 +542,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 5600
           },
           {
             "test_type": "UnitPoolCount",
@@ -760,7 +571,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Land Attack Platoon XLarge",
+      "name": "Platoon - Land Attack Platoon XLarge",
       "to_build": "Land_Attack_XLarge",
       "instance_count": -1,
       "priority": 101,
@@ -769,86 +580,23 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 11200
           },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
             "compare0": ">=",
             "value0": 20
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Land Attack Platoon Max",
-      "to_build": "Land_Attack_Max",
-      "instance_count": -1,
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Land Attack Titan",
-      "to_build": "Land_Attack_Titan",
-      "instance_count": -1,
-      "priority": 110,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "(Tank | Bot) & Mobile & Titan",
-            "compare0": ">",
-            "value0": 0
           },
           {
             "test_type": "CanAttackWithPoolUnitsLand",

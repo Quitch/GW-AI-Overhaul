@@ -1,25 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Air Scout Platoon",
-      "to_build": "Air_Scout",
-      "instance_count": 5,
-      "shared_instance_count": "AirScout",
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Scout",
-            "compare0": ">=",
-            "value0": 1
-          }
-        ]
-      ],
-      "task_type": "Scout"
-    },
-    {
-      "name": "Bomber-Gunship Attack Platoon Small",
+      "name": "Platoon - Bomber-Gunship Attack Platoon Small",
       "to_build": "BomberGunship_Attack_Small",
       "instance_count": -1,
       "priority": 104,
@@ -28,320 +10,21 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 400
           },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
-            "compare0": ">=",
-            "value0": 1
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Bomber-Gunship Attack Platoon Medium",
-      "to_build": "BomberGunship_Attack_Medium",
-      "instance_count": -1,
-      "priority": 103,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
-            "compare0": ">=",
-            "value0": 4
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Bomber-Gunship Attack Platoon Large",
-      "to_build": "BomberGunship_Attack_Large",
-      "instance_count": -1,
-      "priority": 102,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
-            "compare0": ">=",
-            "value0": 10
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Bomber-Gunship Attack Platoon XLarge",
-      "to_build": "BomberGunship_Attack_XLarge",
-      "instance_count": -1,
-      "priority": 101,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
-            "compare0": ">=",
-            "value0": 20
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Bomber-Gunship Attack Platoon Max",
-      "to_build": "BomberGunship_Attack_Max",
-      "instance_count": -1,
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Heavy Bomber Attack Platoon Small",
-      "to_build": "BomberGunship_Attack_Small",
-      "instance_count": -1,
-      "priority": 104,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Bomber & Advanced - Titan",
-            "compare0": ">=",
-            "value0": 1
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Heavy Bomber Attack Platoon Medium",
-      "to_build": "BomberGunship_Attack_Medium",
-      "instance_count": -1,
-      "priority": 103,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Bomber & Advanced - Titan",
-            "compare0": ">=",
-            "value0": 4
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Heavy Bomber Attack Platoon Large",
-      "to_build": "BomberGunship_Attack_Large",
-      "instance_count": -1,
-      "priority": 102,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Bomber & Advanced - Titan",
-            "compare0": ">=",
-            "value0": 10
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Heavy Bomber Attack Platoon XLarge",
-      "to_build": "BomberGunship_Attack_XLarge",
-      "instance_count": -1,
-      "priority": 101,
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Bomber & Advanced - Titan",
-            "compare0": ">=",
-            "value0": 20
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Heavy Bomber Attack Platoon Max",
-      "to_build": "BomberGunship_Attack_Max",
-      "instance_count": -1,
-      "priority": 100,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Bomber & Advanced - Titan",
-            "compare0": ">=",
-            "value0": 40
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsBomber",
-            "string0": "WL_AnySurface",
-            "string1": "WL_Air",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "BomberAttack"
-    },
-    {
-      "name": "Air Titan Attack",
-      "to_build": "Air_Attack_Titan",
-      "instance_count": -1,
-      "priority": 105,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Titan",
             "compare0": ">=",
             "value0": 1
           },
@@ -354,12 +37,23 @@
         ],
         [
           {
-            "test_type": "EnemyAirPresenceOnPlanet",
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
             "boolean": true
           },
           {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<",
+            "value0": 150
+          },
+          {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "Air & Titan",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
             "compare0": ">=",
             "value0": 1
           },
@@ -374,7 +68,476 @@
       "task_type": "BomberAttack"
     },
     {
-      "name": "Fighter Attack Platoon Small",
+      "name": "Platoon - Bomber-Gunship Attack Platoon Medium",
+      "to_build": "BomberGunship_Attack_Medium",
+      "instance_count": -1,
+      "priority": 103,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 720
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 600
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Bomber-Gunship Attack Platoon Large",
+      "to_build": "BomberGunship_Attack_Large",
+      "instance_count": -1,
+      "priority": 102,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 1200
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 1500
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Bomber-Gunship Attack Platoon XLarge",
+      "to_build": "BomberGunship_Attack_XLarge",
+      "instance_count": -1,
+      "priority": 101,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 2000
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 20
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 3000
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
+            "compare0": ">=",
+            "value0": 20
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Heavy Bomber Attack Platoon Small",
+      "to_build": "BomberGunship_Attack_Small",
+      "instance_count": -1,
+      "priority": 104,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 400
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Heavy Bomber Attack Platoon Medium",
+      "to_build": "BomberGunship_Attack_Medium",
+      "instance_count": -1,
+      "priority": 103,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 720
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 600
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Heavy Bomber Attack Platoon Large",
+      "to_build": "BomberGunship_Attack_Large",
+      "instance_count": -1,
+      "priority": 102,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 1200
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 1500
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Heavy Bomber Attack Platoon XLarge",
+      "to_build": "BomberGunship_Attack_XLarge",
+      "instance_count": -1,
+      "priority": 101,
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 2000
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 20
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 3000
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Bomber & Advanced - Titan",
+            "compare0": ">=",
+            "value0": 20
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsBomber",
+            "string0": "WL_AnySurface",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ]
+      ],
+      "task_type": "BomberAttack"
+    },
+    {
+      "name": "Platoon - Fighter Attack Platoon Small",
       "to_build": "Fighter_Attack_Small",
       "instance_count": 1,
       "priority": 104,
@@ -383,11 +546,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 400
           },
           {
             "test_type": "UnitPoolCount",
@@ -406,11 +575,76 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 400
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanProvideAirSupportWithPoolUnits",
+            "string0": "fighter_attack",
+            "string1": "WL_Air",
+            "string2": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsFighter",
+            "string0": "WL_Air",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<",
+            "value0": 150
           },
           {
             "test_type": "UnitPoolCount",
@@ -430,7 +664,7 @@
       "task_type": "FighterAttack"
     },
     {
-      "name": "Fighter Attack Platoon Medium",
+      "name": "Platoon - Fighter Attack Platoon Medium",
       "to_build": "Fighter_Attack_Medium",
       "instance_count": 1,
       "priority": 103,
@@ -439,11 +673,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 720
           },
           {
             "test_type": "UnitPoolCount",
@@ -462,11 +702,76 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 720
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanProvideAirSupportWithPoolUnits",
+            "string0": "fighter_attack",
+            "string1": "WL_Air",
+            "string2": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 600
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsFighter",
+            "string0": "WL_Air",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 600
           },
           {
             "test_type": "UnitPoolCount",
@@ -486,7 +791,7 @@
       "task_type": "FighterAttack"
     },
     {
-      "name": "Fighter Attack Platoon Large",
+      "name": "Platoon - Fighter Attack Platoon Large",
       "to_build": "Fighter_Attack_Large",
       "instance_count": 1,
       "priority": 102,
@@ -495,11 +800,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 1200
           },
           {
             "test_type": "UnitPoolCount",
@@ -518,11 +829,76 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 1200
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanProvideAirSupportWithPoolUnits",
+            "string0": "fighter_attack",
+            "string1": "WL_Air",
+            "string2": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 1500
+          },
+          {
+            "test_type": "UnitPoolCount",
+            "unit_type_string0": "Air & Fighter",
+            "compare0": ">=",
+            "value0": 10
+          },
+          {
+            "test_type": "CanAttackWithPoolUnitsFighter",
+            "string0": "WL_Air",
+            "string1": "WL_Air",
+            "unit_type_string0": "Mobile | Structure"
+          }
+        ],
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemyAirPresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 1500
           },
           {
             "test_type": "UnitPoolCount",
@@ -542,7 +918,7 @@
       "task_type": "FighterAttack"
     },
     {
-      "name": "Fighter Attack Platoon XLarge",
+      "name": "Platoon - Fighter Attack Platoon XLarge",
       "to_build": "Fighter_Attack_XLarge",
       "instance_count": 1,
       "priority": 101,
@@ -551,11 +927,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 2000
           },
           {
             "test_type": "UnitPoolCount",
@@ -574,11 +956,17 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "PenchantPlatoon",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiAir",
+            "compare0": "<=",
+            "value0": 2000
           },
           {
             "test_type": "UnitPoolCount",
@@ -593,26 +981,28 @@
             "string2": "WL_Air",
             "unit_type_string0": "Mobile | Structure"
           }
-        ]
-      ],
-      "task_type": "FighterAttack"
-    },
-    {
-      "name": "Fighter Attack Platoon Max",
-      "to_build": "Fighter_Attack_Max",
-      "instance_count": 1,
-      "priority": 100,
-      "build_conditions": [
+        ],
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
           {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
           },
           {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 3000
+          },
+          {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
             "compare0": ">=",
-            "value0": 40
+            "value0": 20
           },
           {
             "test_type": "CanAttackWithPoolUnitsFighter",
@@ -623,14 +1013,25 @@
         ],
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": true
+          },
+          {
             "test_type": "EnemyAirPresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "Air",
+            "compare0": "<=",
+            "value0": 3000
           },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
             "compare0": ">=",
-            "value0": 40
+            "value0": 20
           },
           {
             "test_type": "CanProvideAirSupportWithPoolUnits",
