@@ -55,6 +55,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -91,6 +96,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
@@ -131,6 +141,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -167,6 +182,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
@@ -207,6 +227,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -243,6 +268,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
@@ -283,6 +313,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -319,6 +354,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
@@ -359,6 +399,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -397,6 +442,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -433,6 +483,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
@@ -511,6 +566,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -549,6 +609,11 @@
             "boolean": true
           },
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiSurface",
             "compare0": "<",
@@ -585,6 +650,11 @@
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
