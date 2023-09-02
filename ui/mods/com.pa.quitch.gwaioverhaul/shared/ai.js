@@ -59,7 +59,7 @@ define({
       "Sniper",
       "Nuker",
       "Tactical",
-      "PenchantPlatoon",
+      "Platoon",
     ];
     var penchantExclusions = [
       [], // Vanilla
@@ -140,7 +140,7 @@ define({
         "PenchantT2Bot",
         "PenchantT2Naval",
       ],
-      [], // Platoon
+      ["PenchantPlatoon"], // Platoon
     ];
     var penchantNames = [
       "", // Vanilla - no modifications
