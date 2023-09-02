@@ -1,7 +1,7 @@
 {
   "build_list": [
     {
-      "name": "Hover Raid Platoon Small",
+      "name": "Platoon - Hover Raid Platoon Small",
       "to_build": "Hover_Raid_Small",
       "instance_count": 1,
       "priority": 109,
@@ -9,12 +9,18 @@
         [
           {
             "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
+            "string0": "Platoon",
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 840
           },
           {
             "test_type": "UnitPoolCount",
@@ -33,7 +39,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Hover Raid Platoon Medium",
+      "name": "Platoon - Hover Raid Platoon Medium",
       "to_build": "Hover_Raid_Medium",
       "instance_count": 1,
       "priority": 108,
@@ -41,8 +47,8 @@
         [
           {
             "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
+            "string0": "Platoon",
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
@@ -52,6 +58,12 @@
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 2800
           },
           {
             "test_type": "UnitPoolCount",
@@ -70,7 +82,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Hover Raid Platoon Large",
+      "name": "Platoon - Hover Raid Platoon Large",
       "to_build": "Hover_Raid_Large",
       "instance_count": 1,
       "priority": 107,
@@ -78,8 +90,8 @@
         [
           {
             "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
+            "string0": "Platoon",
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
@@ -89,6 +101,12 @@
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 5600
           },
           {
             "test_type": "UnitPoolCount",
@@ -107,7 +125,7 @@
       "task_type": "LandAttack"
     },
     {
-      "name": "Hover Raid Platoon XLarge",
+      "name": "Platoon - Hover Raid Platoon XLarge",
       "to_build": "Hover_Raid_XLarge",
       "instance_count": 1,
       "priority": 106,
@@ -115,8 +133,8 @@
         [
           {
             "test_type": "HasPersonalityTag",
-            "string0": "PenchantPlatoon",
-            "boolean": false
+            "string0": "Platoon",
+            "boolean": true
           },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
@@ -126,44 +144,18 @@
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreat",
+            "string0": "AntiSurface",
+            "compare0": "<",
+            "value0": 11200
           },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "(Hover & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
             "compare0": ">=",
             "value0": 20
-          },
-          {
-            "test_type": "CanAttackWithPoolUnitsLand",
-            "string0": "WL_AnySurface",
-            "string1": "WL_AnySurface",
-            "unit_type_string0": "Mobile | Structure"
-          }
-        ]
-      ],
-      "task_type": "LandAttack"
-    },
-    {
-      "name": "Hover Raid Platoon Max",
-      "to_build": "Hover_Raid_Max",
-      "instance_count": 1,
-      "priority": 105,
-      "build_conditions": [
-        [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "UnitPoolCount",
-            "unit_type_string0": "(Hover & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
-            "compare0": ">=",
-            "value0": 40
           },
           {
             "test_type": "CanAttackWithPoolUnitsLand",

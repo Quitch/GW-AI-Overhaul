@@ -59,6 +59,7 @@ define({
       "Sniper",
       "Nuker",
       "Tactical",
+      "Platoon",
     ];
     var penchantExclusions = [
       [], // Vanilla
@@ -139,6 +140,7 @@ define({
         "PenchantT2Bot",
         "PenchantT2Naval",
       ],
+      ["PenchantPlatoon"], // Platoon
     ];
     var penchantNames = [
       "", // Vanilla - no modifications
@@ -154,6 +156,7 @@ define({
       "!LOC:Sniper",
       "!LOC:Nuker",
       "!LOC:Tactical",
+      "!LOC:Platoon",
     ];
     var penchantTag = _.sample(penchantTags);
     var penchantIndex = _.indexOf(penchantTags, penchantTag);
