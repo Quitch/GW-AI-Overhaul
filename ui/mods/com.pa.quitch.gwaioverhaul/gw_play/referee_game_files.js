@@ -15,10 +15,6 @@ define([
     return -1;
   };
 
-  var combineSpecs = function (baseSpecs, newSpecs) {
-    return baseSpecs.concat(newSpecs);
-  };
-
   /* start of gw_spec.js replacements */
   function tagSpec(tag, spec) {
     var moreWork = [];
@@ -412,7 +408,7 @@ define([
             var currentCount = n;
             var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
             var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
-            var aiSpecs = combineSpecs(units, model.gwoSpecs);
+            var aiSpecs = units.concat(model.gwoSpecs);
 
             genUnitSpecs(aiSpecs, aiTag[n]).then(function (aiSpecFiles) {
               var unitMapPath = aiUnitMapPath;
@@ -457,10 +453,7 @@ define([
           var additionalPlayerSpecs = _.isUndefined(ai.ally)
             ? model.gwoSpecs
             : model.gwoSpecs.concat(ai.ally.commander);
-          var playerSpecs = combineSpecs(
-            inventory.units(),
-            additionalPlayerSpecs
-          );
+          var playerSpecs = inventory.units().concat(additionalPlayerSpecs);
 
           genUnitSpecs(playerSpecs, playerTag).then(function (playerSpecFiles) {
             var playerFilesClassic = {};

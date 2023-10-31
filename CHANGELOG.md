@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.50.1 - 2023-10-31
+
+### Fixed
+
+- Cluster AI receiving its bot factory buffs twice
+
 ## v5.55.0 - 2023-09-02
 
 ### Added
