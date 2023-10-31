@@ -128,8 +128,6 @@ define([
       gwoUnit.airFactoryBuildArm,
       gwoUnit.antiNukeLauncherBuildArm,
       gwoUnit.botFactoryAdvancedBuildArm,
-      gwoUnit.botFactoryAdvancedBuildArm,
-      gwoUnit.botFactoryBuildArm,
       gwoUnit.botFactoryBuildArm,
       gwoUnit.navalFactoryAdvancedBuildArm,
       gwoUnit.navalFactoryBuildArm,
