@@ -26,13 +26,14 @@ define([
       path: "unit_types",
       op: "replace",
       value: [
+        "UNITTYPE_Custom58",
         "UNITTYPE_Commander",
         "UNITTYPE_Construction",
         "UNITTYPE_Mobile",
         "UNITTYPE_Offense",
         "UNITTYPE_Land",
+        "UNITTYPE_Amphibious",
         "UNITTYPE_NoBuild",
-        "UNITTYPE_Custom58",
       ],
     },
     {

@@ -1,6 +1,12 @@
 # CHANGELOG
 
-## v5.50.1 - 2023-10-31
+## v5.55.2 - 2023-11-03
+
+### Fixed
+
+- Added amphibious tag to Cluster Security
+
+## v5.55.1 - 2023-10-31
 
 ### Fixed
 

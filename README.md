@@ -42,10 +42,6 @@ You should download and install this mod via the Planetary Annihilation: TITANS 
 
 If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the mod from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 
-## Report a Bug
-
-Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
-
 ## Discussion
 
 Join the [Planetary Annihilation official Discord](https://discord.gg/pa).
@@ -132,11 +128,13 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 
 Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
 
-## Known Issues
+## Report a Bug
 
-- More Pew Pew will cause some units modified by tech card to show incorrect stats and range circles.
-- Selection and combat grouping mods e.g. Air Scout Select, can cause the AI to use these units incorrectly.
-- Bot Commander loadout [may cause freezes in battle](https://github.com/Quitch/GW-AI-Overhaul/issues/79).
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
+
+## Known issues
+
+- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79), with the current common factors appearing to be the player using bots and the enemy featuring a Cluster Security commander. Please use [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79) to report if you encounter this bug.
 
 ## Recommended mods
 
@@ -148,7 +146,9 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 - Challenge Levels for galactic war
 - Enemy ramp for galactic war
 - Galactic War Unique Loadouts
+- More Pew Pew
 - Section of Foreign Intelligence for galactic war
+- Selection and combat grouping mods e.g. Air Scout Select
 
 ## Thanks to
 
