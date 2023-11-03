@@ -42,10 +42,6 @@ You should download and install this mod via the Planetary Annihilation: TITANS 
 
 If you are using [PA Mod Manager (PAMM)](https://steamcommunity.com/sharedfiles/filedetails/?id=2631864717) you will need to [download the mod from GitHub](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 
-## Report a Bug
-
-Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
-
 ## Discussion
 
 Join the [Planetary Annihilation official Discord](https://discord.gg/pa).
@@ -131,6 +127,10 @@ Both bosses and FFA factions will use Shared Armies to allow for multiple Comman
 **Q. Why aren't awarded bounties showing on the player list?**
 
 Galactic War hides eco modifiers from the player list. The bounties are still being awarded. If you gain one it will show below your eco bar.
+
+## Report a Bug
+
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
 
 ## Known issues
 
