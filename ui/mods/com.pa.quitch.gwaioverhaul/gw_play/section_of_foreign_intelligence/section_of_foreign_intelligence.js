@@ -189,7 +189,6 @@ if (!gwoIntelligenceLoaded) {
               if (star.ai() && star.ai().cardName) {
                 return star.ai().cardName;
               }
-              return null;
             });
 
             model.gwoCardAvailable = ko.computed(function () {

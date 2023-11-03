@@ -194,14 +194,14 @@ define(function () {
       var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
         if (_.isUndefined(def)) {
-          return null;
+          return;
         }
         tags[context] = {};
       }
       var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
         if (_.isUndefined(def)) {
-          return null;
+          return;
         }
         tagContext[name] = def;
       }

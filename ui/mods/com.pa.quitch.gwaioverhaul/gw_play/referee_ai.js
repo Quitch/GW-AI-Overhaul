@@ -96,7 +96,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                 if (_.isEqual(object, value)) {
                   return object;
                 }
-                return null;
               });
             });
           }

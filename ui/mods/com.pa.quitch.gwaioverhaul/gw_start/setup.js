@@ -424,7 +424,7 @@ if (!gwoSetupLoaded) {
 
             var dealStartCard = buildGalaxy.then(function (galaxy) {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
 
               return gwoDealStartCard({
@@ -454,7 +454,7 @@ if (!gwoSetupLoaded) {
 
             var populate = moveIn.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
 
               // Scatter some AIs
@@ -917,7 +917,7 @@ if (!gwoSetupLoaded) {
                 model.makeGameBusy() !== busyToken ||
                 warGenerationFailed === true
               ) {
-                return null;
+                return;
               }
 
               model.makeGameBusy(false);
