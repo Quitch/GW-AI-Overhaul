@@ -10,7 +10,7 @@ assignees: Quitch
 
 [ ] I have verified this bug with all other mods disabled
 
-[ ] I am not using one of the documented [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
+[ ] I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
 
 [ ] I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
 
