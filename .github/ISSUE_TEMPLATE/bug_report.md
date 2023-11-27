@@ -14,7 +14,7 @@ assignees: Quitch
 
 [ ] I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
 
-[ ] I have confirmed this happens after [verifying the games files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
+[ ] I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
 
 [ ] I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
 
