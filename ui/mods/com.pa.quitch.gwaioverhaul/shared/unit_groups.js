@@ -546,6 +546,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
 
+  var fabberBuildArms = [
+    gwoUnit.airFabberAdvancedBuildArm,
+    gwoUnit.airFabberBuildArm,
+    gwoUnit.barnacleBuildArm,
+    gwoUnit.botFabberAdvancedBuildArm,
+    gwoUnit.botFabberBuildArm,
+    gwoUnit.colonelBuildArm,
+    gwoUnit.commanderBuildArm,
+    gwoUnit.mendBuildArm,
+    gwoUnit.navalFabberAdvancedBuildArm,
+    gwoUnit.navalFabberBuildArm,
+    gwoUnit.orbitalFabberBuildArm,
+    gwoUnit.stitchBuildArm,
+  ];
+
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
     gwoUnit.antiNukeLauncher,
@@ -580,6 +595,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     energyUnits: energyUnits,
     energyAll: energyAll,
     energyWeapons: energyWeapons,
+    fabberBuildArms: fabberBuildArms,
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
     fabbersBasic: fabbersBasic,

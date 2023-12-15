@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Commander Upgrade Tech allows you to reclaim friendly Commanders
+
 ## v5.55.2 - 2023-11-03
 
 ### Fixed
