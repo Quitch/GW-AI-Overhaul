@@ -20,6 +20,10 @@
   color: white;
 }
 
+#incompatible-mods {
+  color: red;
+}
+
 .gwo-info .data {
   font-weight: bold;
   color: white;

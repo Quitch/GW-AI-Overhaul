@@ -103,6 +103,34 @@ if (!gwoWarInfoPanelLoaded) {
               });
             }
 
+            model.gwoIncompatibleMods = ko.observableArray([]);
+
+            api.mods.getMounted("client").then(function (mods) {
+              var incompatibleMods = [
+                "com.heiz.aurora_arty", // Aurora-Artillery
+                "com.wondible.pa.gw_challenge", // Challenge Levels for galactic war
+                "com.wondible.pa.gw_ramp", // Enemy Ramp for galactic war
+                "nemuneko.gw.unique.loadouts", // Galactic War Unique Loadouts
+                "com.pa.domdom.laser_unit_effects", // More Pew Pew
+                "com.wondible.pa.section_of_foreign_intelligence", // Section of Foreign Intelligence for galactic war
+                "com.pa.lulamae.air-scout-select", // Air Scout Select
+                "com.pa.grandhomie.land_scout_combat_grouping_mod", // Land scout combat grouping
+                "ca.pa.metapod.colonel_combat_grouping_mod", // Combat Colonel selection mod
+              ];
+              var modIdentifiers = _.map(mods, "identifier");
+              var incompatibleModsInUse = _.intersection(
+                incompatibleMods,
+                modIdentifiers
+              );
+              var incompatibleModNames = _.sortBy(
+                _.map(incompatibleModsInUse, function (incompatibleMod) {
+                  var index = _.findIndex(mods, "identifier", incompatibleMod);
+                  return mods[index].display_name;
+                })
+              );
+              model.gwoIncompatibleMods(incompatibleModNames);
+            });
+
             // Player Information
             var inventory = game.inventory();
 

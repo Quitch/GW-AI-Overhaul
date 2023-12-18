@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Incompatible mods currently in use are listed on the Galactic War Overhaul panel
+
 ### Changed
 
 - Commander Upgrade Tech allows you to reclaim friendly Commanders

@@ -48,6 +48,24 @@
       </div>
     </div>
     <!-- /ko -->
+    <h3
+      id="incompatible-mods"
+      data-bind="visible:$root.gwoIncompatibleMods().length > 0"
+    >
+      <loc>Incompatible Mods</loc>
+    </h3>
+    <!-- ko if: $root.gwoIncompatibleMods -->
+    <div class="table">
+      <div class="tablebody" data-bind="foreach: $root.gwoIncompatibleMods()">
+        <div class="tr">
+          <div
+            class="data"
+            data-bind="text: $root.gwoIncompatibleMods()[$index()]"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
     <h3 data-bind="text: $root.gwoFactionName"></h3>
     <div class="td" data-bind="text: $root.gwoLoadout"></div>
     <ul data-bind="foreach: $root.gwoPlayer">
