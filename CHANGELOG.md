@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.56.0 - 2023-12-18
 
 ### Added
 
