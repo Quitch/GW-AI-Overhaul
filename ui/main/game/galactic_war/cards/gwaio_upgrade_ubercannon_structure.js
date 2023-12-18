@@ -1,11 +1,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300%."
+      "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
     ),
     summarize: _.constant("!LOC:Commander Upgrade Tech"),
     icon: _.constant(
@@ -21,7 +22,15 @@ define([
       return { chance: 30 };
     },
     buff: function (inventory) {
-      inventory.addMods([
+      var mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
+        return {
+          file: fabberBuildArm,
+          path: "reclaim_types",
+          op: "push",
+          value: "Friendly_Commander",
+        };
+      });
+      mods.push(
         {
           file: gwoUnit.commanderSecondaryAmmo,
           path: "damage",
@@ -39,8 +48,9 @@ define([
           path: "burn_damage",
           op: "multiply",
           value: 4,
-        },
-      ]);
+        }
+      );
+      inventory.addMods(mods);
     },
     dull: function () {
       // empty

@@ -379,7 +379,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.55.2";
+            var version = "5.56.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -424,7 +424,7 @@ if (!gwoSetupLoaded) {
 
             var dealStartCard = buildGalaxy.then(function (galaxy) {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
 
               return gwoDealStartCard({
@@ -454,7 +454,7 @@ if (!gwoSetupLoaded) {
 
             var populate = moveIn.then(function () {
               if (model.makeGameBusy() !== busyToken) {
-                return null;
+                return;
               }
 
               // Scatter some AIs
@@ -917,7 +917,7 @@ if (!gwoSetupLoaded) {
                 model.makeGameBusy() !== busyToken ||
                 warGenerationFailed === true
               ) {
-                return null;
+                return;
               }
 
               model.makeGameBusy(false);

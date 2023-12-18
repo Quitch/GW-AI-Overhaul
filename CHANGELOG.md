@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.56.0 - 2023-12-18
+
+### Added
+
+- Incompatible mods currently in use are listed on the Galactic War Overhaul panel
+
+### Changed
+
+- Commander Upgrade Tech allows you to reclaim friendly Commanders
+
 ## v5.55.2 - 2023-11-03
 
 ### Fixed
