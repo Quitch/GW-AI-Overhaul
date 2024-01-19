@@ -116,6 +116,7 @@ if (!gwoWarInfoPanelLoaded) {
                 "com.pa.lulamae.air-scout-select", // Air Scout Select
                 "com.pa.grandhomie.land_scout_combat_grouping_mod", // Land scout combat grouping
                 "ca.pa.metapod.colonel_combat_grouping_mod", // Combat Colonel selection mod
+                "com.pa.nemogielen.client.BetterCombatSelection", // Better Combat Selection
               ];
               var modIdentifiers = _.map(mods, "identifier");
               var incompatibleModsInUse = _.intersection(

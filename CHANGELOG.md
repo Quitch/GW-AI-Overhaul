@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.56.1 - 2024-01-19
+
+## Changed
+
+- Updated incompatible mod alerts
+
 ## v5.56.0 - 2023-12-18
 
 ### Added
