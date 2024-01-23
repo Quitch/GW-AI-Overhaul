@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+## Changed
+
+- Penchant is now the default AI selection
+
 ## v5.56.1 - 2024-01-19
 
 ## Changed

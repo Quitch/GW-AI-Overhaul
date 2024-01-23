@@ -23,7 +23,7 @@ if (!gwoUILoaded) {
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
         easierStart: ko.observable(false),
-        ai: ko.observable("Titans"),
+        ai: ko.observable("Penchant"),
         paLore: ko.observable(true),
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
