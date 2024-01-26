@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- Correct locked name of Terminal Commander loadout
+- Locked name of Terminal Commander loadout
 
 ## v5.56.1 - 2024-01-19
 
