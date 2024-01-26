@@ -333,13 +333,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                     aiTechPath.length
                   );
                 }
-              } else {
+              } else if (_.startsWith(filePath, aiFilePath)) {
                 // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
-                if (_.startsWith(filePath, aiFilePath)) {
-                  updatedFilePath =
-                    aiTechPath + filePath.slice(aiFilePath.length);
-                }
+                updatedFilePath =
+                  aiTechPath + filePath.slice(aiFilePath.length);
               }
+
               configFiles[updatedFilePath] = json;
             } else {
               configFiles[filePath] = json;

@@ -179,10 +179,8 @@ if (!gwoSystemChangesLoaded) {
               var container = system.systemDisplay;
               container.addChild(self.scale);
               sortContainer(container);
-            } else {
-              if (self.scale.parent) {
-                self.scale.parent.removeChild(self.scale);
-              }
+            } else if (self.scale.parent) {
+              self.scale.parent.removeChild(self.scale);
             }
           });
 
