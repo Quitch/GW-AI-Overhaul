@@ -5,6 +5,7 @@
 ### Changed
 
 - Penchant is now the default AI selection
+- Penchant prefers completing existing minefields over starting new ones
 
 ### Fixed
 
