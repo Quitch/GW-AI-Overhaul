@@ -2,9 +2,13 @@
 
 ## Unreleased
 
-## Changed
+### Changed
 
 - Penchant is now the default AI selection
+
+### Fixed
+
+- Correct locked name of Terminal Commander loadout
 
 ## v5.56.1 - 2024-01-19
 
