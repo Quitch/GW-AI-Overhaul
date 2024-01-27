@@ -41,10 +41,7 @@ define({
     }
 
     var iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
-    var append = ".png";
-    if (hardcore === true) {
-      append = "_hardcore.png";
-    }
+    var append = hardcore ? "_hardcore.png" : ".png";
 
     switch (icon) {
       case -1: {
