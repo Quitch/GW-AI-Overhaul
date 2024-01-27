@@ -67,13 +67,13 @@ if (!gwoWarInfoPanelLoaded) {
                 model.gwoSettings.cheatsUsed,
                 "!LOC:Cheats used"
               );
+              options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
               // deprecated - pre-v5.27.0 support only
               options(
                 model.gwoOptions,
                 model.gwoSettings.tougherCommanders,
                 "!LOC:Tougher commanders"
               );
-              options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
 
               var cheatsDetected = function () {
                 requireGW(
