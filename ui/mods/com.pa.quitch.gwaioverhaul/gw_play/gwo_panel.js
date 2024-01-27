@@ -166,7 +166,7 @@ if (!gwoWarInfoPanelLoaded) {
                   id: "gwaio_upgrade_subcommander_duplication",
                 })
               ) {
-                subcommanderName = subcommanderName.concat(" x2");
+                subcommanderName += " x2";
               }
               return {
                 name: subcommanderName,
