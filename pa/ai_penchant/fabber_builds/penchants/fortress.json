@@ -840,7 +840,6 @@
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "priority": 445,
-      "base_sort": "FromBuilder",
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
@@ -850,26 +849,24 @@
             "boolean": true
           },
           {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "MiniUnitCannon"
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Structure & Basic & Artillery",
+            "unit_type_string0": "Structure & (Artillery | Tactical)",
             "compare0": "<",
-            "value0": 1
+            "value0": 2
           },
           {
-            "test_type": "HaveSeenEnemyUnits",
-            "unit_type_string0": "Advanced",
-            "boolean": false
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 4
           },
           {
             "test_type": "UnitCountAroundBase",
@@ -877,7 +874,12 @@
             "string0": "Enemy",
             "value0": 350,
             "compare0": ">=",
-            "value1": 1
+            "value1": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Land & Advanced",
+            "boolean": false
           },
           {
             "test_type": "CanFindPlaceToBuild",
@@ -890,11 +892,11 @@
         "placement_type": "FromMainBasePerimeter",
         "unit_count_rules": [
           {
-            "unit_type_string": "Structure & Basic & Artillery",
+            "unit_type_string": "Structure & (Artillery | Tactical)",
             "alliance": "Ally",
             "compare_type": "<",
             "range": 75,
-            "count": 1
+            "count": 2
           }
         ],
         "threat": {
@@ -927,14 +929,10 @@
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "MiniUnitCannon"
-          },
-          {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (Artillery | Tactical)",
             "compare0": "<",
-            "value0": 2
+            "value0": 1
           },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
@@ -951,7 +949,7 @@
           },
           {
             "test_type": "HaveSeenEnemyUnits",
-            "unit_type_string0": "Advanced",
+            "unit_type_string0": "Land & Advanced",
             "boolean": false
           },
           {
@@ -976,7 +974,7 @@
             "alliance": "Ally",
             "compare_type": "<",
             "range": 75,
-            "count": 2
+            "count": 1
           }
         ]
       }
