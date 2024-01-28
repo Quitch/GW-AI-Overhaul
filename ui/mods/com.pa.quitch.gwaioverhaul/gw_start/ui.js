@@ -23,7 +23,7 @@ if (!gwoUILoaded) {
         systemScaling: ko.observable(true),
         simpleSystems: ko.observable(false),
         easierStart: ko.observable(false),
-        ai: ko.observable("Titans"),
+        ai: ko.observable("Penchant"),
         paLore: ko.observable(true),
         techCardDeck: ko.observable("Expanded"),
         customDifficulty: ko.observable(false),
@@ -86,7 +86,7 @@ if (!gwoUILoaded) {
       // Allow modders to append their deck names
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
-      model.factionTooltip =
+      model.gwoFactionTooltip =
         "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
       var addHtml = {
@@ -122,8 +122,8 @@ if (!gwoUILoaded) {
       locTree($("#difficulty-ai"));
 
       if (api.content.usingTitans()) {
-        model.factionTooltip =
-          model.factionTooltip +
+        model.gwoFactionTooltip =
+          model.gwoFactionTooltip +
           loc(
             "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
           );
@@ -131,7 +131,7 @@ if (!gwoUILoaded) {
         $("select option[value*='Queller']").prop("disabled", true);
       }
 
-      // Track difficulty settings so AI Settings fields display correct values
+      // Track difficulty settings so AI Settings' fields display correct values
       requireGW(
         [
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",

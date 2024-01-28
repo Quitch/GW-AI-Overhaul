@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.57.0 - 2024-01-28
+
+### Changed
+
+- Penchant is now the default AI selection
+- Penchant prefers completing existing minefields over starting new ones
+- Penchant Artillery and Fortress will build the Lob
+
+### Fixed
+
+- Locked name of Terminal Commander loadout
+- AI Tech assignment errors
+
 ## v5.56.1 - 2024-01-19
 
 ## Changed
@@ -1609,18 +1622,18 @@
 
 ## v4.10.0 - 2020-11-02
 
-## Added
+### Added
 
 - Nomad Commander loadout
 - Updated loadouts from trialq's discontinued Galactic War Loadouts mod
   - Swarm Commander loadout
   - Buff Commander loadout
 
-## Changed
+### Changed
 
 - Some Synchronous personalities now use more basic fabbers
 
-## Fixed
+### Fixed
 
 - Custom loadouts showing a Which Units? tooltip
 

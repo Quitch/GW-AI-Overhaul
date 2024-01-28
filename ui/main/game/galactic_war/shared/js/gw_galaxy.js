@@ -45,10 +45,10 @@ define([
 
       var checked = {};
 
-      var worklist = [[from]];
+      var workList = [[from]];
 
-      while (worklist.length > 0) {
-        var path = worklist.shift();
+      while (workList.length > 0) {
+        var path = workList.shift();
 
         var node = path[path.length - 1];
         var nodeNeighbors = neighborsMap[node];
@@ -87,7 +87,7 @@ define([
             var newPath = _.cloneDeep(path);
             newPath.push(other);
 
-            worklist.push(newPath);
+            workList.push(newPath);
           }
         }
       }
