@@ -6,6 +6,7 @@
 
 - Penchant is now the default AI selection
 - Penchant prefers completing existing minefields over starting new ones
+- Penchant Artillery and Fortress will build the lob
 
 ### Fixed
 

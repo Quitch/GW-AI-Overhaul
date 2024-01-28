@@ -698,6 +698,75 @@
       }
     },
     {
+      "name": "Fortress - Basic Artillery",
+      "to_build": "BasicArtillery",
+      "instance_count": 1,
+      "min_num_assisters": 2,
+      "max_num_assisters": 5,
+      "priority": 445,
+      "builders": ["AnyBasicFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Fortress",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Artillery | Tactical)",
+            "compare0": "<",
+            "value0": 2
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountAroundBase",
+            "unit_type_string0": "Structure",
+            "string0": "Enemy",
+            "value0": 350,
+            "compare0": ">=",
+            "value1": 3
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "BasicArtillery"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Structure & (Artillery | Tactical)",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 75,
+            "count": 2
+          }
+        ],
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
       "name": "Fortress - Basic Artillery - Threat",
       "to_build": "BasicArtillery",
       "instance_count": 1,
@@ -765,12 +834,13 @@
       }
     },
     {
-      "name": "Fortress - Basic Artillery",
-      "to_build": "BasicArtillery",
+      "name": "Fortress - Mini Unit Cannon",
+      "to_build": "MiniUnitCannon",
       "instance_count": 1,
       "min_num_assisters": 2,
       "max_num_assisters": 5,
       "priority": 445,
+      "base_sort": "FromBuilder",
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
@@ -780,36 +850,38 @@
             "boolean": true
           },
           {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
             "test_type": "CanAffordBuildDemand"
           },
           {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "MiniUnitCannon"
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Structure & (Artillery | Tactical)",
+            "unit_type_string0": "Structure & Basic & Artillery",
             "compare0": "<",
-            "value0": 2
+            "value0": 1
           },
           {
-            "test_type": "UnitCountInBase",
-            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
-            "compare0": ">=",
-            "value0": 4
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Advanced",
+            "boolean": false
           },
           {
             "test_type": "UnitCountAroundBase",
             "unit_type_string0": "Structure",
             "string0": "Enemy",
-            "value0": 350,
+            "value0": 240,
             "compare0": ">=",
-            "value1": 3
+            "value1": 1
           },
           {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicArtillery"
+            "string0": "MiniUnitCannon"
           }
         ]
       ],
@@ -818,11 +890,11 @@
         "placement_type": "FromMainBasePerimeter",
         "unit_count_rules": [
           {
-            "unit_type_string": "Structure & (Artillery | Tactical)",
+            "unit_type_string": "Structure & Basic & Artillery",
             "alliance": "Ally",
             "compare_type": "<",
             "range": 75,
-            "count": 2
+            "count": 1
           }
         ],
         "threat": {
@@ -831,6 +903,82 @@
           "radius": 10,
           "value": 50
         }
+      }
+    },
+    {
+      "name": "Fortress - Mini Unit Cannon - Threat",
+      "to_build": "MiniUnitCannon",
+      "instance_count": 1,
+      "priority": 462,
+      "base_sort": "FromPerimeter",
+      "builders": ["AnyBasicFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Fortress",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "MiniUnitCannon"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Artillery | Tactical)",
+            "compare0": "<",
+            "value0": 2
+          },
+          {
+            "test_type": "PlanetHighestEnemyArmyThreatRatio",
+            "string0": "Land",
+            "string1": "AntiSurface",
+            "compare0": ">",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | Factory)",
+            "compare0": ">=",
+            "value0": 3
+          },
+          {
+            "test_type": "HaveSeenEnemyUnits",
+            "unit_type_string0": "Advanced",
+            "boolean": false
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "MiniUnitCannon"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Structure & (EnergyProduction | Factory | Tactical | Artillery)",
+            "alliance": "Ally",
+            "compare_type": ">=",
+            "range": 50,
+            "count": 1
+          },
+          {
+            "unit_type_string": "Structure & (Artillery | Tactical)",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 75,
+            "count": 2
+          }
+        ]
       }
     },
     {
