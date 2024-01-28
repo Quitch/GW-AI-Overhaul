@@ -10,6 +10,7 @@
 ### Fixed
 
 - Locked name of Terminal Commander loadout
+- AI Tech assignment errors
 
 ## v5.56.1 - 2024-01-19
 

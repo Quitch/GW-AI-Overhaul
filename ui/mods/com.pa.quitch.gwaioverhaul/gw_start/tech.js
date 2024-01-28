@@ -26,7 +26,7 @@ define([
       inventory.synchronousUnitsNotMobile
     );
     var revenantsUnits = inventory.revenantsUnitsMobile.concat(
-      inventory.revenantsUnitsNotMobile
+      inventory.revenantsUnitsNotMobileWithAmmo
     );
     var factionUnits = [
       legonisUnits,
@@ -172,7 +172,7 @@ define([
       inventory.synchronousUnitsNotMobile
     );
     var revenantsUnits = inventory.revenantsUnitsMobile.concat(
-      inventory.revenantsUnitsNotMobile
+      inventory.revenantsUnitsNotMobileNoAmmo
     );
     var factionUnits = [
       legonisUnits,

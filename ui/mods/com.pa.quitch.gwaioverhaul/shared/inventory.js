@@ -83,7 +83,19 @@ define([
       gwoUnit.stitchBuildArm,
     ],
 
-    revenantsUnitsNotMobile: [
+    revenantsUnitsNotMobileNoAmmo: [
+      gwoUnit.anchor,
+      gwoUnit.catalyst,
+      gwoUnit.deepSpaceOrbitalRadar,
+      gwoUnit.halley,
+      gwoUnit.jig,
+      gwoUnit.nukeLauncher,
+      gwoUnit.orbitalFactory,
+      gwoUnit.orbitalLauncher,
+      gwoUnit.umbrella,
+      gwoUnit.unitCannon,
+    ],
+    revenantsUnitsNotMobileWithAmmo: [
       gwoUnit.anchor,
       gwoUnit.catalyst,
       gwoUnit.deepSpaceOrbitalRadar,
@@ -116,7 +128,7 @@ define([
     clusterUnits: gwoGroup.structures.concat(gwoUnit.ragnarok),
     clusterWeapons: [
       gwoUnit.holkinsWeapon,
-      gwoUnit.lob,
+      gwoUnit.lobWeapon,
       gwoUnit.pelterWeapon,
       gwoUnit.ragnarokWeapon,
     ],
