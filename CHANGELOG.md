@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Penchant AI not having amphibious platoons
+
 ## v5.57.0 - 2024-01-28
 
 ### Changed
