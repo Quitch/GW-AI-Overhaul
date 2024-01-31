@@ -8,6 +8,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": false
+          },
+          {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
@@ -34,6 +39,11 @@
       "priority": 108,
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": false
+          },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
@@ -67,6 +77,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": false
+          },
+          {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
@@ -99,6 +114,11 @@
       "build_conditions": [
         [
           {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": false
+          },
+          {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
           },
@@ -130,6 +150,11 @@
       "priority": 105,
       "build_conditions": [
         [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "PenchantPlatoon",
+            "boolean": false
+          },
           {
             "test_type": "EnemySurfacePresenceOnPlanet",
             "boolean": true
