@@ -354,6 +354,19 @@ define([
     gwoUnit.skitterWeapon
   );
 
+  var getAIUnitMapPath = function (titans, aiBrain) {
+    var append = titans ? "_x1.json" : ".json";
+
+    switch (aiBrain) {
+      case "Queller":
+        return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
+      case "Penchant":
+        return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
+      default:
+        return "/pa/ai/unit_maps/ai_unit_map" + append;
+    }
+  };
+
   return function () {
     var self = this;
 
@@ -378,18 +391,9 @@ define([
       var playerFileGen = $.Deferred();
       var filesToProcess = [playerFileGen];
 
-      var aiUnitMapPath = "/pa/ai/unit_maps/ai_unit_map.json";
-      var aiUnitMapTitansPath = "/pa/ai/unit_maps/ai_unit_map_x1.json";
       var aiBrain = gwoAI.aiInUse();
-
-      if (aiBrain === "Queller") {
-        aiUnitMapPath = "/pa/ai_queller/q_uber/unit_maps/ai_unit_map.json";
-        aiUnitMapTitansPath =
-          "/pa/ai_queller/q_uber/unit_maps/ai_unit_map_x1.json";
-      } else if (aiBrain === "Penchant") {
-        aiUnitMapPath = "/pa/ai_penchant/unit_maps/ai_unit_map.json";
-        aiUnitMapTitansPath = "/pa/ai_penchant/unit_maps/ai_unit_map_x1.json";
-      }
+      var aiUnitMapPath = getAIUnitMapPath(false, aiBrain);
+      var aiUnitMapTitansPath = getAIUnitMapPath(true, aiBrain);
 
       var unitsLoad = $.get("spec://pa/units/unit_list.json");
       var aiMapLoad = $.get("spec:/" + aiUnitMapPath);
