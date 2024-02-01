@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.57.2 - 2024-02-01
+
+### Fixed
+
+- Some personalities using too many bots and tanks
+
 ## v5.57.1 - 2024-01-31
 
 ### Fixed
