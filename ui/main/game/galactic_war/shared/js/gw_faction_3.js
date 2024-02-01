@@ -82,7 +82,8 @@ define(function () {
         [192, 192, 192],
       ],
       personality: {
-        percent_land: 0,
+        percent_vehicle: 0,
+        percent_bot: 0,
         percent_air: 0.5,
         percent_naval: 0,
         percent_orbital: 0.5,
