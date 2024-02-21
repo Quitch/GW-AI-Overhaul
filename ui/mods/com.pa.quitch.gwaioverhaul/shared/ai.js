@@ -12,11 +12,11 @@ define({
     var game = model.game();
     var ai = game.galaxy().stars()[game.currentStar()].ai();
     var inventory = game.inventory();
-    var aiBrain = this.aiInUse();
-    var quellerPath = "/pa/ai_queller/";
     var smartSubcommanders = _.some(inventory.cards(), {
       id: "gwaio_upgrade_subcommander_tactics",
     });
+    var aiBrain = this.aiInUse();
+    var quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
     if (type === "cluster") {
       return "/pa/ai_cluster/";
