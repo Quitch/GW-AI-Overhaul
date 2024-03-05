@@ -11,6 +11,7 @@ define([
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
+    isCluster: true,
     econ_rate: 1,
     personality: {
       percent_vehicle: 0.45,
@@ -49,7 +50,6 @@ define([
   var boss = {
     name: "Node",
     character: "!LOC:Boss",
-    isCluster: true,
     personality: {
       adv_eco_mod: 2,
       fabber_to_factory_ratio_basic: 1.5,
@@ -68,7 +68,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         energy_drain_check: 0.72,
         metal_demand_check: 0.8,
@@ -84,7 +83,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         fabber_to_factory_ratio_basic: 2,
         fabber_alone_on_planet_mod: 4,
@@ -99,7 +97,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_drain_check: 0.71,
         energy_drain_check: 0.8,
@@ -116,7 +113,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         basic_to_advanced_factory_ratio: 10,
       },
@@ -129,7 +125,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         adv_eco_mod: 0.5,
         adv_eco_mod_alone: 0.5,
@@ -146,7 +141,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 0.75,
         min_basic_fabbers: 4,
@@ -160,7 +154,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 2,
         min_basic_fabbers: 2,
@@ -174,7 +167,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 1.5,
         adv_eco_mod: 2,
@@ -189,7 +181,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 0.5,
         adv_eco_mod: 0.5,
@@ -209,7 +200,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         adv_eco_mod: 1.3,
         min_basic_fabbers: 2,
@@ -224,7 +214,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
@@ -238,7 +227,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
@@ -252,7 +240,6 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_drain_check: 0.71,
         energy_drain_check: 0.8,
@@ -269,7 +256,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         energy_drain_check: 0.72,
         metal_demand_check: 0.8,
@@ -285,7 +271,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         fabber_to_factory_ratio_basic: 2,
         fabber_alone_on_planet_mod: 4,
@@ -300,7 +285,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_drain_check: 0.71,
         energy_drain_check: 0.8,
@@ -317,7 +301,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         basic_to_advanced_factory_ratio: 10,
       },
@@ -330,7 +313,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         adv_eco_mod: 0.5,
         adv_eco_mod_alone: 0.5,
@@ -346,7 +328,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 0.75,
         min_basic_fabbers: 4,
@@ -360,7 +341,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 2,
       },
@@ -373,7 +353,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 1.5,
         adv_eco_mod: 2,
@@ -388,7 +367,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         neural_data_mod: 0.5,
         adv_eco_mod: 0.5,
@@ -408,7 +386,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         adv_eco_mod: 1.3,
         min_basic_fabbers: 2,
@@ -423,7 +400,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
@@ -437,7 +413,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_demand_check: 0.99,
         energy_demand_check: 0.99,
@@ -451,7 +426,6 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      isCluster: true,
       personality: {
         metal_drain_check: 0.71,
         energy_drain_check: 0.8,
@@ -473,7 +447,6 @@ define([
       [142, 107, 68],
       [192, 192, 192],
     ],
-    isCluster: true,
     personality: randomWorkerPersonality,
     commander: workerCommander,
   };
@@ -484,7 +457,6 @@ define([
       [70, 70, 70],
       [192, 192, 192],
     ],
-    isCluster: true,
     personality: randomSecurityPersonality,
     commander: securityCommander,
   };
