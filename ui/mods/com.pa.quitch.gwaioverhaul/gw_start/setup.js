@@ -906,6 +906,8 @@ if (!gwoSetupLoaded) {
               originSystem.gwaio.aiMods = [];
               originSystem.gwaio.techCardDeck =
                 model.gwoDifficultySettings.techCardDeck();
+              originSystem.gwaio.aiPersonalityAsName =
+                model.gwoDifficultySettings.aiPersonalityAsName();
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
               // We don't need to apply the hotfix as it's for v5.22.1 and earlier

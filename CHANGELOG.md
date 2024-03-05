@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- War setup allows you to have AI personalities displayed in place of names during battles
+
 ## v5.57.2 - 2024-02-01
 
 ### Fixed
