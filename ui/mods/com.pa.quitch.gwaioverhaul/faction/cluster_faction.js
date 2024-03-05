@@ -228,8 +228,7 @@ define([
         [192, 192, 192],
       ],
       personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
+        basic_to_advanced_factory_ratio: 10,
       },
       commander: workerCommander,
     },
@@ -414,8 +413,7 @@ define([
         [192, 192, 192],
       ],
       personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
+        basic_to_advanced_factory_ratio: 10,
       },
       commander: securityCommander,
     },

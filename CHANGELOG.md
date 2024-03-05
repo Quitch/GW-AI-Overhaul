@@ -16,6 +16,7 @@
   - Factory
   - Fabber
   - Random
+- Swarm now uses a high ratio of T1 to T2
 
 ## v5.57.2 - 2024-02-01
 

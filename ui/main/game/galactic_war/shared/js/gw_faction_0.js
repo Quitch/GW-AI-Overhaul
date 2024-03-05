@@ -290,10 +290,7 @@ define(function () {
         [192, 192, 192],
       ],
       personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 1,
+        basic_to_advanced_factory_ratio: 10,
       },
       commander:
         "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
