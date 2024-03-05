@@ -11,9 +11,11 @@
 - Removed the following personalities:
   - Relentless
   - Gold
+  - Platinum
 - Added the following personalities:
   - Factory
   - Fabber
+  - Random
 
 ## v5.57.2 - 2024-02-01
 

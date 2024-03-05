@@ -79,26 +79,6 @@ define([
     },
     {
       name: "Worker",
-      character: "!LOC:Platinum",
-      color: [
-        [142, 107, 68],
-        [192, 192, 192],
-      ],
-      isCluster: true,
-      personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.15,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 2,
-        min_advanced_fabbers: 2,
-      },
-      commander: workerCommander,
-    },
-    {
-      name: "Worker",
       character: "!LOC:Fabber",
       color: [
         [142, 107, 68],
@@ -300,26 +280,6 @@ define([
     },
     {
       name: "Security",
-      character: "!LOC:Platinum",
-      color: [
-        [70, 70, 70],
-        [192, 192, 192],
-      ],
-      isCluster: true,
-      personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.15,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 2,
-        min_advanced_fabbers: 2,
-      },
-      commander: securityCommander,
-    },
-    {
-      name: "Security",
       character: "!LOC:Fabber",
       color: [
         [70, 70, 70],
@@ -502,6 +462,33 @@ define([
       commander: securityCommander,
     },
   ];
+
+  var shuffledPersonalties = _.shuffle(minions);
+  var randomWorkerPersonality = shuffledPersonalties[0].personality;
+  var randomSecurityPersonality = shuffledPersonalties[1].personality;
+  var randomWorkerAI = {
+    name: "Worker",
+    character: "!LOC:Random",
+    color: [
+      [142, 107, 68],
+      [192, 192, 192],
+    ],
+    isCluster: true,
+    personality: randomWorkerPersonality,
+    commander: workerCommander,
+  };
+  var randomSecurityAI = {
+    name: "Security",
+    character: "!LOC:Random",
+    color: [
+      [70, 70, 70],
+      [192, 192, 192],
+    ],
+    isCluster: true,
+    personality: randomSecurityPersonality,
+    commander: securityCommander,
+  };
+  minions.push(randomWorkerAI, randomSecurityAI);
 
   return {
     name: factionName,

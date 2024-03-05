@@ -112,26 +112,6 @@ define(function () {
         "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
     },
     {
-      name: "Shadowdaemon",
-      character: "!LOC:Platinum",
-      color: [
-        [153, 255, 51],
-        [192, 192, 192],
-      ],
-      personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.15,
-        adv_eco_mod: 1,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_advanced_fabbers: 2,
-      },
-      commander:
-        "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
-    },
-    {
       name: "Spartandano",
       character: "!LOC:Fabber",
       color: [
@@ -328,6 +308,20 @@ define(function () {
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
+
+  var shuffledPersonalties = _.shuffle(minions);
+  var randomPersonality = shuffledPersonalties[0].personality;
+  var randomAI = {
+    name: "Shadowdaemon",
+    character: "!LOC:Random",
+    color: [
+      [153, 255, 51],
+      [192, 192, 192],
+    ],
+    personality: randomPersonality,
+    commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
+  };
+  minions.push(randomAI);
 
   return {
     name: factionName,
