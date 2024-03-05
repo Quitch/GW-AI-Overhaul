@@ -8,8 +8,12 @@
 
 ### Changed
 
-- Remove Relentless personality
-- Added Factory personality
+- Removed the following personalities:
+  - Relentless
+  - Gold
+- Added the following personalities:
+  - Factory
+  - Fabber
 
 ## v5.57.2 - 2024-02-01
 

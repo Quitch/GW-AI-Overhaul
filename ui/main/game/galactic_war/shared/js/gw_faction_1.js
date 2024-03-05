@@ -130,20 +130,15 @@ define(function () {
     },
     {
       name: "TheChessKnight",
-      character: "!LOC:Gold",
+      character: "!LOC:Fabber",
       color: [
         [127, 0, 255],
         [192, 192, 192],
       ],
       personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.3,
-        adv_eco_mod: 1,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 2,
+        fabber_to_factory_ratio_basic: 2,
+        fabber_alone_on_planet_mod: 4,
+        factory_alone_on_planet_mod: 0.25,
       },
       commander:
         "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
