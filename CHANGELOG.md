@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v5.58.0 - 2024-03-05
+
+### Added
+
+- War setup allows you to have AI personalities displayed in place of names during battles
+
+### Changed
+
+- Removed the following personalities:
+  - Relentless
+  - Gold
+  - Platinum
+- Added the following personalities:
+  - Factory
+  - Fabber
+  - Random
+- Swarm now uses a high ratio of T1 to T2
+
 ## v5.57.2 - 2024-02-01
 
 ### Fixed

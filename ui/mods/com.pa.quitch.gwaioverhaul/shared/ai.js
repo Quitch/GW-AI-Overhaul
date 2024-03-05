@@ -12,6 +12,9 @@ define({
     var game = model.game();
     var ai = game.galaxy().stars()[game.currentStar()].ai();
     var inventory = game.inventory();
+    var smartSubcommanders = _.some(inventory.cards(), {
+      id: "gwaio_upgrade_subcommander_tactics",
+    });
     var aiBrain = this.aiInUse();
     var quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
@@ -22,12 +25,7 @@ define({
         return quellerPath;
       } else if (type === "enemy") {
         return quellerPath + "q_uber/";
-      } else if (
-        type === "subcommander" &&
-        _.some(inventory.cards(), {
-          id: "gwaio_upgrade_subcommander_tactics",
-        })
-      ) {
+      } else if (type === "subcommander" && smartSubcommanders) {
         return quellerPath + "q_gold/";
       }
       // type === "subcommander"

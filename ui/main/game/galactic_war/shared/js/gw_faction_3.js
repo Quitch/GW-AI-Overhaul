@@ -110,41 +110,16 @@ define(function () {
         "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
     },
     {
-      name: "Enderstryke71",
-      character: "!LOC:Platinum",
-      color: [
-        [255, 0, 0],
-        [192, 192, 192],
-      ],
-      personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.15,
-        adv_eco_mod: 1,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_advanced_fabbers: 2,
-      },
-      commander:
-        "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
-    },
-    {
       name: "Iwmiked",
-      character: "!LOC:Gold",
+      character: "!LOC:Fabber",
       color: [
         [204, 0, 0],
         [192, 192, 192],
       ],
       personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.3,
-        adv_eco_mod: 1,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 2,
+        fabber_to_factory_ratio_basic: 2,
+        fabber_alone_on_planet_mod: 4,
+        factory_alone_on_planet_mod: 0.25,
       },
       commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
     },
@@ -288,19 +263,14 @@ define(function () {
     },
     {
       name: "XOV",
-      character: "!LOC:Relentless",
+      character: "!LOC:Factory",
       color: [
         [255, 255, 0],
         [192, 192, 192],
       ],
       personality: {
-        metal_drain_check: 0.44,
-        energy_drain_check: 0.55,
-        metal_demand_check: 0.61,
-        energy_demand_check: 0.7,
-        neural_data_mod: 1.2,
-        adv_eco_mod: 1.2,
-        adv_eco_mod_alone: 0.95,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
       },
       commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
     },
@@ -312,10 +282,7 @@ define(function () {
         [192, 192, 192],
       ],
       personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 1,
+        basic_to_advanced_factory_ratio: 10,
       },
       commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
     },
@@ -337,6 +304,21 @@ define(function () {
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
   ];
+
+  var shuffledPersonalties = _.shuffle(minions);
+  var randomPersonality = shuffledPersonalties[0].personality;
+  var randomAI = {
+    name: "Enderstryke71",
+    character: "!LOC:Random",
+    color: [
+      [255, 0, 0],
+      [192, 192, 192],
+    ],
+    personality: randomPersonality,
+    commander:
+      "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
+  };
+  minions.push(randomAI);
 
   return {
     name: factionName,

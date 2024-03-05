@@ -112,41 +112,16 @@ define(function () {
         "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
     },
     {
-      name: "Shadowdaemon",
-      character: "!LOC:Platinum",
-      color: [
-        [153, 255, 51],
-        [192, 192, 192],
-      ],
-      personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.15,
-        adv_eco_mod: 1,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_advanced_fabbers: 2,
-      },
-      commander:
-        "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
-    },
-    {
       name: "Spartandano",
-      character: "!LOC:Gold",
+      character: "!LOC:Fabber",
       color: [
         [128, 255, 0],
         [192, 192, 192],
       ],
       personality: {
-        energy_drain_check: 0.77,
-        metal_demand_check: 0.85,
-        energy_demand_check: 0.92,
-        neural_data_mod: 1.3,
-        adv_eco_mod: 1,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 2,
+        fabber_to_factory_ratio_basic: 2,
+        fabber_alone_on_planet_mod: 4,
+        factory_alone_on_planet_mod: 0.25,
       },
       commander: "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
     },
@@ -288,19 +263,14 @@ define(function () {
     },
     {
       name: "Zancrowe",
-      character: "!LOC:Relentless",
+      character: "!LOC:Factory",
       color: [
         [0, 153, 76],
         [192, 192, 192],
       ],
       personality: {
-        metal_drain_check: 0.44,
-        energy_drain_check: 0.55,
-        metal_demand_check: 0.61,
-        energy_demand_check: 0.7,
-        neural_data_mod: 1.2,
-        adv_eco_mod: 1.2,
-        adv_eco_mod_alone: 0.95,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
       },
       commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
     },
@@ -312,10 +282,7 @@ define(function () {
         [192, 192, 192],
       ],
       personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 1,
+        basic_to_advanced_factory_ratio: 10,
       },
       commander:
         "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
@@ -338,6 +305,20 @@ define(function () {
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
+
+  var shuffledPersonalties = _.shuffle(minions);
+  var randomPersonality = shuffledPersonalties[0].personality;
+  var randomAI = {
+    name: "Shadowdaemon",
+    character: "!LOC:Random",
+    color: [
+      [153, 255, 51],
+      [192, 192, 192],
+    ],
+    personality: randomPersonality,
+    commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
+  };
+  minions.push(randomAI);
 
   return {
     name: factionName,

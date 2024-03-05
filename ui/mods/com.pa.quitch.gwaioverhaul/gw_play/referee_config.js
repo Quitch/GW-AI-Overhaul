@@ -73,6 +73,16 @@ define([
       "on_player_planet",
       "no_restriction",
     ]);
+    var galaxy = model.game().galaxy();
+    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    var gwaioSettings = originSystem.gwaio;
+    var character = ai.character ? loc(ai.character) : loc("!LOC:None");
+    if (ai.penchantName) {
+      character = character + " " + loc(ai.penchantName);
+    }
+    if (gwaioSettings && gwaioSettings.aiPersonalityAsName === true) {
+      ai.name = character;
+    }
     _.times(
       ai.bossCommanders ||
         ai.commanderCount ||

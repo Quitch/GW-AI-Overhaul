@@ -54,25 +54,25 @@ Join the [Planetary Annihilation official Discord](https://discord.gg/pa).
 
 Sub Commanders are not impacted by difficulty. At any difficulty level you can choose to enable Easier Start which provides you with more neutral planets with free tech.
 
-![Beginner badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png) **Beginner**: for when you've completed the tutorial and are new to the game.
+![Beginner badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/-1_beginner.png) **Beginner**: you've completed the tutorial and are new to the game.
 
-![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png) **Casual**: for when you've some PA experience under your belt.
+![Casual badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/0_casual.png) **Casual**: you've some PA experience under your belt.
 
-![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png) **Iron**: for when you've overcome your turtle instincts.
+![Iron badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/1_iron.png) **Iron**: you've overcome your turtle instincts.
 
 ![Bronze badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/2_bronze.png) **Bronze**: you've beaten vanilla Galactic War.
 
-![Silver badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png) **Silver**: you can beat the skirmish AI.
+![Silver badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/3_silver.png) **Silver**: you've beaten the skirmish AI.
 
-![Gold badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png) **Gold**: you can beat the Queller AI.
+![Gold badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/4_gold.png) **Gold**: you've beaten the Queller AI.
 
-![Platinum badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png) **Platinum**: for when one enemy Commander is no longer a worthy challenge.
+![Platinum badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/5_platinum.png) **Platinum**: one enemy Commander is no longer a worthy challenge.
 
-![Diamond badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png) **Diamond**: for when your loadouts become too powerful.
+![Diamond badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/6_diamond.png) **Diamond**: your loadouts are too powerful.
 
-![Uber badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png) **Uber**: for when you're a Galactic War master ready for the ultimate challenge.
+![Uber badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/7_uber.png) **Uber**: you're a Galactic War master ready for the ultimate challenge.
 
-![Custom badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/8_custom.png) **Custom**: for when you want to create your own challenge.
+![Custom badge](./ui/mods/com.pa.quitch.gwaioverhaul/shared/img/8_custom.png) **Custom**: you want to create your own challenge.
 
 ### Difficulty Options
 
@@ -102,7 +102,7 @@ Each system will display the following information:
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
 
-These buffs are applied to commanders and then on a per-faction basis:
+These buffs are applied to commanders on a per-faction basis:
 
 - **Legonis Machina**: vehicle units and factories
 - **Foundation**: air and naval units and factories
