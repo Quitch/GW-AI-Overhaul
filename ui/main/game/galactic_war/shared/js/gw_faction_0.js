@@ -293,19 +293,14 @@ define(function () {
     },
     {
       name: "Kevin4001",
-      character: "!LOC:Relentless",
+      character: "!LOC:Factory",
       color: [
         [0, 0, 225],
         [192, 192, 192],
       ],
       personality: {
-        metal_drain_check: 0.44,
-        energy_drain_check: 0.55,
-        metal_demand_check: 0.61,
-        energy_demand_check: 0.7,
-        neural_data_mod: 1.2,
-        adv_eco_mod: 1.2,
-        adv_eco_mod_alone: 0.95,
+        metal_demand_check: 0.99,
+        energy_demand_check: 0.99,
       },
       commander:
         "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",

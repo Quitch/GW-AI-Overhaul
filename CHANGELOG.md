@@ -6,6 +6,11 @@
 
 - War setup allows you to have AI personalities displayed in place of names during battles
 
+### Changed
+
+- Remove Relentless personality
+- Added Factory personality
+
 ## v5.57.2 - 2024-02-01
 
 ### Fixed
