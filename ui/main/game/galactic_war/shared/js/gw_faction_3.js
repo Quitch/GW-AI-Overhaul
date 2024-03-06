@@ -1,5 +1,7 @@
 // Overhauls personalities
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
+], function (personalities) {
   var factionName = "Revenants";
   var factionColour = [
     [236, 34, 35],
@@ -10,51 +12,13 @@ define(function () {
     character: "!LOC:Baseline",
     color: factionColour,
     econ_rate: 1,
-    personality: {
-      percent_vehicle: 0.25,
-      percent_bot: 0.2,
-      percent_air: 0.05,
-      percent_naval: 0.05,
-      percent_orbital: 0.45,
-      metal_drain_check: 0.54,
-      energy_drain_check: 0.65,
-      metal_demand_check: 0.71,
-      energy_demand_check: 0.8,
-      micro_type: 0,
-      go_for_the_kill: false,
-      neural_data_mod: 1,
-      personality_tags: ["Default", "GWAlly", "SlowerExpansion", "queller"],
-      adv_eco_mod: 1.3,
-      adv_eco_mod_alone: 0.85,
-      priority_scout_metal_spots: false,
-      factory_build_delay_min: 0,
-      factory_build_delay_max: 0,
-      unable_to_expand_delay: 0,
-      enable_commander_danger_responses: false,
-      per_expansion_delay: 0,
-      fabber_to_factory_ratio_basic: 1,
-      fabber_to_factory_ratio_advanced: 1,
-      fabber_alone_on_planet_mod: 3,
-      basic_to_advanced_factory_ratio: 0,
-      factory_alone_on_planet_mod: 0.25,
-      min_basic_fabbers: 2,
-      max_basic_fabbers: 4,
-      min_advanced_fabbers: 3,
-      max_advanced_fabbers: 3,
-    },
+    personality: personalities.revenants,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
   var boss = {
     name: "First Seeker Osiris",
     character: "!LOC:Boss",
-    personality: {
-      adv_eco_mod: 1,
-      fabber_to_factory_ratio_basic: 2,
-      fabber_to_factory_ratio_advanced: 2,
-      fabber_alone_on_planet_mod: 3,
-      min_basic_fabbers: 4,
-      min_advanced_fabbers: 1,
-    },
+    personality: personalities.revenantsBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
   var minions = [
@@ -65,13 +29,7 @@ define(function () {
         [255, 204, 204],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0,
-        percent_bot: 0,
-        percent_air: 0,
-        percent_naval: 0,
-        percent_orbital: 1,
-      },
+      personality: personalities.spaceInvader,
       commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
     },
     {
@@ -81,13 +39,7 @@ define(function () {
         [255, 153, 153],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0,
-        percent_bot: 0,
-        percent_air: 0.5,
-        percent_naval: 0,
-        percent_orbital: 0.5,
-      },
+      personality: personalities.astronaut,
       commander: "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
     },
     {
@@ -97,15 +49,7 @@ define(function () {
         [255, 102, 102],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.72,
-        metal_demand_check: 0.8,
-        adv_eco_mod: 1,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.uber,
       commander:
         "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
     },
@@ -116,11 +60,7 @@ define(function () {
         [204, 0, 0],
         [192, 192, 192],
       ],
-      personality: {
-        fabber_to_factory_ratio_basic: 2,
-        fabber_alone_on_planet_mod: 4,
-        factory_alone_on_planet_mod: 0.25,
-      },
+      personality: personalities.fabber,
       commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
     },
     {
@@ -130,14 +70,7 @@ define(function () {
         [153, 0, 0],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.54,
-        energy_demand_check: 0.65,
-        adv_eco_mod: 1,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.defender,
       commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
     },
     {
@@ -147,9 +80,7 @@ define(function () {
         [255, 204, 153],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.luddite,
       commander:
         "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
     },
@@ -160,13 +91,7 @@ define(function () {
         [255, 178, 102],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        min_basic_fabbers: 4,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.technologist,
       commander:
         "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
     },
@@ -177,10 +102,7 @@ define(function () {
         [255, 153, 51],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.75,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.cautious,
       commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
     },
     {
@@ -190,10 +112,7 @@ define(function () {
         [255, 128, 0],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 2,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.aggressive,
       commander:
         "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
     },
@@ -204,11 +123,7 @@ define(function () {
         [204, 102, 0],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 1.5,
-        adv_eco_mod: 2,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.rush,
       commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
     },
     {
@@ -218,16 +133,7 @@ define(function () {
         [255, 255, 204],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.5,
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        fabber_to_factory_ratio_advanced: 3,
-        min_basic_fabbers: 4,
-        max_basic_fabbers: 8,
-        max_advanced_fabbers: 6,
-      },
+      personality: personalities.turtle,
       commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
     },
     {
@@ -237,15 +143,7 @@ define(function () {
         [255, 255, 153],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0.075,
-        percent_bot: 0.075,
-        percent_air: 0.15,
-        percent_naval: 0.1,
-        percent_orbital: 0.6,
-        fabber_to_factory_ratio_basic: 1.5,
-        min_basic_fabbers: 1,
-      },
+      personality: personalities.revenantsOriginal,
       commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
     },
     {
@@ -255,10 +153,7 @@ define(function () {
         [255, 255, 102],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.65,
-        metal_demand_check: 0.71,
-      },
+      personality: personalities.absurd,
       commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
     },
     {
@@ -268,10 +163,7 @@ define(function () {
         [255, 255, 0],
         [192, 192, 192],
       ],
-      personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-      },
+      personality: personalities.factory,
       commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
     },
     {
@@ -281,9 +173,7 @@ define(function () {
         [204, 204, 0],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.swarm,
       commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
     },
     {
@@ -293,14 +183,7 @@ define(function () {
         [153, 153, 0],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        adv_eco_mod: 1,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.economist,
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
   ];

@@ -1,5 +1,7 @@
 // Overhauls personalities
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
+], function (personalities) {
   var factionName = "Foundation";
   var factionColour = [
     [145, 87, 199],
@@ -10,51 +12,13 @@ define(function () {
     character: "!LOC:Baseline",
     color: factionColour,
     econ_rate: 1,
-    personality: {
-      percent_vehicle: 0.2,
-      percent_bot: 0.05,
-      percent_air: 0.25,
-      percent_naval: 0.45,
-      percent_orbital: 0.05,
-      metal_drain_check: 0.54,
-      energy_drain_check: 0.65,
-      metal_demand_check: 0.71,
-      energy_demand_check: 0.8,
-      micro_type: 0,
-      go_for_the_kill: false,
-      neural_data_mod: 1,
-      personality_tags: ["Default", "GWAlly", "SlowerExpansion", "queller"],
-      adv_eco_mod: 1.3,
-      adv_eco_mod_alone: 0.85,
-      priority_scout_metal_spots: false,
-      factory_build_delay_min: 0,
-      factory_build_delay_max: 0,
-      unable_to_expand_delay: 0,
-      enable_commander_danger_responses: false,
-      per_expansion_delay: 0,
-      fabber_to_factory_ratio_basic: 1,
-      fabber_to_factory_ratio_advanced: 2,
-      fabber_alone_on_planet_mod: 2,
-      basic_to_advanced_factory_ratio: 0,
-      factory_alone_on_planet_mod: 0.5,
-      min_basic_fabbers: 2,
-      max_basic_fabbers: 4,
-      min_advanced_fabbers: 3,
-      max_advanced_fabbers: 3,
-    },
+    personality: personalities.foundation,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
   var boss = {
     name: "Inquisitor Nemicus",
     character: "!LOC:Boss",
-    personality: {
-      adv_eco_mod: 1,
-      fabber_to_factory_ratio_basic: 2,
-      fabber_to_factory_ratio_advanced: 2,
-      fabber_alone_on_planet_mod: 3,
-      min_basic_fabbers: 4,
-      min_advanced_fabbers: 1,
-    },
+    personality: personalities.foundationBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
   var minions = [
@@ -65,13 +29,7 @@ define(function () {
         [229, 204, 255],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0,
-        percent_bot: 0,
-        percent_air: 1,
-        percent_naval: 0,
-        percent_orbital: 0,
-      },
+      personality: personalities.airForce,
       commander:
         "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
     },
@@ -82,13 +40,7 @@ define(function () {
         [204, 153, 255],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0,
-        percent_bot: 0,
-        percent_air: 0,
-        percent_naval: 1,
-        percent_orbital: 0,
-      },
+      personality: personalities.navy,
       commander: "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
     },
     {
@@ -98,14 +50,7 @@ define(function () {
         [178, 102, 255],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.72,
-        metal_demand_check: 0.8,
-        adv_eco_mod: 1,
-        fabber_alone_on_planet_mod: 3,
-        min_basic_fabbers: 3,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.uber,
       commander:
         "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
     },
@@ -116,11 +61,7 @@ define(function () {
         [127, 0, 255],
         [192, 192, 192],
       ],
-      personality: {
-        fabber_to_factory_ratio_basic: 2,
-        fabber_alone_on_planet_mod: 4,
-        factory_alone_on_planet_mod: 0.25,
-      },
+      personality: personalities.fabber,
       commander:
         "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
     },
@@ -131,14 +72,7 @@ define(function () {
         [102, 0, 204],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.54,
-        energy_demand_check: 0.65,
-        adv_eco_mod: 1,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.defender,
       commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
     },
     {
@@ -148,9 +82,7 @@ define(function () {
         [76, 0, 153],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.luddite,
       commander:
         "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
     },
@@ -161,13 +93,7 @@ define(function () {
         [255, 204, 255],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        min_basic_fabbers: 4,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.technologist,
       commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
     },
     {
@@ -177,10 +103,7 @@ define(function () {
         [255, 153, 255],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.75,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.cautious,
       commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
     },
     {
@@ -190,10 +113,7 @@ define(function () {
         [255, 102, 255],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 2,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.aggressive,
       commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
     },
     {
@@ -203,11 +123,7 @@ define(function () {
         [255, 0, 255],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 1.5,
-        adv_eco_mod: 2,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.rush,
       commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
     },
     {
@@ -217,16 +133,7 @@ define(function () {
         [204, 0, 204],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.5,
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        fabber_to_factory_ratio_advanced: 3,
-        min_basic_fabbers: 4,
-        max_basic_fabbers: 8,
-        max_advanced_fabbers: 6,
-      },
+      personality: personalities.turtle,
       commander:
         "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
     },
@@ -237,19 +144,7 @@ define(function () {
         [153, 0, 153],
         [192, 192, 192],
       ],
-      personality: {
-        percent_vehicle: 0.025,
-        percent_bot: 0.025,
-        percent_air: 0.55,
-        percent_naval: 0.35,
-        percent_orbital: 0.05,
-        metal_drain_check: 0.75,
-        energy_drain_check: 0.85,
-        metal_demand_check: 0.75,
-        energy_demand_check: 0.85,
-        fabber_to_factory_ratio_basic: 1.5,
-        min_basic_fabbers: 1,
-      },
+      personality: personalities.foundationOriginal,
       commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
     },
     {
@@ -259,10 +154,7 @@ define(function () {
         [255, 204, 229],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.65,
-        metal_demand_check: 0.71,
-      },
+      personality: personalities.absurd,
       commander: "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
     },
     {
@@ -272,10 +164,7 @@ define(function () {
         [255, 153, 204],
         [192, 192, 192],
       ],
-      personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-      },
+      personality: personalities.factory,
       commander:
         "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
     },
@@ -286,9 +175,7 @@ define(function () {
         [255, 102, 178],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.swarm,
       commander:
         "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
     },
@@ -299,14 +186,7 @@ define(function () {
         [255, 51, 153],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        adv_eco_mod: 1,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.economist,
       commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
     },
   ];
