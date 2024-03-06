@@ -332,8 +332,9 @@ define({
     adv_eco_mod: 1,
     min_basic_fabbers: 4,
   },
-  // TODO: delay teching instead of factory ratio
   luddite: {
+    adv_eco_mod: 2,
+    adv_eco_mod_alone: 1.3,
     basic_to_advanced_factory_ratio: 10,
   },
   technologist: {
