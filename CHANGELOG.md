@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.59.0 - 2024-03-06
+
+### Changed
+
+- Luddite techs later
+- Swarm will use more advanced fabbers
+
 ## v5.58.0 - 2024-03-05
 
 ### Added

@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (planets, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
+], function (planets, gwoUnit, personalities) {
   var factionName = "Cluster";
   var factionColour = [
     [128, 128, 128],
@@ -13,49 +14,13 @@ define([
     color: factionColour,
     isCluster: true,
     econ_rate: 1,
-    personality: {
-      percent_vehicle: 0.45,
-      percent_bot: 0.4,
-      percent_air: 0.05,
-      percent_naval: 0.05,
-      percent_orbital: 0.05,
-      metal_drain_check: 0.54,
-      energy_drain_check: 0.65,
-      metal_demand_check: 0.71,
-      energy_demand_check: 0.8,
-      micro_type: 0,
-      go_for_the_kill: false,
-      neural_data_mod: 1,
-      personality_tags: ["Default", "GWAlly", "SlowerExpansion", "queller"],
-      adv_eco_mod: 1.5,
-      adv_eco_mod_alone: 0.85,
-      priority_scout_metal_spots: false,
-      factory_build_delay_min: 0,
-      factory_build_delay_max: 0,
-      unable_to_expand_delay: 0,
-      enable_commander_danger_responses: false,
-      per_expansion_delay: 0,
-      fabber_to_factory_ratio_basic: 1,
-      fabber_to_factory_ratio_advanced: 1,
-      fabber_alone_on_planet_mod: 2,
-      basic_to_advanced_factory_ratio: 0,
-      factory_alone_on_planet_mod: 0.5,
-      min_basic_fabbers: 3,
-      max_basic_fabbers: 4,
-      min_advanced_fabbers: 1,
-      max_advanced_fabbers: 3,
-    },
+    personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
   var boss = {
     name: "Node",
     character: "!LOC:Boss",
-    personality: {
-      adv_eco_mod: 2,
-      fabber_to_factory_ratio_basic: 1.5,
-      fabber_alone_on_planet_mod: 3,
-      min_basic_fabbers: 4,
-    },
+    personality: personalities.clusterBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
   var workerCommander = gwoUnit.angel;
@@ -68,12 +33,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.72,
-        metal_demand_check: 0.8,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-      },
+      personality: personalities.uber,
       commander: workerCommander,
     },
     {
@@ -83,11 +43,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        fabber_to_factory_ratio_basic: 2,
-        fabber_alone_on_planet_mod: 4,
-        factory_alone_on_planet_mod: 0.25,
-      },
+      personality: personalities.fabber,
       commander: workerCommander,
     },
     {
@@ -97,13 +53,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.54,
-        energy_demand_check: 0.65,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.defender,
       commander: workerCommander,
     },
     {
@@ -113,9 +63,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.luddite,
       commander: workerCommander,
     },
     {
@@ -125,13 +73,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        min_basic_fabbers: 4,
-        min_advanced_fabbers: 1,
-      },
+      personality: personalities.technologist,
       commander: workerCommander,
     },
     {
@@ -141,10 +83,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.75,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.cautious,
       commander: workerCommander,
     },
     {
@@ -154,10 +93,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 2,
-        min_basic_fabbers: 2,
-      },
+      personality: personalities.aggressive,
       commander: workerCommander,
     },
     {
@@ -167,11 +103,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 1.5,
-        adv_eco_mod: 2,
-        min_basic_fabbers: 2,
-      },
+      personality: personalities.rush,
       commander: workerCommander,
     },
     {
@@ -181,16 +113,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.5,
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        fabber_to_factory_ratio_advanced: 3,
-        min_basic_fabbers: 4,
-        max_basic_fabbers: 8,
-        max_advanced_fabbers: 6,
-      },
+      personality: personalities.turtle,
       commander: workerCommander,
     },
     {
@@ -200,11 +123,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 1.3,
-        min_basic_fabbers: 2,
-        min_advanced_fabbers: 3,
-      },
+      personality: personalities.absurd,
       commander: workerCommander,
     },
     {
@@ -214,10 +133,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-      },
+      personality: personalities.factory,
       commander: workerCommander,
     },
     {
@@ -227,9 +143,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.swarm,
       commander: workerCommander,
     },
     {
@@ -239,13 +153,7 @@ define([
         [142, 107, 68],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.economist,
       commander: workerCommander,
     },
     {
@@ -255,12 +163,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        energy_drain_check: 0.72,
-        metal_demand_check: 0.8,
-        fabber_to_factory_ratio_advanced: 2,
-        fabber_alone_on_planet_mod: 3,
-      },
+      personality: personalities.uber,
       commander: securityCommander,
     },
     {
@@ -270,11 +173,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        fabber_to_factory_ratio_basic: 2,
-        fabber_alone_on_planet_mod: 4,
-        factory_alone_on_planet_mod: 0.25,
-      },
+      personality: personalities.fabber,
       commander: securityCommander,
     },
     {
@@ -284,13 +183,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.54,
-        energy_demand_check: 0.65,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.defender,
       commander: securityCommander,
     },
     {
@@ -300,9 +193,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.luddite,
       commander: securityCommander,
     },
     {
@@ -312,12 +203,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.technologist,
       commander: securityCommander,
     },
     {
@@ -327,10 +213,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.75,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.cautious,
       commander: securityCommander,
     },
     {
@@ -340,9 +223,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 2,
-      },
+      personality: personalities.aggressive,
       commander: securityCommander,
     },
     {
@@ -352,11 +233,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 1.5,
-        adv_eco_mod: 2,
-        min_basic_fabbers: 2,
-      },
+      personality: personalities.rush,
       commander: securityCommander,
     },
     {
@@ -366,16 +243,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        neural_data_mod: 0.5,
-        adv_eco_mod: 0.5,
-        adv_eco_mod_alone: 0.5,
-        fabber_to_factory_ratio_basic: 3,
-        fabber_to_factory_ratio_advanced: 3,
-        min_basic_fabbers: 4,
-        max_basic_fabbers: 8,
-        max_advanced_fabbers: 6,
-      },
+      personality: personalities.turtle,
       commander: securityCommander,
     },
     {
@@ -385,11 +253,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        adv_eco_mod: 1.3,
-        min_basic_fabbers: 2,
-        min_advanced_fabbers: 3,
-      },
+      personality: personalities.absurd,
       commander: securityCommander,
     },
     {
@@ -399,10 +263,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-      },
+      personality: personalities.factory,
       commander: securityCommander,
     },
     {
@@ -412,9 +273,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        basic_to_advanced_factory_ratio: 10,
-      },
+      personality: personalities.swarm,
       commander: securityCommander,
     },
     {
@@ -424,13 +283,7 @@ define([
         [70, 70, 70],
         [192, 192, 192],
       ],
-      personality: {
-        metal_drain_check: 0.71,
-        energy_drain_check: 0.8,
-        metal_demand_check: 0.99,
-        energy_demand_check: 0.99,
-        min_basic_fabbers: 4,
-      },
+      personality: personalities.economist,
       commander: securityCommander,
     },
   ];
