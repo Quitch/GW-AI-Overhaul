@@ -1,0 +1,136 @@
+{
+  "build_list": [
+    {
+      "name": "Minelayer - Basic Mine Defense - Field",
+      "to_build": "LandMine",
+      "instance_count": -1,
+      "priority": 262,
+      "base_sort": "FromPerimeter",
+      "builders": ["BasicBotCombatFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Minelayer",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "DistFromMainBase",
+            "compare0": ">=",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure - Factory - CombatFabBuild",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & CombatFabBuild & Defense",
+            "compare0": ">",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & CombatFabBuild & Defense",
+            "compare0": "<",
+            "value0": 25
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Factory | Teleporter) - Artillery",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "LandMine"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 35,
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Minelayer - Basic Mine Defense - Mex",
+      "to_build": "LandMine",
+      "instance_count": -1,
+      "priority": 261,
+      "base_sort": "FromPerimeter",
+      "builders": ["BasicBotCombatFabber"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Minelayer",
+            "boolean": true
+          },
+          {
+            "test_type": "EnemySurfacePresenceOnPlanet",
+            "boolean": true
+          },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "DistFromMainBase",
+            "compare0": ">=",
+            "value0": 150
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure - Factory - CombatFabBuild",
+            "compare0": ">=",
+            "value0": 1
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & CombatFabBuild & Defense",
+            "compare0": "<",
+            "value0": 25
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Factory | Teleporter) - Artillery",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "LandMine"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "placement_type": "FromMainBasePerimeter",
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 35,
+          "value": 5
+        }
+      }
+    }
+  ]
+}

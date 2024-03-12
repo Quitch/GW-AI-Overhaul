@@ -46,7 +46,7 @@ define({
     var penchantTags = [
       "Vanilla",
       "Artillery",
-      "Fortress",
+      ["Fortress", "Minelayer"], // Fortress
       "AllTerrain",
       "Assault",
       "Boomer",
@@ -58,6 +58,7 @@ define({
       "Nuker",
       "Tactical",
       "Platoon",
+      "Minelayer",
     ];
     var penchantExclusions = [
       [], // Vanilla
@@ -139,6 +140,7 @@ define({
         "PenchantT2Naval",
       ],
       ["PenchantPlatoon"], // Platoon
+      [], // Minelayer
     ];
     var penchantNames = [
       "", // Vanilla - no modifications
@@ -155,6 +157,7 @@ define({
       "!LOC:Nuker",
       "!LOC:Tactical",
       "!LOC:Platoon",
+      "!LOC:Minelayer",
     ];
     var penchantTag = _.sample(penchantTags);
     var penchantIndex = _.indexOf(penchantTags, penchantTag);
