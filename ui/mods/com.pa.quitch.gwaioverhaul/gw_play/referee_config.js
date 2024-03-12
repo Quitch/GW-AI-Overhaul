@@ -66,6 +66,14 @@ define([
     };
   };
 
+  var getAIPersonalityName = function (ai) {
+    var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
+    if (ai.penchantName) {
+      personalityName = personalityName + " " + loc(ai.penchantName);
+    }
+    return personalityName;
+  };
+
   var setupAIArmy = function (ai, index, specTag, alliance) {
     var slotsArray = [];
     var aiLandingOptions = _.shuffle([
@@ -85,6 +93,7 @@ define([
         );
       }
     );
+    ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
