@@ -6,10 +6,6 @@
 
 - Support Show AI Personality Names mod in place of the built-in war option
 
-### Changed
-
-- Removed land mine builds from Penchant AI for performance reasons
-
 ## v5.59.0 - 2024-03-06
 
 ### Changed
