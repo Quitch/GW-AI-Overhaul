@@ -207,7 +207,7 @@ if (!gwoSetupLoaded) {
             }
           };
 
-          var titansAITags = ["Default", "GalacticWar"];
+          var titansAITags = ["Default"];
 
           var setupPenchantAI = function (ai) {
             var penchantValues = gwoAI.penchants();
