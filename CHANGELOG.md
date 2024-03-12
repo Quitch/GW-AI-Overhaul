@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.60.0 - 2024-03-12
+
+### Added
+
+- Support Show AI Personality Names mod in place of the built-in war option
+
 ## v5.59.0 - 2024-03-06
 
 ### Changed

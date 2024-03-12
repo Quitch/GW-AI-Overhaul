@@ -379,7 +379,7 @@ if (!gwoSetupLoaded) {
             var busyToken = {};
             model.makeGameBusy(busyToken);
 
-            var version = "5.59.0";
+            var version = "5.60.0";
             console.log("War created using Galactic War Overhaul v" + version);
 
             var game = new GW.Game();
@@ -906,8 +906,6 @@ if (!gwoSetupLoaded) {
               originSystem.gwaio.aiMods = [];
               originSystem.gwaio.techCardDeck =
                 model.gwoDifficultySettings.techCardDeck();
-              originSystem.gwaio.aiPersonalityAsName =
-                model.gwoDifficultySettings.aiPersonalityAsName();
               // We don't need to apply the hotfix as it's for v5.17.1 and earlier
               originSystem.gwaio.treasurePlanetFixed = true;
               // We don't need to apply the hotfix as it's for v5.22.1 and earlier

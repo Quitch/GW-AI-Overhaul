@@ -51,7 +51,7 @@ if (!gwoUILoaded) {
         factionTechHandicap: koNumeric(0, 1),
         alliedCommanderChance: koNumeric(0, 0),
         personalityTags: ko.observableArray(),
-        aiPersonalityAsName: ko.observable(false),
+        aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
       };
 
       var difficultySettings = model.gwoDifficultySettings;
@@ -84,8 +84,6 @@ if (!gwoUILoaded) {
         "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
       model.gwoBossCommandersTooltip =
         "!LOC:Number of Commanders in the boss's army.";
-      model.gwoAIPersonalityAsNameTooltip =
-        "Display each AI's personality instead of its name on the player list in battles.";
       // Allow modders to append their deck names
       model.gwoCardsTooltip =
         "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";

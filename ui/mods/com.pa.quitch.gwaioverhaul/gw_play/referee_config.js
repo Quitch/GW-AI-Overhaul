@@ -66,6 +66,14 @@ define([
     };
   };
 
+  var getAIPersonalityName = function (ai) {
+    var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
+    if (ai.penchantName) {
+      personalityName = personalityName + " " + loc(ai.penchantName);
+    }
+    return personalityName;
+  };
+
   var setupAIArmy = function (ai, index, specTag, alliance) {
     var slotsArray = [];
     var aiLandingOptions = _.shuffle([
@@ -73,16 +81,6 @@ define([
       "on_player_planet",
       "no_restriction",
     ]);
-    var galaxy = model.game().galaxy();
-    var originSystem = galaxy.stars()[galaxy.origin()].system();
-    var gwaioSettings = originSystem.gwaio;
-    var character = ai.character ? loc(ai.character) : loc("!LOC:None");
-    if (ai.penchantName) {
-      character = character + " " + loc(ai.penchantName);
-    }
-    if (gwaioSettings && gwaioSettings.aiPersonalityAsName === true) {
-      ai.name = character;
-    }
     _.times(
       ai.bossCommanders ||
         ai.commanderCount ||
@@ -95,6 +93,7 @@ define([
         );
       }
     );
+    ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
