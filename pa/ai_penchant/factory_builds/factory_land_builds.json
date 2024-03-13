@@ -317,53 +317,6 @@
       ]
     },
     {
-      "name": "Basic Combat Fabber Bot",
-      "to_build": "BasicBotCombatFabber",
-      "instance_count": 1,
-      "priority": 97,
-      "builders": ["BasicBotFactory"],
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Bot",
-            "boolean": false
-          },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "Tutorial",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "UnitRatioOnPlanet",
-            "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",
-            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
-            "compare0": "<",
-            "value0": 0.01
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "BasicBotCombatFabber"
-          }
-        ]
-      ]
-    },
-    {
       "name": "Land Scout - Intel",
       "to_build": "LandScout",
       "instance_count": 1,

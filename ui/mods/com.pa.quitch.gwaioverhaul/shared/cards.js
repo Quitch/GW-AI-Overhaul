@@ -106,7 +106,7 @@ define({
 
   hasT2Access: function (inventory) {
     return _.some(inventory.cards(), function (card) {
-      return _.some(model.cardsGrantingAdvancedTech, function (t2Card) {
+      return _.some(model.gwoCardsGrantingAdvancedTech, function (t2Card) {
         return card.id === t2Card;
       });
     });

@@ -1,526 +1,526 @@
 var gwoSystemChangesLoaded;
 
-if (!gwoSystemChangesLoaded) {
+function gwoSystemChanges() {
+  if (gwoSystemChangesLoaded) {
+    return;
+  }
+
   gwoSystemChangesLoaded = true;
 
-  function gwoSystemChanges() {
-    try {
-      var game = model.game();
+  try {
+    var game = model.game();
 
-      if (!game.isTutorial()) {
-        var galaxy = game.galaxy();
-        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-        if (gwoSettings) {
-          console.log(
-            "War created using Galactic War Overhaul v" + gwoSettings.version
-          );
-        } else {
-          console.log(
-            "War created using base game, or Galactic War Overhaul v4.12.1 or earlier"
-          );
+    if (!game.isTutorial()) {
+      var galaxy = game.galaxy();
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      if (gwoSettings) {
+        console.log(
+          "War created using Galactic War Overhaul v" + gwoSettings.version
+        );
+      } else {
+        console.log(
+          "War created using base game, or Galactic War Overhaul v4.12.1 or earlier"
+        );
+      }
+
+      // Don't allow starting zoom higher than maximum zoom
+      _.defer(function () {
+        model.galaxy.zoom(
+          Math.max(model.galaxy.zoom(), model.galaxy.minZoom())
+        );
+        model.centerOnPlayer();
+      });
+
+      function createBitmap(params) {
+        if (!params.url) {
+          throw new Error("No URL specified");
+        }
+        if (!params.size) {
+          throw new Error("No size specified");
         }
 
-        // Don't allow starting zoom higher than maximum zoom
-        _.defer(function () {
-          model.galaxy.zoom(
-            Math.max(model.galaxy.zoom(), model.galaxy.minZoom())
-          );
-          model.centerOnPlayer();
+        var result = new createjs.Bitmap(params.url);
+        result.x = 0;
+        result.y = 0;
+        result.regX = params.size[0] / 2;
+        result.regY = params.size[1] / 2;
+
+        var scale = params.scale;
+        if (!_.isUndefined(scale)) {
+          result.scaleX = scale;
+          result.scaleY = scale;
+        }
+
+        result.color = ko.observable(params.color);
+        if (result.color) {
+          if (params.noCache) {
+            throw new Error("noCache incompatible with color");
+          }
+
+          var updateFilters = function () {
+            var color = result.color();
+            result.filters = [];
+            if (color) {
+              result.filters.push(
+                new createjs.ColorFilter(
+                  color[0],
+                  color[1],
+                  color[2],
+                  color.length >= 4 ? color[3] : 1
+                )
+              );
+            }
+          };
+          updateFilters();
+
+          result.color.subscribe(function () {
+            updateFilters();
+            result.updateCache();
+          });
+        }
+
+        if (!_.isUndefined(params.alpha)) {
+          result.alpha = params.alpha;
+        }
+
+        if (!params.noCache) {
+          // Note: Extra pixel compensates for bad filtering on the edges
+          result.cache(-1, -1, params.size[0] + 2, params.size[1] + 2);
+          $(result.image).load(function () {
+            result.updateCache();
+          });
+        }
+        return result;
+      }
+
+      function sortContainer(container) {
+        container.sortChildren(function (a, b) {
+          if (_.isUndefined(a.z)) {
+            if (_.isUndefined(b.z)) {
+              return 0;
+            }
+            return -1;
+          } else if (_.isUndefined(b.z)) {
+            return 1;
+          }
+          return a.z - b.z;
+        });
+      }
+
+      // Add tooltips, starting planet, and thruster icons on planet intelligence icons
+      $(".all-planets").replaceWith(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
+        )
+      );
+
+      function SelectionViewModel(config) {
+        var self = this;
+        var galaxyView = config.galaxy;
+        var hover = !!config.hover;
+        var iconUrl = config.iconUrl;
+        var color = config.color;
+
+        if (!iconUrl) {
+          if (hover) {
+            iconUrl = "coui://ui/main/game/galactic_war/shared/img/hover.png";
+          } else {
+            iconUrl =
+              "coui://ui/main/game/galactic_war/shared/img/selection.png";
+          }
+        }
+
+        if (!color) {
+          if (hover) {
+            color = [0.5, 0.9, 1];
+          } else {
+            color = [0, 0.8, 1];
+          }
+        }
+
+        self.visible = ko.observable(true);
+        self.star = ko.observable(-1);
+        self.system = ko.computed(function () {
+          return self.star() >= 0
+            ? galaxyView.systems()[self.star()]
+            : undefined;
         });
 
-        function createBitmap(params) {
-          if (!params.url) {
-            throw new Error("No URL specified");
-          }
-          if (!params.size) {
-            throw new Error("No size specified");
-          }
-
-          var result = new createjs.Bitmap(params.url);
-          result.x = 0;
-          result.y = 0;
-          result.regX = params.size[0] / 2;
-          result.regY = params.size[1] / 2;
-
-          var scale = params.scale;
-          if (!_.isUndefined(scale)) {
-            result.scaleX = scale;
-            result.scaleY = scale;
-          }
-
-          result.color = ko.observable(params.color);
-          if (result.color) {
-            if (params.noCache) {
-              throw new Error("noCache incompatible with color");
+        var extractor = function (field) {
+          return ko.pureComputed(function () {
+            var system = self.system();
+            if (system) {
+              // Display system description in intelligence panel
+              return loc(system[field]()) || "";
+            } else {
+              return "";
             }
+          });
+        };
 
-            var updateFilters = function () {
-              var color = result.color();
-              result.filters = [];
-              if (color) {
-                result.filters.push(
-                  new createjs.ColorFilter(
-                    color[0],
-                    color[1],
-                    color[2],
-                    color.length >= 4 ? color[3] : 1
-                  )
-                );
+        self.name = extractor("name");
+        self.html = extractor("html");
+        self.description = extractor("description");
+        self.scale = new createjs.Container();
+        self.scale.scaleY = 0.5;
+        self.scale.z = -1;
+        self.icon = createBitmap({
+          url: iconUrl,
+          size: [240, 240],
+          color: color,
+        });
+        self.scale.addChild(self.icon);
+
+        ko.computed(function () {
+          var system = self.system();
+          var visible = !!system && self.visible();
+          if (hover && visible) {
+            visible = system.mouseOver() !== system.mouseOut();
+          }
+          self.icon.visible = visible;
+          if (self.icon.visible) {
+            var container = system.systemDisplay;
+            container.addChild(self.scale);
+            sortContainer(container);
+          } else if (self.scale.parent) {
+            self.scale.parent.removeChild(self.scale);
+          }
+        });
+
+        if (!hover) {
+          self.icon.addEventListener("tick", function () {
+            self.icon.rotation = (_.now() * 0.02) % 360;
+          });
+
+          self.system.subscribe(
+            function (oldSystem) {
+              if (oldSystem) {
+                oldSystem.selected(false);
               }
-            };
-            updateFilters();
+            },
+            null,
+            "beforeChange"
+          );
 
-            result.color.subscribe(function () {
-              updateFilters();
-              result.updateCache();
-            });
-          }
+          // Create planets' tooltips for intelligence panel
+          self.system.subscribe(function () {
+            var newSystem = self.system();
 
-          if (!_.isUndefined(params.alpha)) {
-            result.alpha = params.alpha;
-          }
+            if (newSystem) {
+              newSystem.selected(true);
 
-          if (!params.noCache) {
-            // Note: Extra pixel compensates for bad filtering on the edges
-            result.cache(-1, -1, params.size[0] + 2, params.size[1] + 2);
-            $(result.image).load(function () {
-              result.updateCache();
-            });
-          }
-          return result;
-        }
+              var radius = loc("!LOC:Radius:");
+              var metalSpots = loc("!LOC:Metal Spots:");
+              var metalClusters = loc("!LOC:Metal Clusters:");
+              var metalDensity = loc("!LOC:Metal Density:");
+              var temperature = loc("!LOC:Temperature:");
+              var waterHeight = loc("!LOC:Water Height:");
 
-        function sortContainer(container) {
-          container.sortChildren(function (a, b) {
-            if (_.isUndefined(a.z)) {
-              if (_.isUndefined(b.z)) {
-                return 0;
-              }
-              return -1;
-            } else if (_.isUndefined(b.z)) {
-              return 1;
+              model.gwoPlanetData = _.map(
+                self.system().planets(),
+                function (planet) {
+                  var tooltip = radius + " " + planet.generator.radius;
+
+                  if (planet.generator.biome === "gas") {
+                    return tooltip;
+                  }
+
+                  if (planet.metal_spots) {
+                    tooltip +=
+                      "<br>" + metalSpots + " " + planet.metal_spots.length;
+                  } else {
+                    tooltip +=
+                      "<br>" +
+                      metalClusters +
+                      " " +
+                      Math.round(planet.generator.metalClusters) +
+                      "<br>" +
+                      metalDensity +
+                      " " +
+                      Math.round(planet.generator.metalDensity);
+                  }
+                  if (
+                    planet.generator.biome !== "metal" &&
+                    planet.generator.biome !== "metal_boss" &&
+                    planet.generator.biome !== "moon"
+                  ) {
+                    tooltip +=
+                      "<br>" +
+                      temperature +
+                      " " +
+                      Math.round(planet.generator.temperature) +
+                      "<br>" +
+                      waterHeight +
+                      " " +
+                      Math.round(planet.generator.waterHeight);
+                  }
+                  return tooltip;
+                }
+              );
             }
-            return a.z - b.z;
           });
         }
+      }
 
-        // Add tooltips, starting planet, and thruster icons on planet intelligence icons
-        $(".all-planets").replaceWith(
-          loadHtml(
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html"
-          )
+      // Turn off the original selection icon before replacing model.selection()
+      model.selection.visible(false);
+      model.selection = new SelectionViewModel({
+        galaxy: model.galaxy,
+        hover: false,
+      });
+      model.selection.star(game.currentStar());
+
+      model.hoverSystem = new SelectionViewModel({
+        galaxy: model.galaxy,
+        hover: true,
+      });
+
+      model.canMove = ko.computed(function () {
+        if (model.player.moving()) {
+          return false;
+        }
+        var from = game.currentStar();
+        var to = model.selection.star();
+        if (to < 0 || to > galaxy.stars().length) {
+          return false;
+        }
+        if (!model.canSelectOrMovePrefix()) {
+          return false;
+        }
+        if (from === to) {
+          return false;
+        }
+        return galaxy.pathBetween(from, to, model.cheats.noFog());
+      });
+
+      model.displayMove = ko.computed(function () {
+        return model.canMove();
+      });
+
+      model.displayFight = ko.computed(function () {
+        return (
+          model.canFight() &&
+          !model.allowLoad() &&
+          model.selection.star() === game.currentStar()
         );
+      });
 
-        function SelectionViewModel(config) {
-          var self = this;
-          var galaxyView = config.galaxy;
-          var hover = !!config.hover;
-          var iconUrl = config.iconUrl;
-          var color = config.color;
-
-          if (!iconUrl) {
-            if (hover) {
-              iconUrl = "coui://ui/main/game/galactic_war/shared/img/hover.png";
-            } else {
-              iconUrl =
-                "coui://ui/main/game/galactic_war/shared/img/selection.png";
-            }
-          }
-
-          if (!color) {
-            if (hover) {
-              color = [0.5, 0.9, 1];
-            } else {
-              color = [0, 0.8, 1];
-            }
-          }
-
-          self.visible = ko.observable(true);
-          self.star = ko.observable(-1);
-          self.system = ko.computed(function () {
-            return self.star() >= 0
-              ? galaxyView.systems()[self.star()]
-              : undefined;
-          });
-
-          var extractor = function (field) {
-            return ko.pureComputed(function () {
-              var system = self.system();
-              if (system) {
-                // Display system description in intelligence panel
-                return loc(system[field]()) || "";
-              } else {
-                return "";
-              }
+      // System colours
+      requireGW(
+        [
+          "shared/gw_factions",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        ],
+        function (GWFactions, gwoSave) {
+          var normalizedColor = function (faction) {
+            return _.map(faction.color[0], function (c) {
+              return c / 255;
             });
           };
 
-          self.name = extractor("name");
-          self.html = extractor("html");
-          self.description = extractor("description");
-          self.scale = new createjs.Container();
-          self.scale.scaleY = 0.5;
-          self.scale.z = -1;
-          self.icon = createBitmap({
-            url: iconUrl,
-            size: [240, 240],
-            color: color,
-          });
-          self.scale.addChild(self.icon);
-
-          ko.computed(function () {
-            var system = self.system();
-            var visible = !!system && self.visible();
-            if (hover && visible) {
-              visible = system.mouseOver() !== system.mouseOut();
-            }
-            self.icon.visible = visible;
-            if (self.icon.visible) {
-              var container = system.systemDisplay;
-              container.addChild(self.scale);
-              sortContainer(container);
-            } else if (self.scale.parent) {
-              self.scale.parent.removeChild(self.scale);
-            }
-          });
-
-          if (!hover) {
-            self.icon.addEventListener("tick", function () {
-              self.icon.rotation = (_.now() * 0.02) % 360;
+          game.defeatTeam = function (team) {
+            var aiCount = 0;
+            api.tally.incStatInt("gw_eliminate_faction");
+            _.forEach(model.galaxy.systems(), function (system) {
+              var star = system.star;
+              var ai = star.ai();
+              if (ai) {
+                if (ai.team === team) {
+                  if (ai.foes) {
+                    var newAI = ai.foes[0];
+                    var foeBackup = ai.foes.slice(1);
+                    var foeKeys = _.keys(newAI);
+                    _.forEach(foeKeys, function (key) {
+                      star.ai()[key] = ai.foes[0][key];
+                    });
+                    var systemColour = normalizedColor(GWFactions[ai.faction]);
+                    system.ownerColor(systemColour.concat(3));
+                    star.ai().foes = foeBackup;
+                    delete star.ai().minions;
+                  } else {
+                    star.ai(undefined);
+                    // Delete pre-dealt cards when boss defeated
+                    if (ai.mirrorMode !== true) {
+                      star.cardList([]);
+                    }
+                  }
+                } else {
+                  ++aiCount;
+                }
+              }
             });
 
-            self.system.subscribe(
-              function (oldSystem) {
-                if (oldSystem) {
-                  oldSystem.selected(false);
-                }
-              },
-              null,
-              "beforeChange"
-            );
+            if (!aiCount) {
+              requireGW(["shared/gw_game"], function (GWGame) {
+                game.gameState(GWGame.gameStates.won);
+              });
+            }
+          };
 
-            // Create planets' tooltips for intelligence panel
-            self.system.subscribe(function () {
-              var newSystem = self.system();
+          _.forEach(model.galaxy.systems(), function (system) {
+            var ai = system.star.ai();
+            if (!ai) {
+              return;
+            }
 
-              if (newSystem) {
-                newSystem.selected(true);
+            // Colour inner ring to match ally or other faction present
+            var innerRing = {};
+            if (ai.ally || ai.foes) {
+              var innerColour = ai.ally
+                ? normalizedColor(GWFactions[ai.ally.faction])
+                : normalizedColor(GWFactions[ai.foes[0].faction]);
+              innerRing = createBitmap({
+                url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+                size: [240, 240],
+                color: innerColour.concat(7),
+                scale: 0.71,
+                alpha: 0.8,
+              });
+              var scaleInnerRing = new createjs.Container();
+              scaleInnerRing.addChild(innerRing);
+              scaleInnerRing.z = 0;
+              system.systemDisplay.addChild(scaleInnerRing);
+            }
+            innerRing.visible = false;
 
-                var radius = loc("!LOC:Radius:");
-                var metalSpots = loc("!LOC:Metal Spots:");
-                var metalClusters = loc("!LOC:Metal Clusters:");
-                var metalDensity = loc("!LOC:Metal Density:");
-                var temperature = loc("!LOC:Temperature:");
-                var waterHeight = loc("!LOC:Water Height:");
+            ko.computed(function () {
+              innerRing.visible =
+                (system.connected() || model.cheats.noFog()) &&
+                !!system.ownerColor() &&
+                system.ownerColor()[0] !== model.player.color()[0];
 
-                model.gwoPlanetData = _.map(
-                  self.system().planets(),
-                  function (planet) {
-                    var tooltip = radius + " " + planet.generator.radius;
+              // Fix Z axis issues
+              if (innerRing.visible === true) {
+                system.mouseOver(1);
+                system.mouseOver(0);
+                system.mouseOut(0);
+              }
 
-                    if (planet.generator.biome === "gas") {
-                      return tooltip;
-                    }
+              if (
+                system.star.ai() &&
+                system.star.ai().treasurePlanet !== true
+              ) {
+                // Assign faction colour, not minion colour, to each system
+                var outerColour = [];
+                outerColour = normalizedColor(GWFactions[ai.faction]);
+                system.ownerColor(outerColour.concat(3));
+              }
 
-                    if (planet.metal_spots) {
-                      tooltip +=
-                        "<br>" + metalSpots + " " + planet.metal_spots.length;
-                    } else {
-                      tooltip +=
-                        "<br>" +
-                        metalClusters +
-                        " " +
-                        Math.round(planet.generator.metalClusters) +
-                        "<br>" +
-                        metalDensity +
-                        " " +
-                        Math.round(planet.generator.metalDensity);
-                    }
-                    if (
-                      planet.generator.biome !== "metal" &&
-                      planet.generator.biome !== "metal_boss" &&
-                      planet.generator.biome !== "moon"
-                    ) {
-                      tooltip +=
-                        "<br>" +
-                        temperature +
-                        " " +
-                        Math.round(planet.generator.temperature) +
-                        "<br>" +
-                        waterHeight +
-                        " " +
-                        Math.round(planet.generator.waterHeight);
-                    }
-                    return tooltip;
+              // Dependencies. These will cause the base code that updates color to rerun
+              // so we have to run under the same conditions, and pray we run later than that code.
+              system.connected();
+              model.cheats.noFog();
+              system.star.hasCard();
+            });
+          });
+
+          var bugfixes = function () {
+            var allFixesApplied =
+              gwoSettings &&
+              gwoSettings.treasurePlanetFixed &&
+              gwoSettings.clusterFixed;
+
+            if (!gwoSettings || allFixesApplied) {
+              return;
+            }
+
+            var star = {};
+            var securityFix = false; // we have to fix `unit_types`
+            var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+
+            for (star of galaxy.stars()) {
+              allFixesApplied =
+                gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed;
+
+              if (allFixesApplied) {
+                break;
+              }
+
+              // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
+              if (
+                !gwoSettings.treasurePlanetFixed &&
+                _.includes(star.cardList(), undefined)
+              ) {
+                star.cardList([]);
+                gwoSettings.treasurePlanetFixed = true;
+              }
+
+              // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
+              if (!gwoSettings.clusterFixed) {
+                var warVersion = gwoSettings.version;
+                var fixedVersion = "5.52.2";
+                var clusterFixDeployed = warVersion.localeCompare(
+                  fixedVersion,
+                  undefined,
+                  {
+                    numeric: true,
+                    sensitivity: "base",
                   }
                 );
-              }
-            });
-          }
-        }
-
-        // Turn off the original selection icon before replacing model.selection()
-        model.selection.visible(false);
-        model.selection = new SelectionViewModel({
-          galaxy: model.galaxy,
-          hover: false,
-        });
-        model.selection.star(game.currentStar());
-
-        model.hoverSystem = new SelectionViewModel({
-          galaxy: model.galaxy,
-          hover: true,
-        });
-
-        model.canMove = ko.computed(function () {
-          if (model.player.moving()) {
-            return false;
-          }
-          var from = game.currentStar();
-          var to = model.selection.star();
-          if (to < 0 || to > galaxy.stars().length) {
-            return false;
-          }
-          if (!model.canSelectOrMovePrefix()) {
-            return false;
-          }
-          if (from === to) {
-            return false;
-          }
-          return galaxy.pathBetween(from, to, model.cheats.noFog());
-        });
-
-        model.displayMove = ko.computed(function () {
-          return model.canMove();
-        });
-
-        model.displayFight = ko.computed(function () {
-          return (
-            model.canFight() &&
-            !model.allowLoad() &&
-            model.selection.star() === game.currentStar()
-          );
-        });
-
-        // System colours
-        requireGW(
-          [
-            "shared/gw_factions",
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
-          ],
-          function (GWFactions, gwoSave) {
-            var normalizedColor = function (faction) {
-              return _.map(faction.color[0], function (c) {
-                return c / 255;
-              });
-            };
-
-            game.defeatTeam = function (team) {
-              var aiCount = 0;
-              api.tally.incStatInt("gw_eliminate_faction");
-              _.forEach(model.galaxy.systems(), function (system) {
-                var star = system.star;
-                var ai = star.ai();
-                if (ai) {
-                  if (ai.team === team) {
-                    if (ai.foes) {
-                      var newAI = ai.foes[0];
-                      var foeBackup = ai.foes.slice(1);
-                      var foeKeys = _.keys(newAI);
-                      _.forEach(foeKeys, function (key) {
-                        star.ai()[key] = ai.foes[0][key];
-                      });
-                      var systemColour = normalizedColor(
-                        GWFactions[ai.faction]
-                      );
-                      system.ownerColor(systemColour.concat(3));
-                      star.ai().foes = foeBackup;
-                      delete star.ai().minions;
-                    } else {
-                      star.ai(undefined);
-                      // Delete pre-dealt cards when boss defeated
-                      if (ai.mirrorMode !== true) {
-                        star.cardList([]);
-                      }
+                if (clusterFixDeployed >= 0) {
+                  gwoSettings.clusterFixed = true;
+                } else {
+                  var applyFix = function (mod) {
+                    if (mod.path === "buildable_types") {
+                      mod.value = mod.value + " & Custom58";
+                      return mod.file;
+                    } else if (mod.path === "unit_types") {
+                      mod.value.push("UNITTYPE_Custom58");
+                      return mod.file;
                     }
-                  } else {
-                    ++aiCount;
-                  }
-                }
-              });
+                  };
 
-              if (!aiCount) {
-                requireGW(["shared/gw_game"], function (GWGame) {
-                  game.gameState(GWGame.gameStates.won);
-                });
-              }
-            };
-
-            _.forEach(model.galaxy.systems(), function (system) {
-              var ai = system.star.ai();
-              if (!ai) {
-                return;
-              }
-
-              // Colour inner ring to match ally or other faction present
-              var innerRing = {};
-              if (ai.ally || ai.foes) {
-                var innerColour = ai.ally
-                  ? normalizedColor(GWFactions[ai.ally.faction])
-                  : normalizedColor(GWFactions[ai.foes[0].faction]);
-                innerRing = createBitmap({
-                  url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-                  size: [240, 240],
-                  color: innerColour.concat(7),
-                  scale: 0.71,
-                  alpha: 0.8,
-                });
-                var scaleInnerRing = new createjs.Container();
-                scaleInnerRing.addChild(innerRing);
-                scaleInnerRing.z = 0;
-                system.systemDisplay.addChild(scaleInnerRing);
-              }
-              innerRing.visible = false;
-
-              ko.computed(function () {
-                innerRing.visible =
-                  (system.connected() || model.cheats.noFog()) &&
-                  !!system.ownerColor() &&
-                  system.ownerColor()[0] !== model.player.color()[0];
-
-                // Fix Z axis issues
-                if (innerRing.visible === true) {
-                  system.mouseOver(1);
-                  system.mouseOver(0);
-                  system.mouseOut(0);
-                }
-
-                if (
-                  system.star.ai() &&
-                  system.star.ai().treasurePlanet !== true
-                ) {
-                  // Assign faction colour, not minion colour, to each system
-                  var outerColour = [];
-                  outerColour = normalizedColor(GWFactions[ai.faction]);
-                  system.ownerColor(outerColour.concat(3));
-                }
-
-                // Dependencies. These will cause the base code that updates color to rerun
-                // so we have to run under the same conditions, and pray we run later than that code.
-                system.connected();
-                model.cheats.noFog();
-                system.star.hasCard();
-              });
-            });
-
-            var bugfixes = function () {
-              var allFixesApplied =
-                gwoSettings &&
-                gwoSettings.treasurePlanetFixed &&
-                gwoSettings.clusterFixed;
-
-              if (!gwoSettings || allFixesApplied) {
-                return;
-              }
-
-              var star = {};
-              var securityFix = false; // we have to fix `unit_types`
-              var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
-
-              for (star of galaxy.stars()) {
-                allFixesApplied =
-                  gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed;
-
-                if (allFixesApplied) {
-                  break;
-                }
-
-                // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-                if (
-                  !gwoSettings.treasurePlanetFixed &&
-                  _.includes(star.cardList(), undefined)
-                ) {
-                  star.cardList([]);
-                  gwoSettings.treasurePlanetFixed = true;
-                }
-
-                // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
-                if (!gwoSettings.clusterFixed) {
-                  var warVersion = gwoSettings.version;
-                  var fixedVersion = "5.52.2";
-                  var clusterFixDeployed = warVersion.localeCompare(
-                    fixedVersion,
-                    undefined,
-                    {
-                      numeric: true,
-                      sensitivity: "base",
+                  var clusterTypeFix = function (mod) {
+                    var security =
+                      "/pa/units/land/bot_support_commander/bot_support_commander.json";
+                    var worker =
+                      "/pa/units/air/support_platform/support_platform.json";
+                    if (mod.file === security && securityFix === false) {
+                      return applyFix(mod);
                     }
-                  );
-                  if (clusterFixDeployed >= 0) {
-                    gwoSettings.clusterFixed = true;
-                  } else {
-                    var applyFix = function (mod) {
-                      if (mod.path === "buildable_types") {
-                        mod.value = mod.value + " & Custom58";
-                        return mod.file;
-                      } else if (mod.path === "unit_types") {
-                        mod.value.push("UNITTYPE_Custom58");
-                        return mod.file;
-                      }
-                    };
+                    if (mod.file === worker && workerFix < 2) {
+                      return applyFix(mod);
+                    }
+                  };
 
-                    var clusterTypeFix = function (mod) {
-                      var security =
-                        "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                      var worker =
-                        "/pa/units/air/support_platform/support_platform.json";
-                      if (mod.file === security && securityFix === false) {
-                        return applyFix(mod);
-                      }
-                      if (mod.file === worker && workerFix < 2) {
-                        return applyFix(mod);
-                      }
-                    };
-
-                    if (!gwoSettings.clusterFixed && star.ai()) {
-                      var ai = star.ai();
-                      for (var mod of ai.inventory) {
-                        if (ai.isCluster) {
-                          var security =
-                            "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                          var worker =
-                            "/pa/units/air/support_platform/support_platform.json";
-                          var result = clusterTypeFix(mod);
-                          switch (result) {
-                            case security:
-                              securityFix = true;
-                              break;
-                            case worker:
-                              workerFix += 1;
-                          }
-
-                          if (securityFix === true && workerFix === 2) {
-                            gwoSettings.clusterFixed = true;
+                  if (!gwoSettings.clusterFixed && star.ai()) {
+                    var ai = star.ai();
+                    for (var mod of ai.inventory) {
+                      if (ai.isCluster) {
+                        var security =
+                          "/pa/units/land/bot_support_commander/bot_support_commander.json";
+                        var worker =
+                          "/pa/units/air/support_platform/support_platform.json";
+                        var result = clusterTypeFix(mod);
+                        switch (result) {
+                          case security:
+                            securityFix = true;
                             break;
-                          }
+                          case worker:
+                            workerFix += 1;
+                        }
+
+                        if (securityFix === true && workerFix === 2) {
+                          gwoSettings.clusterFixed = true;
+                          break;
                         }
                       }
                     }
                   }
                 }
               }
-              gwoSettings.treasurePlanetFixed = true;
-              gwoSettings.clusterFixed = true;
-              gwoSave(game, true);
-            };
-            bugfixes();
-          }
-        );
-      }
-    } catch (e) {
-      console.error(e);
-      console.error(JSON.stringify(e));
+            }
+            gwoSettings.treasurePlanetFixed = true;
+            gwoSettings.clusterFixed = true;
+            gwoSave(game, true);
+          };
+          bugfixes();
+        }
+      );
     }
+  } catch (e) {
+    console.error(e);
+    console.error(JSON.stringify(e));
   }
-  gwoSystemChanges();
 }
+gwoSystemChanges();

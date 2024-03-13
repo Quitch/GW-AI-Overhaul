@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.61.0 - 2024-03-13
+
+### Changed
+
+- Limit Penchant AI minelaying to specific penchants
+
 ## v5.60.0 - 2024-03-12
 
 ### Added
