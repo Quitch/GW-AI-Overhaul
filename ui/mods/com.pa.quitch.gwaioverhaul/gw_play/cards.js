@@ -17,7 +17,7 @@ if (!gwoCardsLoaded) {
         locTree($("#hover-card"));
 
         // Used by cards checking for T2 access - global var for modders
-        model.cardsGrantingAdvancedTech = [
+        model.gwoCardsGrantingAdvancedTech = [
           "gwc_enable_air_all",
           "gwc_enable_bots_all",
           "gwc_enable_sea_all",
