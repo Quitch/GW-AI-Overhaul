@@ -67,20 +67,29 @@ function gwoUI() {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
-    var previousSettings = difficultySettings.previousSettings();
-    if (!_.isEmpty(previousSettings)) {
-      var settingNames = _.keys(difficultySettings);
+    var restorePreviousSettings = function (settings) {
+      var previousSettings = difficultySettings.previousSettings();
+
+      if (_.isEmpty(previousSettings)) {
+        return settings;
+      }
+
+      var settingNames = _.keys(previousSettings);
       _.pull(settingNames, "previousSettings");
       _.forEach(settingNames, function (name, i) {
-        difficultySettings[name](previousSettings[i]);
+        settings[name](previousSettings[i]);
       });
       _.defer(function () {
         $("#gwo-personality-picker")
           .selectpicker("val", model.gwoDifficultySettings.personalityTags())
           .trigger("change");
       });
-      model.playerFactionIndex(difficultySettings.playerFaction());
-    }
+      model.playerFactionIndex(settings.playerFaction());
+
+      return settings;
+    };
+
+    difficultySettings = restorePreviousSettings(difficultySettings);
 
     // Because PA Inc wants to avoid escaping characters in HTML
     model.gwoFactionScalingTooltip =
