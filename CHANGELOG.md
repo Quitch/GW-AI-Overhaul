@@ -4,10 +4,10 @@
 
 ### Changed
 
-- Reduced the cost of Colonels for the CEO Commander
-- Atlas upgrade increases Atlas health by 100% instead of 25%
-- Locust upgrade now adds splash damage rather than vision
-- Lob Upgrade doubles the fire rate and removes the recharge cost
+- CEO Commander gets cheaper Colonels
+- Atlas Upgrade Tech health buff increased
+- Locust Upgrade Tech now adds splash damage rather than vision
+- Lob Upgrade Tech doubles the fire rate and removes the recharge cost
 
 ## v5.61.0 - 2024-03-13
 
