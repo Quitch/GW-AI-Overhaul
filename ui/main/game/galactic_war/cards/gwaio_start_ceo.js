@@ -13,7 +13,8 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons."
+      "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons." +
+        " Halves their cost." // added separately to avoid breaking translations
     ),
     hint: function () {
       return {
@@ -52,6 +53,12 @@ define([
               path: "command_caps",
               op: "push",
               value: "ORDER_FireSecondaryWeapon",
+            },
+            {
+              file: gwoUnit.colonel,
+              path: "build_metal_cost",
+              op: "multiply",
+              value: 0.5,
             },
           ]);
 

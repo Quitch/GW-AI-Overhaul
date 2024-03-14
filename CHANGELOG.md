@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Reduced the cost of Colonels for the CEO Commander
+
 ## v5.61.0 - 2024-03-13
 
 ### Changed
