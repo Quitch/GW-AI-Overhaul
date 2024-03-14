@@ -6,6 +6,7 @@
 
 - Reduced the cost of Colonels for the CEO Commander
 - Atlas upgrade increases Atlas health by 100% instead of 25%
+- Locust upgrade now adds splash damage rather than vision
 
 ## v5.61.0 - 2024-03-13
 
