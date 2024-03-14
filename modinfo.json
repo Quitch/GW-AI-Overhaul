@@ -31,6 +31,7 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
     ],
     "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/bugfixes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
