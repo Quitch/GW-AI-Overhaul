@@ -117,7 +117,6 @@ function gwoUI() {
         $(classOrId).replaceWith(loadHtml(this.path + file));
       },
     };
-
     var gameDifficultyLabelId = "#game-difficulty-label";
     var gameDifficultyId = "#game-difficulty";
 
