@@ -68,13 +68,13 @@ function gwoUI() {
     });
 
     var restorePreviousSettings = function (settings) {
-      var previousSettings = difficultySettings.previousSettings();
+      var previousSettings = settings.previousSettings();
 
       if (_.isEmpty(previousSettings)) {
         return settings;
       }
 
-      var settingNames = _.keys(previousSettings);
+      var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
       _.forEach(settingNames, function (name, i) {
         settings[name](previousSettings[i]);
