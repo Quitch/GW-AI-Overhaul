@@ -5,6 +5,7 @@
 ### Changed
 
 - Reduced the cost of Colonels for the CEO Commander
+- Atlas upgrade increases Atlas health by 100% instead of 25%
 
 ## v5.61.0 - 2024-03-13
 
