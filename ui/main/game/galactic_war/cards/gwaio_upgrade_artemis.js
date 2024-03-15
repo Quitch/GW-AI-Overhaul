@@ -38,6 +38,12 @@ define([
           op: "replace",
           value: "target",
         },
+        {
+          file: gwoUnit.avenger,
+          path: "unit_types",
+          op: "push",
+          value: "UNITTYPE_Heavy",
+        },
       ]);
     },
     dull: function () {
