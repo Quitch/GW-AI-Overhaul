@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Locusts Upgrade Tech doubles the vision radius of nanoswarms."
+      "!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms."
     ),
     summarize: _.constant("!LOC:Locusts Upgrade Tech"),
     icon: _.constant(
@@ -27,16 +27,22 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwoUnit.locusts,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
+          file: gwoUnit.locustsAmmo,
+          path: "splash_damage",
+          op: "add",
+          value: 20,
         },
         {
-          file: gwoUnit.locusts,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
+          file: gwoUnit.locustsAmmo,
+          path: "splash_radius",
+          op: "add",
+          value: 20,
+        },
+        {
+          file: gwoUnit.locustsAmmo,
+          path: "full_damage_splash_radius",
+          op: "add",
+          value: 5,
         },
       ]);
     },

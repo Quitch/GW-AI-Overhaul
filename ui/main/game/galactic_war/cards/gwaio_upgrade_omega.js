@@ -5,7 +5,8 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
+      "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser." +
+        "Doubles the rate of fire of the other weapons." // added separately to avoid breaking translations
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
@@ -37,6 +38,12 @@ define([
           path: "attack_range_frac",
           op: "replace",
           value: 0.3,
+        },
+        {
+          file: gwoUnit.omegaWeapon,
+          path: "rate_of_fire",
+          op: "multiply",
+          value: 2,
         },
       ]);
     },

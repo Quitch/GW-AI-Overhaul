@@ -5,7 +5,8 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%."
+      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%." +
+        " Fires twice as fast and no longer costs metal to recharge its ammo." // added separately to avoid breaking translations
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(
@@ -37,6 +38,30 @@ define([
           path: "max_firing_velocity",
           op: "multiply",
           value: 2.5,
+        },
+        {
+          file: gwoUnit.lobWeapon,
+          path: "ammo_source",
+          op: "replace",
+          value: "time",
+        },
+        {
+          file: gwoUnit.lobWeapon,
+          path: "ammo_capacity",
+          op: "replace",
+          value: 17,
+        },
+        {
+          file: gwoUnit.lobWeapon,
+          path: "ammo_demand",
+          op: "replace",
+          value: 0,
+        },
+        {
+          file: gwoUnit.lobWeapon,
+          path: "ammo_per_shot",
+          op: "replace",
+          value: 2,
         },
       ]);
     },

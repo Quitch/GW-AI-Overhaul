@@ -306,217 +306,106 @@ function gwoSystemChanges() {
       });
 
       // System colours
-      requireGW(
-        [
-          "shared/gw_factions",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
-        ],
-        function (GWFactions, gwoSave) {
-          var normalizedColor = function (faction) {
-            return _.map(faction.color[0], function (c) {
-              return c / 255;
-            });
-          };
+      requireGW(["shared/gw_factions"], function (GWFactions) {
+        var normalizedColor = function (faction) {
+          return _.map(faction.color[0], function (c) {
+            return c / 255;
+          });
+        };
 
-          game.defeatTeam = function (team) {
-            var aiCount = 0;
-            api.tally.incStatInt("gw_eliminate_faction");
-            _.forEach(model.galaxy.systems(), function (system) {
-              var star = system.star;
-              var ai = star.ai();
-              if (ai) {
-                if (ai.team === team) {
-                  if (ai.foes) {
-                    var newAI = ai.foes[0];
-                    var foeBackup = ai.foes.slice(1);
-                    var foeKeys = _.keys(newAI);
-                    _.forEach(foeKeys, function (key) {
-                      star.ai()[key] = ai.foes[0][key];
-                    });
-                    var systemColour = normalizedColor(GWFactions[ai.faction]);
-                    system.ownerColor(systemColour.concat(3));
-                    star.ai().foes = foeBackup;
-                    delete star.ai().minions;
-                  } else {
-                    star.ai(undefined);
-                    // Delete pre-dealt cards when boss defeated
-                    if (ai.mirrorMode !== true) {
-                      star.cardList([]);
-                    }
-                  }
-                } else {
-                  ++aiCount;
-                }
-              }
-            });
-
-            if (!aiCount) {
-              requireGW(["shared/gw_game"], function (GWGame) {
-                game.gameState(GWGame.gameStates.won);
-              });
-            }
-          };
-
+        game.defeatTeam = function (team) {
+          var aiCount = 0;
+          api.tally.incStatInt("gw_eliminate_faction");
           _.forEach(model.galaxy.systems(), function (system) {
-            var ai = system.star.ai();
-            if (!ai) {
-              return;
-            }
-
-            // Colour inner ring to match ally or other faction present
-            var innerRing = {};
-            if (ai.ally || ai.foes) {
-              var innerColour = ai.ally
-                ? normalizedColor(GWFactions[ai.ally.faction])
-                : normalizedColor(GWFactions[ai.foes[0].faction]);
-              innerRing = createBitmap({
-                url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-                size: [240, 240],
-                color: innerColour.concat(7),
-                scale: 0.71,
-                alpha: 0.8,
-              });
-              var scaleInnerRing = new createjs.Container();
-              scaleInnerRing.addChild(innerRing);
-              scaleInnerRing.z = 0;
-              system.systemDisplay.addChild(scaleInnerRing);
-            }
-            innerRing.visible = false;
-
-            ko.computed(function () {
-              innerRing.visible =
-                (system.connected() || model.cheats.noFog()) &&
-                !!system.ownerColor() &&
-                system.ownerColor()[0] !== model.player.color()[0];
-
-              // Fix Z axis issues
-              if (innerRing.visible === true) {
-                system.mouseOver(1);
-                system.mouseOver(0);
-                system.mouseOut(0);
+            var star = system.star;
+            var ai = star.ai();
+            if (ai) {
+              if (ai.team === team) {
+                if (ai.foes) {
+                  var newAI = ai.foes[0];
+                  var foeBackup = ai.foes.slice(1);
+                  var foeKeys = _.keys(newAI);
+                  _.forEach(foeKeys, function (key) {
+                    star.ai()[key] = ai.foes[0][key];
+                  });
+                  var systemColour = normalizedColor(GWFactions[ai.faction]);
+                  system.ownerColor(systemColour.concat(3));
+                  star.ai().foes = foeBackup;
+                  delete star.ai().minions;
+                } else {
+                  star.ai(undefined);
+                  // Delete pre-dealt cards when boss defeated
+                  if (ai.mirrorMode !== true) {
+                    star.cardList([]);
+                  }
+                }
+              } else {
+                ++aiCount;
               }
-
-              if (
-                system.star.ai() &&
-                system.star.ai().treasurePlanet !== true
-              ) {
-                // Assign faction colour, not minion colour, to each system
-                var outerColour = [];
-                outerColour = normalizedColor(GWFactions[ai.faction]);
-                system.ownerColor(outerColour.concat(3));
-              }
-
-              // Dependencies. These will cause the base code that updates color to rerun
-              // so we have to run under the same conditions, and pray we run later than that code.
-              system.connected();
-              model.cheats.noFog();
-              system.star.hasCard();
-            });
+            }
           });
 
-          var bugfixes = function () {
-            var allFixesApplied =
-              gwoSettings &&
-              gwoSettings.treasurePlanetFixed &&
-              gwoSettings.clusterFixed;
+          if (!aiCount) {
+            requireGW(["shared/gw_game"], function (GWGame) {
+              game.gameState(GWGame.gameStates.won);
+            });
+          }
+        };
 
-            if (!gwoSettings || allFixesApplied) {
-              return;
+        _.forEach(model.galaxy.systems(), function (system) {
+          var ai = system.star.ai();
+          if (!ai) {
+            return;
+          }
+
+          // Colour inner ring to match ally or other faction present
+          var innerRing = {};
+          if (ai.ally || ai.foes) {
+            var innerColour = ai.ally
+              ? normalizedColor(GWFactions[ai.ally.faction])
+              : normalizedColor(GWFactions[ai.foes[0].faction]);
+            innerRing = createBitmap({
+              url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+              size: [240, 240],
+              color: innerColour.concat(7),
+              scale: 0.71,
+              alpha: 0.8,
+            });
+            var scaleInnerRing = new createjs.Container();
+            scaleInnerRing.addChild(innerRing);
+            scaleInnerRing.z = 0;
+            system.systemDisplay.addChild(scaleInnerRing);
+          }
+          innerRing.visible = false;
+
+          ko.computed(function () {
+            innerRing.visible =
+              (system.connected() || model.cheats.noFog()) &&
+              !!system.ownerColor() &&
+              system.ownerColor()[0] !== model.player.color()[0];
+
+            // Fix Z axis issues
+            if (innerRing.visible === true) {
+              system.mouseOver(1);
+              system.mouseOver(0);
+              system.mouseOut(0);
             }
 
-            var star = {};
-            var securityFix = false; // we have to fix `unit_types`
-            var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
-
-            for (star of galaxy.stars()) {
-              allFixesApplied =
-                gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed;
-
-              if (allFixesApplied) {
-                break;
-              }
-
-              // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-              if (
-                !gwoSettings.treasurePlanetFixed &&
-                _.includes(star.cardList(), undefined)
-              ) {
-                star.cardList([]);
-                gwoSettings.treasurePlanetFixed = true;
-              }
-
-              // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
-              if (!gwoSettings.clusterFixed) {
-                var warVersion = gwoSettings.version;
-                var fixedVersion = "5.52.2";
-                var clusterFixDeployed = warVersion.localeCompare(
-                  fixedVersion,
-                  undefined,
-                  {
-                    numeric: true,
-                    sensitivity: "base",
-                  }
-                );
-                if (clusterFixDeployed >= 0) {
-                  gwoSettings.clusterFixed = true;
-                } else {
-                  var applyFix = function (mod) {
-                    if (mod.path === "buildable_types") {
-                      mod.value = mod.value + " & Custom58";
-                      return mod.file;
-                    } else if (mod.path === "unit_types") {
-                      mod.value.push("UNITTYPE_Custom58");
-                      return mod.file;
-                    }
-                  };
-
-                  var clusterTypeFix = function (mod) {
-                    var security =
-                      "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                    var worker =
-                      "/pa/units/air/support_platform/support_platform.json";
-                    if (mod.file === security && securityFix === false) {
-                      return applyFix(mod);
-                    }
-                    if (mod.file === worker && workerFix < 2) {
-                      return applyFix(mod);
-                    }
-                  };
-
-                  if (!gwoSettings.clusterFixed && star.ai()) {
-                    var ai = star.ai();
-                    for (var mod of ai.inventory) {
-                      if (ai.isCluster) {
-                        var security =
-                          "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                        var worker =
-                          "/pa/units/air/support_platform/support_platform.json";
-                        var result = clusterTypeFix(mod);
-                        switch (result) {
-                          case security:
-                            securityFix = true;
-                            break;
-                          case worker:
-                            workerFix += 1;
-                        }
-
-                        if (securityFix === true && workerFix === 2) {
-                          gwoSettings.clusterFixed = true;
-                          break;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+            if (system.star.ai() && system.star.ai().treasurePlanet !== true) {
+              // Assign faction colour, not minion colour, to each system
+              var outerColour = [];
+              outerColour = normalizedColor(GWFactions[ai.faction]);
+              system.ownerColor(outerColour.concat(3));
             }
-            gwoSettings.treasurePlanetFixed = true;
-            gwoSettings.clusterFixed = true;
-            gwoSave(game, true);
-          };
-          bugfixes();
-        }
-      );
+
+            // Dependencies. These will cause the base code that updates color to rerun
+            // so we have to run under the same conditions, and pray we run later than that code.
+            system.connected();
+            model.cheats.noFog();
+            system.star.hasCard();
+          });
+        });
+      });
     }
   } catch (e) {
     console.error(e);
