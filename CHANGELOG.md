@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.62.0 - 2024-03-15
 
 ### Changed
 
