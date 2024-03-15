@@ -9,6 +9,7 @@
 - Locust Upgrade Tech now adds splash damage rather than vision
 - Lob Upgrade Tech doubles the fire rate and removes the recharge cost
 - Omega Upgrade Tech now also doubles the rate of fire
+- Artemis Upgrade Tech changed to allow planetary targeting
 
 ## v5.61.0 - 2024-03-13
 

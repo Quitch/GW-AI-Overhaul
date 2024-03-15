@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Artemis Upgrade Tech increases the range of the railgun platform by 50%."
+      "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform."
     ),
     summarize: _.constant("!LOC:Artemis Upgrade Tech"),
     icon: _.constant(
@@ -28,9 +28,15 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.artemisWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 1.5,
+          path: "target_layers",
+          op: "push",
+          value: ["WL_LandHorizontal", "WL_WaterSurface", "WL_Air"],
+        },
+        {
+          file: gwoUnit.artemisAmmo,
+          path: "collision_check",
+          op: "replace",
+          value: "target",
         },
       ]);
     },
