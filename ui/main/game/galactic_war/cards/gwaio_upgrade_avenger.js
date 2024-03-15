@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Avenger Upgrade Tech replaces the orbital fighter's laser with an orbital battleship laser."
+      "!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter."
     ),
     summarize: _.constant("!LOC:Avenger Upgrade Tech"),
     icon: _.constant(
@@ -29,23 +29,14 @@ define([
         {
           file: gwoUnit.avenger,
           path: "tools",
-          op: "replace",
+          op: "push",
           value: [
             {
-              spec_id: gwoUnit.omegaWeapon,
+              spec_id: gwoUnit.artemisWeapon,
               aim_bone: "bone_body",
-              record_index: 0,
-              fire_event: "fired0",
-              projectiles_per_fire: 1,
               muzzle_bone: "bone_recoil01",
             },
           ],
-        },
-        {
-          file: gwoUnit.avenger,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Heavy",
         },
       ]);
     },
