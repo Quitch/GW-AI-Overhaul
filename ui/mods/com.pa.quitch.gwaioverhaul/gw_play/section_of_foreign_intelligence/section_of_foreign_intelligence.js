@@ -47,23 +47,27 @@ if (!gwoIntelligenceLoaded) {
               return character;
             };
 
-            var factionIndex = 0;
+            var setFactionIndex = function (commander, currentFaction) {
+              return _.isUndefined(commander.faction)
+                ? currentFaction
+                : commander.faction;
+            };
 
-            var getFactionColourIndex = function (commander, index) {
+            var getFactionColourIndex = function (
+              commander,
+              index,
+              currentFaction
+            ) {
               var inventory = model.game().inventory();
               var playerFaction = inventory.getTag("global", "playerFaction");
-              factionIndex = _.isUndefined(commander.faction)
-                ? factionIndex
-                : commander.faction;
-
-              if (factionIndex === playerFaction) {
+              if (currentFaction === playerFaction) {
                 // allies appear after the player and sub commanders in colour
                 return index + inventory.minions().length + 1;
               }
               return commander.faction ? 0 : index + 1;
             };
 
-            var getFactionName = function (commander) {
+            var getFactionName = function (commander, currentFaction) {
               var inventory = model.game().inventory();
               var playerFaction = inventory.getTag("global", "playerFaction");
               var factionNames = [
@@ -74,14 +78,21 @@ if (!gwoIntelligenceLoaded) {
                 "Cluster",
               ];
               var faction = factionNames[commander.faction];
-              if (factionIndex === playerFaction) {
+              if (currentFaction === playerFaction) {
                 faction += " (" + loc("!LOC:ALLY") + ")";
               }
               return faction;
             };
 
+            var factionIndex = 0;
+
             var intelligence = function (commander, index) {
-              var adjustedIndex = getFactionColourIndex(commander, index);
+              factionIndex = setFactionIndex(commander, factionIndex);
+              var adjustedIndex = getFactionColourIndex(
+                commander,
+                index,
+                factionIndex
+              );
               var name = commander.name;
               var eco = commander.econ_rate;
               var numCommanders = getNumberOfCommanders(commander);
@@ -98,7 +109,7 @@ if (!gwoIntelligenceLoaded) {
                 ),
                 character: getCommanderCharacter(commander),
                 eco: eco,
-                faction: getFactionName(commander),
+                faction: getFactionName(commander, factionIndex),
               };
             };
 
