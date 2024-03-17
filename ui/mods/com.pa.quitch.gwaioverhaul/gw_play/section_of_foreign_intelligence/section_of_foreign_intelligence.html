@@ -79,7 +79,12 @@
     </ul>
   </div>
   <ul data-bind="foreach: $root.gwoAIs">
-    <h3><span data-bind="text: faction"></span></h3>
+    <h3>
+      <span data-bind="text: faction"></span
+      ><span class="info_tip" data-bind="visible: tooltip, tooltip: tooltip"
+        >?</span
+      >
+    </h3>
     <li class="commander">
       <div class="div-player-icon">
         <div

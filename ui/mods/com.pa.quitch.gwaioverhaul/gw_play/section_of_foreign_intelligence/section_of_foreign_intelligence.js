@@ -67,21 +67,37 @@ if (!gwoIntelligenceLoaded) {
               return commander.faction ? 0 : index + 1;
             };
 
-            var getFactionName = function (commander, currentFaction) {
+            var getFactionName = function (commanderFaction, currentFaction) {
+              if (_.isUndefined(commanderFaction)) {
+                return {
+                  name: "",
+                  tooltip: "",
+                };
+              }
+
               var inventory = model.game().inventory();
               var playerFaction = inventory.getTag("global", "playerFaction");
-              var factionNames = [
-                "Legonis Machina",
-                "Foundation",
-                "Synchronous",
-                "Revenants",
-                "Cluster",
+              var factionInfo = [
+                { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
+                { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
+                { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
+                { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
+                {
+                  name: "Cluster",
+                  tooltip: "!LOC:Prefers land; applies tech to structures.",
+                },
               ];
-              var faction = factionNames[commander.faction];
+              var faction = factionInfo[commanderFaction];
+
               if (currentFaction === playerFaction) {
-                faction += " (" + loc("!LOC:ALLY") + ")";
+                faction.name += " (" + loc("!LOC:ALLY") + ")";
+                faction.tooltip = "!LOC:Fights for you.";
               }
-              return faction;
+
+              return {
+                name: faction.name,
+                tooltip: faction.tooltip,
+              };
             };
 
             var factionIndex = 0;
@@ -96,6 +112,7 @@ if (!gwoIntelligenceLoaded) {
               var name = commander.name;
               var eco = commander.econ_rate;
               var numCommanders = getNumberOfCommanders(commander);
+              var faction = getFactionName(commander.faction, factionIndex);
 
               if (numCommanders > 1) {
                 name = name.concat(" x", numCommanders);
@@ -109,7 +126,8 @@ if (!gwoIntelligenceLoaded) {
                 ),
                 character: getCommanderCharacter(commander),
                 eco: eco,
-                faction: getFactionName(commander, factionIndex),
+                faction: faction.name,
+                tooltip: faction.tooltip,
               };
             };
 
