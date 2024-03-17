@@ -80,10 +80,19 @@
   </div>
   <ul data-bind="foreach: $root.gwoAIs">
     <h3>
-      <span data-bind="text: faction"></span
-      ><span class="info_tip" data-bind="visible: tooltip, tooltip: tooltip"
+      <span data-bind="text: faction"></span>
+      <!-- ko if: faction === "Cluster" && tooltip -->
+      <span
+        class="info_tip"
+        ,
+        data-placement="right"
+        data-bind="tooltip: tooltip"
         >?</span
       >
+      <!-- /ko -->
+      <!-- ko if: faction !== "Cluster" && tooltip -->
+      <span class="info_tip" data-bind="tooltip: tooltip">?</span>
+      <!-- /ko -->
     </h3>
     <li class="commander">
       <div class="div-player-icon">
