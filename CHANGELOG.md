@@ -4,7 +4,10 @@
 
 ### Added
 
-- Tooltips for game modifiers and available tech
+- Tooltips for:
+  - game modifiers
+  - available tech
+  - AI tech
 
 ## v5.62.0 - 2024-03-15
 

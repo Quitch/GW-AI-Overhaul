@@ -9,6 +9,7 @@ if (!gwoIntelligenceLoaded) {
       if (!model.game().isTutorial()) {
         model.gwoAvailableTechTooltip = "This card will be offered as part of the first draw."
         model.gwoGameModifiersTooltip = "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team."
+        model.gwoAIBuffsTooltip = "Applied to AI commanders and units preferred by the faction."
 
         requireGW(
           [

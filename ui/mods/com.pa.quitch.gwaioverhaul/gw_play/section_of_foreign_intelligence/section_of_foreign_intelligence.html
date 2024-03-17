@@ -47,7 +47,11 @@
     </ul>
   </div>
   <div data-bind="visible: $root.gwoAiBuffs">
-    <h3><loc>AI Tech</loc></h3>
+    <h3><loc>AI Tech</loc><span
+      class="info_tip"
+      data-bind="tooltip: $root.gwoAIBuffsTooltip"
+      >?</span
+    ></h3>
     <ul>
       <li data-bind="visible: $root.gwoTechBuild"><loc>Build faster</loc></li>
       <li data-bind="visible: $root.gwoTechCombat">
