@@ -8,6 +8,7 @@
   - game modifiers
   - available tech
   - AI tech
+  - AI factions
 
 ## v5.62.0 - 2024-03-15
 
