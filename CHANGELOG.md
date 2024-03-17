@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Tooltips for game modifiers and available tech
+
 ## v5.62.0 - 2024-03-15
 
 ### Changed

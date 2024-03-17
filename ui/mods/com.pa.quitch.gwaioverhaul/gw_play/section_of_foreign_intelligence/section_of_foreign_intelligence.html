@@ -20,11 +20,22 @@
     </div>
   </div>
   <div data-bind="visible: $root.gwoCardAvailable">
-    <h3><loc>Available Tech</loc></h3>
+    <h3><loc>Available Tech</loc><span
+      class="info_tip"
+      data-bind="tooltip: $root.gwoAvailableTechTooltip"
+      >?</span
+    ></h3>
     <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
   <div data-bind="visible: $root.gwoGameOptions">
-    <h3><loc>Game Modifiers</loc></h3>
+    <h3>
+      <loc>Game Modifiers</loc
+      ><span
+        class="info_tip"
+        data-bind="tooltip: $root.gwoGameModifiersTooltip"
+        >?</span
+      >
+    </h3>
     <ul>
       <li data-bind="visible: $root.gwoBountyMode"><loc>Bounties</loc></li>
       <li data-bind="visible: $root.gwoLandAnywhere">
