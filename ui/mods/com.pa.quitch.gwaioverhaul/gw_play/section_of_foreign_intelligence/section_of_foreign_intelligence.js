@@ -84,7 +84,8 @@ if (!gwoIntelligenceLoaded) {
                 { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
                 {
                   name: "Cluster",
-                  tooltip: "!LOC:Prefers land; applies tech to structures.",
+                  tooltip:
+                    "!LOC:Prefers bots and vehicles; applies tech to structures.",
                 },
               ];
               var faction = factionInfo[commanderFaction];
