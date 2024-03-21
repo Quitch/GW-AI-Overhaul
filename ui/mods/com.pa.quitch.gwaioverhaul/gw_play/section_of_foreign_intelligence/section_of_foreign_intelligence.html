@@ -20,11 +20,21 @@
     </div>
   </div>
   <div data-bind="visible: $root.gwoCardAvailable">
-    <h3><loc>Available Tech</loc></h3>
+    <h3>
+      <loc>Available Tech</loc
+      ><span class="info_tip" data-bind="tooltip: $root.gwoAvailableTechTooltip"
+        >?</span
+      >
+    </h3>
     <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
   <div data-bind="visible: $root.gwoGameOptions">
-    <h3><loc>Game Modifiers</loc></h3>
+    <h3>
+      <loc>Game Modifiers</loc
+      ><span class="info_tip" data-bind="tooltip: $root.gwoGameModifiersTooltip"
+        >?</span
+      >
+    </h3>
     <ul>
       <li data-bind="visible: $root.gwoBountyMode"><loc>Bounties</loc></li>
       <li data-bind="visible: $root.gwoLandAnywhere">
@@ -36,7 +46,15 @@
     </ul>
   </div>
   <div data-bind="visible: $root.gwoAiBuffs">
-    <h3><loc>AI Tech</loc></h3>
+    <h3>
+      <loc>AI Tech</loc
+      ><span
+        class="info_tip"
+        data-placement="right"
+        data-bind="tooltip: $root.gwoAIBuffsTooltip"
+        >?</span
+      >
+    </h3>
     <ul>
       <li data-bind="visible: $root.gwoTechBuild"><loc>Build faster</loc></li>
       <li data-bind="visible: $root.gwoTechCombat">
@@ -64,7 +82,17 @@
     </ul>
   </div>
   <ul data-bind="foreach: $root.gwoAIs">
-    <h3><span data-bind="text: faction"></span></h3>
+    <h3>
+      <span data-bind="text: faction"></span>
+      <!-- ko if: faction === "Cluster" && tooltip -->
+      <span class="info_tip" data-placement="right" data-bind="tooltip: tooltip"
+        >?</span
+      >
+      <!-- /ko -->
+      <!-- ko if: faction !== "Cluster" && tooltip -->
+      <span class="info_tip" data-bind="tooltip: tooltip">?</span>
+      <!-- /ko -->
+    </h3>
     <li class="commander">
       <div class="div-player-icon">
         <div

@@ -7,6 +7,13 @@ if (!gwoIntelligenceLoaded) {
   function gwoIntelligence() {
     try {
       if (!model.game().isTutorial()) {
+        model.gwoAvailableTechTooltip =
+          "This card will be offered as part of the first draw.";
+        model.gwoGameModifiersTooltip =
+          "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.";
+        model.gwoAIBuffsTooltip =
+          "Applied to AI commanders and units preferred by the faction.";
+
         requireGW(
           [
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
@@ -40,44 +47,73 @@ if (!gwoIntelligenceLoaded) {
               return character;
             };
 
-            var factionIndex = 0;
+            var setFactionIndex = function (commander, currentFaction) {
+              return _.isUndefined(commander.faction)
+                ? currentFaction
+                : commander.faction;
+            };
 
-            var getFactionColourIndex = function (commander, index) {
+            var getFactionColourIndex = function (
+              commander,
+              index,
+              currentFaction
+            ) {
               var inventory = model.game().inventory();
               var playerFaction = inventory.getTag("global", "playerFaction");
-              factionIndex = _.isUndefined(commander.faction)
-                ? factionIndex
-                : commander.faction;
-
-              if (factionIndex === playerFaction) {
+              if (currentFaction === playerFaction) {
                 // allies appear after the player and sub commanders in colour
                 return index + inventory.minions().length + 1;
               }
               return commander.faction ? 0 : index + 1;
             };
 
-            var getFactionName = function (commander) {
+            var getFactionName = function (commanderFaction, currentFaction) {
+              if (_.isUndefined(commanderFaction)) {
+                return {
+                  name: "",
+                  tooltip: "",
+                };
+              }
+
               var inventory = model.game().inventory();
               var playerFaction = inventory.getTag("global", "playerFaction");
-              var factionNames = [
-                "Legonis Machina",
-                "Foundation",
-                "Synchronous",
-                "Revenants",
-                "Cluster",
+              var factionInfo = [
+                { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
+                { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
+                { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
+                { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
+                {
+                  name: "Cluster",
+                  tooltip:
+                    "!LOC:Prefers bots and vehicles; applies tech to structures.",
+                },
               ];
-              var faction = factionNames[commander.faction];
-              if (factionIndex === playerFaction) {
-                faction += " (" + loc("!LOC:ALLY") + ")";
+              var faction = factionInfo[commanderFaction];
+
+              if (currentFaction === playerFaction) {
+                faction.name += " (" + loc("!LOC:ALLY") + ")";
+                faction.tooltip = "!LOC:Fights for you.";
               }
-              return faction;
+
+              return {
+                name: faction.name,
+                tooltip: faction.tooltip,
+              };
             };
 
+            var factionIndex = 0;
+
             var intelligence = function (commander, index) {
-              var adjustedIndex = getFactionColourIndex(commander, index);
+              factionIndex = setFactionIndex(commander, factionIndex);
+              var adjustedIndex = getFactionColourIndex(
+                commander,
+                index,
+                factionIndex
+              );
               var name = commander.name;
               var eco = commander.econ_rate;
               var numCommanders = getNumberOfCommanders(commander);
+              var faction = getFactionName(commander.faction, factionIndex);
 
               if (numCommanders > 1) {
                 name = name.concat(" x", numCommanders);
@@ -91,7 +127,8 @@ if (!gwoIntelligenceLoaded) {
                 ),
                 character: getCommanderCharacter(commander),
                 eco: eco,
-                faction: getFactionName(commander),
+                faction: faction.name,
+                tooltip: faction.tooltip,
               };
             };
 

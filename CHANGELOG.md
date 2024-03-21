@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.63.0 - 2024-03-21
+
+### Added
+
+- Tooltips for:
+  - game modifiers
+  - available tech
+  - AI tech
+  - AI factions
+
 ## v5.62.0 - 2024-03-15
 
 ### Changed
