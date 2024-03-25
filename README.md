@@ -149,6 +149,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - More Pew Pew
 - Section of Foreign Intelligence for galactic war
 - Selection and combat grouping mods e.g. Air Scout Select
+- Client mod which modifies unit files and is incompatible with PA 116982 or later. Disable any unit, selection, FX, or faction mod which hasn't been updated since at least 12 June 2023.
 
 ## Thanks to
 
