@@ -20,6 +20,7 @@ function gwoSetup() {
     model.ready = ko.computed(function () {
       return enableGoToWar() && !!model.activeStartCard();
     });
+
     api.mods.getMounted("client", true).then(function (mods) {
       var modMounted = function (modIdentifier) {
         return _.some(mods, { identifier: modIdentifier });
