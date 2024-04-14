@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Kaiju Upgrade Tech replaces the side guns due to the original tech now being in the base game
+
 ## v5.63.0 - 2024-03-21
 
 ### Added
