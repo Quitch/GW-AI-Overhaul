@@ -324,6 +324,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var structuresIntelAdvanced = [
     gwoUnit.deepSpaceOrbitalRadar,
     gwoUnit.radarAdvanced,
+    gwoUnit.radarJammingStation,
   ];
   var structuresIntel = structuresIntelBasic.concat(structuresIntelAdvanced);
   var structuresSuperWeapons = [
@@ -567,6 +568,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.energyPlantAdvanced,
     gwoUnit.metalExtractorAdvanced,
     gwoUnit.radarAdvanced,
+    gwoUnit.radarJammer,
     gwoUnit.unitCannon
   );
 

@@ -305,6 +305,7 @@ define({
   piranhaWeapon: "/pa/units/sea/sea_scout/sea_scout_tool_weapon.json",
   radar: "/pa/units/land/radar/radar.json",
   radarAdvanced: "/pa/units/land/radar_adv/radar_adv.json",
+  radarJammingStation: "/pa/units/land/radar_jammer/radar_jammer.json",
   radarSatelliteAdvanced:
     "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
   ragnarok: "/pa/units/land/titan_structure/titan_structure.json",

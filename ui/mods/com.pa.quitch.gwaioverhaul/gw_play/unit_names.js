@@ -143,6 +143,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         path: gwoUnit.torpedoLauncherAdvanced,
       },
       { name: "!LOC:Torpedo Launcher", path: gwoUnit.torpedoLauncher },
+      { name: "!LOC:Radar Jamming Station", path: gwoUnit.radarJammingStation },
     ],
   };
 });
