@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Kaiju Upgrade Tech enables the use of teleporters by hover destroyers."
+      "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage."
     ),
     summarize: _.constant("!LOC:Kaiju Upgrade Tech"),
     icon: _.constant(
@@ -28,110 +28,45 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.kaiju,
-          path: "teleportable",
+          path: "tools",
           op: "replace",
-          value: {},
-        },
-        {
-          file: gwoUnit.kaiju,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Use",
-        },
-      ]);
-
-      var unitTypePrepend = "(Naval & Hover & Advanced & Mobile) | ";
-      var unitTypes =
-        "(Naval & Hover & Advanced & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - Scout - SelfDestruct - Deconstruction - Titan";
-      inventory.addAIMods([
-        {
-          type: "factory",
-          op: "new",
-          toBuild: "HoverShip",
           value: [
             {
-              test_type: "AloneOnPlanet",
-              boolean: true,
+              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
+              record_index: 0,
+              fire_event: "fired0",
+              aim_bone: "bone_pitch01",
+              projectiles_per_fire: 2,
+              muzzle_bone: ["socket_leftMuzzle01", "socket_rightMuzzle01"],
             },
             {
-              test_type: "CanAffordBuildDemand",
+              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
+              record_index: 1,
+              fire_event: "fired1",
+              aim_bone: "bone_pitch02",
+              projectiles_per_fire: 2,
+              muzzle_bone: ["socket_leftMuzzle02", "socket_rightMuzzle02"],
             },
             {
-              test_type: "OtherPlanetCanReceiveLandUnitAssistance",
-              boolean: true,
+              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
+              record_index: 2,
+              fire_event: "fired2",
+              aim_bone: "bone_pitch03",
+              projectiles_per_fire: 2,
+              muzzle_bone: ["socket_leftMuzzle03", "socket_rightMuzzle03"],
             },
             {
-              test_type: "UnitCountOnPlanet",
-              unit_type_string0: "Structure & Teleporter",
-              compare0: ">",
-              value0: 0,
+              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
+              record_index: 3,
+              fire_event: "fired3",
+              aim_bone: "bone_pitch04",
+              projectiles_per_fire: 2,
+              muzzle_bone: ["socket_leftMuzzle04", "socket_rightMuzzle04"],
             },
           ],
         },
-        {
-          type: "platoon",
-          op: "prepend",
-          toBuild: "Land_Attack_XLarge",
-          value: unitTypePrepend,
-          idToMod: "unit_type_string0",
-          refId: "test_type",
-          refValue: "UnitPoolCount",
-        },
-        {
-          type: "template",
-          op: "squad",
-          toBuild: "Land_Attack_XLarge",
-          value: {
-            unit_types: unitTypes,
-            min_count: 0,
-            max_count: 40,
-            squad: "General",
-          },
-        },
-        {
-          type: "platoon",
-          op: "prepend",
-          toBuild: "Land_Attack_Max",
-          value: unitTypePrepend,
-          idToMod: "unit_type_string0",
-          refId: "test_type",
-          refValue: "UnitPoolCount",
-        },
-        {
-          type: "template",
-          op: "squad",
-          toBuild: "Land_Attack_Max",
-          value: {
-            unit_types: unitTypes,
-            min_count: 0,
-            max_count: -1,
-            squad: "General",
-          },
-        },
-        {
-          type: "platoon",
-          op: "prepend",
-          toBuild: "Teleporter_Attack_Queller",
-          value: unitTypePrepend,
-          idToMod: "unit_type_string0",
-          refId: "test_type",
-          refValue: "UnitPoolCount",
-        },
-        {
-          type: "template",
-          op: "squad",
-          toBuild: "Teleporter_Attack_Queller",
-          value: {
-            unit_types: unitTypes,
-            min_count: 0,
-            max_count: -1,
-            squad: "General",
-          },
-        },
       ]);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

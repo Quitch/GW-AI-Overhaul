@@ -14,13 +14,13 @@
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "(Recon & Advanced - (Orbital | Important)) | (Recon & (Orbital | Important) - Structure)",
+            "unit_type_string0": "((Recon & Structure - Orbital) | (Recon & Orbital - Structure)) - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Land & Structure & Recon & Basic",
+            "unit_type_string0": "Land & Structure & Recon & Basic - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
@@ -29,14 +29,8 @@
             "string0": "BasicRadar"
           },
           {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
             "test_type": "UnitCountAroundBase",
-            "unit_type_string0": "Land & Structure & Recon & Basic",
+            "unit_type_string0": "Land & Structure & Recon & Basic - RadarJammer",
             "string0": "Ally",
             "value0": 200,
             "compare0": "<",
@@ -72,13 +66,13 @@
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "(Recon & Advanced - (Orbital | Important)) | (Recon & (Orbital | Important) - Structure)",
+            "unit_type_string0": "((Recon & Structure - Orbital) | (Recon & Orbital - Structure)) - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Land & Structure & Recon & Basic",
+            "unit_type_string0": "Land & Structure & Recon & Basic - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
@@ -93,14 +87,8 @@
             "string0": "BasicRadar"
           },
           {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
             "test_type": "UnitCountAroundBase",
-            "unit_type_string0": "Land & Structure & Recon & Basic",
+            "unit_type_string0": "Land & Structure & Recon & Basic - RadarJammer",
             "string0": "Ally",
             "value0": 200,
             "compare0": "<",
@@ -136,25 +124,19 @@
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "(Factory & Construction) - (Orbital | Important) - NukeDefense - Nuke - SelfDestruct",
+            "unit_type_string0": "(Factory & Construction) - Orbital - NukeDefense - Nuke - SelfDestruct",
             "compare0": ">",
             "value0": 1
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "(Recon & Structure - (Orbital | Important)) | (Recon & (Orbital | Important) - Structure)",
+            "unit_type_string0": "((Recon & Structure - Orbital) | (Recon & Orbital - Structure)) - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicRadar"
-          },
-          {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
-            "compare0": "<",
-            "value0": 1
           },
           {
             "test_type": "CanFindPlaceToBuild",
@@ -186,7 +168,7 @@
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Land & Structure & Recon & Advanced",
+            "unit_type_string0": "Land & Structure & Recon & Advanced - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
@@ -195,14 +177,8 @@
             "string0": "AdvancedRadar"
           },
           {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
             "test_type": "UnitCountAroundBase",
-            "unit_type_string0": "Land & Structure & Recon & Advanced",
+            "unit_type_string0": "Land & Structure & Recon & Advanced - RadarJammer",
             "string0": "Ally",
             "value0": 350,
             "compare0": "<",
@@ -238,7 +214,7 @@
           },
           {
             "test_type": "UnitCountInBase",
-            "unit_type_string0": "Land & Structure & Recon & Advanced",
+            "unit_type_string0": "Land & Structure & Recon & Advanced - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
@@ -253,14 +229,8 @@
             "value0": 0
           },
           {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
-            "compare0": "<",
-            "value0": 1
-          },
-          {
             "test_type": "UnitCountAroundBase",
-            "unit_type_string0": "Land & Structure & Recon & Advanced",
+            "unit_type_string0": "Land & Structure & Recon & Advanced - RadarJammer",
             "string0": "Ally",
             "value0": 350,
             "compare0": "<",
@@ -296,7 +266,7 @@
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "(Recon & Structure - (Orbital | Important)) | (Recon & (Orbital | Important) - Structure)",
+            "unit_type_string0": "((Recon & Structure - Orbital) | (Recon & Orbital - Structure)) - RadarJammer",
             "compare0": "<",
             "value0": 1
           },
@@ -305,14 +275,92 @@
             "string0": "AdvancedRadar"
           },
           {
-            "test_type": "UnitCount",
-            "unit_type_string0": "Structure & Recon & (Orbital | Important)",
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "AdvancedRadar"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
+      "name": "Radar Jammer",
+      "to_build": "RadarJammer",
+      "instance_count": 1,
+      "shared_instance_count": "RadarJammer",
+      "priority": 91,
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "RadarJammer & (Structure | Orbital)",
             "compare0": "<",
             "value0": 1
           },
           {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "RadarJammer"
+          },
+          {
+            "test_type": "UnitCountAroundBase",
+            "unit_type_string0": "RadarJammer & (Structure | Orbital)",
+            "string0": "Ally",
+            "value0": 200,
+            "compare0": "<",
+            "value1": 1
+          },
+          {
             "test_type": "CanFindPlaceToBuild",
-            "string0": "AdvancedRadar"
+            "string0": "RadarJammer"
+          }
+        ]
+      ],
+      "placement_rules": {
+        "buffer": 2,
+        "threat": {
+          "influence_type": "AntiSurface",
+          "compare_type": "<",
+          "radius": 10,
+          "value": 50
+        }
+      }
+    },
+    {
+      "name": "Radar Jammer - Have none",
+      "to_build": "RadarJammer",
+      "instance_count": 1,
+      "shared_instance_count": "RadarJammer",
+      "priority": 265,
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
+      "build_conditions": [
+        [
+          {
+            "test_type": "CanAffordBuildDemand"
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "RadarJammer & (Structure | Orbital)",
+            "compare0": "<",
+            "value0": 1
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "RadarJammer"
+          },
+          {
+            "test_type": "CanFindPlaceToBuild",
+            "string0": "RadarJammer"
           }
         ]
       ],

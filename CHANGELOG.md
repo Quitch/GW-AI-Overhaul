@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v5.64.0 - 2024-04-22
+
+### Added
+
+- Support for Radar Jamming Station
+- Radar Jamming Station upgrade tech
+- Penchant AI support for Kaiju's using teleporters
+
+### Changed
+
+- Kaiju Upgrade Tech replaces the side guns due to the original tech now being in the base game
+- Removed the Vanguard from Intelligence Fabrication Tech
+- Removed fixes and changes now integrated into the base game
+
+### Fixed
+
+- Torpedo upgrades not working correctly due to changes in PA 120679
+- Which Units? tooltip for Intelligence Fabrication Tech
+- Unit Cannon Upgrade Tech not doubling capacity after PA increased the unit's base capacity
+
 ## v5.63.0 - 2024-03-21
 
 ### Added

@@ -27,8 +27,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.titans);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

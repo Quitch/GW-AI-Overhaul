@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%."
+      "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming and radar radius of the radar jammer."
     ),
-    summarize: _.constant("!LOC:ARKYD Upgrade Tech"),
+    summarize: _.constant("!LOC:Radar Jamming Station Upgrade Tech"),
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png"
     ),
@@ -19,7 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.arkyd)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoUnit.radarJammingStation)) {
         chance = 60;
       }
       return { chance: chance };
@@ -27,34 +27,16 @@ define([
     buff: function (inventory) {
       inventory.addMods([
         {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.1.radius",
           op: "multiply",
-          value: 1.5,
+          value: 2,
         },
         {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
+          file: gwoUnit.radarAdvanced,
           path: "recon.observer.items.3.radius",
           op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.4.radius",
-          op: "multiply",
-          value: 1.5,
+          value: 2,
         },
       ]);
     },

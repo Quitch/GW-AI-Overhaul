@@ -45,8 +45,6 @@ define([
         gwoGroup.starterUnitsAdvanced.concat(gwoGroup.vehicles)
       );
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

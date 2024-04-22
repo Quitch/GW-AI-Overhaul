@@ -31,8 +31,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     buff: function () {
       // performed in referee_config.js
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

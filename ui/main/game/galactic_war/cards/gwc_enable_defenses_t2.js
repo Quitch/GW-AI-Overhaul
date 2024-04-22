@@ -32,8 +32,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

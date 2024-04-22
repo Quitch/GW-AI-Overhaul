@@ -43,6 +43,10 @@ define([
             "socket_build",
             "socket_build",
             "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
+            "socket_build",
           ],
         },
         {
@@ -59,8 +63,6 @@ define([
         },
       ]);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

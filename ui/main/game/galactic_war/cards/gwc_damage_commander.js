@@ -1,23 +1,26 @@
 define([
   "shared/gw_common",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoGroup) {
+], function (GW, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Defense Ammunition Tech increases damage of all defensive structures by 25%"
+      "!LOC:Commander Ammunition Tech increases damage of your commanders by 25%"
     ),
-    summarize: _.constant("!LOC:Defense Ammunition Tech"),
+    summarize: _.constant("!LOC:Commander Ammunition Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_speed.png"
     ),
     audio: function () {
       return {
         found: "/VO/Computer/gw/board_tech_available_ammunition",
       };
     },
-    getContext: gwoCard.getContext,
+    getContext: function (galaxy) {
+      return {
+        totalSize: galaxy.stars().length,
+      };
+    },
     deal: function (system, context) {
       var chance = 24;
       var dist = system.distance();
@@ -36,13 +39,23 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.structuresDefencesAmmo, function (ammo) {
-        return {
-          file: ammo,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        };
+      var ammos = gwoGroup.commanderAmmo;
+      var mods = [];
+      _.forEach(ammos, function (ammo) {
+        mods.push(
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          }
+        );
       });
       inventory.addMods(mods);
     },

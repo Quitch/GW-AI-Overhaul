@@ -44,8 +44,6 @@ define([
         },
       ]);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

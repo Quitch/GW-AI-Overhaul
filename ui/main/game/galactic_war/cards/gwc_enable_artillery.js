@@ -29,8 +29,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresArtillery);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

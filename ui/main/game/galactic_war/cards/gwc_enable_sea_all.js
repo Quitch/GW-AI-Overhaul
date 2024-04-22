@@ -39,8 +39,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.starterUnitsAdvanced.concat(gwoGroup.naval));
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

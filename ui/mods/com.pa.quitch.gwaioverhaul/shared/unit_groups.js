@@ -93,7 +93,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.gilEAmmo,
     gwoUnit.locustsAmmo,
     gwoUnit.slammerAmmo,
-    gwoUnit.slammerTorpedoAmmo,
+    gwoUnit.slammerTorpedoLandAmmo,
+    gwoUnit.slammerTorpedoWaterAmmo,
   ];
   var botsAdvancedWeapons = [
     gwoUnit.bluehawkWeapon,
@@ -324,6 +325,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var structuresIntelAdvanced = [
     gwoUnit.deepSpaceOrbitalRadar,
     gwoUnit.radarAdvanced,
+    gwoUnit.radarJammingStation,
   ];
   var structuresIntel = structuresIntelBasic.concat(structuresIntelAdvanced);
   var structuresSuperWeapons = [
@@ -567,8 +569,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.energyPlantAdvanced,
     gwoUnit.metalExtractorAdvanced,
     gwoUnit.radarAdvanced,
+    gwoUnit.radarJammingStation,
     gwoUnit.unitCannon
   );
+
+  var commanderAmmo = [
+    gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmo,
+    gwoUnit.commanderSecondaryAmmo,
+    gwoUnit.commanderTorpedoLandAmmo,
+    gwoUnit.commanderTorpedoWaterAmmo,
+  ];
 
   return {
     air: air,
@@ -591,6 +602,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
     clusterCommanders: clusterCommanders,
+    commanderAmmo: commanderAmmo,
     energyIntel: energyIntel,
     energyUnits: energyUnits,
     energyAll: energyAll,

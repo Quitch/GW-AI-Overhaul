@@ -9,7 +9,8 @@ define([
       gwoUnit.commanderAAAmmo,
       gwoUnit.commanderAmmo,
       gwoUnit.commanderSecondaryAmmo,
-      gwoUnit.commanderTorpedoAmmo,
+      gwoUnit.commanderTorpedoLandAmmo,
+      gwoUnit.commanderTorpedoWaterAmmo,
     ],
     commanderBuildArms: [gwoUnit.commanderBuildArm],
 

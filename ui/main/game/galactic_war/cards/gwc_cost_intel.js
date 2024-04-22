@@ -39,7 +39,6 @@ define([
         gwoUnit.skitter,
         gwoUnit.firefly,
         gwoUnit.stingray,
-        gwoUnit.vanguard,
         gwoUnit.stitch,
         gwoUnit.mend,
         gwoUnit.barnacle,
@@ -55,8 +54,6 @@ define([
       });
       inventory.addMods(mods);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

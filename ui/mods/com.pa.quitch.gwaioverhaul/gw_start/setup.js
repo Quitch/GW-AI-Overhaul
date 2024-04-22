@@ -20,6 +20,7 @@ function gwoSetup() {
     model.ready = ko.computed(function () {
       return enableGoToWar() && !!model.activeStartCard();
     });
+
     api.mods.getMounted("client", true).then(function (mods) {
       var modMounted = function (modIdentifier) {
         return _.some(mods, { identifier: modIdentifier });
@@ -379,7 +380,7 @@ function gwoSetup() {
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          var version = "5.63.0";
+          var version = "5.64.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           var game = new GW.Game();
@@ -476,9 +477,7 @@ function gwoSetup() {
               teams: teams,
               neutralStars: neutralStars,
               orderedSpawn: false,
-              spawn: function () {
-                //empty
-              },
+              spawn: function () {},
               canSpread: _.constant(true),
               spread: function (star, ai) {
                 var team = teams[ai.team];

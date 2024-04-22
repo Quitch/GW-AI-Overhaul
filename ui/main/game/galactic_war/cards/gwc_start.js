@@ -33,8 +33,6 @@ define([
       );
       inventory.addUnits(starterUnits);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });
