@@ -433,11 +433,9 @@ function gwoCard() {
 
           // GWDealer.chooseCards - use our deck
           var chooseCards = function (params) {
-            inventory = params.inventory;
             var rng = params.rng || new Math.seedrandom();
             var count = params.count;
             var star = params.star;
-            galaxy = params.galaxy;
             var dealAddSlot = params.addSlot;
             var cardContexts = {};
 
@@ -548,17 +546,16 @@ function gwoCard() {
               var deferredQueue = [];
 
               _.forEach(model.galaxy.systems(), function (system, starIndex) {
+                var ai = system.star.ai();
                 if (
                   model.canSelect(starIndex) &&
-                  system.star.ai() &&
-                  system.star.ai().treasurePlanet !== true
+                  ai &&
+                  ai.treasurePlanet !== true
                 ) {
                   deferredQueue.push(
                     chooseCards({
-                      inventory: inventory,
                       count: 1,
                       star: system.star,
-                      galaxy: game.galaxy(),
                       addSlot: false,
                     }).then(function (card) {
                       system.star.cardList(card);
@@ -763,9 +760,7 @@ function gwoCard() {
 
           // We need cheats to deal from our deck
           model.cheats.testCards = function () {
-            galaxy = game.galaxy();
             var star = galaxy.stars()[game.currentStar()];
-            inventory = game.inventory();
             var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
 
             _.forEach(model.gwoCards, function (cardId) {
@@ -795,8 +790,6 @@ function gwoCard() {
             var cardId = _.find(model.gwoCards, function (card) {
               return card === id;
             });
-            galaxy = game.galaxy();
-            inventory = game.inventory();
 
             if (_.isUndefined(cardId)) {
               console.error(
@@ -835,8 +828,6 @@ function gwoCard() {
 
             api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-            inventory = game.inventory();
-
             var cardsOffered = 0;
             if (inventory.handIsFull()) {
               cardsOffered = numCardsToOffer + 1;
@@ -845,11 +836,9 @@ function gwoCard() {
             }
             var star = game.galaxy().stars()[game.currentStar()];
             var dealStarCards = chooseCards({
-              inventory: inventory,
               count:
                 cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
               star: star,
-              galaxy: game.galaxy(),
             }).then(function (result) {
               var ok = true;
 
