@@ -6,7 +6,7 @@
 
 - Support for Radar Jamming Station
 - Radar Jamming Station upgrade tech
-- Penchant AI support for Kaiju's using teleporters
+- Penchant AI support for Kaijus using teleporters
 
 ### Changed
 
