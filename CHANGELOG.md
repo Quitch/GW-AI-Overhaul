@@ -12,7 +12,7 @@
 
 - Kaiju Upgrade Tech replaces the side guns due to the original tech now being in the base game
 - Removed the Vanguard from Intelligence Fabrication Tech
-- Remove fix for weapon death specs as this is now integrated into the base game
+- Removed fixes and changes now integrated into the base game
 
 ### Fixed
 
