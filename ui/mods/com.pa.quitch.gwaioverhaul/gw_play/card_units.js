@@ -255,6 +255,10 @@ define([
       { id: "gwaio_upgrade_halley", units: [gwoUnit.halley] },
       { id: "gwaio_upgrade_ragnarok", units: [gwoUnit.ragnarok] },
       { id: "gwaio_upgrade_radar", units: [gwoUnit.radar] },
+      {
+        id: "gwaio_upgrade_radarjammer",
+        units: [gwoUnit.radarJammingStation],
+      },
       { id: "gwaio_upgrade_advancedradar", units: [gwoUnit.radarAdvanced] },
       {
         id: "gwaio_upgrade_laserdefensetower",
