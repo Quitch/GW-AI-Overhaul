@@ -39,7 +39,6 @@ define([
         gwoUnit.skitter,
         gwoUnit.firefly,
         gwoUnit.stingray,
-        gwoUnit.vanguard,
         gwoUnit.stitch,
         gwoUnit.mend,
         gwoUnit.barnacle,

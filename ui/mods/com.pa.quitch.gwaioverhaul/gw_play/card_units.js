@@ -29,8 +29,7 @@ define([
           gwoUnit.hermes,
           gwoUnit.skitter,
           gwoUnit.firefly,
-          gwoUnit.stingray,
-          gwoUnit.vanguard
+          gwoUnit.stingray
         ),
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },

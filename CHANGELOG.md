@@ -10,6 +10,7 @@
 ### Changed
 
 - Kaiju Upgrade Tech replaces the side guns due to the original tech now being in the base game
+- Removed the Vanguard from Intelligence Fabrication Tech
 
 ### Fixed
 
