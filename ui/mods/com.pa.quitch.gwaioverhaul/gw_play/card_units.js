@@ -29,7 +29,11 @@ define([
           gwoUnit.hermes,
           gwoUnit.skitter,
           gwoUnit.firefly,
-          gwoUnit.stingray
+          gwoUnit.stingray,
+          gwoUnit.stitch,
+          gwoUnit.mend,
+          gwoUnit.barnacle,
+          gwoUnit.teleporter
         ),
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },

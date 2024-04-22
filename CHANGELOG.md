@@ -15,6 +15,7 @@
 ### Fixed
 
 - Torpedo upgrades not working correctly due to changes in PA 120679
+- Which Units? tooltip for Intelligence Fabrication Tech
 
 ## v5.63.0 - 2024-03-21
 
