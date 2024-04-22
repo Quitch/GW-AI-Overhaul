@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Current mod version to Galactic War Info panel
+
 ## v5.64.0 - 2024-04-22
 
 ### Added
