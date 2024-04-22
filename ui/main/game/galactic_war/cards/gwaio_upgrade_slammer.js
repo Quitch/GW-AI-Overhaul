@@ -41,8 +41,8 @@ define([
         {
           file: gwoUnit.slammerTorpedo,
           path: "target_layers",
-          op: "replace",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
+          op: "push",
+          value: "WL_LandHorizontal",
         },
         {
           file: gwoUnit.slammerTorpedo,
@@ -51,19 +51,19 @@ define([
           value: ["Mobile", "Structure - Wall", "Wall"],
         },
         {
-          file: gwoUnit.slammerTorpedoAmmo,
+          file: gwoUnit.slammerTorpedoLandAmmo,
           path: "flight_layer",
           op: "replace",
           value: "Air",
         },
         {
-          file: gwoUnit.slammerTorpedoAmmo,
+          file: gwoUnit.slammerTorpedoLandAmmo,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Air",
         },
         {
-          file: gwoUnit.slammerTorpedoAmmo,
+          file: gwoUnit.slammerTorpedoLandAmmo,
           path: "cruise_height",
           op: "replace",
           value: 200,

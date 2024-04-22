@@ -126,10 +126,10 @@ define({
   commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",
   commanderSecondary: "/pa/tools/uber_cannon/uber_cannon.json",
   commanderSecondaryAmmo: "/pa/ammo/cannon_uber/cannon_uber.json",
-  commanderTorpedo:
-    "/pa/units/commanders/base_commander/base_commander_tool_torpedo_weapon.json",
-  commanderTorpedoAmmo:
-    "/pa/units/commanders/base_commander/base_commander_torpedo_ammo.json",
+  commanderTorpedoLandAmmo:
+    "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_land.json",
+  commanderTorpedoWaterAmmo:
+    "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_water.json",
   commanderWeapon:
     "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
   deepSpaceOrbitalRadar:
@@ -329,9 +329,10 @@ define({
   slammerAmmo: "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
   slammerTorpedo:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_tool_weapon.json",
-  // TITANS torpedo launcher doesn't use this ammo, only the Slammer does
-  slammerTorpedoAmmo:
-    "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
+  slammerTorpedoLandAmmo:
+    "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo_land.json",
+  slammerTorpedoWaterAmmo:
+    "/pa/units/land/assault_bot_adv/assault_bot_adv_torpedo_ammo_water.json",
   slammerWeapon:
     "/pa/units/land/assault_bot_adv/assault_bot_adv_tool_weapon.json",
   solarArray: "/pa/units/orbital/solar_array/solar_array.json",

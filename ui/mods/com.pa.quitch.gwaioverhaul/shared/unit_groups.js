@@ -93,7 +93,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.gilEAmmo,
     gwoUnit.locustsAmmo,
     gwoUnit.slammerAmmo,
-    gwoUnit.slammerTorpedoAmmo,
+    gwoUnit.slammerTorpedoLandAmmo,
+    gwoUnit.slammerTorpedoWaterAmmo,
   ];
   var botsAdvancedWeapons = [
     gwoUnit.bluehawkWeapon,
@@ -572,6 +573,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
+  var commanderAmmo = [
+    gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmo,
+    gwoUnit.commanderSecondaryAmmo,
+    gwoUnit.commanderTorpedoLandAmmo,
+    gwoUnit.commanderTorpedoWaterAmmo,
+  ];
+
   return {
     air: air,
     airAdvanced: airAdvanced,
@@ -593,6 +602,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
     clusterCommanders: clusterCommanders,
+    commanderAmmo: commanderAmmo,
     energyIntel: energyIntel,
     energyUnits: energyUnits,
     energyAll: energyAll,
