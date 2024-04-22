@@ -63,8 +63,6 @@ define([
       });
       inventory.addAIMods(aiMods);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

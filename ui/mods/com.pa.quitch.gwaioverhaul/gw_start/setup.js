@@ -477,9 +477,7 @@ function gwoSetup() {
               teams: teams,
               neutralStars: neutralStars,
               orderedSpawn: false,
-              spawn: function () {
-                //empty
-              },
+              spawn: function () {},
               canSpread: _.constant(true),
               spread: function (star, ai) {
                 var team = teams[ai.team];

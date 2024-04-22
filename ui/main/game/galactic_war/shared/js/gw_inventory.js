@@ -20,9 +20,7 @@ define(function () {
       self.aiMods(config.aiMods || []);
       self.maxCards(!_.isUndefined(config.maxCards) ? config.maxCards : 0);
 
-      self.applyCards = function () {
-        //empty
-      };
+      self.applyCards = function () {};
       self.cards(config.cards || []);
       delete self.applyCards;
 

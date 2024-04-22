@@ -30,9 +30,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 2); // one for card and one slot
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
     keep: function (params, context) {
       context.chance = 100;
     },

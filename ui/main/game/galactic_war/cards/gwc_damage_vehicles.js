@@ -35,8 +35,6 @@ define([
       });
       inventory.addMods(mods);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

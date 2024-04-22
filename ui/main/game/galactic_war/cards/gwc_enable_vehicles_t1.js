@@ -39,8 +39,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.vehiclesBasic);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

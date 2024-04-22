@@ -39,8 +39,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.botsBasic);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

@@ -39,8 +39,6 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.airBasic);
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
   };
 });

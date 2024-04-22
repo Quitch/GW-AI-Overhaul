@@ -95,9 +95,7 @@ define([
         inventory.addUnits([minion.commander]);
       }
     },
-    dull: function () {
-      // empty
-    },
+    dull: function () {},
     keep: function (params, context) {
       context.chance = 50;
     },
