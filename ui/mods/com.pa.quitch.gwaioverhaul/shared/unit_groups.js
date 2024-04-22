@@ -569,7 +569,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.energyPlantAdvanced,
     gwoUnit.metalExtractorAdvanced,
     gwoUnit.radarAdvanced,
-    gwoUnit.radarJammer,
+    gwoUnit.radarJammingStation,
     gwoUnit.unitCannon
   );
 
