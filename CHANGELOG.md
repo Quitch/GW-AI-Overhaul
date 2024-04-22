@@ -16,6 +16,7 @@
 
 - Torpedo upgrades not working correctly due to changes in PA 120679
 - Which Units? tooltip for Intelligence Fabrication Tech
+- Unit Cannon Upgrade Tech not doubling capacity after PA increased the unit's base capacity
 
 ## v5.63.0 - 2024-03-21
 
