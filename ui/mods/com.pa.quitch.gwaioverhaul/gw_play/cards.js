@@ -312,6 +312,7 @@ function gwoCard() {
           "gwaio_upgrade_piranha",
           "gwaio_upgrade_planetaryradar",
           "gwaio_upgrade_radar",
+          "gwaio_upgrade_radarjammer",
           "gwaio_upgrade_ragnarok",
           "gwaio_upgrade_sheller",
           "gwaio_upgrade_singlelaserdefensetower",

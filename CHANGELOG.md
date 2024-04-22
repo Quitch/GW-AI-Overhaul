@@ -5,6 +5,7 @@
 ### Added
 
 - Support for Radar Jamming Station
+- Radar Jamming Station upgrade tech
 
 ### Changed
 
