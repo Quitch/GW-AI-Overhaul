@@ -50,7 +50,7 @@
     },
     {
       "name": "Land Transfer To Planet - Alone",
-      "to_build": "Land_Attack_Max",
+      "to_build": "Land_Attack_Max_Transfer",
       "instance_count": -1,
       "shared_instance_count": "LandTransferToPlanet",
       "priority": 117,
@@ -75,7 +75,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
             "compare0": ">=",
             "value0": 5
           }
@@ -85,7 +85,7 @@
     },
     {
       "name": "Land Transfer To Planet",
-      "to_build": "Land_Attack_XLarge",
+      "to_build": "Land_Attack_XLarge_Transfer",
       "instance_count": 1,
       "shared_instance_count": "LandTransferToPlanet",
       "priority": 116,
@@ -110,7 +110,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
             "compare0": ">=",
             "value0": 5
           }
