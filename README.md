@@ -133,7 +133,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ## Known issues
 
-- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79), with the current common factors appearing to be the player using bots and the enemy featuring a Cluster Security commander. Please use [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79) to report if you encounter this bug.
+- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79).
 
 ## Recommended mods
 
