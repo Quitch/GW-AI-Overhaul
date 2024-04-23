@@ -46,7 +46,12 @@
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
-    "live_game": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"]
+    "live_game": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
+    ],
+    "shared_build": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"
+    ]
   },
   "priority": 200,
   "titansOnly": true,

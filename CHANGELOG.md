@@ -6,6 +6,10 @@
 
 - Current mod version to Galactic War Info panel
 
+### Fixed
+
+- Planetary Radar icon being hidden by the Radar Jamming Station
+
 ## v5.64.0 - 2024-04-22
 
 ### Added
