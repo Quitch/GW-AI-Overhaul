@@ -24,7 +24,8 @@
     "loadHtml": "readonly",
     "locTree": "readonly",
     "globals": "readonly",
-    "CommanderUtility": "readonly"
+    "CommanderUtility": "readonly",
+    "Build": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

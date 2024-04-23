@@ -26,7 +26,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war
-- 13 new loadouts
+- 17 new loadouts
 - Unlocks Galactic War's biggest planetary systems
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
@@ -89,7 +89,6 @@ Each system will display the following information:
 - **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
 - **Land Anywhere**: you can land anywhere on any starting planet.
 - **Sudden Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
-- **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
@@ -134,7 +133,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ## Known issues
 
-- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79), with the current common factors appearing to be the player using bots and the enemy featuring a Cluster Security commander. Please use [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79) to report if you encounter this bug.
+- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79).
 
 ## Recommended mods
 

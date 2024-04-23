@@ -6,11 +6,15 @@
 >
   <div class="gwo-info">
     <h2><loc>Galactic War Overhaul</loc></h2>
-    <!-- ko if: $root.gwoSettings -->
     <div class="table">
       <div class="tablebody">
         <div class="tr">
-          <div class="td"><loc>Version:</loc></div>
+          <div class="td"><loc>Mod:</loc></div>
+          <div class="data" data-bind="text: $root.gwoVersion"></div>
+        </div>
+        <!-- ko if: $root.gwoSettings -->
+        <div class="tr">
+          <div class="td"><loc>War:</loc></div>
           <div class="data" data-bind="text: $root.gwoSettings.version"></div>
         </div>
         <div class="tr">
@@ -29,8 +33,10 @@
           <div class="td"><loc>Deck:</loc></div>
           <div class="data" data-bind="text: $root.gwoDeck"></div>
         </div>
+        <!-- /ko -->
       </div>
     </div>
+    <!-- ko if: $root.gwoSettings -->
     <div class="table">
       <div
         class="tablebody"

@@ -1,12 +1,22 @@
 # CHANGELOG
 
+## v5.64.1 - 2024-04-23
+
+### Added
+
+- Current mod version to Galactic War Info panel
+
+### Fixed
+
+- Planetary Radar icon being hidden by the Radar Jamming Station
+
 ## v5.64.0 - 2024-04-22
 
 ### Added
 
 - Support for Radar Jamming Station
 - Radar Jamming Station upgrade tech
-- Penchant AI support for Kaiju's using teleporters
+- Penchant AI support for Kaijus using teleporters
 
 ### Changed
 
