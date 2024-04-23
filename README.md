@@ -89,7 +89,6 @@ Each system will display the following information:
 - **Bounties**: gain an eco bonus for each army destroyed. Enemies gain these too.
 - **Land Anywhere**: you can land anywhere on any starting planet.
 - **Sudden Death**: the defeat of a single army on a team leads to the defeat of the entire team. This includes Sub Commanders.
-- **Threat**: the eco threat of that Commander. This increases the deeper you proceed into the galaxy.
 - **Personality**: the playstyle adopted by the Commander. Some are better than others and it's up to you to figure out which.
 - **Additional Factions**: the system is a FFA and these factions will fight against you, each other, and the primary faction.
 
