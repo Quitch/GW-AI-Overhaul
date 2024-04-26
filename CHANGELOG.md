@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- The Guardians sometimes idling the whole battle
+
 ## v5.64.1 - 2024-04-23
 
 ### Added

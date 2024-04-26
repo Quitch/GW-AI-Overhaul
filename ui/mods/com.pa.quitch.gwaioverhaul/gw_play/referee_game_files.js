@@ -4,7 +4,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GW, gwoUnit, gwoAI) {
   var clusterArmyIndex = function (ai) {
-    if (ai.faction === 4) {
+    if (ai.mirrorMode) {
+      return -1;
+    } else if (ai.faction === 4) {
       return 0;
     } else if (ai.foes) {
       var index = _.findIndex(ai.foes, { faction: [4] });
