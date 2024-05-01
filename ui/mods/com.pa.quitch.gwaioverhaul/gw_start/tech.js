@@ -15,25 +15,12 @@ define([
   ];
 
   var setupAITech0FabricationTech = function () {
-    var legonisUnits = inventory.legonisUnitsMobile.concat(
-      inventory.legonisUnitsNotMobile
-    );
-    var foundationUnits = inventory.foundationUnitsMobileAir.concat(
-      inventory.foundationUnitsMobileNotAir,
-      inventory.foundationUnitsNotMobile
-    );
-    var synchronousUnits = inventory.synchronousUnitsMobile.concat(
-      inventory.synchronousUnitsNotMobile
-    );
-    var revenantsUnits = inventory.revenantsUnitsMobile.concat(
-      inventory.revenantsUnitsNotMobileWithAmmo
-    );
     var factionUnits = [
-      legonisUnits,
-      foundationUnits,
-      synchronousUnits,
-      revenantsUnits,
-      inventory.clusterUnits,
+      inventory.legonisUnits,
+      inventory.foundationUnits,
+      inventory.synchronousUnits,
+      inventory.revenantsUnitsWithAmmo,
+      inventory.clusterUnitsNotMobile,
     ];
     _.forEach(factionUnits, function (faction, i) {
       factionsTech[i][0] = _.map(faction, function (unit) {
@@ -49,24 +36,12 @@ define([
   setupAITech0FabricationTech();
 
   var setupAmmo = function () {
-    var legonisAmmo = inventory.legonisAmmo.concat(inventory.commanderAmmo);
-    var foundationAmmo = inventory.foundationAmmo.concat(
-      inventory.commanderAmmo
-    );
-    var synchronousAmmo = inventory.synchronousAmmo.concat(
-      inventory.commanderAmmo
-    );
-    var revenantsAmmo = inventory.revenantsAmmo.concat(inventory.commanderAmmo);
-    var clusterAmmo = inventory.clusterAmmo.concat(
-      inventory.commanderAmmo,
-      inventory.clusterCommanderAmmo
-    );
     var factionAmmo = [
-      legonisAmmo,
-      foundationAmmo,
-      synchronousAmmo,
-      revenantsAmmo,
-      clusterAmmo,
+      inventory.legonisAmmo,
+      inventory.foundationAmmo,
+      inventory.synchronousAmmo,
+      inventory.revenantsAmmo,
+      inventory.clusterAmmo,
     ];
     _.forEach(factionAmmo, function (faction, i) {
       factionsTech[i][1] = _.flatten(
@@ -91,27 +66,12 @@ define([
   };
 
   var setupEnergyWeapons = function () {
-    var legonisWeapons = inventory.legonisWeapons.concat(
-      inventory.commanderWeapons
-    );
-    var foundationWeapons = inventory.foundationWeapons.concat(
-      inventory.commanderWeapons
-    );
-    var synchronousWeapons = inventory.synchronousWeapons.concat(
-      inventory.commanderWeapons
-    );
-    var revenantsWeapons = inventory.revenantsWeapons.concat(
-      inventory.commanderWeapons
-    );
-    var clusterWeapons = inventory.clusterWeapons.concat(
-      inventory.commanderWeapons
-    );
     var factionWeapons = [
-      legonisWeapons,
-      foundationWeapons,
-      synchronousWeapons,
-      revenantsWeapons,
-      clusterWeapons,
+      inventory.legonisWeapons,
+      inventory.foundationWeapons,
+      inventory.synchronousWeapons,
+      inventory.revenantsWeapons,
+      inventory.clusterWeapons,
     ];
     _.forEach(factionWeapons, function (faction, i) {
       factionsTech[i][1] = factionsTech[i][1].concat(
@@ -161,25 +121,12 @@ define([
   };
 
   var setupUnitArmour = function () {
-    var legonisUnits = inventory.legonisUnitsMobile.concat(
-      inventory.legonisUnitsNotMobile
-    );
-    var foundationUnits = inventory.foundationUnitsMobileAir.concat(
-      inventory.foundationUnitsMobileNotAir,
-      inventory.foundationUnitsNotMobile
-    );
-    var synchronousUnits = inventory.synchronousUnitsMobile.concat(
-      inventory.synchronousUnitsNotMobile
-    );
-    var revenantsUnits = inventory.revenantsUnitsMobile.concat(
-      inventory.revenantsUnitsNotMobileNoAmmo
-    );
     var factionUnits = [
-      legonisUnits,
-      foundationUnits,
-      synchronousUnits,
-      revenantsUnits,
-      inventory.clusterUnits,
+      inventory.legonisUnits,
+      inventory.foundationUnits,
+      inventory.synchronousUnits,
+      inventory.revenantsUnits,
+      inventory.clusterUnitsNotMobile,
     ];
     _.forEach(factionUnits, function (units, i) {
       factionsTech[i][2] = healthBoost(units, 1.5);
@@ -187,15 +134,12 @@ define([
   };
 
   var setupCommanderArmour = function () {
-    var clusterCommanders = inventory.commanderUnits.concat(
-      inventory.clusterCommanders
-    );
     var factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
       inventory.commanderUnits, // Revenants
-      clusterCommanders,
+      inventory.clusterCommanders,
     ];
     _.forEach(factionCommanders, function (commanders, i) {
       factionsTech[i][2] = factionsTech[i][2].concat(
@@ -255,15 +199,12 @@ define([
       revenantsTech,
       clusterTech,
     ];
-    var clusterUnitsNotStructure = inventory.commanderUnits.concat(
-      inventory.clusterCommanders
-    );
     var factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNotAir,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
-      clusterUnitsNotStructure,
+      inventory.clusterUnitsMobile,
     ];
     _.forEach(factionUnitsNoAir, function (factionUnits, i) {
       if (_.isUndefined(factionsTechNoAir[i][3])) {
@@ -276,15 +217,12 @@ define([
   };
 
   var setupCommanderEngineTech = function () {
-    var clusterCommanders = inventory.commanderUnits.concat(
-      inventory.clusterCommanders
-    );
     var factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
       inventory.commanderUnits, // Revenants
-      clusterCommanders,
+      inventory.clusterCommanders,
     ];
     _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][3] = factionsTech[i][3].concat(
@@ -301,27 +239,12 @@ define([
   setupAITech3EngineTech();
 
   var setupAITech4EfficiencyTech = function () {
-    var legonisBuildArms = inventory.legonisBuildArms.concat(
-      inventory.commanderBuildArms
-    );
-    var foundationBuildArms = inventory.foundationBuildArms.concat(
-      inventory.commanderBuildArms
-    );
-    var synchronousBuildArms = inventory.synchronousBuildArms.concat(
-      inventory.commanderBuildArms
-    );
-    var revenantsBuildArms = inventory.revenantsBuildArms.concat(
-      inventory.commanderBuildArms
-    );
-    var clusterBuildArms = inventory.clusterBuildArms.concat(
-      inventory.commanderBuildArms
-    );
     var factionBuildArms = [
-      legonisBuildArms,
-      foundationBuildArms,
-      synchronousBuildArms,
-      revenantsBuildArms,
-      clusterBuildArms,
+      inventory.legonisBuildArms,
+      inventory.foundationBuildArms,
+      inventory.synchronousBuildArms,
+      inventory.revenantsBuildArms,
+      inventory.clusterBuildArms,
     ];
 
     _.forEach(factionBuildArms, function (faction, i) {
@@ -361,15 +284,12 @@ define([
       revenantsTech,
       clusterTech,
     ];
-    var clusterUnitsNotStructure = inventory.commanderUnits.concat(
-      inventory.clusterCommanders
-    );
     var factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNotAir,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
-      clusterUnitsNotStructure,
+      inventory.clusterUnitsMobile,
     ];
     _.forEach(factionUnitsNoAir, function (factionUnits, i) {
       if (_.isUndefined(factionsTechNoAir[i][6])) {
@@ -382,15 +302,12 @@ define([
   };
 
   var setupCommanderEngineCombatTech = function () {
-    var clusterCommanders = inventory.commanderUnits.concat(
-      inventory.clusterCommanders
-    );
     var factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
       inventory.commanderUnits, // Revenants
-      clusterCommanders,
+      inventory.clusterCommanders,
     ];
     _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][6] = factionsTech[i][6].concat(
