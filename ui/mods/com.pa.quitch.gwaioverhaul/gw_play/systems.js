@@ -313,39 +313,40 @@ function gwoSystemChanges() {
           });
         };
 
-        game.defeatTeam = function (team) {
-          var aiCount = 0;
+        game.defeatTeam = function (defeatedTeam) {
+          var remainingAIs = 0;
+
           api.tally.incStatInt("gw_eliminate_faction");
+
           _.forEach(model.galaxy.systems(), function (system) {
             var star = system.star;
             var ai = star.ai();
-            if (ai) {
-              if (ai.team === team) {
-                if (ai.foes) {
-                  var newAI = ai.foes[0];
-                  var foeBackup = ai.foes.slice(1);
-                  var foeKeys = _.keys(newAI);
-                  _.forEach(foeKeys, function (key) {
-                    star.ai()[key] = ai.foes[0][key];
-                  });
-                  var systemColour = normalizedColor(GWFactions[ai.faction]);
-                  system.ownerColor(systemColour.concat(3));
-                  star.ai().foes = foeBackup;
-                  delete star.ai().minions;
-                } else {
-                  star.ai(undefined);
-                  // Delete pre-dealt cards when boss defeated
-                  if (ai.mirrorMode !== true) {
-                    star.cardList([]);
-                  }
-                }
+
+            if (ai && ai.team === defeatedTeam) {
+              var replacementAI = _.first(ai.foes);
+              if (replacementAI) {
+                _.forEach(_.keys(replacementAI), function (key) {
+                  star.ai()[key] = replacementAI[key];
+                });
+
+                var factionColor = normalizedColor(GWFactions[ai.faction]);
+                system.ownerColor(factionColor.concat(3));
+
+                star.ai().foes = _.rest(ai.foes);
+                delete star.ai().minions;
               } else {
-                ++aiCount;
+                star.ai(undefined);
+                // Delete pre-dealt cards when boss defeated
+                if (ai.mirrorMode !== true) {
+                  star.cardList([]);
+                }
               }
+            } else if (ai) {
+              ++remainingAIs;
             }
           });
 
-          if (!aiCount) {
+          if (!remainingAIs) {
             requireGW(["shared/gw_game"], function (GWGame) {
               game.gameState(GWGame.gameStates.won);
             });
