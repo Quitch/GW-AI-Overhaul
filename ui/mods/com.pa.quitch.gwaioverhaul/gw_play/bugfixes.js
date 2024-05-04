@@ -1,14 +1,15 @@
 var gwoBugfixesLoaded;
 
 function gwoBugfixes() {
-  if (gwoBugfixesLoaded) {
+  var game = model.game();
+
+  if (gwoBugfixesLoaded || game.isTutorial()) {
     return;
   }
 
   gwoBugfixesLoaded = true;
 
   try {
-    var game = model.game();
     var galaxy = game.galaxy();
     var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =

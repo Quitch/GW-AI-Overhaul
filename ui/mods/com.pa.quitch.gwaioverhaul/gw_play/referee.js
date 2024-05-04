@@ -1,7 +1,7 @@
 var gwoRefereeChangesLoaded;
 
 function gwoRefereeChanges() {
-  if (gwoRefereeChangesLoaded) {
+  if (gwoRefereeChangesLoaded || model.game().isTutorial()) {
     return;
   }
 
