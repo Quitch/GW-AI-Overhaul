@@ -128,11 +128,11 @@ define([
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     var playerFaction = inventory.getTag("global", "playerFaction");
-    var isCluster = playerFaction === 4;
+    var playerIsCluster = playerFaction === 4;
 
     _.forEach(alliedCommanders, function (ally, index) {
       // Avoid breaking Sub Commanders from earlier versions
-      ally.personality.ai_path = setAIPath(isCluster, true);
+      ally.personality.ai_path = setAIPath(playerIsCluster, true);
 
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
@@ -156,7 +156,7 @@ define([
     ai = setAdvEcoMod(ai, aiBrain);
 
     // Avoid breaking enemies from earlier versions
-    var aiIsCluster = ai.faction === 4 && ai.mirrorMode !== true;
+    var aiIsCluster = gwoAI.isCluster(ai.faction, ai.mirrorMode);
     var aiPath = setAIPath(aiIsCluster, false);
     ai.personality.ai_path = aiPath;
 
@@ -180,7 +180,7 @@ define([
       foe = setAdvEcoMod(foe, aiBrain);
 
       // Avoid breaking enemies from earlier versions
-      var foeIsCluster = parseInt(foe.faction[0]) === 4; // was an array before v5.44.0
+      var foeIsCluster = gwoAI.isCluster(foe.faction, ai.mirrorMode);
       foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
       var foeTag = index + 1; // 0 taken by primary AI
