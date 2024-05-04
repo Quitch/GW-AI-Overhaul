@@ -185,7 +185,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     if (ai.mirrorMode) {
       return "None";
     }
-    return isEnemyCluster ? "Enemy" : "None";
+    if (isEnemyCluster) {
+      return "Enemy";
+    }
+    return "None";
   };
 
   // parse AI mods and load the results into self.files()
