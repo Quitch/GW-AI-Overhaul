@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Wars are won by defeating all bosses not all enemies
+
 ## v5.64.2 - 2024-04-26
 
 ### Fixed

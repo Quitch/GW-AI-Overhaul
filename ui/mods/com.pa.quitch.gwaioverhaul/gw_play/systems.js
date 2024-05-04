@@ -314,7 +314,7 @@ function gwoSystemChanges() {
         };
 
         game.defeatTeam = function (defeatedTeam) {
-          var remainingAIs = 0;
+          var remainingBosses = 0;
 
           api.tally.incStatInt("gw_eliminate_faction");
 
@@ -341,12 +341,12 @@ function gwoSystemChanges() {
                   star.cardList([]);
                 }
               }
-            } else if (ai) {
-              ++remainingAIs;
+            } else if (ai && ai.boss) {
+              ++remainingBosses;
             }
           });
 
-          if (!remainingAIs) {
+          if (!remainingBosses) {
             requireGW(["shared/gw_game"], function (GWGame) {
               game.gameState(GWGame.gameStates.won);
             });
