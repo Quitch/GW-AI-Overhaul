@@ -1,6 +1,6 @@
 define({
   hasUnit: function (inventoryUnits, units) {
-    if (!_.isArray(units)) {
+    if (_.isString(units)) {
       return _.includes(inventoryUnits, units);
     }
 
@@ -14,7 +14,7 @@ define({
 
   // !hasUnit() matches on AND; missingUnit() matches on OR
   missingUnit: function (inventoryUnits, units) {
-    if (!_.isArray(units)) {
+    if (_.isString(units)) {
       return !_.includes(inventoryUnits, units);
     }
 
