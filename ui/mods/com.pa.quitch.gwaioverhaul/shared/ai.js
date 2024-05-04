@@ -42,6 +42,15 @@ define({
     return "/pa/ai/";
   },
 
+  isCluster: function (faction, mirrorMode) {
+    if (mirrorMode) {
+      return false;
+    }
+    return _.isArray(faction) // was an array before v5.44.0
+      ? parseInt(faction[0]) === 4
+      : faction === 4;
+  },
+
   penchants: function () {
     var penchantTags = [
       "Vanilla",

@@ -9,7 +9,9 @@ define([
     } else if (ai.faction === 4) {
       return 0;
     } else if (ai.foes) {
-      var index = _.findIndex(ai.foes, { faction: [4] });
+      var index = _.findIndex(ai.foes, function (foe) {
+        return gwoAI.isCluster(foe.faction, ai.mirrorMode);
+      });
       if (index !== -1) {
         return index + 1;
       }

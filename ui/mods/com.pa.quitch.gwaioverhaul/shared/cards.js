@@ -1,27 +1,27 @@
 define({
   hasUnit: function (inventoryUnits, units) {
-    if (_.isArray(units)) {
-      for (var unit of units) {
-        if (_.includes(inventoryUnits, unit)) {
-          return true;
-        }
-      }
-    } else {
+    if (_.isString(units)) {
       return _.includes(inventoryUnits, units);
+    }
+
+    for (var unit of units) {
+      if (_.includes(inventoryUnits, unit)) {
+        return true;
+      }
     }
     return false;
   },
 
   // !hasUnit() matches on AND; missingUnit() matches on OR
   missingUnit: function (inventoryUnits, units) {
-    if (_.isArray(units)) {
-      for (var unit of units) {
-        if (!_.includes(inventoryUnits, unit)) {
-          return true;
-        }
-      }
-    } else {
+    if (_.isString(units)) {
       return !_.includes(inventoryUnits, units);
+    }
+
+    for (var unit of units) {
+      if (!_.includes(inventoryUnits, unit)) {
+        return true;
+      }
     }
     return false;
   },

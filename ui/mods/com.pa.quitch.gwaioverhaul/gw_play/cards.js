@@ -577,10 +577,11 @@ function gwoCard() {
           };
 
           var setupGeneralCommander = function () {
+            var cards = inventory.cards();
             if (
-              inventory.cards().length === 1 &&
-              inventory.cards()[0].id === "gwc_start_subcdr" &&
-              !inventory.cards()[0].minions
+              cards.length === 1 &&
+              cards[0].id === "gwc_start_subcdr" &&
+              !cards[0].minions
             ) {
               var ai = gwoSettings && gwoSettings.ai;
               _.times(2, function () {
@@ -597,7 +598,7 @@ function gwoCard() {
                       penchantValues.penchants
                     );
                 }
-                inventory.cards().push({
+                cards.push({
                   id: "gwc_minion",
                   minion: subcommander,
                   unique: Math.random(),
