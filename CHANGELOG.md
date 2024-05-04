@@ -6,6 +6,10 @@
 
 - Wars are won by defeating all bosses not all enemies
 
+### Fixed
+
+- Dedicated Cluster AI not being loaded when Cluster didn't own the system
+
 ## v5.64.2 - 2024-04-26
 
 ### Fixed

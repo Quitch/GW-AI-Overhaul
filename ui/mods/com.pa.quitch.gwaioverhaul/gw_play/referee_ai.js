@@ -170,24 +170,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     });
   };
 
-  var isClusterAIPresent = function (inventory, ai, subcommanders) {
-    var aiIsCluster = ai.faction === 4;
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    if (playerIsCluster && subcommanders > 0) {
+  var isClusterPresent = function (inventory, ai, subcommanders) {
+    var isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
+    var isEnemyCluster =
+      ai.faction === 4 ||
+      _.some(ai.foes, function (foe) {
+        return _.isArray(foe.faction) // was an array before v5.44.0
+          ? parseInt(foe.faction[0]) === 4
+          : foe.faction === 4;
+      });
+    if (isPlayerCluster && subcommanders > 0) {
       return "Player";
-    } else if (ai.mirrorMode) {
-      return "None";
-    } else if (aiIsCluster) {
-      return "Enemy";
-    } else if (ai.foes) {
-      for (var foe of ai.foes) {
-        var foeIsCluster = parseInt(foe.faction[0]) === 4; // was an array before v5.44.0
-        if (foeIsCluster) {
-          return "Enemy";
-        }
-      }
     }
-    return "None";
+    if (ai.mirrorMode) {
+      return "None";
+    }
+    return isEnemyCluster ? "Enemy" : "None";
   };
 
   // parse AI mods and load the results into self.files()
@@ -203,7 +201,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     var numberOfAllies = alliedCommanders.length;
     var aiFilePath =
       numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
-    var clusterPresence = isClusterAIPresent(inventory, ai, numberOfAllies);
+    var clusterPresence = isClusterPresent(inventory, ai, numberOfAllies);
     var aiToModify = aiToMod(inventory, ai.mirrorMode, clusterPresence);
 
     var deferred = $.Deferred();
