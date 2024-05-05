@@ -160,16 +160,15 @@ function gwoWarInfoPanel() {
           if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
           }
-          var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           ) {
-            subcommanderName += " x2";
+            subcommander.name += " x2";
           }
           return {
-            name: subcommanderName,
+            name: subcommander.name,
             color: gwoColour.rgb(
               gwoColour.pick(
                 factionIndex,
@@ -182,14 +181,10 @@ function gwoWarInfoPanel() {
         };
 
         model.gwoPlayer = ko.computed(function () {
-          var playerName = ko.observable().extend({ session: "displayName" });
-          var playerColor = gwoColour.rgb(
-            inventory.getTag("global", "playerColor")
-          );
           var commanders = [
             {
-              name: playerName,
-              color: playerColor,
+              name: ko.observable().extend({ session: "displayName" }),
+              color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
               character: loc("!LOC:Human"),
             },
           ];

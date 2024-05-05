@@ -527,8 +527,7 @@ function gwoCard() {
           var deferred = $.Deferred();
           if (!_.isEmpty(card)) {
             requireGW(["cards/" + card[0].id], function (data) {
-              var cardName = loc(data.summarize());
-              system.star.ai().cardName = cardName;
+              system.star.ai().cardName = loc(data.summarize());
               deferred.resolve();
             });
           }
@@ -544,11 +543,7 @@ function gwoCard() {
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
               var ai = system.star.ai();
-              if (
-                model.canSelect(starIndex) &&
-                ai &&
-                ai.treasurePlanet !== true
-              ) {
+              if (model.canSelect(starIndex) && ai && !ai.treasurePlanet) {
                 deferredQueue.push(
                   chooseCards({
                     count: 1,
