@@ -143,30 +143,28 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     return "None";
   };
 
-  var addAILoadFilesToFileList = function (
-    aiFiles,
-    aiToModify,
-    fileList,
-    aiTechPath
-  ) {
-    if (aiToModify === "None") {
+  var managerPath = function (type) {
+    switch (type) {
+      case "fabber":
+        return "fabber_builds/";
+      case "factory":
+        return "factory_builds/";
+      case "platoon":
+        return "platoon_builds/";
+      case "template":
+        return "platoon_templates/";
+      default:
+        throw new Error("Invalid AI file type: " + type);
+    }
+  };
+
+  var addAILoadFilesToFileList = function (aiFiles, modType, fileList, aiPath) {
+    if (modType === "None") {
       return;
     }
 
     _.forEach(aiFiles, function (aiFile) {
-      var managerPath = "";
-      if (aiFile.type === "fabber") {
-        managerPath = "fabber_builds/";
-      } else if (aiFile.type === "factory") {
-        managerPath = "factory_builds/";
-      } else if (aiFile.type === "platoon") {
-        managerPath = "platoon_builds/";
-      } else if (aiFile.type === "template") {
-        managerPath = "platoon_templates/";
-      } else {
-        console.error("Invalid op in", aiFile);
-      }
-      fileList.push(aiTechPath + managerPath + aiFile.value);
+      fileList.push(aiPath + managerPath(aiFile.type) + aiFile.value);
     });
   };
 
