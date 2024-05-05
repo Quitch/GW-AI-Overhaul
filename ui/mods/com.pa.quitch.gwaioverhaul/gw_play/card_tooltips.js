@@ -1,7 +1,7 @@
 var gwoCardTooltipsLoaded;
 
 function gwoCardTooltips() {
-  if (gwoCardTooltipsLoaded) {
+  if (gwoCardTooltipsLoaded || model.game().isTutorial()) {
     return;
   }
 
