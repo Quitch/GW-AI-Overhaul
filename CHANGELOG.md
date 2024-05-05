@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- The Guardians are labeled as Guardian faction in the intelligence panel
+
 ## v5.64.3 - 2024-05-04
 
 ### Changed

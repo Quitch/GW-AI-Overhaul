@@ -67,8 +67,8 @@ function gwoIntelligence() {
           return commander.faction ? 0 : index + 1;
         };
 
-        var getFactionName = function (commanderFaction, currentFaction) {
-          if (_.isUndefined(commanderFaction)) {
+        var getFactionName = function (commander, currentFaction) {
+          if (_.isUndefined(commander.faction)) {
             return {
               name: "",
               tooltip: "",
@@ -88,7 +88,9 @@ function gwoIntelligence() {
                 "!LOC:Prefers bots and vehicles; applies tech to structures.",
             },
           ];
-          var faction = factionInfo[commanderFaction];
+          var faction = commander.mirrorMode
+            ? { name: "Guardians", tooltip: "!LOC:A mystery." }
+            : factionInfo[commander.faction];
 
           if (currentFaction === playerFaction) {
             faction.name += " (" + loc("!LOC:ALLY") + ")";
@@ -113,7 +115,7 @@ function gwoIntelligence() {
           var name = commander.name;
           var eco = commander.econ_rate;
           var numCommanders = getNumberOfCommanders(commander);
-          var faction = getFactionName(commander.faction, factionIndex);
+          var faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
