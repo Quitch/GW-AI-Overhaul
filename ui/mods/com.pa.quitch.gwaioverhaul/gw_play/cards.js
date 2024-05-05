@@ -810,7 +810,7 @@ function gwoCard() {
 
         /* Cheat code end */
 
-        // gw_play self.explore - call our chooseCards function
+        // gw_play self.explore - call our chooseCards()
         model.explore = function () {
           if (!game || !game.explore()) {
             return;
