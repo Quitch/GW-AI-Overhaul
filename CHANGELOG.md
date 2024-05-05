@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- The Guardians are labeled as Guardian faction in the intelligence panel
+- The Guardians are labelled as Guardian faction in the intelligence panel
 
 ## v5.64.3 - 2024-05-04
 
