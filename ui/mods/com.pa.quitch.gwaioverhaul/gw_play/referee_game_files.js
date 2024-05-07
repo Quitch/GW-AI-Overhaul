@@ -59,7 +59,7 @@ define([
 
     var ops = {
       multiply: function (attribute, value) {
-        return _.isNumber(attribute) ? attribute * value : value;
+        return _.isNumber(attribute) ? attribute * value : 0;
       },
       add: function (attribute, value) {
         return _.isNumber(attribute) || _.isString(attribute)

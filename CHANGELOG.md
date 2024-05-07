@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Multiplication of a non-existent value now leads to 0 rather than the multiplication number
+
 ## v5.64.4 - 2024-05-05
 
 ### Fixed
