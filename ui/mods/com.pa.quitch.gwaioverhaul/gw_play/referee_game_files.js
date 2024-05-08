@@ -10,7 +10,7 @@ define([
       return 0;
     } else if (ai.foes) {
       var index = _.findIndex(ai.foes, function (foe) {
-        return gwoAI.isCluster(foe.faction, ai.mirrorMode);
+        return gwoAI.isCluster(foe);
       });
       if (index !== -1) {
         return index + 1;

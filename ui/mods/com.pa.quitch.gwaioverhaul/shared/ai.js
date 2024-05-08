@@ -42,13 +42,13 @@ define({
     return "/pa/ai/";
   },
 
-  isCluster: function (faction, mirrorMode) {
-    if (mirrorMode) {
+  isCluster: function (ai) {
+    if (ai.mirrorMode) {
       return false;
     }
-    return _.isArray(faction) // was an array before v5.44.0
-      ? parseInt(faction[0]) === 4
-      : faction === 4;
+    return _.isArray(ai.faction) // was an array before v5.44.0
+      ? parseInt(ai.faction[0]) === 4
+      : ai.faction === 4;
   },
 
   penchants: function () {
