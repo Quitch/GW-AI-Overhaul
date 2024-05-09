@@ -160,6 +160,7 @@ function gwoWarInfoPanel() {
           if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
           }
+          // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
