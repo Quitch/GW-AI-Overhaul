@@ -160,15 +160,16 @@ function gwoWarInfoPanel() {
           if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
           }
+          var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           ) {
-            subcommander.name += " x2";
+            subcommanderName += " x2";
           }
           return {
-            name: subcommander.name,
+            name: subcommanderName,
             color: gwoColour.rgb(
               gwoColour.pick(
                 factionIndex,

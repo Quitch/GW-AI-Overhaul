@@ -6,6 +6,10 @@
 
 - Multiplication of a non-existent value now leads to 0 rather than the multiplication number
 
+### Fixed
+
+- Sub Commander Duplication Tech adding additional x2 indicators to the subcommander's name
+
 ## v5.64.4 - 2024-05-05
 
 ### Fixed
