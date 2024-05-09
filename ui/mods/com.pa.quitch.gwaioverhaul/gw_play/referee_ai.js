@@ -171,9 +171,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
   var isClusterPresent = function (inventory, ai, subcommanders) {
     var isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
     var isEnemyCluster =
-      gwoAI.isCluster(ai.faction, ai.mirrorMode) ||
+      gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {
-        return gwoAI.isCluster(foe.faction, ai.mirrorMode);
+        return gwoAI.isCluster(foe);
       });
     if (isPlayerCluster && subcommanders > 0) {
       return "Player";

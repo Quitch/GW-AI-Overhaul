@@ -156,7 +156,7 @@ define([
     ai = setAdvEcoMod(ai, aiBrain);
 
     // Avoid breaking enemies from earlier versions
-    var aiIsCluster = gwoAI.isCluster(ai.faction, ai.mirrorMode);
+    var aiIsCluster = gwoAI.isCluster(ai);
     var aiPath = setAIPath(aiIsCluster, false);
     ai.personality.ai_path = aiPath;
 
@@ -180,7 +180,7 @@ define([
       foe = setAdvEcoMod(foe, aiBrain);
 
       // Avoid breaking enemies from earlier versions
-      var foeIsCluster = gwoAI.isCluster(foe.faction, ai.mirrorMode);
+      var foeIsCluster = gwoAI.isCluster(foe);
       foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
       var foeTag = index + 1; // 0 taken by primary AI

@@ -10,7 +10,7 @@ define([
       return 0;
     } else if (ai.foes) {
       var index = _.findIndex(ai.foes, function (foe) {
-        return gwoAI.isCluster(foe.faction, ai.mirrorMode);
+        return gwoAI.isCluster(foe);
       });
       if (index !== -1) {
         return index + 1;
@@ -59,7 +59,7 @@ define([
 
     var ops = {
       multiply: function (attribute, value) {
-        return _.isNumber(attribute) ? attribute * value : value;
+        return _.isNumber(attribute) ? attribute * value : 0;
       },
       add: function (attribute, value) {
         return _.isNumber(attribute) || _.isString(attribute)

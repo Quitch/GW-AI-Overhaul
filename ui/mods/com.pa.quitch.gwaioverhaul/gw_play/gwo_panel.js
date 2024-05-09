@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         var galaxy = game.galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.64.4");
+        model.gwoVersion = ko.observable("5.65.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -160,15 +160,16 @@ function gwoWarInfoPanel() {
           if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
           }
+          var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
               id: "gwaio_upgrade_subcommander_duplication",
             })
           ) {
-            subcommander.name += " x2";
+            subcommanderName += " x2";
           }
           return {
-            name: subcommander.name,
+            name: subcommanderName,
             color: gwoColour.rgb(
               gwoColour.pick(
                 factionIndex,
