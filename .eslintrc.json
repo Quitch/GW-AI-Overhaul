@@ -30,7 +30,6 @@
   "plugins": ["lodash"],
   "rules": {
     "curly": [2, "all"],
-    "no-inner-declarations": 0,
     "lodash/prefer-lodash-method": [2, { "ignoreMethods": ["split"] }],
     "lodash/prefer-map": 0,
     "lodash/prefer-noop": 0
