@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         var galaxy = game.galaxy();
         var originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.65.0");
+        model.gwoVersion = ko.observable("5.65.1");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -160,6 +160,7 @@ function gwoWarInfoPanel() {
           if (subcommander.penchant) {
             personality = personality + " " + loc(subcommander.penchant);
           }
+          // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
           if (
             _.some(cards, {
