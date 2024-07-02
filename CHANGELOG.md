@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Super Weapon Fabrication Tech not reliably working with Tactical Nuke Commander
+
 ## v5.65.0 - 2024-05-09
 
 ### Changed
