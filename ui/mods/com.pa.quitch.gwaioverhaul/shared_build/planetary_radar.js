@@ -1,4 +1,4 @@
-const gwoPlanetaryRadarLoaded;
+var gwoPlanetaryRadarLoaded;
 
 function gwoPlanetaryRadar() {
   if (gwoPlanetaryRadarLoaded) {
