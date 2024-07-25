@@ -34,7 +34,11 @@ function gwoCardTooltips() {
         }
 
         const unitInPlayerInventory = function (unit) {
-          const playerUnits = model.game().inventory().units();
+          const playerUnits = model
+            .game()
+            .inventory()
+            .units()
+            .concat("/pa/units/commanders/base_commander/base_commander.json");
           return _.some(playerUnits, function (playerUnit) {
             return playerUnit === unit;
           });
@@ -42,6 +46,29 @@ function gwoCardTooltips() {
 
         const highlightUnitName = function (unitName) {
           return "<span class='highlight'>" + unitName + "</span>";
+        };
+
+        const sortUnitNames = function (units) {
+          return _.map(units, function (unit) {
+            const unitNameIndex = _.findIndex(gwoUnitToNames.units, {
+              path: unit,
+            });
+
+            if (unitNameIndex === -1) {
+              console.warn(
+                unit + " is invalid or missing from GWO unit_names.js"
+              );
+              return loc("!LOC:Unknown Unit");
+            }
+
+            const translatedName = loc(
+              gwoUnitToNames.units[unitNameIndex].name
+            );
+            const formattedName = unitInPlayerInventory(unit)
+              ? translatedName
+              : highlightUnitName(translatedName);
+            return formattedName;
+          }).sort();
         };
 
         const makeCardTooltip = function (card, hoverIndex) {
@@ -72,26 +99,7 @@ function gwoCardTooltips() {
 
           const units = model.gwoCardsToUnits[cardUnitsIndex].units;
           if (units) {
-            // find, sort, and highlight the unit names
-            const affectedUnits = _.map(units, function (unit) {
-              const unitNameIndex = _.findIndex(gwoUnitToNames.units, {
-                path: unit,
-              });
-              if (unitNameIndex === -1) {
-                console.warn(
-                  unit + " is invalid or missing from GWO unit_names.js"
-                );
-                return loc("!LOC:Unknown Unit");
-              } else {
-                const translatedName = loc(
-                  gwoUnitToNames.units[unitNameIndex].name
-                );
-                const formattedName = unitInPlayerInventory(unit)
-                  ? translatedName
-                  : highlightUnitName(translatedName);
-                return formattedName;
-              }
-            }).sort();
+            const affectedUnits = sortUnitNames(units);
 
             // set up the final tooltip
             model.gwoTechCardTooltip()[hoverIndex] = _.map(
