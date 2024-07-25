@@ -178,9 +178,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     if (isPlayerCluster && subcommanders > 0) {
       return "Player";
     }
-    if (ai.mirrorMode) {
-      return "None";
-    }
     if (isEnemyCluster) {
       return "Enemy";
     }
