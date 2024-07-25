@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [];
+      const mods = [];
       _.forEach(gwoGroup.botsMobile, function (unit) {
         mods.push(
           {

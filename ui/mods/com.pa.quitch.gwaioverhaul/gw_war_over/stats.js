@@ -1,4 +1,4 @@
-var gwoWarOverLoadoutStatsLoaded;
+const gwoWarOverLoadoutStatsLoaded;
 
 // Track the highest difficulty defeated for loadout icons
 function gwoWarOverLoadoutStats() {
@@ -9,16 +9,16 @@ function gwoWarOverLoadoutStats() {
   gwoWarOverLoadoutStatsLoaded = true;
 
   try {
-    var game = model.game();
-    var galaxy = game.galaxy();
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const game = model.game();
+    const galaxy = game.galaxy();
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
     if (
       gwoSettings &&
       gwoSettings.cheatsUsed !== true &&
       game.gameState() === "won"
     ) {
-      var difficultyLevelAsInt =
+      const difficultyLevelAsInt =
         _.findIndex(
           [
             "!LOC:Beginner",
@@ -32,15 +32,15 @@ function gwoWarOverLoadoutStats() {
             "!LOC:Uber",
           ],
           function (difficulty) {
-            var warDifficulty = gwoSettings.difficulty;
+            const warDifficulty = gwoSettings.difficulty;
             return difficulty === warDifficulty;
           }
         ) - 1; // -1 because we added Beginner later
-      var loadout = game.inventory().cards()[0].id;
-      var highestDifficultyDefeatedWithLoadout = ko
+      const loadout = game.inventory().cards()[0].id;
+      const highestDifficultyDefeatedWithLoadout = ko
         .observable()
         .extend({ local: "gwaio_victory_" + loadout });
-      var previousBest = -1;
+      const previousBest = -1;
 
       // Value wasn't an array in v5.34.0 and earlier
       if (_.isArray(highestDifficultyDefeatedWithLoadout())) {

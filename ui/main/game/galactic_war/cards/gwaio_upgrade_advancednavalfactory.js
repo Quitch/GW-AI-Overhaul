@@ -26,7 +26,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.navalAdvancedMobile, function (unit) {
+      const mods = _.map(gwoGroup.navalAdvancedMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

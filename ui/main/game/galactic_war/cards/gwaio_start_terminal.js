@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Terminal Commander"),
@@ -29,10 +29,10 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
+          const playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
-          var mods = [];
-          var mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
+          const mods = [];
+          const mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
 
           if (playerIsCluster) {
             _.forEach(gwoGroup.unitsNoCluster, function (unit) {

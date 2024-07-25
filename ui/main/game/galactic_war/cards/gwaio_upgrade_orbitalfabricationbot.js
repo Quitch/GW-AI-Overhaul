@@ -41,7 +41,7 @@ define([
         },
       ]);
 
-      var structures = [
+      const structures = [
         "BasicAirDefense",
         "BasicAirFactory",
         "BasicArtillery",
@@ -57,7 +57,7 @@ define([
         "Umbrella",
         "Wall",
       ];
-      var aiMods = _.map(structures, function (structure) {
+      const aiMods = _.map(structures, function (structure) {
         return {
           type: "fabber",
           op: "append",

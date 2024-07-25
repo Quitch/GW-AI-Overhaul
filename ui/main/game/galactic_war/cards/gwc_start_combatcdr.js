@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GW, GWCStart, gwoCard, gwoUnit) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Bionic Augmentation Commander Of Neutralizing"),
@@ -29,7 +29,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
-          var mods = [
+          const mods = [
             {
               file: gwoUnit.commander,
               path: "navigation.move_speed",
@@ -61,7 +61,7 @@ define([
               value: 3,
             },
           ];
-          var weapons = [gwoUnit.commanderSecondary, gwoUnit.commanderWeapon];
+          const weapons = [gwoUnit.commanderSecondary, gwoUnit.commanderWeapon];
           _.forEach(weapons, function (weapon) {
             mods.push(
               {

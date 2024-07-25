@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.vehiclesMobile, function (unit) {
+      const mods = _.map(gwoGroup.vehiclesMobile, function (unit) {
         return {
           file: unit,
           path: "max_health",

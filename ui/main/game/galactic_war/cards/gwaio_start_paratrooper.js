@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
@@ -29,20 +29,20 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
 
-          var unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
-          var units = unitCannons.concat(gwoGroup.unitCannonMobile);
+          const unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
+          const units = unitCannons.concat(gwoGroup.unitCannonMobile);
           inventory.addUnits(units);
 
-          var mobileLandUnits = gwoGroup.botsMobile.concat(
+          const mobileLandUnits = gwoGroup.botsMobile.concat(
             gwoGroup.vehiclesMobile
           );
-          var landUnitsNotInUnitCannon = _.filter(
+          const landUnitsNotInUnitCannon = _.filter(
             mobileLandUnits,
             function (unit) {
               return !_.includes(gwoGroup.unitCannonMobile, unit);
             }
           );
-          var mods = _.flatten(
+          const mods = _.flatten(
             _.map(unitCannons, function (unit) {
               return [
                 {
@@ -94,7 +94,7 @@ define([
           });
           inventory.addMods(mods);
 
-          var aiMods = [
+          const aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -115,7 +115,7 @@ define([
               value: "gwaio_upgrade_leveler.json", // Queller AI
             },
           ];
-          var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
+          const factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
           _.forEach(factoryArtillery, function (structure) {
             aiMods.push(
               {
@@ -134,7 +134,7 @@ define([
               }
             );
           });
-          var mobileLand = [
+          const mobileLand = [
             "SupportCommander", // TITANS AI
             "UberSupportCommander", // Queller AI
             "AdvancedArtilleryBot",

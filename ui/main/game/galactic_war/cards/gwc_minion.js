@@ -7,8 +7,8 @@ define([
   return {
     visible: _.constant(true),
     describe: function (params) {
-      var minion = params.minion;
-      var result = [];
+      const minion = params.minion;
+      const result = [];
       result.push("!LOC:Adds a Sub Commander that will join you in battles.");
       result.push("<br>");
       result.push("!LOC:Name:");
@@ -41,7 +41,7 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = context.chance;
-      var aiOpeningFactories = [
+      const aiOpeningFactories = [
         gwoUnit.vehicleFactory,
         gwoUnit.botFactory,
         gwoUnit.airFactory,
@@ -61,13 +61,13 @@ define([
         chance = chance / (inventory.minions().length + 1);
       }
 
-      var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
-      var galaxy = model.game().galaxy();
-      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      const minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
+      const galaxy = model.game().galaxy();
+      const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
       if (gwoSettings) {
-        var ai = gwoSettings.ai;
+        const ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwoAI.penchants();
+          const penchantValues = gwoAI.penchants();
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
@@ -89,7 +89,7 @@ define([
       // Note: Storing only the name allows changing the parameters, which
       // is easier for testing.  Every time the cards get re-applied, the
       // minion parameters will be updated.
-      var minion = params.minion;
+      const minion = params.minion;
       inventory.minions.push(minion);
       if (minion.commander) {
         inventory.addUnits([minion.commander]);

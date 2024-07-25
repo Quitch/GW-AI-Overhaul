@@ -20,7 +20,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 33;
-      var dist = system.distance();
+      const dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
         (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
@@ -41,7 +41,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.flatten(
+      const mods = _.flatten(
         _.map(gwoGroup.energyWeapons, function (weapon) {
           return [
             {

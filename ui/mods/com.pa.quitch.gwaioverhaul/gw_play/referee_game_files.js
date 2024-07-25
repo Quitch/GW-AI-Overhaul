@@ -3,13 +3,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GW, gwoUnit, gwoAI) {
-  var clusterArmyIndex = function (ai) {
+  const clusterArmyIndex = function (ai) {
     if (ai.mirrorMode) {
       return -1;
     } else if (ai.faction === 4) {
       return 0;
     } else if (ai.foes) {
-      var index = _.findIndex(ai.foes, function (foe) {
+      const index = _.findIndex(ai.foes, function (foe) {
         return gwoAI.isCluster(foe);
       });
       if (index !== -1) {
@@ -19,7 +19,7 @@ define([
     return -1;
   };
 
-  var flattenBaseSpecs = function (spec, specs, tag) {
+  const flattenBaseSpecs = function (spec, specs, tag) {
     if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
       return spec;
     }
@@ -41,8 +41,8 @@ define([
   };
 
   // to support custom ops
-  var modSpecs = function (specs, mods, specTag) {
-    var load = function (specId) {
+  const modSpecs = function (specs, mods, specTag) {
+    const load = function (specId) {
       var taggedId = specId;
       if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
         taggedId = specId + specTag;
@@ -57,7 +57,7 @@ define([
       return result;
     };
 
-    var ops = {
+    const ops = {
       multiply: function (attribute, value) {
         return _.isNumber(attribute) ? attribute * value : 0;
       },
@@ -97,7 +97,7 @@ define([
         // hack fix for mirrorMode due to the fact that
         // `attribute` was retaining the previous `specTag`s
         // and I couldn't track down why
-        var cleanAttribute = attribute.slice(
+        const cleanAttribute = attribute.slice(
           0,
           attribute.lastIndexOf(".json") + 5
         );
@@ -138,7 +138,7 @@ define([
       },
     };
 
-    var applyMod = function (mod) {
+    const applyMod = function (mod) {
       var spec = load(mod.file);
       if (!spec) {
         return console.warn("Warning: File not found in mod", mod);
@@ -147,10 +147,10 @@ define([
         return console.error("Invalid operation in mod", mod);
       }
 
-      var originalPath = (mod.path || "").split(".");
-      var path = originalPath.reverse();
+      const originalPath = (mod.path || "").split(".");
+      const path = originalPath.reverse();
 
-      var reportError = function (error, step) {
+      const reportError = function (error, step) {
         console.error(
           error,
           spec[step],
@@ -164,12 +164,12 @@ define([
         return undefined;
       };
 
-      var opDefaults = {
+      const opDefaults = {
         push: [],
         pull: [],
       };
 
-      var cookStep = function (step, op) {
+      const cookStep = function (step, op) {
         if (_.isArray(spec)) {
           if (step === "+") {
             step = spec.length;
@@ -191,7 +191,7 @@ define([
         cookStep(level);
 
         if (_.isString(spec[level])) {
-          var newSpec = load(spec[level]);
+          const newSpec = load(spec[level]);
           if (!newSpec) {
             return reportError("Undefined mod spec encountered,", level);
           }
@@ -204,7 +204,7 @@ define([
       }
 
       if (path.length && path[0]) {
-        var leaf = cookStep(path[0], mod.op);
+        const leaf = cookStep(path[0], mod.op);
         spec[leaf] = ops[mod.op](spec[leaf], mod.value);
       } else {
         ops[mod.op](spec, mod.value);
@@ -227,8 +227,8 @@ define([
     gwoUnit.skitterWeapon
   );
 
-  var getAIUnitMapPath = function (titans, aiBrain) {
-    var append = titans ? "_x1.json" : ".json";
+  const getAIUnitMapPath = function (titans, aiBrain) {
+    const append = titans ? "_x1.json" : ".json";
 
     switch (aiBrain) {
       case "Queller":
@@ -241,51 +241,55 @@ define([
   };
 
   return function () {
-    var self = this;
+    const self = this;
 
     // Game file generation cannot use previously mounted files.  That would be bad.
-    var done = $.Deferred();
+    const done = $.Deferred();
 
     // community mods will hook unmountAllMemoryFiles to remount client mods
     api.file.unmountAllMemoryFiles().always(function () {
-      var titans = api.content.usingTitans();
+      const titans = api.content.usingTitans();
 
-      var game = self.game();
-      var ai = game.galaxy().stars()[game.currentStar()].ai();
-      var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-      var aiTag = [];
-      var aiFactions = [];
+      const game = self.game();
+      const ai = game.galaxy().stars()[game.currentStar()].ai();
+      const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+      const aiTag = [];
+      const aiFactions = [];
       _.times(aiFactionCount, function (n) {
-        var aiNewTag = ".ai" + n;
+        const aiNewTag = ".ai" + n;
         aiTag.push(aiNewTag);
         aiFactions.push($.Deferred());
       });
 
-      var playerFileGen = $.Deferred();
-      var filesToProcess = [playerFileGen];
+      const playerFileGen = $.Deferred();
+      const filesToProcess = [playerFileGen];
 
-      var aiBrain = gwoAI.aiInUse();
-      var aiUnitMapPath = getAIUnitMapPath(false, aiBrain);
-      var aiUnitMapTitansPath = getAIUnitMapPath(true, aiBrain);
+      const aiBrain = gwoAI.aiInUse();
+      const aiUnitMapPath = getAIUnitMapPath(false, aiBrain);
+      const aiUnitMapTitansPath = getAIUnitMapPath(true, aiBrain);
 
-      var unitsLoad = $.get("spec://pa/units/unit_list.json");
-      var aiMapLoad = $.get("spec:/" + aiUnitMapPath);
-      var aiX1MapLoad = titans ? $.get("spec:/" + aiUnitMapTitansPath) : {};
+      const unitsLoad = $.get("spec://pa/units/unit_list.json");
+      const aiMapLoad = $.get("spec:/" + aiUnitMapPath);
+      const aiX1MapLoad = titans ? $.get("spec:/" + aiUnitMapTitansPath) : {};
       $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
         function (unitsGet, aiMapGet, aiX1MapGet) {
-          var inventory = self.game().inventory();
+          const inventory = self.game().inventory();
 
-          var units = parse(unitsGet[0]).units;
-          var aiUnitMap = parse(aiMapGet[0]);
-          var aiX1UnitMap = parse(aiX1MapGet[0]);
-          var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
-          var clusterUnitMapTitansPath =
+          const units = parse(unitsGet[0]).units;
+          const aiUnitMap = parse(aiMapGet[0]);
+          const aiX1UnitMap = parse(aiX1MapGet[0]);
+          const clusterUnitMapPath =
+            "/pa/ai_cluster/unit_maps/ai_unit_map.json";
+          const clusterUnitMapTitansPath =
             "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
           _.times(aiFactionCount, function (n) {
-            var currentCount = n;
-            var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
-            var enemyX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, aiTag[n]);
-            var aiSpecs = units.concat(model.gwoSpecs);
+            const currentCount = n;
+            const enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
+            const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
+              aiX1UnitMap,
+              aiTag[n]
+            );
+            const aiSpecs = units.concat(model.gwoSpecs);
 
             GW.specs
               .genUnitSpecs(aiSpecs, aiTag[n])
@@ -297,17 +301,20 @@ define([
                   unitMapTitansPath = clusterUnitMapTitansPath;
                 }
 
-                var enemyAIUnitMapFile = unitMapPath + aiTag[n];
-                var enemyAIUnitMapPair = {};
+                const enemyAIUnitMapFile = unitMapPath + aiTag[n];
+                const enemyAIUnitMapPair = {};
                 enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                var enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[n];
-                var enemyX1AIUnitMapPair = {};
+                const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[n];
+                const enemyX1AIUnitMapPair = {};
                 enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-                var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-                var aiFilesX1 = titans
+                const aiFilesClassic = _.assign(
+                  enemyAIUnitMapPair,
+                  aiSpecFiles
+                );
+                const aiFilesX1 = titans
                   ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
                   : {};
-                var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+                const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
                 if (ai.inventory) {
                   var aiInventory =
@@ -323,23 +330,23 @@ define([
               });
           });
 
-          var playerTag = ".player";
+          const playerTag = ".player";
 
-          var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-          var playerX1AIUnitMap = titans
+          const playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
+          const playerX1AIUnitMap = titans
             ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
             : {};
-          var additionalPlayerSpecs = _.isUndefined(ai.ally)
+          const additionalPlayerSpecs = _.isUndefined(ai.ally)
             ? model.gwoSpecs
             : model.gwoSpecs.concat(ai.ally.commander);
-          var playerSpecs = inventory.units().concat(additionalPlayerSpecs);
+          const playerSpecs = inventory.units().concat(additionalPlayerSpecs);
 
           GW.specs
             .genUnitSpecs(playerSpecs, playerTag)
             .then(function (playerSpecFiles) {
               var playerFilesClassic = {};
               var playerFilesX1 = {};
-              var playerIsCluster =
+              const playerIsCluster =
                 inventory.getTag("global", "playerFaction") === 4;
               // the order of unit_map assignments must match getAIPath()
               if (playerIsCluster) {
@@ -452,7 +459,11 @@ define([
                     )
                   : {};
               }
-              var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+              const playerFiles = _.assign(
+                {},
+                playerFilesClassic,
+                playerFilesX1
+              );
               modSpecs(playerFiles, inventory.mods(), playerTag);
               playerFileGen.resolve(playerFiles);
             });

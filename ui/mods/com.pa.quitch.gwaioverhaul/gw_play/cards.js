@@ -1,7 +1,7 @@
 var gwoCardsLoaded;
 
 function gwoCard() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoCardsLoaded || game.isTutorial()) {
     return;
@@ -18,7 +18,7 @@ function gwoCard() {
     );
     locTree($("#hover-card"));
 
-    // Used by cards checking for T2 access - global var for modders
+    // Used by cards checking for T2 access - global const  for modders
     model.gwoCardsGrantingAdvancedTech = [
       "gwc_enable_air_all",
       "gwc_enable_bots_all",
@@ -30,7 +30,7 @@ function gwoCard() {
       "gwaio_upgrade_fabricationvehicle",
     ];
 
-    var numCardsToOffer = 3;
+    const numCardsToOffer = 3;
 
     model.rerollTech = function () {
       var cardsOffered = 0;
@@ -39,7 +39,7 @@ function gwoCard() {
       } else {
         cardsOffered = numCardsToOffer;
       }
-      var star = game.galaxy().stars()[game.currentStar()];
+      const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (model.gwoRerollsUsed() >= cardsOffered - 1) {
         model.gwoOfferRerolls(false);
@@ -49,7 +49,7 @@ function gwoCard() {
       model.explore();
     };
 
-    var setupTechRerolls = function () {
+    const setupTechRerolls = function () {
       model.gwoOfferRerolls = ko.observable(true);
       model.gwoRerollsUsed = ko
         .observable(0)
@@ -61,7 +61,7 @@ function gwoCard() {
       }
       // Avoid incorrect rerolls when loading an exploration save game
       else if (game.turnState() === "explore") {
-        var star = game.galaxy().stars()[game.currentStar()];
+        const star = game.galaxy().stars()[game.currentStar()];
         model.gwoRerollsUsed = ko.observable(
           numCardsToOffer - star.cardList().length
         );
@@ -91,11 +91,11 @@ function gwoCard() {
 
     // modified to recognise mod loadouts
     globals.CardViewModel = function (params) {
-      var self = this;
+      const self = this;
 
       self.params = ko.observable(params);
       self.id = ko.computed(function () {
-        var p = self.params();
+        const p = self.params();
         return _.isObject(p) ? p.id : p;
       });
 
@@ -117,10 +117,10 @@ function gwoCard() {
         return _.includes(self.id(), "_start_");
       });
 
-      var completed = $.Deferred();
+      const completed = $.Deferred();
       self.card = completed.promise();
 
-      var loadCard = function (card, data) {
+      const loadCard = function (card, data) {
         if (_.isEmpty(card)) {
           self.desc(
             "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
@@ -146,10 +146,10 @@ function gwoCard() {
 
       var loadToken = 0;
       ko.computed(function () {
-        var data = self.params();
+        const data = self.params();
         ++loadToken;
-        var myToken = loadToken;
-        var cardId = self.id();
+        const myToken = loadToken;
+        const cardId = self.id();
         if (cardId) {
           requireGW(["cards/" + cardId], function (card) {
             if (loadToken !== myToken) {
@@ -163,8 +163,8 @@ function gwoCard() {
       });
     };
 
-    var setupGwoCards = function (gwoSettings) {
-      var basicCards = [
+    const setupGwoCards = function (gwoSettings) {
+      const basicCards = [
         "gwc_add_card_slot",
         "gwc_bld_efficiency_cdr",
         "gwc_bld_efficiency_fabs",
@@ -222,7 +222,7 @@ function gwoCard() {
         "gwc_storage_1",
         "gwc_storage_and_buff",
       ];
-      var expandedCards = [
+      const expandedCards = [
         "gwaio_enable_planetaryradar",
         "gwaio_speed_structure",
         "gwaio_upgrade_advancedairfactory",
@@ -360,7 +360,7 @@ function gwoCard() {
       return model.gwoCards.concat(basicCards);
     };
 
-    var setupGwoDeck = function (cards, deck, cardsRemaining, promise) {
+    const setupGwoDeck = function (cards, deck, cardsRemaining, promise) {
       _.forEach(model.gwoCards, function (cardId) {
         requireGW(["cards/" + cardId], function (card) {
           card.id = cardId;
@@ -383,23 +383,23 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
       ],
       function (GW, GWFactions, gwoAI, gwoSave, gwoBank) {
-        var inventory = game.inventory();
-        var playerFaction = inventory.getTag("global", "playerFaction");
-        var galaxy = game.galaxy();
-        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        const inventory = game.inventory();
+        const playerFaction = inventory.getTag("global", "playerFaction");
+        const galaxy = game.galaxy();
+        const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
         /* Start of GWO implementation of GWDealer */
 
         model.gwoCards = setupGwoCards(gwoSettings);
 
-        var cards = [];
-        var deck = [];
-        var numberOfCards = model.gwoCards.length;
-        var loaded = $.Deferred();
+        const cards = [];
+        const deck = [];
+        const numberOfCards = model.gwoCards.length;
+        const loaded = $.Deferred();
 
         setupGwoDeck(cards, deck, numberOfCards, loaded);
 
-        var doNotDealCard = function (
+        const doNotDealCard = function (
           inventory,
           card,
           cardsDealt,
@@ -429,14 +429,14 @@ function gwoCard() {
         };
 
         // GWDealer.chooseCards - use our deck
-        var chooseCards = function (params) {
-          var rng = params.rng || new Math.seedrandom();
-          var count = params.count;
-          var star = params.star;
-          var dealAddSlot = params.addSlot;
-          var cardContexts = {};
+        const chooseCards = function (params) {
+          const rng = params.rng || new Math.seedrandom();
+          const count = params.count;
+          const star = params.star;
+          const dealAddSlot = params.addSlot;
+          const cardContexts = {};
 
-          var result = $.Deferred();
+          const result = $.Deferred();
           loaded.then(function () {
             _.forEach(cards, function (card) {
               if (card.getContext && !cardContexts[card.id]) {
@@ -444,17 +444,17 @@ function gwoCard() {
               }
             });
 
-            var list = [];
+            const list = [];
 
             _.times(count, function () {
               var fullHand = [];
               var hand = [];
 
               fullHand = _.map(cards, function (card) {
-                var context = cardContexts[card.id];
-                var cardChance =
+                const context = cardContexts[card.id];
+                const cardChance =
                   card.deal && card.deal(star, context, inventory);
-                var match = doNotDealCard(
+                const match = doNotDealCard(
                   inventory,
                   card,
                   list,
@@ -481,7 +481,7 @@ function gwoCard() {
               if (hand.length) {
                 var resultIndex;
 
-                var probability = _.reduce(
+                const probability = _.reduce(
                   hand,
                   function (sum, card) {
                     return sum + card.chance;
@@ -502,10 +502,10 @@ function gwoCard() {
                 }
 
                 if (!_.isUndefined(resultIndex)) {
-                  var resultDeal = fullHand[resultIndex];
-                  var cardParams = resultDeal && resultDeal.params;
-                  var cardId = deck[resultIndex];
-                  var systemCard = {
+                  const resultDeal = fullHand[resultIndex];
+                  const cardParams = resultDeal && resultDeal.params;
+                  const cardId = deck[resultIndex];
+                  const systemCard = {
                     id: cardId,
                   };
 
@@ -523,8 +523,8 @@ function gwoCard() {
           return result;
         };
 
-        var setCardName = function (system, card) {
-          var deferred = $.Deferred();
+        const setCardName = function (system, card) {
+          const deferred = $.Deferred();
           if (!_.isEmpty(card)) {
             requireGW(["cards/" + card[0].id], function (data) {
               system.star.ai().cardName = loc(data.summarize());
@@ -534,15 +534,15 @@ function gwoCard() {
           return deferred.promise();
         };
 
-        var dealCardToSelectableAI = function (win, turnState) {
-          var deferred = $.Deferred();
+        const dealCardToSelectableAI = function (win, turnState) {
+          const deferred = $.Deferred();
 
           // Avoid running twice after winning a fight
           if (!win || turnState === "end") {
-            var deferredQueue = [];
+            const deferredQueue = [];
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
-              var ai = system.star.ai();
+              const ai = system.star.ai();
               if (model.canSelect(starIndex) && ai && !ai.treasurePlanet) {
                 deferredQueue.push(
                   chooseCards({
@@ -568,20 +568,20 @@ function gwoCard() {
           return deferred.promise();
         };
 
-        var setupGeneralCommander = function () {
-          var cards = inventory.cards();
+        const setupGeneralCommander = function () {
+          const cards = inventory.cards();
           if (
             cards.length === 1 &&
             cards[0].id === "gwc_start_subcdr" &&
             !cards[0].minions
           ) {
-            var ai = gwoSettings && gwoSettings.ai;
+            const ai = gwoSettings && gwoSettings.ai;
             _.times(2, function () {
-              var subcommander = _.cloneDeep(
+              const subcommander = _.cloneDeep(
                 _.sample(GWFactions[playerFaction].minions)
               );
               if (ai === "Penchant") {
-                var penchantValues = gwoAI.penchants();
+                const penchantValues = gwoAI.penchants();
                 subcommander.character =
                   subcommander.character +
                   (" " + loc(penchantValues.penchantName));
@@ -602,7 +602,7 @@ function gwoCard() {
         };
         setupGeneralCommander();
 
-        var dealCardToSelectableAIWhenWarStarts = function (settings) {
+        const dealCardToSelectableAIWhenWarStarts = function (settings) {
           if (settings && !settings.firstDealComplete) {
             settings.firstDealComplete = true;
             dealCardToSelectableAI(false).then(function () {
@@ -615,21 +615,21 @@ function gwoCard() {
         /* Cheat code start */
 
         // Cheats use our deck
-        var dealCard = function (params) {
-          var result = $.Deferred();
+        const dealCard = function (params) {
+          const result = $.Deferred();
           loaded.then(function () {
-            var card = _.find(model.gwoCards, function (cardId) {
+            const card = _.find(model.gwoCards, function (cardId) {
               return cardId === params.id;
             });
 
             // Simulate a deal
-            var context =
+            const context =
               card.getContext &&
               card.getContext(params.galaxy, params.inventory);
 
-            var deal = card.deal && card.deal(params.star, context);
-            var product = { id: params.id };
-            var cardParams = deal && deal.params;
+            const deal = card.deal && card.deal(params.star, context);
+            const product = { id: params.id };
+            const cardParams = deal && deal.params;
             if (cardParams && _.isObject(cardParams)) {
               _.assign(product, cardParams);
             }
@@ -643,10 +643,10 @@ function gwoCard() {
 
         /* end of GWO implementation of GWDealer */
 
-        var testMinions = function (product, inventory) {
+        const testMinions = function (product, inventory) {
           _.forEach(GWFactions, function (faction) {
             _.forEach(faction.minions, function (minion) {
-              var minionStock = _.cloneDeep(product);
+              const minionStock = _.cloneDeep(product);
               minionStock.minion = minion;
               inventory.cards.push(minionStock);
               inventory.cards.pop();
@@ -659,8 +659,8 @@ function gwoCard() {
               require([
                 "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
               ], function (gwoUnit) {
-                var clusterSecurity = gwoUnit.colonel;
-                var clusterWorker = gwoUnit.angel;
+                const clusterSecurity = gwoUnit.colonel;
+                const clusterWorker = gwoUnit.angel;
 
                 if (
                   !CommanderUtility.bySpec.getObjectName(
@@ -680,14 +680,14 @@ function gwoCard() {
           });
         };
 
-        var dealSubCommander = function (product) {
-          var subcommander = _.cloneDeep(
+        const dealSubCommander = function (product) {
+          const subcommander = _.cloneDeep(
             _.sample(GWFactions[playerFaction].minions)
           );
-          var ai = gwoSettings && gwoSettings.ai;
+          const ai = gwoSettings && gwoSettings.ai;
 
           if (ai === "Penchant") {
-            var penchantValues = gwoAI.penchants();
+            const penchantValues = gwoAI.penchants();
             subcommander.character =
               subcommander.character + (" " + loc(penchantValues.penchantName));
             subcommander.personality.personality_tags =
@@ -701,11 +701,11 @@ function gwoCard() {
           return product;
         };
 
-        var testCardForMatches = function (inventory, card) {
+        const testCardForMatches = function (inventory, card) {
           model.currentSystemCardList().push(card);
 
-          var cardsDealt = [card];
-          var duplicate = doNotDealCard(
+          const cardsDealt = [card];
+          const duplicate = doNotDealCard(
             inventory,
             card,
             cardsDealt,
@@ -718,20 +718,25 @@ function gwoCard() {
           }
         };
 
-        var applyCheatCards = function (product, inventory) {
+        const applyCheatCards = function (product, inventory) {
           inventory.cards.push(product);
           inventory.applyCards();
         };
 
-        var setupNewCardSlot = function (product) {
+        const setupNewCardSlot = function (product) {
           product.allowOverflow = true;
           product.unique = Math.random();
 
           return product;
         };
 
-        var expandInventorySize = function (galaxy, inventory, star, maxCards) {
-          var sizeDifference = inventory.cards().length - maxCards;
+        const expandInventorySize = function (
+          galaxy,
+          inventory,
+          star,
+          maxCards
+        ) {
+          const sizeDifference = inventory.cards().length - maxCards;
           _.times(sizeDifference, function () {
             dealCard({
               id: "gwc_add_card_slot",
@@ -747,8 +752,8 @@ function gwoCard() {
 
         // We need cheats to deal from our deck
         model.cheats.testCards = function () {
-          var star = galaxy.stars()[game.currentStar()];
-          var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
+          const star = galaxy.stars()[game.currentStar()];
+          const maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
 
           _.forEach(model.gwoCards, function (cardId) {
             dealCard({
@@ -773,8 +778,8 @@ function gwoCard() {
         };
 
         model.cheats.giveCard = function () {
-          var id = model.cheats.giveCardId();
-          var cardId = _.find(model.gwoCards, function (card) {
+          const id = model.cheats.giveCardId();
+          const cardId = _.find(model.gwoCards, function (card) {
             return card === id;
           });
 
@@ -821,8 +826,8 @@ function gwoCard() {
           } else {
             cardsOffered = numCardsToOffer;
           }
-          var star = game.galaxy().stars()[game.currentStar()];
-          var dealStarCards = chooseCards({
+          const star = game.galaxy().stars()[game.currentStar()];
+          const dealStarCards = chooseCards({
             count:
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
             star: star,
@@ -841,7 +846,7 @@ function gwoCard() {
 
             if (ok) {
               // Combine the deal with pre-dealt system card
-              var cardList = result.concat(star.cardList());
+              const cardList = result.concat(star.cardList());
               star.cardList(cardList);
             }
           });
@@ -860,10 +865,10 @@ function gwoCard() {
         model.win = function (selectedCardIndex) {
           model.exitGate($.Deferred());
 
-          var techCard = model.currentSystemCardList()[selectedCardIndex];
-          var techAudio =
+          const techCard = model.currentSystemCardList()[selectedCardIndex];
+          const techAudio =
             techCard && techCard.audio() ? techCard.audio().found : null;
-          var playTechAudio = !!techCard;
+          const playTechAudio = !!techCard;
 
           game.winTurn(selectedCardIndex).then(function (didWin) {
             if (!didWin) {

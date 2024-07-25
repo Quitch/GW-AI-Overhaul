@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GW, GWCStart, gwoCard, gwoUnit) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:General Commander"),
@@ -49,7 +49,7 @@ define([
           _.forEach(context.minions, function (minion) {
             inventory.minions.push(minion);
           });
-          var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
+          const minionSpecs = _.compact(_.pluck(context.minions, "commander"));
           inventory.addUnits(minionSpecs);
         }
         ++buffCount;

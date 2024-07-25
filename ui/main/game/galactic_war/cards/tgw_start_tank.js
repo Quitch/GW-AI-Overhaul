@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Buff Commander"),
@@ -29,7 +29,7 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          var mods = [];
+          const mods = [];
           _.forEach(gwoGroup.mobile, function (unit) {
             mods.push(
               {

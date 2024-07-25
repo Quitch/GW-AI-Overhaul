@@ -1,7 +1,7 @@
 var gwoSystemChangesLoaded;
 
 function gwoSystemChanges() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoSystemChangesLoaded || game.isTutorial()) {
     return;
@@ -10,8 +10,8 @@ function gwoSystemChanges() {
   gwoSystemChangesLoaded = true;
 
   try {
-    var galaxy = game.galaxy();
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const galaxy = game.galaxy();
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     if (gwoSettings) {
       console.log(
         "War created using Galactic War Overhaul v" + gwoSettings.version
@@ -28,7 +28,7 @@ function gwoSystemChanges() {
       model.centerOnPlayer();
     });
 
-    function createBitmap(params) {
+    const createBitmap = function (params) {
       if (!params.url) {
         throw new Error("No URL specified");
       }
@@ -36,13 +36,13 @@ function gwoSystemChanges() {
         throw new Error("No size specified");
       }
 
-      var result = new createjs.Bitmap(params.url);
+      const result = new createjs.Bitmap(params.url);
       result.x = 0;
       result.y = 0;
       result.regX = params.size[0] / 2;
       result.regY = params.size[1] / 2;
 
-      var scale = params.scale;
+      const scale = params.scale;
       if (!_.isUndefined(scale)) {
         result.scaleX = scale;
         result.scaleY = scale;
@@ -54,8 +54,8 @@ function gwoSystemChanges() {
           throw new Error("noCache incompatible with color");
         }
 
-        var updateFilters = function () {
-          var color = result.color();
+        const updateFilters = function () {
+          const color = result.color();
           result.filters = [];
           if (color) {
             result.filters.push(
@@ -88,9 +88,9 @@ function gwoSystemChanges() {
         });
       }
       return result;
-    }
+    };
 
-    function sortContainer(container) {
+    const sortContainer = function (container) {
       container.sortChildren(function (a, b) {
         if (_.isUndefined(a.z)) {
           if (_.isUndefined(b.z)) {
@@ -102,17 +102,17 @@ function gwoSystemChanges() {
         }
         return a.z - b.z;
       });
-    }
+    };
 
     // Add tooltips, starting planet, and thruster icons on planet intelligence icons
     $(".all-planets").replaceWith(
       loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html")
     );
 
-    function SelectionViewModel(config) {
-      var self = this;
-      var galaxyView = config.galaxy;
-      var hover = !!config.hover;
+    const SelectionViewModel = function (config) {
+      const self = this;
+      const galaxyView = config.galaxy;
+      const hover = !!config.hover;
       var iconUrl = config.iconUrl;
       var color = config.color;
 
@@ -138,9 +138,9 @@ function gwoSystemChanges() {
         return self.star() >= 0 ? galaxyView.systems()[self.star()] : undefined;
       });
 
-      var extractor = function (field) {
+      const extractor = function (field) {
         return ko.pureComputed(function () {
-          var system = self.system();
+          const system = self.system();
           if (system) {
             // Display system description in intelligence panel
             return loc(system[field]()) || "";
@@ -164,14 +164,14 @@ function gwoSystemChanges() {
       self.scale.addChild(self.icon);
 
       ko.computed(function () {
-        var system = self.system();
+        const system = self.system();
         var visible = !!system && self.visible();
         if (hover && visible) {
           visible = system.mouseOver() !== system.mouseOut();
         }
         self.icon.visible = visible;
         if (self.icon.visible) {
-          var container = system.systemDisplay;
+          const container = system.systemDisplay;
           container.addChild(self.scale);
           sortContainer(container);
         } else if (self.scale.parent) {
@@ -196,17 +196,17 @@ function gwoSystemChanges() {
 
         // Create planets' tooltips for intelligence panel
         self.system.subscribe(function () {
-          var newSystem = self.system();
+          const newSystem = self.system();
 
           if (newSystem) {
             newSystem.selected(true);
 
-            var radius = loc("!LOC:Radius:");
-            var metalSpots = loc("!LOC:Metal Spots:");
-            var metalClusters = loc("!LOC:Metal Clusters:");
-            var metalDensity = loc("!LOC:Metal Density:");
-            var temperature = loc("!LOC:Temperature:");
-            var waterHeight = loc("!LOC:Water Height:");
+            const radius = loc("!LOC:Radius:");
+            const metalSpots = loc("!LOC:Metal Spots:");
+            const metalClusters = loc("!LOC:Metal Clusters:");
+            const metalDensity = loc("!LOC:Metal Density:");
+            const temperature = loc("!LOC:Temperature:");
+            const waterHeight = loc("!LOC:Water Height:");
 
             model.gwoPlanetData = _.map(
               self.system().planets(),
@@ -252,7 +252,7 @@ function gwoSystemChanges() {
           }
         });
       }
-    }
+    };
 
     // Turn off the original selection icon before replacing model.selection()
     model.selection.visible(false);
@@ -271,8 +271,8 @@ function gwoSystemChanges() {
       if (model.player.moving()) {
         return false;
       }
-      var from = game.currentStar();
-      var to = model.selection.star();
+      const from = game.currentStar();
+      const to = model.selection.star();
       if (to < 0 || to > galaxy.stars().length) {
         return false;
       }
@@ -299,7 +299,7 @@ function gwoSystemChanges() {
 
     // System colours
     requireGW(["shared/gw_factions"], function (GWFactions) {
-      var normalizedColor = function (faction) {
+      const normalizedColor = function (faction) {
         return _.map(faction.color[0], function (c) {
           return c / 255;
         });
@@ -311,17 +311,17 @@ function gwoSystemChanges() {
         api.tally.incStatInt("gw_eliminate_faction");
 
         _.forEach(model.galaxy.systems(), function (system) {
-          var star = system.star;
-          var ai = star.ai();
+          const star = system.star;
+          const ai = star.ai();
 
           if (ai && ai.team === defeatedTeam) {
-            var replacementAI = _.first(ai.foes);
+            const replacementAI = _.first(ai.foes);
             if (replacementAI) {
               _.forEach(_.keys(replacementAI), function (key) {
                 star.ai()[key] = replacementAI[key];
               });
 
-              var factionColor = normalizedColor(GWFactions[ai.faction]);
+              const factionColor = normalizedColor(GWFactions[ai.faction]);
               system.ownerColor(factionColor.concat(3));
 
               star.ai().foes = _.rest(ai.foes);
@@ -346,7 +346,7 @@ function gwoSystemChanges() {
       };
 
       _.forEach(model.galaxy.systems(), function (system) {
-        var ai = system.star.ai();
+        const ai = system.star.ai();
         if (!ai) {
           return;
         }
@@ -354,7 +354,7 @@ function gwoSystemChanges() {
         // Colour inner ring to match ally or other faction present
         var innerRing = {};
         if (ai.ally || ai.foes) {
-          var innerColour = ai.ally
+          const innerColour = ai.ally
             ? normalizedColor(GWFactions[ai.ally.faction])
             : normalizedColor(GWFactions[ai.foes[0].faction]);
           innerRing = createBitmap({
@@ -364,7 +364,7 @@ function gwoSystemChanges() {
             scale: 0.71,
             alpha: 0.8,
           });
-          var scaleInnerRing = new createjs.Container();
+          const scaleInnerRing = new createjs.Container();
           scaleInnerRing.addChild(innerRing);
           scaleInnerRing.z = 0;
           system.systemDisplay.addChild(scaleInnerRing);

@@ -4,7 +4,7 @@ define({
       return _.includes(inventoryUnits, units);
     }
 
-    for (var unit of units) {
+    for (const unit of units) {
       if (_.includes(inventoryUnits, unit)) {
         return true;
       }
@@ -18,7 +18,7 @@ define({
       return !_.includes(inventoryUnits, units);
     }
 
-    for (var unit of units) {
+    for (const unit of units) {
       if (!_.includes(inventoryUnits, unit)) {
         return true;
       }
@@ -27,7 +27,7 @@ define({
   },
 
   loadoutIcon: function (loadoutId) {
-    var highestDifficultyDefeated = ko
+    const highestDifficultyDefeated = ko
       .observableArray()
       .extend({ local: "gwaio_victory_" + loadoutId });
     var icon = -1;
@@ -40,8 +40,8 @@ define({
       icon = highestDifficultyDefeated();
     }
 
-    var iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
-    var append = hardcore ? "_hardcore.png" : ".png";
+    const iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
+    const append = hardcore ? "_hardcore.png" : ".png";
 
     switch (icon) {
       case -1: {
@@ -81,7 +81,7 @@ define({
 
   applyDulls: function (card, inventory, units) {
     if (inventory.lookupCard(card) === 0) {
-      var buffCount = inventory.getTag("", "buffCount", 0);
+      const buffCount = inventory.getTag("", "buffCount", 0);
       if (buffCount) {
         inventory.removeUnits(units);
         inventory.setTag("", "buffCount", undefined);

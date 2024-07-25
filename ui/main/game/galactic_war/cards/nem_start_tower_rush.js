@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Defense Tech Commander"),
@@ -30,10 +30,10 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
 
-          var units = gwoGroup.structuresDefencesAdvanced.concat(
+          const units = gwoGroup.structuresDefencesAdvanced.concat(
             gwoUnit.laserDefenseTower
           );
-          var mods = [];
+          const mods = [];
           _.forEach(units, function (unit) {
             mods.push(
               {
@@ -50,7 +50,7 @@ define([
               }
             );
           });
-          var costUnits = _.filter(
+          const costUnits = _.filter(
             gwoGroup.structuresDefences,
             function (defence) {
               return defence !== gwoUnit.wall && defence !== gwoUnit.landMine;
@@ -86,7 +86,7 @@ define([
               value: 2,
             }
           );
-          var weapons = _.filter(
+          const weapons = _.filter(
             gwoGroup.structuresDefencesWeapons,
             function (defence) {
               return defence !== gwoUnit.landMineWeapon;
@@ -122,14 +122,14 @@ define([
           });
           inventory.addMods(mods);
 
-          var structures = [
+          const structures = [
             "AdvancedAirDefense",
             "AdvancedLandDefense",
             "AdvancedNavalDefense",
             "BasicLandDefense",
             "TML",
           ];
-          var aiMods = _.flatten(
+          const aiMods = _.flatten(
             _.map(structures, function (structure) {
               return [
                 {

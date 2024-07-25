@@ -1,6 +1,6 @@
 define(["shared/gw_common"], function (GW) {
   return function (gameState, saveStars) {
-    var starsSaved = !saveStars;
+    const starsSaved = !saveStars;
 
     model.game().saved(starsSaved);
     model.driveAccessInProgress(true);

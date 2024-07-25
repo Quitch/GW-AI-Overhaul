@@ -1,7 +1,7 @@
 define({
   aiInUse: function () {
-    var galaxy = model.game().galaxy();
-    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    const galaxy = model.game().galaxy();
+    const originSystem = galaxy.stars()[galaxy.origin()].system();
     if (originSystem.gwaio) {
       return originSystem.gwaio.ai;
     }
@@ -9,14 +9,14 @@ define({
   },
 
   getAIPath: function (type) {
-    var game = model.game();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
-    var inventory = game.inventory();
-    var smartSubcommanders = _.some(inventory.cards(), {
+    const game = model.game();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const inventory = game.inventory();
+    const smartSubcommanders = _.some(inventory.cards(), {
       id: "gwaio_upgrade_subcommander_tactics",
     });
-    var aiBrain = this.aiInUse();
-    var quellerPath = "/pa/ai_queller/";
+    const aiBrain = this.aiInUse();
+    const quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
     if (type === "cluster") {
       return "/pa/ai_cluster/";
@@ -52,7 +52,7 @@ define({
   },
 
   penchants: function () {
-    var penchantTags = [
+    const penchantTags = [
       "Vanilla",
       "Artillery",
       ["Fortress", "Minelayer"], // Fortress
@@ -69,7 +69,7 @@ define({
       "Platoon",
       "Minelayer",
     ];
-    var penchantExclusions = [
+    const penchantExclusions = [
       [], // Vanilla
       [], // Artillery
       ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
@@ -151,7 +151,7 @@ define({
       ["PenchantPlatoon"], // Platoon
       [], // Minelayer
     ];
-    var penchantNames = [
+    const penchantNames = [
       "", // Vanilla - no modifications
       "!LOC:Artillery",
       "!LOC:Fortress",
@@ -168,10 +168,11 @@ define({
       "!LOC:Platoon",
       "!LOC:Minelayer",
     ];
-    var penchantTag = _.sample(penchantTags);
-    var penchantIndex = _.indexOf(penchantTags, penchantTag);
-    var personalityTags = penchantExclusions[penchantIndex].concat(penchantTag);
-    var penchantName = loc(penchantNames[penchantIndex]);
+    const penchantTag = _.sample(penchantTags);
+    const penchantIndex = _.indexOf(penchantTags, penchantTag);
+    const personalityTags =
+      penchantExclusions[penchantIndex].concat(penchantTag);
+    const penchantName = loc(penchantNames[penchantIndex]);
 
     return {
       penchants: personalityTags,

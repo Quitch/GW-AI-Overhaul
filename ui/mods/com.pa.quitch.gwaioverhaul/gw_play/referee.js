@@ -23,8 +23,8 @@ function gwoRefereeChanges() {
         gwoGenerateAI,
         gwoGenerateConfig
       ) {
-        var gwoReferee = function (game) {
-          var self = this;
+        const gwoReferee = function (game) {
+          const self = this;
 
           self.game = ko.observable(game);
           self.files = ko.observable();
@@ -33,25 +33,25 @@ function gwoRefereeChanges() {
         };
 
         gwoReferee.prototype.stripSystems = function () {
-          var self = this;
+          const self = this;
 
           // remove the systems from the galaxy
-          var gw = self.config().gw;
+          const gw = self.config().gw;
           GW.Game.saveSystems(gw);
         };
 
         gwoReferee.prototype.mountFiles = function () {
-          var self = this;
+          const self = this;
 
-          var deferred = $.Deferred();
+          const deferred = $.Deferred();
 
-          var allFiles = _.cloneDeep(self.files());
+          const allFiles = _.cloneDeep(self.files());
           // The player unit list needs to be the superset of units for proper UI behavior
-          var unitList = "/pa/units/unit_list.json";
-          var playerUnits = allFiles[unitList + ".player"];
-          var aiUnits = allFiles[unitList + ".ai"];
+          const unitList = "/pa/units/unit_list.json";
+          const playerUnits = allFiles[unitList + ".player"];
+          const aiUnits = allFiles[unitList + ".ai"];
           if (playerUnits) {
-            var allUnits = _.cloneDeep(playerUnits);
+            const allUnits = _.cloneDeep(playerUnits);
             if (aiUnits && allUnits.units) {
               allUnits.units = allUnits.units.concat(aiUnits.units);
             }
@@ -62,7 +62,7 @@ function gwoRefereeChanges() {
             _.assign(allFiles, self.localFiles());
           }
 
-          var cookedFiles = _.mapValues(allFiles, function (value) {
+          const cookedFiles = _.mapValues(allFiles, function (value) {
             if (!_.isString(value)) {
               return JSON.stringify(value);
             } else {
@@ -86,7 +86,7 @@ function gwoRefereeChanges() {
 
         GWReferee.hire = function (game) {
           // call our own gw_referee implementation
-          var ref = new gwoReferee(game);
+          const ref = new gwoReferee(game);
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(_.bind(gwoGenerateAI, ref))
             .then(_.bind(gwoGenerateConfig, ref))

@@ -38,7 +38,7 @@ define([
         },
       ]);
 
-      var units = [
+      const units = [
         "AdvancedAirDefense",
         "AdvancedLandDefense",
         "AdvancedNavalDefense",
@@ -53,7 +53,7 @@ define([
         "TML",
         "UnitCannon",
       ];
-      var aiMods = _.map(units, function (unit) {
+      const aiMods = _.map(units, function (unit) {
         return {
           type: "fabber",
           op: "append",

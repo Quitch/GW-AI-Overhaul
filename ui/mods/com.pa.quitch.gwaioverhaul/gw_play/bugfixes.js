@@ -1,7 +1,7 @@
 var gwoBugfixesLoaded;
 
 function gwoBugfixes() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoBugfixesLoaded || game.isTutorial()) {
     return;
@@ -10,8 +10,8 @@ function gwoBugfixes() {
   gwoBugfixesLoaded = true;
 
   try {
-    var galaxy = game.galaxy();
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const galaxy = game.galaxy();
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
@@ -44,9 +44,9 @@ function gwoBugfixes() {
 
       // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
       if (!gwoSettings.clusterFixed) {
-        var warVersion = gwoSettings.version;
-        var fixedVersion = "5.52.2";
-        var clusterFixDeployed = warVersion.localeCompare(
+        const warVersion = gwoSettings.version;
+        const fixedVersion = "5.52.2";
+        const clusterFixDeployed = warVersion.localeCompare(
           fixedVersion,
           undefined,
           {
@@ -57,7 +57,7 @@ function gwoBugfixes() {
         if (clusterFixDeployed >= 0) {
           gwoSettings.clusterFixed = true;
         } else {
-          var applyFix = function (mod) {
+          const applyFix = function (mod) {
             if (mod.path === "buildable_types") {
               mod.value = mod.value + " & Custom58";
               return mod.file;
@@ -67,10 +67,11 @@ function gwoBugfixes() {
             }
           };
 
-          var clusterTypeFix = function (mod) {
-            var security =
+          const clusterTypeFix = function (mod) {
+            const security =
               "/pa/units/land/bot_support_commander/bot_support_commander.json";
-            var worker = "/pa/units/air/support_platform/support_platform.json";
+            const worker =
+              "/pa/units/air/support_platform/support_platform.json";
             if (mod.file === security && securityFix === false) {
               return applyFix(mod);
             }
@@ -80,14 +81,14 @@ function gwoBugfixes() {
           };
 
           if (!gwoSettings.clusterFixed && star.ai()) {
-            var ai = star.ai();
-            for (var mod of ai.inventory) {
+            const ai = star.ai();
+            for (const mod of ai.inventory) {
               if (ai.isCluster) {
-                var security =
+                const security =
                   "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                var worker =
+                const worker =
                   "/pa/units/air/support_platform/support_platform.json";
-                var result = clusterTypeFix(mod);
+                const result = clusterTypeFix(mod);
                 switch (result) {
                   case security:
                     securityFix = true;
