@@ -1,4 +1,4 @@
-const gwoMenuLoaded;
+var gwoMenuLoaded;
 
 function gwoMenu() {
   if (gwoMenuLoaded || model.gameType() !== "Galactic War") {

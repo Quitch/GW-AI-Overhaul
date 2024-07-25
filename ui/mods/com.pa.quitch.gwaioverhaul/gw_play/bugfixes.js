@@ -82,13 +82,13 @@ function gwoBugfixes() {
 
           if (!gwoSettings.clusterFixed && star.ai()) {
             const ai = star.ai();
-            for (const mod of ai.inventory) {
+            for (var mod of ai.inventory) {
               if (ai.isCluster) {
                 const security =
                   "/pa/units/land/bot_support_commander/bot_support_commander.json";
                 const worker =
                   "/pa/units/air/support_platform/support_platform.json";
-                const result = clusterTypeFix(mod);
+                var result = clusterTypeFix(mod);
                 switch (result) {
                   case security:
                     securityFix = true;

@@ -48,26 +48,26 @@ define([
       const workList = [[from]];
 
       while (workList.length > 0) {
-        const path = workList.shift();
+        var path = workList.shift();
 
-        const node = path[path.length - 1];
-        const nodeNeighbors = neighborsMap[node];
+        var node = path[path.length - 1];
+        var nodeNeighbors = neighborsMap[node];
 
         checked[node] = true;
 
-        for (const neighbor of nodeNeighbors) {
-          const other = neighbor;
+        for (var neighbor of nodeNeighbors) {
+          var other = neighbor;
 
           if (checked[other]) {
             continue;
           } // ignore loop
 
           if (other === to) {
-            const previous = _.last(path);
+            var previous = _.last(path);
 
             // prevent pathing through unexplored systems for fog of war
 
-            const explored = self.stars()[previous].explored() || toExplored;
+            var explored = self.stars()[previous].explored() || toExplored;
 
             if (!explored && !noFog) {
               continue;
@@ -78,13 +78,13 @@ define([
             return path;
           }
 
-          const otherStar = self.stars()[other];
-          const otherVisited = otherStar.history().length > 0;
+          var otherStar = self.stars()[other];
+          var otherVisited = otherStar.history().length > 0;
 
-          const valid = noFog ? otherVisited : otherStar.explored();
+          var valid = noFog ? otherVisited : otherStar.explored();
 
           if (valid) {
-            const newPath = _.cloneDeep(path);
+            var newPath = _.cloneDeep(path);
             newPath.push(other);
 
             workList.push(newPath);

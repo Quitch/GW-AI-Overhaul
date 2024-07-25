@@ -1,4 +1,4 @@
-const gwoWarOverLoadoutStatsLoaded;
+var gwoWarOverLoadoutStatsLoaded;
 
 // Track the highest difficulty defeated for loadout icons
 function gwoWarOverLoadoutStats() {
@@ -40,7 +40,7 @@ function gwoWarOverLoadoutStats() {
       const highestDifficultyDefeatedWithLoadout = ko
         .observable()
         .extend({ local: "gwaio_victory_" + loadout });
-      const previousBest = -1;
+      var previousBest = -1;
 
       // Value wasn't an array in v5.34.0 and earlier
       if (_.isArray(highestDifficultyDefeatedWithLoadout())) {
