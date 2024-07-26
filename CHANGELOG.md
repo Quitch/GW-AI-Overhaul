@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Guardians adapt their unit type selection to more closely match the tech you brought
+
 ### Fixed
 
 - Commander being highlighted in card tooltips
