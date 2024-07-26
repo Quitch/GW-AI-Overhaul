@@ -380,7 +380,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.65.1";
+          const version = "5.66.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
