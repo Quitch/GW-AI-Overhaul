@@ -191,7 +191,7 @@ define([
         cookStep(level);
 
         if (_.isString(spec[level])) {
-          const newSpec = load(spec[level]);
+          var newSpec = load(spec[level]);
           if (!newSpec) {
             return reportError("Undefined mod spec encountered,", level);
           }

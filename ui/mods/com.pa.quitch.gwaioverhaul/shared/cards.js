@@ -4,7 +4,7 @@ define({
       return _.includes(inventoryUnits, units);
     }
 
-    for (const unit of units) {
+    for (var unit of units) {
       if (_.includes(inventoryUnits, unit)) {
         return true;
       }
@@ -18,7 +18,7 @@ define({
       return !_.includes(inventoryUnits, units);
     }
 
-    for (const unit of units) {
+    for (var unit of units) {
       if (!_.includes(inventoryUnits, unit)) {
         return true;
       }
