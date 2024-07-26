@@ -104,6 +104,43 @@ define([
     };
   };
 
+  const countCards = function (cards, type) {
+    var countOfType = 0;
+    _.forEach(cards, function (card) {
+      if (_.includes(card.id, type)) {
+        countOfType++;
+      }
+    });
+    return countOfType;
+  };
+
+  const notZero = function (typeCards, totalCards) {
+    if (typeCards === 0) {
+      return 0;
+    }
+    return typeCards / totalCards;
+  };
+
+  const setupGuardianPersonality = function (cards, personality) {
+    const totalAirCards = countCards(cards, "_air");
+    const totalBotCards = countCards(cards, "_bot");
+    const totalOrbitalCards = countCards(cards, "_orbital");
+    const totalSeaCards = countCards(cards, "_sea");
+    const totalVehicleCards = countCards(cards, "_vehicle");
+    const totalCards =
+      totalAirCards +
+      totalBotCards +
+      totalOrbitalCards +
+      totalSeaCards +
+      totalVehicleCards;
+    personality.percent_air = notZero(totalAirCards, totalCards);
+    personality.percent_bot = notZero(totalBotCards, totalCards);
+    personality.percent_orbital = notZero(totalOrbitalCards, totalCards);
+    personality.percent_naval = notZero(totalSeaCards, totalCards);
+    personality.percent_vehicle = notZero(totalVehicleCards, totalCards);
+    return personality;
+  };
+
   return function () {
     const self = this;
 
@@ -154,6 +191,9 @@ define([
 
     // Set up AI System Owner
     ai = setAdvEcoMod(ai, aiBrain);
+    if (ai.mirrorMode === true) {
+      ai.personality = setupGuardianPersonality(cards, ai.personality);
+    }
 
     // Avoid breaking enemies from earlier versions
     const aiIsCluster = gwoAI.isCluster(ai);
