@@ -133,11 +133,13 @@ define([
       totalOrbitalCards +
       totalSeaCards +
       totalVehicleCards;
-    personality.percent_air = notZero(totalAirCards, totalCards);
-    personality.percent_bot = notZero(totalBotCards, totalCards);
-    personality.percent_orbital = notZero(totalOrbitalCards, totalCards);
-    personality.percent_naval = notZero(totalSeaCards, totalCards);
-    personality.percent_vehicle = notZero(totalVehicleCards, totalCards);
+    if (totalCards !== 0) {
+      personality.percent_air = notZero(totalAirCards, totalCards);
+      personality.percent_bot = notZero(totalBotCards, totalCards);
+      personality.percent_orbital = notZero(totalOrbitalCards, totalCards);
+      personality.percent_naval = notZero(totalSeaCards, totalCards);
+      personality.percent_vehicle = notZero(totalVehicleCards, totalCards);
+    }
     return personality;
   };
 
