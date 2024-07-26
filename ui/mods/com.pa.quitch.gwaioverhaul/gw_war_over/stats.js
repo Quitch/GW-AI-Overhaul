@@ -9,16 +9,16 @@ function gwoWarOverLoadoutStats() {
   gwoWarOverLoadoutStatsLoaded = true;
 
   try {
-    var game = model.game();
-    var galaxy = game.galaxy();
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const game = model.game();
+    const galaxy = game.galaxy();
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
     if (
       gwoSettings &&
       gwoSettings.cheatsUsed !== true &&
       game.gameState() === "won"
     ) {
-      var difficultyLevelAsInt =
+      const difficultyLevelAsInt =
         _.findIndex(
           [
             "!LOC:Beginner",
@@ -32,12 +32,12 @@ function gwoWarOverLoadoutStats() {
             "!LOC:Uber",
           ],
           function (difficulty) {
-            var warDifficulty = gwoSettings.difficulty;
+            const warDifficulty = gwoSettings.difficulty;
             return difficulty === warDifficulty;
           }
         ) - 1; // -1 because we added Beginner later
-      var loadout = game.inventory().cards()[0].id;
-      var highestDifficultyDefeatedWithLoadout = ko
+      const loadout = game.inventory().cards()[0].id;
+      const highestDifficultyDefeatedWithLoadout = ko
         .observable()
         .extend({ local: "gwaio_victory_" + loadout });
       var previousBest = -1;

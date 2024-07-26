@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (gwoColour, gwoAI) {
-  var setAIPath = function (isCluster, isPlayer) {
+  const setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPath("cluster");
     } else if (isPlayer) {
@@ -11,7 +11,7 @@ define([
     return gwoAI.getAIPath("enemy");
   };
 
-  var applySubcommanderTacticsTech = function (personality, cards) {
+  const applySubcommanderTacticsTech = function (personality, cards) {
     if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
       personality.micro_type = 2;
       personality.go_for_the_kill = true;
@@ -23,7 +23,7 @@ define([
     return personality;
   };
 
-  var applySubcommanderFabberTech = function (personality, cards) {
+  const applySubcommanderFabberTech = function (personality, cards) {
     if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
       personality.max_basic_fabbers = Math.round(
         personality.max_basic_fabbers * 1.5
@@ -35,7 +35,7 @@ define([
     return personality;
   };
 
-  var applySubcommanderDuplicationTech = function (cards) {
+  const applySubcommanderDuplicationTech = function (cards) {
     if (
       _.some(cards, {
         id: "gwaio_upgrade_subcommander_duplication",
@@ -46,7 +46,7 @@ define([
     return 1;
   };
 
-  var setAdvEcoMod = function (aiRoot, brain) {
+  const setAdvEcoMod = function (aiRoot, brain) {
     if (brain !== "Queller") {
       aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
       aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
@@ -54,7 +54,7 @@ define([
     return aiRoot;
   };
 
-  var aiCommander = function (name, unit, landingOptions, commanderNumber) {
+  const aiCommander = function (name, unit, landingOptions, commanderNumber) {
     while (commanderNumber > landingOptions.length - 1) {
       commanderNumber -= landingOptions.length;
     }
@@ -66,7 +66,7 @@ define([
     };
   };
 
-  var getAIPersonalityName = function (ai) {
+  const getAIPersonalityName = function (ai) {
     var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
     if (ai.penchantName) {
       personalityName = personalityName + " " + loc(ai.penchantName);
@@ -74,9 +74,9 @@ define([
     return personalityName;
   };
 
-  var setupAIArmy = function (ai, index, specTag, alliance) {
-    var slotsArray = [];
-    var aiLandingOptions = _.shuffle([
+  const setupAIArmy = function (ai, index, specTag, alliance) {
+    const slotsArray = [];
+    const aiLandingOptions = _.shuffle([
       "off_player_planet",
       "on_player_planet",
       "no_restriction",
@@ -104,16 +104,64 @@ define([
     };
   };
 
+  const countCards = function (cards, type) {
+    var countOfType = 0;
+    _.forEach(cards, function (card) {
+      if (_.includes(card.id, type)) {
+        countOfType++;
+      }
+    });
+    return countOfType;
+  };
+
+  const calculatePercentage = function (typeCards, totalCards) {
+    if (typeCards === 0) {
+      return 0;
+    }
+    return typeCards / totalCards;
+  };
+
+  const setupGuardianPersonality = function (cards, personality) {
+    const totalAirCards = countCards(cards, "_air");
+    const totalBotCards = countCards(cards, "_bot");
+    const totalOrbitalCards = countCards(cards, "_orbital");
+    const totalSeaCards = countCards(cards, "_sea");
+    const totalVehicleCards = countCards(cards, "_vehicle");
+    const totalCards =
+      totalAirCards +
+      totalBotCards +
+      totalOrbitalCards +
+      totalSeaCards +
+      totalVehicleCards;
+    if (totalCards !== 0) {
+      personality.percent_air = calculatePercentage(totalAirCards, totalCards);
+      personality.percent_bot = calculatePercentage(totalBotCards, totalCards);
+      personality.percent_orbital = calculatePercentage(
+        totalOrbitalCards,
+        totalCards
+      );
+      personality.percent_naval = calculatePercentage(
+        totalSeaCards,
+        totalCards
+      );
+      personality.percent_vehicle = calculatePercentage(
+        totalVehicleCards,
+        totalCards
+      );
+    }
+    return personality;
+  };
+
   return function () {
-    var self = this;
+    const self = this;
 
     // Set up the player
-    var game = self.game();
-    var inventory = game.inventory();
-    var cards = inventory.cards();
-    var playerName = ko.observable().extend({ session: "displayName" });
-    var playerTag = ".player";
-    var armies = [
+    const game = self.game();
+    const inventory = game.inventory();
+    const cards = inventory.cards();
+    const playerName = ko.observable().extend({ session: "displayName" });
+    const playerTag = ".player";
+    const armies = [
       {
         slots: [{ name: playerName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
@@ -122,13 +170,13 @@ define([
         alliance_group: 1,
       },
     ];
-    var currentStar = game.galaxy().stars()[game.currentStar()];
+    const currentStar = game.galaxy().stars()[game.currentStar()];
     var ai = currentStar.ai();
-    var alliedCommanders = _.isUndefined(ai.ally)
+    const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
-    var playerFaction = inventory.getTag("global", "playerFaction");
-    var playerIsCluster = playerFaction === 4;
+    const playerFaction = inventory.getTag("global", "playerFaction");
+    const playerIsCluster = playerFaction === 4;
 
     _.forEach(alliedCommanders, function (ally, index) {
       // Avoid breaking Sub Commanders from earlier versions
@@ -138,26 +186,29 @@ define([
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
-      var allyIndex = index + 1;
-      var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
+      const allyIndex = index + 1;
+      const subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
       armies.push(subcommanderArmy);
     });
 
     // Set up the AI
-    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-    var aiTag = [];
+    const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+    const aiTag = [];
     _.times(aiFactionCount, function (n) {
-      var aiNewTag = ".ai" + n.toString();
+      const aiNewTag = ".ai" + n.toString();
       aiTag.push(aiNewTag);
     });
-    var aiBrain = gwoAI.aiInUse();
+    const aiBrain = gwoAI.aiInUse();
 
     // Set up AI System Owner
     ai = setAdvEcoMod(ai, aiBrain);
+    if (ai.mirrorMode === true) {
+      ai.personality = setupGuardianPersonality(cards, ai.personality);
+    }
 
     // Avoid breaking enemies from earlier versions
-    var aiIsCluster = gwoAI.isCluster(ai);
-    var aiPath = setAIPath(aiIsCluster, false);
+    const aiIsCluster = gwoAI.isCluster(ai);
+    const aiPath = setAIPath(aiIsCluster, false);
     ai.personality.ai_path = aiPath;
 
     var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
@@ -170,7 +221,7 @@ define([
       minion.personality.ai_path = aiPath;
 
       minion.faction = ai.faction;
-      var minionIndex = index + 1; // primary AI has colour 0
+      const minionIndex = index + 1; // primary AI has colour 0
       aiArmy = setupAIArmy(minion, minionIndex, aiTag[0], 2);
       armies.push(aiArmy);
     });
@@ -180,16 +231,16 @@ define([
       foe = setAdvEcoMod(foe, aiBrain);
 
       // Avoid breaking enemies from earlier versions
-      var foeIsCluster = gwoAI.isCluster(foe);
+      const foeIsCluster = gwoAI.isCluster(foe);
       foe.personality.ai_path = setAIPath(foeIsCluster, false);
 
-      var foeTag = index + 1; // 0 taken by primary AI
-      var foeAlliance = index + 3; //  1 & 2 taken by player and primary AI
+      const foeTag = index + 1; // 0 taken by primary AI
+      const foeAlliance = index + 3; //  1 & 2 taken by player and primary AI
       aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
       armies.push(aiArmy);
     });
 
-    var config = {
+    const config = {
       files: self.files(),
       armies: armies,
       player: {

@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = [
+      const mods = [
         {
           file: gwoUnit.singleLaserDefenseTower,
           path: "tools",

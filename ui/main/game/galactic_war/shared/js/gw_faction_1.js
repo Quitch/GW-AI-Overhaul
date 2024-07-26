@@ -2,12 +2,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
-  var factionName = "Foundation";
-  var factionColour = [
+  const factionName = "Foundation";
+  const factionColour = [
     [145, 87, 199],
     [192, 192, 192],
   ];
-  var baselinePersonality = {
+  const baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -15,13 +15,13 @@ define([
     personality: personalities.foundation,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var boss = {
+  const boss = {
     name: "Inquisitor Nemicus",
     character: "!LOC:Boss",
     personality: personalities.foundationBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var minions = [
+  const minions = [
     {
       name: "Progenitor",
       character: "!LOC:Air Force",
@@ -191,9 +191,9 @@ define([
     },
   ];
 
-  var shuffledPersonalties = _.shuffle(minions);
-  var randomPersonality = shuffledPersonalties[0].personality;
-  var randomAI = {
+  const shuffledPersonalties = _.shuffle(minions);
+  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
     color: [

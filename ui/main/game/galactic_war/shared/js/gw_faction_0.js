@@ -2,12 +2,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
-  var factionName = "Legonis Machina";
-  var factionColour = [
+  const factionName = "Legonis Machina";
+  const factionColour = [
     [0, 176, 255],
     [192, 192, 192],
   ];
-  var baselinePersonality = {
+  const baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -15,13 +15,13 @@ define([
     personality: personalities.legonisMachina,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var boss = {
+  const boss = {
     name: "Imperator Invictus",
     character: "!LOC:Boss",
     personality: personalities.legonisMachinaBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var minions = [
+  const minions = [
     {
       name: "Able",
       character: "!LOC:Armor",
@@ -192,9 +192,9 @@ define([
     },
   ];
 
-  var shuffledPersonalties = _.shuffle(minions);
-  var randomPersonality = shuffledPersonalties[0].personality;
-  var randomAI = {
+  const shuffledPersonalties = _.shuffle(minions);
+  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomAI = {
     name: "Aryst0krat",
     character: "!LOC:Random",
     color: [

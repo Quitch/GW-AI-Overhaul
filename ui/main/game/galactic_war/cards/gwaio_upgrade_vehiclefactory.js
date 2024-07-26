@@ -29,7 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var newUnits = gwoGroup.starterUnitsAdvanced.concat(
+      const newUnits = gwoGroup.starterUnitsAdvanced.concat(
         gwoGroup.vehiclesAdvancedMobile
       );
       inventory.addUnits(newUnits);
@@ -43,13 +43,13 @@ define([
         },
       ]);
 
-      var units = [
+      const units = [
         "AdvancedArmorTank",
         "AdvancedArtilleryVehicle",
         "AdvancedLaserTank",
         "FlakTank",
       ];
-      var aiMods = _.flatten(
+      const aiMods = _.flatten(
         _.map(units, function (unit) {
           return [
             {

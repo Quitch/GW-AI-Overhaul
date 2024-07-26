@@ -26,10 +26,10 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var units = gwoGroup.structuresSuperWeapons.concat(
+      const units = gwoGroup.structuresSuperWeapons.concat(
         gwoUnit.nukeLauncherAmmo
       );
-      var mods = _.map(units, function (unit) {
+      const mods = _.map(units, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

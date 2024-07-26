@@ -1,12 +1,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
 ], function (inventory) {
-  var legonisTech = [];
-  var foundationTech = [];
-  var synchronousTech = [];
-  var revenantsTech = [];
-  var clusterTech = [];
-  var factionsTech = [
+  const legonisTech = [];
+  const foundationTech = [];
+  const synchronousTech = [];
+  const revenantsTech = [];
+  const clusterTech = [];
+  const factionsTech = [
     legonisTech,
     foundationTech,
     synchronousTech,
@@ -14,8 +14,8 @@ define([
     clusterTech,
   ];
 
-  var setupAITech0FabricationTech = function () {
-    var factionUnits = [
+  const setupAITech0FabricationTech = function () {
+    const factionUnits = [
       inventory.legonisUnits,
       inventory.foundationUnits,
       inventory.synchronousUnits,
@@ -35,8 +35,8 @@ define([
   };
   setupAITech0FabricationTech();
 
-  var setupAmmo = function () {
-    var factionAmmo = [
+  const setupAmmo = function () {
+    const factionAmmo = [
       inventory.legonisAmmo,
       inventory.foundationAmmo,
       inventory.synchronousAmmo,
@@ -65,8 +65,8 @@ define([
     });
   };
 
-  var setupEnergyWeapons = function () {
-    var factionWeapons = [
+  const setupEnergyWeapons = function () {
+    const factionWeapons = [
       inventory.legonisWeapons,
       inventory.foundationWeapons,
       inventory.synchronousWeapons,
@@ -103,13 +103,13 @@ define([
     });
   };
 
-  var setupAITech1AmmunitionTech = function () {
+  const setupAITech1AmmunitionTech = function () {
     setupAmmo();
     setupEnergyWeapons();
   };
   setupAITech1AmmunitionTech();
 
-  var healthBoost = function (units, value) {
+  const healthBoost = function (units, value) {
     return _.map(units, function (unit) {
       return {
         file: unit,
@@ -120,8 +120,8 @@ define([
     });
   };
 
-  var setupUnitArmour = function () {
-    var factionUnits = [
+  const setupUnitArmour = function () {
+    const factionUnits = [
       inventory.legonisUnits,
       inventory.foundationUnits,
       inventory.synchronousUnits,
@@ -133,8 +133,8 @@ define([
     });
   };
 
-  var setupCommanderArmour = function () {
-    var factionCommanders = [
+  const setupCommanderArmour = function () {
+    const factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
@@ -148,13 +148,13 @@ define([
     });
   };
 
-  var setupAITech2ArmourTech = function () {
+  const setupAITech2ArmourTech = function () {
     setupUnitArmour();
     setupCommanderArmour();
   };
   setupAITech2ArmourTech();
 
-  var speedBoost = function (units, value) {
+  const speedBoost = function (units, value) {
     return _.flatten(
       _.map(units, function (unit) {
         return [
@@ -187,19 +187,19 @@ define([
     );
   };
 
-  var setupAirEngineTech = function () {
+  const setupAirEngineTech = function () {
     foundationTech[3] = speedBoost(inventory.foundationUnitsMobileAir, 1.25);
   };
 
-  var setupNotAirEngineTech = function () {
-    var factionsTechNoAir = [
+  const setupNotAirEngineTech = function () {
+    const factionsTechNoAir = [
       legonisTech,
       foundationTech,
       synchronousTech,
       revenantsTech,
       clusterTech,
     ];
-    var factionUnitsNoAir = [
+    const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNotAir,
       inventory.synchronousUnitsMobile,
@@ -216,8 +216,8 @@ define([
     });
   };
 
-  var setupCommanderEngineTech = function () {
-    var factionCommanders = [
+  const setupCommanderEngineTech = function () {
+    const factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
@@ -231,15 +231,15 @@ define([
     });
   };
 
-  var setupAITech3EngineTech = function () {
+  const setupAITech3EngineTech = function () {
     setupAirEngineTech();
     setupNotAirEngineTech();
     setupCommanderEngineTech();
   };
   setupAITech3EngineTech();
 
-  var setupAITech4EfficiencyTech = function () {
-    var factionBuildArms = [
+  const setupAITech4EfficiencyTech = function () {
+    const factionBuildArms = [
       inventory.legonisBuildArms,
       inventory.foundationBuildArms,
       inventory.synchronousBuildArms,
@@ -271,20 +271,20 @@ define([
   setupAITech4EfficiencyTech();
 
   // we redo the speed tech because Combat Commander Tech uses different values
-  var setupAirEngineCombatTech = function () {
+  const setupAirEngineCombatTech = function () {
     foundationTech[6] = speedBoost(inventory.foundationUnitsMobileAir, 1.25);
   };
 
   // we redo the speed tech because Combat Commander Tech uses different values
-  var setupNotAirEngineCombatTech = function () {
-    var factionsTechNoAir = [
+  const setupNotAirEngineCombatTech = function () {
+    const factionsTechNoAir = [
       legonisTech,
       foundationTech,
       synchronousTech,
       revenantsTech,
       clusterTech,
     ];
-    var factionUnitsNoAir = [
+    const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNotAir,
       inventory.synchronousUnitsMobile,
@@ -301,8 +301,8 @@ define([
     });
   };
 
-  var setupCommanderEngineCombatTech = function () {
-    var factionCommanders = [
+  const setupCommanderEngineCombatTech = function () {
+    const factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
       inventory.commanderUnits, // Foundation
       inventory.commanderUnits, // Synchronous
@@ -316,13 +316,13 @@ define([
     });
   };
 
-  var setupAmmunitionAndArmourCombatTech = function () {
+  const setupAmmunitionAndArmourCombatTech = function () {
     _.forEach(factionsTech, function (faction) {
       faction[6] = faction[6].concat(faction[1], faction[2]);
     });
   };
 
-  var setupAITech6CombatTech = function () {
+  const setupAITech6CombatTech = function () {
     setupAirEngineCombatTech();
     setupNotAirEngineCombatTech();
     setupCommanderEngineCombatTech();

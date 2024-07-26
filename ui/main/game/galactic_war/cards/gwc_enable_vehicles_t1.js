@@ -21,7 +21,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.vehiclesBasic)) {
-        var dist = system.distance();
+        const dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
           (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||

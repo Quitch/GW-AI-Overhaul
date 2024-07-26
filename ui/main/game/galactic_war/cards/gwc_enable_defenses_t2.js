@@ -19,8 +19,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      var hasT2Access = gwoCard.hasT2Access(inventory);
-      var missingUnit = gwoCard.missingUnit(
+      const hasT2Access = gwoCard.hasT2Access(inventory);
+      const missingUnit = gwoCard.missingUnit(
         inventory.units(),
         gwoGroup.structuresDefencesAdvanced
       );

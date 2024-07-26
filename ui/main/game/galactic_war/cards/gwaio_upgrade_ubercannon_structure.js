@@ -22,7 +22,7 @@ define([
       return { chance: 30 };
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
+      const mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
         return {
           file: fabberBuildArm,
           path: "reclaim_types",

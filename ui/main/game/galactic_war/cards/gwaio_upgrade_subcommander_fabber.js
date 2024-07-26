@@ -18,8 +18,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      var galaxy = model.game().galaxy();
-      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      const galaxy = model.game().galaxy();
+      const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
       if (
         inventory.minions().length > 0 &&
         (!gwoSettings || gwoSettings.ai !== "Queller")

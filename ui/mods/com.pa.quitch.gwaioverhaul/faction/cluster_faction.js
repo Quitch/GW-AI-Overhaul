@@ -3,12 +3,12 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (planets, gwoUnit, personalities) {
-  var factionName = "Cluster";
-  var factionColour = [
+  const factionName = "Cluster";
+  const factionColour = [
     [128, 128, 128],
     [192, 192, 192],
   ];
-  var baselinePersonality = {
+  const baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -17,15 +17,15 @@ define([
     personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var boss = {
+  const boss = {
     name: "Node",
     character: "!LOC:Boss",
     personality: personalities.clusterBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var workerCommander = gwoUnit.angel;
-  var securityCommander = gwoUnit.colonel;
-  var minions = [
+  const workerCommander = gwoUnit.angel;
+  const securityCommander = gwoUnit.colonel;
+  const minions = [
     {
       name: "Worker",
       character: "!LOC:Uber",
@@ -288,10 +288,10 @@ define([
     },
   ];
 
-  var shuffledPersonalties = _.shuffle(minions);
-  var randomWorkerPersonality = shuffledPersonalties[0].personality;
-  var randomSecurityPersonality = shuffledPersonalties[1].personality;
-  var randomWorkerAI = {
+  const shuffledPersonalties = _.shuffle(minions);
+  const randomWorkerPersonality = shuffledPersonalties[0].personality;
+  const randomSecurityPersonality = shuffledPersonalties[1].personality;
+  const randomWorkerAI = {
     name: "Worker",
     character: "!LOC:Random",
     color: [
@@ -301,7 +301,7 @@ define([
     personality: randomWorkerPersonality,
     commander: workerCommander,
   };
-  var randomSecurityAI = {
+  const randomSecurityAI = {
     name: "Security",
     character: "!LOC:Random",
     color: [

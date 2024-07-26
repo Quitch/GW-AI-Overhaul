@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Rapid Deployment Commander"),
@@ -28,7 +28,7 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
 
-          var mods = [
+          const mods = [
             {
               file: gwoUnit.airFactory,
               path: "buildable_types",
@@ -207,7 +207,7 @@ define([
           }
           inventory.addMods(mods);
 
-          var aiMods = [
+          const aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -236,7 +236,7 @@ define([
               refValue: 477,
             },
           ];
-          var types = ["fabber", "factory"];
+          const types = ["fabber", "factory"];
           _.forEach(types, function (type) {
             aiMods.push({
               type: type,
@@ -244,7 +244,7 @@ define([
               value: CARD.id + ".json",
             });
           });
-          var factoriesBasic = [
+          const factoriesBasic = [
             "BasicAirFactory",
             "BasicBotFactory",
             "BasicNavalFactory",
@@ -272,7 +272,7 @@ define([
               }
             );
           });
-          var factoriesAdvanced = [
+          const factoriesAdvanced = [
             "AdvancedAirFactory",
             "AdvancedBotFactory",
             "AdvancedNavalFactory",

@@ -26,7 +26,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mobileStructures = gwoGroup.structuresDefences.concat(
+      const mobileStructures = gwoGroup.structuresDefences.concat(
         gwoGroup.structuresIntel,
         gwoGroup.structuresArtillery,
         gwoGroup.structuresEcoStorage,
@@ -35,7 +35,7 @@ define([
         gwoUnit.jig
       );
 
-      var mods = _.flatten(
+      const mods = _.flatten(
         _.map(mobileStructures, function (unit) {
           return [
             {

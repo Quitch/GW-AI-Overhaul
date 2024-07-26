@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Nomad Commander"),
@@ -29,8 +29,8 @@ define([
         if (!buffCount) {
           GWCStart.buff(inventory);
 
-          var mods = [];
-          var smallStructures = [
+          const mods = [];
+          const smallStructures = [
             gwoUnit.energyPlant,
             gwoUnit.energyStorage,
             gwoUnit.galata,
@@ -44,27 +44,30 @@ define([
             gwoUnit.umbrella,
             gwoUnit.wall,
           ];
-          var mediumStructures = [
+          const mediumStructures = [
             gwoUnit.catapult,
             gwoUnit.energyPlantAdvanced,
             gwoUnit.flak,
             gwoUnit.laserDefenseTowerAdvanced,
             gwoUnit.torpedoLauncherAdvanced,
           ];
-          var largeStructures = [
+          const largeStructures = [
             gwoUnit.anchor,
             gwoUnit.deepSpaceOrbitalRadar,
             gwoUnit.holkins,
             gwoUnit.jig,
             gwoUnit.radarAdvanced,
           ];
-          var allStructures = smallStructures.concat(
+          const allStructures = smallStructures.concat(
             mediumStructures,
             largeStructures
           );
-          var groundStructures = _.filter(allStructures, function (structure) {
-            return structure !== gwoUnit.anchor && structure !== gwoUnit.jig;
-          });
+          const groundStructures = _.filter(
+            allStructures,
+            function (structure) {
+              return structure !== gwoUnit.anchor && structure !== gwoUnit.jig;
+            }
+          );
           _.forEach(groundStructures, function (unit) {
             mods.push(
               {
@@ -117,7 +120,7 @@ define([
               }
             );
           });
-          var orbitalStructures = [gwoUnit.anchor, gwoUnit.jig];
+          const orbitalStructures = [gwoUnit.anchor, gwoUnit.jig];
           _.forEach(orbitalStructures, function (unit) {
             mods.push(
               {
@@ -208,7 +211,8 @@ define([
             op: "replace",
             value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
           });
-          var teleportableStructures = smallStructures.concat(mediumStructures);
+          const teleportableStructures =
+            smallStructures.concat(mediumStructures);
           _.forEach(teleportableStructures, function (unit) {
             mods.push(
               {
@@ -225,10 +229,10 @@ define([
               }
             );
           });
-          var defensiveStructures = gwoGroup.structuresArtillery.concat(
+          const defensiveStructures = gwoGroup.structuresArtillery.concat(
             gwoGroup.structuresDefences
           );
-          var offensiveStructures = _.filter(
+          const offensiveStructures = _.filter(
             defensiveStructures,
             function (structure) {
               return structure !== gwoUnit.wall;
@@ -244,8 +248,8 @@ define([
           });
           inventory.addMods(mods);
 
-          var types = ["platoon", "template"];
-          var aiMods = _.map(types, function (type) {
+          const types = ["platoon", "template"];
+          const aiMods = _.map(types, function (type) {
             return {
               type: type,
               op: "load",

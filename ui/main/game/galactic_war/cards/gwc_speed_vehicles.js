@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var mods = _.flatten(
+      const mods = _.flatten(
         _.map(gwoGroup.vehiclesMobile, function (unit) {
           return [
             {

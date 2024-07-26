@@ -21,7 +21,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 500;
-      var dist = system.distance();
+      const dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
         (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
@@ -35,7 +35,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresEcoStorage);
-      var units = gwoGroup.structuresEcoStorage.concat(gwoUnit.commander);
+      const units = gwoGroup.structuresEcoStorage.concat(gwoUnit.commander);
       inventory.addMods(
         _.flatten(
           _.map(units, function (unit) {

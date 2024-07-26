@@ -1,7 +1,7 @@
 var gwoWarInfoPanelLoaded;
 
 function gwoWarInfoPanel() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoWarInfoPanelLoaded || game.isTutorial()) {
     return;
@@ -13,19 +13,19 @@ function gwoWarInfoPanel() {
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
-        var url =
+        const url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
         $.get(url, function (html) {
-          var $fi = $(html);
+          const $fi = $(html);
           $("#header").append($fi);
           locTree($("#gwo-panel"));
           ko.applyBindings(model, $fi[0]);
         });
 
         // War Information
-        var galaxy = game.galaxy();
-        var originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.65.1");
+        const galaxy = game.galaxy();
+        const originSystem = galaxy.stars()[galaxy.origin()].system();
+        model.gwoVersion = ko.observable("5.66.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -35,7 +35,7 @@ function gwoWarInfoPanel() {
           model.gwoDeck =
             loc("!LOC:" + model.gwoSettings.techCardDeck) || "!LOC:Expanded";
 
-          var options = function (optionsList, setting, text) {
+          const options = function (optionsList, setting, text) {
             if (setting) {
               optionsList.push(loc(text));
             }
@@ -75,14 +75,14 @@ function gwoWarInfoPanel() {
             "!LOC:Tougher commanders"
           );
 
-          var cheatsDetected = function () {
+          const cheatsDetected = function () {
             requireGW(
               ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
               function (gwoSave) {
-                var game = model.game();
-                var galaxy = game.galaxy();
-                var originSystem = galaxy.stars()[galaxy.origin()].system();
-                var gwoSettings = originSystem.gwaio;
+                const game = model.game();
+                const galaxy = game.galaxy();
+                const originSystem = galaxy.stars()[galaxy.origin()].system();
+                const gwoSettings = originSystem.gwaio;
                 if (gwoSettings && !gwoSettings.cheatsUsed) {
                   gwoSettings.cheatsUsed = true;
                   options(
@@ -106,7 +106,7 @@ function gwoWarInfoPanel() {
         model.gwoIncompatibleMods = ko.observableArray([]);
 
         api.mods.getMounted("client").then(function (mods) {
-          var incompatibleMods = [
+          const incompatibleMods = [
             "com.heiz.aurora_arty", // Aurora-Artillery
             "com.wondible.pa.gw_challenge", // Challenge Levels for galactic war
             "com.wondible.pa.gw_ramp", // Enemy Ramp for galactic war
@@ -118,14 +118,14 @@ function gwoWarInfoPanel() {
             "ca.pa.metapod.colonel_combat_grouping_mod", // Combat Colonel selection mod
             "com.pa.nemogielen.client.BetterCombatSelection", // Better Combat Selection
           ];
-          var modIdentifiers = _.map(mods, "identifier");
-          var incompatibleModsInUse = _.intersection(
+          const modIdentifiers = _.map(mods, "identifier");
+          const incompatibleModsInUse = _.intersection(
             incompatibleMods,
             modIdentifiers
           );
-          var incompatibleModNames = _.sortBy(
+          const incompatibleModNames = _.sortBy(
             _.map(incompatibleModsInUse, function (incompatibleMod) {
-              var index = _.findIndex(mods, "identifier", incompatibleMod);
+              const index = _.findIndex(mods, "identifier", incompatibleMod);
               return mods[index].display_name;
             })
           );
@@ -133,27 +133,27 @@ function gwoWarInfoPanel() {
         });
 
         // Player Information
-        var inventory = game.inventory();
+        const inventory = game.inventory();
 
-        var factions = [
+        const factions = [
           "Legonis Machina",
           "Foundation",
           "Synchronous",
           "Revenants",
           "Cluster",
         ];
-        var factionIndex = inventory.getTag("global", "playerFaction");
+        const factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
 
-        var cards = inventory.cards();
+        const cards = inventory.cards();
 
-        var loadoutId = cards[0].id;
+        const loadoutId = cards[0].id;
         model.gwoLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
           model.gwoLoadout(loc(card.summarize()));
         });
 
-        var intelligence = function (subcommander, index) {
+        const intelligence = function (subcommander, index) {
           var personality = subcommander.character
             ? loc(subcommander.character)
             : loc("!LOC:None");
@@ -183,14 +183,14 @@ function gwoWarInfoPanel() {
         };
 
         model.gwoPlayer = ko.computed(function () {
-          var commanders = [
+          const commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
               character: loc("!LOC:Human"),
             },
           ];
-          var subcommanders = inventory.minions();
+          const subcommanders = inventory.minions();
           _.forEach(subcommanders, function (subcommander, index) {
             commanders.push(intelligence(subcommander, index));
           });

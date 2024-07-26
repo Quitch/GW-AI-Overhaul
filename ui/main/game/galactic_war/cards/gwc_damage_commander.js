@@ -23,7 +23,7 @@ define([
     },
     deal: function (system, context) {
       var chance = 24;
-      var dist = system.distance();
+      const dist = system.distance();
       if (
         context.totalSize <= GW.balance.numberOfSystems[0] ||
         context.totalSize <= GW.balance.numberOfSystems[1]
@@ -39,8 +39,8 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      var ammos = gwoGroup.commanderAmmo;
-      var mods = [];
+      const ammos = gwoGroup.commanderAmmo;
+      const mods = [];
       _.forEach(ammos, function (ammo) {
         mods.push(
           {

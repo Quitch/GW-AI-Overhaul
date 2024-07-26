@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.66.0 - 2024-07-26
+
+### Changed
+
+- Guardians adapt their unit type selection to more closely match the tech you brought
+
+### Fixed
+
+- Commander being highlighted in card tooltips
+
 ## v5.65.1 - 2024-07-02
 
 ### Fixed
