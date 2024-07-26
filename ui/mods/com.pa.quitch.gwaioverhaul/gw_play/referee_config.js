@@ -114,7 +114,7 @@ define([
     return countOfType;
   };
 
-  const notZero = function (typeCards, totalCards) {
+  const calculatePercentage = function (typeCards, totalCards) {
     if (typeCards === 0) {
       return 0;
     }
@@ -134,11 +134,20 @@ define([
       totalSeaCards +
       totalVehicleCards;
     if (totalCards !== 0) {
-      personality.percent_air = notZero(totalAirCards, totalCards);
-      personality.percent_bot = notZero(totalBotCards, totalCards);
-      personality.percent_orbital = notZero(totalOrbitalCards, totalCards);
-      personality.percent_naval = notZero(totalSeaCards, totalCards);
-      personality.percent_vehicle = notZero(totalVehicleCards, totalCards);
+      personality.percent_air = calculatePercentage(totalAirCards, totalCards);
+      personality.percent_bot = calculatePercentage(totalBotCards, totalCards);
+      personality.percent_orbital = calculatePercentage(
+        totalOrbitalCards,
+        totalCards
+      );
+      personality.percent_naval = calculatePercentage(
+        totalSeaCards,
+        totalCards
+      );
+      personality.percent_vehicle = calculatePercentage(
+        totalVehicleCards,
+        totalCards
+      );
     }
     return personality;
   };
