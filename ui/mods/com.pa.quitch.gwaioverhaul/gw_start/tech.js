@@ -96,7 +96,7 @@ define([
     });
     _.forEach(factionCommanders, function (commanders, i) {
       factionsTech[i][2] = factionsTech[i][2].concat(
-        multiply(commanders, 2, ["max_health"])
+        multiply(commanders, 2, "max_health")
       );
     });
   };
