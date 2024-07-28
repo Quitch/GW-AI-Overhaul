@@ -329,7 +329,7 @@ function gwoSystemChanges() {
             } else {
               star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
-              if (ai.mirrorMode !== true) {
+              if (!ai.mirrorMode) {
                 star.cardList([]);
               }
             }
@@ -384,7 +384,7 @@ function gwoSystemChanges() {
             system.mouseOut(0);
           }
 
-          if (system.star.ai() && system.star.ai().treasurePlanet !== true) {
+          if (system.star.ai() && !system.star.ai().treasurePlanet) {
             // Assign faction colour, not minion colour, to each system
             var outerColour = [];
             outerColour = normalizedColor(GWFactions[ai.faction]);

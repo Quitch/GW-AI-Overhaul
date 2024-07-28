@@ -790,7 +790,7 @@ function gwoSetup() {
                   if (
                     sharedSystemsForGalacticWarActive === false &&
                     ai.faction === 1 &&
-                    ai.boss !== true
+                    !ai.boss
                   ) {
                     planet.generator.waterHeight = 50;
                   }
