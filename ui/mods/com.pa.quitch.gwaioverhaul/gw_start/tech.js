@@ -130,25 +130,17 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    foundationTech[3] = multiply(
-      inventory.foundationUnitsMobileAir,
-      1.25,
-      speedPaths
-    );
     _.forEach(factionUnitsNoAir, function (factionUnits, i) {
-      if (_.isUndefined(factionsTechNoAir[i][3])) {
-        factionsTechNoAir[i][3] = [];
-      } else {
-        factionsTechNoAir[i][3] = factionsTechNoAir[i][3].concat(
-          multiply(factionUnits, 1.5, speedPaths)
-        );
-      }
+      factionsTechNoAir[i][3] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][3] = factionsTech[i][3].concat(
         multiply(factionUnits, 2, speedPaths)
       );
     });
+    foundationTech[3] = foundationTech[3].concat(
+      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
+    );
   };
   setupAITech3EngineTech();
 
@@ -198,24 +190,17 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    foundationTech[6] = multiply(
-      inventory.foundationUnitsMobileAir,
-      1.25,
-      speedPaths
-    );
     _.forEach(factionUnitsNoAir, function (factionUnits, i) {
-      if (_.isUndefined(factionsTechNoAir[i][6])) {
-        factionsTechNoAir[i][6] = [];
-      }
-      factionsTechNoAir[i][6] = factionsTechNoAir[i][6].concat(
-        multiply(factionUnits, 1.5, speedPaths)
-      );
+      factionsTechNoAir[i][6] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
       factionsTech[i][6] = factionsTech[i][6].concat(
         multiply(factionUnits, 3, speedPaths)
       );
     });
+    foundationTech[6] = foundationTech[6].concat(
+      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
+    );
     // Add ammo and armour tech
     _.forEach(factionsTech, function (faction) {
       faction[6] = faction[6].concat(faction[1], faction[2]);
