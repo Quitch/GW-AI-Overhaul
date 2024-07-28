@@ -33,7 +33,7 @@ define({
     } else if (
       type === "subcommander" &&
       !_.isEmpty(inventory.aiMods()) &&
-      ai.mirrorMode !== true
+      !ai.mirrorMode
     ) {
       return "/pa/ai_tech/";
     } else if (aiBrain === "Penchant") {

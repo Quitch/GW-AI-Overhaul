@@ -15,7 +15,7 @@ function gwoWarOverLoadoutStats() {
 
     if (
       gwoSettings &&
-      gwoSettings.cheatsUsed !== true &&
+      !gwoSettings.cheatsUsed &&
       game.gameState() === "won"
     ) {
       const difficultyLevelAsInt =

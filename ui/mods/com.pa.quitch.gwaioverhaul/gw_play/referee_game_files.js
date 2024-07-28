@@ -407,7 +407,7 @@ define([
                   : {};
               } else if (
                 !_.isEmpty(inventory.aiMods()) &&
-                ai.mirrorMode !== true
+                !ai.mirrorMode
               ) {
                 playerFilesClassic = _.assign(
                   {

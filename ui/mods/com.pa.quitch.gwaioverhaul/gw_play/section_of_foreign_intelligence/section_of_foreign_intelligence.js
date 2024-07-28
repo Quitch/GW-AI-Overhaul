@@ -232,7 +232,7 @@ function gwoIntelligence() {
           const star = model.selection.system().star;
           return (
             star.ai() &&
-            star.ai().treasurePlanet !== true &&
+            !star.ai().treasurePlanet &&
             star.cardList() &&
             // Don't show when finding cards through Explore
             star.cardList().length === 1

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.66.2 - 2024-07-28
+
+### Fixed
+
+- Legonis Machina AIs not receiving armour buffs for their tanks
+
 ## v5.66.1 - 2024-07-27
 
 ### Fixed

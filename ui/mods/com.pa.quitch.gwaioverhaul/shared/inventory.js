@@ -162,7 +162,7 @@ define([
 
     legonisUnitsNotMobile: legonisUnitsNotMobile,
     legonisUnitsMobile: legonisUnitsMobile,
-    legonisUnits: legonisUnitsNotMobile.concat(legonisUnitsNotMobile),
+    legonisUnits: legonisUnitsNotMobile.concat(legonisUnitsMobile),
     legonisWeapons: commanderWeapons,
     legonisAmmo: legonisAmmo.concat(commanderAmmo),
     legonisBuildArms: legonisBuildArms.concat(commanderBuildArms),
