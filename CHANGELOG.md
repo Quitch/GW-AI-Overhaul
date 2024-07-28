@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Legonis Machina AIs not receiving armour buffs for their tanks
+- Legonis Machina AIs not receiving cost discounts and armour buffs for their tanks
 
 ## v5.66.1 - 2024-07-27
 
