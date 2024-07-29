@@ -134,8 +134,6 @@ function gwoIntelligence() {
           };
         };
 
-        // Planetary Intelligence
-
         const formattedString = function (number) {
           const km2 = 1000000;
           number = number / km2;
