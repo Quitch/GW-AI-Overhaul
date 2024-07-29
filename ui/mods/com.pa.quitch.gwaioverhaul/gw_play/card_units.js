@@ -3,6 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
   const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]     
+  const botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced]
   const mobileStructures = gwoGroup.structuresDefences.concat(
     gwoGroup.structuresIntel,
     gwoGroup.structuresArtillery,
@@ -433,6 +434,7 @@ define([
       { id: "gwaio_speed_titans", units: gwoGroup.titans },
       { id: "gwaio_combat_titans", units: gwoGroup.titans },
       { id: "gwaio_cooldown_vehicles", units: vehicleFactories },
+      { id: "gwaio_cooldown_bots", units: botFactories },
       { id: "gwaio_speed_structure", units: mobileStructures },
     ],
   };

@@ -10,6 +10,7 @@
   - Titan Engine Tech
   - Titan Combat Tech
   - Vehicle Cooldown Tech
+  - Bot Cooldown Tech
 
 ### Fixed
 
