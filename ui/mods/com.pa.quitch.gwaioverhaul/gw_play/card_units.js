@@ -421,6 +421,7 @@ define([
       { id: "gwaio_upgrade_subcommander_tactics" },
       { id: "gwaio_health_titans", units: gwoGroup.titans },
       { id: "gwaio_damage_titans", units: gwoGroup.titans },
+      { id: "gwaio_speed_titans", units: gwoGroup.titans },
     ],
   };
 });

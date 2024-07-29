@@ -7,6 +7,7 @@
 - New tech cards
   - Titan Armour Tech
   - Titan Ammunition Tech
+  - Titan Engine Tech
 
 ## v5.66.2 - 2024-07-28
 

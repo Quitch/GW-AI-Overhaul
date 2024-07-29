@@ -227,6 +227,7 @@ function gwoCard() {
         "gwaio_enable_planetaryradar",
         "gwaio_health_titans",
         "gwaio_speed_structure",
+        "gwaio_speed_titans",
         "gwaio_upgrade_advancedairfactory",
         "gwaio_upgrade_advancedbotfactory",
         "gwaio_upgrade_advancedenergyplant",
