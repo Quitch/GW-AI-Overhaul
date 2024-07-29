@@ -293,10 +293,29 @@ function gwoIntelligence() {
           return buffNames;
         };
 
+        const createAIIntelligence = function (ai) {
+          var commanders = [];
+          commanders.push(intelligence(ai, 0));
+          if (ai.minions) {
+            const minions = _.map(ai.minions, intelligence);
+            commanders = commanders.concat(minions);
+          }
+          if (ai.foes) {
+            const foes = _.map(ai.foes, intelligence);
+            commanders = commanders.concat(foes);
+          }
+          if (ai.ally) {
+            const commander = intelligence(ai.ally, 0);
+            commanders.push(commander);
+          }
+          return commanders;
+        };
+
         model.aiBuffs = ko.observableArray([]);
         model.gameModifiers = ko.observableArray([]);
+        model.ais = ko.observableArray([]);
 
-        model.checkModifiers = ko.computed(function () {
+        model.generateIntelligence = ko.computed(function () {
           const star = model.selection.system().star;
           const ai = star.ai();
           if (!ai) {
@@ -306,27 +325,7 @@ function gwoIntelligence() {
           }
           model.aiBuffs(convertBuffNumberToName(ai));
           model.gameModifiers(convertGameMModifiersToName(ai));
-        });
-
-        model.gwoAIs = ko.computed(function () {
-          const ai = model.selection.system().star.ai();
-          var commanders = [];
-          if (ai) {
-            commanders.push(intelligence(ai, 0));
-            if (ai.minions) {
-              const minions = _.map(ai.minions, intelligence);
-              commanders = commanders.concat(minions);
-            }
-            if (ai.foes) {
-              const foes = _.map(ai.foes, intelligence);
-              commanders = commanders.concat(foes);
-            }
-            if (ai.ally) {
-              const commander = intelligence(ai.ally, 0);
-              commanders.push(commander);
-            }
-          }
-          return commanders;
+          model.ais(createAIIntelligence(ai));
         });
       }
     );
