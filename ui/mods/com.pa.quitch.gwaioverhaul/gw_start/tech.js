@@ -112,7 +112,7 @@ define([
     ];
     const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
-      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
@@ -172,7 +172,7 @@ define([
     ];
     const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
-      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,

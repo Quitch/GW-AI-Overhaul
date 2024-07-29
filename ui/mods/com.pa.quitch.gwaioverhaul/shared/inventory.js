@@ -18,7 +18,7 @@ define([
     gwoUnit.zeus,
     gwoUnit.squall
   );
-  const foundationUnitsMobileNotAir = _.without(
+  const foundationUnitsMobileNaval = _.without(
     gwoGroup.navalMobile,
     gwoUnit.squall
   );
@@ -169,9 +169,9 @@ define([
 
     foundationUnitsNotMobile: foundationUnitsNotMobile,
     foundationUnitsMobileAir: foundationUnitsMobileAir,
-    foundationUnitsMobileNotAir: foundationUnitsMobileNotAir,
+    foundationUnitsMobileNaval: foundationUnitsMobileNaval,
     foundationUnits: foundationUnitsMobileAir.concat(
-      foundationUnitsMobileNotAir,
+      foundationUnitsMobileNaval,
       foundationUnitsNotMobile
     ),
     foundationWeapons: foundationWeapons.concat(commanderWeapons),
