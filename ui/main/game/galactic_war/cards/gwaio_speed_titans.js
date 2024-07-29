@@ -26,7 +26,7 @@ define([
     },
     buff: function (inventory) {
       const mods = _.flatten(
-        _.map(gwoGroup.titans, function (unit) {
+        _.map(gwoGroup.titansMobile, function (unit) {
           return [
             {
               file: unit,

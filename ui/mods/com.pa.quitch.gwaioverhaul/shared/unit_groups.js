@@ -349,6 +349,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.ragnarok,
     gwoUnit.zeus,
   ];
+  const titansMobile = _.without(titans, gwoUnit.ragnarok);
   const titansAmmo = [
     gwoUnit.aresAmmo,
     gwoUnit.aresSecondaryAmmo,
@@ -656,6 +657,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresSuperWeapons: structuresSuperWeapons,
     teleporters: teleporters,
     titans: titans,
+    titansMobile: titansMobile,
     titansAmmo: titansAmmo,
     titansWeapons: titansWeapons,
     unitCannonMobile: unitCannonMobile,
