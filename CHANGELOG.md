@@ -9,6 +9,7 @@
   - Titan Ammunition Tech
   - Titan Engine Tech
   - Titan Combat Tech
+  - Vehicle Cooldown Tech
 
 ## v5.66.2 - 2024-07-28
 
