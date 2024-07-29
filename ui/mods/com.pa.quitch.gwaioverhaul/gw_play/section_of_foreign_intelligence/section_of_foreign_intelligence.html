@@ -36,7 +36,7 @@
       >
     </h3>
     <!-- ko if: $root.selection.system().star.ai() -->
-    <div data-bind="foreach: $root.gwoGameModifiers()">
+    <div data-bind="foreach: $root.gwoGameModifiers">
       <ul>
         <li data-bind="text: $root.gwoGameModifiers()[$index()]"></li>
       </ul>
@@ -54,7 +54,7 @@
       >
     </h3>
     <!-- ko if: $root.selection.system().star.ai() -->
-    <div data-bind="foreach: $root.gwoAIBuffs()">
+    <div data-bind="foreach: $root.gwoAIBuffs">
       <ul>
         <li data-bind="text: $root.gwoAIBuffs()[$index()]"></li>
       </ul>
