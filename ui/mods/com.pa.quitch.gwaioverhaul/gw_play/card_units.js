@@ -422,6 +422,7 @@ define([
       { id: "gwaio_health_titans", units: gwoGroup.titans },
       { id: "gwaio_damage_titans", units: gwoGroup.titans },
       { id: "gwaio_speed_titans", units: gwoGroup.titans },
+      { id: "gwaio_combat_titans", units: gwoGroup.titans },
     ],
   };
 });
