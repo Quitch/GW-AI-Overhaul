@@ -590,7 +590,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.vehicleFactory,
     gwoUnit.vehicleFactoryAdvanced,
   ];
-  const mobileStructures = structuresDefences.concat(
+  const nomadStructures = structuresDefences.concat(
     structuresIntel,
     structuresArtillery,
     structuresEcoStorage,
@@ -637,7 +637,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     immobile: immobile,
     mobile: mobile,
     mobileNoCluster: mobileNoCluster,
-    mobileStructures: mobileStructures,
+    nomadStructures: nomadStructures,
     naval: naval,
     navalAdvanced: navalAdvanced,
     navalAdvancedMobile: navalAdvancedMobile,

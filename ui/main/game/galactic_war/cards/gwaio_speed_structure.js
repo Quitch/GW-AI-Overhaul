@@ -1,8 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoGroup, gwoUnit) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -26,17 +25,8 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mobileStructures = gwoGroup.structuresDefences.concat(
-        gwoGroup.structuresIntel,
-        gwoGroup.structuresArtillery,
-        gwoGroup.structuresEcoStorage,
-        gwoUnit.energyPlant,
-        gwoUnit.energyPlantAdvanced,
-        gwoUnit.jig
-      );
-
       const mods = _.flatten(
-        _.map(mobileStructures, function (unit) {
+        _.map(gwoGroup.nomadStructures, function (unit) {
           return [
             {
               file: unit,
