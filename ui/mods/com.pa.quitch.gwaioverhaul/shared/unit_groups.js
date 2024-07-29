@@ -482,7 +482,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.ares,
     gwoUnit.zeus
   );
-  const notMobile = structures.concat(gwoUnit.ragnarok);
+  const immobile = structures.concat(gwoUnit.ragnarok);
   const mobileNoCluster = airMobileNoCluster.concat(
     botsMobileNoCluster,
     navalMobile,
@@ -543,7 +543,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesWeapons
   );
 
-  const units = mobile.concat(notMobile);
+  const units = mobile.concat(immobile);
   const unitsNoCluster = mobileNoCluster.concat(mobile);
 
   const clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
@@ -624,7 +624,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     navalBasicMobile: navalBasicMobile,
     navalMobile: navalMobile,
     navalWeapons: navalWeapons,
-    notMobile: notMobile,
+    immobile: immobile,
     orbital: orbital,
     orbitalAdvanced: orbitalAdvanced,
     orbitalAdvancedMobile: orbitalAdvancedMobile,

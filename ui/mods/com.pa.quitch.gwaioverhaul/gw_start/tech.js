@@ -40,7 +40,7 @@ define([
       inventory.foundationUnits,
       inventory.synchronousUnits,
       inventory.revenantsUnitsWithAmmo,
-      inventory.clusterUnitsNotMobile,
+      inventory.clusterUnitsImmobile,
     ];
     _.forEach(factionUnits, function (units, i) {
       factionsTech[i][0] = multiply(units, 0.75, "build_metal_cost");
@@ -82,7 +82,7 @@ define([
       inventory.foundationUnits,
       inventory.synchronousUnits,
       inventory.revenantsUnits,
-      inventory.clusterUnitsNotMobile,
+      inventory.clusterUnitsImmobile,
     ];
     const factionCommanders = [
       inventory.commanderUnits, // Legonis Machina

@@ -80,7 +80,7 @@ define([
               }
             );
           });
-          _.forEach(gwoGroup.notMobile, function (unit) {
+          _.forEach(gwoGroup.immobile, function (unit) {
             mods.push({
               file: unit,
               path: "build_metal_cost",
