@@ -582,8 +582,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.commanderTorpedoWaterAmmo,
   ];
 
-  
-  const orbitalFactories = [gwoUnit.orbitalLauncher, gwoUnit.orbitalFactory]
+  const airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced];
+  const botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced];
+  const navalFactories = [gwoUnit.navalFactory, gwoUnit.navalFactoryAdvanced];
+  const orbitalFactories = [gwoUnit.orbitalLauncher, gwoUnit.orbitalFactory];
+  const vehicleFactories = [
+    gwoUnit.vehicleFactory,
+    gwoUnit.vehicleFactoryAdvanced,
+  ];
+  const mobileStructures = structuresDefences.concat(
+    structuresIntel,
+    structuresArtillery,
+    structuresEcoStorage,
+    gwoUnit.energyPlant,
+    gwoUnit.energyPlantAdvanced,
+    gwoUnit.jig
+  );
 
   return {
     air: air,
@@ -592,10 +606,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     airAmmo: airAmmo,
     airBasic: airBasic,
     airBasicMobile: airBasicMobile,
+    airFactories: airFactories,
     airMobile: airMobile,
     airMobileNoCluster: airMobileNoCluster,
     airWeapons: airWeapons,
     ammo: ammo,
+    botFactories: botFactories,
     bots: bots,
     botsAdvanced: botsAdvanced,
     botsAdvancedMobile: botsAdvancedMobile,
@@ -607,9 +623,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsWeapons: botsWeapons,
     clusterCommanders: clusterCommanders,
     commanderAmmo: commanderAmmo,
+    energyAll: energyAll,
     energyIntel: energyIntel,
     energyUnits: energyUnits,
-    energyAll: energyAll,
     energyWeapons: energyWeapons,
     fabberBuildArms: fabberBuildArms,
     fabbers: fabbers,
@@ -618,17 +634,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     factories: factories,
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,
+    immobile: immobile,
     mobile: mobile,
     mobileNoCluster: mobileNoCluster,
+    mobileStructures: mobileStructures,
     naval: naval,
     navalAdvanced: navalAdvanced,
     navalAdvancedMobile: navalAdvancedMobile,
     navalAmmo: navalAmmo,
     navalBasic: navalBasic,
     navalBasicMobile: navalBasicMobile,
+    navalFactories: navalFactories,
     navalMobile: navalMobile,
     navalWeapons: navalWeapons,
-    immobile: immobile,
     orbital: orbital,
     orbitalAdvanced: orbitalAdvanced,
     orbitalAdvancedMobile: orbitalAdvancedMobile,
@@ -661,10 +679,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresSuperWeapons: structuresSuperWeapons,
     teleporters: teleporters,
     titans: titans,
-    titansMobile: titansMobile,
     titansAmmo: titansAmmo,
+    titansMobile: titansMobile,
     titansWeapons: titansWeapons,
     unitCannonMobile: unitCannonMobile,
+    units: units,
+    unitsNoCluster: unitsNoCluster,
+    vehicleFactories: vehicleFactories,
     vehicles: vehicles,
     vehiclesAdvanced: vehiclesAdvanced,
     vehiclesAdvancedMobile: vehiclesAdvancedMobile,
@@ -674,7 +695,5 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesMobile: vehiclesMobile,
     vehiclesWeapons: vehiclesWeapons,
     weapons: weapons,
-    units: units,
-    unitsNoCluster: unitsNoCluster,
   };
 });

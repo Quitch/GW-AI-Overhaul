@@ -2,18 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]     
-  const botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced]
-  const airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced]
-  const navalFactories = [gwoUnit.navalFactory, gwoUnit.navalFactoryAdvanced]
-  const mobileStructures = gwoGroup.structuresDefences.concat(
-    gwoGroup.structuresIntel,
-    gwoGroup.structuresArtillery,
-    gwoGroup.structuresEcoStorage,
-    gwoUnit.energyPlant,
-    gwoUnit.energyPlantAdvanced,
-    gwoUnit.jig
-  );
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
@@ -435,12 +423,12 @@ define([
       { id: "gwaio_damage_titans", units: gwoGroup.titans },
       { id: "gwaio_speed_titans", units: gwoGroup.titans },
       { id: "gwaio_combat_titans", units: gwoGroup.titans },
-      { id: "gwaio_cooldown_vehicles", units: vehicleFactories },
-      { id: "gwaio_cooldown_bots", units: botFactories },
-      { id: "gwaio_cooldown_air", units: airFactories },
-      { id: "gwaio_cooldown_sea", units: navalFactories },
+      { id: "gwaio_cooldown_vehicles", units: gwoGroup.vehicleFactories },
+      { id: "gwaio_cooldown_bots", units: gwoGroup.botFactories },
+      { id: "gwaio_cooldown_air", units: gwoGroup.airFactories },
+      { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
       { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
-      { id: "gwaio_speed_structure", units: mobileStructures },
+      { id: "gwaio_speed_structure", units: gwoGroup.mobileStructures },
     ],
   };
 });

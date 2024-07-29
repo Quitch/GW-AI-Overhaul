@@ -1,8 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
-  const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,13 +19,13 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), vehicleFactories)) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.vehicleFactories)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.map(vehicleFactories, function (unit) {
+      const mods = _.map(gwoGroup.vehicleFactories, function (unit) {
         return {
           file: unit,
           path: "factory_cooldown_time",
