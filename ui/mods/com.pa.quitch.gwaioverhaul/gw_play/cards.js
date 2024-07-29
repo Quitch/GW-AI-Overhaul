@@ -226,6 +226,7 @@ function gwoCard() {
         "gwaio_combat_titans",
         "gwaio_cooldown_air",
         "gwaio_cooldown_bots",
+        "gwaio_cooldown_orbital",
         "gwaio_cooldown_sea",
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",

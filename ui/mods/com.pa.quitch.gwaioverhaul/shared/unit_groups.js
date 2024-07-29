@@ -582,6 +582,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.commanderTorpedoWaterAmmo,
   ];
 
+  
+  const orbitalFactories = [gwoUnit.orbitalLauncher, gwoUnit.orbitalFactory]
+
   return {
     air: air,
     airAdvanced: airAdvanced,
@@ -632,6 +635,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     orbitalAmmo: orbitalAmmo,
     orbitalBasic: orbitalBasic,
     orbitalBasicMobile: orbitalBasicMobile,
+    orbitalFactories: orbitalFactories,
     orbitalMobile: orbitalMobile,
     orbitalWeapons: orbitalWeapons,
     starterUnitsAdvanced: starterUnitsAdvanced,

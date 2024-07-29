@@ -439,6 +439,7 @@ define([
       { id: "gwaio_cooldown_bots", units: botFactories },
       { id: "gwaio_cooldown_air", units: airFactories },
       { id: "gwaio_cooldown_sea", units: navalFactories },
+      { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
       { id: "gwaio_speed_structure", units: mobileStructures },
     ],
   };

@@ -13,6 +13,7 @@
   - Bot Cooldown Tech
   - Air Cooldown Tech
   - Naval Cooldown Tech
+  - Orbital Cooldown Tech
 
 ### Fixed
 
