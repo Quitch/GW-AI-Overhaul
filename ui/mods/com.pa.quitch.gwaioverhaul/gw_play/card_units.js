@@ -2,7 +2,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]
+  const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]     
+  const mobileStructures = gwoGroup.structuresDefences.concat(
+    gwoGroup.structuresIntel,
+    gwoGroup.structuresArtillery,
+    gwoGroup.structuresEcoStorage,
+    gwoUnit.energyPlant,
+    gwoUnit.energyPlantAdvanced,
+    gwoUnit.jig
+  );
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
@@ -425,6 +433,7 @@ define([
       { id: "gwaio_speed_titans", units: gwoGroup.titans },
       { id: "gwaio_combat_titans", units: gwoGroup.titans },
       { id: "gwaio_cooldown_vehicles", units: vehicleFactories },
+      { id: "gwaio_speed_structure", units: mobileStructures },
     ],
   };
 });

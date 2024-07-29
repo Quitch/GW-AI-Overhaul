@@ -11,6 +11,10 @@
   - Titan Combat Tech
   - Vehicle Cooldown Tech
 
+### Fixed
+
+- Structure Engine Tech not having an associated unit list for its tooltip
+
 ## v5.66.2 - 2024-07-28
 
 ### Fixed
