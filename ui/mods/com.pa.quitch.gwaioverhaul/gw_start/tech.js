@@ -208,6 +208,22 @@ define([
   };
   setupAITech6CombatTech();
 
+  const setupAITech7CooldownTech = function () {
+    const factionUnits = [
+      inventory.legonisUnitsImmobile,
+      inventory.foundationUnitsImmobile,
+      inventory.synchronousUnitsImmobile,
+      inventory.revenantsUnitsFactories,
+      inventory.clusterUnitsFactories,
+    ];
+    _.forEach(factionUnits, function (units, i) {
+      factionsTech[i][7] = multiply(units, 0.5, "factory_cooldown_time");
+    });
+  };
+  setupAITech7CooldownTech();
+
+  console.debug(factionsTech);
+
   return {
     factionTechs: [
       legonisTech,

@@ -14,6 +14,7 @@
   - Air Cooldown Tech
   - Naval Cooldown Tech
   - Orbital Cooldown Tech
+- AI Cooldown Tech
 
 ### Fixed
 

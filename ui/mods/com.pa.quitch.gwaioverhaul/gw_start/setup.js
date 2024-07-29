@@ -273,7 +273,7 @@ function gwoSetup() {
         };
 
         const selectAIBuffs = function (numberOfBuffs) {
-          const buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
+          const buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
           return _.sample(buffType, numberOfBuffs);
         };
 

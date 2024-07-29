@@ -266,6 +266,7 @@ function gwoIntelligence() {
 
         // AI Buffs
 
+        // TODO - replace all these computes with a single array just like gwo_panel.js
         model.gwoTechBuild = ko.computed(function () {
           const star = model.selection.system().star;
           return (
@@ -330,6 +331,15 @@ function gwoIntelligence() {
           );
         });
 
+        model.gwoTechCooldown = ko.computed(function () {
+          const star = model.selection.system().star;
+          return (
+            star.ai() &&
+            star.ai().typeOfBuffs &&
+            _.includes(star.ai().typeOfBuffs, 7)
+          );
+        });
+
         model.gwoTechMirror = ko.computed(function () {
           const star = model.selection.system().star;
           return star.ai() && star.ai().mirrorMode === true;
@@ -344,6 +354,7 @@ function gwoIntelligence() {
             model.gwoTechDamage() ||
             model.gwoTechHealth() ||
             model.gwoTechSpeed() ||
+            model.gwoTechCooldown() ||
             model.gwoTechMirror()
           );
         });
