@@ -201,6 +201,7 @@ function gwoIntelligence() {
                 break;
               case 1: // damage
               case 2: // health
+              case 7: // cooldown
                 totalThreat *= 1.2;
                 break;
               case 3: // speed
