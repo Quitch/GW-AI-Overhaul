@@ -94,13 +94,13 @@ Each system will display the following information:
 
 ### AI Buffs
 
-- **Build**: AI has Improved Build Arms.
-- **Combat**: AI has Combat Tech.
-- **Cost**: AI has Fabrication Tech.
-- **Damage**: AI has Ammunition Tech.
-- **Health**: AI has Armour Tech.
-- **Speed**: AI has Engine Tech.
-- **Factory**: AI has Cooldown Tech.
+- **Build**: Improved Build Arms
+- **Combat**: Combat Tech
+- **Cost**: Fabrication Tech
+- **Damage**: Ammunition Tech
+- **Health**: Armour Tech
+- **Speed**: Engine Tech
+- **Factory**: Cooldown Tech
 
 These buffs are applied to commanders on a per-faction basis:
 
