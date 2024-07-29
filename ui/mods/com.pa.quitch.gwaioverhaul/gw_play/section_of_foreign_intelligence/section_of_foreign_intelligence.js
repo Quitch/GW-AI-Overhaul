@@ -321,6 +321,7 @@ function gwoIntelligence() {
           if (!ai) {
             model.gwoGameModifiers([]);
             model.gwoAIBuffs([]);
+            model.gwoAis([]);
             return;
           }
           model.gwoAIBuffs(convertBuffNumberToName(ai));
