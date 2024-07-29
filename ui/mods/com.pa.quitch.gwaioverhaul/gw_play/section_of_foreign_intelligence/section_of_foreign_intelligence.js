@@ -145,9 +145,9 @@ function gwoIntelligence() {
           return Math.floor(number);
         };
 
-        model.gwoSystemSurfaceArea = ko.computed(function () {
+        const calculateSurfaceArea = function (system) {
           var area = 0;
-          _.forEach(model.selection.system().planets(), function (world) {
+          _.forEach(system.planets(), function (world) {
             if (
               (world.generator && world.generator.biome !== "gas") ||
               (world.planet && world.planet.biome !== "gas")
@@ -156,7 +156,7 @@ function gwoIntelligence() {
             }
           });
           return formattedString(area);
-        });
+        };
 
         const toFixedIfNecessary = function (value, decimals) {
           // + converts the string output of toFixed() back to a float
@@ -300,6 +300,7 @@ function gwoIntelligence() {
           return commanders;
         };
 
+        model.gwoSystemSurfaceArea = ko.observable(0);
         model.gwoSystemThreat = ko.observable(0);
         model.gwoAvailableTech = ko.observable("");
         model.gwoGameModifiers = ko.observableArray([]);
@@ -307,8 +308,10 @@ function gwoIntelligence() {
         model.gwoAis = ko.observableArray([]);
 
         model.generateIntelligence = ko.computed(function () {
-          const star = model.selection.system().star;
+          const system = model.selection.system();
+          const star = system.star;
           const ai = star.ai();
+          model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
           if (!ai) {
             model.gwoSystemThreat(0);
             model.gwoAvailableTech("");
