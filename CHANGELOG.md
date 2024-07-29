@@ -11,6 +11,7 @@
   - Titan Combat Tech
   - Vehicle Cooldown Tech
   - Bot Cooldown Tech
+  - Air Cooldown Tech
 
 ### Fixed
 

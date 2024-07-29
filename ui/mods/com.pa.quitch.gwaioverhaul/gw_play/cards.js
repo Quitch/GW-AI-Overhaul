@@ -224,6 +224,7 @@ function gwoCard() {
       ];
       const expandedCards = [
         "gwaio_combat_titans",
+        "gwaio_cooldown_air",
         "gwaio_cooldown_bots",
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",
