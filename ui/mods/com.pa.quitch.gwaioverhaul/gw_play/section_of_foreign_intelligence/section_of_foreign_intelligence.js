@@ -239,39 +239,27 @@ function gwoIntelligence() {
           );
         });
 
-        // Game Options
+        // AI Buffs & Game Options
 
-        model.gwoBountyMode = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().bountyMode;
-        });
-
-        model.gwoLandAnywhere = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().landAnywhere;
-        });
-
-        model.gwoSuddenDeath = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().suddenDeath;
-        });
-
-        model.gwoGameOptions = ko.computed(function () {
-          return (
-            model.gwoBountyMode() ||
-            model.gwoLandAnywhere() ||
-            model.gwoSuddenDeath()
-          );
-        });
-
-        // AI Buffs
+        const convertGameMModifiersToName = function (ai) {
+          const gameModifiers = [];
+          if (ai.bountyMode) {
+            gameModifiers.push("Bounties");
+          }
+          if (ai.landAnywhere) {
+            gameModifiers.push("Land Anywhere");
+          }
+          if (ai.suddenDeath) {
+            gameModifiers.push("Sudden Death");
+          }
+          return gameModifiers;
+        };
 
         const convertBuffNumberToName = function (ai) {
           const buffs = ai.typeOfBuffs;
           const guardians = ai.mirrorMode;
           const buffNames = [];
           _.forEach(buffs, function (buff) {
-            console.log("In loop", buff);
             switch (buff) {
               case 0:
                 buffNames.push(loc("!LOC:Costs decreased"));
@@ -306,15 +294,18 @@ function gwoIntelligence() {
         };
 
         model.aiBuffs = ko.observableArray([]);
+        model.gameModifiers = ko.observableArray([]);
 
-        model.checkAIBuffs = ko.computed(function () {
+        model.checkModifiers = ko.computed(function () {
           const star = model.selection.system().star;
           const ai = star.ai();
           if (!ai) {
             model.aiBuffs([]);
+            model.gameModifiers([]);
             return;
           }
           model.aiBuffs(convertBuffNumberToName(ai));
+          model.gameModifiers(convertGameMModifiersToName(ai));
         });
 
         model.gwoAIs = ko.computed(function () {

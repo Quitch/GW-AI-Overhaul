@@ -28,22 +28,20 @@
     </h3>
     <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
-  <div data-bind="visible: $root.gwoGameOptions">
+  <div data-bind="visible: $root.gameModifiers().length > 0">
     <h3>
       <loc>Game Modifiers</loc
       ><span class="info_tip" data-bind="tooltip: $root.gwoGameModifiersTooltip"
         >?</span
       >
     </h3>
-    <ul>
-      <li data-bind="visible: $root.gwoBountyMode"><loc>Bounties</loc></li>
-      <li data-bind="visible: $root.gwoLandAnywhere">
-        <loc>Land Anywhere</loc>
-      </li>
-      <li data-bind="visible: $root.gwoSuddenDeath">
-        <loc>Sudden Death</loc>
-      </li>
-    </ul>
+    <!-- ko if: $root.selection.system().star.ai() -->
+    <div data-bind="foreach: $root.gameModifiers()">
+      <ul>
+        <li data-bind="text: $root.gameModifiers()[$index()]"></li>
+      </ul>
+    </div>
+    <!-- /ko -->
   </div>
   <div data-bind="visible: $root.aiBuffs().length > 0">
     <h3>

@@ -16,6 +16,10 @@
   - Orbital Cooldown Tech
 - AI Cooldown Tech
 
+### Changed
+
+- Reduced performance load of intelligence panel
+
 ### Fixed
 
 - Structure Engine Tech not having an associated unit list for its tooltip
