@@ -420,6 +420,7 @@ define([
       { id: "gwaio_upgrade_subcommander_fabber" },
       { id: "gwaio_upgrade_subcommander_tactics" },
       { id: "gwaio_health_titans", units: gwoGroup.titans },
+      { id: "gwaio_damage_titans", units: gwoGroup.titans },
     ],
   };
 });

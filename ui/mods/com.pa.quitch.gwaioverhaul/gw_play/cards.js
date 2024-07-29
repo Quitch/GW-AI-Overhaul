@@ -223,6 +223,7 @@ function gwoCard() {
         "gwc_storage_and_buff",
       ];
       const expandedCards = [
+        "gwaio_damage_titans",
         "gwaio_enable_planetaryradar",
         "gwaio_health_titans",
         "gwaio_speed_structure",
