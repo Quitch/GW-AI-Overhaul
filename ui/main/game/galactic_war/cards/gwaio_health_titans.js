@@ -20,7 +20,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (gwoCard.hasUnit(inventory.units(), gwoGroup.titans)) {
-        chance = 80;
+        chance = 70;
       }
       return { chance: chance };
     },
