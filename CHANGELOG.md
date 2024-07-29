@@ -12,6 +12,7 @@
   - Vehicle Cooldown Tech
   - Bot Cooldown Tech
   - Air Cooldown Tech
+  - Naval Cooldown Tech
 
 ### Fixed
 

@@ -5,6 +5,7 @@ define([
   const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]     
   const botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced]
   const airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced]
+  const navalFactories = [gwoUnit.navalFactory, gwoUnit.navalFactoryAdvanced]
   const mobileStructures = gwoGroup.structuresDefences.concat(
     gwoGroup.structuresIntel,
     gwoGroup.structuresArtillery,
@@ -437,6 +438,7 @@ define([
       { id: "gwaio_cooldown_vehicles", units: vehicleFactories },
       { id: "gwaio_cooldown_bots", units: botFactories },
       { id: "gwaio_cooldown_air", units: airFactories },
+      { id: "gwaio_cooldown_sea", units: navalFactories },
       { id: "gwaio_speed_structure", units: mobileStructures },
     ],
   };
