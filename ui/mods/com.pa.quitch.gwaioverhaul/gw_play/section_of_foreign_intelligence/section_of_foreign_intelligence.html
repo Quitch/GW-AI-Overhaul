@@ -28,7 +28,7 @@
     </h3>
     <div class="td" data-bind="text: $root.gwoCardName"></div>
   </div>
-  <div data-bind="visible: $root.gameModifiers().length > 0">
+  <div data-bind="visible: $root.gwoGameModifiers().length > 0">
     <h3>
       <loc>Game Modifiers</loc
       ><span class="info_tip" data-bind="tooltip: $root.gwoGameModifiersTooltip"
@@ -36,14 +36,14 @@
       >
     </h3>
     <!-- ko if: $root.selection.system().star.ai() -->
-    <div data-bind="foreach: $root.gameModifiers()">
+    <div data-bind="foreach: $root.gwoGameModifiers()">
       <ul>
-        <li data-bind="text: $root.gameModifiers()[$index()]"></li>
+        <li data-bind="text: $root.gwoGameModifiers()[$index()]"></li>
       </ul>
     </div>
     <!-- /ko -->
   </div>
-  <div data-bind="visible: $root.aiBuffs().length > 0">
+  <div data-bind="visible: $root.gwoAIBuffs().length > 0">
     <h3>
       <loc>AI Tech</loc
       ><span
@@ -54,14 +54,14 @@
       >
     </h3>
     <!-- ko if: $root.selection.system().star.ai() -->
-    <div data-bind="foreach: $root.aiBuffs()">
+    <div data-bind="foreach: $root.gwoAIBuffs()">
       <ul>
-        <li data-bind="text: $root.aiBuffs()[$index()]"></li>
+        <li data-bind="text: $root.gwoAIBuffs()[$index()]"></li>
       </ul>
     </div>
     <!-- /ko -->
   </div>
-  <ul data-bind="foreach: $root.ais">
+  <ul data-bind="foreach: $root.gwoAis">
     <h3>
       <span data-bind="text: faction"></span>
       <!-- ko if: faction === "Cluster" && tooltip -->

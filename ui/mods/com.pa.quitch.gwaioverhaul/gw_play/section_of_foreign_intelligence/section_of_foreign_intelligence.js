@@ -311,21 +311,21 @@ function gwoIntelligence() {
           return commanders;
         };
 
-        model.aiBuffs = ko.observableArray([]);
-        model.gameModifiers = ko.observableArray([]);
-        model.ais = ko.observableArray([]);
+        model.gwoGameModifiers = ko.observableArray([]);
+        model.gwoAIBuffs = ko.observableArray([]);
+        model.gwoAis = ko.observableArray([]);
 
         model.generateIntelligence = ko.computed(function () {
           const star = model.selection.system().star;
           const ai = star.ai();
           if (!ai) {
-            model.aiBuffs([]);
-            model.gameModifiers([]);
+            model.gwoGameModifiers([]);
+            model.gwoAIBuffs([]);
             return;
           }
-          model.aiBuffs(convertBuffNumberToName(ai));
-          model.gameModifiers(convertGameMModifiersToName(ai));
-          model.ais(createAIIntelligence(ai));
+          model.gwoAIBuffs(convertBuffNumberToName(ai));
+          model.gwoGameModifiers(convertGameMModifiersToName(ai));
+          model.gwoAis(createAIIntelligence(ai));
         });
       }
     );
