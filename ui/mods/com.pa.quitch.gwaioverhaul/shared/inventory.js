@@ -39,24 +39,14 @@ define([
     gwoUnit.umbrella,
     gwoUnit.unitCannon,
   ];
-  const revenantsUnitsNotMobileWithAmmo = [
-    gwoUnit.anchor,
-    gwoUnit.catalyst,
-    gwoUnit.deepSpaceOrbitalRadar,
-    gwoUnit.halley,
-    gwoUnit.jig,
-    gwoUnit.nukeLauncher,
-    gwoUnit.nukeLauncherAmmo,
-    gwoUnit.orbitalFactory,
-    gwoUnit.orbitalLauncher,
-    gwoUnit.umbrella,
-    gwoUnit.unitCannon,
-  ];
+  const revenantsUnitsNotMobileWithAmmo = revenantsUnitsNotMobileNoAmmo.concat(
+    gwoUnit.nukeLauncherAmmo
+  );
   const revenantsUnitsMobile = gwoGroup.orbitalMobile.concat(gwoUnit.helios);
-  const clusterCommanders = commanderUnits.concat([
+  const clusterCommanders = commanderUnits.concat(
     gwoUnit.angel,
-    gwoUnit.colonel,
-  ]);
+    gwoUnit.colonel
+  );
   const clusterUnitsMobile = clusterCommanders;
   const clusterUnitsNotMobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
 
