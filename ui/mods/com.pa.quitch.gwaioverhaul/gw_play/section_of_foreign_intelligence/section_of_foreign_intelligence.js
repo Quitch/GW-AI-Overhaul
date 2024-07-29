@@ -219,7 +219,6 @@ function gwoIntelligence() {
           const ai = star.ai();
           const cardList = star.cardList();
           if (
-            ai &&
             ai.cardName &&
             !ai.treasurePlanet &&
             cardList.length === 1 // Don't show when finding cards through Explore
