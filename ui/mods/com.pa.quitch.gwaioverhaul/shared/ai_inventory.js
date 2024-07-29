@@ -27,7 +27,7 @@ define([
     gwoUnit.botFactory,
   ];
   const synchronousUnitsMobile = gwoGroup.botsMobile.concat(gwoUnit.atlas);
-  const revenantsUnitsImmobileNoAmmo = [
+  const revenantsUnitsImmobile = [
     gwoUnit.anchor,
     gwoUnit.antiNukeLauncher,
     gwoUnit.catalyst,
@@ -40,7 +40,7 @@ define([
     gwoUnit.umbrella,
     gwoUnit.unitCannon,
   ];
-  const revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobileNoAmmo.concat(
+  const revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobile.concat(
     gwoUnit.antiNukeLauncherAmmo,
     gwoUnit.nukeLauncherAmmo
   );
@@ -185,14 +185,14 @@ define([
     synchronousAmmo: synchronousAmmo.concat(commanderAmmo),
     synchronousBuildArms: synchronousBuildArms.concat(commanderBuildArms),
 
-    revenantsUnitsImmobileNoAmmo: revenantsUnitsImmobileNoAmmo,
+    revenantsUnitsImmobile: revenantsUnitsImmobile,
     revenantsUnitsImmobileWithAmmo: revenantsUnitsImmobileWithAmmo,
     revenantsUnitsMobile: revenantsUnitsMobile,
     revenantsUnitsWithAmmo: revenantsUnitsMobile.concat(
       revenantsUnitsImmobileWithAmmo
     ),
     revenantsUnitsFactories: revenantsUnitsFactories,
-    revenantsUnits: revenantsUnitsMobile.concat(revenantsUnitsImmobileNoAmmo),
+    revenantsUnits: revenantsUnitsMobile.concat(revenantsUnitsImmobile),
     revenantsWeapons: revenantsWeapons.concat(commanderWeapons),
     revenantsAmmo: revenantsAmmo.concat(commanderAmmo),
     revenantsBuildArms: revenantsBuildArms.concat(commanderBuildArms),
