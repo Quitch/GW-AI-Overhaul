@@ -100,6 +100,7 @@ Each system will display the following information:
 - **Damage**: AI has Ammunition Tech.
 - **Health**: AI has Armour Tech.
 - **Speed**: AI has Engine Tech.
+- **Factory**: AI has Cooldown Tech.
 
 These buffs are applied to commanders on a per-faction basis:
 
