@@ -29,6 +29,7 @@ define([
   const synchronousUnitsMobile = gwoGroup.botsMobile.concat(gwoUnit.atlas);
   const revenantsUnitsImmobileNoAmmo = [
     gwoUnit.anchor,
+    gwoUnit.antiNukeLauncher,
     gwoUnit.catalyst,
     gwoUnit.deepSpaceOrbitalRadar,
     gwoUnit.halley,
@@ -40,9 +41,11 @@ define([
     gwoUnit.unitCannon,
   ];
   const revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobileNoAmmo.concat(
+    gwoUnit.antiNukeLauncherAmmo,
     gwoUnit.nukeLauncherAmmo
   );
   const revenantsUnitsFactories = [
+    gwoUnit.antiNukeLauncher,
     gwoUnit.nukeLauncher,
     gwoUnit.orbitalFactory,
     gwoUnit.orbitalLauncher,
@@ -129,6 +132,7 @@ define([
     gwoUnit.stitchBuildArm,
   ];
   const revenantsBuildArms = [
+    gwoUnit.antiNukeLauncherBuildArm,
     gwoUnit.nukeLauncherBuildArm,
     gwoUnit.orbitalFabberBuildArm,
     gwoUnit.orbitalFactoryBuildArm,

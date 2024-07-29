@@ -21,6 +21,7 @@
 
 - Reduced performance load of intelligence panel
 - Threat score not displayed when no threat present
+- Revenants apply their tech to anti-nuke launchers
 
 ### Fixed
 
