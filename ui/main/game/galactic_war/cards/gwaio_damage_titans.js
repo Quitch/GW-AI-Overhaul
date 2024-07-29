@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Titan Ammunition Tech increases damage of all titans by 25%."
+      "!LOC:Titan Ammunition Tech increases the damage of all titans by 25%."
     ),
     summarize: _.constant("!LOC:Titan Ammunition Tech"),
     icon: _.constant(
