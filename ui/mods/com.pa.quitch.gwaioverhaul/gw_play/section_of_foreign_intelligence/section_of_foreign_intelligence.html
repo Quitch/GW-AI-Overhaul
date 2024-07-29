@@ -45,7 +45,7 @@
       </li>
     </ul>
   </div>
-  <div data-bind="visible: $root.gwoAiBuffs">
+  <div data-bind="visible: $root.aiBuffs().length > 0">
     <h3>
       <loc>AI Tech</loc
       ><span
@@ -55,34 +55,13 @@
         >?</span
       >
     </h3>
-    <ul>
-      <li data-bind="visible: $root.gwoTechBuild"><loc>Build faster</loc></li>
-      <li data-bind="visible: $root.gwoTechCombat">
-        <loc>Combat units enhanced</loc>
-      </li>
-      <!-- Commanders enhanced is v5.11.0 and earlier only -->
-      <li data-bind="visible: $root.gwoEnhancedCommanders">
-        <loc>Commanders enhanced</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechCost">
-        <loc>Costs decreased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechDamage">
-        <loc>Damage increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechHealth">
-        <loc>Health increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechSpeed">
-        <loc>Speed increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechCooldown">
-        <loc>Factory cooldown decreased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechMirror">
-        <loc>Your technology bonuses</loc>
-      </li>
-    </ul>
+    <!-- ko if: $root.selection.system().star.ai() -->
+    <div data-bind="foreach: $root.aiBuffs()">
+      <ul>
+        <li data-bind="text: $root.aiBuffs()[$index()]"></li>
+      </ul>
+    </div>
+    <!-- /ko -->
   </div>
   <ul data-bind="foreach: $root.gwoAIs">
     <h3>

@@ -266,97 +266,55 @@ function gwoIntelligence() {
 
         // AI Buffs
 
-        // TODO - replace all these computes with a single array just like gwo_panel.js
-        model.gwoTechBuild = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 4)
-          );
-        });
+        const convertBuffNumberToName = function (ai) {
+          const buffs = ai.typeOfBuffs;
+          const guardians = ai.mirrorMode;
+          const buffNames = [];
+          _.forEach(buffs, function (buff) {
+            console.log("In loop", buff);
+            switch (buff) {
+              case 0:
+                buffNames.push(loc("!LOC:Costs decreased"));
+                break;
+              case 1:
+                buffNames.push(loc("!LOC:Damage increased"));
+                break;
+              case 2:
+                buffNames.push(loc("!LOC:Health increased"));
+                break;
+              case 3:
+                buffNames.push(loc("!LOC:Speed increased"));
+                break;
+              case 4:
+                buffNames.push(loc("!LOC:Build faster"));
+                break;
+              case 5: // v5.11.0 and earlier only
+                buffNames.push(loc("!LOC:Commanders enhanced"));
+                break;
+              case 6:
+                buffNames.push(loc("!LOC:Combat units enhanced"));
+                break;
+              case 7:
+                buffNames.push(loc("!LOC:Factory cooldown decreased"));
+                break;
+            }
+          });
+          if (guardians) {
+            buffNames.push(loc("!LOC:Your technology bonuses"));
+          }
+          return buffNames;
+        };
 
-        model.gwoTechCost = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 0)
-          );
-        });
+        model.aiBuffs = ko.observableArray([]);
 
-        model.gwoTechDamage = ko.computed(function () {
+        model.checkAIBuffs = ko.computed(function () {
           const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 1)
-          );
-        });
-
-        model.gwoTechHealth = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 2)
-          );
-        });
-
-        model.gwoTechSpeed = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 3)
-          );
-        });
-
-        // v5.11.0 and earlier only
-        model.gwoEnhancedCommanders = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 5)
-          );
-        });
-
-        model.gwoTechCombat = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 6)
-          );
-        });
-
-        model.gwoTechCooldown = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 7)
-          );
-        });
-
-        model.gwoTechMirror = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().mirrorMode === true;
-        });
-
-        model.gwoAiBuffs = ko.computed(function () {
-          return (
-            model.gwoTechBuild() ||
-            model.gwoTechCombat() ||
-            model.gwoTechCost() ||
-            model.gwoEnhancedCommanders() ||
-            model.gwoTechDamage() ||
-            model.gwoTechHealth() ||
-            model.gwoTechSpeed() ||
-            model.gwoTechCooldown() ||
-            model.gwoTechMirror()
-          );
+          const ai = star.ai();
+          if (!ai) {
+            model.aiBuffs([]);
+            return;
+          }
+          model.aiBuffs(convertBuffNumberToName(ai));
         });
 
         model.gwoAIs = ko.computed(function () {
