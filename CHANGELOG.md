@@ -19,6 +19,7 @@
 ### Changed
 
 - Reduced performance load of intelligence panel
+- Threat score not displayed when no threat present
 
 ### Fixed
 

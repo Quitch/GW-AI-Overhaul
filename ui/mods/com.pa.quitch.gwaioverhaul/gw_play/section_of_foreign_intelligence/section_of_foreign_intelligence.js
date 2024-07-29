@@ -163,61 +163,58 @@ function gwoIntelligence() {
           return +parseFloat(value).toFixed(decimals);
         };
 
-        model.gwoSystemThreat = ko.computed(function () {
-          const ai = model.selection.system().star.ai();
+        const measureThreat = function (ai) {
           var commanders = [];
           var totalThreat = 0;
-          if (ai) {
-            commanders.push(intelligence(ai, 0));
-            if (ai.minions) {
-              commanders = commanders.concat(_.map(ai.minions, intelligence));
-            }
-            if (ai.foes) {
-              commanders = commanders.concat(_.map(ai.foes, intelligence));
-              _.forEach(ai.foes, function (army) {
-                var commanderCount = 1;
-                if (army.commanderCount) {
-                  commanderCount = army.commanderCount;
-                } else if (army.landing_policy) {
-                  // legacy GWO support
-                  commanderCount = army.landing_policy.length;
-                }
-                totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
-              });
-            }
-            _.times(commanders.length, function (n) {
-              totalThreat += commanders[n].eco;
-            });
-            _.forEach(ai.typeOfBuffs, function (buff) {
-              switch (buff) {
-                case 0: // cost
-                case 4: // build
-                  totalThreat *= 1.3;
-                  break;
-                case 1: // damage
-                case 2: // health
-                  totalThreat *= 1.2;
-                  break;
-                case 3: // speed
-                  totalThreat *= 1.1;
-                  break;
-                case 6: // combat
-                  totalThreat *= 1.5;
+          commanders.push(intelligence(ai, 0));
+          if (ai.minions) {
+            commanders = commanders.concat(_.map(ai.minions, intelligence));
+          }
+          if (ai.foes) {
+            commanders = commanders.concat(_.map(ai.foes, intelligence));
+            _.forEach(ai.foes, function (army) {
+              var commanderCount = 1;
+              if (army.commanderCount) {
+                commanderCount = army.commanderCount;
+              } else if (army.landing_policy) {
+                // legacy GWO support
+                commanderCount = army.landing_policy.length;
               }
+              totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
             });
-            if (ai.mirrorMode === true) {
-              totalThreat *= 2;
-            }
-            if (ai.ally) {
-              if (ai.ally.econ_rate) {
-                totalThreat /= ai.ally.econ_rate + 1;
-              } else {
-                totalThreat /= 2;
-              }
+          }
+          _.times(commanders.length, function (n) {
+            totalThreat += commanders[n].eco;
+          });
+          if (ai.ally) {
+            if (ai.ally.econ_rate) {
+              totalThreat /= ai.ally.econ_rate + 1;
+            } else {
+              totalThreat /= 2;
             }
           }
+          _.forEach(ai.typeOfBuffs, function (buff) {
+            switch (buff) {
+              case 0: // cost
+              case 4: // build
+                totalThreat *= 1.3;
+                break;
+              case 1: // damage
+              case 2: // health
+                totalThreat *= 1.2;
+                break;
+              case 3: // speed
+                totalThreat *= 1.1;
+                break;
+              case 6: // combat
+                totalThreat *= 1.5;
+            }
+          });
+          if (ai.mirrorMode === true) {
+            totalThreat *= 2;
+          }
           return toFixedIfNecessary(totalThreat, 2);
-        });
+        };
 
         const availableTech = function (star) {
           const ai = star.ai();
@@ -303,6 +300,7 @@ function gwoIntelligence() {
           return commanders;
         };
 
+        model.gwoSystemThreat = ko.observable(0);
         model.gwoAvailableTech = ko.observable("");
         model.gwoGameModifiers = ko.observableArray([]);
         model.gwoAIBuffs = ko.observableArray([]);
@@ -312,12 +310,14 @@ function gwoIntelligence() {
           const star = model.selection.system().star;
           const ai = star.ai();
           if (!ai) {
+            model.gwoSystemThreat(0);
             model.gwoAvailableTech("");
             model.gwoGameModifiers([]);
             model.gwoAIBuffs([]);
             model.gwoAis([]);
             return;
           }
+          model.gwoSystemThreat(measureThreat(ai));
           model.gwoAvailableTech(availableTech(star));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameMModifiersToName(ai));
