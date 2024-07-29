@@ -128,7 +128,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.narwhalAmmo,
     gwoUnit.narwhalTorpedoAmmo,
     gwoUnit.orcaAmmo,
-    gwoUnit.orcaTorpedoAmmo,
     gwoUnit.piranhaAmmo,
   ];
   const navalBasicWeapons = [
@@ -136,7 +135,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.narwhalAA,
     gwoUnit.narwhalTorpedo,
     gwoUnit.narwhalWeapon,
-    gwoUnit.orcaTorpedo,
     gwoUnit.orcaWeapon,
     gwoUnit.piranhaWeapon,
   ];
