@@ -10,11 +10,11 @@ define([
     ),
     summarize: _.constant("!LOC:Air Cooldown Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_factory.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
     ),
     audio: function () {
       return {
-        found: "/VO/Computer/gw/board_tech_available_bot",
+        found: "/VO/Computer/gw/board_tech_available_air",
       };
     },
     getContext: gwoCard.getContext,
