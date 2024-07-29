@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
 ], function (inventory) {
   const legonisTech = [];
   const foundationTech = [];
