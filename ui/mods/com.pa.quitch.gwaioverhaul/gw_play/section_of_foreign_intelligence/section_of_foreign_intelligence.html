@@ -19,14 +19,14 @@
       </div>
     </div>
   </div>
-  <div data-bind="visible: $root.gwoCardAvailable">
+  <div data-bind="visible: $root.gwoAvailableTech">
     <h3>
       <loc>Available Tech</loc
       ><span class="info_tip" data-bind="tooltip: $root.gwoAvailableTechTooltip"
         >?</span
       >
     </h3>
-    <div class="td" data-bind="text: $root.gwoCardName"></div>
+    <div class="td" data-bind="text: $root.gwoAvailableTech"></div>
   </div>
   <div data-bind="visible: $root.gwoGameModifiers().length > 0">
     <h3>

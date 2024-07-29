@@ -219,27 +219,19 @@ function gwoIntelligence() {
           return toFixedIfNecessary(totalThreat, 2);
         });
 
-        // Available Technology
-
-        model.gwoCardName = ko.computed(function () {
-          const star = model.selection.system().star;
-          if (star.ai() && star.ai().cardName) {
-            return star.ai().cardName;
+        const availableTech = function (star) {
+          const ai = star.ai();
+          const cardList = star.cardList();
+          if (
+            ai &&
+            ai.cardName &&
+            !ai.treasurePlanet &&
+            cardList.length === 1 // Don't show when finding cards through Explore
+          ) {
+            return ai.cardName;
           }
-        });
-
-        model.gwoCardAvailable = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            !star.ai().treasurePlanet &&
-            star.cardList() &&
-            // Don't show when finding cards through Explore
-            star.cardList().length === 1
-          );
-        });
-
-        // AI Buffs & Game Options
+          return "";
+        };
 
         const convertGameMModifiersToName = function (ai) {
           const gameModifiers = [];
@@ -311,6 +303,7 @@ function gwoIntelligence() {
           return commanders;
         };
 
+        model.gwoAvailableTech = ko.observable("");
         model.gwoGameModifiers = ko.observableArray([]);
         model.gwoAIBuffs = ko.observableArray([]);
         model.gwoAis = ko.observableArray([]);
@@ -319,11 +312,13 @@ function gwoIntelligence() {
           const star = model.selection.system().star;
           const ai = star.ai();
           if (!ai) {
+            model.gwoAvailableTech("");
             model.gwoGameModifiers([]);
             model.gwoAIBuffs([]);
             model.gwoAis([]);
             return;
           }
+          model.gwoAvailableTech(availableTech(star));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameMModifiersToName(ai));
           model.gwoAis(createAIIntelligence(ai));
