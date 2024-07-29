@@ -6,7 +6,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Air Cooldown Tech halves the cooldown time between builds for all bot factories."
+      "!LOC:Air Cooldown Tech halves the cooldown time between builds for all air factories."
     ),
     summarize: _.constant("!LOC:Air Cooldown Tech"),
     icon: _.constant(
