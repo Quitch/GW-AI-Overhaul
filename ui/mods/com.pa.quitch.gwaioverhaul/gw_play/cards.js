@@ -224,6 +224,7 @@ function gwoCard() {
       ];
       const expandedCards = [
         "gwaio_enable_planetaryradar",
+        "gwaio_health_titans",
         "gwaio_speed_structure",
         "gwaio_upgrade_advancedairfactory",
         "gwaio_upgrade_advancedbotfactory",

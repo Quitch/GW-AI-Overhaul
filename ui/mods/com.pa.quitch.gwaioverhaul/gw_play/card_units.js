@@ -419,6 +419,7 @@ define([
       { id: "gwaio_upgrade_subcommander_duplication" },
       { id: "gwaio_upgrade_subcommander_fabber" },
       { id: "gwaio_upgrade_subcommander_tactics" },
+      { id: "gwaio_health_titans", units: gwoGroup.titans },
     ],
   };
 });
