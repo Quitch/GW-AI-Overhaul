@@ -14,7 +14,8 @@
   - Air Cooldown Tech
   - Naval Cooldown Tech
   - Orbital Cooldown Tech
-- AI Cooldown Tech
+- New AI Tech
+  - Faster factory cooldown
 
 ### Changed
 
