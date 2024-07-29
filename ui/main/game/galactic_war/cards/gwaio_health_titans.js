@@ -4,7 +4,9 @@ define([
 ], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant("!LOC: Increases the health of all Titans by 50%."),
+    describe: _.constant(
+      "!LOC:Titan Armour Tech increases the health of all Titans by 50%."
+    ),
     summarize: _.constant("!LOC:Titan Armour Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
