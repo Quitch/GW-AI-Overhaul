@@ -2,6 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
+  const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,14 +20,12 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]
       if (gwoCard.hasUnit(inventory.units(), vehicleFactories)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
-      const vehicleFactories = [gwoUnit.vehicleFactory, gwoUnit.vehicleFactoryAdvanced]
       const mods = _.map(vehicleFactories, function (unit) {
         return {
           file: unit,
