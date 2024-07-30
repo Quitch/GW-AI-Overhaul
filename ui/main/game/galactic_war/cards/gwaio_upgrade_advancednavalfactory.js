@@ -21,7 +21,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced)) {
-        chance = 60;
+        chance = 30;
       }
       return { chance: chance };
     },

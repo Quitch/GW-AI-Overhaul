@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Structure Engine Tech increases the speed of all mobile structures by 50%"
+      "!LOC:Titan Engine Tech increases the speed of all titans by 50%."
     ),
-    summarize: _.constant("!LOC:Structure Engine Tech"),
+    summarize: _.constant("!LOC:Titan Engine Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
     ),
     audio: function () {
       return {
@@ -19,14 +19,14 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (inventory.hasCard("gwaio_start_nomad")) {
+      if (gwoCard.hasUnit(inventory.units(), gwoGroup.titans)) {
         chance = 70;
       }
       return { chance: chance };
     },
     buff: function (inventory) {
       const mods = _.flatten(
-        _.map(gwoGroup.nomadStructures, function (unit) {
+        _.map(gwoGroup.titansMobile, function (unit) {
           return [
             {
               file: unit,

@@ -1,10 +1,38 @@
 # CHANGELOG
 
+## v5.67.0 - 2024-07-30
+
+### Added
+
+- New tech cards
+  - Titan Armour Tech
+  - Titan Ammunition Tech
+  - Titan Engine Tech
+  - Titan Combat Tech
+  - Vehicle Cooldown Tech
+  - Bot Cooldown Tech
+  - Air Cooldown Tech
+  - Naval Cooldown Tech
+  - Orbital Cooldown Tech
+- New AI Tech
+  - Faster factory cooldown
+
+### Changed
+
+- Reduced performance load of intelligence panel
+- Threat score not displayed when no threat present
+- Revenants apply their tech to anti-nuke launchers
+
+### Fixed
+
+- Structure Engine Tech not having an associated unit list for its tooltip
+- Advanced Naval Factory Upgrade Tech being offered too often
+
 ## v5.66.2 - 2024-07-28
 
 ### Fixed
 
-- Legonis Machina AIs not receiving armour buffs for their tanks
+- Legonis Machina AIs not receiving cost discounts and armour buffs for their tanks
 
 ## v5.66.1 - 2024-07-27
 

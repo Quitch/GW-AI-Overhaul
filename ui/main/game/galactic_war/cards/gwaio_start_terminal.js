@@ -60,7 +60,7 @@ define([
             op: "add",
             value: -15,
           });
-          _.forEach(gwoGroup.notMobile, function (unit) {
+          _.forEach(gwoGroup.immobile, function (unit) {
             mods.push({
               file: unit,
               path: "passive_health_regen",

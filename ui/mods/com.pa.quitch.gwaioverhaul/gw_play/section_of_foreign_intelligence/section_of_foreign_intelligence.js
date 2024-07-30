@@ -134,8 +134,6 @@ function gwoIntelligence() {
           };
         };
 
-        // Planetary Intelligence
-
         const formattedString = function (number) {
           const km2 = 1000000;
           number = number / km2;
@@ -145,9 +143,9 @@ function gwoIntelligence() {
           return Math.floor(number);
         };
 
-        model.gwoSystemSurfaceArea = ko.computed(function () {
+        const calculateSurfaceArea = function (system) {
           var area = 0;
-          _.forEach(model.selection.system().planets(), function (world) {
+          _.forEach(system.planets(), function (world) {
             if (
               (world.generator && world.generator.biome !== "gas") ||
               (world.planet && world.planet.biome !== "gas")
@@ -156,217 +154,175 @@ function gwoIntelligence() {
             }
           });
           return formattedString(area);
-        });
+        };
 
         const toFixedIfNecessary = function (value, decimals) {
           // + converts the string output of toFixed() back to a float
           return +parseFloat(value).toFixed(decimals);
         };
 
-        model.gwoSystemThreat = ko.computed(function () {
-          const ai = model.selection.system().star.ai();
+        const measureThreat = function (ai) {
           var commanders = [];
           var totalThreat = 0;
-          if (ai) {
-            commanders.push(intelligence(ai, 0));
-            if (ai.minions) {
-              commanders = commanders.concat(_.map(ai.minions, intelligence));
-            }
-            if (ai.foes) {
-              commanders = commanders.concat(_.map(ai.foes, intelligence));
-              _.forEach(ai.foes, function (army) {
-                var commanderCount = 1;
-                if (army.commanderCount) {
-                  commanderCount = army.commanderCount;
-                } else if (army.landing_policy) {
-                  // legacy GWO support
-                  commanderCount = army.landing_policy.length;
-                }
-                totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
-              });
-            }
-            _.times(commanders.length, function (n) {
-              totalThreat += commanders[n].eco;
-            });
-            _.forEach(ai.typeOfBuffs, function (buff) {
-              switch (buff) {
-                case 0: // cost
-                case 4: // build
-                  totalThreat *= 1.3;
-                  break;
-                case 1: // damage
-                case 2: // health
-                  totalThreat *= 1.2;
-                  break;
-                case 3: // speed
-                  totalThreat *= 1.1;
-                  break;
-                case 6: // combat
-                  totalThreat *= 1.5;
+          commanders.push(intelligence(ai, 0));
+          if (ai.minions) {
+            commanders = commanders.concat(_.map(ai.minions, intelligence));
+          }
+          if (ai.foes) {
+            commanders = commanders.concat(_.map(ai.foes, intelligence));
+            _.forEach(ai.foes, function (army) {
+              var commanderCount = 1;
+              if (army.commanderCount) {
+                commanderCount = army.commanderCount;
+              } else if (army.landing_policy) {
+                // legacy GWO support
+                commanderCount = army.landing_policy.length;
               }
+              totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
             });
-            if (ai.mirrorMode === true) {
-              totalThreat *= 2;
+          }
+          _.times(commanders.length, function (n) {
+            totalThreat += commanders[n].eco;
+          });
+          if (ai.ally) {
+            if (ai.ally.econ_rate) {
+              totalThreat /= ai.ally.econ_rate + 1;
+            } else {
+              totalThreat /= 2;
             }
-            if (ai.ally) {
-              if (ai.ally.econ_rate) {
-                totalThreat /= ai.ally.econ_rate + 1;
-              } else {
-                totalThreat /= 2;
-              }
+          }
+          _.forEach(ai.typeOfBuffs, function (buff) {
+            switch (buff) {
+              case 0: // cost
+              case 4: // build
+                totalThreat *= 1.3;
+                break;
+              case 1: // damage
+              case 2: // health
+              case 7: // cooldown
+                totalThreat *= 1.2;
+                break;
+              case 3: // speed
+                totalThreat *= 1.1;
+                break;
+              case 6: // combat
+                totalThreat *= 1.5;
             }
+          });
+          if (ai.mirrorMode === true) {
+            totalThreat *= 2;
           }
           return toFixedIfNecessary(totalThreat, 2);
-        });
+        };
 
-        // Available Technology
-
-        model.gwoCardName = ko.computed(function () {
-          const star = model.selection.system().star;
-          if (star.ai() && star.ai().cardName) {
-            return star.ai().cardName;
+        const availableTech = function (star) {
+          const ai = star.ai();
+          const cardList = star.cardList();
+          if (
+            ai.cardName &&
+            !ai.treasurePlanet &&
+            cardList.length === 1 // Don't show when finding cards through Explore
+          ) {
+            return ai.cardName;
           }
-        });
+          return "";
+        };
 
-        model.gwoCardAvailable = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            !star.ai().treasurePlanet &&
-            star.cardList() &&
-            // Don't show when finding cards through Explore
-            star.cardList().length === 1
-          );
-        });
+        const convertGameMModifiersToName = function (ai) {
+          const gameModifiers = [];
+          if (ai.bountyMode) {
+            gameModifiers.push("Bounties");
+          }
+          if (ai.landAnywhere) {
+            gameModifiers.push("Land Anywhere");
+          }
+          if (ai.suddenDeath) {
+            gameModifiers.push("Sudden Death");
+          }
+          return gameModifiers;
+        };
 
-        // Game Options
+        const convertBuffNumberToName = function (ai) {
+          const buffs = ai.typeOfBuffs;
+          const guardians = ai.mirrorMode;
+          const buffNames = [];
+          _.forEach(buffs, function (buff) {
+            switch (buff) {
+              case 0:
+                buffNames.push(loc("!LOC:Costs decreased"));
+                break;
+              case 1:
+                buffNames.push(loc("!LOC:Damage increased"));
+                break;
+              case 2:
+                buffNames.push(loc("!LOC:Health increased"));
+                break;
+              case 3:
+                buffNames.push(loc("!LOC:Speed increased"));
+                break;
+              case 4:
+                buffNames.push(loc("!LOC:Build faster"));
+                break;
+              case 5: // v5.11.0 and earlier only
+                buffNames.push(loc("!LOC:Commanders enhanced"));
+                break;
+              case 6:
+                buffNames.push(loc("!LOC:Combat units enhanced"));
+                break;
+              case 7:
+                buffNames.push(loc("!LOC:Factory cooldown decreased"));
+                break;
+            }
+          });
+          if (guardians) {
+            buffNames.push(loc("!LOC:Your technology bonuses"));
+          }
+          return buffNames;
+        };
 
-        model.gwoBountyMode = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().bountyMode;
-        });
-
-        model.gwoLandAnywhere = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().landAnywhere;
-        });
-
-        model.gwoSuddenDeath = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().suddenDeath;
-        });
-
-        model.gwoGameOptions = ko.computed(function () {
-          return (
-            model.gwoBountyMode() ||
-            model.gwoLandAnywhere() ||
-            model.gwoSuddenDeath()
-          );
-        });
-
-        // AI Buffs
-
-        model.gwoTechBuild = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 4)
-          );
-        });
-
-        model.gwoTechCost = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 0)
-          );
-        });
-
-        model.gwoTechDamage = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 1)
-          );
-        });
-
-        model.gwoTechHealth = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 2)
-          );
-        });
-
-        model.gwoTechSpeed = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 3)
-          );
-        });
-
-        // v5.11.0 and earlier only
-        model.gwoEnhancedCommanders = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 5)
-          );
-        });
-
-        model.gwoTechCombat = ko.computed(function () {
-          const star = model.selection.system().star;
-          return (
-            star.ai() &&
-            star.ai().typeOfBuffs &&
-            _.includes(star.ai().typeOfBuffs, 6)
-          );
-        });
-
-        model.gwoTechMirror = ko.computed(function () {
-          const star = model.selection.system().star;
-          return star.ai() && star.ai().mirrorMode === true;
-        });
-
-        model.gwoAiBuffs = ko.computed(function () {
-          return (
-            model.gwoTechBuild() ||
-            model.gwoTechCombat() ||
-            model.gwoTechCost() ||
-            model.gwoEnhancedCommanders() ||
-            model.gwoTechDamage() ||
-            model.gwoTechHealth() ||
-            model.gwoTechSpeed() ||
-            model.gwoTechMirror()
-          );
-        });
-
-        model.gwoAIs = ko.computed(function () {
-          const ai = model.selection.system().star.ai();
+        const createAIIntelligence = function (ai) {
           var commanders = [];
-          if (ai) {
-            commanders.push(intelligence(ai, 0));
-            if (ai.minions) {
-              const minions = _.map(ai.minions, intelligence);
-              commanders = commanders.concat(minions);
-            }
-            if (ai.foes) {
-              const foes = _.map(ai.foes, intelligence);
-              commanders = commanders.concat(foes);
-            }
-            if (ai.ally) {
-              const commander = intelligence(ai.ally, 0);
-              commanders.push(commander);
-            }
+          commanders.push(intelligence(ai, 0));
+          if (ai.minions) {
+            const minions = _.map(ai.minions, intelligence);
+            commanders = commanders.concat(minions);
+          }
+          if (ai.foes) {
+            const foes = _.map(ai.foes, intelligence);
+            commanders = commanders.concat(foes);
+          }
+          if (ai.ally) {
+            const commander = intelligence(ai.ally, 0);
+            commanders.push(commander);
           }
           return commanders;
+        };
+
+        model.gwoSystemSurfaceArea = ko.observable(0);
+        model.gwoSystemThreat = ko.observable(0);
+        model.gwoAvailableTech = ko.observable("");
+        model.gwoGameModifiers = ko.observableArray([]);
+        model.gwoAIBuffs = ko.observableArray([]);
+        model.gwoAis = ko.observableArray([]);
+
+        model.generateIntelligence = ko.computed(function () {
+          const system = model.selection.system();
+          const star = system.star;
+          const ai = star.ai();
+          model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
+          if (!ai) {
+            model.gwoSystemThreat(0);
+            model.gwoAvailableTech("");
+            model.gwoGameModifiers([]);
+            model.gwoAIBuffs([]);
+            model.gwoAis([]);
+            return;
+          }
+          model.gwoSystemThreat(measureThreat(ai));
+          model.gwoAvailableTech(availableTech(star));
+          model.gwoAIBuffs(convertBuffNumberToName(ai));
+          model.gwoGameModifiers(convertGameMModifiersToName(ai));
+          model.gwoAis(createAIIntelligence(ai));
         });
       }
     );

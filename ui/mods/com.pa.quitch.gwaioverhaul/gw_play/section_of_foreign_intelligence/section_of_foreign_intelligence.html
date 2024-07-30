@@ -13,39 +13,37 @@
           >k<sup>2</sup>
         </div>
       </div>
-      <div class="tr">
+      <div data-bind="visible: $root.gwoSystemThreat" class="tr">
         <div class="td pad"><loc>Threat Level:</loc></div>
         <div class="data pad" data-bind="text: $root.gwoSystemThreat"></div>
       </div>
     </div>
   </div>
-  <div data-bind="visible: $root.gwoCardAvailable">
+  <div data-bind="visible: $root.gwoAvailableTech">
     <h3>
       <loc>Available Tech</loc
       ><span class="info_tip" data-bind="tooltip: $root.gwoAvailableTechTooltip"
         >?</span
       >
     </h3>
-    <div class="td" data-bind="text: $root.gwoCardName"></div>
+    <div class="td" data-bind="text: $root.gwoAvailableTech"></div>
   </div>
-  <div data-bind="visible: $root.gwoGameOptions">
+  <div data-bind="visible: $root.gwoGameModifiers().length > 0">
     <h3>
       <loc>Game Modifiers</loc
       ><span class="info_tip" data-bind="tooltip: $root.gwoGameModifiersTooltip"
         >?</span
       >
     </h3>
-    <ul>
-      <li data-bind="visible: $root.gwoBountyMode"><loc>Bounties</loc></li>
-      <li data-bind="visible: $root.gwoLandAnywhere">
-        <loc>Land Anywhere</loc>
-      </li>
-      <li data-bind="visible: $root.gwoSuddenDeath">
-        <loc>Sudden Death</loc>
-      </li>
-    </ul>
+    <!-- ko if: $root.selection.system().star.ai() -->
+    <div data-bind="foreach: $root.gwoGameModifiers">
+      <ul>
+        <li data-bind="text: $root.gwoGameModifiers()[$index()]"></li>
+      </ul>
+    </div>
+    <!-- /ko -->
   </div>
-  <div data-bind="visible: $root.gwoAiBuffs">
+  <div data-bind="visible: $root.gwoAIBuffs().length > 0">
     <h3>
       <loc>AI Tech</loc
       ><span
@@ -55,33 +53,15 @@
         >?</span
       >
     </h3>
-    <ul>
-      <li data-bind="visible: $root.gwoTechBuild"><loc>Build faster</loc></li>
-      <li data-bind="visible: $root.gwoTechCombat">
-        <loc>Combat units enhanced</loc>
-      </li>
-      <!-- Commanders enhanced is v5.11.0 and earlier only -->
-      <li data-bind="visible: $root.gwoEnhancedCommanders">
-        <loc>Commanders enhanced</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechCost">
-        <loc>Costs decreased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechDamage">
-        <loc>Damage increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechHealth">
-        <loc>Health increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechSpeed">
-        <loc>Speed increased</loc>
-      </li>
-      <li data-bind="visible: $root.gwoTechMirror">
-        <loc>Your technology bonuses</loc>
-      </li>
-    </ul>
+    <!-- ko if: $root.selection.system().star.ai() -->
+    <div data-bind="foreach: $root.gwoAIBuffs">
+      <ul>
+        <li data-bind="text: $root.gwoAIBuffs()[$index()]"></li>
+      </ul>
+    </div>
+    <!-- /ko -->
   </div>
-  <ul data-bind="foreach: $root.gwoAIs">
+  <ul data-bind="foreach: $root.gwoAis">
     <h3>
       <span data-bind="text: faction"></span>
       <!-- ko if: faction === "Cluster" && tooltip -->

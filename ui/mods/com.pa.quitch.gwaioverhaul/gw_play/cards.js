@@ -223,8 +223,17 @@ function gwoCard() {
         "gwc_storage_and_buff",
       ];
       const expandedCards = [
+        "gwaio_combat_titans",
+        "gwaio_cooldown_air",
+        "gwaio_cooldown_bots",
+        "gwaio_cooldown_orbital",
+        "gwaio_cooldown_sea",
+        "gwaio_cooldown_vehicles",
+        "gwaio_damage_titans",
         "gwaio_enable_planetaryradar",
+        "gwaio_health_titans",
         "gwaio_speed_structure",
+        "gwaio_speed_titans",
         "gwaio_upgrade_advancedairfactory",
         "gwaio_upgrade_advancedbotfactory",
         "gwaio_upgrade_advancedenergyplant",

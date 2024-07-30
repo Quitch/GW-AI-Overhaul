@@ -53,7 +53,7 @@ function gwoSetup() {
         "main/shared/js/star_system_templates",
         "main/game/galactic_war/shared/js/gw_easy_star_systems",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/tech.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
@@ -273,7 +273,7 @@ function gwoSetup() {
         };
 
         const selectAIBuffs = function (numberOfBuffs) {
-          const buffType = [0, 1, 2, 3, 4, 6]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat
+          const buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
           return _.sample(buffType, numberOfBuffs);
         };
 
@@ -380,7 +380,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.66.2";
+          const version = "5.67.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();

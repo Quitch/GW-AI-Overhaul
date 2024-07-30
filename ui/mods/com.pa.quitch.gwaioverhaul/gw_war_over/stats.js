@@ -13,11 +13,7 @@ function gwoWarOverLoadoutStats() {
     const galaxy = game.galaxy();
     const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
-    if (
-      gwoSettings &&
-      !gwoSettings.cheatsUsed &&
-      game.gameState() === "won"
-    ) {
+    if (gwoSettings && !gwoSettings.cheatsUsed && game.gameState() === "won") {
       const difficultyLevelAsInt =
         _.findIndex(
           [

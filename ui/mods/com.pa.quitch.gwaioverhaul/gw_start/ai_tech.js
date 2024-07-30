@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/inventory.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
 ], function (inventory) {
   const legonisTech = [];
   const foundationTech = [];
@@ -40,7 +40,7 @@ define([
       inventory.foundationUnits,
       inventory.synchronousUnits,
       inventory.revenantsUnitsWithAmmo,
-      inventory.clusterUnitsNotMobile,
+      inventory.clusterUnitsImmobile,
     ];
     _.forEach(factionUnits, function (units, i) {
       factionsTech[i][0] = multiply(units, 0.75, "build_metal_cost");
@@ -82,7 +82,7 @@ define([
       inventory.foundationUnits,
       inventory.synchronousUnits,
       inventory.revenantsUnits,
-      inventory.clusterUnitsNotMobile,
+      inventory.clusterUnitsImmobile,
     ];
     const factionCommanders = [
       inventory.commanderUnits, // Legonis Machina
@@ -112,7 +112,7 @@ define([
     ];
     const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
-      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
@@ -172,7 +172,7 @@ define([
     ];
     const factionUnitsNoAir = [
       inventory.legonisUnitsMobile,
-      inventory.foundationUnitsMobileNotAir,
+      inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
@@ -207,6 +207,22 @@ define([
     });
   };
   setupAITech6CombatTech();
+
+  const setupAITech7CooldownTech = function () {
+    const factionUnits = [
+      inventory.legonisUnitsImmobile,
+      inventory.foundationUnitsImmobile,
+      inventory.synchronousUnitsImmobile,
+      inventory.revenantsUnitsFactories,
+      inventory.clusterUnitsFactories,
+    ];
+    _.forEach(factionUnits, function (units, i) {
+      factionsTech[i][7] = multiply(units, 0.5, "factory_cooldown_time");
+    });
+  };
+  setupAITech7CooldownTech();
+
+  console.debug(factionsTech);
 
   return {
     factionTechs: [

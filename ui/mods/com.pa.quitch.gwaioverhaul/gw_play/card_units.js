@@ -419,6 +419,16 @@ define([
       { id: "gwaio_upgrade_subcommander_duplication" },
       { id: "gwaio_upgrade_subcommander_fabber" },
       { id: "gwaio_upgrade_subcommander_tactics" },
+      { id: "gwaio_health_titans", units: gwoGroup.titans },
+      { id: "gwaio_damage_titans", units: gwoGroup.titans },
+      { id: "gwaio_speed_titans", units: gwoGroup.titans },
+      { id: "gwaio_combat_titans", units: gwoGroup.titans },
+      { id: "gwaio_cooldown_vehicles", units: gwoGroup.vehicleFactories },
+      { id: "gwaio_cooldown_bots", units: gwoGroup.botFactories },
+      { id: "gwaio_cooldown_air", units: gwoGroup.airFactories },
+      { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
+      { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
+      { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
     ],
   };
 });
