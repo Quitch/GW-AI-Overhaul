@@ -33,7 +33,6 @@ define([
       ) {
         chance = 120;
       }
-
       return { chance: chance };
     },
     buff: function (inventory) {
