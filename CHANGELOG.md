@@ -26,6 +26,7 @@
 ### Fixed
 
 - Structure Engine Tech not having an associated unit list for its tooltip
+- Advanced Naval Factory Upgrade Tech being offered too often
 
 ## v5.66.2 - 2024-07-28
 
