@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Orbital Cooldown Tech likelihood tied to distance and galaxy size
+
 ## v5.67.0 - 2024-07-30
 
 ### Added
