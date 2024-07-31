@@ -6,6 +6,10 @@
 
 - Orbital Cooldown Tech likelihood tied to distance and galaxy size
 
+### Fixed
+
+- Penchant AI not checking for air threats before building AA in the Unit Cannon
+
 ## v5.67.0 - 2024-07-30
 
 ### Added
