@@ -97,7 +97,7 @@
           {
             "test_type": "HasPersonalityTag",
             "string0": "GalacticWar",
-            "boolean": false
+            "boolean": true
           },
           {
             "test_type": "AloneOnPlanet",
