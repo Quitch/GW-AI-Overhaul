@@ -5,6 +5,7 @@
 ### Changed
 
 - Orbital Cooldown Tech likelihood tied to distance and galaxy size
+- Improved quality and consistency of TITANS AI anti-air approach to Galactic War
 
 ### Fixed
 
