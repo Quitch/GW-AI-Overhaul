@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
+  "shared/gw_common",
+], function (gwoCard, gwoGroup, GW) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,10 +18,20 @@ define([
       };
     },
     getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.orbitalFactories)) {
-        chance = 50;
+    deal: function (system, context) {
+      var chance = 24;
+      const dist = system.distance();
+      if (
+        context.totalSize <= GW.balance.numberOfSystems[0] ||
+        context.totalSize <= GW.balance.numberOfSystems[1]
+      ) {
+        chance = 12;
+      } else if (
+        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 6) ||
+        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
+        dist > 7
+      ) {
+        chance = 120;
       }
       return { chance: chance };
     },

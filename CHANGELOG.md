@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.68.0 - 2024-07-31
+
+### Changed
+
+- Orbital Cooldown Tech likelihood tied to distance and galaxy size
+- Improved quality and consistency of TITANS AI anti-air approach to Galactic War
+
+### Fixed
+
+- Penchant AI not checking for air threats before building AA in the Unit Cannon
+- TITANS AI not utilising the Galactic War approach to anti-air
+
 ## v5.67.0 - 2024-07-30
 
 ### Added
