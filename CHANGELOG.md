@@ -9,6 +9,7 @@
 ### Fixed
 
 - Penchant AI not checking for air threats before building AA in the Unit Cannon
+- TITANS AI not utilising the Galactic War approach to anti-air
 
 ## v5.67.0 - 2024-07-30
 
