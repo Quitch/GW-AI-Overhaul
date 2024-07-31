@@ -140,6 +140,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 - Shared Systems for galactic war
 - AI Chat
+- AI Personality Names
 
 ## Incompatible mods
 
