@@ -75,8 +75,10 @@ function gwoIntelligence() {
             };
           }
 
-          const inventory = model.game().inventory();
-          const playerFaction = inventory.getTag("global", "playerFaction");
+          const playerFaction = model
+            .game()
+            .inventory()
+            .getTag("global", "playerFaction");
           const factionInfo = [
             { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
             { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
