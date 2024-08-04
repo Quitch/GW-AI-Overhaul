@@ -331,12 +331,14 @@ function gwoSetup() {
             return;
           }
 
+          const ffa = "ffa";
+
           if (_.isArray(ais)) {
             _.forEach(ais, function (ai) {
-              ai.personality.personality_tags.push("ffa");
+              ai.personality.personality_tags.push(ffa);
             });
           } else {
-            ais.personality.personality_tags.push("ffa");
+            ais.personality.personality_tags.push(ffa);
           }
         };
 
