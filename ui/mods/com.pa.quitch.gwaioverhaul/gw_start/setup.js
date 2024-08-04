@@ -211,9 +211,7 @@ function gwoSetup() {
           }
         };
 
-        const titansAITags = ["Default"];
-
-        const setupPenchantAI = function (ai) {
+        const setupPenchantAI = function (ai, titansAITags) {
           const penchantValues = gwoAI.penchants();
           ai.personality.personality_tags =
             ai.personality.personality_tags.concat(
@@ -256,6 +254,8 @@ function gwoSetup() {
               difficulty.startingLocationEvaluationRadius();
           }
 
+          const titansAITags = ["Default"];
+
           switch (difficulty.ai()) {
             case "Queller":
               ai.personality.personality_tags =
@@ -263,12 +263,12 @@ function gwoSetup() {
                   getQuellerAITag(ai.faction)
                 );
               break;
-            case "Penchant":
-              setupPenchantAI(ai);
-              break;
-            default: // "Titans"
+            case "Titans":
               ai.personality.personality_tags =
                 ai.personality.personality_tags.concat(titansAITags);
+            // fall through
+            case "Penchant":
+              setupPenchantAI(ai, titansAITags);
           }
         };
 
