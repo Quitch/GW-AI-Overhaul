@@ -225,9 +225,9 @@ function gwoSetup() {
           return string === "true";
         };
 
-        const personalityId = "#gwo-personality-picker";
-
         const setAIPersonality = function (ai, difficulty) {
+          const personalityId = "#gwo-personality-picker";
+
           ai.personality.micro_type = difficulty.microType();
           ai.personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
           ai.personality.priority_scout_metal_spots = parseBoolean(
@@ -345,7 +345,9 @@ function gwoSetup() {
           const previousSettings = difficultySettings.previousSettings();
           const settingNames = _.keys(model.gwoDifficultySettings);
           _.pull(settingNames, "previousSettings");
-          difficultySettings.personalityTags($(personalityId).val());
+          difficultySettings.personalityTags(
+            $("#gwo-personality-picker").val()
+          );
           _.forEach(settingNames, function (name, i) {
             previousSettings[i] = difficultySettings[name]();
           });
