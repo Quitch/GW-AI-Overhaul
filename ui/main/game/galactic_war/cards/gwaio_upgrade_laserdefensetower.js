@@ -30,7 +30,7 @@ define([
           file: gwoUnit.laserDefenseTowerWeapon,
           path: "max_range",
           op: "multiply",
-          value: 1.25,
+          value: 1.5,
         },
       ]);
     },

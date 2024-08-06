@@ -222,8 +222,6 @@ define([
   };
   setupAITech7CooldownTech();
 
-  console.debug(factionsTech);
-
   return {
     factionTechs: [
       legonisTech,

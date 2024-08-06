@@ -211,9 +211,7 @@ function gwoSetup() {
           }
         };
 
-        const titansAITags = ["Default"];
-
-        const setupPenchantAI = function (ai) {
+        const setupPenchantAI = function (ai, titansAITags) {
           const penchantValues = gwoAI.penchants();
           ai.personality.personality_tags =
             ai.personality.personality_tags.concat(
@@ -227,9 +225,9 @@ function gwoSetup() {
           return string === "true";
         };
 
-        const personalityId = "#gwo-personality-picker";
-
         const setAIPersonality = function (ai, difficulty) {
+          const personalityId = "#gwo-personality-picker";
+
           ai.personality.micro_type = difficulty.microType();
           ai.personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
           ai.personality.priority_scout_metal_spots = parseBoolean(
@@ -256,6 +254,8 @@ function gwoSetup() {
               difficulty.startingLocationEvaluationRadius();
           }
 
+          const titansAITags = ["Default"];
+
           switch (difficulty.ai()) {
             case "Queller":
               ai.personality.personality_tags =
@@ -263,12 +263,12 @@ function gwoSetup() {
                   getQuellerAITag(ai.faction)
                 );
               break;
-            case "Penchant":
-              setupPenchantAI(ai);
-              break;
-            default: // "Titans"
+            case "Titans":
               ai.personality.personality_tags =
                 ai.personality.personality_tags.concat(titansAITags);
+            // fall through
+            case "Penchant":
+              setupPenchantAI(ai, titansAITags);
           }
         };
 
@@ -331,12 +331,14 @@ function gwoSetup() {
             return;
           }
 
+          const ffa = "ffa";
+
           if (_.isArray(ais)) {
             _.forEach(ais, function (ai) {
-              ai.personality.personality_tags.push("ffa");
+              ai.personality.personality_tags.push(ffa);
             });
           } else {
-            ais.personality.personality_tags.push("ffa");
+            ais.personality.personality_tags.push(ffa);
           }
         };
 
@@ -345,7 +347,9 @@ function gwoSetup() {
           const previousSettings = difficultySettings.previousSettings();
           const settingNames = _.keys(model.gwoDifficultySettings);
           _.pull(settingNames, "previousSettings");
-          difficultySettings.personalityTags($(personalityId).val());
+          difficultySettings.personalityTags(
+            $("#gwo-personality-picker").val()
+          );
           _.forEach(settingNames, function (name, i) {
             previousSettings[i] = difficultySettings[name]();
           });
@@ -380,7 +384,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.68.0";
+          const version = "5.68.1";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
