@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Laser Defence Tower Upgrade Tech applies the full range buff
+
 ## v5.68.0 - 2024-07-31
 
 ### Changed
