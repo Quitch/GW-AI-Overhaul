@@ -117,26 +117,16 @@ define([
           ];
           const factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
           _.forEach(factoryArtillery, function (structure) {
-            aiMods.push(
-              {
-                type: "fabber",
-                op: "append",
-                toBuild: structure,
-                idToMod: "builders",
-                value: "Commander", // TITANS AI
-              },
-              {
-                type: "fabber",
-                op: "append",
-                toBuild: structure,
-                idToMod: "builders",
-                value: "UberCommander", // Queller AI
-              }
-            );
+            aiMods.push({
+              type: "fabber",
+              op: "append",
+              toBuild: structure,
+              idToMod: "builders",
+              value: "Commander",
+            });
           });
           const mobileLand = [
-            "SupportCommander", // TITANS AI
-            "UberSupportCommander", // Queller AI
+            "SupportCommander",
             "AdvancedArtilleryBot",
             "TMLBot",
             "BasicArmorTank",
