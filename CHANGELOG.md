@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- General Commander starts with two free data banks
+
 ### Fixed
 
 - Roboticist using too much air

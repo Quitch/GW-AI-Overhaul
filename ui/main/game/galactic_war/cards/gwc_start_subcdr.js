@@ -39,7 +39,6 @@ define([
             gwoUnit.vehicleFabber,
             gwoUnit.vehicleFactory,
           ]);
-          inventory.maxCards(inventory.maxCards() - 2);
         }
         // Support for GWO v4.2.2 and earlier
         if (
