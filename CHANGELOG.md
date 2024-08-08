@@ -12,6 +12,7 @@
 - Roboticist using too much air
 - Queller not using CEO Commander ability
 - Queller's Commander not using Paratrooper ability
+- Avoid Tourist Commander subcommanders running build checks that can never complete
 
 ## v5.68.1 - 2024-08-06
 
