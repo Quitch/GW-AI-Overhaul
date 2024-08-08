@@ -5,6 +5,7 @@
 ### Changed
 
 - General Commander starts with two free data banks
+- Hoarder Commander starts with four free data banks
 
 ### Fixed
 

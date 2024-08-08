@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains every factory on every tier of the tech tree, but this has left no space for anything else. You will need to seek out additional data banks."
+      "!LOC:Contains every factory on every tier of the tech tree."
     ),
     hint: function () {
       return {
@@ -27,7 +27,6 @@ define([
         var buffCount = inventory.getTag("", "buffCount", 0);
         if (!buffCount) {
           GWCStart.buff(inventory);
-          inventory.maxCards(inventory.maxCards() - 4);
           inventory.addUnits(
             gwoGroup.air.concat(
               gwoGroup.bots,
