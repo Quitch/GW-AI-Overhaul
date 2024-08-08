@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v5.69.0 - 2024-08-08
+
+### Changed
+
+- General Commander starts with two free data banks
+- Hoarder Commander starts with four free data banks
+- Beginner difficulty is now the same as Casual but with a guaranteed ally in every system
+
+### Fixed
+
+- Roboticist using too much air
+- Queller not using CEO Commander ability
+- Queller's Commander not using Paratrooper ability
+- Avoid Tourist Commander subcommanders running build checks that can never complete
+- Queller shipping with Legion checks
+
 ## v5.68.1 - 2024-08-06
 
 ### Fixed

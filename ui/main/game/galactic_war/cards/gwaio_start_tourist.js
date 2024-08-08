@@ -35,6 +35,14 @@ define([
               value: 200,
             },
           ]);
+
+          inventory.addAIMods([
+            {
+              type: "fabber",
+              op: "load",
+              value: CARD.id + ".json",
+            },
+          ]);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
