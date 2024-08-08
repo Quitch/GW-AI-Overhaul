@@ -9,6 +9,8 @@
 ### Fixed
 
 - Roboticist using too much air
+- Queller not using CEO Commander ability
+- Queller's Commander not using Paratrooper ability
 
 ## v5.68.1 - 2024-08-06
 
