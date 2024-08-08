@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Removed Queller files as the version in PA is current
+
 ## v5.69.0 - 2024-08-08
 
 ### Changed
