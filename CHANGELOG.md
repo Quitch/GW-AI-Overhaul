@@ -6,6 +6,7 @@
 
 - General Commander starts with two free data banks
 - Hoarder Commander starts with four free data banks
+- Beginner difficulty is now the same as Casual but with a guaranteed ally in every system
 
 ### Fixed
 
