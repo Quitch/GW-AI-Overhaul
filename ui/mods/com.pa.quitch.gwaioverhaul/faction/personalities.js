@@ -72,6 +72,7 @@ define({
   roboticist: {
     percent_vehicle: 0,
     percent_bot: 1,
+    percent_air: 0,
     percent_naval: 0,
     percent_orbital: 0,
   },
