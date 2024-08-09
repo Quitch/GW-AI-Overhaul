@@ -48,7 +48,8 @@ define([
       ];
       if (
         !gwoCard.hasUnit(inventory.units(), aiOpeningFactories) ||
-        inventory.hasCard("nem_start_deepspace")
+        inventory.hasCard("nem_start_deepspace") ||
+        inventory.hasCard("gwaio_start_tourist")
       ) {
         return {
           params: {

@@ -6,6 +6,7 @@
 
 - Removed Queller files as the version in PA is current
 - Tourist Commander no longer gets allies in systems
+- Tourist Commander is no longer offered subcommanders
 
 ### Fixed
 
