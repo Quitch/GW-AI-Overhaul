@@ -6,6 +6,10 @@
 
 - Removed Queller files as the version in PA is current
 
+### Fixed
+
+- Outdated AI additions in tech cards
+
 ## v5.69.0 - 2024-08-08
 
 ### Changed
