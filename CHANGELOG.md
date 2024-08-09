@@ -9,6 +9,7 @@
 ### Fixed
 
 - Outdated AI additions in tech cards
+- Hoarder Commander not being offered Advanced Defense Technology
 
 ## v5.69.0 - 2024-08-08
 

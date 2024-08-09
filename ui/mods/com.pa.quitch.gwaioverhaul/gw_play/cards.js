@@ -28,6 +28,7 @@ function gwoCard() {
       "gwaio_upgrade_fabricationbot",
       "gwaio_upgrade_fabricationship",
       "gwaio_upgrade_fabricationvehicle",
+      "gwaio_start_hoarder",
     ];
 
     const numCardsToOffer = 3;
