@@ -220,7 +220,7 @@ define({
       bountyModeValue: 0.2,
       factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 400,
-      alliedCommanderChance: 10,
+      alliedCommanderChance: 5,
     },
     {
       difficultyName: "!LOC:Uber",

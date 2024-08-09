@@ -8,6 +8,7 @@
 - Tourist Commander no longer gets allies in systems
 - Tourist Commander is no longer offered subcommanders
 - Intelligence Fabrication Tech no longer applies to the Stingray
+- Decreased chance of allied commanders on Diamond
 
 ### Fixed
 
