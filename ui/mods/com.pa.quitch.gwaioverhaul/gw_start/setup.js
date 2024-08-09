@@ -320,7 +320,10 @@ function gwoSetup() {
           if (!model.gwoStarCardsWhichBreakAllies) {
             model.gwoStarCardsWhichBreakAllies = [];
           }
-          model.gwoStarCardsWhichBreakAllies.push("nem_start_deepspace");
+          model.gwoStarCardsWhichBreakAllies.push(
+            "nem_start_deepspace",
+            "gwaio_start_tourist"
+          );
           return _.some(model.gwoStarCardsWhichBreakAllies, function (card) {
             return card === game.inventory().cards()[0].id;
           });
