@@ -25,7 +25,8 @@
     "locTree": "readonly",
     "globals": "readonly",
     "CommanderUtility": "readonly",
-    "Build": "readonly"
+    "Build": "readonly",
+    "i18n": "readonly"
   },
   "plugins": ["lodash"],
   "rules": {

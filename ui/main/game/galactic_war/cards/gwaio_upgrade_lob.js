@@ -5,8 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%." +
-        " Fires twice as fast and no longer costs metal to recharge its ammo." // added separately to avoid breaking translations
+      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo."
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(

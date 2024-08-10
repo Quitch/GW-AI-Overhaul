@@ -8,7 +8,13 @@ define([
   const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Warp Commander"),
+    summarize: function () {
+      const english = _.includes(i18n.detectLanguage(), "en");
+      if (english) {
+        return "!LOC:Warp Commander";
+      }
+      return loc("!LOC:Teleporter") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
+    },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },

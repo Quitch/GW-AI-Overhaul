@@ -12,9 +12,13 @@ define([
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories."
-    ),
+    describe: function () {
+      const english = _.includes(i18n.detectLanguage(), "en");
+      if (english) {
+        return "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories.";
+      }
+      return "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories. Sub Commanders will not do anything except defend themselves and automatically transfer their excess income to you.";
+    },
     hint: function () {
       return {
         icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",

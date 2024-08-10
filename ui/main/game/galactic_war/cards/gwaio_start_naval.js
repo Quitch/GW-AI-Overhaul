@@ -8,7 +8,7 @@ define([
   const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Naval Commander"),
+    summarize: _.constant(loc("!LOC:Naval") + " " + loc("!LOC:Commander")), // scuffed translation using existing strings
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
