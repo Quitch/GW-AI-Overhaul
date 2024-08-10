@@ -152,6 +152,16 @@ define([
     return personality;
   };
 
+  const glassPlanets = function (planets) {
+    const unglassableBiome = ["asteroid", "gas", "metal"];
+    _.forEach(planets, function (planet) {
+      if (!_.includes(unglassableBiome, planet.generator.biome)) {
+        planet.generator.biome = "moon";
+      }
+    });
+    return planets;
+  };
+
   return function () {
     const self = this;
 
@@ -248,6 +258,14 @@ define([
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
+    const planetsGlassed = inventory.hasCard("gwaio_enable_orbitalbombardment");
+
+    if (planetsGlassed) {
+      currentStar.system().planets = glassPlanets(
+        currentStar.system().planets,
+        planetsGlassed
+      );
+    }
 
     const config = {
       files: self.files(),

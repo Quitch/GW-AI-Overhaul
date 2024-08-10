@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- New tech cards
+  - Orbital Bombardment Tech
+
 ### Fixed
 
 - The parts of a tech card description which have a translation are now always translated
