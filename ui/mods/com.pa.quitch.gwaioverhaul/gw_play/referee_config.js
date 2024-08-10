@@ -261,10 +261,7 @@ define([
     const planetsGlassed = inventory.hasCard("gwaio_enable_orbitalbombardment");
 
     if (planetsGlassed) {
-      currentStar.system().planets = glassPlanets(
-        currentStar.system().planets,
-        planetsGlassed
-      );
+      currentStar.system().planets = glassPlanets(currentStar.system().planets);
     }
 
     const config = {
