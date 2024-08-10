@@ -4,7 +4,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Sudden Death tech enables bounty mode in every system."
+      "!LOC:Sudden Death tech enables sudden death mode in every system."
     ),
     summarize: _.constant("!LOC:Sudden Death Tech"),
     icon: _.constant(
