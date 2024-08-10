@@ -5,7 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Wall Upgrade Tech increases the health of walls by 50%."
+      loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%.") +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +27,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.wall,

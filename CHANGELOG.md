@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## v5.70.0 - 2024-08-10
+
+### Added
+
+- New tech cards
+  - Bounty Tech
+  - Sudden Death Tech
+  - Land Anywhere Tech
+
+### Changed
+
+- Removed Queller files as the version in PA is current
+- Tourist Commander no longer gets allies in systems
+- Tourist Commander is no longer offered subcommanders
+- Intelligence Fabrication Tech no longer applies to the Stingray
+- Decreased chance of allied commanders on Diamond
+- The more subcommanders you have the more likely you are to be offered subcommander tech
+- Reduced the number of boss commanders on Uber
+- Updated incompatible mods list
+- Upgrade techs for individual units no longer use a Data Bank
+
+### Fixed
+
+- Outdated AI additions in tech cards
+- Hoarder Commander not being offered Advanced Defense Technology
+- Broken translations on loadout screen (some are a bit scuffed)
+
 ## v5.69.0 - 2024-08-08
 
 ### Changed

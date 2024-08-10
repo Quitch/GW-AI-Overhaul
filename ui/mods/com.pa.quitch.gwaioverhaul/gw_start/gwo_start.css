@@ -33,6 +33,11 @@
   overflow-x: hidden;
 }
 
+#difficulty-cards,
+#difficulty-cards button {
+  text-transform: uppercase;
+}
+
 #custom-difficulty-settings select:disabled {
   color: #666;
 }

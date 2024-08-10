@@ -6,7 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator."
+      loc(
+        "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Fabrication Aircraft Upgrade Tech"),
     icon: _.constant(
@@ -26,6 +30,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.starterUnitsAdvanced);
 
       inventory.addMods([

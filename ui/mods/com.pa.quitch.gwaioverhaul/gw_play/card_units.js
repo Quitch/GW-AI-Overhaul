@@ -29,7 +29,6 @@ define([
           gwoUnit.hermes,
           gwoUnit.skitter,
           gwoUnit.firefly,
-          gwoUnit.stingray,
           gwoUnit.stitch,
           gwoUnit.mend,
           gwoUnit.barnacle,
@@ -429,6 +428,9 @@ define([
       { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
       { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
+      { id: "gwaio_enable_bounties" },
+      { id: "gwaio_enable_suddendeath" },
+      { id: "gwaio_enable_landanywhere" },
     ],
   };
 });

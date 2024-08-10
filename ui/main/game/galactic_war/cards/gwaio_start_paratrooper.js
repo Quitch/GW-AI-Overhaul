@@ -14,7 +14,10 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
+      loc(
+        "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
+      ) +
+        " Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
     ),
     hint: function () {
       return {
@@ -117,26 +120,16 @@ define([
           ];
           const factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
           _.forEach(factoryArtillery, function (structure) {
-            aiMods.push(
-              {
-                type: "fabber",
-                op: "append",
-                toBuild: structure,
-                idToMod: "builders",
-                value: "Commander", // TITANS AI
-              },
-              {
-                type: "fabber",
-                op: "append",
-                toBuild: structure,
-                idToMod: "builders",
-                value: "UberCommander", // Queller AI
-              }
-            );
+            aiMods.push({
+              type: "fabber",
+              op: "append",
+              toBuild: structure,
+              idToMod: "builders",
+              value: "Commander",
+            });
           });
           const mobileLand = [
-            "SupportCommander", // TITANS AI
-            "UberSupportCommander", // Queller AI
+            "SupportCommander",
             "AdvancedArtilleryBot",
             "TMLBot",
             "BasicArmorTank",

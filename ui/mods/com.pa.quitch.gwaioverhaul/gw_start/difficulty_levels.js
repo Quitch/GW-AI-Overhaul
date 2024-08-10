@@ -220,7 +220,7 @@ define({
       bountyModeValue: 0.2,
       factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 400,
-      alliedCommanderChance: 10,
+      alliedCommanderChance: 5,
     },
     {
       difficultyName: "!LOC:Uber",
@@ -241,7 +241,7 @@ define({
       max_basic_fabbers: 12,
       max_advanced_fabbers: 12,
       ffa_chance: 25,
-      bossCommanders: 5,
+      bossCommanders: 4,
       landAnywhereChance: 20,
       suddenDeathChance: 10,
       bountyModeChance: 25,

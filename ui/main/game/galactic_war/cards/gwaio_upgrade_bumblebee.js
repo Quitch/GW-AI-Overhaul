@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
+      loc(
+        "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Bumblebee Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoUnit.landMine);
 
       inventory.addMods([

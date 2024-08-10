@@ -137,14 +137,7 @@ define([
                   op: "append",
                   toBuild: structure,
                   idToMod: "builders",
-                  value: "Commander", // TITANS AI
-                },
-                {
-                  type: "fabber",
-                  op: "append",
-                  toBuild: structure,
-                  idToMod: "builders",
-                  value: "UberCommander", // Queller AI
+                  value: "Commander",
                 },
                 {
                   type: "fabber",

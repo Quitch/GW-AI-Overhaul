@@ -6,7 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
+      loc(
+        "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Naval Factory Upgrade Tech"),
     icon: _.constant(
@@ -29,6 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       const newUnits = gwoGroup.starterUnitsAdvanced.concat(
         gwoGroup.navalAdvancedMobile
       );

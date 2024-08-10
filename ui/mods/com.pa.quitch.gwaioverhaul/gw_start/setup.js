@@ -320,7 +320,10 @@ function gwoSetup() {
           if (!model.gwoStarCardsWhichBreakAllies) {
             model.gwoStarCardsWhichBreakAllies = [];
           }
-          model.gwoStarCardsWhichBreakAllies.push("nem_start_deepspace");
+          model.gwoStarCardsWhichBreakAllies.push(
+            "nem_start_deepspace",
+            "gwaio_start_tourist"
+          );
           return _.some(model.gwoStarCardsWhichBreakAllies, function (card) {
             return card === game.inventory().cards()[0].id;
           });
@@ -384,7 +387,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.69.0";
+          const version = "5.70.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();

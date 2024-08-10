@@ -121,6 +121,10 @@ define([
     return typeCards / totalCards;
   };
 
+  const checkForCard = function (inventory, id) {
+    return inventory.hasCard(id);
+  };
+
   const setupGuardianPersonality = function (cards, personality) {
     const totalAirCards = countCards(cards, "_air");
     const totalBotCards = countCards(cards, "_bot");
@@ -240,6 +244,19 @@ define([
       armies.push(aiArmy);
     });
 
+    const playerBountyMode = checkForCard(inventory, "gwaio_enable_bounties");
+    const bountyMode = ai.bountyMode || playerBountyMode;
+    const playerSuddenDeathMode = checkForCard(
+      inventory,
+      "gwaio_enable_suddendeath"
+    );
+    const suddenDeathMode = ai.bountyMode || playerSuddenDeathMode;
+    const playerLandAnywhereMode = checkForCard(
+      inventory,
+      "gwaio_enable_landanywhere"
+    );
+    const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
+
     const config = {
       files: self.files(),
       armies: armies,
@@ -247,10 +264,10 @@ define([
         commander: inventory.getTag("global", "commander"),
       },
       system: currentStar.system(),
-      land_anywhere: ai.landAnywhere,
-      bounty_mode: ai.bountyMode,
+      land_anywhere: landAnywhereMode,
+      bounty_mode: bountyMode,
       bounty_value: ai.bountyModeValue,
-      sudden_death_mode: ai.suddenDeath,
+      sudden_death_mode: suddenDeathMode,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter

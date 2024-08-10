@@ -98,7 +98,7 @@ function gwoUI() {
       "!LOC:Number of Commanders in the boss's army.";
     // Allow modders to append their deck names
     model.gwoCardsTooltip =
-      "!LOC:BASIC: base game tech cards<BR>EXPANDED: over 100 additional cards.";
+      "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 100 additional cards.";
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
@@ -131,6 +131,7 @@ function gwoUI() {
     locTree($(gameDifficultyId));
     locTree($("#difficulty-options"));
     locTree($("#custom-difficulty-settings"));
+    locTree($("#difficulty-cards"));
     locTree($("#difficulty-ai"));
 
     if (api.content.usingTitans()) {

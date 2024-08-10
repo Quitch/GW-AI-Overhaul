@@ -28,6 +28,7 @@ function gwoCard() {
       "gwaio_upgrade_fabricationbot",
       "gwaio_upgrade_fabricationship",
       "gwaio_upgrade_fabricationvehicle",
+      "gwaio_start_hoarder",
     ];
 
     const numCardsToOffer = 3;
@@ -230,7 +231,10 @@ function gwoCard() {
         "gwaio_cooldown_sea",
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",
+        "gwaio_enable_bounties",
+        "gwaio_enable_landanywhere",
         "gwaio_enable_planetaryradar",
+        "gwaio_enable_suddendeath",
         "gwaio_health_titans",
         "gwaio_speed_structure",
         "gwaio_speed_titans",

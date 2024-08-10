@@ -1,12 +1,13 @@
 <div class="form-group" id="difficulty-cards">
-  <label id="game-cards-label" for="game-cards"><loc>TECH:</loc></label>
+  <label id="game-cards-label" for="game-cards"><loc>TECHS</loc>:</label>
   <span class="info_tip" data-bind="tooltip: model.gwoCardsTooltip">?</span>
   <select
     class="form-control"
     id="game-cards"
     data-bind="selectPicker: gwoDifficultySettings.techCardDeck"
   >
-    <option value="Basic">BASIC</option>
-    <option value="Expanded">EXPANDED</option>
+    <!-- Must be capitalised for translation to work. Made uppercase through CSS -->
+    <option value="Basic">Basic</option>
+    <option value="Expanded">Galactic War Overhaul</option>
   </select>
 </div>

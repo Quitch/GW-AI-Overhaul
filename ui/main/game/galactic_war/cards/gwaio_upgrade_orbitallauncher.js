@@ -6,7 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
+      loc(
+        "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
     icon: _.constant(
@@ -29,6 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.orbitalAdvanced);
 
       inventory.addMods([

@@ -62,26 +62,15 @@ define([
             "BasicLandDefense",
             "BasicArtillery",
           ];
-          const aiMods = _.flatten(
-            _.map(structures, function (structure) {
-              return [
-                {
-                  type: "factory",
-                  op: "append",
-                  toBuild: structure,
-                  idToMod: "builders",
-                  value: "Commander", // TITANS AI
-                },
-                {
-                  type: "factory",
-                  op: "append",
-                  toBuild: structure,
-                  idToMod: "builders",
-                  value: "UberCommander", // Queller AI
-                },
-              ];
-            })
-          );
+          const aiMods = _.map(structures, function (structure) {
+            return {
+              type: "factory",
+              op: "append",
+              toBuild: structure,
+              idToMod: "builders",
+              value: "Commander",
+            };
+          });
           inventory.addAIMods(aiMods);
         } else {
           // Don't clog up a slot.
