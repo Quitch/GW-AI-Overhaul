@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- New tech cards
+  - Bounty Tech
+
 ### Changed
 
 - Removed Queller files as the version in PA is current

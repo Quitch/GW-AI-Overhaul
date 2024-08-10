@@ -230,9 +230,9 @@ function gwoIntelligence() {
           return "";
         };
 
-        const convertGameMModifiersToName = function (ai) {
+        const convertGameMModifiersToName = function (ai, inventory) {
           const gameModifiers = [];
-          if (ai.bountyMode) {
+          if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
             gameModifiers.push("Bounties");
           }
           if (ai.landAnywhere) {
@@ -308,6 +308,7 @@ function gwoIntelligence() {
         model.gwoAis = ko.observableArray([]);
 
         model.generateIntelligence = ko.computed(function () {
+          const inventory = model.game().inventory();
           const system = model.selection.system();
           const star = system.star;
           const ai = star.ai();
@@ -323,7 +324,7 @@ function gwoIntelligence() {
           model.gwoSystemThreat(measureThreat(ai));
           model.gwoAvailableTech(availableTech(star));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
-          model.gwoGameModifiers(convertGameMModifiersToName(ai));
+          model.gwoGameModifiers(convertGameMModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));
         });
       }

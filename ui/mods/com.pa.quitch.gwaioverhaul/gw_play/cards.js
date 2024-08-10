@@ -231,6 +231,7 @@ function gwoCard() {
         "gwaio_cooldown_sea",
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",
+        "gwaio_enable_bounties",
         "gwaio_enable_planetaryradar",
         "gwaio_health_titans",
         "gwaio_speed_structure",

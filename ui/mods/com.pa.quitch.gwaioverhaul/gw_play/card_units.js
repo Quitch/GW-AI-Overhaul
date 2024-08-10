@@ -428,6 +428,7 @@ define([
       { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
       { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
+      { id: "gwaio_enable_bounties" },
     ],
   };
 });
