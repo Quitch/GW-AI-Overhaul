@@ -117,6 +117,9 @@ function gwoWarInfoPanel() {
             "com.pa.grandhomie.land_scout_combat_grouping_mod", // Land scout combat grouping
             "ca.pa.metapod.colonel_combat_grouping_mod", // Combat Colonel selection mod
             "com.pa.nemogielen.client.BetterCombatSelection", // Better Combat Selection
+            "com.uberent.pa.PAFX", // PA-FX Titans
+            "com.uberent.pa.PAFX.classic", // PA-FX Classic
+            "com.pa.client.cirolog.boom", // Bigger Explosions
           ];
           const modIdentifiers = _.map(mods, "identifier");
           const incompatibleModsInUse = _.intersection(

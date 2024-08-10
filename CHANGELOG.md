@@ -11,6 +11,7 @@
 - Decreased chance of allied commanders on Diamond
 - The more subcommanders you have the more likely you are to be offered subcommander tech
 - Reduced the number of boss commanders on Uber
+- Updated incompatible mods list
 
 ### Fixed
 
