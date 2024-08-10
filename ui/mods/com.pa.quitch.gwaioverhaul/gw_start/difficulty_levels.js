@@ -241,7 +241,7 @@ define({
       max_basic_fabbers: 12,
       max_advanced_fabbers: 12,
       ffa_chance: 25,
-      bossCommanders: 5,
+      bossCommanders: 4,
       landAnywhereChance: 20,
       suddenDeathChance: 10,
       bountyModeChance: 25,
