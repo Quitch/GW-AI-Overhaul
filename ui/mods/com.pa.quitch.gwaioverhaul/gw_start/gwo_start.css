@@ -33,7 +33,8 @@
   overflow-x: hidden;
 }
 
-#difficulty-cards {
+#difficulty-cards,
+#difficulty-cards button {
   text-transform: uppercase;
 }
 

@@ -131,6 +131,7 @@ function gwoUI() {
     locTree($(gameDifficultyId));
     locTree($("#difficulty-options"));
     locTree($("#custom-difficulty-settings"));
+    locTree($("#difficulty-cards"));
     locTree($("#difficulty-ai"));
 
     if (api.content.usingTitans()) {
