@@ -16,10 +16,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       };
     },
     getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      const chance = 30;
-      const minionModifier = chance * inventory.minions().length;
-      return { chance: chance + minionModifier };
+    deal: function () {
+      return { chance: 60 };
     },
     buff: function () {
       // referee_config.js
