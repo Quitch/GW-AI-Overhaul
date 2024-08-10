@@ -238,7 +238,7 @@ function gwoIntelligence() {
           if (ai.landAnywhere) {
             gameModifiers.push("Land Anywhere");
           }
-          if (ai.suddenDeath) {
+          if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
             gameModifiers.push("Sudden Death");
           }
           return gameModifiers;

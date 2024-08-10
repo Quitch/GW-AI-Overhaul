@@ -6,6 +6,7 @@
 
 - New tech cards
   - Bounty Tech
+  - Sudden Death Tech
 
 ### Changed
 

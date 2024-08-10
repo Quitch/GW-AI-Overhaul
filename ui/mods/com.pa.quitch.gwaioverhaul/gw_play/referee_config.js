@@ -246,6 +246,11 @@ define([
 
     const playerBountyMode = checkForCard(inventory, "gwaio_enable_bounties");
     const bountyMode = ai.bountyMode || playerBountyMode;
+    const playerSuddenDeathMode = checkForCard(
+      inventory,
+      "gwaio_enable_suddendeath"
+    );
+    const suddenDeathMode = ai.bountyMode || playerSuddenDeathMode;
 
     const config = {
       files: self.files(),
@@ -257,7 +262,7 @@ define([
       land_anywhere: ai.landAnywhere,
       bounty_mode: bountyMode,
       bounty_value: ai.bountyModeValue,
-      sudden_death_mode: ai.suddenDeath,
+      sudden_death_mode: suddenDeathMode,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter
