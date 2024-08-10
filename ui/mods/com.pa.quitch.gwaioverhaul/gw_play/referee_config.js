@@ -251,6 +251,11 @@ define([
       "gwaio_enable_suddendeath"
     );
     const suddenDeathMode = ai.bountyMode || playerSuddenDeathMode;
+    const playerLandAnywhereMode = checkForCard(
+      inventory,
+      "gwaio_enable_landanywhere"
+    );
+    const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
 
     const config = {
       files: self.files(),
@@ -259,7 +264,7 @@ define([
         commander: inventory.getTag("global", "commander"),
       },
       system: currentStar.system(),
-      land_anywhere: ai.landAnywhere,
+      land_anywhere: landAnywhereMode,
       bounty_mode: bountyMode,
       bounty_value: ai.bountyModeValue,
       sudden_death_mode: suddenDeathMode,

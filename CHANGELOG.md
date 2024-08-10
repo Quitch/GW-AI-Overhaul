@@ -7,6 +7,7 @@
 - New tech cards
   - Bounty Tech
   - Sudden Death Tech
+  - Land Anywhere Tech
 
 ### Changed
 

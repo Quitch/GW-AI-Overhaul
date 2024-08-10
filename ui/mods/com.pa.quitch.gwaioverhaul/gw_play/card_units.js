@@ -430,6 +430,7 @@ define([
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
       { id: "gwaio_enable_bounties" },
       { id: "gwaio_enable_suddendeath" },
+      { id: "gwaio_enable_landanywhere" },
     ],
   };
 });

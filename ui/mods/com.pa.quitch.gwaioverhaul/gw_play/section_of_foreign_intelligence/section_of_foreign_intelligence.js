@@ -235,7 +235,10 @@ function gwoIntelligence() {
           if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
             gameModifiers.push("Bounties");
           }
-          if (ai.landAnywhere) {
+          if (
+            ai.landAnywhere ||
+            inventory.hasCard("gwaio_enable_landanywhere")
+          ) {
             gameModifiers.push("Land Anywhere");
           }
           if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
