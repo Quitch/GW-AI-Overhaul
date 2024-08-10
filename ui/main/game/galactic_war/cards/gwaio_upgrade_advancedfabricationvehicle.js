@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%."
+      loc(
+        "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Vehicle Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.vehicleFabberAdvancedBuildArm,

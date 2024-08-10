@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Energy Storage Upgrade Tech increases the amount of energy storage by 300%."
+      loc(
+        "!LOC:Energy Storage Upgrade Tech increases the amount of energy storage by 300%."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Energy Storage Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.energyStorage,

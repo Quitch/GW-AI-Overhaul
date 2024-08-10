@@ -12,6 +12,7 @@
 - The more subcommanders you have the more likely you are to be offered subcommander tech
 - Reduced the number of boss commanders on Uber
 - Updated incompatible mods list
+- Upgrade techs for individual units no longer use a Data Bank
 
 ### Fixed
 

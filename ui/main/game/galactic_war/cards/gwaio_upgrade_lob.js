@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo."
+      loc(
+        "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.lobWeapon,

@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
+      loc(
+        "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Zeus Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.zeus,

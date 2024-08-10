@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit, preventing torpedoes from targeting it and allowing the navigation of shallow waters. Surface weapon range is increased by 50%."
+      loc(
+        "!LOC:Orca Upgrade Tech changes the destroyer to a water hover unit, preventing torpedoes from targeting it and allowing the navigation of shallow waters. Surface weapon range is increased by 50%."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Orca Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.orca,

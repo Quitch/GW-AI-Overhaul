@@ -6,7 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
+      loc(
+        "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Commander Upgrade Tech"),
     icon: _.constant(
@@ -22,6 +26,7 @@ define([
       return { chance: 30 };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       const mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
         return {
           file: fabberBuildArm,

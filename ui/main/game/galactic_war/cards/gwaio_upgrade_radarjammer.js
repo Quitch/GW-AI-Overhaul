@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming and radar radius of the radar jammer."
+      loc(
+        "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming and radar radius of the radar jammer."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Radar Jamming Station Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.radarAdvanced,

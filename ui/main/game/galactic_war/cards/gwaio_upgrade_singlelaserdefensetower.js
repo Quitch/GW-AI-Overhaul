@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
+      loc(
+        "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       const mods = [
         {
           file: gwoUnit.singleLaserDefenseTower,

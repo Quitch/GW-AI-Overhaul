@@ -5,7 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns."
+      loc(
+        "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns."
+      ) +
+        "<br> <br>" +
+        loc("!LOC:Does not use a Data Bank.")
     ),
     summarize: _.constant("!LOC:Unit Cannon Upgrade Tech"),
     icon: _.constant(
@@ -25,6 +29,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
+      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
           file: gwoUnit.unitCannon,
