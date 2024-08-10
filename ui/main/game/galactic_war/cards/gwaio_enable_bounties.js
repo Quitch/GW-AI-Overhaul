@@ -4,7 +4,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bounty tech enables bounty mode in every system."
+      "!LOC:Bounty tech enables the bounties game modifier in every system."
     ),
     summarize: _.constant("!LOC:Bounty Tech"),
     icon: _.constant(

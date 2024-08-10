@@ -4,7 +4,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Land Anywhere tech enables land anywhere mode in every system."
+      "!LOC:Land Anywhere tech enables the land anywhere game modifier in every system."
     ),
     summarize: _.constant("!LOC:Land Anywhere Tech"),
     icon: _.constant(
