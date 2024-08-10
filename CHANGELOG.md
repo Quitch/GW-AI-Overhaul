@@ -9,6 +9,7 @@
 - Tourist Commander is no longer offered subcommanders
 - Intelligence Fabrication Tech no longer applies to the Stingray
 - Decreased chance of allied commanders on Diamond
+- The more subcommanders you have the more likely you are to be offered subcommander tech
 
 ### Fixed
 

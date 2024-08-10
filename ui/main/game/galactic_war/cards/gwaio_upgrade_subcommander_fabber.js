@@ -17,15 +17,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     },
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
       const galaxy = model.game().galaxy();
       const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-      if (
-        inventory.minions().length > 0 &&
-        (!gwoSettings || gwoSettings.ai !== "Queller")
-      ) {
-        chance = 30;
-      }
+      const chance =
+        gwoSettings && gwoSettings.ai === "Queller"
+          ? 0
+          : inventory.minions().length * 30;
       return { chance: chance };
     },
     buff: function () {
