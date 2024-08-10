@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- The parts of a tech card description which have a translation are now always translated
+
 ## v5.70.0 - 2024-08-10
 
 ### Added
