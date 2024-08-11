@@ -30,7 +30,7 @@ define([
         (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
         dist > 7
       ) {
-        chance = 120;
+        chance = 80;
       }
       return { chance: chance };
     },
