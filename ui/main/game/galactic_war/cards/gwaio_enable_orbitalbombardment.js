@@ -1,6 +1,7 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "shared/gw_common",
+], function (gwoCard, GW) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,8 +17,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       };
     },
     getContext: gwoCard.getContext,
-    deal: function () {
-      return { chance: 40 };
+    deal: function (system, context) {
+      var chance = 40;
+      const dist = system.distance();
+      if (
+        context.totalSize <= GW.balance.numberOfSystems[0] ||
+        context.totalSize <= GW.balance.numberOfSystems[1]
+      ) {
+        chance = 20;
+      } else if (
+        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 6) ||
+        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
+        dist > 7
+      ) {
+        chance = 120;
+      }
+      return { chance: chance };
     },
     buff: function () {
       // referee_config.js
