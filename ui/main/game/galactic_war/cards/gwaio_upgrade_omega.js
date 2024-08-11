@@ -6,8 +6,10 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser. Doubles the rate of fire of the other weapons."
+        "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
       ) +
+        " " +
+        loc("!LOC:Doubles the rate of fire of the other weapons.") +
         "<br> <br>" +
         loc("!LOC:Does not use a Data Bank.")
     ),
@@ -26,7 +28,12 @@ define([
       if (gwoCard.hasUnit(inventory.units(), gwoUnit.omega)) {
         chance = 60;
       }
-      return { chance: chance };
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: chance,
+      };
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);

@@ -431,6 +431,7 @@ define([
       { id: "gwaio_enable_bounties" },
       { id: "gwaio_enable_suddendeath" },
       { id: "gwaio_enable_landanywhere" },
+      { id: "gwaio_enable_orbitalbombardment" },
     ],
   };
 });

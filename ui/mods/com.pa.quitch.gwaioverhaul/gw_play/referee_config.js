@@ -121,10 +121,6 @@ define([
     return typeCards / totalCards;
   };
 
-  const checkForCard = function (inventory, id) {
-    return inventory.hasCard(id);
-  };
-
   const setupGuardianPersonality = function (cards, personality) {
     const totalAirCards = countCards(cards, "_air");
     const totalBotCards = countCards(cards, "_bot");
@@ -154,6 +150,16 @@ define([
       );
     }
     return personality;
+  };
+
+  const glassPlanets = function (planets) {
+    const unglassableBiome = ["asteroid", "gas", "metal"];
+    _.forEach(planets, function (planet) {
+      if (!_.includes(unglassableBiome, planet.generator.biome)) {
+        planet.generator.biome = "moon";
+      }
+    });
+    return planets;
   };
 
   return function () {
@@ -244,18 +250,19 @@ define([
       armies.push(aiArmy);
     });
 
-    const playerBountyMode = checkForCard(inventory, "gwaio_enable_bounties");
+    const playerBountyMode = inventory.hasCard("gwaio_enable_bounties");
     const bountyMode = ai.bountyMode || playerBountyMode;
-    const playerSuddenDeathMode = checkForCard(
-      inventory,
-      "gwaio_enable_suddendeath"
-    );
+    const playerSuddenDeathMode = inventory.hasCard("gwaio_enable_suddendeath");
     const suddenDeathMode = ai.bountyMode || playerSuddenDeathMode;
-    const playerLandAnywhereMode = checkForCard(
-      inventory,
+    const playerLandAnywhereMode = inventory.hasCard(
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
+    const planetsGlassed = inventory.hasCard("gwaio_enable_orbitalbombardment");
+
+    if (planetsGlassed) {
+      currentStar.system().planets = glassPlanets(currentStar.system().planets);
+    }
 
     const config = {
       files: self.files(),

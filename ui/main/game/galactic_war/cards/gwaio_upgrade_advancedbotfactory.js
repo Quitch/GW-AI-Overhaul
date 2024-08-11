@@ -27,7 +27,12 @@ define([
       if (gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced)) {
         chance = 60;
       }
-      return { chance: chance };
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: chance,
+      };
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
