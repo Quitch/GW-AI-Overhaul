@@ -10,6 +10,7 @@
 ### Fixed
 
 - The parts of a tech card description which have a translation are now always translated
+- Upgrade tech cards being unacquirable if all Data Banks were full
 
 ## v5.70.0 - 2024-08-10
 

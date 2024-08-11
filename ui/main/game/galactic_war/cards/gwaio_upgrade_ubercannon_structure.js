@@ -23,7 +23,8 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function () {
-      return { chance: 30 };
+      const chance = 30;
+      return { chance: chance };
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
