@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Bombardment Tech removes all trees, lava, and water from systems you fight in."
+      "!LOC:Orbital Bombardment Tech removes all trees, lava, and water from the systems you fight in."
     ),
     summarize: _.constant("!LOC:Orbital Bombardment Tech"),
     icon: _.constant(
