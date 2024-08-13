@@ -10,7 +10,7 @@
   <!-- /ko -->
   <span
     class="info_tip"
-    data-bind="visible: $root.currentSystemCardList()[$index()].id() !== 'gwc_add_card_slot' && $root.currentSystemCardList()[$index()].id() !== 'gwc_minion' && !$root.currentSystemCardList()[$index()].isLoadout() && !$root.currentSystemCardList()[$index()].id().startsWith('gwaio_upgrade_subcommander_') , tooltip: $root.gwoTechCardTooltip()[$index() + 1]"
+    data-bind="visible: !_.includes($root.cardsWithoutTooltip, $root.currentSystemCardList()[$index()].id()) && !$root.currentSystemCardList()[$index()].isLoadout() , tooltip: $root.gwoTechCardTooltip()[$index() + 1]"
     ><loc>Which Units?</loc></span
   >
   <div

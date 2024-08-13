@@ -2,6 +2,22 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
+  if (!model.cardsWithoutTooltip) {
+    model.cardsWithoutTooltip = [];
+  }
+
+  model.cardsWithoutTooltip.push(
+    "gwc_add_card_slot",
+    "gwc_minion",
+    "gwaio_upgrade_subcommander_fabber",
+    "gwaio_upgrade_subcommander_duplication",
+    "gwaio_upgrade_subcommander_tactics",
+    "gwaio_enable_bounties",
+    "gwaio_enable_suddendeath",
+    "gwaio_enable_landanywhere",
+    "gwaio_enable_orbitalbombardment"
+  );
+
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Showing Which Units? tooltips for cards without a tooltip
+
 ## v5.71.0 - 2024-08-11
 
 ### Added
