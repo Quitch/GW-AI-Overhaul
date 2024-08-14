@@ -258,9 +258,11 @@ define([
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
-    const planetsGlassed = inventory.hasCard("gwaio_enable_orbitalbombardment");
+    const canGlassPlanets = inventory.hasCard(
+      "gwaio_enable_orbitalbombardment"
+    );
 
-    if (planetsGlassed) {
+    if (canGlassPlanets) {
       currentStar.system().planets = glassPlanets(currentStar.system().planets);
     }
 
