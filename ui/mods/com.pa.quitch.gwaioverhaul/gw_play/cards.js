@@ -224,6 +224,7 @@ function gwoCard() {
         "gwc_storage_and_buff",
       ];
       const expandedCards = [
+        "gwaio_anti_air",
         "gwaio_anti_bots",
         "gwaio_anti_hover",
         "gwaio_anti_sea",
