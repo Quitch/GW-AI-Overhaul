@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Anti-Orbital Ammo Tech doubles all damage you deal to orbital but halves damage to air."
+      "!LOC:Anti-Orbital Ammo Tech doubles all damage you deal to orbital units but halves damage to air units."
     ),
     summarize: _.constant("!LOC:Anti-Orbital Ammo Tech"),
     icon: _.constant(
