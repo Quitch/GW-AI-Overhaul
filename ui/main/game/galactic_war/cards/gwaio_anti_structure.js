@@ -18,7 +18,17 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function () {
-      return { chance: 70 };
+      var chance = 70;
+      const hasAntiTech = _.some(
+        model.game().inventory().cards(),
+        function (card) {
+          return _.startsWith(card.id, "gwaio_anti_");
+        }
+      );
+      if (hasAntiTech) {
+        chance = 35;
+      }
+      return { chance: chance };
     },
     buff: function (inventory) {
       const mods = _.flatten(
