@@ -26,7 +26,7 @@ define([
         }
       );
       if (hasAntiTech) {
-        chance = 35;
+        chance /= 2;
       }
       return { chance: chance };
     },

@@ -19,8 +19,16 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 70;
+      const hasAntiTech = _.some(
+        model.game().inventory().cards(),
+        function (card) {
+          return _.startsWith(card.id, "gwaio_anti_");
+        }
+      );
       if (inventory.hasCard("gwaio_anti_sea")) {
         chance = 0;
+      } else if (hasAntiTech) {
+        chance /= 2;
       }
       return { chance: chance };
     },
