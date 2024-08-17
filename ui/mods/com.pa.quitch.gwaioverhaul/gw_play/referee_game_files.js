@@ -136,6 +136,9 @@ define([
         }
         return attribute;
       },
+      multiplyOrAdd: function (attribute, value) {
+        return _.isNumber(attribute) ? attribute * value : value;
+      },
     };
 
     const applyMod = function (mod) {

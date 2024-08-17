@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- New op multiplyOrAdd which behaves like the old multiply op
+
 ### Fixed
 
 - Showing Which Units? tooltips for cards without a tooltip
