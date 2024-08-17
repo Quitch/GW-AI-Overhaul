@@ -11,6 +11,7 @@
   - Anti-Hover Ammo Tech
   - Anti-Ship Ammo Tech
   - Anti-Air Ammo Tech
+  - Anti-Orbital Ammo Tech
 
 ### Fixed
 

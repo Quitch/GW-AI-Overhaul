@@ -20,7 +20,8 @@ define([
     "gwaio_anti_bots",
     "gwaio_anti_hover",
     "gwaio_anti_sea",
-    "gwaio_anti_air"
+    "gwaio_anti_air",
+    "gwaio_anti_orbital"
   );
 
   return {
@@ -458,6 +459,7 @@ define([
       { id: "gwaio_anti_hover" },
       { id: "gwaio_anti_sea" },
       { id: "gwaio_anti_air" },
+      { id: "gwaio_anti_orbital" },
     ],
   };
 });
