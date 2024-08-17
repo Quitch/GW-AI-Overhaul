@@ -9,6 +9,7 @@
   - Anti-Tank Ammo Tech
   - Anti-Bot Ammo Tech
   - Anti-Hover Ammo Tech
+  - Anti-Ship Ammo Tech
 
 ### Fixed
 

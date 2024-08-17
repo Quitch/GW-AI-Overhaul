@@ -18,7 +18,8 @@ define([
     "gwaio_enable_orbitalbombardment",
     "gwaio_anti_vehicles",
     "gwaio_anti_bots",
-    "gwaio_anti_hover"
+    "gwaio_anti_hover",
+    "gwaio_anti_naval"
   );
 
   return {
@@ -454,6 +455,7 @@ define([
       { id: "gwaio_anti_vehicles" },
       { id: "gwaio_anti_bots" },
       { id: "gwaio_anti_hover" },
+      { id: "gwaio_anti_naval" },
     ],
   };
 });
