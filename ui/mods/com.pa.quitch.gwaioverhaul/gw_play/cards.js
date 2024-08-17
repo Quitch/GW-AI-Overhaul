@@ -224,6 +224,7 @@ function gwoCard() {
         "gwc_storage_and_buff",
       ];
       const expandedCards = [
+        "gwaio_anti_tank",
         "gwaio_combat_titans",
         "gwaio_cooldown_air",
         "gwaio_cooldown_bots",

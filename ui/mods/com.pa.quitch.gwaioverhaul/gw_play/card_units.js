@@ -15,7 +15,8 @@ define([
     "gwaio_enable_bounties",
     "gwaio_enable_suddendeath",
     "gwaio_enable_landanywhere",
-    "gwaio_enable_orbitalbombardment"
+    "gwaio_enable_orbitalbombardment",
+    "gwaio_anti_tank"
   );
 
   return {
@@ -448,6 +449,7 @@ define([
       { id: "gwaio_enable_suddendeath" },
       { id: "gwaio_enable_landanywhere" },
       { id: "gwaio_enable_orbitalbombardment" },
+      { id: "gwaio_anti_tank" },
     ],
   };
 });
