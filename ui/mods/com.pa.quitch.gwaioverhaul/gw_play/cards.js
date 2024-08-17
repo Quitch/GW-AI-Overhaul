@@ -224,6 +224,14 @@ function gwoCard() {
         "gwc_storage_and_buff",
       ];
       const expandedCards = [
+        "gwaio_anti_air",
+        "gwaio_anti_bots",
+        "gwaio_anti_commander",
+        "gwaio_anti_hover",
+        "gwaio_anti_orbital",
+        "gwaio_anti_sea",
+        "gwaio_anti_structure",
+        "gwaio_anti_vehicles",
         "gwaio_combat_titans",
         "gwaio_cooldown_air",
         "gwaio_cooldown_bots",
@@ -236,6 +244,7 @@ function gwoCard() {
         "gwaio_enable_orbitalbombardment",
         "gwaio_enable_planetaryradar",
         "gwaio_enable_suddendeath",
+        "gwaio_enable_tsunami",
         "gwaio_health_titans",
         "gwaio_speed_structure",
         "gwaio_speed_titans",

@@ -2,6 +2,31 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
+  if (!model.cardsWithoutTooltip) {
+    model.cardsWithoutTooltip = [];
+  }
+
+  model.cardsWithoutTooltip.push(
+    "gwc_add_card_slot",
+    "gwc_minion",
+    "gwaio_upgrade_subcommander_fabber",
+    "gwaio_upgrade_subcommander_duplication",
+    "gwaio_upgrade_subcommander_tactics",
+    "gwaio_enable_bounties",
+    "gwaio_enable_suddendeath",
+    "gwaio_enable_landanywhere",
+    "gwaio_enable_orbitalbombardment",
+    "gwaio_anti_vehicles",
+    "gwaio_anti_bots",
+    "gwaio_anti_hover",
+    "gwaio_anti_sea",
+    "gwaio_anti_air",
+    "gwaio_anti_orbital",
+    "gwaio_anti_structure",
+    "gwaio_enable_tsunami",
+    "gwaio_anti_commander"
+  );
+
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
@@ -432,6 +457,15 @@ define([
       { id: "gwaio_enable_suddendeath" },
       { id: "gwaio_enable_landanywhere" },
       { id: "gwaio_enable_orbitalbombardment" },
+      { id: "gwaio_anti_vehicles" },
+      { id: "gwaio_anti_bots" },
+      { id: "gwaio_anti_hover" },
+      { id: "gwaio_anti_sea" },
+      { id: "gwaio_anti_air" },
+      { id: "gwaio_anti_orbital" },
+      { id: "gwaio_anti_structure" },
+      { id: "gwaio_enable_tsunami" },
+      { id: "gwaio_anti_commander" },
     ],
   };
 });

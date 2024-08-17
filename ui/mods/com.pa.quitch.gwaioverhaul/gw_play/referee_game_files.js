@@ -136,6 +136,9 @@ define([
         }
         return attribute;
       },
+      multiplyOrAdd: function (attribute, value) {
+        return _.isNumber(attribute) ? attribute * value : value;
+      },
     };
 
     const applyMod = function (mod) {
@@ -405,10 +408,7 @@ define([
                       playerSpecFiles
                     )
                   : {};
-              } else if (
-                !_.isEmpty(inventory.aiMods()) &&
-                !ai.mirrorMode
-              ) {
+              } else if (!_.isEmpty(inventory.aiMods()) && !ai.mirrorMode) {
                 playerFilesClassic = _.assign(
                   {
                     "/pa/ai_tech/unit_maps/ai_unit_map.json.player":

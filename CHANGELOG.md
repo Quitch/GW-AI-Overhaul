@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v5.72.0 - 2024-08-17
+
+### Added
+
+- New op multiplyOrAdd which behaves like the old multiply op
+- New tech cards
+  - Anti-Tank Ammo Tech
+  - Anti-Bot Ammo Tech
+  - Anti-Hover Ammo Tech
+  - Anti-Ship Ammo Tech
+  - Anti-Air Ammo Tech
+  - Anti-Orbital Ammo Tech
+  - Anti-Structure Ammo Tech
+  - Tsunami Tech
+  - Anti-Commander Ammo Tech
+
+### Fixed
+
+- Showing Which Units? tooltips for cards without a tooltip
+
 ## v5.71.0 - 2024-08-11
 
 ### Added

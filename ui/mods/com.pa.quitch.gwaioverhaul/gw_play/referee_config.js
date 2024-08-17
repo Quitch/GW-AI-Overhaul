@@ -162,6 +162,17 @@ define([
     return planets;
   };
 
+  const floodPlanets = function (planets) {
+    _.forEach(planets, function (planet) {
+      const floodPlanet =
+        !planet.generator.waterHeight || planet.generator.waterHeight < 50;
+      if (floodPlanet) {
+        planet.generator.waterHeight = 50;
+      }
+    });
+    return planets;
+  };
+
   return function () {
     const self = this;
 
@@ -258,10 +269,17 @@ define([
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
-    const planetsGlassed = inventory.hasCard("gwaio_enable_orbitalbombardment");
+    const canGlassPlanets = inventory.hasCard(
+      "gwaio_enable_orbitalbombardment"
+    );
+    const canFloodPlanets = inventory.hasCard("gwaio_enable_tsunami");
 
-    if (planetsGlassed) {
+    if (canGlassPlanets) {
       currentStar.system().planets = glassPlanets(currentStar.system().planets);
+    }
+
+    if (canFloodPlanets) {
+      currentStar.system().planets = floodPlanets(currentStar.system().planets);
     }
 
     const config = {
