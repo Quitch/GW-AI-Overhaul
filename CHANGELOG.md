@@ -12,6 +12,7 @@
   - Anti-Ship Ammo Tech
   - Anti-Air Ammo Tech
   - Anti-Orbital Ammo Tech
+  - Anti-Structure Ammo Tech
 
 ### Fixed
 

@@ -229,6 +229,7 @@ function gwoCard() {
         "gwaio_anti_hover",
         "gwaio_anti_orbital",
         "gwaio_anti_sea",
+        "gwaio_anti_structure",
         "gwaio_anti_vehicles",
         "gwaio_combat_titans",
         "gwaio_cooldown_air",
