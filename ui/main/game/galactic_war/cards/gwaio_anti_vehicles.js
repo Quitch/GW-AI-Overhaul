@@ -9,7 +9,7 @@ define([
     ),
     summarize: _.constant("!LOC:Anti-Tank Ammo Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle_armor.png"
     ),
     audio: function () {
       return {
