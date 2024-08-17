@@ -8,6 +8,7 @@
 - New tech cards
   - Anti-Tank Ammo Tech
   - Anti-Bot Ammo Tech
+  - Anti-Hover Ammo Tech
 
 ### Fixed
 
