@@ -7,6 +7,7 @@
 - New op multiplyOrAdd which behaves like the old multiply op
 - New tech cards
   - Anti-Tank Ammo Tech
+  - Anti-Bot Ammo Tech
 
 ### Fixed
 
