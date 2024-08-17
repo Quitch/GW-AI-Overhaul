@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval."
+      "!LOC:Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to ships."
     ),
     summarize: _.constant("!LOC:Anti-Hover Ammo Tech"),
     icon: _.constant(
