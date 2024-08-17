@@ -243,6 +243,7 @@ function gwoCard() {
         "gwaio_enable_orbitalbombardment",
         "gwaio_enable_planetaryradar",
         "gwaio_enable_suddendeath",
+        "gwaio_enable_tsunami",
         "gwaio_health_titans",
         "gwaio_speed_structure",
         "gwaio_speed_titans",

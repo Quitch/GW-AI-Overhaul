@@ -13,6 +13,7 @@
   - Anti-Air Ammo Tech
   - Anti-Orbital Ammo Tech
   - Anti-Structure Ammo Tech
+  - Tsunami Tech
 
 ### Fixed
 

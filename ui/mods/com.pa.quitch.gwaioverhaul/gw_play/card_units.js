@@ -22,7 +22,8 @@ define([
     "gwaio_anti_sea",
     "gwaio_anti_air",
     "gwaio_anti_orbital",
-    "gwaio_anti_structure"
+    "gwaio_anti_structure",
+    "gwaio_enable_tsunami"
   );
 
   return {
@@ -462,6 +463,7 @@ define([
       { id: "gwaio_anti_air" },
       { id: "gwaio_anti_orbital" },
       { id: "gwaio_anti_structure" },
+      { id: "gwaio_enable_tsunami" },
     ],
   };
 });
