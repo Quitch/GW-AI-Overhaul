@@ -17,8 +17,12 @@ define([
       };
     },
     getContext: gwoCard.getContext,
-    deal: function () {
-      return { chance: 70 };
+    deal: function (system, context, inventory) {
+      var chance = 70;
+      if (inventory.hasCard("gwaio_anti_orbital")) {
+        chance = 0;
+      }
+      return { chance: chance };
     },
     buff: function (inventory) {
       const mods = _.flatten(
