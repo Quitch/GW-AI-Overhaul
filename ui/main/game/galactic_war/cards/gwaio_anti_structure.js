@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units."
+      "!LOC:Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units excluding commanders."
     ),
     summarize: _.constant("!LOC:Anti-Structure Ammo Tech"),
     icon: _.constant(
@@ -17,7 +17,7 @@ define([
       };
     },
     getContext: gwoCard.getContext,
-    deal: function () {
+    deal: function (system, context, inventory) {
       var chance = 70;
       const hasAntiTech = _.some(
         model.game().inventory().cards(),
@@ -25,7 +25,9 @@ define([
           return _.startsWith(card.id, "gwaio_anti_");
         }
       );
-      if (hasAntiTech) {
+      if (inventory.hasCard("gwaio_anti_commander")) {
+        chance = 0;
+      } else if (hasAntiTech) {
         chance /= 2;
       }
       return { chance: chance };

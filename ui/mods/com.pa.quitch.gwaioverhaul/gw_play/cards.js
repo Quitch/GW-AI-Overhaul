@@ -226,6 +226,7 @@ function gwoCard() {
       const expandedCards = [
         "gwaio_anti_air",
         "gwaio_anti_bots",
+        "gwaio_anti_commander",
         "gwaio_anti_hover",
         "gwaio_anti_orbital",
         "gwaio_anti_sea",

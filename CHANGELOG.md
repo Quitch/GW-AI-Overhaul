@@ -14,6 +14,7 @@
   - Anti-Orbital Ammo Tech
   - Anti-Structure Ammo Tech
   - Tsunami Tech
+  - Anti-Commander Ammo Tech
 
 ### Fixed
 
