@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Anti-Tank Ammo Tech doubles all damage you deal to tanks but halves damage to bots."
+      "!LOC:Anti-Tank Ammo Tech doubles all damage you deal to vehicles but halves damage to bots."
     ),
     summarize: _.constant("!LOC:Anti-Tank Ammo Tech"),
     icon: _.constant(
