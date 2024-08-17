@@ -408,10 +408,7 @@ define([
                       playerSpecFiles
                     )
                   : {};
-              } else if (
-                !_.isEmpty(inventory.aiMods()) &&
-                !ai.mirrorMode
-              ) {
+              } else if (!_.isEmpty(inventory.aiMods()) && !ai.mirrorMode) {
                 playerFilesClassic = _.assign(
                   {
                     "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
