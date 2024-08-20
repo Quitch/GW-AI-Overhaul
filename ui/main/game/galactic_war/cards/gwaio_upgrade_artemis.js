@@ -49,7 +49,7 @@ define([
           value: "target",
         },
         {
-          file: gwoUnit.avenger,
+          file: gwoUnit.artemis,
           path: "unit_types",
           op: "push",
           value: "UNITTYPE_Heavy",
