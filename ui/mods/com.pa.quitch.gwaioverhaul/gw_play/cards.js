@@ -593,37 +593,38 @@ function gwoCard() {
 
         const setupGeneralCommander = function () {
           const cards = inventory.cards();
-          if (
-            cards.length === 1 &&
-            cards[0].id === "gwc_start_subcdr" &&
-            !cards[0].minions
-          ) {
-            const ai = gwoSettings && gwoSettings.ai;
-            _.times(2, function () {
-              const subcommander = _.cloneDeep(
-                _.sample(GWFactions[playerFaction].minions)
-              );
-              if (ai === "Penchant") {
-                const penchantValues = gwoAI.penchants();
-                subcommander.character =
-                  subcommander.character +
-                  (" " + loc(penchantValues.penchantName));
-                subcommander.personality.personality_tags =
-                  subcommander.personality.personality_tags.concat(
-                    penchantValues.penchants
-                  );
-              }
-              cards.push({
-                id: "gwc_minion",
-                minion: subcommander,
-                unique: Math.random(),
-              });
+          const ai = gwoSettings && gwoSettings.ai;
+          _.times(2, function () {
+            const subcommander = _.cloneDeep(
+              _.sample(GWFactions[playerFaction].minions)
+            );
+            if (ai === "Penchant") {
+              const penchantValues = gwoAI.penchants();
+              subcommander.character =
+                subcommander.character +
+                (" " + loc(penchantValues.penchantName));
+              subcommander.personality.personality_tags =
+                subcommander.personality.personality_tags.concat(
+                  penchantValues.penchants
+                );
+            }
+            cards.push({
+              id: "gwc_minion",
+              minion: subcommander,
+              unique: Math.random(),
             });
-            inventory.applyCards();
-            gwoSave(game, false);
-          }
+          });
+          inventory.applyCards();
+          gwoSave(game, false);
         };
-        setupGeneralCommander();
+
+        if (
+          cards.length === 1 &&
+          cards[0].id === "gwc_start_subcdr" &&
+          !cards[0].minions
+        ) {
+          setupGeneralCommander();
+        }
 
         const dealCardToSelectableAIWhenWarStarts = function (settings) {
           if (settings && !settings.firstDealComplete) {

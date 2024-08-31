@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v5.73.0 - 2024-08-31
+
+### Changed
+
+- Naval Commander increases the amount of water and lava on planets
+
+### Fixed
+
+- AI not handling upgraded Artemis units correctly
+- Sudden Death and Land Anywhere status not matching intelligence panel
+
 ## v5.72.0 - 2024-08-17
 
 ### Added

@@ -264,15 +264,17 @@ define([
     const playerBountyMode = inventory.hasCard("gwaio_enable_bounties");
     const bountyMode = ai.bountyMode || playerBountyMode;
     const playerSuddenDeathMode = inventory.hasCard("gwaio_enable_suddendeath");
-    const suddenDeathMode = ai.bountyMode || playerSuddenDeathMode;
+    const suddenDeathMode = ai.suddenDeath || playerSuddenDeathMode;
     const playerLandAnywhereMode = inventory.hasCard(
       "gwaio_enable_landanywhere"
     );
-    const landAnywhereMode = ai.bountyMode || playerLandAnywhereMode;
+    const landAnywhereMode = ai.landAnywhere || playerLandAnywhereMode;
     const canGlassPlanets = inventory.hasCard(
       "gwaio_enable_orbitalbombardment"
     );
-    const canFloodPlanets = inventory.hasCard("gwaio_enable_tsunami");
+    const canFloodPlanets =
+      inventory.hasCard("gwaio_enable_tsunami") ||
+      inventory.hasCard("gwaio_start_naval");
 
     if (canGlassPlanets) {
       currentStar.system().planets = glassPlanets(currentStar.system().planets);

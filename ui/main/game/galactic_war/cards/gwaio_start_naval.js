@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Naval Commander loadout contains all naval factories."
+      "!LOC:The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets."
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {
