@@ -11,6 +11,7 @@ define({
   getAIPath: function (type) {
     const game = model.game();
     const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const guardians = ai.mirrorMode;
     const inventory = game.inventory();
     const smartSubcommanders = _.some(inventory.cards(), {
       id: "gwaio_upgrade_subcommander_tactics",
@@ -33,7 +34,7 @@ define({
     } else if (
       type === "subcommander" &&
       !_.isEmpty(inventory.aiMods()) &&
-      !ai.mirrorMode
+      !guardians
     ) {
       return "/pa/ai_tech/";
     } else if (aiBrain === "Penchant") {
@@ -43,7 +44,8 @@ define({
   },
 
   isCluster: function (ai) {
-    if (ai.mirrorMode) {
+    const guardians = ai.mirrorMode;
+    if (guardians) {
       return false;
     }
     return _.isArray(ai.faction) // was an array before v5.44.0

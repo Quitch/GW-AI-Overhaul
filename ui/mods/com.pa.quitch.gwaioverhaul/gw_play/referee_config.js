@@ -223,7 +223,8 @@ define([
 
     // Set up AI System Owner
     ai = setAdvEcoMod(ai, aiBrain);
-    if (ai.mirrorMode === true) {
+    const guardians = ai.mirrorMode;
+    if (guardians) {
       ai.personality = setupGuardianPersonality(cards, ai.personality);
     }
 
