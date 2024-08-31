@@ -272,7 +272,9 @@ define([
     const canGlassPlanets = inventory.hasCard(
       "gwaio_enable_orbitalbombardment"
     );
-    const canFloodPlanets = inventory.hasCard("gwaio_enable_tsunami");
+    const canFloodPlanets =
+      inventory.hasCard("gwaio_enable_tsunami") ||
+      inventory.hasCard("gwaio_start_naval");
 
     if (canGlassPlanets) {
       currentStar.system().planets = glassPlanets(currentStar.system().planets);

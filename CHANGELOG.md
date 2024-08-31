@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Naval Commander increases the amount of water and lava on planets
+
 ### Fixed
 
 - AI not handling upgraded Artemis units correctly
