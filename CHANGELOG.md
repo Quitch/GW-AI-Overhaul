@@ -5,6 +5,7 @@
 ### Fixed
 
 - AI not handling upgraded Artemis units correctly
+- Sudden Death and Land Anywhere status not matching intelligence panel
 
 ## v5.72.0 - 2024-08-17
 
