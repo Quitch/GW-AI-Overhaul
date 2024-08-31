@@ -212,7 +212,7 @@ function gwoIntelligence() {
             }
           });
           if (ai.mirrorMode === true) {
-            totalThreat *= 2;
+            totalThreat *= 3;
           }
           return toFixedIfNecessary(totalThreat, 2);
         };
