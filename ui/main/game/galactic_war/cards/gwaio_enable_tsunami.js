@@ -20,7 +20,10 @@ define([
     deal: function (system, context, inventory) {
       var chance = 40;
       const dist = system.distance();
-      if (inventory.hasCard("gwaio_start_naval")) {
+      if (
+        inventory.hasCard("gwaio_start_naval") ||
+        inventory.hasCard("gwaio_enable_orbitalbombardment")
+      ) {
         chance = 0;
       } else if (
         context.totalSize <= GW.balance.numberOfSystems[0] ||

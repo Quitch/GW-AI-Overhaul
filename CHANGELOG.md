@@ -5,6 +5,7 @@
 ### Changed
 
 - Increased the threat rating of the Guardians
+- Don't deal Orbital Bombardment or Tsunami Tech if the player has the other one
 
 ## v5.73.0 - 2024-08-31
 
