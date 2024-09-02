@@ -334,14 +334,16 @@ function gwoSetup() {
             return;
           }
 
-          const ffa = "ffa";
+          const ffa = ["ffa", "platoon"];
 
           if (_.isArray(ais)) {
             _.forEach(ais, function (ai) {
-              ai.personality.personality_tags.push(ffa);
+              ai.personality.personality_tags =
+                ai.personality.personality_tags.concat(ffa);
             });
           } else {
-            ais.personality.personality_tags.push(ffa);
+            ais.personality.personality_tags =
+              ais.personality.personality_tags.concat(ffa);
           }
         };
 

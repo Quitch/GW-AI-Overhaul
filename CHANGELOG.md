@@ -10,6 +10,7 @@
 ### Fixed
 
 - General Commander not starting with subcommanders
+- Queller AI uses its platoon behaviour in FFAs in new wars
 
 ## v5.73.0 - 2024-08-31
 
