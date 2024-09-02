@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GW, gwoUnit, gwoAI) {
   const clusterArmyIndex = function (ai) {
-    if (ai.mirrorMode) {
+    const guardians = ai.mirrorMode;
+    if (guardians) {
       return -1;
     } else if (ai.faction === 4) {
       return 0;
@@ -324,7 +325,8 @@ define([
                     currentCount === 0
                       ? ai.inventory
                       : ai.foes[currentCount - 1].inventory;
-                  if (ai.mirrorMode === true) {
+                  const guardians = ai.mirrorMode;
+                  if (guardians) {
                     aiInventory = aiInventory.concat(inventory.mods());
                   }
                   modSpecs(aiFiles, aiInventory, aiTag[n]);
@@ -351,6 +353,7 @@ define([
               var playerFilesX1 = {};
               const playerIsCluster =
                 inventory.getTag("global", "playerFaction") === 4;
+              const guardians = ai.mirrorMode;
               // the order of unit_map assignments must match getAIPath()
               if (playerIsCluster) {
                 playerFilesClassic = _.assign(
@@ -408,7 +411,7 @@ define([
                       playerSpecFiles
                     )
                   : {};
-              } else if (!_.isEmpty(inventory.aiMods()) && !ai.mirrorMode) {
+              } else if (!_.isEmpty(inventory.aiMods()) && !guardians) {
                 playerFilesClassic = _.assign(
                   {
                     "/pa/ai_tech/unit_maps/ai_unit_map.json.player":

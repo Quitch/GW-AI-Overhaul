@@ -313,6 +313,7 @@ function gwoSystemChanges() {
         _.forEach(model.galaxy.systems(), function (system) {
           const star = system.star;
           const ai = star.ai();
+          const guardians = ai.mirrorMode;
 
           if (ai && ai.team === defeatedTeam) {
             const replacementAI = _.first(ai.foes);
@@ -329,7 +330,7 @@ function gwoSystemChanges() {
             } else {
               star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
-              if (!ai.mirrorMode) {
+              if (!guardians) {
                 star.cardList([]);
               }
             }

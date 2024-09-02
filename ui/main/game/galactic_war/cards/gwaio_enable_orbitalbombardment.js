@@ -17,10 +17,15 @@ define([
       };
     },
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       var chance = 40;
       const dist = system.distance();
       if (
+        inventory.hasCard("gwaio_start_naval") ||
+        inventory.hasCard("gwaio_enable_tsunami")
+      ) {
+        chance = 0;
+      } else if (
         context.totalSize <= GW.balance.numberOfSystems[0] ||
         context.totalSize <= GW.balance.numberOfSystems[1]
       ) {

@@ -211,8 +211,9 @@ function gwoIntelligence() {
                 totalThreat *= 1.5;
             }
           });
-          if (ai.mirrorMode === true) {
-            totalThreat *= 2;
+          const guardians = ai.mirrorMode;
+          if (guardians) {
+            totalThreat *= 3;
           }
           return toFixedIfNecessary(totalThreat, 2);
         };

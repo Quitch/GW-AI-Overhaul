@@ -132,9 +132,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     return aiPath + filePath.slice(cullLength);
   };
 
-  const aiToMod = function (inventory, mirrorMode, clusterPresence) {
+  const aiToMod = function (inventory, guardians, clusterPresence) {
     if (!_.isEmpty(inventory.aiMods()) || clusterPresence === "Player") {
-      if (mirrorMode) {
+      if (guardians) {
         return "All";
       } else {
         return "SubCommanders";
@@ -196,6 +196,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     const inventory = game.inventory();
     const currentStar = game.galaxy().stars()[game.currentStar()];
     const ai = currentStar.ai();
+    const guardians = ai.mirrorMode;
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
@@ -203,7 +204,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     const aiFilePath =
       numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
     const clusterPresence = isClusterPresent(inventory, ai, numberOfAllies);
-    const aiToModify = aiToMod(inventory, ai.mirrorMode, clusterPresence);
+    const aiToModify = aiToMod(inventory, guardians, clusterPresence);
 
     const deferred = $.Deferred();
 
