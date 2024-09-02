@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Prevent AI building more than one Planetary Radar per planet
+
 ## v5.74.0 - 2024-09-02
 
 ### Changed

@@ -59,6 +59,7 @@ define([
             "UNITTYPE_Recon",
             "UNITTYPE_FabAdvBuild",
             "UNITTYPE_Radar",
+            "UNITTYPE_Important",
             "UNITTYPE_Custom58",
           ],
         },
