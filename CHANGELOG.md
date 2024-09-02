@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Decreased effectiveness of subcommanders when playing with Queller AI
+
 ### Fixed
 
 - Prevent AI building more than one Planetary Radar per planet

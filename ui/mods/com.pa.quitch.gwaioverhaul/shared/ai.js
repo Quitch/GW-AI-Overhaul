@@ -27,10 +27,10 @@ define({
       } else if (type === "enemy") {
         return quellerPath + "q_uber/";
       } else if (type === "subcommander" && smartSubcommanders) {
-        return quellerPath + "q_gold/";
+        return quellerPath + "q_silver/";
       }
       // type === "subcommander"
-      return quellerPath + "q_silver/";
+      return quellerPath + "q_bronze/";
     } else if (
       type === "subcommander" &&
       !_.isEmpty(inventory.aiMods()) &&
