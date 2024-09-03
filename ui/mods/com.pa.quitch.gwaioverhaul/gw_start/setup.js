@@ -225,30 +225,30 @@ function gwoSetup() {
 
         const setAIPersonality = function (ai, difficulty) {
           const personalityId = "#gwo-personality-picker";
+          const personality = ai.personality;
 
-          ai.personality.micro_type = difficulty.microType();
-          ai.personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
-          ai.personality.priority_scout_metal_spots = parseBoolean(
+          personality.micro_type = difficulty.microType();
+          personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
+          personality.priority_scout_metal_spots = parseBoolean(
             difficulty.priorityScoutMetalSpots()
           );
-          ai.personality.factory_build_delay_min =
+          personality.factory_build_delay_min =
             difficulty.factoryBuildDelayMin();
-          ai.personality.factory_build_delay_max =
+          personality.factory_build_delay_max =
             difficulty.factoryBuildDelayMax();
-          ai.personality.unable_to_expand_delay =
-            difficulty.unableToExpandDelay();
-          ai.personality.enable_commander_danger_responses = parseBoolean(
+          personality.unable_to_expand_delay = difficulty.unableToExpandDelay();
+          personality.enable_commander_danger_responses = parseBoolean(
             difficulty.enableCommanderDangerResponses()
           );
-          ai.personality.per_expansion_delay = difficulty.perExpansionDelay();
-          ai.personality.max_basic_fabbers = difficulty.maxBasicFabbers();
-          ai.personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
-          ai.personality.personality_tags =
+          personality.per_expansion_delay = difficulty.perExpansionDelay();
+          personality.max_basic_fabbers = difficulty.maxBasicFabbers();
+          personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
+          personality.personality_tags =
             $(personalityId).val() === null ? [] : $(personalityId).val();
           // We treat 0 as undefined, which means the AI examines the
           // radius of the spawn zone
           if (difficulty.startingLocationEvaluationRadius() > 0) {
-            ai.personality.starting_location_evaluation_radius =
+            personality.starting_location_evaluation_radius =
               difficulty.startingLocationEvaluationRadius();
           }
 
@@ -256,14 +256,14 @@ function gwoSetup() {
 
           switch (difficulty.ai()) {
             case "Queller":
-              ai.personality.personality_tags =
-                ai.personality.personality_tags.concat(
+              personality.personality_tags =
+                personality.personality_tags.concat(
                   getQuellerAITag(ai.faction)
                 );
               break;
             case "Titans":
-              ai.personality.personality_tags =
-                ai.personality.personality_tags.concat(titansAITags);
+              personality.personality_tags =
+                personality.personality_tags.concat(titansAITags);
             // fall through
             case "Penchant":
               setupPenchantAI(ai, titansAITags);
