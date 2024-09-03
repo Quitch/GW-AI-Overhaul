@@ -8,9 +8,7 @@ function gwoSetup() {
   gwoSetupLoaded = true;
 
   try {
-    model.makeGame = function () {
-      // Prevent changes to settings causing creation of new galaxies
-    };
+    model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
 
     const enableGoToWar = ko.observable(true);
     var sharedSystemsForGalacticWarActive = false;
