@@ -380,23 +380,6 @@ define([
               ) {
                 playerFilesClassic = _.assign(
                   {
-                    "/pa/ai_queller/q_gold/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_queller/q_gold/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else if (aiBrain === "Queller") {
-                playerFilesClassic = _.assign(
-                  {
                     "/pa/ai_queller/q_silver/unit_maps/ai_unit_map.json.player":
                       playerAIUnitMap,
                   },
@@ -406,6 +389,23 @@ define([
                   ? _.assign(
                       {
                         "/pa/ai_queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
+                          playerX1AIUnitMap,
+                      },
+                      playerSpecFiles
+                    )
+                  : {};
+              } else if (aiBrain === "Queller") {
+                playerFilesClassic = _.assign(
+                  {
+                    "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map.json.player":
+                      playerAIUnitMap,
+                  },
+                  playerSpecFiles
+                );
+                playerFilesX1 = titans
+                  ? _.assign(
+                      {
+                        "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map_x1.json.player":
                           playerX1AIUnitMap,
                       },
                       playerSpecFiles

@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.75.0 - 2024-09-03
+
+### Changed
+
+- Decreased effectiveness of subcommanders when playing with Queller AI
+
+### Fixed
+
+- Prevent AI building more than one Planetary Radar per planet
+- Deck name on GWO panel aligns to selection and is translated
+- Properly display deck name if loading a non-GWO save
+- Translate the usage of cheats on the GWO panel
+
 ## v5.74.0 - 2024-09-02
 
 ### Changed

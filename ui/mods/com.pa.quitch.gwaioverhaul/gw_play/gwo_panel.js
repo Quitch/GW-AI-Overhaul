@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.74.0");
+        model.gwoVersion = ko.observable("5.75.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -33,7 +33,10 @@ function gwoWarInfoPanel() {
           model.gwoSize = loc(model.gwoSettings.galaxySize);
           model.gwoAI = model.gwoSettings.ai || "Titans";
           model.gwoDeck =
-            loc("!LOC:" + model.gwoSettings.techCardDeck) || "!LOC:Expanded";
+            model.gwoSettings.techCardDeck === "Expanded"
+              ? loc("!LOC:Galactic War Overhaul")
+              : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
+                loc("!LOC:Galactic War Overhaul");
 
           const options = function (optionsList, setting, text) {
             if (setting) {
@@ -65,7 +68,7 @@ function gwoWarInfoPanel() {
           options(
             model.gwoOptions,
             model.gwoSettings.cheatsUsed,
-            "!LOC:Cheats used"
+            "!LOC:dev mode"
           );
           options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
           // deprecated - pre-v5.27.0 support only
@@ -88,7 +91,7 @@ function gwoWarInfoPanel() {
                   options(
                     model.gwoOptions,
                     model.gwoSettings.cheatsUsed,
-                    "!LOC:Cheats used"
+                    "!LOC:dev mode"
                   );
                   gwoSave(game, true);
                 }
