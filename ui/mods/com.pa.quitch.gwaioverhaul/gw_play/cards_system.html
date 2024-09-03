@@ -10,7 +10,7 @@
   <!-- /ko -->
   <span
     class="info_tip"
-    data-bind="visible: !_.includes($root.cardsWithoutTooltip, $root.currentSystemCardList()[$index()].id()) && !$root.currentSystemCardList()[$index()].isLoadout() , tooltip: $root.gwoTechCardTooltip()[$index() + 1]"
+    data-bind="visible: !_.includes($root.gwoCardsWithoutTooltip, $root.currentSystemCardList()[$index()].id()) && !$root.currentSystemCardList()[$index()].isLoadout() , tooltip: $root.gwoTechCardTooltip()[$index() + 1]"
     ><loc>Which Units?</loc></span
   >
   <div

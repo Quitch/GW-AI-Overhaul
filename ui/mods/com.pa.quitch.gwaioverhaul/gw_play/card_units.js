@@ -2,11 +2,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  if (!model.cardsWithoutTooltip) {
-    model.cardsWithoutTooltip = [];
+  if (!model.gwoCardsWithoutTooltip) {
+    model.gwoCardsWithoutTooltip = [];
   }
 
-  model.cardsWithoutTooltip.push(
+  model.gwoCardsWithoutTooltip.push(
     "gwc_add_card_slot",
     "gwc_minion",
     "gwaio_upgrade_subcommander_fabber",
