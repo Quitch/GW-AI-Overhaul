@@ -33,7 +33,10 @@ function gwoWarInfoPanel() {
           model.gwoSize = loc(model.gwoSettings.galaxySize);
           model.gwoAI = model.gwoSettings.ai || "Titans";
           model.gwoDeck =
-            loc("!LOC:" + model.gwoSettings.techCardDeck) || "!LOC:Expanded";
+            model.gwoSettings.techCardDeck === "Expanded"
+              ? loc("!LOC:Galactic War Overhaul")
+              : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
+                loc("!LOC:Galactic War Overhaul");
 
           const options = function (optionsList, setting, text) {
             if (setting) {

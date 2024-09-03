@@ -9,6 +9,8 @@
 ### Fixed
 
 - Prevent AI building more than one Planetary Radar per planet
+- Deck name on GWO panel aligns to selection and is translated
+- Properly display deck name if loading a non-GWO save
 
 ## v5.74.0 - 2024-09-02
 
