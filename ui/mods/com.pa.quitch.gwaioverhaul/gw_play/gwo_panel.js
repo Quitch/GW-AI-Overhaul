@@ -68,7 +68,7 @@ function gwoWarInfoPanel() {
           options(
             model.gwoOptions,
             model.gwoSettings.cheatsUsed,
-            "!LOC:Cheats used"
+            "!LOC:dev mode"
           );
           options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
           // deprecated - pre-v5.27.0 support only
@@ -91,7 +91,7 @@ function gwoWarInfoPanel() {
                   options(
                     model.gwoOptions,
                     model.gwoSettings.cheatsUsed,
-                    "!LOC:Cheats used"
+                    "!LOC:dev mode"
                   );
                   gwoSave(game, true);
                 }

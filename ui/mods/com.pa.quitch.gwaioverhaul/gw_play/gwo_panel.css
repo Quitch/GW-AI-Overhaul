@@ -24,6 +24,10 @@
   color: red;
 }
 
+#options::first-letter {
+  text-transform: uppercase;
+}
+
 .gwo-info .data {
   font-weight: bold;
   color: white;
