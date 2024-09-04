@@ -884,7 +884,7 @@ function gwoCard() {
           });
         };
 
-        // call dealCardToSelectableAI() so system cards update when player acquires a card
+        // call dealCardToSelectableAI() so systems' cards update when player acquires a card
         model.win = function (selectedCardIndex) {
           model.exitGate($.Deferred());
 
