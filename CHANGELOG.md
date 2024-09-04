@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Translation of the easy systems option on the GWO info panel
+
 ## v5.75.0 - 2024-09-03
 
 ### Changed

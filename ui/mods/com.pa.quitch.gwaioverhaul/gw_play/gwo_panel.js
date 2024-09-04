@@ -58,7 +58,7 @@ function gwoWarInfoPanel() {
           options(
             model.gwoOptions,
             model.gwoSettings.simpleSystems,
-            "!LOC:Simple systems"
+            "!LOC:Easy Systems"
           );
           options(
             model.gwoOptions,
