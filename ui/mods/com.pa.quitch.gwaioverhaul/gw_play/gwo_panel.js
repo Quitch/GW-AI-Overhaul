@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.75.0");
+        model.gwoVersion = ko.observable("5.75.1");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -58,7 +58,7 @@ function gwoWarInfoPanel() {
           options(
             model.gwoOptions,
             model.gwoSettings.simpleSystems,
-            "!LOC:Simple systems"
+            "!LOC:Easy Systems"
           );
           options(
             model.gwoOptions,

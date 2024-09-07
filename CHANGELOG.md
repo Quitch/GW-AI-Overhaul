@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.75.1 - 2024-09-07
+
+### Fixed
+
+- Translation of the easy systems option on the GWO info panel
+- Being able to acquire subcommander upgrades when your Data Banks are full
+
 ## v5.75.0 - 2024-09-03
 
 ### Changed

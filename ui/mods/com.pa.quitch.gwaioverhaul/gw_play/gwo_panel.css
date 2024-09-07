@@ -24,6 +24,11 @@
   color: red;
 }
 
+/* This allows us to format text after it has been translated (which is case sensitive) */
+#options {
+  text-transform: lowercase;
+}
+
 #options::first-letter {
   text-transform: uppercase;
 }

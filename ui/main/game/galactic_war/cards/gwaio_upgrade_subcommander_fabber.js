@@ -23,12 +23,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         gwoSettings && gwoSettings.ai === "Queller"
           ? 0
           : inventory.minions().length * 30;
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return { chance: chance };
     },
     buff: function () {
       // performed in referee_config.js
