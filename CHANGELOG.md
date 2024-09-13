@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.75.2 - 2024-09-13
+
+### Fixed
+
+- The Guardians not correctly adjusting personality for your tech when you use Queller AI
+
 ## v5.75.1 - 2024-09-07
 
 ### Fixed
