@@ -177,7 +177,7 @@ define([
       );
     }
     const aiBrain = gwoAI.aiInUse();
-    if (aiBrain == "Queller") {
+    if (aiBrain === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
