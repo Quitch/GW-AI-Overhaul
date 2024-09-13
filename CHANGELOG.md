@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.75.2 - 2024-09-13
 
 ### Fixed
 
