@@ -121,6 +121,34 @@ define([
     return typeCards / totalCards;
   };
 
+  const quellerGuardianPersonality = function (personality) {
+    const unitPercentages = [
+      personality.percent_air,
+      personality.percent_bot,
+      personality.percent_orbital,
+      personality.percent_naval,
+      personality.percent_vehicle,
+    ];
+    const highestValue = _.max(unitPercentages);
+    const valueIndex = unitPercentages.indexOf(highestValue);
+    const personality_tags = ["queller"];
+    switch (valueIndex) {
+      case 0:
+        personality_tags.push("air");
+        break;
+      case 1:
+        personality_tags.push("bot");
+        break;
+      case 2:
+        personality_tags.push("orbital");
+        break;
+      case 4:
+        personality_tags.push("tank");
+        break;
+    }
+    return personality_tags;
+  };
+
   const setupGuardianPersonality = function (cards, personality) {
     const totalAirCards = countCards(cards, "_air");
     const totalBotCards = countCards(cards, "_bot");
@@ -148,6 +176,10 @@ define([
         totalVehicleCards,
         totalCards
       );
+    }
+    const aiBrain = gwoAI.aiInUse();
+    if (aiBrain == "Queller") {
+      personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
   };
