@@ -14,24 +14,22 @@ function gwoWarOverLoadoutStats() {
     const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
     if (gwoSettings && !gwoSettings.cheatsUsed && game.gameState() === "won") {
+      const difficultyLevels = [
+        "!LOC:Beginner",
+        "!LOC:Casual",
+        "!LOC:Iron",
+        "!LOC:Bronze",
+        "!LOC:Silver",
+        "!LOC:Gold",
+        "!LOC:Platinum",
+        "!LOC:Diamond",
+        "!LOC:Uber",
+      ];
       const difficultyLevelAsInt =
-        _.findIndex(
-          [
-            "!LOC:Beginner",
-            "!LOC:Casual",
-            "!LOC:Iron",
-            "!LOC:Bronze",
-            "!LOC:Silver",
-            "!LOC:Gold",
-            "!LOC:Platinum",
-            "!LOC:Diamond",
-            "!LOC:Uber",
-          ],
-          function (difficulty) {
-            const warDifficulty = gwoSettings.difficulty;
-            return difficulty === warDifficulty;
-          }
-        ) - 1; // -1 because we added Beginner later
+        _.findIndex(difficultyLevels, function (difficulty) {
+          const warDifficulty = gwoSettings.difficulty;
+          return difficulty === warDifficulty;
+        }) - 1; // -1 because we added Beginner later
       const loadout = game.inventory().cards()[0].id;
       const highestDifficultyDefeatedWithLoadout = ko
         .observable()
