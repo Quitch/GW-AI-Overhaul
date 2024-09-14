@@ -654,7 +654,7 @@
 
 ### Changed
 
-- Orbital Launder Upgrade Tech grants access to the Jig
+- Orbital Launcher Upgrade Tech grants access to the Jig
 
 ### Fixed
 
