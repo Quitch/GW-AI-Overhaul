@@ -127,6 +127,7 @@ define([
       personality.percent_bot,
       personality.percent_orbital,
       personality.percent_air,
+      personality.percent_naval,
     ];
     const highestValue = _.max(unitPercentages);
     const valueIndex = unitPercentages.indexOf(highestValue);
@@ -144,6 +145,7 @@ define([
       case 3:
         aiPersonalityTags.push("air");
         break;
+      // case 4: do nothing
     }
     return aiPersonalityTags;
   };
