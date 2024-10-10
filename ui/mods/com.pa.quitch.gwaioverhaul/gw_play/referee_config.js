@@ -130,22 +130,22 @@ define([
     ];
     const highestValue = _.max(unitPercentages);
     const valueIndex = unitPercentages.indexOf(highestValue);
-    const personality_tags = ["queller"];
+    const aiPersonalityTags = ["queller"];
     switch (valueIndex) {
       case 0:
-        personality_tags.push("tank");
+        aiPersonalityTags.push("tank");
         break;
       case 1:
-        personality_tags.push("bot");
+        aiPersonalityTags.push("bot");
         break;
       case 2:
-        personality_tags.push("orbital");
+        aiPersonalityTags.push("orbital");
         break;
       case 3:
-        personality_tags.push("air");
+        aiPersonalityTags.push("air");
         break;
     }
-    return personality_tags;
+    return aiPersonalityTags;
   };
 
   const setupGuardianPersonality = function (cards, personality) {
