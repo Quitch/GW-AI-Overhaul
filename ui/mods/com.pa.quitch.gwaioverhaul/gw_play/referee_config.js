@@ -162,7 +162,7 @@ define([
       totalOrbitalCards +
       totalSeaCards +
       totalVehicleCards;
-    if (totalCards !== 0) {
+    if (totalCards > 0) {
       personality.percent_air = calculatePercentage(totalAirCards, totalCards);
       personality.percent_bot = calculatePercentage(totalBotCards, totalCards);
       personality.percent_orbital = calculatePercentage(
