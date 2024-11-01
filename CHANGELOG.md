@@ -6,6 +6,7 @@
 
 - Guardian approach when player is focused on naval tech and AI is Queller
 - Dox Upgrade Tech not working alongside Bot Ammunition Tech
+- Spawned units not getting tech bonuses
 
 ## v5.75.2 - 2024-09-13
 
