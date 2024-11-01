@@ -46,8 +46,8 @@ define([
         {
           file: gwoUnit.kestrelWeapon,
           path: "max_range",
-          op: "replace",
-          value: 20,
+          op: "multiply",
+          value: 0.33,
         },
         {
           file: gwoUnit.kestrelWeapon,
@@ -64,8 +64,8 @@ define([
         {
           file: gwoUnit.kestrelAmmo,
           path: "damage",
-          op: "replace",
-          value: 100,
+          op: "multiply",
+          value: 5,
         },
       ]);
     },

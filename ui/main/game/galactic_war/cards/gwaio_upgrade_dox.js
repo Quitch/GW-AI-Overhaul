@@ -46,8 +46,8 @@ define([
         {
           file: gwoUnit.doxWeapon,
           path: "max_range",
-          op: "replace",
-          value: 20,
+          op: "multiply",
+          value: 0.27,
         },
         {
           file: gwoUnit.doxWeapon,
@@ -64,8 +64,8 @@ define([
         {
           file: gwoUnit.doxAmmo,
           path: "damage",
-          op: "replace",
-          value: 100,
+          op: "multiply",
+          value: 10,
         },
       ]);
     },

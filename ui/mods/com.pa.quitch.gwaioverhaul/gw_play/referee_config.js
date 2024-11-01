@@ -127,25 +127,27 @@ define([
       personality.percent_bot,
       personality.percent_orbital,
       personality.percent_air,
+      personality.percent_naval,
     ];
     const highestValue = _.max(unitPercentages);
     const valueIndex = unitPercentages.indexOf(highestValue);
-    const personality_tags = ["queller"];
+    const aiPersonalityTags = ["queller"];
     switch (valueIndex) {
       case 0:
-        personality_tags.push("tank");
+        aiPersonalityTags.push("tank");
         break;
       case 1:
-        personality_tags.push("bot");
+        aiPersonalityTags.push("bot");
         break;
       case 2:
-        personality_tags.push("orbital");
+        aiPersonalityTags.push("orbital");
         break;
       case 3:
-        personality_tags.push("air");
+        aiPersonalityTags.push("air");
         break;
+      // case 4: do nothing
     }
-    return personality_tags;
+    return aiPersonalityTags;
   };
 
   const setupGuardianPersonality = function (cards, personality) {
@@ -160,7 +162,7 @@ define([
       totalOrbitalCards +
       totalSeaCards +
       totalVehicleCards;
-    if (totalCards !== 0) {
+    if (totalCards > 0) {
       personality.percent_air = calculatePercentage(totalAirCards, totalCards);
       personality.percent_bot = calculatePercentage(totalBotCards, totalCards);
       personality.percent_orbital = calculatePercentage(
@@ -177,7 +179,7 @@ define([
       );
     }
     const aiBrain = gwoAI.aiInUse();
-    if (aiBrain == "Queller") {
+    if (aiBrain === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
