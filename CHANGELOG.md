@@ -5,6 +5,7 @@
 ### Fixed
 
 - Adjust Guardian approach when player is focused on naval tech and AI is Queller
+- Dox Upgrade Tech works alongside Bot Ammunition Tech
 
 ## v5.75.2 - 2024-09-13
 
