@@ -178,8 +178,7 @@ define([
         totalCards
       );
     }
-    const aiBrain = gwoAI.aiInUse();
-    if (aiBrain === "Queller") {
+    if (gwoAI.aiInUse() === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
