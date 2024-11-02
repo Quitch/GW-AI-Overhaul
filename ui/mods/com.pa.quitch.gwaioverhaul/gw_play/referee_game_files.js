@@ -20,6 +20,7 @@ define([
     return -1;
   };
 
+  // fixes error in base game's spawn_unit_on_death tagging
   function tagSpec(tag, spec) {
     const moreWork = [];
     if (!_.isObject(spec)) {
