@@ -186,7 +186,7 @@ define([
   };
 
   const glassPlanets = function (planets) {
-    const unglassableBiome = ["asteroid", "gas", "metal"];
+    const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
     _.forEach(planets, function (planet) {
       if (!_.includes(unglassableBiome, planet.generator.biome)) {
         planet.generator.biome = "moon";
