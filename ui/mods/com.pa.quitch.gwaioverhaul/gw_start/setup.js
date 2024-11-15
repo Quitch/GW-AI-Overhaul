@@ -264,9 +264,10 @@ function gwoSetup() {
             case "Titans":
               personality.personality_tags =
                 personality.personality_tags.concat(titansAITags);
-            // fall through
+              break;
             case "Penchant":
               setupPenchantAI(ai, titansAITags);
+              break;
           }
         };
 
