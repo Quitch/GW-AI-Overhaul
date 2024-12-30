@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Lucky Commander loadout
+
 ### Changed
 
 - Legonis Machina and Synchronous lean more heavily into their preferred unit types

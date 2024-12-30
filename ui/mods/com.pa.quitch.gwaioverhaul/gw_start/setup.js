@@ -89,7 +89,8 @@ function gwoSetup() {
           { id: "gwaio_start_backpacker" },
           { id: "gwaio_start_hoarder" },
           { id: "gwaio_start_warp" },
-          { id: "gwaio_start_terminal" }
+          { id: "gwaio_start_terminal" },
+          { id: "gwaio_start_lucky" }
         );
         if (!model.gwoStartingCards) {
           model.gwoStartingCards = [];
