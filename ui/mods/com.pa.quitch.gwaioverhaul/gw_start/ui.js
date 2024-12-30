@@ -70,19 +70,21 @@ function gwoUI() {
     const restorePreviousSettings = function (settings) {
       const previousSettings = settings.previousSettings();
 
-      if (!_.isEmpty(previousSettings)) {
-        const settingNames = _.keys(settings);
-        _.pull(settingNames, "previousSettings");
-        _.forEach(settingNames, function (name, i) {
-          settings[name](previousSettings[i]);
-        });
-        _.defer(function () {
-          $("#gwo-personality-picker")
-            .selectpicker("val", model.gwoDifficultySettings.personalityTags())
-            .trigger("change");
-        });
-        model.playerFactionIndex(settings.playerFaction());
+      if (_.isEmpty(previousSettings)) {
+        return settings;
       }
+
+      const settingNames = _.keys(settings);
+      _.pull(settingNames, "previousSettings");
+      _.forEach(settingNames, function (name, i) {
+        settings[name](previousSettings[i]);
+      });
+      _.defer(function () {
+        $("#gwo-personality-picker")
+          .selectpicker("val", model.gwoDifficultySettings.personalityTags())
+          .trigger("change");
+      });
+      model.playerFactionIndex(settings.playerFaction());
 
       return settings;
     };
