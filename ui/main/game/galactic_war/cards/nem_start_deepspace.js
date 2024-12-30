@@ -132,6 +132,7 @@ define([
         gwoUnit.metalExtractor,
         gwoUnit.omega,
         gwoUnit.solarArray,
+        gwoUnit.icarus,
       ];
       gwoCard.applyDulls(CARD, inventory, units);
     },

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Space Excavation Commander is no longer able to build the Icarus
+
 ## v5.72.3 - 2024-11-01
 
 ### Fixed
