@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## Changed
+### Changed
 
 - Legonis Machina and Synchronous lean more heavily into their preferred unit types
 
