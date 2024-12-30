@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Changed
+
+- Legonis Machina and Synchronous lean more heavily into their preferred unit types
+
 ### Fixed
 
 - Space Excavation Commander is no longer able to build the Icarus

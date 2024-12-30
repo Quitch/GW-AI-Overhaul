@@ -1,8 +1,8 @@
 define({
   // Legonis Machina
   legonisMachina: {
-    percent_vehicle: 0.55,
-    percent_bot: 0.2,
+    percent_vehicle: 0.65,
+    percent_bot: 0.1,
     percent_air: 0.15,
     percent_naval: 0.05,
     percent_orbital: 0.05,
@@ -154,8 +154,8 @@ define({
 
   //Synchronous
   synchronous: {
-    percent_vehicle: 0.2,
-    percent_bot: 0.55,
+    percent_vehicle: 0.1,
+    percent_bot: 0.65,
     percent_air: 0.15,
     percent_naval: 0.05,
     percent_orbital: 0.05,
