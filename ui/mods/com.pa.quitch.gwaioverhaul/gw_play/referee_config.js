@@ -178,15 +178,14 @@ define([
         totalCards
       );
     }
-    const aiBrain = gwoAI.aiInUse();
-    if (aiBrain === "Queller") {
+    if (gwoAI.aiInUse() === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
   };
 
   const glassPlanets = function (planets) {
-    const unglassableBiome = ["asteroid", "gas", "metal"];
+    const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
     _.forEach(planets, function (planet) {
       if (!_.includes(unglassableBiome, planet.generator.biome)) {
         planet.generator.biome = "moon";

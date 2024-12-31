@@ -89,7 +89,8 @@ function gwoSetup() {
           { id: "gwaio_start_backpacker" },
           { id: "gwaio_start_hoarder" },
           { id: "gwaio_start_warp" },
-          { id: "gwaio_start_terminal" }
+          { id: "gwaio_start_terminal" },
+          { id: "gwaio_start_lucky" }
         );
         if (!model.gwoStartingCards) {
           model.gwoStartingCards = [];
@@ -264,9 +265,10 @@ function gwoSetup() {
             case "Titans":
               personality.personality_tags =
                 personality.personality_tags.concat(titansAITags);
-            // fall through
+              break;
             case "Penchant":
               setupPenchantAI(ai, titansAITags);
+              break;
           }
         };
 
@@ -387,7 +389,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.75.3";
+          const version = "5.76.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();

@@ -18,7 +18,7 @@ function gwoCard() {
     );
     locTree($("#hover-card"));
 
-    // Used by cards checking for T2 access - global const  for modders
+    // Used by cards checking for T2 access - global for modders
     model.gwoCardsGrantingAdvancedTech = [
       "gwc_enable_air_all",
       "gwc_enable_bots_all",
@@ -31,7 +31,11 @@ function gwoCard() {
       "gwaio_start_hoarder",
     ];
 
-    const numCardsToOffer = 3;
+    const isLuckyCommander = function (inventory) {
+      return inventory.hasCard("gwaio_start_lucky");
+    };
+
+    const numCardsToOffer = isLuckyCommander(game.inventory()) ? 4 : 3;
 
     model.rerollTech = function () {
       var cardsOffered = 0;

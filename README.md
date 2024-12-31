@@ -98,9 +98,9 @@ Each system will display the following information:
 - **Combat**: Combat Tech
 - **Cost**: Fabrication Tech
 - **Damage**: Ammunition Tech
+- **Factory**: Cooldown Tech
 - **Health**: Armour Tech
 - **Speed**: Engine Tech
-- **Factory**: Cooldown Tech
 
 These buffs are applied to commanders on a per-faction basis:
 

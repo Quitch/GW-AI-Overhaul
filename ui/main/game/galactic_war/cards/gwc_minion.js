@@ -87,9 +87,6 @@ define([
       };
     },
     buff: function (inventory, params) {
-      // Note: Storing only the name allows changing the parameters, which
-      // is easier for testing.  Every time the cards get re-applied, the
-      // minion parameters will be updated.
       const minion = params.minion;
       inventory.minions.push(minion);
       if (minion.commander) {

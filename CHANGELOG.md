@@ -1,6 +1,20 @@
 # CHANGELOG
 
-## v5.72.3 - 2024-11-01
+## v5.76.0 - 2024-12-31
+
+### Added
+
+- Lucky Commander loadout
+
+### Changed
+
+- Legonis Machina and Synchronous lean more heavily into their preferred unit types
+
+### Fixed
+
+- Space Excavation Commander is no longer able to build the Icarus
+
+## v5.75.3 - 2024-11-01
 
 ### Fixed
 
