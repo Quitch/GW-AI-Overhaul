@@ -150,7 +150,7 @@ define([
     return aiPersonalityTags;
   };
 
-  const setupGuardianPersonality = function (cards, personality) {
+  const setupGuardianPersonality = function (cards, personality, aiInUse) {
     const totalAirCards = countCards(cards, "_air");
     const totalBotCards = countCards(cards, "_bot");
     const totalOrbitalCards = countCards(cards, "_orbital");
@@ -178,7 +178,7 @@ define([
         totalCards
       );
     }
-    if (gwoAI.aiInUse() === "Queller") {
+    if (aiInUse === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
@@ -257,7 +257,7 @@ define([
     ai = setAdvEcoMod(ai, aiInUse);
     const guardians = ai.mirrorMode;
     if (guardians) {
-      ai.personality = setupGuardianPersonality(cards, ai.personality);
+      ai.personality = setupGuardianPersonality(cards, ai.personality, aiInUse);
     }
 
     // Avoid breaking enemies from earlier versions
