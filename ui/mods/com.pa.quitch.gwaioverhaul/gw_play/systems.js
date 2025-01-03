@@ -144,9 +144,8 @@ function gwoSystemChanges() {
           if (system) {
             // Display system description in intelligence panel
             return loc(system[field]()) || "";
-          } else {
-            return "";
           }
+          return "";
         });
       };
 
