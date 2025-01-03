@@ -16,12 +16,12 @@ define({
     const smartSubcommanders = _.some(inventory.cards(), {
       id: "gwaio_upgrade_subcommander_tactics",
     });
-    const aiBrain = this.aiInUse();
+    const aiInUse = this.aiInUse();
     const quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
     if (type === "cluster") {
       return "/pa/ai_cluster/";
-    } else if (aiBrain === "Queller") {
+    } else if (aiInUse === "Queller") {
       if (type === "all") {
         return quellerPath;
       } else if (type === "enemy") {
@@ -37,7 +37,7 @@ define({
       !guardians
     ) {
       return "/pa/ai_tech/";
-    } else if (aiBrain === "Penchant") {
+    } else if (aiInUse === "Penchant") {
       return "/pa/ai_penchant/";
     }
     return "/pa/ai/";
