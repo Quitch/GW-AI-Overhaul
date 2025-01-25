@@ -5,6 +5,7 @@
 ### Fixed
 
 - Guardian planet not being pre-dealt tech if you had unlocked all loadouts
+- Cheats not defeating bosses
 
 ## v5.76.0 - 2024-12-31
 

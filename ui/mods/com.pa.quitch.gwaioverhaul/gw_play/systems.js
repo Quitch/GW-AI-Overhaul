@@ -312,7 +312,7 @@ function gwoSystemChanges() {
         _.forEach(model.galaxy.systems(), function (system) {
           const star = system.star;
           const ai = star.ai();
-          const guardians = ai.mirrorMode;
+          const guardians = ai && ai.mirrorMode;
 
           if (ai && ai.team === defeatedTeam) {
             const replacementAI = _.first(ai.foes);
