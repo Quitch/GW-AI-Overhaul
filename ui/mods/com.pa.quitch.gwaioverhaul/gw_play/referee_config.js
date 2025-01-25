@@ -150,7 +150,7 @@ define([
     return aiPersonalityTags;
   };
 
-  const setupGuardianPersonality = function (cards, personality) {
+  const setupGuardianPersonality = function (cards, personality, aiInUse) {
     const totalAirCards = countCards(cards, "_air");
     const totalBotCards = countCards(cards, "_bot");
     const totalOrbitalCards = countCards(cards, "_orbital");
@@ -178,7 +178,7 @@ define([
         totalCards
       );
     }
-    if (gwoAI.aiInUse() === "Queller") {
+    if (aiInUse === "Queller") {
       personality.personality_tags = quellerGuardianPersonality(personality);
     }
     return personality;
@@ -251,13 +251,13 @@ define([
       const aiNewTag = ".ai" + n.toString();
       aiTag.push(aiNewTag);
     });
-    const aiBrain = gwoAI.aiInUse();
+    const aiInUse = gwoAI.aiInUse();
 
     // Set up AI System Owner
-    ai = setAdvEcoMod(ai, aiBrain);
+    ai = setAdvEcoMod(ai, aiInUse);
     const guardians = ai.mirrorMode;
     if (guardians) {
-      ai.personality = setupGuardianPersonality(cards, ai.personality);
+      ai.personality = setupGuardianPersonality(cards, ai.personality, aiInUse);
     }
 
     // Avoid breaking enemies from earlier versions
@@ -269,7 +269,7 @@ define([
     armies.push(aiArmy);
 
     _.forEach(ai.minions, function (minion, index) {
-      minion = setAdvEcoMod(minion, aiBrain);
+      minion = setAdvEcoMod(minion, aiInUse);
 
       // Avoid breaking enemies from earlier versions
       minion.personality.ai_path = aiPath;
@@ -282,7 +282,7 @@ define([
 
     // Set up Additional AI Factions
     _.forEach(ai.foes, function (foe, index) {
-      foe = setAdvEcoMod(foe, aiBrain);
+      foe = setAdvEcoMod(foe, aiInUse);
 
       // Avoid breaking enemies from earlier versions
       const foeIsCluster = gwoAI.isCluster(foe);

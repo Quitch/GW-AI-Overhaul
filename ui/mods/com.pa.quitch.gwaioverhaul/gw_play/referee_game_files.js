@@ -361,10 +361,10 @@ define([
     gwoUnit.skitterWeapon
   );
 
-  const getAIUnitMapPath = function (titans, aiBrain) {
+  const getAIUnitMapPath = function (titans, aiInUse) {
     const append = titans ? "_x1.json" : ".json";
 
-    switch (aiBrain) {
+    switch (aiInUse) {
       case "Queller":
         return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
       case "Penchant":
@@ -398,9 +398,9 @@ define([
       const playerFileGen = $.Deferred();
       const filesToProcess = [playerFileGen];
 
-      const aiBrain = gwoAI.aiInUse();
-      const aiUnitMapPath = getAIUnitMapPath(false, aiBrain);
-      const aiUnitMapTitansPath = getAIUnitMapPath(true, aiBrain);
+      const aiInUse = gwoAI.aiInUse();
+      const aiUnitMapPath = getAIUnitMapPath(false, aiInUse);
+      const aiUnitMapTitansPath = getAIUnitMapPath(true, aiInUse);
 
       const unitsLoad = $.get("spec://pa/units/unit_list.json");
       const aiMapLoad = $.get("spec:/" + aiUnitMapPath);
@@ -496,7 +496,7 @@ define([
                   )
                 : {};
             } else if (
-              aiBrain === "Queller" &&
+              aiInUse === "Queller" &&
               _.some(inventory.cards(), {
                 id: "gwaio_upgrade_subcommander_tactics",
               })
@@ -517,7 +517,7 @@ define([
                     playerSpecFiles
                   )
                 : {};
-            } else if (aiBrain === "Queller") {
+            } else if (aiInUse === "Queller") {
               playerFilesClassic = _.assign(
                 {
                   "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map.json.player":
@@ -551,7 +551,7 @@ define([
                     playerSpecFiles
                   )
                 : {};
-            } else if (aiBrain === "Penchant") {
+            } else if (aiInUse === "Penchant") {
               playerFilesClassic = _.assign(
                 {
                   "/pa/ai_penchant/unit_maps/ai_unit_map.json.player":

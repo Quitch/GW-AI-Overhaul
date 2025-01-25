@@ -217,8 +217,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const aiTechPath = "/pa/ai_tech/";
       const subcommanderAIPath = gwoAI.getAIPath("subcommander");
       const enemyAIPath = gwoAI.getAIPath("enemy");
-      const aiBrain = gwoAI.aiInUse();
-      const isQueller = aiBrain === "Queller";
+      const isQueller = gwoAI.aiInUse() === "Queller";
 
       addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
 

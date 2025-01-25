@@ -2,8 +2,9 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], function (module, GW, GWCStart, gwoCard) {
+], function (module, GW, GWCStart, gwoBank, gwoCard) {
   const CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
@@ -33,7 +34,7 @@ define([
         inventory.setTag("", "buffCount", buffCount);
       } else {
         inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
+        gwoBank.addStartCard(CARD);
       }
     },
     dull: function (inventory) {

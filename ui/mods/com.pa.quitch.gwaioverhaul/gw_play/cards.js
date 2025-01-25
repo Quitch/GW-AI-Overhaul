@@ -561,6 +561,10 @@ function gwoCard() {
           return deferred.promise();
         };
 
+        const isCardLoadout = function (card) {
+          return _.includes(card.id, "_start_");
+        };
+
         const dealCardToSelectableAI = function (win, turnState) {
           const deferred = $.Deferred();
 
@@ -570,7 +574,12 @@ function gwoCard() {
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
               const ai = system.star.ai();
-              if (model.canSelect(starIndex) && ai && !ai.treasurePlanet) {
+              const treasurePlanet = ai && ai.treasurePlanet;
+              const loadoutPresent =
+                treasurePlanet &&
+                !_.isEmpty(system.star.cardList()) &&
+                isCardLoadout(system.star.cardList()[0]);
+              if (model.canSelect(starIndex) && ai && !loadoutPresent) {
                 deferredQueue.push(
                   chooseCards({
                     count: 1,

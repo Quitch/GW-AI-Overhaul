@@ -11,11 +11,15 @@ function gwoBugfixes() {
 
   try {
     const galaxy = game.galaxy();
+    const luckyCommanderFixed = ko
+      .observable()
+      .extend({ local: "gwaio_lucky_commander_fixed" });
     const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
-      gwoSettings.clusterFixed;
+      gwoSettings.clusterFixed &&
+      luckyCommanderFixed();
 
     if (!gwoSettings || allFixesApplied) {
       return;
@@ -110,6 +114,37 @@ function gwoBugfixes() {
 
     gwoSettings.treasurePlanetFixed = true;
     gwoSettings.clusterFixed = true;
+
+    // Fix for v5.76.0 Lucky Commander unlocks
+    const fixLuckyCommanderLocalStorageVariable = function () {
+      if (luckyCommanderFixed()) {
+        return;
+      }
+
+      const unlockedVanillaStartCards = ko
+        .observableArray()
+        .extend({ local: "gw_bank" });
+      const unlockedGwoStartCards = ko
+        .observableArray()
+        .extend({ local: "gwaio_bank" });
+      const index = _.findIndex(
+        unlockedVanillaStartCards().startCards,
+        "id",
+        "gwaio_start_lucky"
+      );
+
+      if (index !== -1) {
+        unlockedVanillaStartCards().startCards.splice(index, 1);
+        unlockedVanillaStartCards.valueHasMutated();
+        unlockedGwoStartCards().startCards.push({
+          id: "gwaio_start_lucky",
+        });
+        unlockedGwoStartCards.valueHasMutated();
+      }
+    };
+
+    fixLuckyCommanderLocalStorageVariable();
+    luckyCommanderFixed("true");
 
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
