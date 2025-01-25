@@ -6,6 +6,7 @@
 
 - Guardian planet not being pre-dealt tech if you had unlocked all loadouts
 - Cheats not defeating bosses
+- Lucky Commander causing a 404 error if Galactic War Overhaul was uninstalled
 
 ## v5.76.0 - 2024-12-31
 
