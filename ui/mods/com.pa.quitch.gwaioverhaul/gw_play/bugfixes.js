@@ -25,95 +25,68 @@ function gwoBugfixes() {
       return;
     }
 
-    var star = {};
-    var securityFix = false; // we have to fix `unit_types`
-    var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
-
-    for (star of galaxy.stars()) {
-      allFixesApplied =
-        gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed;
-
-      if (allFixesApplied) {
-        break;
+    const fixTreasurePlanet = function (star) {
+      if (gwoSettings.treasurePlanetFixed) {
+        return;
       }
 
-      // Fix GWO v5.17.1 and earlier treasure planet bug when player had all loadouts unlocked
-      if (
-        !gwoSettings.treasurePlanetFixed &&
-        _.includes(star.cardList(), undefined)
-      ) {
+      if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
       }
+    };
 
-      // Fix GWO v5.22.1 and earlier Cluster commanders doing nothing
-      if (!gwoSettings.clusterFixed) {
-        const warVersion = gwoSettings.version;
-        const fixedVersion = "5.52.2";
-        const clusterFixDeployed = warVersion.localeCompare(
-          fixedVersion,
-          undefined,
-          {
-            numeric: true,
-            sensitivity: "base",
-          }
-        );
-        if (clusterFixDeployed >= 0) {
+    const applyClusterTypeFix = function (mod) {
+      if (mod.path === "buildable_types") {
+        mod.value = mod.value + " & Custom58";
+        return mod.file;
+      } else if (mod.path === "unit_types") {
+        mod.value.push("UNITTYPE_Custom58");
+        return mod.file;
+      }
+    };
+
+    const clusterTypeFix = function (mod, securityFix, workerFix) {
+      const security =
+        "/pa/units/land/bot_support_commander/bot_support_commander.json";
+      const worker = "/pa/units/air/support_platform/support_platform.json";
+      if (
+        (securityFix === false && mod.file === security) ||
+        (workerFix < 2 && mod.file === worker)
+      ) {
+        return applyClusterTypeFix(mod);
+      }
+    };
+
+    const fixClusterCommanders = function (star) {
+      const ai = star.ai();
+
+      if (gwoSettings.clusterFixed || !ai || !ai.isCluster) {
+        return;
+      }
+
+      var securityFix = false; // we have to fix `unit_types`
+      var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+
+      for (var mod of ai.inventory) {
+        const security =
+          "/pa/units/land/bot_support_commander/bot_support_commander.json";
+        const worker = "/pa/units/air/support_platform/support_platform.json";
+        var result = clusterTypeFix(mod, securityFix, workerFix);
+        switch (result) {
+          case security:
+            securityFix = true;
+            break;
+          case worker:
+            workerFix += 1;
+        }
+
+        if (securityFix === true && workerFix >= 2) {
           gwoSettings.clusterFixed = true;
-        } else {
-          const applyFix = function (mod) {
-            if (mod.path === "buildable_types") {
-              mod.value = mod.value + " & Custom58";
-              return mod.file;
-            } else if (mod.path === "unit_types") {
-              mod.value.push("UNITTYPE_Custom58");
-              return mod.file;
-            }
-          };
-
-          const clusterTypeFix = function (mod) {
-            const security =
-              "/pa/units/land/bot_support_commander/bot_support_commander.json";
-            const worker =
-              "/pa/units/air/support_platform/support_platform.json";
-            if (mod.file === security && securityFix === false) {
-              return applyFix(mod);
-            }
-            if (mod.file === worker && workerFix < 2) {
-              return applyFix(mod);
-            }
-          };
-
-          if (!gwoSettings.clusterFixed && star.ai()) {
-            const ai = star.ai();
-            for (var mod of ai.inventory) {
-              if (ai.isCluster) {
-                const security =
-                  "/pa/units/land/bot_support_commander/bot_support_commander.json";
-                const worker =
-                  "/pa/units/air/support_platform/support_platform.json";
-                var result = clusterTypeFix(mod);
-                switch (result) {
-                  case security:
-                    securityFix = true;
-                    break;
-                  case worker:
-                    workerFix += 1;
-                }
-
-                if (securityFix === true && workerFix === 2) {
-                  gwoSettings.clusterFixed = true;
-                  break;
-                }
-              }
-            }
-          }
+          break;
         }
       }
-    }
-
-    gwoSettings.treasurePlanetFixed = true;
-    gwoSettings.clusterFixed = true;
+    };
 
     // Fix for v5.76.0 Lucky Commander unlocks
     const fixLuckyCommanderLocalStorageVariable = function () {
@@ -140,11 +113,53 @@ function gwoBugfixes() {
           id: "gwaio_start_lucky",
         });
         unlockedGwoStartCards.valueHasMutated();
+        luckyCommanderFixed("true");
       }
     };
 
-    fixLuckyCommanderLocalStorageVariable();
-    luckyCommanderFixed("true");
+    const checkVersion = function (fixedVersion) {
+      return gwoSettings.version.localeCompare(fixedVersion, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+    };
+
+    const checkIfPatchesNeeded = function () {
+      const playerIsCluster =
+        model.game().inventory().getTag("global", "playerFaction") === 4;
+
+      if (checkVersion("5.76.1") >= 0) {
+        luckyCommanderFixed("true");
+        return;
+      }
+
+      if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
+        gwoSettings.clusterFixed = true;
+        return;
+      }
+
+      if (checkVersion("5.18.0") >= 0) {
+        gwoSettings.treasurePlanetFixed = true;
+      }
+    };
+    checkIfPatchesNeeded();
+
+    const applyFixes = function () {
+      for (var star of galaxy.stars()) {
+        if (gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed) {
+          break;
+        }
+
+        fixTreasurePlanet(star); // Fix players having all loadouts unlocked
+        fixClusterCommanders(star); // Fix Cluster commanders doing nothing
+      }
+
+      gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
+      gwoSettings.clusterFixed = true; // Cluster might not exist
+
+      fixLuckyCommanderLocalStorageVariable();
+    };
+    applyFixes();
 
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
