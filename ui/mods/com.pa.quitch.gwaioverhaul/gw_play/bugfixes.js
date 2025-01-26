@@ -88,7 +88,6 @@ function gwoBugfixes() {
       }
     };
 
-    // Fix for v5.76.0 Lucky Commander unlocks
     const fixLuckyCommanderLocalStorageVariable = function () {
       if (luckyCommanderFixed()) {
         return;
@@ -157,7 +156,7 @@ function gwoBugfixes() {
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
 
-      fixLuckyCommanderLocalStorageVariable();
+      fixLuckyCommanderLocalStorageVariable(); // Fix Lucky Commander bank assignment
     };
     applyFixes();
 
