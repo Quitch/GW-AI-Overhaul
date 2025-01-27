@@ -25,7 +25,7 @@ function gwoBugfixes() {
       return;
     }
 
-    const fixTreasurePlanet = function (star) {
+    const fixTreasurePlanetCardList = function (star) {
       if (gwoSettings.treasurePlanetFixed) {
         return;
       }
@@ -58,7 +58,7 @@ function gwoBugfixes() {
       }
     };
 
-    const fixClusterCommanders = function (star) {
+    const fixClusterCommanderTypes = function (star) {
       const ai = star.ai();
 
       if (gwoSettings.clusterFixed || !ai || !ai.isCluster) {
@@ -149,14 +149,14 @@ function gwoBugfixes() {
           break;
         }
 
-        fixTreasurePlanet(star); // Fix players having all loadouts unlocked
-        fixClusterCommanders(star); // Fix Cluster commanders doing nothing
+        fixTreasurePlanetCardList(star);
+        fixClusterCommanderTypes(star);
       }
 
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
 
-      fixLuckyCommanderLocalStorageVariable(); // Fix Lucky Commander bank assignment
+      fixLuckyCommanderLocalStorageVariable();
     };
     applyFixes();
 
