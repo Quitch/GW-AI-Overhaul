@@ -54,7 +54,7 @@ function gwoUI() {
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
+      aiPersonalityAsName: ko.observable(false), // obsolete
     };
 
     var difficultySettings = model.gwoDifficultySettings;
