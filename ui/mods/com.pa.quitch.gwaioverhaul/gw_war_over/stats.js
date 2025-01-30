@@ -17,6 +17,26 @@ function gwoWarOverLoadoutStats() {
       return;
     }
 
+    const getPreviousBest = function (defeatedDifficulties) {
+      return _.isArray(defeatedDifficulties)
+        ? defeatedDifficulties[0]
+        : defeatedDifficulties;
+    };
+
+    const loadoutId = game.inventory().cards()[0].id;
+    const defeatedDifficulties = ko
+      .observable()
+      .extend({ local: "gwaio_victory_" + loadoutId });
+    const previousBest = getPreviousBest(defeatedDifficulties());
+
+    const isNewHighScore = function (currentDifficulty, previousBest) {
+      return (
+        currentDifficulty > previousBest ||
+        (currentDifficulty === previousBest && game.hardcore()) ||
+        _.isUndefined(previousBest)
+      );
+    };
+
     const difficultyLevels = [
       "!LOC:Beginner",
       "!LOC:Casual",
@@ -28,34 +48,16 @@ function gwoWarOverLoadoutStats() {
       "!LOC:Diamond",
       "!LOC:Uber",
     ];
-    const difficultyLevelAsInt =
+    const currentDifficultyIndex =
       _.findIndex(difficultyLevels, function (difficulty) {
-        const warDifficulty = gwoSettings.difficulty;
-        return difficulty === warDifficulty;
-      }) - 1; // -1 because we added Beginner later
-    const loadout = game.inventory().cards()[0].id;
-    const highestDifficultyDefeatedWithLoadout = ko
-      .observable()
-      .extend({ local: "gwaio_victory_" + loadout });
-    var previousBest = -1;
+        return difficulty === gwoSettings.difficulty;
+      }) - 1; // Adjust for added "Beginner" level
 
-    // Value wasn't an array in v5.34.0 and earlier
-    if (_.isArray(highestDifficultyDefeatedWithLoadout())) {
-      previousBest = highestDifficultyDefeatedWithLoadout()[0];
-    } else {
-      previousBest = highestDifficultyDefeatedWithLoadout();
-    }
-
-    if (
-      difficultyLevelAsInt > previousBest ||
-      (difficultyLevelAsInt === previousBest && game.hardcore()) ||
-      _.isUndefined(previousBest)
-    ) {
-      highestDifficultyDefeatedWithLoadout([
-        difficultyLevelAsInt,
-        game.hardcore(),
-      ]);
-    }
+    defeatedDifficulties(
+      isNewHighScore(currentDifficultyIndex, previousBest)
+        ? [currentDifficultyIndex, game.hardcore()]
+        : defeatedDifficulties()
+    );
   } catch (e) {
     console.error(e);
     console.error(JSON.stringify(e));
