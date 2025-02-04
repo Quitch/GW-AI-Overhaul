@@ -233,11 +233,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
         var aiBuildOps = [];
         var clusterOps = [];
-        const clusterCommanders = [
-          "SupportPlatform",
-          "SupportCommander",
-          "UberSupportCommander", // Queller AI
-        ];
+        const clusterCommanders = ["SupportPlatform", "SupportCommander"];
         const clusterAIMods = _.map(clusterCommanders, function (commander) {
           return {
             type: "factory",
