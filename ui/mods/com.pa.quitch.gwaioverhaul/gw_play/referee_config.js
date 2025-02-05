@@ -115,10 +115,7 @@ define([
   };
 
   const calculatePercentage = function (typeCards, totalCards) {
-    if (typeCards === 0) {
-      return 0;
-    }
-    return typeCards / totalCards;
+    return typeCards === 0 ? 0 : typeCards / totalCards;
   };
 
   const quellerGuardianPersonality = function (personality) {
