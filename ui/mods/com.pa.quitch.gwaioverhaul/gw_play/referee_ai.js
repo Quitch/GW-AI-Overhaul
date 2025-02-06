@@ -173,7 +173,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     });
   };
 
-  const isClusterPresent = function (inventory, ai, subcommanders) {
+  const whoIsCluster = function (inventory, ai, subcommanders) {
     const isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
     const isEnemyCluster =
       gwoAI.isCluster(ai) ||
@@ -203,7 +203,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     const numberOfAllies = alliedCommanders.length;
     const aiFilePath =
       numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
-    const clusterPresence = isClusterPresent(inventory, ai, numberOfAllies);
+    const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
     const aiToModify = aiToMod(inventory, guardians, clusterPresence);
 
     const deferred = $.Deferred();
@@ -233,11 +233,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
         var aiBuildOps = [];
         var clusterOps = [];
-        const clusterCommanders = [
-          "SupportPlatform",
-          "SupportCommander",
-          "UberSupportCommander", // Queller AI
-        ];
+        const clusterCommanders = ["SupportPlatform", "SupportCommander"];
         const clusterAIMods = _.map(clusterCommanders, function (commander) {
           return {
             type: "factory",

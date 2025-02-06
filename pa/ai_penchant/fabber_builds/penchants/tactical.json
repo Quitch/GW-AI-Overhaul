@@ -91,7 +91,7 @@
       "max_num_assisters": 5,
       "priority": 379,
       "base_sort": "FromPerimeter",
-      "builders": ["AnyUberAdvancedFabber", "UberSupportCommander"],
+      "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
           {

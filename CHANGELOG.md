@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.76.2 - 2025-02-06
+
+### Fixed
+
+- Tactical penchant not building Catapults in response to threat
+
 ## v5.76.1 - 2025-01-25
 
 ### Fixed
