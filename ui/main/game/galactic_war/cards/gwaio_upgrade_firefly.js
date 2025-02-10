@@ -6,7 +6,7 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 100%."
+        "!LOC:Firefly Upgrade Tech increases the air scout's vision by 100%."
       ) +
         "<br> <br>" +
         loc("!LOC:Does not use a Data Bank.")
@@ -38,29 +38,6 @@ define([
       inventory.addMods([
         {
           file: gwoUnit.firefly,
-          path: "tools",
-          op: "replace",
-          value: [
-            {
-              spec_id: gwoUnit.fireflyWeapon,
-              aim_bone: "bone_root",
-              muzzle_bone: "bone_root",
-            },
-          ],
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Attack",
-        },
-        {
-          file: gwoUnit.firefly,
           path: "recon.observer.items.0.radius",
           op: "multiply",
           value: 2,
@@ -70,12 +47,6 @@ define([
           path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 2,
-        },
-        {
-          file: gwoUnit.fireflyAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 3.34,
         },
       ]);
     },
