@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Repeating Lucky Commander bugfix checks
+
 ## v5.76.2 - 2025-02-06
 
 ### Fixed
