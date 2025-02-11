@@ -88,7 +88,6 @@ function gwoRefereeChanges() {
           // call our own gw_referee implementation
           const ref = new gwoReferee(game);
           return _.bind(gwoGenerateGameFiles, ref)()
-            .then(_.bind(gwoGenerateAI, ref))
             .then(_.bind(gwoGenerateConfig, ref))
             .then(function () {
               return ref;
