@@ -20,11 +20,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   const airBasicAmmo = [
     gwoUnit.bumblebeeAmmo,
+    gwoUnit.fireflyAmmo,
     gwoUnit.hummingbirdAmmo,
     gwoUnit.icarusAmmo,
   ];
   const airBasicWeapons = [
     gwoUnit.bumblebeeWeapon,
+    gwoUnit.fireflyWeapon,
     gwoUnit.hummingbirdWeapon,
     gwoUnit.icarusWeapon,
   ];
@@ -376,6 +378,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.antAmmo,
     gwoUnit.drifterAmmo,
     gwoUnit.infernoAmmo,
+    gwoUnit.skitterAmmo,
     gwoUnit.spinnerAmmo,
     gwoUnit.strykerAmmo,
   ];
@@ -383,6 +386,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.antWeapon,
     gwoUnit.drifterWeapon,
     gwoUnit.infernoWeapon,
+    gwoUnit.skitterWeapon,
     gwoUnit.spinnerWeapon,
     gwoUnit.strykerWeapon,
   ];

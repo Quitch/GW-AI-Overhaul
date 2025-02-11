@@ -144,6 +144,8 @@ define({
   energyPlantAdvanced: "/pa/units/land/energy_plant_adv/energy_plant_adv.json",
   energyStorage: "/pa/units/land/energy_storage/energy_storage.json",
   firefly: "/pa/units/air/air_scout/air_scout.json",
+  fireflyAmmo: "/pa/units/air/air_scout/air_scout_ammo.json",
+  fireflyWeapon: "/pa/units/air/air_scout/air_scout_tool_weapon.json",
   flak: "/pa/units/land/air_defense_adv/air_defense_adv.json",
   flakAmmo: "/pa/units/land/air_defense_adv/air_defense_adv_ammo.json",
   flakWeapon: "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
@@ -287,6 +289,8 @@ define({
     "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
   orca: "/pa/units/sea/destroyer/destroyer.json",
   orcaAmmo: "/pa/units/sea/destroyer/destroyer_ammo.json",
+  orcaTorpedo: "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
+  orcaTorpedoAmmo: "/pa/units/sea/destroyer/destroyer_torpedo_ammo.json",
   orcaWeapon: "/pa/units/sea/destroyer/destroyer_tool_weapon.json",
   pelican: "/pa/units/air/transport/transport.json",
   pelter: "/pa/units/land/artillery_short/artillery_short.json",
@@ -319,6 +323,8 @@ define({
   singleLaserDefenseTowerWeapon:
     "/pa/units/land/laser_defense_single/laser_defense_single_tool_weapon.json",
   skitter: "/pa/units/land/land_scout/land_scout.json",
+  skitterAmmo: "/pa/units/land/land_scout/land_scout_ammo.json",
+  skitterWeapon: "/pa/units/land/land_scout/land_scout_tool_weapon.json",
   slammer: "/pa/units/land/assault_bot_adv/assault_bot_adv.json",
   slammerAmmo: "/pa/units/land/assault_bot_adv/assault_bot_adv_ammo.json",
   slammerTorpedo:

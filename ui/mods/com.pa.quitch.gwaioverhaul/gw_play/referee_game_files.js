@@ -347,6 +347,20 @@ define([
     _.forEach(mods, applyMod);
   };
 
+  // global for modder compatibility
+  if (!model.gwoSpecs) {
+    model.gwoSpecs = [];
+  }
+  // files not assigned by default that we wish to mod
+  model.gwoSpecs.push(
+    gwoUnit.fireflyAmmo,
+    gwoUnit.fireflyWeapon,
+    gwoUnit.orcaTorpedo,
+    gwoUnit.orcaTorpedoAmmo,
+    gwoUnit.skitterAmmo,
+    gwoUnit.skitterWeapon
+  );
+
   const getAIUnitMapPath = function (titans, aiInUse) {
     const append = titans ? "_x1.json" : ".json";
 
@@ -395,7 +409,7 @@ define([
         function (unitsGet, aiMapGet, aiX1MapGet) {
           const inventory = self.game().inventory();
 
-          const aiSpecs = parse(unitsGet[0]).units;
+          const units = parse(unitsGet[0]).units;
           const aiUnitMap = parse(aiMapGet[0]);
           const aiX1UnitMap = parse(aiX1MapGet[0]);
           const clusterUnitMapPath =
@@ -409,6 +423,7 @@ define([
               aiX1UnitMap,
               aiTag[n]
             );
+            const aiSpecs = units.concat(model.gwoSpecs);
 
             genUnitSpecs(aiSpecs, aiTag[n]).then(function (aiSpecFiles) {
               var unitMapPath = aiUnitMapPath;
@@ -451,9 +466,10 @@ define([
           const playerX1AIUnitMap = titans
             ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
             : {};
-          const playerSpecs = _.isUndefined(ai.ally)
-            ? inventory.units()
-            : inventory.units().concat(ai.ally.commander);
+          const additionalPlayerSpecs = _.isUndefined(ai.ally)
+            ? model.gwoSpecs
+            : model.gwoSpecs.concat(ai.ally.commander);
+          const playerSpecs = inventory.units().concat(additionalPlayerSpecs);
 
           genUnitSpecs(playerSpecs, playerTag).then(function (playerSpecFiles) {
             var playerFilesClassic = {};
