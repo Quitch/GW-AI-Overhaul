@@ -241,6 +241,10 @@ function gwoUI() {
         });
       }
     );
+
+    model.title = ko.computed(function () {
+      return model.mode() || loc("!LOC:Galactic War Overhaul");
+    });
   } catch (e) {
     console.error(e);
     console.error(JSON.stringify(e));

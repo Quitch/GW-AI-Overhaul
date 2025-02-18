@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
+
 ### Fixed
 
 - Repeating Lucky Commander bugfix checks
