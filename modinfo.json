@@ -51,6 +51,10 @@
     ],
     "shared_build": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"
+    ],
+    "start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
     ]
   },
   "priority": 200,

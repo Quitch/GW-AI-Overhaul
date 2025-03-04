@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
+- Easier Start enabled by default
+- Reduced the maximum number of fabbers at Uber difficulty
+
 ### Fixed
 
 - Repeating Lucky Commander bugfix checks
