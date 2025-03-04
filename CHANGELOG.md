@@ -6,6 +6,10 @@
 
 - Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
 
+### Changed
+
+- Enabled Easier Start by default
+
 ### Fixed
 
 - Repeating Lucky Commander bugfix checks

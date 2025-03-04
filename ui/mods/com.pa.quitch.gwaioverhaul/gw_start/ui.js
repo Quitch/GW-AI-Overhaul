@@ -25,7 +25,7 @@ function gwoUI() {
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
-      easierStart: ko.observable(false),
+      easierStart: ko.observable(true),
       ai: ko.observable("Penchant"),
       paLore: ko.observable(true),
       techCardDeck: ko.observable("Expanded"),
