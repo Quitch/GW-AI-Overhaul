@@ -2,12 +2,9 @@
 
 ## Unreleased
 
-### Added
-
-- Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
-
 ### Changed
 
+- Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
 - Enabled Easier Start by default
 - Reduced the maximum number of fabbers at Uber difficulty
 
