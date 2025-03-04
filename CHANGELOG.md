@@ -9,6 +9,7 @@
 ### Changed
 
 - Enabled Easier Start by default
+- Reduced the maximum number of fabbers at Uber difficulty
 
 ### Fixed
 
