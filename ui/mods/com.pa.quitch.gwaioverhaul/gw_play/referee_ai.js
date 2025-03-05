@@ -211,13 +211,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const aiMods = _.partition(inventory.aiMods(), { op: "load" });
       const aiNewFiles = aiMods[0];
       const aiJsonMods = aiMods[1];
-      const aiTechPath = "/pa/ai_tech/";
-      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
-      const enemyAIPath = gwoAI.getAIPath("enemy");
-      const isQueller = gwoAI.aiInUse() === "Queller";
       const guardians = ai.mirrorMode;
       const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
       const aiToModify = aiToMod(inventory, guardians, clusterPresence);
+      const aiTechPath = "/pa/ai_tech/";
+
+      addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
+
+      const isQueller = gwoAI.aiInUse() === "Queller";
+      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
+      const enemyAIPath = gwoAI.getAIPath("enemy");
+      const clusterAIPath = gwoAI.getAIPath("cluster");
       const clusterCommanders = ["SupportPlatform", "SupportCommander"];
       const clusterAIMods = _.map(clusterCommanders, function (commander) {
         return {
@@ -228,9 +232,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           value: 0,
         };
       });
-      const clusterAIPath = gwoAI.getAIPath("cluster");
-
-      addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
 
       _.forEach(fileList, function (filePath) {
         if (
