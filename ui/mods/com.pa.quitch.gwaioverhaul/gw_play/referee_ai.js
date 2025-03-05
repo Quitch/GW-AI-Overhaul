@@ -196,15 +196,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     const inventory = game.inventory();
     const currentStar = game.galaxy().stars()[game.currentStar()];
     const ai = currentStar.ai();
-    const guardians = ai.mirrorMode;
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     const numberOfAllies = alliedCommanders.length;
     const aiFilePath =
       numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
-    const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
-    const aiToModify = aiToMod(inventory, guardians, clusterPresence);
 
     const deferred = $.Deferred();
 
@@ -218,6 +215,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const subcommanderAIPath = gwoAI.getAIPath("subcommander");
       const enemyAIPath = gwoAI.getAIPath("enemy");
       const isQueller = gwoAI.aiInUse() === "Queller";
+      const guardians = ai.mirrorMode;
+      const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
+      const aiToModify = aiToMod(inventory, guardians, clusterPresence);
       const clusterCommanders = ["SupportPlatform", "SupportCommander"];
       const clusterAIMods = _.map(clusterCommanders, function (commander) {
         return {
