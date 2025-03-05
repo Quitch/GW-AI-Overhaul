@@ -23,10 +23,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               _.forEach(build.build_conditions, function (testArray) {
                 _.forEach(testArray, function (test) {
                   if (test[refId] === refValue) {
-                    if (_.isArray(test[idToMod])) {
+                    if (_.isArray(value) && _.isArray(test[idToMod])) {
                       test[idToMod] = test[idToMod].concat(value);
-                    } else if (test[idToMod]) {
+                    } else if (!_.isArray(value) && !_.isArray(test[idToMod])) {
                       test[idToMod] += value;
+                    } else {
+                      throw new Error(
+                        "Invalid AI append:",
+                        value,
+                        toBuild,
+                        idToMod,
+                        refId,
+                        refValue
+                      );
                     }
                   }
                 });
@@ -54,10 +63,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               _.forEach(build.build_conditions, function (testArray) {
                 _.forEach(testArray, function (test) {
                   if (test[refId] === refValue) {
-                    if (_.isArray(test[idToMod])) {
+                    if (_.isArray(value) && _.isArray(test[idToMod])) {
                       test[idToMod] = value.concat(test[idToMod]);
-                    } else if (test[idToMod]) {
+                    } else if (!_.isArray(value) && !_.isArray(test[idToMod])) {
                       test[idToMod] = value + test[idToMod];
+                    } else {
+                      throw new Error(
+                        "Invalid AI prepend:",
+                        value,
+                        toBuild,
+                        idToMod,
+                        refId,
+                        refValue
+                      );
                     }
                   }
                 });
