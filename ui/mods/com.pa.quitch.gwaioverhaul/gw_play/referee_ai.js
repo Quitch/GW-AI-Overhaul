@@ -218,6 +218,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const subcommanderAIPath = gwoAI.getAIPath("subcommander");
       const enemyAIPath = gwoAI.getAIPath("enemy");
       const isQueller = gwoAI.aiInUse() === "Queller";
+      const clusterCommanders = ["SupportPlatform", "SupportCommander"];
+      const clusterAIMods = _.map(clusterCommanders, function (commander) {
+        return {
+          type: "factory",
+          op: "replace",
+          toBuild: commander,
+          idToMod: "priority",
+          value: 0,
+        };
+      });
+      const clusterAIPath = gwoAI.getAIPath("cluster");
 
       addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
 
@@ -233,17 +244,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
         var aiBuildOps = [];
         var clusterOps = [];
-        const clusterCommanders = ["SupportPlatform", "SupportCommander"];
-        const clusterAIMods = _.map(clusterCommanders, function (commander) {
-          return {
-            type: "factory",
-            op: "replace",
-            toBuild: commander,
-            idToMod: "priority",
-            value: 0,
-          };
-        });
-        const clusterAIPath = gwoAI.getAIPath("cluster");
         const quellerSubCommander =
           isQueller &&
           numberOfAllies > 0 &&
