@@ -154,7 +154,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       case "template":
         return "platoon_templates/";
       default:
-        throw new Error("Invalid AI file type: " + type);
+        throw new Error("Invalid AI file type");
     }
   };
 
