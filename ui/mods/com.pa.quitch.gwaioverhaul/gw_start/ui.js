@@ -120,7 +120,7 @@ function gwoUI() {
     const gameDifficultyLabelId = "#game-difficulty-label";
     const gameDifficultyId = "#game-difficulty";
 
-    addHtml.append("#game-settings-label", "difficulty_options.html");
+    addHtml.after("#game-settings-label", "difficulty_options.html");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");

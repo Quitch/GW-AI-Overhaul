@@ -196,15 +196,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     const inventory = game.inventory();
     const currentStar = game.galaxy().stars()[game.currentStar()];
     const ai = currentStar.ai();
-    const guardians = ai.mirrorMode;
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     const numberOfAllies = alliedCommanders.length;
     const aiFilePath =
       numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
-    const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
-    const aiToModify = aiToMod(inventory, guardians, clusterPresence);
 
     const deferred = $.Deferred();
 
@@ -214,12 +211,27 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const aiMods = _.partition(inventory.aiMods(), { op: "load" });
       const aiNewFiles = aiMods[0];
       const aiJsonMods = aiMods[1];
+      const guardians = ai.mirrorMode;
+      const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
+      const aiToModify = aiToMod(inventory, guardians, clusterPresence);
       const aiTechPath = "/pa/ai_tech/";
-      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
-      const enemyAIPath = gwoAI.getAIPath("enemy");
-      const isQueller = gwoAI.aiInUse() === "Queller";
 
       addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
+
+      const isQueller = gwoAI.aiInUse() === "Queller";
+      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
+      const enemyAIPath = gwoAI.getAIPath("enemy");
+      const clusterAIPath = gwoAI.getAIPath("cluster");
+      const clusterCommanders = ["SupportPlatform", "SupportCommander"];
+      const clusterAIMods = _.map(clusterCommanders, function (commander) {
+        return {
+          type: "factory",
+          op: "replace",
+          toBuild: commander,
+          idToMod: "priority",
+          value: 0,
+        };
+      });
 
       _.forEach(fileList, function (filePath) {
         if (
@@ -233,17 +245,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
         var aiBuildOps = [];
         var clusterOps = [];
-        const clusterCommanders = ["SupportPlatform", "SupportCommander"];
-        const clusterAIMods = _.map(clusterCommanders, function (commander) {
-          return {
-            type: "factory",
-            op: "replace",
-            toBuild: commander,
-            idToMod: "priority",
-            value: 0,
-          };
-        });
-        const clusterAIPath = gwoAI.getAIPath("cluster");
         const quellerSubCommander =
           isQueller &&
           numberOfAllies > 0 &&
@@ -282,11 +283,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         $.getJSON("coui:/" + filePath)
           .then(function (json) {
             var updatedFilePath = filePath;
+            const aiTechFile = _.startsWith(filePath, aiTechPath);
 
             if (aiToModify === "All") {
               addTechToAI(json, aiBuildOps);
               // Put "load" files where the AI expects them to be
-              if (_.startsWith(filePath, aiTechPath)) {
+              if (aiTechFile) {
                 if (isQueller) {
                   // We don't know if the aiFilePath contains q_uber
                   const quellerEnemyPath = gwoAI.getAIPath("enemy");
@@ -323,14 +325,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               addTechToAI(json, aiBuildOps);
               if (quellerSubCommander) {
                 // Put "load" files where Queller expects them to be
-                if (_.startsWith(filePath, aiTechPath)) {
+                if (aiTechFile) {
                   updatedFilePath = aiPathCreation(
                     subcommanderAIPath,
                     filePath,
                     aiTechPath.length
                   );
                 }
-              } else if (_.startsWith(filePath, aiFilePath)) {
+              } else if (aiTechFile) {
                 // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                 updatedFilePath =
                   aiTechPath + filePath.slice(aiFilePath.length);
