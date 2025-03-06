@@ -11,7 +11,7 @@
 ### Fixed
 
 - Repeating Lucky Commander bugfix checks
-- Clicking option names in setup changes the state of that option and not hardcore
+- Clicking option names in setup changing the Hardcore setting
 
 ## v5.76.2 - 2025-02-06
 
