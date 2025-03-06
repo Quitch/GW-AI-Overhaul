@@ -1,5 +1,5 @@
-<div class="form-group" id="difficulty-options">
-  <div>
+<div id="difficulty-options">
+  <label style="text-transform: none" id="faction-scaling">
     <input
       type="checkbox"
       data-bind="checked: $root.gwoDifficultySettings.factionScaling"
@@ -9,10 +9,9 @@
     <span class="info_tip" data-bind="tooltip: gwoFactionScalingTooltip"
       >?</span
     >
-  </div>
-
+  </label>
   <!-- Removed if Shared Systems for Galactic War is loaded -->
-  <div id="system-scaling">
+  <label style="text-transform: none" id="system-scaling">
     <input
       type="checkbox"
       data-bind="checked: $root.gwoDifficultySettings.systemScaling"
@@ -23,8 +22,8 @@
       data-bind="tooltip: '!LOC:System size determined by distance into the galaxy.'"
       >?</span
     >
-  </div>
-  <div id="gwo-system-size">
+  </label>
+  <label style="text-transform: none" id="system-size">
     <input
       type="checkbox"
       data-bind="checked: $root.gwoDifficultySettings.simpleSystems"
@@ -35,9 +34,8 @@
       data-bind="tooltip: '!LOC:Use smaller, mostly single planet systems.'"
       >?</span
     >
-  </div>
-
-  <div>
+  </label>
+  <label style="text-transform: none" id="easier-start">
     <input
       type="checkbox"
       data-bind="checked: $root.gwoDifficultySettings.easierStart"
@@ -48,8 +46,8 @@
       data-bind="tooltip: '!LOC:More neutral systems with free technology.'"
       >?</span
     >
-  </div>
-  <div>
+  </label>
+  <label style="text-transform: none" id="pa-lore">
     <input
       type="checkbox"
       data-bind="checked: $root.gwoDifficultySettings.paLore"
@@ -60,5 +58,5 @@
       data-bind="tooltip: '!LOC:Display the original pre-release Galactic War lore in the Planetary Intelligence panel.'"
       >?</span
     >
-  </div>
+  </label>
 </div>
