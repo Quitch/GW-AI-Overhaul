@@ -301,11 +301,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         $.getJSON("coui:/" + filePath)
           .then(function (json) {
             var updatedFilePath = filePath;
+            const aiTechFile = _.startsWith(filePath, aiTechPath);
 
             if (aiToModify === "All") {
               addTechToAI(json, aiBuildOps);
               // Put "load" files where the AI expects them to be
-              if (_.startsWith(filePath, aiTechPath)) {
+              if (aiTechFile) {
                 if (isQueller) {
                   // We don't know if the aiFilePath contains q_uber
                   const quellerEnemyPath = gwoAI.getAIPath("enemy");
@@ -342,14 +343,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               addTechToAI(json, aiBuildOps);
               if (quellerSubCommander) {
                 // Put "load" files where Queller expects them to be
-                if (_.startsWith(filePath, aiTechPath)) {
+                if (aiTechFile) {
                   updatedFilePath = aiPathCreation(
                     subcommanderAIPath,
                     filePath,
                     aiTechPath.length
                   );
                 }
-              } else if (_.startsWith(filePath, aiFilePath)) {
+              } else if (aiTechFile) {
                 // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                 updatedFilePath =
                   aiTechPath + filePath.slice(aiFilePath.length);
