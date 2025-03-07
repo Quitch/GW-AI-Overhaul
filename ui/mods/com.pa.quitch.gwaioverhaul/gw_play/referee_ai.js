@@ -233,10 +233,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         };
       });
 
+      const aiBuildsForType = function (type) {
+        return _.filter(aiJsonMods, { type });
+      };
+
       _.forEach(fileList, function (filePath) {
+        const filePathContains = function (substring) {
+          return _.includes(filePath, substring);
+        };
+
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/")
+          filePathContains("/neural_networks/")
         ) {
           return;
         }
@@ -251,28 +259,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           (_.startsWith(filePath, subcommanderAIPath) ||
             _.startsWith(filePath, aiTechPath));
 
-        // Only mods associated with the file's AI manager are loaded
-        if (
-          aiToModify !== "None" &&
-          !_.isEmpty(aiJsonMods) &&
-          (!isQueller || quellerSubCommander || aiToModify === "All")
-        ) {
-          if (_.includes(filePath, "/fabber_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, {
-              type: "fabber",
-            });
-          } else if (_.includes(filePath, "/factory_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, { type: "factory" });
-          } else if (_.includes(filePath, "/platoon_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, { type: "platoon" });
-          } else if (_.includes(filePath, "/platoon_templates/")) {
-            aiBuildOps = _.filter(aiJsonMods, {
-              type: "template",
-            });
+        if (aiToModify !== "None" && !_.isEmpty(aiJsonMods)) {
+          if (filePathContains("/fabber_builds/")) {
+            aiBuildOps = aiBuildsForType("fabber");
+          } else if (filePathContains("/factory_builds/")) {
+            aiBuildOps = aiBuildsForType("factory");
+          } else if (filePathContains("/platoon_builds/")) {
+            aiBuildOps = aiBuildsForType("platoon");
+          } else if (filePathContains("/platoon_templates/")) {
+            aiBuildOps = aiBuildsForType("template");
           }
         }
         if (
-          _.includes(filePath, "/factory_builds/") &&
+          filePathContains("/factory_builds/") &&
           clusterPresence !== "None"
         ) {
           clusterOps = clusterAIMods;
