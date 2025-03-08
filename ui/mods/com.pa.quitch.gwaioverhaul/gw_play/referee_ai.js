@@ -8,16 +8,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       append: function (value, toBuild, idToMod, refId, refValue) {
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
-            if (
+            const validMatch =
               (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod] &&
-              _.isArray(build[idToMod])
-            ) {
+              build[idToMod];
+            if (validMatch && _.isArray(build[idToMod])) {
               build[idToMod] = build[idToMod].concat(value);
-            } else if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod]
-            ) {
+            } else if (validMatch) {
               build[idToMod] += value;
             } else {
               _.forEach(build.build_conditions, function (testArray) {
@@ -39,16 +35,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       prepend: function (value, toBuild, idToMod, refId, refValue) {
         _.forEach(json.build_list, function (build) {
           if (build.to_build === toBuild) {
-            if (
+            const validMatch =
               (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod] &&
-              _.isArray(build[idToMod])
-            ) {
+              build[idToMod];
+            if (validMatch && _.isArray(build[idToMod])) {
               build[idToMod] = value.concat(build[idToMod]);
-            } else if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod]
-            ) {
+            } else if (validMatch) {
               build[idToMod] = value + build[idToMod];
             } else {
               _.forEach(build.build_conditions, function (testArray) {
