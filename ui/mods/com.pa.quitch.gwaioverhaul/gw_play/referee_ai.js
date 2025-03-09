@@ -243,7 +243,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       };
 
       _.forEach(fileList, function (filePath) {
-        const filePathContains = function (substring) {
+        const filePathIncludes = function (substring) {
           return _.includes(filePath, substring);
         };
 
@@ -255,7 +255,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           return _.endsWith(filePath, filePathFragment);
         };
 
-        if (!filePathEnds(".json") || filePathContains("/neural_networks/")) {
+        if (!filePathEnds(".json") || filePathIncludes("/neural_networks/")) {
           return;
         }
 
@@ -269,18 +269,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           (filePathStarts(subcommanderAIPath) || filePathStarts(aiTechPath));
 
         if (aiToModify !== "None" && !_.isEmpty(aiJsonMods)) {
-          if (filePathContains("/fabber_builds/")) {
+          if (filePathIncludes("/fabber_builds/")) {
             aiBuildOps = aiBuildsForType("fabber");
-          } else if (filePathContains("/factory_builds/")) {
+          } else if (filePathIncludes("/factory_builds/")) {
             aiBuildOps = aiBuildsForType("factory");
-          } else if (filePathContains("/platoon_builds/")) {
+          } else if (filePathIncludes("/platoon_builds/")) {
             aiBuildOps = aiBuildsForType("platoon");
-          } else if (filePathContains("/platoon_templates/")) {
+          } else if (filePathIncludes("/platoon_templates/")) {
             aiBuildOps = aiBuildsForType("template");
           }
         }
         if (
-          filePathContains("/factory_builds/") &&
+          filePathIncludes("/factory_builds/") &&
           clusterPresence !== "None"
         ) {
           clusterOps = clusterAIMods;
