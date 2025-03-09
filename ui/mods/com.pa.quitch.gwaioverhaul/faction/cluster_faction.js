@@ -23,11 +23,13 @@ define([
     personality: personalities.clusterBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
+  const workerName = "Worker";
   const workerCommander = gwoUnit.angel;
+  const securityName = "Security";
   const securityCommander = gwoUnit.colonel;
   const minions = [
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Uber",
       color: [
         [142, 107, 68],
@@ -37,7 +39,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Fabber",
       color: [
         [142, 107, 68],
@@ -47,7 +49,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Defender",
       color: [
         [142, 107, 68],
@@ -57,7 +59,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Luddite",
       color: [
         [142, 107, 68],
@@ -67,7 +69,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Technologist",
       color: [
         [142, 107, 68],
@@ -77,7 +79,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Cautious",
       color: [
         [142, 107, 68],
@@ -87,7 +89,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Aggressive",
       color: [
         [142, 107, 68],
@@ -97,7 +99,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Rush",
       color: [
         [142, 107, 68],
@@ -107,7 +109,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Turtle",
       color: [
         [142, 107, 68],
@@ -117,7 +119,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Absurd",
       color: [
         [142, 107, 68],
@@ -127,7 +129,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Factory",
       color: [
         [142, 107, 68],
@@ -137,7 +139,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Swarm",
       color: [
         [142, 107, 68],
@@ -147,7 +149,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Worker",
+      name: workerName,
       character: "!LOC:Economist",
       color: [
         [142, 107, 68],
@@ -157,7 +159,7 @@ define([
       commander: workerCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Uber",
       color: [
         [70, 70, 70],
@@ -167,7 +169,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Fabber",
       color: [
         [70, 70, 70],
@@ -177,7 +179,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Defender",
       color: [
         [70, 70, 70],
@@ -187,7 +189,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Luddite",
       color: [
         [70, 70, 70],
@@ -197,7 +199,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Technologist",
       color: [
         [70, 70, 70],
@@ -207,7 +209,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Cautious",
       color: [
         [70, 70, 70],
@@ -217,7 +219,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Aggressive",
       color: [
         [70, 70, 70],
@@ -227,7 +229,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Rush",
       color: [
         [70, 70, 70],
@@ -237,7 +239,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Turtle",
       color: [
         [70, 70, 70],
@@ -247,7 +249,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Absurd",
       color: [
         [70, 70, 70],
@@ -257,7 +259,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Factory",
       color: [
         [70, 70, 70],
@@ -267,7 +269,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Swarm",
       color: [
         [70, 70, 70],
@@ -277,7 +279,7 @@ define([
       commander: securityCommander,
     },
     {
-      name: "Security",
+      name: securityName,
       character: "!LOC:Economist",
       color: [
         [70, 70, 70],
@@ -292,7 +294,7 @@ define([
   const randomWorkerPersonality = shuffledPersonalties[0].personality;
   const randomSecurityPersonality = shuffledPersonalties[1].personality;
   const randomWorkerAI = {
-    name: "Worker",
+    name: workerName,
     character: "!LOC:Random",
     color: [
       [142, 107, 68],
@@ -302,7 +304,7 @@ define([
     commander: workerCommander,
   };
   const randomSecurityAI = {
-    name: "Security",
+    name: securityName,
     character: "!LOC:Random",
     color: [
       [70, 70, 70],

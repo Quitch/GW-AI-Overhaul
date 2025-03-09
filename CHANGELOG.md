@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v5.77.0 - 2025-03-09
+
+### Changed
+
+- Galactic War renamed to Galactic War Overhaul on the main menu and loadout screen
+- Easier Start enabled by default
+- Reduced the maximum number of fabbers at Uber difficulty
+
+### Fixed
+
+- Repeating Lucky Commander bugfix checks
+- Clicking option names in setup changing the Hardcore setting
+
 ## v5.76.2 - 2025-02-06
 
 ### Fixed

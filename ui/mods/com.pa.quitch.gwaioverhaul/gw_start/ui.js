@@ -25,7 +25,7 @@ function gwoUI() {
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
-      easierStart: ko.observable(false),
+      easierStart: ko.observable(true),
       ai: ko.observable("Penchant"),
       paLore: ko.observable(true),
       techCardDeck: ko.observable("Expanded"),
@@ -120,7 +120,7 @@ function gwoUI() {
     const gameDifficultyLabelId = "#game-difficulty-label";
     const gameDifficultyId = "#game-difficulty";
 
-    addHtml.append("#game-settings-label", "difficulty_options.html");
+    addHtml.after("#game-settings-label", "difficulty_options.html");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
@@ -241,6 +241,10 @@ function gwoUI() {
         });
       }
     );
+
+    model.title = ko.computed(function () {
+      return model.mode() || loc("!LOC:Galactic War Overhaul");
+    });
   } catch (e) {
     console.error(e);
     console.error(JSON.stringify(e));

@@ -112,8 +112,9 @@ function gwoBugfixes() {
           id: "gwaio_start_lucky",
         });
         unlockedGwoStartCards.valueHasMutated();
-        luckyCommanderFixed("true");
       }
+
+      luckyCommanderFixed("true");
     };
 
     const checkVersion = function (fixedVersion) {
