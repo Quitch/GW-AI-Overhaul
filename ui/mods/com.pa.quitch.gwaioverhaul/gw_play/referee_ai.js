@@ -238,8 +238,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         };
       });
 
-      const aiBuildsForType = function (type) {
-        return _.filter(aiJsonMods, { type });
+      const aiBuildsForType = function (filePathFragment) {
+        return _.filter(aiJsonMods, { type: filePathFragment });
       };
 
       _.forEach(fileList, function (filePath) {
