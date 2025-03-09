@@ -55,4 +55,4 @@ Add any other context about the problem here.
 
 ## Logs
 
-Please attach the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring. Please also upload and link a copy of your localstore folder, found within the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).
+Please attach the most recent [client **AND** server logs](https://support.planetaryannihilation.com/kb/faq.php?id=182) immediately following the bug occurring. Please also upload and link a zipped copy of your localstore folder, found within the [Planetary Annihilation Data Directory](https://support.planetaryannihilation.com/kb/faq.php?id=176).

@@ -229,9 +229,7 @@ define([
     const playerIsCluster = playerFaction === 4;
 
     _.forEach(alliedCommanders, function (ally, index) {
-      // Avoid breaking Sub Commanders from earlier versions
-      ally.personality.ai_path = setAIPath(playerIsCluster, true);
-
+      ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
