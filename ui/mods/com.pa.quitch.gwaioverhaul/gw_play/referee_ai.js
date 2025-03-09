@@ -7,94 +7,27 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       // fabber/factory/platoon only
       append: function (value, toBuild, idToMod, refId, refValue) {
         _.forEach(json.build_list, function (build) {
-          if (build.to_build === toBuild) {
-            if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod] &&
-              _.isArray(build[idToMod])
-            ) {
-              build[idToMod] = build[idToMod].concat(value);
-            } else if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod]
-            ) {
-              build[idToMod] += value;
-            } else {
-              _.forEach(build.build_conditions, function (testArray) {
-                _.forEach(testArray, function (test) {
-                  if (test[refId] === refValue) {
-                    if (_.isArray(test[idToMod])) {
-                      test[idToMod] = test[idToMod].concat(value);
-                    } else if (test[idToMod]) {
-                      test[idToMod] += value;
-                    }
-                  }
-                });
-              });
-            }
+          if (build.to_build !== toBuild) {
+            return;
           }
-        });
-      },
-      // fabber/factory/platoon only
-      prepend: function (value, toBuild, idToMod, refId, refValue) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build === toBuild) {
-            if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod] &&
-              _.isArray(build[idToMod])
-            ) {
-              build[idToMod] = value.concat(build[idToMod]);
-            } else if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod]
-            ) {
-              build[idToMod] = value + build[idToMod];
-            } else {
-              _.forEach(build.build_conditions, function (testArray) {
-                _.forEach(testArray, function (test) {
-                  if (test[refId] === refValue) {
-                    if (_.isArray(test[idToMod])) {
-                      test[idToMod] = value.concat(test[idToMod]);
-                    } else if (test[idToMod]) {
-                      test[idToMod] = value + test[idToMod];
-                    }
-                  }
-                });
-              });
-            }
-          }
-        });
-      },
-      // fabber/factory/platoon only
-      replace: function (value, toBuild, idToMod, refId, refValue) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build === toBuild) {
-            if (
-              (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-              build[idToMod]
-            ) {
-              build[idToMod] = value;
-            } else {
-              _.forEach(build.build_conditions, function (testArray) {
-                _.forEach(testArray, function (test) {
-                  if (test[refId] === refValue && test[idToMod]) {
-                    test[idToMod] = value;
-                  }
-                });
-              });
-            }
-          }
-        });
-      },
-      // fabber/factory/platoon only
-      remove: function (value, toBuild) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build === toBuild) {
+
+          const validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch && _.isArray(build[idToMod])) {
+            build[idToMod] = build[idToMod].concat(value);
+          } else if (validMatch) {
+            build[idToMod] += value;
+          } else {
             _.forEach(build.build_conditions, function (testArray) {
-              _.remove(testArray, function (object) {
-                if (_.isEqual(object, value)) {
-                  return object;
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue) {
+                  if (_.isArray(test[idToMod])) {
+                    test[idToMod] = test[idToMod].concat(value);
+                  } else if (test[idToMod]) {
+                    test[idToMod] += value;
+                  }
                 }
               });
             });
@@ -102,16 +35,88 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         });
       },
       // fabber/factory/platoon only
+      prepend: function (value, toBuild, idToMod, refId, refValue) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          const validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch && _.isArray(build[idToMod])) {
+            build[idToMod] = value.concat(build[idToMod]);
+          } else if (validMatch) {
+            build[idToMod] = value + build[idToMod];
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue) {
+                  if (_.isArray(test[idToMod])) {
+                    test[idToMod] = value.concat(test[idToMod]);
+                  } else if (test[idToMod]) {
+                    test[idToMod] = value + test[idToMod];
+                  }
+                }
+              });
+            });
+          }
+        });
+      },
+      // fabber/factory/platoon only
+      replace: function (value, toBuild, idToMod, refId, refValue) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          const validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch) {
+            build[idToMod] = value;
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue && test[idToMod]) {
+                  test[idToMod] = value;
+                }
+              });
+            });
+          }
+        });
+      },
+      // fabber/factory/platoon only
+      remove: function (value, toBuild) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          _.forEach(build.build_conditions, function (testArray) {
+            _.remove(testArray, function (object) {
+              if (_.isEqual(object, value)) {
+                return object;
+              }
+            });
+          });
+        });
+      },
+      // fabber/factory/platoon only
       new: function (value, toBuild, idToMod) {
         _.forEach(json.build_list, function (build) {
-          if (build.to_build === toBuild) {
-            if (_.isUndefined(idToMod)) {
-              build.build_conditions.push(value);
-            } else {
-              _.forEach(build.build_conditions, function (testArray) {
-                testArray.push(value);
-              });
-            }
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          if (_.isUndefined(idToMod)) {
+            build.build_conditions.push(value);
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              testArray.push(value);
+            });
           }
         });
       },
@@ -233,11 +238,24 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         };
       });
 
+      const aiBuildsForType = function (filePathFragment) {
+        return _.filter(aiJsonMods, { type: filePathFragment });
+      };
+
       _.forEach(fileList, function (filePath) {
-        if (
-          !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/")
-        ) {
+        const filePathContains = function (substring) {
+          return _.includes(filePath, substring);
+        };
+
+        const filePathStarts = function (filePathFragment) {
+          return _.startsWith(filePath, filePathFragment);
+        };
+
+        const filePathEnds = function (filePathFragment) {
+          return _.endsWith(filePath, filePathFragment);
+        };
+
+        if (!filePathEnds(".json") || filePathContains("/neural_networks/")) {
           return;
         }
 
@@ -248,31 +266,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         const quellerSubCommander =
           isQueller &&
           numberOfAllies > 0 &&
-          (_.startsWith(filePath, subcommanderAIPath) ||
-            _.startsWith(filePath, aiTechPath));
+          (filePathStarts(subcommanderAIPath) || filePathStarts(aiTechPath));
 
-        // Only mods associated with the file's AI manager are loaded
-        if (
-          aiToModify !== "None" &&
-          !_.isEmpty(aiJsonMods) &&
-          (!isQueller || quellerSubCommander || aiToModify === "All")
-        ) {
-          if (_.includes(filePath, "/fabber_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, {
-              type: "fabber",
-            });
-          } else if (_.includes(filePath, "/factory_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, { type: "factory" });
-          } else if (_.includes(filePath, "/platoon_builds/")) {
-            aiBuildOps = _.filter(aiJsonMods, { type: "platoon" });
-          } else if (_.includes(filePath, "/platoon_templates/")) {
-            aiBuildOps = _.filter(aiJsonMods, {
-              type: "template",
-            });
+        if (aiToModify !== "None" && !_.isEmpty(aiJsonMods)) {
+          if (filePathContains("/fabber_builds/")) {
+            aiBuildOps = aiBuildsForType("fabber");
+          } else if (filePathContains("/factory_builds/")) {
+            aiBuildOps = aiBuildsForType("factory");
+          } else if (filePathContains("/platoon_builds/")) {
+            aiBuildOps = aiBuildsForType("platoon");
+          } else if (filePathContains("/platoon_templates/")) {
+            aiBuildOps = aiBuildsForType("template");
           }
         }
         if (
-          _.includes(filePath, "/factory_builds/") &&
+          filePathContains("/factory_builds/") &&
           clusterPresence !== "None"
         ) {
           clusterOps = clusterAIMods;
@@ -283,7 +291,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         $.getJSON("coui:/" + filePath)
           .then(function (json) {
             var updatedFilePath = filePath;
-            const aiTechFile = _.startsWith(filePath, aiTechPath);
+            const aiTechFile = filePathStarts(aiTechPath);
 
             if (aiToModify === "All") {
               addTechToAI(json, aiBuildOps);
@@ -319,7 +327,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               }
             } else if (aiToModify === "SubCommanders") {
               // Make a clean copy of the files for enemy AIs
-              if (_.startsWith(filePath, enemyAIPath)) {
+              if (filePathStarts(enemyAIPath)) {
                 configFiles[filePath] = _.cloneDeep(json);
               }
               addTechToAI(json, aiBuildOps);
@@ -332,7 +340,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                     aiTechPath.length
                   );
                 }
-              } else if (aiTechFile) {
+              } else if (filePathStarts(aiFilePath)) {
                 // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                 updatedFilePath =
                   aiTechPath + filePath.slice(aiFilePath.length);
@@ -352,7 +360,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                   aiTechPath,
                 ];
                 slice = _.filter(quellerPaths, function (path) {
-                  return _.startsWith(filePath, path);
+                  return filePathStarts(path);
                 }).toString();
               }
               updatedFilePath = aiPathCreation(
