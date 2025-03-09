@@ -247,10 +247,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           return _.includes(filePath, substring);
         };
 
-        if (
-          !_.endsWith(filePath, ".json") ||
-          filePathContains("/neural_networks/")
-        ) {
+        const filePathStarts = function (filePathFragment) {
+          return _.startsWith(filePath, filePathFragment);
+        };
+
+        const filePathEnds = function (filePathFragment) {
+          return _.endsWith(filePath, filePathFragment);
+        };
+
+        if (!filePathEnds(".json") || filePathContains("/neural_networks/")) {
           return;
         }
 
@@ -261,8 +266,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         const quellerSubCommander =
           isQueller &&
           numberOfAllies > 0 &&
-          (_.startsWith(filePath, subcommanderAIPath) ||
-            _.startsWith(filePath, aiTechPath));
+          (filePathStarts(subcommanderAIPath) || filePathStarts(aiTechPath));
 
         if (aiToModify !== "None" && !_.isEmpty(aiJsonMods)) {
           if (filePathContains("/fabber_builds/")) {
@@ -287,7 +291,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         $.getJSON("coui:/" + filePath)
           .then(function (json) {
             var updatedFilePath = filePath;
-            const aiTechFile = _.startsWith(filePath, aiTechPath);
+            const aiTechFile = filePathStarts(aiTechPath);
 
             if (aiToModify === "All") {
               addTechToAI(json, aiBuildOps);
@@ -323,7 +327,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
               }
             } else if (aiToModify === "SubCommanders") {
               // Make a clean copy of the files for enemy AIs
-              if (_.startsWith(filePath, enemyAIPath)) {
+              if (filePathStarts(enemyAIPath)) {
                 configFiles[filePath] = _.cloneDeep(json);
               }
               addTechToAI(json, aiBuildOps);
@@ -336,7 +340,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                     aiTechPath.length
                   );
                 }
-              } else if (aiTechFile) {
+              } else if (filePathStarts(aiFilePath)) {
                 // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
                 updatedFilePath =
                   aiTechPath + filePath.slice(aiFilePath.length);
@@ -356,7 +360,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
                   aiTechPath,
                 ];
                 slice = _.filter(quellerPaths, function (path) {
-                  return _.startsWith(filePath, path);
+                  return filePathStarts(path);
                 }).toString();
               }
               updatedFilePath = aiPathCreation(
