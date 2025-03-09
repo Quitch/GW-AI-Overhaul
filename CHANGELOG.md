@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.77.1 - 2025-03-10
+
+### Fixed
+
+- Stinger Upgrade Tech not applying
+
 ## v5.77.0 - 2025-03-09
 
 ### Changed
