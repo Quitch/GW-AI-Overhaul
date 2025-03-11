@@ -381,10 +381,10 @@ function gwoCard() {
         !gwoSettings.techCardDeck || // v5.35.0 and earlier
         gwoSettings.techCardDeck === "Expanded"
       ) {
-        return model.gwoCards.concat(basicCards, expandedCards);
+        model.gwoCards.concat(basicCards, expandedCards);
+      } else {
+        model.gwoCards.concat(basicCards);
       }
-
-      return model.gwoCards.concat(basicCards);
     };
 
     const setupGwoDeck = function (cards, deck, cardsRemaining, promise) {
@@ -417,7 +417,7 @@ function gwoCard() {
 
         /* Start of GWO implementation of GWDealer */
 
-        model.gwoCards = setupGwoCards(gwoSettings);
+        setupGwoCards(gwoSettings);
 
         const cards = [];
         const deck = [];
