@@ -470,7 +470,7 @@ define([
         id: "gwaio_enable_factories_t1_all",
         units: gwoGroup.airBasic.concat(
           gwoGroup.botsBasic,
-          gwoUnit.vehiclesBasic
+          gwoGroup.vehiclesBasic
         ),
       },
     ],
