@@ -39,9 +39,6 @@ define([
         } else {
           chance = 200;
         }
-        if (!gwoCard.hasUnit(inventory.units(), basicFactories)) {
-          chance *= 3;
-        }
       }
       return { chance: chance };
     },
