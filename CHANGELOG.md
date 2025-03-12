@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.78.0 - 2025-03-12
+
+### Added
+
+- Complete Basic Factory Tech card
+
+### Fixed
+
+- TITANS and Penchant AI not sending Booms through teleporters
+
 ## v5.77.1 - 2025-03-10
 
 ### Fixed
