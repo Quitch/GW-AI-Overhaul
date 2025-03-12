@@ -466,6 +466,13 @@ define([
       { id: "gwaio_anti_structure" },
       { id: "gwaio_enable_tsunami" },
       { id: "gwaio_anti_commander" },
+      {
+        id: "gwaio_enable_factories_t1_all",
+        units: gwoGroup.airBasic.concat(
+          gwoGroup.botsBasic,
+          gwoUnit.vehiclesBasic
+        ),
+      },
     ],
   };
 });

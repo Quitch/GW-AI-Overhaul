@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Complete Basic Factory Tech card
+
 ## v5.77.1 - 2025-03-10
 
 ### Fixed
