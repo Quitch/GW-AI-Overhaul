@@ -37,7 +37,7 @@ define([
         ) {
           chance = 25;
         } else {
-          chance = 200;
+          chance = 250;
         }
       }
       return { chance: chance };
