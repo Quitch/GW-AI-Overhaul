@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- TITANS and Penchant AI not sending Booms via teleporters
+- TITANS and Penchant AI not sending Booms through teleporters
 
 ## v5.77.1 - 2025-03-10
 
