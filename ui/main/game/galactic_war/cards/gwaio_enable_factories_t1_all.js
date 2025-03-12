@@ -37,9 +37,9 @@ define([
           (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
           dist > 6
         ) {
-          chance = 33;
+          chance = 25;
         } else {
-          chance = 83;
+          chance = 200;
         }
         if (!gwoCard.hasUnit(inventory.units(), basicFactories)) {
           chance *= 3;
