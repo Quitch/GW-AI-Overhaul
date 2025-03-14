@@ -123,6 +123,7 @@ function gwoWarInfoPanel() {
             "com.uberent.pa.PAFX", // PA-FX Titans
             "com.uberent.pa.PAFX.classic", // PA-FX Classic
             "com.pa.client.cirolog.boom", // Bigger Explosions
+            "ca.pa.metapod.effectsandstuffNikVersion", // Nik's 'How is this event legal?!' Mod Pack
           ];
           const modIdentifiers = _.map(mods, "identifier");
           const incompatibleModsInUse = _.intersection(

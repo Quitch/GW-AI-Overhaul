@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+## Changed
+
+- Updated incompatible mod list
+
 ## v5.78.0 - 2025-03-12
 
 ### Added
