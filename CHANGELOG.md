@@ -418,7 +418,7 @@
 
 ## v5.56.1 - 2024-01-19
 
-## Changed
+### Changed
 
 - Updated incompatible mod alerts
 
