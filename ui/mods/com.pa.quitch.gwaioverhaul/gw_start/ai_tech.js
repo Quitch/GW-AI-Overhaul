@@ -201,9 +201,8 @@ define([
     foundationTech[6] = foundationTech[6].concat(
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
-    // Add ammo and armour tech
     _.forEach(factionsTech, function (faction) {
-      faction[6] = faction[6].concat(faction[1], faction[2]);
+      faction[6] = faction[6].concat(faction[1], faction[2]); // Add ammo and armour tech
     });
   };
   setupAITech6CombatTech();
