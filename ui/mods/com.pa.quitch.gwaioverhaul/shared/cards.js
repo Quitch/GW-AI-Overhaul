@@ -72,9 +72,7 @@ define({
         return iconPath + "7_uber" + append;
       }
       default: {
-        return (
-          "coui://ui/main/game/galactic_war/shared/img/red-commander" + append
-        );
+        return "coui://ui/main/game/galactic_war/shared/img/red-commander.png";
       }
     }
   },
