@@ -134,7 +134,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ### Known issues
 
-- Some users have reported instances of the sim can freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server to ON and Local Server Multi-Threading to OFF.
+- Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server to ON and Local Server Multi-Threading to OFF.
 
 ## Recommended mods
 
