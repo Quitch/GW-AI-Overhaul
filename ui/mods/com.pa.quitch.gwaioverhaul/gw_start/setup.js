@@ -183,7 +183,7 @@ function gwoSetup() {
 
         var aiFaction = 0;
         const getQuellerAITag = function (faction) {
-          if (!_.isUndefined(faction)) {
+          if (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
             aiFaction = parseInt(faction);
