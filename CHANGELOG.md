@@ -10,6 +10,10 @@
 
 - Updated incompatible mod list
 
+### Bugfix
+
+- Prevent errors caused by attempting invalid merges during unit spec modification
+
 ## v5.78.0 - 2025-03-12
 
 ### Added

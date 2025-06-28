@@ -36,9 +36,14 @@ define([
     spec = _.cloneDeep(spec);
     delete spec.base_spec;
 
-    base = flattenBaseSpecs(base, specs, tag);
+    const flattenedSpec = flattenBaseSpecs(base, specs, tag);
 
-    return _.merge({}, base, spec);
+    if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
+      // avoid issues with _.merge()
+      delete flattenedSpec.ammo_id;
+    }
+
+    return _.merge({}, flattenedSpec, spec);
   };
 
   // to support custom ops
