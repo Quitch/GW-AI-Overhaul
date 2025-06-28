@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Nyx benefits from intelligence card bonuses
+- Nyx, Kessler, and Ward (Carapace) missing their names on tooltips
 
 ## v5.79.0 - 2025-06-28
 
