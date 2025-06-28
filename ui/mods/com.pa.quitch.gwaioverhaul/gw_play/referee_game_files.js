@@ -201,13 +201,15 @@ define([
         if (_.isString(spec[level])) {
           var newSpec = load(spec[level]);
           if (!newSpec) {
-            return reportError("Undefined mod spec encountered,", level);
+            reportError("Undefined mod spec encountered,", level);
+            return;
           }
           spec = newSpec;
         } else if (_.isObject(spec[level])) {
           spec = spec[level];
         } else {
-          return reportError("Invalid attribute encountered,", level);
+          reportError("Invalid attribute encountered,", level);
+          return;
         }
       }
 
