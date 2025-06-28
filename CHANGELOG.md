@@ -2,11 +2,11 @@
 
 ## v5.79.0 - 2025-06-28
 
-## Added
+### Added
 
 - Support for the Nyx, Kessler, and Ward (Carapace) in existing cards
 
-## Changed
+### Changed
 
 - Updated incompatible mod list
 
