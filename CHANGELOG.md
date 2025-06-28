@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.79.1 - 2025-06-28
 
 ### Bugfix
 
