@@ -170,7 +170,6 @@ define([
           "path",
           originalPath.slice(0, -path.length).join(".")
         );
-        return undefined;
       };
 
       const opDefaults = {
