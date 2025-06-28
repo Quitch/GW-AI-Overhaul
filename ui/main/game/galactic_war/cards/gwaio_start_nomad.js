@@ -56,6 +56,7 @@ define([
             gwoUnit.deepSpaceOrbitalRadar,
             gwoUnit.holkins,
             gwoUnit.jig,
+            gwoUnit.kessler,
             gwoUnit.radarAdvanced,
           ];
           const allStructures = smallStructures.concat(
@@ -65,7 +66,11 @@ define([
           const groundStructures = _.filter(
             allStructures,
             function (structure) {
-              return structure !== gwoUnit.anchor && structure !== gwoUnit.jig;
+              return (
+                structure !== gwoUnit.anchor &&
+                structure !== gwoUnit.jig &&
+                structure !== gwoUnit.kessler
+              );
             }
           );
           _.forEach(groundStructures, function (unit) {
@@ -120,7 +125,11 @@ define([
               }
             );
           });
-          const orbitalStructures = [gwoUnit.anchor, gwoUnit.jig];
+          const orbitalStructures = [
+            gwoUnit.anchor,
+            gwoUnit.jig,
+            gwoUnit.kessler,
+          ];
           _.forEach(orbitalStructures, function (unit) {
             mods.push(
               {

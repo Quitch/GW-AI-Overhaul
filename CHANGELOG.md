@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Added
+
+- Support for the Nyx, Kessler, and Ward (Carapace) in existing cards
+
 ## Changed
 
 - Updated incompatible mod list

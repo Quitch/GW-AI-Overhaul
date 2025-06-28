@@ -127,11 +127,12 @@ define([
     },
     dull: function (inventory) {
       const units = [
-        gwoUnit.flak,
-        gwoUnit.laserDefenseTowerAdvanced,
-        gwoUnit.laserDefenseTower,
-        gwoUnit.catapult,
         gwoUnit.anchor,
+        gwoUnit.catapult,
+        gwoUnit.flak,
+        gwoUnit.kessler,
+        gwoUnit.laserDefenseTower,
+        gwoUnit.laserDefenseTowerAdvanced,
         gwoUnit.torpedoLauncherAdvanced,
       ];
       gwoCard.applyDulls(CARD, inventory, units);
