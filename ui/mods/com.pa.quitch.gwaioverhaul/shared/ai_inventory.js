@@ -34,6 +34,7 @@ define([
     gwoUnit.deepSpaceOrbitalRadar,
     gwoUnit.halley,
     gwoUnit.jig,
+    gwoUnit.kessler, // not immobile but matching how the cards handle it
     gwoUnit.nukeLauncher,
     gwoUnit.orbitalFactory,
     gwoUnit.orbitalLauncher,
@@ -78,7 +79,8 @@ define([
   const revenantsAmmo = gwoGroup.orbitalAmmo.concat(
     gwoUnit.anchorAmmoAG,
     gwoUnit.anchorAmmoAO,
-    gwoUnit.heliosAmmo
+    gwoUnit.heliosAmmo,
+    gwoUnit.kesslerAmmo
   );
   const clusterCommanderAmmo = [gwoUnit.angelAmmo, gwoUnit.colonelAmmo];
   const clusterAmmo = gwoGroup.structuresDefencesAmmo.concat(

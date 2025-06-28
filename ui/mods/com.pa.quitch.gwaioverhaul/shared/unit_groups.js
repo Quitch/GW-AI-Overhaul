@@ -240,6 +240,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const structuresDefencesBasic = [
     gwoUnit.anchor,
     gwoUnit.galata,
+    gwoUnit.kessler,
     gwoUnit.landMine,
     gwoUnit.laserDefenseTower,
     gwoUnit.singleLaserDefenseTower,
@@ -251,6 +252,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.anchorAmmoAG,
     gwoUnit.anchorAmmoAO,
     gwoUnit.galataAmmo,
+    gwoUnit.kesslerAmmo,
     gwoUnit.landMineAmmo,
     gwoUnit.laserDefenseTowerAmmo,
     gwoUnit.singleLaserDefenseTowerAmmo,
@@ -262,6 +264,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.anchorWeaponAG,
     gwoUnit.anchorWeaponAO,
     gwoUnit.galataWeapon,
+    gwoUnit.kesslerWeapon,
     gwoUnit.landMineWeapon,
     gwoUnit.laserDefenseTowerWeapon,
     gwoUnit.singleLaserDefenseTowerWeapon,
@@ -393,10 +396,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const vehiclesAdvancedMobile = [
     gwoUnit.leveler,
     gwoUnit.manhattan,
+    gwoUnit.nyx,
     gwoUnit.sheller,
     gwoUnit.storm,
     gwoUnit.vanguard,
     gwoUnit.vehicleFabberAdvanced,
+    gwoUnit.ward,
   ];
   const vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
@@ -410,6 +415,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.shellerWeapon,
     gwoUnit.stormWeapon,
     gwoUnit.vanguardWeapon,
+    gwoUnit.wardWeapon,
   ];
   const vehiclesBasic = vehiclesBasicMobile.concat(gwoUnit.vehicleFactory);
   const vehiclesAdvanced = vehiclesAdvancedMobile.concat(

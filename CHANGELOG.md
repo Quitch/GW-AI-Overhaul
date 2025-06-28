@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v5.79.0 - 2025-06-28
+
+## Added
+
+- Support for the Nyx, Kessler, and Ward (Carapace) in existing cards
+
+## Changed
+
+- Updated incompatible mod list
+
+### Bugfix
+
+- Prevent errors caused by attempting invalid merges during unit spec modification
+
 ## v5.78.0 - 2025-03-12
 
 ### Added
@@ -412,7 +426,7 @@
 
 ## v5.56.1 - 2024-01-19
 
-## Changed
+### Changed
 
 - Updated incompatible mod alerts
 

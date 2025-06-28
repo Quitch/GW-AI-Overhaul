@@ -132,9 +132,9 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
 
-## Known issues
+### Known issues
 
-- Some users have reported sometimes in a battle the sim can freeze while the UI continues to respond. This is being tracked through [issue 79](https://github.com/Quitch/GW-AI-Overhaul/issues/79).
+- Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server to ON and Local Server Multi-Threading to OFF.
 
 ## Recommended mods
 

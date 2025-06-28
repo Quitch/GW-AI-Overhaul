@@ -193,6 +193,9 @@ define({
   kaijuSecondary: "/pa/units/sea/hover_ship/hover_ship_tool_weapon_side.json",
   kaijuSecondaryAmmo: "/pa/units/sea/hover_ship/hover_ship_ammo_side.json",
   kaijuWeapon: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
+  kessler: "/pa/units/orbital/orbital_mine/orbital_mine.json",
+  kesslerAmmo: "/pa/units/orbital/orbital_mine/orbital_mine_ammo.json",
+  kesslerWeapon: "/pa/units/orbital/orbital_mine/orbital_mine_tool_weapon.json",
   kestrel: "/pa/units/air/gunship/gunship.json",
   kestrelAmmo: "/pa/units/air/gunship/gunship_ammo.json",
   kestrelWeapon: "/pa/units/air/gunship/gunship_tool_weapon.json",
@@ -268,6 +271,7 @@ define({
     "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json",
   nukeLauncherWeapon:
     "/pa/units/land/nuke_launcher/nuke_launcher_tool_weapon.json",
+  nyx: "/pa/units/land/tank_jammer/tank_jammer.json",
   omega: "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
   omegaAmmo:
     "/pa/units/orbital/orbital_battleship/orbital_battleship_ammo.json",
@@ -420,6 +424,8 @@ define({
   vehicleFactoryBuildArm:
     "/pa/units/land/vehicle_factory/vehicle_factory_build_arm.json",
   wall: "/pa/units/land/land_barrier/land_barrier.json",
+  ward: "/pa/units/land/tank_anti_nuke/tank_anti_nuke.json",
+  wardWeapon: "/pa/units/land/tank_anti_nuke/tank_anti_nuke_tool_weapon.json",
   wyrm: "/pa/units/air/bomber_heavy/bomber_heavy.json",
   wyrmAmmo: "/pa/units/air/bomber_heavy/bomber_heavy_ammo.json",
   wyrmDeath: "/pa/ammo/air_pbaoe/air_pbaoe.json",

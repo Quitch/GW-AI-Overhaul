@@ -183,7 +183,7 @@ function gwoSetup() {
 
         var aiFaction = 0;
         const getQuellerAITag = function (faction) {
-          if (!_.isUndefined(faction)) {
+          if (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
             aiFaction = parseInt(faction);
@@ -389,7 +389,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.78.0";
+          const version = "5.79.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
