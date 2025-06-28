@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Nyx benefits from intelligence card bonuses
+
 ## v5.79.0 - 2025-06-28
 
 ### Added

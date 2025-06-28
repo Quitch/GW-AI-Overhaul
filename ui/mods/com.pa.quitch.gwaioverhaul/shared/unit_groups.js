@@ -502,6 +502,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   const energyIntel = structuresIntel.concat(
     gwoUnit.arkyd,
+    gwoUnit.nyx,
     gwoUnit.radarSatelliteAdvanced
   );
   const energyUnits = [
