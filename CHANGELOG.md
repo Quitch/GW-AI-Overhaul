@@ -1,12 +1,20 @@
 # CHANGELOG
 
+## v5.79.1 - 2025-06-28
+
+### Bugfix
+
+- Nyx benefits from intelligence card bonuses
+- Nyx, Kessler, and Ward (Carapace) missing their names on tooltips
+- Fix release date and build
+
 ## v5.79.0 - 2025-06-28
 
-## Added
+### Added
 
 - Support for the Nyx, Kessler, and Ward (Carapace) in existing cards
 
-## Changed
+### Changed
 
 - Updated incompatible mod list
 

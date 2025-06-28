@@ -144,6 +144,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       },
       { name: "!LOC:Torpedo Launcher", path: gwoUnit.torpedoLauncher },
       { name: "!LOC:Radar Jamming Station", path: gwoUnit.radarJammingStation },
+      { name: "!LOC:Nyx", path: gwoUnit.nyx },
+      { name: "!LOC:Ward", path: gwoUnit.ward },
+      { name: "!LOC:Kessler", path: gwoUnit.kessler },
     ],
   };
 });
