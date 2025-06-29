@@ -483,6 +483,10 @@ define([
         id: "gwaio_upgrade_ward",
         units: [gwoUnit.ward],
       },
+      {
+        id: "gwaio_upgrade_kessler",
+        units: [gwoUnit.kessler],
+      },
     ],
   };
 });

@@ -311,6 +311,7 @@ function gwoCard() {
         "gwaio_upgrade_inferno",
         "gwaio_upgrade_jig",
         "gwaio_upgrade_kaiju",
+        "gwaio_upgrade_kessler",
         "gwaio_upgrade_kestrel",
         "gwaio_upgrade_kraken",
         "gwaio_upgrade_laserdefensetower",

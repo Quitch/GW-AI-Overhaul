@@ -7,6 +7,7 @@
 - New tech cards
   - Nyx Upgrade Tech
   - Ward Upgrade Tech
+  - Kessler Upgrade Tech
 
 ## v5.79.1 - 2025-06-28
 
