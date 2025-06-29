@@ -479,6 +479,10 @@ define([
         id: "gwaio_upgrade_nyx",
         units: [gwoUnit.nyx],
       },
+      {
+        id: "gwaio_upgrade_ward",
+        units: [gwoUnit.ward],
+      },
     ],
   };
 });

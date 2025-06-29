@@ -366,6 +366,7 @@ function gwoCard() {
         "gwaio_upgrade_vanguard",
         "gwaio_upgrade_vehiclefactory",
         "gwaio_upgrade_wall",
+        "gwaio_upgrade_ward",
         "gwaio_upgrade_wyrm",
         "gwaio_upgrade_zeus",
         // not enabled in vanilla GW
