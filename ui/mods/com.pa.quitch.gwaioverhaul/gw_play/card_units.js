@@ -475,6 +475,10 @@ define([
           gwoGroup.vehiclesBasic
         ),
       },
+      {
+        id: "gwaio_upgrade_nyx",
+        units: [gwoUnit.nyx],
+      },
     ],
   };
 });

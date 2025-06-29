@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- New tech cards
+  - Nyx Upgrade Tech
+
 ## v5.79.1 - 2025-06-28
 
 ### Bugfix

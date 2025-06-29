@@ -326,6 +326,7 @@ function gwoCard() {
         "gwaio_upgrade_narwhal",
         "gwaio_upgrade_navalfactory",
         "gwaio_upgrade_nukes",
+        "gwaio_upgrade_nyx",
         "gwaio_upgrade_omega",
         "gwaio_upgrade_orbitalfabricationbot",
         "gwaio_upgrade_orbitalfactory",
