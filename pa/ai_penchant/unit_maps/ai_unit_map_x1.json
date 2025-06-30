@@ -68,6 +68,9 @@
     },
     "PlanetSplitter": {
       "spec_id": "/pa/units/land/titan_structure/titan_structure.json"
+    },
+    "RadarJammer": {
+      "spec_id": "/pa/units/land/radar_jammer/radar_jammer.json"
     }
   }
 }

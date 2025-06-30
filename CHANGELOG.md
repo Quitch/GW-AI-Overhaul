@@ -9,6 +9,10 @@
   - Ward Upgrade Tech
   - Kessler Upgrade Tech
 
+### Bugfix
+
+- Penchant AI support for the Radar Jammer Station
+
 ## v5.79.1 - 2025-06-28
 
 ### Bugfix
