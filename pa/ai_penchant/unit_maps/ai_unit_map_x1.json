@@ -68,6 +68,15 @@
     },
     "PlanetSplitter": {
       "spec_id": "/pa/units/land/titan_structure/titan_structure.json"
+    },
+    "RadarJammerTank": {
+      "spec_id": "/pa/units/land/tank_jammer/tank_jammer.json"
+    },
+    "AntiNukeTank": {
+      "spec_id": "/pa/units/land/tank_anti_nuke/tank_anti_nuke.json"
+    },
+    "OrbitalMine": {
+      "spec_id": "/pa/units/orbital/orbital_mine/orbital_mine.json"
     }
   }
 }
