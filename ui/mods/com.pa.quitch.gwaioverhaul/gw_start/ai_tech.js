@@ -46,7 +46,6 @@ define([
       factionsTech[i][0] = multiply(units, 0.75, "build_metal_cost");
     });
   };
-  setupAITech0FabricationTech();
 
   const setupAITech1AmmunitionTech = function () {
     const factionAmmo = [
@@ -74,7 +73,6 @@ define([
       );
     });
   };
-  setupAITech1AmmunitionTech();
 
   const setupAITech2ArmourTech = function () {
     const factionUnits = [
@@ -100,7 +98,6 @@ define([
       );
     });
   };
-  setupAITech2ArmourTech();
 
   const setupAITech3EngineTech = function () {
     const factionsTechNoAir = [
@@ -142,7 +139,6 @@ define([
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
   };
-  setupAITech3EngineTech();
 
   const setupAITech4EfficiencyTech = function () {
     const factionBuildArms = [
@@ -160,7 +156,6 @@ define([
       ).concat(multiply(buildArms, 1.5, "construction_demand.metal"));
     });
   };
-  setupAITech4EfficiencyTech();
 
   const setupAITech6CombatTech = function () {
     const factionsTechNoAir = [
@@ -205,7 +200,6 @@ define([
       faction[6] = faction[6].concat(faction[1], faction[2]); // Add ammo and armour tech
     });
   };
-  setupAITech6CombatTech();
 
   const setupAITech7CooldownTech = function () {
     const factionUnits = [
@@ -219,6 +213,13 @@ define([
       factionsTech[i][7] = multiply(units, 0.5, "factory_cooldown_time");
     });
   };
+
+  setupAITech0FabricationTech();
+  setupAITech1AmmunitionTech();
+  setupAITech2ArmourTech();
+  setupAITech3EngineTech();
+  setupAITech4EfficiencyTech();
+  setupAITech6CombatTech();
   setupAITech7CooldownTech();
 
   return {
