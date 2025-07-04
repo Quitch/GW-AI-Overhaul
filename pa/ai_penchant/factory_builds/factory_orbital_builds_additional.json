@@ -8,17 +8,9 @@
       "builders": ["OrbitalLauncher", "OrbitalFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalProbe"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalProbe" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
@@ -42,17 +34,9 @@
       "builders": ["OrbitalLauncher", "OrbitalFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalProbe"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalProbe" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Orbital & (Recon | Scout) - Structure",

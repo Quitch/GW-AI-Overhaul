@@ -13,26 +13,15 @@
             "string0": "Minelayer",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",

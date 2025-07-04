@@ -10,9 +10,7 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "OrbitalLauncher"
@@ -22,28 +20,18 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "WantCommanderOffPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedOrbitalLauncher"
-          },
+          { "test_type": "WantCommanderOffPlanet", "boolean": false },
+          { "test_type": "NeedOrbitalLauncher" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Advanced) - Orbital - Nuke - NukeDefense - SelfDestruct",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "OrbitalLauncher"
@@ -53,28 +41,18 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedOrbitalLauncher"
-          },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
+          { "test_type": "NeedOrbitalLauncher" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ]
       ],
-      "placement_rules": {
-        "buffer": 5
-      }
+      "placement_rules": { "buffer": 5 }
     },
     {
       "name": "Orbital Launcher - Rush - Commander",
@@ -87,13 +65,8 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "WantCommanderOffPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedOrbitalLauncher"
-          },
+          { "test_type": "WantCommanderOffPlanet", "boolean": true },
+          { "test_type": "NeedOrbitalLauncher" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -117,28 +90,17 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedOrbitalLauncher"
-          },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
+          { "test_type": "NeedOrbitalLauncher" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -157,28 +119,17 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedOrbitalLauncher"
-          },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
+          { "test_type": "NeedOrbitalLauncher" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -197,14 +148,113 @@
             "compare0": "<",
             "value0": 1
           },
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
+        ]
+      ],
+      "placement_rules": { "buffer": 5 }
+    },
+    {
+      "name": "Orbital Mine",
+      "to_build": "OrbitalMine",
+      "instance_count": 1,
+      "priority": 379,
+      "builders": ["OrbitalFabber"],
+      "build_conditions": [
+        [
+          { "test_type": "CanAffordBuildDemand" },
           {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Orbital",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Orbital & OrbitalDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | MetalProduction | Factory)",
+            "compare0": ">=",
+            "value0": 2
+          },
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalMine" }
+        ],
+        [
+          { "test_type": "PlanetIsGasGiant", "boolean": true },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Orbital",
+            "compare0": ">",
+            "value0": 0
+          },
+          { "test_type": "CanAffordBuildDemand" },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Orbital & OrbitalDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (EnergyProduction | MetalProduction | Factory)",
+            "compare0": ">=",
+            "value0": 1
+          },
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalMine" }
+        ],
+        [
+          { "test_type": "CanAffordBuildDemand" },
+          {
+            "test_type": "HasPersonalityTag",
+            "string0": "Tutorial",
+            "boolean": false
+          },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Orbital",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Orbital & OrbitalDefense",
+            "compare0": "<",
+            "value0": 4
+          },
+          {
+            "test_type": "UnitCountInBase",
+            "unit_type_string0": "Structure & (Teleporter | PlanetEngine | ControlModule)",
+            "compare0": ">",
+            "value0": 0
+          },
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalMine" }
         ]
       ],
       "placement_rules": {
-        "buffer": 5
+        "buffer": 10,
+        "placement_type": "FromMainBaseCenter",
+        "unit_count_rules": [
+          {
+            "unit_type_string": "Orbital & OrbitalDefense",
+            "alliance": "Ally",
+            "compare_type": "<",
+            "range": 50,
+            "count": 1
+          }
+        ]
       }
     }
   ]

@@ -12,10 +12,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "(Hover & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
@@ -44,10 +41,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -81,10 +75,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -118,10 +109,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -150,10 +138,7 @@
       "priority": 105,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",

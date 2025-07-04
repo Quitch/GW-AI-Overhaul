@@ -9,13 +9,8 @@
       "builders": ["BasicNavalFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Naval & Fabber & Basic",
@@ -43,17 +38,9 @@
             "string0": "PenchantT1Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -71,14 +58,8 @@
             "string0": "PenchantT1Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -92,9 +73,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -112,17 +91,9 @@
             "string0": "PenchantT1Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -140,23 +111,15 @@
             "string0": "PenchantT1Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -171,13 +134,8 @@
             "string0": "PenchantT1Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -185,10 +143,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -217,13 +172,8 @@
             "string0": "PenchantT1Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -253,13 +203,8 @@
       "builders": ["AdvancedNavalFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Naval & Fabber & Advanced",
@@ -287,17 +232,9 @@
             "string0": "PenchantT2Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -315,17 +252,9 @@
             "string0": "PenchantT2Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -343,23 +272,15 @@
             "string0": "PenchantT2Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -374,13 +295,8 @@
             "string0": "PenchantT2Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -388,10 +304,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -420,13 +333,8 @@
             "string0": "PenchantT2Naval",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Naval & AirDefense",
@@ -461,14 +369,8 @@
             "string0": "PenchantT2Naval",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -482,9 +384,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     }

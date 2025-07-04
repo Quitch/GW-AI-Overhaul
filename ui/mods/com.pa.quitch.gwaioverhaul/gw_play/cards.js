@@ -311,6 +311,7 @@ function gwoCard() {
         "gwaio_upgrade_inferno",
         "gwaio_upgrade_jig",
         "gwaio_upgrade_kaiju",
+        "gwaio_upgrade_kessler",
         "gwaio_upgrade_kestrel",
         "gwaio_upgrade_kraken",
         "gwaio_upgrade_laserdefensetower",
@@ -326,6 +327,7 @@ function gwoCard() {
         "gwaio_upgrade_narwhal",
         "gwaio_upgrade_navalfactory",
         "gwaio_upgrade_nukes",
+        "gwaio_upgrade_nyx",
         "gwaio_upgrade_omega",
         "gwaio_upgrade_orbitalfabricationbot",
         "gwaio_upgrade_orbitalfactory",
@@ -365,6 +367,7 @@ function gwoCard() {
         "gwaio_upgrade_vanguard",
         "gwaio_upgrade_vehiclefactory",
         "gwaio_upgrade_wall",
+        "gwaio_upgrade_ward",
         "gwaio_upgrade_wyrm",
         "gwaio_upgrade_zeus",
         // not enabled in vanilla GW

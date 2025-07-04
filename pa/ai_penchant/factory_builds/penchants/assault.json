@@ -14,13 +14,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -28,13 +23,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Gunship",
@@ -58,13 +48,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -72,13 +57,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -96,10 +76,7 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -112,10 +89,7 @@
             "compare0": "<",
             "value0": 200
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
           {
@@ -123,10 +97,7 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -139,10 +110,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -160,17 +128,9 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -178,13 +138,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -212,13 +167,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -226,13 +176,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -260,17 +205,9 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -278,13 +215,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -312,17 +244,9 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -340,14 +264,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -361,9 +279,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -381,17 +297,9 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -409,14 +317,8 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -430,9 +332,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -450,9 +350,7 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -470,9 +368,7 @@
             "string0": "Assault",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     }

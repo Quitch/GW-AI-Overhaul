@@ -61,21 +61,15 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": false
-          },
+          { "test_type": "EnemyPresenceOnPlanet", "boolean": false },
           {
             "test_type": "OtherPlanetNeedsLandUnitAssistance",
             "boolean": true
           },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
+          { "test_type": "CanProvideLandUnitAssistance", "boolean": true },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - NukeDefense",
             "compare0": ">=",
             "value0": 5
           }
@@ -96,21 +90,15 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyPresenceOnPlanet", "boolean": true },
           {
             "test_type": "OtherPlanetNeedsLandUnitAssistance",
             "boolean": true
           },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
+          { "test_type": "CanProvideLandUnitAssistance", "boolean": true },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
+            "unit_type_string0": "((Tank | Bot | Hover) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - NukeDefense",
             "compare0": ">=",
             "value0": 5
           }
@@ -130,10 +118,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "(Bot & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Artillery - Tactical - Heavy - SelfDestruct - Deconstruction - Titan",
@@ -162,10 +147,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -199,10 +181,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -236,10 +215,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -268,10 +244,7 @@
       "priority": 105,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -305,10 +278,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -342,10 +312,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -379,10 +346,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -416,10 +380,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -448,10 +409,7 @@
       "priority": 105,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -485,10 +443,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -522,10 +477,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -559,10 +511,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -596,10 +545,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -628,10 +574,7 @@
       "priority": 105,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -665,13 +608,10 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - NukeDefense - Titan",
             "compare0": ">=",
             "value0": 1
           },
@@ -697,10 +637,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -708,7 +645,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - NukeDefense - Titan",
             "compare0": ">=",
             "value0": 4
           },
@@ -734,10 +671,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -745,7 +679,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - NukeDefense - Titan",
             "compare0": ">=",
             "value0": 10
           },
@@ -771,10 +705,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -782,7 +713,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - NukeDefense - Titan",
             "compare0": ">=",
             "value0": 20
           },
@@ -803,10 +734,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -814,7 +742,7 @@
           },
           {
             "test_type": "UnitPoolCount",
-            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
+            "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - NukeDefense - Titan",
             "compare0": ">=",
             "value0": 40
           },
@@ -835,10 +763,7 @@
       "priority": 110,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",

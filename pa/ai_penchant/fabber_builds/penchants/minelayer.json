@@ -14,20 +14,13 @@
             "string0": "Minelayer",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure - Factory - CombatFabBuild",
@@ -52,10 +45,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "LandMine"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "LandMine" }
         ]
       ],
       "placement_rules": {
@@ -83,20 +73,13 @@
             "string0": "Minelayer",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure - Factory - CombatFabBuild",
@@ -115,10 +98,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "LandMine"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "LandMine" }
         ]
       ],
       "placement_rules": {

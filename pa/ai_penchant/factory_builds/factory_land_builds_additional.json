@@ -14,17 +14,9 @@
             "string0": "PenchantT1Vehicle",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
           {
@@ -32,13 +24,8 @@
             "string0": "PenchantT1Vehicle",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -56,10 +43,7 @@
             "string0": "PenchantT1Vehicle",
             "boolean": false
           },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -72,10 +56,7 @@
             "compare0": "<",
             "value0": 200
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
           {
@@ -83,10 +64,7 @@
             "string0": "PenchantT1Vehicle",
             "boolean": false
           },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -99,10 +77,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -114,23 +89,15 @@
       "builders": ["BasicBotFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -140,13 +107,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -154,10 +116,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -176,13 +135,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -193,6 +147,127 @@
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Structure & Teleporter",
+            "compare0": ">",
+            "value0": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Radar Jammer Tank",
+      "to_build": "RadarJammerTank",
+      "instance_count": 1,
+      "max_num_assisters": 10,
+      "priority": 199,
+      "builders": ["AdvancedVehicleFactory"],
+      "build_conditions": [
+        [
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "RadarJammerTank"
+          },
+          {
+            "test_type": "UnitRatioOnPlanet",
+            "unit_type_string0": "(Tank | Bot) & RadarJammer",
+            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
+            "compare0": "<",
+            "value0": 0.05
+          }
+        ],
+        [
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
+          {
+            "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
+            "boolean": true
+          },
+          {
+            "test_type": "CanAffordPotentialDrain",
+            "string0": "RadarJammerTank"
+          },
+          {
+            "test_type": "UnitRatioOnPlanet",
+            "unit_type_string0": "(Tank | Bot) & RadarJammer",
+            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
+            "compare0": "<",
+            "value0": 0.05
+          },
+          {
+            "test_type": "UnitCountOnPlanet",
+            "unit_type_string0": "Structure & Teleporter",
+            "compare0": ">",
+            "value0": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "Anti-Nuke Tank",
+      "to_build": "AntiNukeTank",
+      "instance_count": 1,
+      "max_num_assisters": 10,
+      "priority": 199,
+      "builders": ["AdvancedVehicleFactory"],
+      "build_conditions": [
+        [
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeTank" },
+          { "test_type": "HaveHadANukeEvent", "boolean": true },
+          {
+            "test_type": "UnitRatioOnPlanet",
+            "unit_type_string0": "(Tank | Bot) & NukeDefense",
+            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
+            "compare0": "<",
+            "value0": 0.05
+          }
+        ],
+        [
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeTank" },
+          {
+            "test_type": "SystemToPlanetThreatRatio",
+            "string0": "Nuke",
+            "string1": "AntiNuke",
+            "compare0": ">",
+            "value0": 1.75
+          },
+          {
+            "test_type": "UnitRatioOnPlanet",
+            "unit_type_string0": "(Tank | Bot) & NukeDefense",
+            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
+            "compare0": "<",
+            "value0": 0.05
+          }
+        ],
+        [
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
+          {
+            "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
+            "boolean": true
+          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeTank" },
+          {
+            "test_type": "SystemThreat",
+            "string0": "Nuke",
+            "compare0": ">",
+            "value0": 0
+          },
+          {
+            "test_type": "UnitRatioOnPlanet",
+            "unit_type_string0": "(Tank | Bot) & NukeDefense",
+            "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
+            "compare0": "<",
+            "value0": 0.05
           },
           {
             "test_type": "UnitCountOnPlanet",

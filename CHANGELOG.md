@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v5.80.0 - 2025-07-04
+
+### Added
+
+- New tech cards
+  - Nyx Upgrade Tech
+  - Ward Upgrade Tech
+  - Kessler Upgrade Tech
+- Support for Bluehawk weapon split
+
+### Changed
+
+- Removed AI's meta penchant for new wars
+
+### Bugfix
+
+- Penchant AI support for the Radar Jammer Station
+
 ## v5.79.1 - 2025-06-28
 
 ### Bugfix

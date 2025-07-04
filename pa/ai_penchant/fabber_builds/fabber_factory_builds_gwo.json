@@ -11,29 +11,20 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "NeedBasicAirFactory",
-            "boolean": false
-          },
+          { "test_type": "NeedBasicAirFactory", "boolean": false },
           {
             "test_type": "UnitCount",
             "unit_type_string0": "(Factory & Construction) - Orbital",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirFactory" }
         ]
       ],
       "placement_rules": {
@@ -57,28 +48,16 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
+          { "test_type": "NeedBasicBotFactory", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCount",
             "unit_type_string0": "(Factory & Construction) - Orbital",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ]
       ],
       "placement_rules": {
@@ -102,18 +81,9 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCount",
             "unit_type_string0": "(Factory & Construction) - Orbital",

@@ -15,20 +15,14 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -41,10 +35,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -52,9 +43,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -78,10 +67,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -126,14 +112,8 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -162,9 +142,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "DistFromNearestEnemyThreat",
             "compare0": "<=",
@@ -235,9 +213,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -256,10 +232,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -267,9 +240,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -288,10 +259,7 @@
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -330,9 +298,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -357,10 +323,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -399,9 +362,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -435,9 +396,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -502,9 +461,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -575,9 +532,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -595,10 +550,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ],
         [
           {
@@ -606,9 +558,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -626,10 +576,7 @@
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ]
       ],
       "placement_rules": {
@@ -667,9 +614,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -694,10 +639,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ]
       ],
       "placement_rules": {
@@ -736,9 +678,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -764,10 +704,7 @@
             "compare0": ">=",
             "value1": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicArtillery"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicArtillery" }
         ]
       ],
       "placement_rules": {
@@ -804,9 +741,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -846,9 +781,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -913,9 +846,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & AirDefense",
@@ -986,9 +917,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1017,9 +946,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1078,9 +1005,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1145,9 +1070,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1166,10 +1089,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
           {
@@ -1177,9 +1097,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1198,10 +1116,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
           {
@@ -1209,9 +1124,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1230,10 +1143,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ]
       ],
       "placement_rules": {
@@ -1263,9 +1173,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1284,10 +1192,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
           {
@@ -1295,9 +1200,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1316,10 +1219,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
           {
@@ -1327,9 +1227,7 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1348,10 +1246,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ]
       ],
       "placement_rules": {
@@ -1382,10 +1277,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1399,10 +1291,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
           {
@@ -1410,10 +1299,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1427,10 +1313,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
           {
@@ -1438,10 +1321,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1455,10 +1335,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ]
       ],
       "placement_rules": {
@@ -1498,10 +1375,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1521,10 +1395,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
           {
@@ -1532,14 +1403,8 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
-          {
-            "test_type": "HaveHadANukeEvent",
-            "boolean": true
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
+          { "test_type": "HaveHadANukeEvent", "boolean": true },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & ((EnergyProduction & Advanced) | Factory)",
@@ -1552,10 +1417,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
           {
@@ -1563,10 +1425,7 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1586,10 +1445,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
           {
@@ -1597,14 +1453,8 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
-          {
-            "test_type": "HaveHadANukeEvent",
-            "boolean": true
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
+          { "test_type": "HaveHadANukeEvent", "boolean": true },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (PlanetEngine | ControlModule)",
@@ -1617,10 +1467,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ]
       ],
       "placement_rules": {

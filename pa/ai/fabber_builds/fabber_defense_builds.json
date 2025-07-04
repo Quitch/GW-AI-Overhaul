@@ -15,14 +15,8 @@
             "string0": "GalacticWar",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -40,10 +34,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -51,9 +42,7 @@
             "string0": "GalacticWar",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "DistFromNearestEnemyThreat",
             "compare0": "<=",
@@ -76,10 +65,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -87,18 +73,9 @@
             "string0": "GalacticWar",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -111,10 +88,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -122,13 +96,8 @@
             "string0": "GalacticWar",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "DistFromNearestEnemyThreat",
             "compare0": "<=",
@@ -146,10 +115,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -189,14 +155,8 @@
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -220,9 +180,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "DistFromNearestEnemyThreat",
             "compare0": "<=",
@@ -293,9 +251,7 @@
             "string0": "GalacticWar",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -313,10 +269,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -324,9 +277,7 @@
             "string0": "GalacticWar",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -344,10 +295,7 @@
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -355,13 +303,8 @@
             "string0": "GalacticWar",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -379,10 +322,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ],
         [
           {
@@ -390,13 +330,8 @@
             "string0": "GalacticWar",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -414,10 +349,7 @@
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -451,9 +383,7 @@
       "builders": ["Commander", "AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & AirDefense",
@@ -478,10 +408,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirDefense" }
         ]
       ],
       "placement_rules": {
@@ -515,9 +442,7 @@
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -546,9 +471,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -608,9 +531,7 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -676,9 +597,7 @@
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -696,15 +615,10 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -722,10 +636,7 @@
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ]
       ],
       "placement_rules": {
@@ -758,9 +669,7 @@
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & SurfaceDefense",
@@ -785,10 +694,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicLandDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicLandDefense" }
         ]
       ],
       "placement_rules": {
@@ -822,9 +728,7 @@
       "builders": ["AnyBasicFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -850,10 +754,7 @@
             "compare0": ">=",
             "value1": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicArtillery"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicArtillery" }
         ]
       ],
       "placement_rules": {
@@ -885,9 +786,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & AirDefense",
@@ -911,9 +810,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & AirDefense",
@@ -967,9 +864,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & AirDefense",
@@ -1030,9 +925,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1056,9 +949,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1112,9 +1003,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -1175,19 +1064,14 @@
       "builders": ["AnyBasicFabber", "AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Defense",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Wall"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Wall" }
         ]
       ],
       "placement_rules": {
@@ -1218,9 +1102,7 @@
       "builders": ["AnyBasicFabber", "AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1239,15 +1121,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1266,15 +1143,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -1293,10 +1165,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ]
       ],
       "placement_rules": {
@@ -1321,9 +1190,7 @@
       "builders": ["AnyBasicFabber", "AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1342,15 +1209,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1369,15 +1231,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -1396,10 +1253,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "Umbrella"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "Umbrella" }
         ]
       ],
       "placement_rules": {
@@ -1425,10 +1279,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1442,16 +1293,10 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1465,16 +1310,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1488,10 +1327,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ]
       ],
       "placement_rules": {
@@ -1526,10 +1362,7 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1549,20 +1382,11 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
-          {
-            "test_type": "HaveHadANukeEvent",
-            "boolean": true
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
+          { "test_type": "HaveHadANukeEvent", "boolean": true },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & ((EnergyProduction & Advanced) | Factory)",
@@ -1575,16 +1399,10 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
           {
             "test_type": "SystemToPlanetThreatRatio",
             "string0": "Nuke",
@@ -1604,20 +1422,11 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ],
         [
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "AntiNukeSilo"
-          },
-          {
-            "test_type": "HaveHadANukeEvent",
-            "boolean": true
-          },
+          { "test_type": "CanAffordPotentialDrain", "string0": "AntiNukeSilo" },
+          { "test_type": "HaveHadANukeEvent", "boolean": true },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (PlanetEngine | ControlModule)",
@@ -1630,10 +1439,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "AntiNukeSilo"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "AntiNukeSilo" }
         ]
       ],
       "placement_rules": {

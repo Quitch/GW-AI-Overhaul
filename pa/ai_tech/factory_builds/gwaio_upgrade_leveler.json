@@ -15,11 +15,7 @@
             "boolean": true
           }
         ],
-        [
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
-        ]
+        [{ "test_type": "CanAffordBuildDemand" }]
       ]
     }
   ]

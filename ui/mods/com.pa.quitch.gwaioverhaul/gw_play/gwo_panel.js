@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.79.1");
+        model.gwoVersion = ko.observable("5.80.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {

@@ -9,9 +9,7 @@
       "builders": ["AnyAdvancedFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "DeepSpaceRadar"
@@ -29,10 +27,7 @@
             "boolean": true,
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "DeepSpaceRadar"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "DeepSpaceRadar" }
         ]
       ],
       "placement_rules": {
