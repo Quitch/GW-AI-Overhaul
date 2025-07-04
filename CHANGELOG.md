@@ -9,6 +9,10 @@
   - Ward Upgrade Tech
   - Kessler Upgrade Tech
 
+### Changed
+
+- Removed AI's meta penchant for new wars
+
 ### Bugfix
 
 - Penchant AI support for the Radar Jammer Station

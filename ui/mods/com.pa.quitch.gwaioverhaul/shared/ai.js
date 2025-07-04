@@ -64,7 +64,6 @@ define({
       "Heavy",
       "Infernodier",
       "Raider",
-      "Meta",
       "Sniper",
       "Nuker",
       "Tactical",
@@ -121,16 +120,6 @@ define({
         "PenchantT2Naval",
       ],
       [
-        // Meta
-        "NoPercentage",
-        "PenchantT2Air",
-        "PenchantT1Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Vehicle",
-        "PenchantT1Naval",
-        "PenchantT2Naval",
-      ],
-      [
         // Sniper
         "NoPercentage",
         "PenchantT2Air",
@@ -163,7 +152,6 @@ define({
       "!LOC:Heavy",
       "!LOC:Infernodier",
       "!LOC:Raider",
-      "!LOC:Meta",
       "!LOC:Sniper",
       "!LOC:Nuker",
       "!LOC:Tactical",
