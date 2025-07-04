@@ -362,7 +362,7 @@
           },
           {
             "test_type": "UnitCountPerPlanetRadius",
-            "unit_type_string0": "Land & (Scout | Radar)",
+            "unit_type_string0": "Land & Scout",
             "compare0": "<",
             "value0": 150
           },
@@ -388,7 +388,7 @@
           },
           {
             "test_type": "UnitCountOnPlanet",
-            "unit_type_string0": "Land & (Scout | Radar)",
+            "unit_type_string0": "Land & Scout",
             "compare0": "<",
             "value0": 1
           },
@@ -425,7 +425,7 @@
           },
           {
             "test_type": "UnitRatioOnPlanet",
-            "unit_type_string0": "Land & (Scout | Radar)",
+            "unit_type_string0": "Land & Mobile & (Scout | Radar)",
             "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
             "compare0": "<",
             "value0": 0.05
@@ -441,7 +441,7 @@
           },
           {
             "test_type": "UnitRatioOnPlanet",
-            "unit_type_string0": "Land & (Scout | Radar)",
+            "unit_type_string0": "Land & Mobile & (Scout | Radar)",
             "unit_type_string1": "((Tank | Bot) & Offense) - Fabber",
             "compare0": "<",
             "value0": 0.05

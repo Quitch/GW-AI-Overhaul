@@ -195,7 +195,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -253,7 +253,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -311,7 +311,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -369,7 +369,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -427,7 +427,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -491,7 +491,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
@@ -555,7 +555,7 @@
           "squad": "Defense"
         },
         {
-          "unit_types": "Land & (Scout | Radar) - Titan",
+          "unit_types": "Land & Mobile & (Scout | Radar) - Titan",
           "min_count": 0,
           "percent": 0.05,
           "squad": "Defense"
