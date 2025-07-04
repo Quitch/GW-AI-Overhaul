@@ -59,6 +59,29 @@ define([
             record_index: 1,
           },
         },
+        {
+          file: gwoUnit.bluehawk,
+          path: "tools.1.muzzle_bone",
+          op: "replace",
+          value: "socket_rightMuzzle",
+        },
+        {
+          file: gwoUnit.bluehawk,
+          path: "tools.1.record_index",
+          op: "replace",
+          value: 0,
+        },
+        {
+          file: gwoUnit.bluehawk,
+          path: "tools",
+          op: "push",
+          value: {
+            spec_id: gwoUnit.bluehawkWeaponOrbital,
+            aim_bone: "socket_leftMuzzle",
+            muzzle_bone: "socket_leftMuzzle",
+            record_index: 1,
+          },
+        },
       ]);
     },
     dull: function () {},
