@@ -15,9 +15,7 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -35,10 +33,7 @@
             "unit_type_string0": "Mobile & Land & Advanced",
             "boolean": true
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "TML"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "TML" }
         ],
         [
           {
@@ -46,9 +41,7 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & SurfaceDefense",
@@ -66,10 +59,7 @@
             "unit_type_string0": "Mobile & Land & Advanced",
             "boolean": true
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "TML"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "TML" }
         ]
       ],
       "placement_rules": {
@@ -99,13 +89,8 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (Artillery | Tactical)",
@@ -130,10 +115,7 @@
             "unit_type_string0": "Mobile & Land & Advanced",
             "boolean": true
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "TML"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "TML" }
         ]
       ],
       "placement_rules": {
@@ -171,9 +153,7 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -213,9 +193,7 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -280,9 +258,7 @@
             "string0": "Tactical",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & AirDefense",

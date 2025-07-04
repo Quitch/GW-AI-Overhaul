@@ -9,34 +9,18 @@
       "builders": ["BasicAirFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "NeedAdvancedAirFabber"
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "NeedAdvancedAirFabber" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedAirFabber"
           }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Fabber & Advanced - Orbital",

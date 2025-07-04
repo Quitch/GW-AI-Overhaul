@@ -30,10 +30,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
@@ -62,10 +59,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
@@ -94,10 +88,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
@@ -126,10 +117,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
@@ -153,10 +141,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & ((Bomber & Basic) | Gunship) - Titan",
@@ -185,10 +170,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Bomber & Advanced - Titan",
@@ -217,10 +199,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Bomber & Advanced - Titan",
@@ -249,10 +228,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Bomber & Advanced - Titan",
@@ -281,10 +257,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Bomber & Advanced - Titan",
@@ -308,10 +281,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Bomber & Advanced - Titan",
@@ -335,10 +305,7 @@
       "priority": 105,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Titan",
@@ -353,10 +320,7 @@
           }
         ],
         [
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Titan",
@@ -385,10 +349,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -408,10 +369,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -441,10 +399,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -464,10 +419,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -497,10 +449,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -520,10 +469,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -553,10 +499,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -576,10 +519,7 @@
             "string0": "PenchantPlatoon",
             "boolean": false
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -604,10 +544,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",
@@ -622,10 +559,7 @@
           }
         ],
         [
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Air & Fighter",

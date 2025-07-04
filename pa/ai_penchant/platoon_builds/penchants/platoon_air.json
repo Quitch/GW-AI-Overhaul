@@ -12,10 +12,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -41,10 +38,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -79,10 +73,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -108,10 +99,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -146,10 +134,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -175,10 +160,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -213,10 +195,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -242,10 +221,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -280,10 +256,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -309,10 +282,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -347,10 +317,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -376,10 +343,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -414,10 +378,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -443,10 +404,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -481,10 +439,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -510,10 +465,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -548,10 +500,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -577,10 +526,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -607,10 +553,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -636,10 +579,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -675,10 +615,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -704,10 +641,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -734,10 +668,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -763,10 +694,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -802,10 +730,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -831,10 +756,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -861,10 +783,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -890,10 +809,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -929,10 +845,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -958,10 +871,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "AntiAir",
@@ -988,10 +898,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",
@@ -1017,10 +924,7 @@
             "string0": "Platoon",
             "boolean": true
           },
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetHighestEnemyArmyThreat",
             "string0": "Air",

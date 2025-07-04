@@ -11,33 +11,22 @@
       "builders": ["AdvancedBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "PlanetIsRespawnable",
-            "boolean": false
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "PlanetIsRespawnable", "boolean": false },
           {
             "test_type": "PlanetThreat",
             "string0": "Economy",
             "compare0": ">",
             "value0": 5000
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "SeismicBot"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "SeismicBot" }
         ]
       ],
       "placement_rules": {
@@ -62,33 +51,22 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "PlanetIsRespawnable",
-            "boolean": false
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "PlanetIsRespawnable", "boolean": false },
           {
             "test_type": "PlanetThreat",
             "string0": "Economy",
             "compare0": ">",
             "value0": 5000
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "FortressVehicle"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "FortressVehicle" }
         ]
       ],
       "placement_rules": {
@@ -113,33 +91,22 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "PlanetIsRespawnable",
-            "boolean": false
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "PlanetIsRespawnable", "boolean": false },
           {
             "test_type": "PlanetThreat",
             "string0": "Economy",
             "compare0": ">",
             "value0": 5000
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "TeslaGunship"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "TeslaGunship" }
         ]
       ],
       "placement_rules": {
@@ -169,19 +136,14 @@
             "compare0": ">",
             "value0": 5000
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory & Orbital",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "MotherShip"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "MotherShip" }
         ]
       ],
       "placement_rules": {
@@ -205,40 +167,22 @@
       "builders": ["AnyAdvancedFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyPresenceOnPlanet", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Economy",
             "compare0": ">",
             "value0": 5000
           },
-          {
-            "test_type": "PlanetIsRespawnable",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "PlanetCount",
-            "compare0": ">=",
-            "value0": 2
-          },
+          { "test_type": "PlanetIsRespawnable", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "PlanetCount", "compare0": ">=", "value0": 2 },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "PlanetSplitter"
           },
-          {
-            "test_type": "PlanetHasUseablePlanetWeapon",
-            "boolean": false
-          },
-          {
-            "test_type": "PlanetIsMainEcoBase",
-            "boolean": false
-          },
+          { "test_type": "PlanetHasUseablePlanetWeapon", "boolean": false },
+          { "test_type": "PlanetIsMainEcoBase", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital",
@@ -258,10 +202,7 @@
             "boolean": true,
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "PlanetSplitter"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "PlanetSplitter" }
         ]
       ],
       "placement_rules": {

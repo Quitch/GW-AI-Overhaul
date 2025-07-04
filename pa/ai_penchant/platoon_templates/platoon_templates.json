@@ -536,21 +536,9 @@
         }
       ]
     },
-    "Air_Scout": {
-      "units": [
-        {
-          "unit_types": "Air & Scout",
-          "max_count": 1
-        }
-      ]
-    },
+    "Air_Scout": { "units": [{ "unit_types": "Air & Scout", "max_count": 1 }] },
     "Vehicle_Scout": {
-      "units": [
-        {
-          "unit_types": "Tank & Scout",
-          "max_count": 1
-        }
-      ]
+      "units": [{ "unit_types": "Tank & Scout", "max_count": 1 }]
     },
     "Bot_Scout": {
       "units": [
@@ -772,11 +760,7 @@
     },
     "Air_Attack_Titan": {
       "units": [
-        {
-          "unit_types": "Air & Titan",
-          "min_count": 1,
-          "max_count": -1
-        },
+        { "unit_types": "Air & Titan", "min_count": 1, "max_count": -1 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -793,11 +777,7 @@
     },
     "Fighter_Attack_Small": {
       "units": [
-        {
-          "unit_types": "Air & Fighter",
-          "min_count": 1,
-          "max_count": 3
-        },
+        { "unit_types": "Air & Fighter", "min_count": 1, "max_count": 3 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -808,11 +788,7 @@
     },
     "Fighter_Attack_Medium": {
       "units": [
-        {
-          "unit_types": "Air & Fighter",
-          "min_count": 4,
-          "max_count": 9
-        },
+        { "unit_types": "Air & Fighter", "min_count": 4, "max_count": 9 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -823,11 +799,7 @@
     },
     "Fighter_Attack_Large": {
       "units": [
-        {
-          "unit_types": "Air & Fighter",
-          "min_count": 10,
-          "max_count": 19
-        },
+        { "unit_types": "Air & Fighter", "min_count": 10, "max_count": 19 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -838,11 +810,7 @@
     },
     "Fighter_Attack_XLarge": {
       "units": [
-        {
-          "unit_types": "Air & Fighter",
-          "min_count": 20,
-          "max_count": 39
-        },
+        { "unit_types": "Air & Fighter", "min_count": 20, "max_count": 39 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -853,11 +821,7 @@
     },
     "Fighter_Attack_Max": {
       "units": [
-        {
-          "unit_types": "Air & Fighter",
-          "min_count": 40,
-          "max_count": -1
-        },
+        { "unit_types": "Air & Fighter", "min_count": 40, "max_count": -1 },
         {
           "unit_types": "Air & MissileDefense",
           "min_count": 0,
@@ -883,20 +847,12 @@
     },
     "Orbital_Fighter_Attack": {
       "units": [
-        {
-          "unit_types": "Orbital & Fighter",
-          "min_count": 1,
-          "max_count": -1
-        }
+        { "unit_types": "Orbital & Fighter", "min_count": 1, "max_count": -1 }
       ]
     },
     "Orbital_Titan_Attack": {
       "units": [
-        {
-          "unit_types": "Orbital & Titan",
-          "min_count": 1,
-          "max_count": -1
-        },
+        { "unit_types": "Orbital & Titan", "min_count": 1, "max_count": -1 },
         {
           "unit_types": "Orbital & Fighter",
           "min_count": 0,
@@ -939,11 +895,7 @@
     },
     "Nukes": {
       "units": [
-        {
-          "unit_types": "Structure & Nuke",
-          "min_count": 1,
-          "max_count": -1
-        }
+        { "unit_types": "Structure & Nuke", "min_count": 1, "max_count": -1 }
       ]
     },
     "UnitCannon": {

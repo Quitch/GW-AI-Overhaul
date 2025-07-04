@@ -12,22 +12,14 @@
         "OrbitalFabber"
       ],
       "build_conditions": [
-        [
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
-        ],
+        [{ "test_type": "CanAffordBuildDemand" }],
         [
           {
             "test_type": "CurrentMetalEfficiency",
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
@@ -54,13 +46,8 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "ThisPlanetNeedsLandUnitAssistance",
-            "boolean": true
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "ThisPlanetNeedsLandUnitAssistance", "boolean": true },
           {
             "test_type": "OtherPlanetCanProvideLandUnitAssistance",
             "boolean": true
@@ -73,9 +60,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetNeedsLandUnitAssistance",
             "boolean": true
@@ -95,17 +80,9 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "WantCommanderOffPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "PresenceOnOtherPlanet",
-            "boolean": true
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "WantCommanderOffPlanet", "boolean": true },
+          { "test_type": "PresenceOnOtherPlanet", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",
@@ -136,9 +113,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",
@@ -182,13 +157,8 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "PlanetWithoutFabberWithTeleporter",
-            "boolean": true
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "PlanetWithoutFabberWithTeleporter", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",
@@ -230,13 +200,8 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "PresenceOnOtherPlanet",
-            "boolean": true
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "PresenceOnOtherPlanet", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",
@@ -272,17 +237,9 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "PresenceOnOtherPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "PresenceOnOtherPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",
@@ -315,10 +272,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetWithoutFabberWithTeleporter",
-            "boolean": true
-          },
+          { "test_type": "PlanetWithoutFabberWithTeleporter", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Teleporter",

@@ -7,10 +7,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Defense & Mobile - Naval - AirDefense - OrbitalDefense - Construction - NukeDefense - Nuke - Structure",
@@ -34,10 +31,7 @@
       "priority": 100,
       "build_conditions": [
         [
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "Defense & Mobile - Land - AirDefense - OrbitalDefense - Construction - NukeDefense - Nuke - Structure",

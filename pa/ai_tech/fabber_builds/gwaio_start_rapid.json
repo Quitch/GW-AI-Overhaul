@@ -26,10 +26,7 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicAirFactory"
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicAirFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicAirFactory" }
         ]
       ],
       "placement_rules": {
@@ -58,10 +55,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Bot & Basic) - Orbital",
@@ -72,10 +66,7 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ]
       ],
       "placement_rules": {
@@ -104,10 +95,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Tank & Basic) - Orbital",
@@ -151,10 +139,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Naval & Basic) - Orbital",
@@ -165,10 +150,7 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ]
       ],
       "placement_rules": {
@@ -196,17 +178,12 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "OrbitalLauncher"
           },
-          {
-            "test_type": "WantCommanderOffPlanet",
-            "boolean": false
-          },
+          { "test_type": "WantCommanderOffPlanet", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Advanced) - Orbital - Nuke - NukeDefense - SelfDestruct",
@@ -219,23 +196,15 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "OrbitalLauncher"
           },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -248,15 +217,10 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ]
       ],
-      "placement_rules": {
-        "buffer": 5
-      }
+      "placement_rules": { "buffer": 5 }
     },
     {
       "name": "gwaio_start_rapid - Orbital Launcher - Rush",
@@ -274,10 +238,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "WantCommanderOffPlanet",
-            "boolean": true
-          },
+          { "test_type": "WantCommanderOffPlanet", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -296,20 +257,11 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -328,20 +280,11 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory - Orbital - Nuke - NukeDefense",
@@ -360,15 +303,10 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "OrbitalLauncher"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "OrbitalLauncher" }
         ]
       ],
-      "placement_rules": {
-        "buffer": 5
-      }
+      "placement_rules": { "buffer": 5 }
     },
     {
       "name": "gwaio_start_rapid - Advanced Air Factory",
@@ -424,10 +362,7 @@
       "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Basic) - Orbital",
@@ -471,10 +406,7 @@
       "builders": ["BasicVehicleFabber", "AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Basic) - Orbital",
@@ -518,10 +450,7 @@
       "builders": ["BasicNavalFabber", "AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Basic) - Orbital",
@@ -563,13 +492,8 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -578,13 +502,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Air & Fighter",
@@ -593,13 +512,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -628,22 +542,12 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Gunship",
@@ -662,22 +566,12 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Bomber",
@@ -696,13 +590,8 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Air & MissileDefense",
@@ -722,27 +611,16 @@
       "builders": ["BasicAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicAirFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "MetMinBasicFabberCount",
-            "boolean": false
-          }
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "MetMinBasicFabberCount", "boolean": false }
         ]
       ]
     },
@@ -754,56 +632,35 @@
       "builders": ["BasicAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Air & Scout",
             "compare0": "<",
             "value0": 150
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Scout",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "AloneOnPlanet", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Scout",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": true
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": true }
         ]
       ]
     },
@@ -816,13 +673,8 @@
       "builders": ["BasicAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -831,13 +683,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Air & Fighter",
@@ -846,13 +693,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -881,22 +723,12 @@
       "builders": ["BasicAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Bomber",
@@ -915,23 +747,15 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedAirFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Fabber & Advanced - Orbital",
@@ -950,22 +774,12 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Bomber",
@@ -984,22 +798,12 @@
       "builders": ["AdvancedAirFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Gunship",
@@ -1018,26 +822,13 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -1050,10 +841,7 @@
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -1066,16 +854,10 @@
             "compare0": "<",
             "value0": 200
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -1088,10 +870,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -1104,22 +883,14 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Bot & Heavy",
@@ -1129,18 +900,13 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -1170,22 +936,14 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Tank & Hover",
@@ -1195,31 +953,18 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": false
-          }
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": false }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Tank & Hover",
@@ -1249,13 +994,8 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "SupportCommander"
@@ -1283,17 +1023,9 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & Deconstruction",
@@ -1308,13 +1040,8 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & Deconstruction",
@@ -1344,23 +1071,15 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1370,13 +1089,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -1384,10 +1098,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1406,13 +1117,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1442,27 +1148,16 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "MetMinBasicFabberCount",
-            "boolean": false
-          }
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "MetMinBasicFabberCount", "boolean": false }
         ]
       ]
     },
@@ -1475,27 +1170,16 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "MetMinBasicFabberCount",
-            "boolean": false
-          }
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "MetMinBasicFabberCount", "boolean": false }
         ]
       ]
     },
@@ -1508,22 +1192,12 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -1536,10 +1210,7 @@
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -1552,16 +1223,10 @@
             "compare0": "<",
             "value0": 200
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Tank | Air) & Factory",
@@ -1574,10 +1239,7 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -1590,17 +1252,9 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -1615,13 +1269,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -1656,17 +1305,9 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & SelfDestruct",
@@ -1676,13 +1317,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & SelfDestruct",
@@ -1711,23 +1347,15 @@
       "builders": ["BasicBotFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1737,13 +1365,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -1751,10 +1374,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1773,13 +1393,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -1809,10 +1424,7 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Factory",
@@ -1825,20 +1437,11 @@
             "compare0": "<",
             "value0": 150
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Factory",
@@ -1851,14 +1454,8 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -1871,17 +1468,9 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Land & Scout",
@@ -1891,13 +1480,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Land & Scout",
@@ -1927,26 +1511,13 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -1969,17 +1540,9 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -1994,13 +1557,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Tank & Heavy",
@@ -2029,23 +1587,15 @@
       "builders": ["BasicVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Air",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -2055,13 +1605,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Air",
@@ -2069,10 +1614,7 @@
             "compare0": ">",
             "value0": 1.0
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -2091,13 +1633,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & AirDefense",
@@ -2127,23 +1664,15 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedBotFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Fabber & Advanced - Orbital",
@@ -2162,23 +1691,15 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedVehicleFabber"
           }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Fabber & Advanced - Orbital",
@@ -2197,22 +1718,12 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -2234,17 +1745,9 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",
@@ -2254,13 +1757,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "((Tank | Bot) & Mobile & Construction) - Fabber",
@@ -2290,17 +1788,9 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2310,13 +1800,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2346,17 +1831,9 @@
       "builders": ["AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2366,13 +1843,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2402,26 +1874,13 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -2444,17 +1903,9 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Tank & Heavy",
@@ -2464,13 +1915,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Tank & Heavy",
@@ -2500,17 +1946,9 @@
       "builders": ["AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2520,13 +1958,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Tank | Bot) & (Artillery | Tactical)",
@@ -2556,10 +1989,7 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Factory",
@@ -2572,20 +2002,11 @@
             "compare0": "<",
             "value0": 150
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ],
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Factory",
@@ -2598,14 +2019,8 @@
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "HaveFullPlanetIntel",
-            "boolean": false
-          }
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "HaveFullPlanetIntel", "boolean": false }
         ]
       ]
     },
@@ -2619,17 +2034,9 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2641,17 +2048,9 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "(Naval & Mobile & Construction) - Fabber",
@@ -2671,13 +2070,8 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2690,17 +2084,9 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2713,13 +2099,8 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Naval & Fabber & Basic",
@@ -2742,17 +2123,9 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2765,14 +2138,8 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -2786,9 +2153,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2801,17 +2166,9 @@
       "builders": ["BasicNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2824,13 +2181,8 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Naval & Fabber & Advanced",
@@ -2853,17 +2205,9 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2876,17 +2220,9 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2899,14 +2235,8 @@
       "builders": ["AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -2920,9 +2250,7 @@
             "compare0": "<",
             "value0": 0.25
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -2934,17 +2262,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalProbe"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalProbe" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
@@ -2968,17 +2288,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalProbe"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalProbe" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Orbital & (Recon | Scout) - Structure",
@@ -2998,23 +2310,15 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalProbe"
-          },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalProbe" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Orbital & Fighter",
             "compare0": ">",
             "value0": 2
           },
-          {
-            "test_type": "OtherPlanetNeedsReconAssistance",
-            "boolean": true
-          }
+          { "test_type": "OtherPlanetNeedsReconAssistance", "boolean": true }
         ]
       ]
     },
@@ -3027,9 +2331,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -3055,9 +2357,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -3072,9 +2372,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -3089,9 +2387,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Orbital",
@@ -3111,9 +2407,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -3151,9 +2445,7 @@
             "compare0": ">",
             "value0": 2
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory & Construction - Orbital - NukeDefense - Nuke - SelfDestruct",
@@ -3166,10 +2458,7 @@
             "compare0": "<",
             "value0": 5
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalFabber"
-          }
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalFabber" }
         ],
         [
           {
@@ -3243,13 +2532,8 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicRadarSattelite"
@@ -3277,13 +2561,8 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicRadarSattelite"
@@ -3307,9 +2586,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicRadarSattelite"
@@ -3320,10 +2597,7 @@
             "compare0": ">",
             "value0": 2
           },
-          {
-            "test_type": "OtherPlanetNeedsReconAssistance",
-            "boolean": true
-          }
+          { "test_type": "OtherPlanetNeedsReconAssistance", "boolean": true }
         ]
       ]
     },
@@ -3336,9 +2610,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -3364,9 +2636,7 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Orbital",
@@ -3381,9 +2651,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "BaseThreat",
             "string0": "Orbital",
@@ -3398,9 +2666,7 @@
           }
         ],
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetHighestEnemyArmyThreatRatio",
             "string0": "Orbital",
@@ -3420,17 +2686,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "PlanetWithoutPresence",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "PlanetWithoutPresence", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Orbital & Transport",
@@ -3453,17 +2711,11 @@
             "compare0": "<",
             "value0": 1.0
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
-          {
-            "test_type": "DesireEnergy"
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "DesireEnergy" },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -3475,17 +2727,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Orbital & LaserPlatform",
@@ -3505,13 +2749,8 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedRadarSattelite"
@@ -3524,13 +2763,8 @@
           }
         ],
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedRadarSattelite"
@@ -3541,10 +2775,7 @@
             "compare0": ">",
             "value0": 2
           },
-          {
-            "test_type": "OtherPlanetNeedsReconAssistance",
-            "boolean": true
-          }
+          { "test_type": "OtherPlanetNeedsReconAssistance", "boolean": true }
         ]
       ]
     }

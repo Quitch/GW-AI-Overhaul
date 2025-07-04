@@ -16,13 +16,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & Artillery",
@@ -37,10 +32,7 @@
             "compare0": ">=",
             "value1": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicArtillery"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicArtillery" }
         ]
       ],
       "placement_rules": {
@@ -77,13 +69,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (Artillery | Tactical)",
@@ -103,10 +90,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicArtillery"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicArtillery" }
         ]
       ],
       "placement_rules": {
@@ -146,13 +130,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "MiniUnitCannon"
@@ -176,10 +155,7 @@
             "compare0": ">=",
             "value1": 1
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "MiniUnitCannon"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "MiniUnitCannon" }
         ]
       ],
       "placement_rules": {
@@ -216,13 +192,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "MiniUnitCannon"
@@ -251,10 +222,7 @@
             "unit_type_string0": "Advanced",
             "boolean": false
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "MiniUnitCannon"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "MiniUnitCannon" }
         ]
       ],
       "placement_rules": {
@@ -294,17 +262,9 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "UnitCannon"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanAffordPotentialDrain", "string0": "UnitCannon" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Factory & Construction - Orbital - NukeDefense - Nuke - SelfDestruct",
@@ -317,15 +277,10 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "UnitCannon"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "UnitCannon" }
         ]
       ],
-      "placement_rules": {
-        "buffer": 2
-      }
+      "placement_rules": { "buffer": 2 }
     },
     {
       "name": "Artillery - TML - Threat",
@@ -343,13 +298,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & (Artillery | Tactical)",
@@ -374,10 +324,7 @@
             "unit_type_string0": "Mobile & Land & Advanced",
             "boolean": true
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "TML"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "TML" }
         ]
       ],
       "placement_rules": {
@@ -417,13 +364,8 @@
             "string0": "Artillery",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Artillery & Advanced",
