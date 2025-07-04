@@ -8,6 +8,7 @@
   - Nyx Upgrade Tech
   - Ward Upgrade Tech
   - Kessler Upgrade Tech
+- Support for Bluehawk weapon split
 
 ### Changed
 

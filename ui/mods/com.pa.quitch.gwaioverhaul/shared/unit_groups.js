@@ -89,6 +89,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   const botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
+    gwoUnit.bluehawkAmmoOrbital,
     gwoUnit.colonelAmmo,
     gwoUnit.gilEAmmo,
     gwoUnit.locustsAmmo,
@@ -98,6 +99,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   const botsAdvancedWeapons = [
     gwoUnit.bluehawkWeapon,
+    gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
     gwoUnit.gileEWeapon,
     gwoUnit.locustsWeapon,

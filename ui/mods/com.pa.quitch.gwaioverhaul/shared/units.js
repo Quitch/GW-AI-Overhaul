@@ -73,12 +73,16 @@ define({
   bluehawk: "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
   bluehawkAmmo:
     "/pa/units/land/bot_tactical_missile/bot_tactical_missile_ammo.json",
+  bluehawkAmmoOrbital:
+    "/pa/units/land/bot_tactical_missile/bot_tactical_missile_ammo_orbital.json",
   bluehawkBeam:
     "/pa/units/land/bot_tactical_missile/bot_tactical_missile_tool_antidrop.json",
   bluehawkBeamAmmo:
     "/pa/units/land/bot_tactical_missile/bot_tactical_missile_antidrop_ammo.json",
   bluehawkWeapon:
     "/pa/units/land/bot_tactical_missile/bot_tactical_missile_tool_weapon.json",
+  bluehawkWeaponOrbital:
+    "/pa/units/land/bot_tactical_missile/bot_tactical_missile_tool_orbital.json",
   boom: "/pa/units/land/bot_bomb/bot_bomb.json",
   boomAmmo: "/pa/units/land/bot_bomb/bot_bomb_ammo.json",
   boomWeapon: "/pa/units/land/bot_bomb/bot_bomb_tool_weapon.json",
