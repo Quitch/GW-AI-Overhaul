@@ -13,18 +13,12 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": false
-          },
+          { "test_type": "EnemyPresenceOnPlanet", "boolean": false },
           {
             "test_type": "OtherPlanetNeedsLandUnitAssistance",
             "boolean": true
           },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
+          { "test_type": "CanProvideLandUnitAssistance", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
@@ -48,18 +42,12 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemyPresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemyPresenceOnPlanet", "boolean": true },
           {
             "test_type": "OtherPlanetNeedsLandUnitAssistance",
             "boolean": true
           },
-          {
-            "test_type": "CanProvideLandUnitAssistance",
-            "boolean": true
-          },
+          { "test_type": "CanProvideLandUnitAssistance", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction",
@@ -82,10 +70,7 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
@@ -114,10 +99,7 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
@@ -146,10 +128,7 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
@@ -178,10 +157,7 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",
@@ -210,10 +186,7 @@
             "string0": "NoPercentage",
             "boolean": true
           },
-          {
-            "test_type": "EnemySurfacePresenceOnPlanet",
-            "boolean": true
-          },
+          { "test_type": "EnemySurfacePresenceOnPlanet", "boolean": true },
           {
             "test_type": "UnitPoolCount",
             "unit_type_string0": "((Tank | Bot) & Mobile) - Fabber - AirDefense - OrbitalDefense - Construction - Deconstruction - Titan",

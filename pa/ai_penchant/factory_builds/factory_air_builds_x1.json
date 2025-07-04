@@ -14,13 +14,8 @@
             "string0": "PenchantT2Air",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -28,13 +23,8 @@
             "string0": "PenchantT2Air",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountPerPlanetRadius",
             "unit_type_string0": "Bomber",
@@ -58,13 +48,8 @@
             "string0": "PenchantT2Air",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Air & MissileDefense",

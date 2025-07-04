@@ -9,13 +9,8 @@
       "builders": ["Commander"],
       "build_conditions": [
         [
-          {
-            "test_type": "BaseThreatened",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "BaseThreatened", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "SupportCommander"

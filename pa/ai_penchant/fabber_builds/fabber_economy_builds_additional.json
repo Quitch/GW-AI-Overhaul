@@ -10,17 +10,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "DesireMetal"
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "DesireMetal" },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -55,18 +47,9 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -86,18 +69,9 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -138,21 +112,10 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -172,21 +135,10 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -227,17 +179,9 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -267,17 +211,9 @@
       "builders": ["OrbitalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "DesireMetal"
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          }
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "DesireMetal" },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true }
         ]
       ],
       "placement_rules": {
@@ -305,14 +241,8 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -332,14 +262,8 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          },
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Structure & Factory & Construction - Orbital",
@@ -379,17 +303,9 @@
             "string0": "SlowerExpansion",
             "boolean": false
           },
-          {
-            "test_type": "PlanetIsGasGiant",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanFindMetalSpotToBuildBasic",
-            "boolean": true
-          }
+          { "test_type": "PlanetIsGasGiant", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanFindMetalSpotToBuildBasic", "boolean": true }
         ]
       ],
       "placement_rules": {

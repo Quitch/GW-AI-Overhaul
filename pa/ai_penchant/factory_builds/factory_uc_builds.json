@@ -14,9 +14,7 @@
             "string0": "PenchantT1Bot",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -34,9 +32,7 @@
             "string0": "PenchantT1Bot",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -54,9 +50,7 @@
             "string0": "PenchantT1Bot",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -74,9 +68,7 @@
             "string0": "PenchantT1Vehicle",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -94,9 +86,7 @@
             "string0": "Raider",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -120,9 +110,7 @@
             "string0": "PenchantT2Bot",
             "boolean": false
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     }

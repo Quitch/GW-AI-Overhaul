@@ -14,13 +14,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -28,13 +23,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Bomber",
@@ -58,17 +48,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
           {
@@ -76,13 +58,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -110,13 +87,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -124,13 +96,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -158,17 +125,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
           {
@@ -176,13 +135,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -210,17 +164,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
           {
@@ -228,13 +174,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -262,17 +203,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" },
+          { "test_type": "CanDeployLandFromBase", "boolean": true }
         ],
         [
           {
@@ -280,13 +213,8 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "OtherPlanetCanReceiveLandUnitAssistance",
             "boolean": true
@@ -314,17 +242,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -342,17 +262,9 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     },
@@ -370,9 +282,7 @@
             "string0": "Sniper",
             "boolean": true
           },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "CanAffordBuildDemand" }
         ]
       ]
     }

@@ -16,58 +16,28 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
+          { "test_type": "NeedBasicBotFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedBasicBotFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedAdvancedBotFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedAdvancedBotFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Bot & Basic) - Orbital",
@@ -78,34 +48,19 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
+          { "test_type": "NeedBasicBotFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction) - Orbital",
             "compare0": "<=",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ]
       ],
       "placement_rules": {
@@ -134,58 +89,34 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "BasicVehicleFactory"
           }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "BasicVehicleFactory"
           }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedAdvancedVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedAdvancedVehicleFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Tank & Basic) - Orbital",
@@ -196,24 +127,15 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "BasicVehicleFactory"
           }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction) - Orbital",
@@ -252,10 +174,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -266,38 +185,22 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": false
-          },
+          { "test_type": "NeedBasicBotFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -308,32 +211,19 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicBotFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedBasicBotFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicBotFactory"
-          }
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicBotFactory" }
         ]
       ],
       "placement_rules": {
@@ -362,10 +252,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -376,38 +263,25 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": false
-          },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "BasicVehicleFactory"
           }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -418,28 +292,18 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedBasicVehicleFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "BasicVehicleFactory"
@@ -467,10 +331,7 @@
       "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -482,28 +343,19 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "NeedAdvancedBotFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedBotFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "AdvancedBotFactory"
           }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -515,10 +367,7 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "NeedAdvancedBotFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedBotFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Advanced) - NukeDefense - Nuke - SelfDestruct",
@@ -552,10 +401,7 @@
       "builders": ["BasicVehicleFabber", "AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Basic) - Orbital",
@@ -567,28 +413,19 @@
             "string0": "Tutorial",
             "boolean": false
           },
-          {
-            "test_type": "NeedAdvancedVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedVehicleFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedVehicleFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "AdvancedVehicleFactory"
           }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -600,20 +437,14 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "NeedAdvancedVehicleFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedVehicleFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Advanced) - NukeDefense - Nuke - SelfDestruct",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "AdvancedVehicleFactory"
@@ -641,10 +472,7 @@
       "builders": ["BasicBotFabber", "AdvancedBotFabber", "SupportCommander"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -660,11 +488,7 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
@@ -676,18 +500,12 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "NeedAdvancedBotFactory",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedBotFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedBotFactory"
           },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanFindPlaceToBuild",
             "string0": "AdvancedBotFactory"
@@ -715,10 +533,7 @@
       "builders": ["BasicVehicleFabber", "AdvancedVehicleFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -734,11 +549,7 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.2
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.2 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
@@ -750,14 +561,8 @@
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "NeedAdvancedVehicleFactory",
-            "boolean": true
-          },
-          {
-            "test_type": "CanDeployLandFromBase",
-            "boolean": true
-          },
+          { "test_type": "NeedAdvancedVehicleFactory", "boolean": true },
+          { "test_type": "CanDeployLandFromBase", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedVehicleFactory"

@@ -9,19 +9,14 @@
       "builders": ["OrbitalLauncher"],
       "build_conditions": [
         [
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Fabber & Orbital",
             "compare0": "<",
             "value0": 1
           },
-          {
-            "test_type": "CanAffordPotentialDrain",
-            "string0": "OrbitalFabber"
-          }
+          { "test_type": "CanAffordPotentialDrain", "string0": "OrbitalFabber" }
         ]
       ]
     }

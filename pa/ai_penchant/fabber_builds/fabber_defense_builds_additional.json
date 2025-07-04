@@ -15,24 +15,15 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
             "compare0": ">",
             "value0": 0
           },
-          {
-            "test_type": "DistFromMainBase",
-            "compare0": ">=",
-            "value0": 150
-          },
+          { "test_type": "DistFromMainBase", "compare0": ">=", "value0": 150 },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
@@ -50,10 +41,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalDefense" }
         ],
         [
           {
@@ -61,13 +49,8 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -96,10 +79,7 @@
             "compare0": ">=",
             "value0": 2
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalDefense" }
         ]
       ],
       "placement_rules": {
@@ -143,13 +123,8 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -173,10 +148,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalDefense" }
         ]
       ],
       "placement_rules": {
@@ -214,13 +186,8 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & Naval & Defense",
@@ -245,10 +212,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalDefense" }
         ],
         [
           {
@@ -256,13 +220,8 @@
             "string0": "PenchantT1Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Basic & Naval & Defense",
@@ -287,10 +246,7 @@
             "compare0": ">=",
             "value0": 3
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalDefense"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalDefense" }
         ]
       ],
       "placement_rules": {
@@ -328,13 +284,8 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "PlanetThreat",
             "string0": "Naval",
@@ -399,13 +350,8 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & Naval & Defense",
@@ -441,13 +387,8 @@
             "string0": "PenchantT2Defence",
             "boolean": false
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountInBase",
             "unit_type_string0": "Structure & Advanced & Naval & Defense",

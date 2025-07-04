@@ -9,13 +9,8 @@
       "builders": ["AdvancedAirFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -24,13 +19,8 @@
           }
         ],
         [
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "SystemThreat",
             "string0": "Air",
@@ -45,13 +35,8 @@
           }
         ],
         [
-          {
-            "test_type": "EnemyAirPresenceOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "EnemyAirPresenceOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitRatioOnPlanet",
             "unit_type_string0": "Air & Fighter",
@@ -85,13 +70,8 @@
             "string0": "PenchantT2Air",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": false
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          }
+          { "test_type": "AloneOnPlanet", "boolean": false },
+          { "test_type": "CanAffordBuildDemand" }
         ],
         [
           {
@@ -99,13 +79,8 @@
             "string0": "PenchantT2Air",
             "boolean": false
           },
-          {
-            "test_type": "AloneOnPlanet",
-            "boolean": true
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "AloneOnPlanet", "boolean": true },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Gunship",
@@ -124,12 +99,8 @@
       "builders": ["BasicAirFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "DesireEnergy"
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "DesireEnergy" },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Commander",
@@ -150,12 +121,8 @@
           }
         ],
         [
-          {
-            "test_type": "DesireEnergy"
-          },
-          {
-            "test_type": "CanAffordBuildDemand"
-          },
+          { "test_type": "DesireEnergy" },
+          { "test_type": "CanAffordBuildDemand" },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "Commander",

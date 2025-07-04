@@ -17,58 +17,28 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
-          {
-            "test_type": "NeedBasicNavalFactory",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
+          { "test_type": "NeedBasicNavalFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicNavalFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedBasicNavalFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedAdvancedNavalFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedAdvancedNavalFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction & Naval & Basic) - Orbital",
@@ -79,34 +49,19 @@
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedBasicNavalFactory",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
+          { "test_type": "NeedBasicNavalFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Construction) - Orbital",
             "compare0": "<=",
             "value0": 0
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ]
       ],
       "placement_rules": {
@@ -136,10 +91,7 @@
       ],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": false
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -150,69 +102,40 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.05
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.05 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicNavalFactory",
-            "boolean": false
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "NeedBasicNavalFactory", "boolean": false },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ],
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "CurrentMetalEfficiency",
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.05
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.05 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedBasicNavalFactory",
-            "boolean": true
-          },
-          {
-            "test_type": "CanDeployNavalFromBase",
-            "boolean": true
-          },
+          { "test_type": "NeedBasicNavalFactory", "boolean": true },
+          { "test_type": "CanDeployNavalFromBase", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "BasicNavalFactory"
           },
-          {
-            "test_type": "CanFindPlaceToBuild",
-            "string0": "BasicNavalFactory"
-          }
+          { "test_type": "CanFindPlaceToBuild", "string0": "BasicNavalFactory" }
         ]
       ],
       "placement_rules": {
@@ -236,14 +159,8 @@
       "builders": ["BasicNavalFabber", "AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedAdvancedNavalFactory",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
+          { "test_type": "NeedAdvancedNavalFactory", "boolean": true },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedNavalFactory"
@@ -254,14 +171,8 @@
           }
         ],
         [
-          {
-            "test_type": "UnableToExpand",
-            "boolean": true
-          },
-          {
-            "test_type": "NeedAdvancedNavalFactory",
-            "boolean": true
-          },
+          { "test_type": "UnableToExpand", "boolean": true },
+          { "test_type": "NeedAdvancedNavalFactory", "boolean": true },
           {
             "test_type": "UnitCountOnPlanet",
             "unit_type_string0": "(Factory & Advanced) - NukeDefense - Nuke - SelfDestruct",
@@ -295,10 +206,7 @@
       "builders": ["BasicNavalFabber", "AdvancedNavalFabber"],
       "build_conditions": [
         [
-          {
-            "test_type": "HaveEcoForAdvanced",
-            "boolean": true
-          },
+          { "test_type": "HaveEcoForAdvanced", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
             "string0": "PreventsWaste",
@@ -309,20 +217,13 @@
             "compare0": ">",
             "value0": 1
           },
-          {
-            "test_type": "MetalStorageFrac",
-            "compare0": ">",
-            "value0": 0.05
-          },
+          { "test_type": "MetalStorageFrac", "compare0": ">", "value0": 0.05 },
           {
             "test_type": "CurrentEnergyEfficiency",
             "compare0": ">=",
             "value0": 1
           },
-          {
-            "test_type": "NeedAdvancedNavalFactory",
-            "boolean": false
-          },
+          { "test_type": "NeedAdvancedNavalFactory", "boolean": false },
           {
             "test_type": "CanAffordPotentialDrain",
             "string0": "AdvancedNavalFactory"
