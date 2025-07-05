@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.80.1 - 2025-07-05
+
+### Bugfix
+
+- Fix Bluehawk Upgrade Tech not applying to the anti-orbital portion of the weapon
+
 ## v5.80.0 - 2025-07-04
 
 ### Added
