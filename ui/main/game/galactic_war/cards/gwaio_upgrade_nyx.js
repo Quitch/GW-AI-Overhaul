@@ -44,7 +44,7 @@ define([
         },
         {
           file: gwoUnit.nyx,
-          path: "recon.observer.items.3.radius",
+          path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 2,
         },

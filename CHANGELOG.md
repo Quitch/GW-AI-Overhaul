@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Nyx Upgrade Tech buffs the jammer range
+
 ## v5.80.1 - 2025-07-05
 
 ### Bugfix
