@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.80.2 - 2025-07-06
+
+### Changed
+
+- Kessler Upgrade Tech aligned to Mine Upgrade Tech
+
+### Bugfix
+
+- Nyx Upgrade Tech buffs the jammer range
+
 ## v5.80.1 - 2025-07-05
 
 ### Bugfix

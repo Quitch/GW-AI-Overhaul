@@ -142,7 +142,6 @@ function gwoBugfixes() {
         gwoSettings.treasurePlanetFixed = true;
       }
     };
-    checkIfPatchesNeeded();
 
     const applyFixes = function () {
       for (var star of galaxy.stars()) {
@@ -159,6 +158,8 @@ function gwoBugfixes() {
 
       fixLuckyCommanderLocalStorageVariable();
     };
+
+    checkIfPatchesNeeded();
     applyFixes();
 
     requireGW(
