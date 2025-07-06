@@ -100,7 +100,7 @@ define([
   };
 
   const setupAITech3EngineTech = function () {
-    const factionUnitsNoAir = [
+    const factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
@@ -120,7 +120,7 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
+    _.forEach(factionUnits, function (factionUnits, i) {
       factionsTech[i][3] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
@@ -151,7 +151,7 @@ define([
   };
 
   const setupAITech6CombatTech = function () {
-    const factionUnitsNoAir = [
+    const factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
@@ -171,7 +171,7 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
+    _.forEach(factionUnits, function (factionUnits, i) {
       factionsTech[i][6] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
