@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Kessler Upgrade Tech aligned to Mine Upgrade Tech
+
 ### Bugfix
 
 - Nyx Upgrade Tech buffs the jammer range

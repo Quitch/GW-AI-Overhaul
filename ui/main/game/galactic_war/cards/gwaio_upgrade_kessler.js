@@ -6,7 +6,7 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Kessler Upgrade Tech adds the ability for orbital mines to move between planets."
+        "!LOC:Kessler Upgrade Tech allows orbital mines to explode without self-destructing."
       ) +
         "<br> <br>" +
         loc("!LOC:Does not use a Data Bank.")
@@ -37,28 +37,10 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods([
         {
-          file: gwoUnit.kessler,
-          path: "system_velocity_multiplier",
+          file: gwoUnit.kesslerWeapon,
+          path: "self_destruct",
           op: "replace",
-          value: 30,
-        },
-        {
-          file: gwoUnit.kessler,
-          path: "gravwell_velocity_multiplier",
-          op: "replace",
-          value: 10,
-        },
-        {
-          file: gwoUnit.kessler,
-          path: "navigation.inter_planetary_type",
-          op: "replace",
-          value: "system",
-        },
-        {
-          file: gwoUnit.kessler,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Interplanetary",
+          value: false,
         },
       ]);
     },
