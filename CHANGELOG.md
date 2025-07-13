@@ -7,6 +7,10 @@
 - Support for Eradication Mode
 - Eradication Tech
 
+### Changed
+
+- Increased granularity of percentage based options for custom settings
+
 ### Bugfix
 
 - Game modifiers not being translated in the intelligence panel
