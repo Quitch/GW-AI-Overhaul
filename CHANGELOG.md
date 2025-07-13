@@ -5,6 +5,7 @@
 ### Added
 
 - Support for Eradication Mode
+- Eradication Tech
 
 ### Bugfix
 

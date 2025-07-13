@@ -244,6 +244,7 @@ function gwoCard() {
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",
         "gwaio_enable_bounties",
+        "gwaio_enable_eradication",
         "gwaio_enable_factories_t1_all",
         "gwaio_enable_landanywhere",
         "gwaio_enable_orbitalbombardment",
