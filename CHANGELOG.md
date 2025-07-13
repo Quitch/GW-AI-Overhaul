@@ -6,6 +6,10 @@
 
 - Support for Eradication Mode
 
+### Bugfix
+
+- Game modifiers not being translated in the intelligence panel
+
 ## v5.80.2 - 2025-07-06
 
 ### Changed

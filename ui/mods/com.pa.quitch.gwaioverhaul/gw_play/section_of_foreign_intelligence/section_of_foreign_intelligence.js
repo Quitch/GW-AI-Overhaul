@@ -259,16 +259,16 @@ function gwoIntelligence() {
           const gameModifiers = [];
 
           if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
-            gameModifiers.push("Bounties");
+            gameModifiers.push(loc("!LOC:Bounties"));
           }
           if (
             ai.landAnywhere ||
             inventory.hasCard("gwaio_enable_landanywhere")
           ) {
-            gameModifiers.push("Land Anywhere");
+            gameModifiers.push(loc("!LOC:Land Anywhere"));
           }
           if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
-            gameModifiers.push("Sudden Death");
+            gameModifiers.push(loc("!LOC:Sudden Death"));
           }
           if (
             ai.eradicationMode ||
