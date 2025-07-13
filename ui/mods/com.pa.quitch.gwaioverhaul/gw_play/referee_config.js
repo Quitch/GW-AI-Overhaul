@@ -289,10 +289,10 @@ define([
       armies.push(aiArmy);
     });
 
-    const playerBountyMode = inventory.hasCard("gwaio_enable_bounties");
-    const bountyMode = ai.bountyMode || playerBountyMode;
-    const playerSuddenDeathMode = inventory.hasCard("gwaio_enable_suddendeath");
-    const suddenDeathMode = ai.suddenDeath || playerSuddenDeathMode;
+    const bountyMode =
+      ai.bountyMode || inventory.hasCard("gwaio_enable_bounties");
+    const suddenDeathMode =
+      ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath");
     const playerLandAnywhereMode = inventory.hasCard(
       "gwaio_enable_landanywhere"
     );
