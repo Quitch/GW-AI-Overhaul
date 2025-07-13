@@ -55,6 +55,7 @@ function gwoUI() {
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
       aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
+      eradicationModeChance: koNumeric(0, 0),
     };
 
     var difficultySettings = model.gwoDifficultySettings;
@@ -237,6 +238,9 @@ function gwoUI() {
             $("#gwo-personality-picker")
               .selectpicker("val", difficultySettings.personalityTags())
               .trigger("change");
+            difficultySettings.eradicationModeChance(
+              difficulties[selectedDifficulty].eradicationModeChance
+            );
           }
         });
       }

@@ -315,6 +315,18 @@ function gwoSetup() {
           return Math.random() * 100 <= gameModeChance;
         };
 
+        const enableAnEradicationModeTypes = function (ai) {
+          while (
+            !ai.eradicationModeSubCommanders &&
+            !ai.eradicationModeFactories &&
+            !ai.eradicationModeFabbers
+          ) {
+            ai.eradicationModeSubCommanders = gameModeEnabled(50);
+            ai.eradicationModeFactories = gameModeEnabled(50);
+            ai.eradicationModeFabbers = gameModeEnabled(50);
+          }
+        };
+
         const startCardAllyCompatibility = function (game) {
           // global for modder compatibility
           if (!model.gwoStarCardsWhichBreakAllies) {
@@ -637,6 +649,10 @@ function gwoSetup() {
                 );
                 ai.bountyMode = gameModeEnabled(difficulty.bountyModeChance());
                 ai.bountyModeValue = parseFloat(difficulty.bountyModeValue());
+                ai.eradicationMode = gameModeEnabled(
+                  difficulty.eradicationModeChance()
+                );
+                enableAnEradicationModeTypes(ai);
 
                 const dist = worker.star.distance();
 

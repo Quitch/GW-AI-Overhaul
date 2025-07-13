@@ -297,6 +297,8 @@ define([
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.landAnywhere || playerLandAnywhereMode;
+    const eradicationMode =
+      ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication");
     const canGlassPlanets = inventory.hasCard(
       "gwaio_enable_orbitalbombardment"
     );
@@ -323,6 +325,10 @@ define([
       bounty_mode: bountyMode,
       bounty_value: ai.bountyModeValue,
       sudden_death_mode: suddenDeathMode,
+      eradication_mode: eradicationMode,
+      eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
+      eradication_mode_factories: ai.eradicationModeFactories,
+      eradication_mode_fabricators: ai.eradicationModeFabbers,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter
