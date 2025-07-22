@@ -14,6 +14,7 @@
 ### Bugfix
 
 - Game modifiers not being translated in the intelligence panel
+- Remove obsolete AI behaviour for Air Factory Upgrade Tech
 
 ## v5.80.2 - 2025-07-06
 
