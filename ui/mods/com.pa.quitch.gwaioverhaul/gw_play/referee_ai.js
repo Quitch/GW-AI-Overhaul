@@ -2,7 +2,7 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
   gwoAI
 ) {
-  const addTechToAI = function (json, mods) {
+  const applyAiMods = function (json, mods) {
     const ops = {
       // fabber/factory/platoon only
       append: function (value, toBuild, idToMod, refId, refValue) {
@@ -133,8 +133,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     });
   };
 
-  const aiPathCreation = function (aiPath, filePath, cullLength) {
-    return aiPath + filePath.slice(cullLength);
+  const aiPathCreation = function (aiPath, filePath, pathLength) {
+    return aiPath + filePath.slice(pathLength);
   };
 
   const aiToMod = function (inventory, guardians, clusterPresence) {
@@ -146,6 +146,20 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       }
     }
     return "None";
+  };
+
+  const whichAIsAreBeingModified = function () {
+    const game = model.game();
+    const inventory = game.inventory();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const alliedCommanders = _.isUndefined(ai.ally)
+      ? inventory.minions()
+      : inventory.minions().concat(ai.ally);
+    const numberOfAllies = alliedCommanders.length;
+    const guardians = ai.mirrorMode;
+    const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
+
+    return aiToMod(inventory, guardians, clusterPresence);
   };
 
   const managerPath = function (type) {
@@ -163,19 +177,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     }
   };
 
-  const addAILoadFilesToFileList = function (
-    aiFiles,
-    modType,
-    fileList,
-    aiPath
-  ) {
-    if (modType === "None") {
-      return;
+  const addAILoadOpsFilesToFileList = function (aiFiles, modType) {
+    const fileList = [];
+
+    if (modType !== "None") {
+      _.forEach(aiFiles, function (aiFile) {
+        fileList.push("/pa/ai_tech/" + managerPath(aiFile.type) + aiFile.value);
+      });
     }
 
-    _.forEach(aiFiles, function (aiFile) {
-      fileList.push(aiPath + managerPath(aiFile.type) + aiFile.value);
-    });
+    return fileList;
   };
 
   const whoIsCluster = function (inventory, ai, subcommanders) {
@@ -194,41 +205,72 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     return "None";
   };
 
-  // parse AI mods and load the results into self.files()
-  return function () {
-    const self = this;
-    const game = self.game();
+  const whichAIsAreCluster = function () {
+    const game = model.game();
     const inventory = game.inventory();
-    const currentStar = game.galaxy().stars()[game.currentStar()];
-    const ai = currentStar.ai();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     const numberOfAllies = alliedCommanders.length;
-    const aiFilePath =
-      numberOfAllies > 0 ? gwoAI.getAIPath("all") : gwoAI.getAIPath("enemy");
+    return whoIsCluster(inventory, ai, numberOfAllies);
+  };
 
-    const deferred = $.Deferred();
+  const processFilesInDirectory = function (
+    filePath,
+    configFiles,
+    aisToModify,
+    clusterPresence
+  ) {
+    const filePathStarts = function (filePathFragment) {
+      return _.startsWith(filePath, filePathFragment);
+    };
 
-    api.file.list(aiFilePath, true).then(function (fileList) {
-      const configFiles = self.files();
-      const aiFiles = [];
-      const aiMods = _.partition(inventory.aiMods(), { op: "load" });
-      const aiNewFiles = aiMods[0];
-      const aiJsonMods = aiMods[1];
-      const guardians = ai.mirrorMode;
-      const clusterPresence = whoIsCluster(inventory, ai, numberOfAllies);
-      const aiToModify = aiToMod(inventory, guardians, clusterPresence);
-      const aiTechPath = "/pa/ai_tech/";
+    const filePathIncludes = function (filePathFragment) {
+      return _.includes(filePath, filePathFragment);
+    };
 
-      addAILoadFilesToFileList(aiNewFiles, aiToModify, fileList, aiTechPath);
+    const copyJsonToClusterAiPath = function (pathLength, clusterJson) {
+      const updatedFilePath = aiPathCreation(
+        gwoAI.getAIPath("cluster"),
+        filePath,
+        pathLength
+      );
+      configFiles[updatedFilePath] = clusterJson;
+    };
 
-      const isQueller = gwoAI.aiInUse() === "Queller";
-      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
-      const enemyAIPath = gwoAI.getAIPath("enemy");
-      const clusterAIPath = gwoAI.getAIPath("cluster");
+    const aiModsInScopeOfFile = function () {
+      const aiMods = _.partition(model.game().inventory().aiMods(), {
+        op: "load",
+      });
+      const aiJsonMods = aiMods[1]; // all AI ops except load
+
+      if (aisToModify === "None" || _.isEmpty(aiJsonMods)) {
+        return;
+      }
+
+      var aiManager = "";
+
+      if (filePathIncludes("/fabber_builds/")) {
+        aiManager = "fabber";
+      } else if (filePathIncludes("/factory_builds/")) {
+        aiManager = "factory";
+      } else if (filePathIncludes("/platoon_builds/")) {
+        aiManager = "platoon";
+      } else if (filePathIncludes("/platoon_templates/")) {
+        aiManager = "template";
+      }
+
+      return _.filter(aiJsonMods, { type: aiManager });
+    };
+
+    const clusterAIModsInScopeOfFile = function () {
+      if (!_.includes(filePath, "/factory_builds/")) {
+        return;
+      }
+
       const clusterCommanders = ["SupportPlatform", "SupportCommander"];
-      const clusterAIMods = _.map(clusterCommanders, function (commander) {
+      return _.map(clusterCommanders, function (commander) {
         return {
           type: "factory",
           op: "replace",
@@ -237,151 +279,176 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           value: 0,
         };
       });
+    };
 
-      const aiBuildsForType = function (filePathFragment) {
-        return _.filter(aiJsonMods, { type: filePathFragment });
-      };
+    const processClusterJson = function (json, pathLength) {
+      const clusterOps = clusterAIModsInScopeOfFile() || [];
+      const clusterJson = _.cloneDeep(json);
+      applyAiMods(clusterJson, clusterOps);
+      copyJsonToClusterAiPath(pathLength, clusterJson);
+    };
 
-      _.forEach(fileList, function (filePath) {
-        const filePathIncludes = function (substring) {
-          return _.includes(filePath, substring);
-        };
+    // Identify the file type and which ops are applicable
+    var aiJsonModsInScope = aiModsInScopeOfFile() || [];
 
-        const filePathStarts = function (filePathFragment) {
-          return _.startsWith(filePath, filePathFragment);
-        };
+    return $.getJSON("coui:/" + filePath).then(function (json) {
+      var updatedFilePath = filePath;
 
-        const filePathEnds = function (filePathFragment) {
-          return _.endsWith(filePath, filePathFragment);
-        };
+      const game = model.game();
+      const inventory = game.inventory();
+      const currentStar = game.galaxy().stars()[game.currentStar()];
+      const ai = currentStar.ai();
+      const alliedCommanders = _.isUndefined(ai.ally)
+        ? inventory.minions()
+        : inventory.minions().concat(ai.ally);
+      const numberOfAllies = alliedCommanders.length;
+      const enemyAIPath = gwoAI.getAIPath("enemy");
+      const subcommanderAIPath = gwoAI.getAIPath("subcommander");
+      const enemyAndSubCommanderAIAreTheSame =
+        gwoAI.aiInUse("enemy") === gwoAI.aiInUse("subcommander");
+      const quellerSubCommander =
+        gwoAI.aiInUse("subcommander") === "Queller" && numberOfAllies > 0;
+      const aiTechPath = "/pa/ai_tech/";
+      const isAiTechFile = filePathStarts(aiTechPath);
 
-        if (!filePathEnds(".json") || filePathIncludes("/neural_networks/")) {
+      switch (aisToModify) {
+        case "All":
+          applyAiMods(json, aiJsonModsInScope);
+          if (isAiTechFile) {
+            updatedFilePath = aiPathCreation(
+              enemyAIPath,
+              filePath,
+              aiTechPath.length
+            );
+            configFiles[updatedFilePath] = json;
+            updatedFilePath = aiPathCreation(
+              subcommanderAIPath,
+              filePath,
+              aiTechPath.length
+            );
+            configFiles[updatedFilePath] = json;
+          } else {
+            configFiles[filePath] = json;
+          }
+          break;
+        case "SubCommanders":
+          if (enemyAndSubCommanderAIAreTheSame && filePathStarts(enemyAIPath)) {
+            // Make a clean copy of the files for enemy AIs before modification of the JSON
+            configFiles[filePath] = _.cloneDeep(json);
+          }
+          applyAiMods(json, aiJsonModsInScope);
+          if (quellerSubCommander && isAiTechFile) {
+            updatedFilePath = aiPathCreation(
+              subcommanderAIPath,
+              filePath,
+              aiTechPath.length
+            );
+          } else if (enemyAndSubCommanderAIAreTheSame) {
+            if (isAiTechFile) {
+              updatedFilePath = aiPathCreation(
+                subcommanderAIPath,
+                filePath,
+                aiTechPath.length
+              );
+            } else if (!filePathStarts(subcommanderAIPath)) {
+              updatedFilePath = aiPathCreation(
+                subcommanderAIPath,
+                filePath,
+                enemyAIPath.length
+              );
+            }
+          }
+          configFiles[updatedFilePath] = json;
+          break;
+        default: // "None"
+          configFiles[filePath] = json;
+      }
+
+      if (clusterPresence === "Player") {
+        processClusterJson(json, subcommanderAIPath.length);
+      } else if (clusterPresence === "Enemy" && !isAiTechFile) {
+        processClusterJson(json, enemyAIPath.length);
+      }
+    });
+  };
+
+  const processDirectories = function (
+    aiPath,
+    configFiles,
+    aisToModify,
+    clusterPresence,
+    enemyAndSubCommanderAIAreTheSame,
+    inventory
+  ) {
+    const deferred = $.Deferred();
+
+    api.file.list(aiPath, true).then(function (fileList) {
+      const isSubCommanderDirectory =
+        enemyAndSubCommanderAIAreTheSame ||
+        aiPath === gwoAI.getAIPath("subcommander");
+
+      if (isSubCommanderDirectory && aisToModify !== "None") {
+        const aiMods = _.partition(inventory.aiMods(), { op: "load" });
+        const aiNewFiles = aiMods[0]; // AI load ops only
+        fileList = fileList.concat(
+          addAILoadOpsFilesToFileList(aiNewFiles, aisToModify)
+        );
+      }
+
+      var promises = _.map(fileList, function (filePath) {
+        if (
+          !_.endsWith(filePath, ".json") ||
+          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+        ) {
           return;
         }
 
-        const aiFile = $.Deferred();
-
-        var aiBuildOps = [];
-        var clusterOps = [];
-        const quellerSubCommander =
-          isQueller &&
-          numberOfAllies > 0 &&
-          (filePathStarts(subcommanderAIPath) || filePathStarts(aiTechPath));
-
-        if (aiToModify !== "None" && !_.isEmpty(aiJsonMods)) {
-          if (filePathIncludes("/fabber_builds/")) {
-            aiBuildOps = aiBuildsForType("fabber");
-          } else if (filePathIncludes("/factory_builds/")) {
-            aiBuildOps = aiBuildsForType("factory");
-          } else if (filePathIncludes("/platoon_builds/")) {
-            aiBuildOps = aiBuildsForType("platoon");
-          } else if (filePathIncludes("/platoon_templates/")) {
-            aiBuildOps = aiBuildsForType("template");
-          }
-        }
-        if (
-          filePathIncludes("/factory_builds/") &&
-          clusterPresence !== "None"
-        ) {
-          clusterOps = clusterAIMods;
-        }
-
-        aiFiles.push(aiFile);
-
-        $.getJSON("coui:/" + filePath)
-          .then(function (json) {
-            var updatedFilePath = filePath;
-            const aiTechFile = filePathStarts(aiTechPath);
-
-            if (aiToModify === "All") {
-              addTechToAI(json, aiBuildOps);
-              // Put "load" files where the AI expects them to be
-              if (aiTechFile) {
-                if (isQueller) {
-                  // We don't know if the aiFilePath contains q_uber
-                  const quellerEnemyPath = gwoAI.getAIPath("enemy");
-                  updatedFilePath = aiPathCreation(
-                    quellerEnemyPath,
-                    filePath,
-                    aiTechPath.length
-                  );
-                  configFiles[updatedFilePath] = json;
-                  if (quellerSubCommander) {
-                    updatedFilePath = aiPathCreation(
-                      subcommanderAIPath,
-                      filePath,
-                      quellerEnemyPath.length
-                    );
-                    configFiles[updatedFilePath] = json;
-                  }
-                } else {
-                  updatedFilePath = aiPathCreation(
-                    aiFilePath,
-                    filePath,
-                    aiTechPath.length
-                  );
-                  configFiles[updatedFilePath] = json;
-                }
-              } else {
-                configFiles[filePath] = json;
-              }
-            } else if (aiToModify === "SubCommanders") {
-              // Make a clean copy of the files for enemy AIs
-              if (filePathStarts(enemyAIPath)) {
-                configFiles[filePath] = _.cloneDeep(json);
-              }
-              addTechToAI(json, aiBuildOps);
-              if (quellerSubCommander) {
-                // Put "load" files where Queller expects them to be
-                if (aiTechFile) {
-                  updatedFilePath = aiPathCreation(
-                    subcommanderAIPath,
-                    filePath,
-                    aiTechPath.length
-                  );
-                }
-              } else if (filePathStarts(aiFilePath)) {
-                // Titans/Penchant Sub Commanders share an ai_path with the enemy so need a new one
-                updatedFilePath =
-                  aiTechPath + filePath.slice(aiFilePath.length);
-              }
-
-              configFiles[updatedFilePath] = json;
-            } else {
-              configFiles[filePath] = json;
-            }
-
-            if (clusterPresence !== "None") {
-              var slice = aiFilePath;
-              if (isQueller) {
-                const quellerPaths = [
-                  enemyAIPath,
-                  subcommanderAIPath,
-                  aiTechPath,
-                ];
-                slice = _.filter(quellerPaths, function (path) {
-                  return filePathStarts(path);
-                }).toString();
-              }
-              updatedFilePath = aiPathCreation(
-                clusterAIPath,
-                filePath,
-                slice.length
-              );
-              const clusterJson = _.cloneDeep(json);
-              addTechToAI(clusterJson, clusterOps);
-              configFiles[updatedFilePath] = clusterJson;
-            }
-          })
-          .always(function () {
-            aiFile.resolve();
-          });
+        return processFilesInDirectory(
+          filePath,
+          configFiles,
+          aisToModify,
+          clusterPresence
+        );
       });
 
-      $.when.apply($, aiFiles).then(function () {
-        self.files.valueHasMutated();
+      Promise.all(promises).then(function () {
         deferred.resolve();
       });
+    });
+
+    return deferred.promise();
+  };
+
+  // parse AI mods and load the results into self.files()
+  return function () {
+    const deferred = $.Deferred();
+
+    const self = this;
+    const configFiles = self.files();
+    const inventory = self.game().inventory();
+    const enemyAIPath = gwoAI.getAIPath("enemy");
+    const subcommanderAIPath = gwoAI.getAIPath("subcommander");
+    const enemyAndSubCommanderAIAreTheSame =
+      gwoAI.aiInUse("enemy") === gwoAI.aiInUse("subcommander");
+    const aiPaths = enemyAndSubCommanderAIAreTheSame
+      ? [enemyAIPath]
+      : [enemyAIPath, subcommanderAIPath];
+    const aisToModify = whichAIsAreBeingModified();
+    const clusterPresence = whichAIsAreCluster();
+
+    var promises = _.map(aiPaths, function (aiPath) {
+      return processDirectories(
+        aiPath,
+        configFiles,
+        aisToModify,
+        clusterPresence,
+        enemyAndSubCommanderAIAreTheSame,
+        inventory
+      );
+    });
+
+    Promise.all(promises).then(function () {
+      deferred.resolve();
     });
 
     return deferred.promise();

@@ -1,9 +1,16 @@
 define({
-  aiInUse: function () {
+  aiInUse: function (alignment) {
     const galaxy = model.game().galaxy();
     const originSystem = galaxy.stars()[galaxy.origin()].system();
     if (originSystem.gwaio) {
-      return originSystem.gwaio.ai;
+      switch (alignment) {
+        case "subcommander":
+          return originSystem.gwaio.aiAlly
+            ? originSystem.gwaio.aiAlly
+            : originSystem.gwaio.ai;
+        default:
+          return originSystem.gwaio.ai;
+      }
     }
     return "Titans";
   },
@@ -16,7 +23,7 @@ define({
     const smartSubcommanders = _.some(inventory.cards(), {
       id: "gwaio_upgrade_subcommander_tactics",
     });
-    const aiInUse = this.aiInUse();
+    const aiInUse = this.aiInUse(type);
     const quellerPath = "/pa/ai_queller/";
     // the order of path assignments must match .player unit_map assignments in generateGameFiles()
     if (type === "cluster") {
@@ -36,7 +43,7 @@ define({
       !_.isEmpty(inventory.aiMods()) &&
       !guardians
     ) {
-      return "/pa/ai_tech/";
+      return "/pa/ai_subcommander/";
     } else if (aiInUse === "Penchant") {
       return "/pa/ai_penchant/";
     }

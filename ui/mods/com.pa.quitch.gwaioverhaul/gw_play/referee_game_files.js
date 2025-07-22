@@ -274,9 +274,9 @@ define([
       const playerFileGen = $.Deferred();
       const filesToProcess = [playerFileGen];
 
-      const aiInUse = gwoAI.aiInUse();
-      const aiUnitMapPath = getAIUnitMapPath(false, aiInUse);
-      const aiUnitMapTitansPath = getAIUnitMapPath(true, aiInUse);
+      const enemyAI = gwoAI.aiInUse("enemy");
+      const aiUnitMapPath = getAIUnitMapPath(false, enemyAI);
+      const aiUnitMapTitansPath = getAIUnitMapPath(true, enemyAI);
 
       const unitsLoad = $.get("spec://pa/units/unit_list.json");
       const aiMapLoad = $.get("spec:/" + aiUnitMapPath);
@@ -360,6 +360,7 @@ define([
               const playerIsCluster =
                 inventory.getTag("global", "playerFaction") === 4;
               const guardians = ai.mirrorMode;
+              const subcommanderAI = gwoAI.aiInUse("subcommander");
               // the order of unit_map assignments must match getAIPath()
               if (playerIsCluster) {
                 playerFilesClassic = _.assign(
@@ -379,7 +380,7 @@ define([
                     )
                   : {};
               } else if (
-                aiInUse === "Queller" &&
+                subcommanderAI === "Queller" &&
                 _.some(inventory.cards(), {
                   id: "gwaio_upgrade_subcommander_tactics",
                 })
@@ -400,7 +401,7 @@ define([
                       playerSpecFiles
                     )
                   : {};
-              } else if (aiInUse === "Queller") {
+              } else if (subcommanderAI === "Queller") {
                 playerFilesClassic = _.assign(
                   {
                     "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map.json.player":
@@ -420,7 +421,7 @@ define([
               } else if (!_.isEmpty(inventory.aiMods()) && !guardians) {
                 playerFilesClassic = _.assign(
                   {
-                    "/pa/ai_tech/unit_maps/ai_unit_map.json.player":
+                    "/pa/ai_subcommander/unit_maps/ai_unit_map.json.player":
                       playerAIUnitMap,
                   },
                   playerSpecFiles
@@ -428,13 +429,13 @@ define([
                 playerFilesX1 = titans
                   ? _.assign(
                       {
-                        "/pa/ai_tech/unit_maps/ai_unit_map_x1.json.player":
+                        "/pa/ai_subcommander/unit_maps/ai_unit_map_x1.json.player":
                           playerX1AIUnitMap,
                       },
                       playerSpecFiles
                     )
                   : {};
-              } else if (aiInUse === "Penchant") {
+              } else if (subcommanderAI === "Penchant") {
                 playerFilesClassic = _.assign(
                   {
                     "/pa/ai_penchant/unit_maps/ai_unit_map.json.player":

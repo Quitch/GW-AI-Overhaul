@@ -777,7 +777,7 @@ function gwoSetup() {
                   );
                   allyCommander.faction = playerFaction;
                   ai.ally = allyCommander;
-                  if (difficulty.ai() === "Penchant") {
+                  if (difficulty.aiAlly() === "Penchant") {
                     setupPenchantAI(ai.ally);
                   }
                 }
@@ -923,6 +923,7 @@ function gwoSetup() {
               originSystem.gwaio.cheatsUsed = true;
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
+            originSystem.gwaio.aiAlly = model.gwoDifficultySettings.aiAlly();
             originSystem.gwaio.aiMods = [];
             originSystem.gwaio.techCardDeck =
               model.gwoDifficultySettings.techCardDeck();

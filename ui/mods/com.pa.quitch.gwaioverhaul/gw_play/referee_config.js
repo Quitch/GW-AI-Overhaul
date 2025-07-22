@@ -246,7 +246,7 @@ define([
       const aiNewTag = ".ai" + n.toString();
       aiTag.push(aiNewTag);
     });
-    const aiInUse = gwoAI.aiInUse();
+    const aiInUse = gwoAI.aiInUse("enemy");
 
     // Set up AI System Owner
     ai = setAdvEcoMod(ai, aiInUse);

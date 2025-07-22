@@ -1,5 +1,7 @@
 <div class="form-group" id="difficulty-ai">
-  <label id="game-ai-label" for="game-ai"><loc>AI:</loc></label>
+  <label id="game-ai-label" for="game-ai-enemy"
+    ><loc>OPPONENT</loc> <loc>AI:</loc></label
+  >
   <span
     class="info_tip"
     data-bind="tooltip: '!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of performance<br>PENCHANT: increased personality'"
@@ -7,8 +9,27 @@
   >
   <select
     class="form-control"
-    id="game-ai"
+    id="game-ai-enemy"
     data-bind="selectPicker: gwoDifficultySettings.ai"
+  >
+    <option value="Titans">TITANS</option>
+    <option value="Queller">QUELLER</option>
+    <option value="Penchant">PENCHANT</option>
+  </select>
+</div>
+<div class="form-group" id="difficulty-ai-ally">
+  <label id="game-ai-label" for="game-ai-ally"
+    ><loc>ALLY</loc> <loc>AI:</loc></label
+  >
+  <span
+    class="info_tip"
+    data-bind="tooltip: '!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of performance<br>PENCHANT: increased personality'"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="game-ai-ally"
+    data-bind="selectPicker: gwoDifficultySettings.aiAlly"
   >
     <option value="Titans">TITANS</option>
     <option value="Queller">QUELLER</option>
