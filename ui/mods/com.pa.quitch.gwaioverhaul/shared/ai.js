@@ -3,14 +3,10 @@ define({
     const galaxy = model.game().galaxy();
     const originSystem = galaxy.stars()[galaxy.origin()].system();
     if (originSystem.gwaio) {
-      switch (alignment) {
-        case "subcommander":
-          return originSystem.gwaio.aiAlly
-            ? originSystem.gwaio.aiAlly
-            : originSystem.gwaio.ai;
-        default:
-          return originSystem.gwaio.ai;
+      if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
+        return originSystem.gwaio.aiAlly;
       }
+      return originSystem.gwaio.ai;
     }
     return "Titans";
   },
