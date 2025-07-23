@@ -20,7 +20,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.missingUnit(inventory.units(), gwoGroup.airBasic)) {
+      if (!gwoCard.hasUnit(inventory.units(), gwoGroup.airBasic)) {
         const dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||

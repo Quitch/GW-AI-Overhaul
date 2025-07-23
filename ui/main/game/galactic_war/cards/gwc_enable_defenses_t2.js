@@ -20,7 +20,7 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       const hasT2Access = gwoCard.hasT2Access(inventory);
-      const missingUnit = gwoCard.missingUnit(
+      const missingUnit = !gwoCard.hasUnit(
         inventory.units(),
         gwoGroup.structuresDefencesAdvanced
       );
