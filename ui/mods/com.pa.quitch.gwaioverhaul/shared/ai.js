@@ -57,119 +57,115 @@ define({
   },
 
   penchants: function () {
-    const penchantTags = [
-      "Vanilla",
-      "Artillery",
-      ["Fortress", "Minelayer"], // Fortress
-      "AllTerrain",
-      "Assault",
-      "Boomer",
-      "Heavy",
-      "Infernodier",
-      "Raider",
-      "Sniper",
-      "Nuker",
-      "Tactical",
-      "Platoon",
-      "Minelayer",
+    const penchants = [
+      { name: "", tags: "" }, // Vanilla - no changes
+      { name: "!LOC:Artillery", tags: ["Artillery"] },
+      {
+        name: "!LOC:Fortress",
+        tags: [
+          "Fortress",
+          "Minelayer",
+          "PenchantT1Defence",
+          "PenchantT2Defence",
+        ],
+      },
+      {
+        name: "!LOC:AllTerrain",
+        tags: [
+          "AllTerrain",
+          "PenchantT1Bot",
+          "PenchantT2Bot",
+          "PenchantT1Vehicle",
+          "PenchantT2Naval",
+        ],
+      },
+      {
+        name: "!LOC:Assault",
+        tags: [
+          "Assault",
+          "PenchantT2Air",
+          "PenchantT1Bot",
+          "PenchantT1Vehicle",
+          "PenchantT2Vehicle",
+          "PenchantT1Naval",
+          "PenchantT2Naval",
+        ],
+      },
+      {
+        name: "!LOC:Boomer",
+        tags: ["Boomer", "PenchantT1Bot", "PenchantT2Bot"],
+      },
+      {
+        name: "!LOC:Heavy",
+        tags: [
+          "Heavy",
+          "NoPercentage",
+          "PenchantT2Air",
+          "PenchantT1Bot",
+          "PenchantT2Bot",
+          "PenchantT1Vehicle",
+          "PenchantT2Vehicle",
+          "PenchantT1Naval",
+          "PenchantT2Naval",
+        ],
+      },
+      {
+        name: "!LOC:Infernodier",
+        tags: [
+          "Infernodier",
+          "NoPercentage",
+          "PenchantT1Bot",
+          "PenchantT2Bot",
+          "PenchantT1Vehicle",
+          "PenchantT2Vehicle",
+        ],
+      },
+      {
+        name: "!LOC:Raider",
+        tags: [
+          "Raider",
+          "PenchantT2Air",
+          "PenchantT1Bot",
+          "PenchantT2Bot",
+          "PenchantT1Vehicle",
+          "PenchantT1Naval",
+          "PenchantT2Naval",
+        ],
+      },
+      {
+        name: "!LOC:Sniper",
+        tags: [
+          "Sniper",
+          "NoPercentage",
+          "PenchantT2Air",
+          "PenchantT1Bot",
+          "PenchantT2Bot",
+          "PenchantT1Vehicle",
+          "PenchantT2Vehicle",
+          "PenchantT1Naval",
+          "PenchantT2Naval",
+        ],
+      },
+      { name: "!LOC:Nuker", tags: ["Nuker"] },
+      {
+        name: "!LOC:Tactical",
+        tags: [
+          "Tactical",
+          "NoPercentage",
+          "PenchantT2Defence",
+          "PenchantT2Air",
+          "PenchantT2Bot",
+          "PenchantT2Naval",
+        ],
+      },
+      { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
+      { name: "!LOC:Minelayer", tags: ["Minelayer"] },
     ];
-    const penchantExclusions = [
-      [], // Vanilla
-      [], // Artillery
-      ["PenchantT1Defence", "PenchantT2Defence"], // Fortress
-      [
-        // AllTerrain
-        "PenchantT1Bot",
-        "PenchantT2Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Naval",
-      ],
-      [
-        // Assault
-        "PenchantT2Air",
-        "PenchantT1Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Vehicle",
-        "PenchantT1Naval",
-        "PenchantT2Naval",
-      ],
-      ["PenchantT1Bot", "PenchantT2Bot"], // Boomer
-      [
-        // Heavy
-        "NoPercentage",
-        "PenchantT2Air",
-        "PenchantT1Bot",
-        "PenchantT2Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Vehicle",
-        "PenchantT1Naval",
-        "PenchantT2Naval",
-      ],
-      [
-        // Infernodier
-        "NoPercentage",
-        "PenchantT1Bot",
-        "PenchantT2Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Vehicle",
-      ],
-      [
-        // Raider
-        "PenchantT2Air",
-        "PenchantT1Bot",
-        "PenchantT2Bot",
-        "PenchantT1Vehicle",
-        "PenchantT1Naval",
-        "PenchantT2Naval",
-      ],
-      [
-        // Sniper
-        "NoPercentage",
-        "PenchantT2Air",
-        "PenchantT1Bot",
-        "PenchantT2Bot",
-        "PenchantT1Vehicle",
-        "PenchantT2Vehicle",
-        "PenchantT1Naval",
-        "PenchantT2Naval",
-      ],
-      [], // Nuker
-      [
-        // Tactical
-        "NoPercentage",
-        "PenchantT2Defence",
-        "PenchantT2Air",
-        "PenchantT2Bot",
-        "PenchantT2Naval",
-      ],
-      ["PenchantPlatoon"], // Platoon
-      [], // Minelayer
-    ];
-    const penchantNames = [
-      "", // Vanilla - no modifications
-      "!LOC:Artillery",
-      "!LOC:Fortress",
-      "!LOC:All-terrain",
-      "!LOC:Assault",
-      "!LOC:Boomer",
-      "!LOC:Heavy",
-      "!LOC:Infernodier",
-      "!LOC:Raider",
-      "!LOC:Sniper",
-      "!LOC:Nuker",
-      "!LOC:Tactical",
-      "!LOC:Platoon",
-      "!LOC:Minelayer",
-    ];
-    const penchantTag = _.sample(penchantTags);
-    const penchantIndex = _.indexOf(penchantTags, penchantTag);
-    const personalityTags =
-      penchantExclusions[penchantIndex].concat(penchantTag);
-    const penchantName = loc(penchantNames[penchantIndex]);
+    const penchant = _.sample(penchants);
 
     return {
-      penchants: personalityTags,
-      penchantName: penchantName,
+      penchants: penchant.tags,
+      penchantName: penchant.name,
     };
   },
 });
