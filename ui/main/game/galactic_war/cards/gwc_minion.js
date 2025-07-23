@@ -34,30 +34,24 @@ define([
     },
     getContext: function (galaxy, inventory) {
       return {
-        chance: 100,
         totalSize: galaxy.stars().length,
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
     deal: function (system, context, inventory) {
-      var chance = context.chance;
+      var chance = 100;
       const aiOpeningFactories = [
         gwoUnit.vehicleFactory,
         gwoUnit.botFactory,
         gwoUnit.airFactory,
       ];
+
       if (
         !gwoCard.hasUnit(inventory.units(), aiOpeningFactories) ||
         inventory.hasCard("nem_start_deepspace") ||
         inventory.hasCard("gwaio_start_tourist")
       ) {
-        return {
-          params: {
-            minion: {},
-            unique: Math.random(),
-          },
-          chance: 0,
-        };
+        chance = 0;
       } else if (inventory.minions) {
         chance = chance / (inventory.minions().length + 1);
       }
@@ -65,6 +59,7 @@ define([
       const minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       const galaxy = model.game().galaxy();
       const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+
       if (gwoSettings) {
         const ai = gwoSettings.ai;
         if (ai === "Penchant") {
