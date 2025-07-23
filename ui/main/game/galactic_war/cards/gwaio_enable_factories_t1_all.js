@@ -40,6 +40,9 @@ define([
           chance = 250;
         }
       }
+      if (gwoCard.missingAllUnits(inventory.units(), basicFactories)) {
+        chance *= 3;
+      }
       return { chance: chance };
     },
     buff: function (inventory) {

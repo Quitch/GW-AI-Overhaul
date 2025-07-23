@@ -10,6 +10,7 @@
 ### Changed
 
 - Increased granularity of percentage based options for custom settings
+- Increased chance of complete basic tech when the player has no basic factories
 
 ### Bugfix
 
