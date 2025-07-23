@@ -616,12 +616,12 @@ function gwoCard() {
             cards[0].id === "gwc_start_subcdr" &&
             !cards[0].minions
           ) {
-            const ai = gwoSettings && gwoSettings.ai;
+            const subcommanderAI = gwoSettings && gwoSettings.aiAlly;
             _.times(2, function () {
               const subcommander = _.cloneDeep(
                 _.sample(GWFactions[playerFaction].minions)
               );
-              if (ai === "Penchant") {
+              if (subcommanderAI === "Penchant") {
                 const penchantValues = gwoAI.penchants();
                 subcommander.character =
                   subcommander.character +
@@ -725,9 +725,9 @@ function gwoCard() {
           const subcommander = _.cloneDeep(
             _.sample(GWFactions[playerFaction].minions)
           );
-          const ai = gwoSettings && gwoSettings.ai;
+          const subcommanderAI = gwoSettings && gwoSettings.aiAlly;
 
-          if (ai === "Penchant") {
+          if (subcommanderAI === "Penchant") {
             const penchantValues = gwoAI.penchants();
             subcommander.character =
               subcommander.character + (" " + loc(penchantValues.penchantName));

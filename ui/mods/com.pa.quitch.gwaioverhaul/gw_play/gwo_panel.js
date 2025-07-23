@@ -32,6 +32,8 @@ function gwoWarInfoPanel() {
           model.gwoDifficulty = loc(model.gwoSettings.difficulty);
           model.gwoSize = loc(model.gwoSettings.galaxySize);
           model.gwoAI = model.gwoSettings.ai || "Titans";
+          model.gwoAIAlly =
+            model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
           model.gwoDeck =
             model.gwoSettings.techCardDeck === "Expanded"
               ? loc("!LOC:Galactic War Overhaul")

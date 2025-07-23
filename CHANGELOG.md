@@ -6,6 +6,7 @@
 
 - Support for Eradication Mode
 - Eradication Tech
+- Support for the enemy and subcommanders using different AI brains
 
 ### Changed
 
