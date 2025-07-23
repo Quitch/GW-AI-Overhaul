@@ -70,7 +70,7 @@ define({
         ],
       },
       {
-        name: "!LOC:AllTerrain",
+        name: "!LOC:All-terrain",
         tags: [
           "AllTerrain",
           "PenchantT1Bot",
