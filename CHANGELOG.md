@@ -15,6 +15,7 @@
 
 - Game modifiers not being translated in the intelligence panel
 - Remove obsolete AI behaviour for Air Factory Upgrade Tech
+- Chance of complete tech was too high when you had some but not all advanced factories
 
 ## v5.80.2 - 2025-07-06
 
