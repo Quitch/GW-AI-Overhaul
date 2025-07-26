@@ -4,11 +4,11 @@ define([
 ], function (gwoColour, gwoAI) {
   const setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
-      return gwoAI.getAIPath("cluster");
+      return gwoAI.getAIPathDestination("cluster");
     } else if (isPlayer) {
-      return gwoAI.getAIPath("subcommander");
+      return gwoAI.getAIPathDestination("subcommander");
     }
-    return gwoAI.getAIPath("enemy");
+    return gwoAI.getAIPathDestination("enemy");
   };
 
   const applySubcommanderTacticsTech = function (personality, cards) {
