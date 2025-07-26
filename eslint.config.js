@@ -8,7 +8,7 @@ export default defineConfig([
   {
     files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 6,
+      ecmaVersion: 6, // only some ES6 support - PA uses Chrome 40
       parserOptions: {
         ecmaFeatures: {
           impliedStrict: true,
