@@ -499,6 +499,10 @@ define([
         id: "gwaio_protocol_fortitude",
         units: gwoGroup.combat,
       },
+      {
+        id: "gwaio_protocol_agility",
+        units: gwoGroup.combat,
+      },
     ],
   };
 });
