@@ -4,29 +4,55 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoGroup, gwoUnit) {
   const prepareMods = function (mods) {
-    const unitsWithADeathWeapon = [
-      gwoUnit.wyrm,
-      gwoUnit.zeus,
-      gwoUnit.commander,
-      gwoUnit.manhattan,
-      gwoUnit.ares,
-      gwoUnit.atlas,
-      gwoUnit.jig,
+    const deathAmmo = [
+      gwoUnit.wyrmDeath,
+      gwoUnit.zeusDeath,
+      gwoUnit.commanderDeath,
+      gwoUnit.manhattanDeath,
+      gwoUnit.atlasDeath,
+      gwoUnit.aresDeath,
+      gwoUnit.jigDeath,
+      gwoUnit.kesslerAmmo,
+      gwoUnit.landMineAmmo,
     ];
+    _.forEach(deathAmmo, function (ammo) {
+      mods.push({
+        file: ammo,
+        path: "splash_damages_allies",
+        op: "replace",
+        value: true,
+      });
+    });
+
     const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
-      return _.includes(unitsWithADeathWeapon, unit);
+      return _.includes(
+        [
+          gwoUnit.wyrm,
+          gwoUnit.zeus,
+          gwoUnit.commander,
+          gwoUnit.manhattan,
+          gwoUnit.atlas,
+          gwoUnit.ares,
+          gwoUnit.jig,
+        ],
+        unit
+      );
     });
     _.forEach(unitsWithoutADeathWeapon, function (unit) {
-      mods.push({
-        file: unit,
-        path: "death_weapon",
-        op: "replace",
-        value: {
-          // TODO: replace with a custom explosion weapon
-          ground_ammo_spec:
-            "/pa/units/orbital/mining_platform/mining_platform_nuke.json",
+      mods.push(
+        {
+          file: unit,
+          path: "death_weapon.ground_ammo_spec",
+          op: "replace",
+          value: gwoUnit.kesslerAmmo,
         },
-      });
+        {
+          file: unit,
+          path: "death_weapon.ground_ammo_spec",
+          op: "tag",
+          value: gwoUnit.kesslerAmmo,
+        }
+      );
     });
   };
 
