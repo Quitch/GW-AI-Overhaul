@@ -27,6 +27,19 @@ define([
     "gwaio_anti_commander"
   );
 
+  const unitsWithADeathWeapon = [
+    gwoUnit.wyrm,
+    gwoUnit.zeus,
+    gwoUnit.commander,
+    gwoUnit.manhattan,
+    gwoUnit.ares,
+    gwoUnit.atlas,
+    gwoUnit.jig,
+  ];
+  const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
+    return _.includes(unitsWithADeathWeapon, unit);
+  });
+
   return {
     cards: [
       { id: "gwaio_enable_bot_aa" },
@@ -506,6 +519,10 @@ define([
       {
         id: "gwaio_protocol_disposability",
         units: gwoGroup.structures,
+      },
+      {
+        id: "gwaio_protocol_killswitch",
+        units: unitsWithoutADeathWeapon,
       },
     ],
   };

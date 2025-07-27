@@ -255,6 +255,7 @@ function gwoCard() {
         "gwaio_protocol_agility",
         "gwaio_protocol_disposability",
         "gwaio_protocol_fortitude",
+        "gwaio_protocol_killswitch",
         "gwaio_protocol_precision",
         "gwaio_protocol_wrath",
         "gwaio_speed_structure",
