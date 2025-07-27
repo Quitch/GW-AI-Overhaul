@@ -14,6 +14,7 @@ define([
       gwoUnit.jigDeath,
       gwoUnit.kesslerAmmo,
       gwoUnit.landMineAmmo,
+      gwoUnit.boomAmmo,
     ];
     _.forEach(deathAmmo, function (ammo) {
       mods.push({
