@@ -4,9 +4,7 @@ define([
 ], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Titan Engine Tech increases the speed of all titans by 50%."
-    ),
+    describe: _.constant("!LOC:Increases the speed of all Titans by 20%."),
     summarize: _.constant("!LOC:Titan Engine Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
@@ -32,25 +30,25 @@ define([
               file: unit,
               path: "navigation.move_speed",
               op: "multiply",
-              value: 1.5,
+              value: 1.2,
             },
             {
               file: unit,
               path: "navigation.brake",
               op: "multiply",
-              value: 1.5,
+              value: 1.2,
             },
             {
               file: unit,
               path: "navigation.acceleration",
               op: "multiply",
-              value: 1.5,
+              value: 1.2,
             },
             {
               file: unit,
               path: "navigation.turn_speed",
               op: "multiply",
-              value: 1.5,
+              value: 1.2,
             },
           ];
         })
