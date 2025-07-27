@@ -495,6 +495,10 @@ define([
         id: "gwaio_protocol_wrath",
         units: gwoGroup.combat,
       },
+      {
+        id: "gwaio_protocol_fortitude",
+        units: gwoGroup.combat,
+      },
     ],
   };
 });
