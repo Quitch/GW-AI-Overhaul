@@ -524,6 +524,10 @@ define([
         id: "gwaio_protocol_killswitch",
         units: unitsWithoutADeathWeapon,
       },
+      {
+        id: "gwaio_protocol_blindness",
+        units: gwoGroup.units,
+      },
     ],
   };
 });
