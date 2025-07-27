@@ -252,6 +252,7 @@ function gwoCard() {
         "gwaio_enable_suddendeath",
         "gwaio_enable_tsunami",
         "gwaio_health_titans",
+        "gwaio_protocol_precision",
         "gwaio_speed_structure",
         "gwaio_speed_titans",
         "gwaio_upgrade_advancedairfactory",

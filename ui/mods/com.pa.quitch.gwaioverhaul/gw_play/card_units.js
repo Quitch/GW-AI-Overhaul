@@ -487,6 +487,10 @@ define([
         id: "gwaio_upgrade_kessler",
         units: [gwoUnit.kessler],
       },
+      {
+        id: "gwaio_protocol_precision",
+        units: gwoGroup.combat,
+      },
     ],
   };
 });

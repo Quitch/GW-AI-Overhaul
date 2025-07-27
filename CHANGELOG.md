@@ -7,6 +7,7 @@
 - Support for Eradication Mode
 - Eradication Tech
 - Support for the enemy and subcommanders using different AI brains
+- New "Protocol" tech cards which provide benefits to all combat units
 
 ### Changed
 
