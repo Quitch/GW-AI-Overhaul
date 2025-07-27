@@ -253,6 +253,7 @@ function gwoCard() {
         "gwaio_enable_tsunami",
         "gwaio_health_titans",
         "gwaio_protocol_agility",
+        "gwaio_protocol_disposability",
         "gwaio_protocol_fortitude",
         "gwaio_protocol_precision",
         "gwaio_protocol_wrath",

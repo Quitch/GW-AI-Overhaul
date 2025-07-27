@@ -503,6 +503,10 @@ define([
         id: "gwaio_protocol_agility",
         units: gwoGroup.combat,
       },
+      {
+        id: "gwaio_protocol_disposability",
+        units: gwoGroup.structures,
+      },
     ],
   };
 });
