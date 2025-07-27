@@ -491,6 +491,10 @@ define([
         id: "gwaio_protocol_precision",
         units: gwoGroup.combat,
       },
+      {
+        id: "gwaio_protocol_wrath",
+        units: gwoGroup.combat,
+      },
     ],
   };
 });
