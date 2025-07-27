@@ -14,7 +14,7 @@
 - Increased chance of complete basic tech when the player has no basic factories
 - Halved the chance of receiving Storage Compression Tech
 - Card descriptions use existing translations where possible
-- Titan Engine Tech reduced from 50% to 20% increase
+- Titan Engine and Combat Techs have smaller movement bonuses
 
 ### Bugfix
 
