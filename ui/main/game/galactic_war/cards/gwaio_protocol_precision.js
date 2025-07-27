@@ -53,6 +53,23 @@ define([
         value: percentageIncrease,
       });
     });
+    // Try to make sure that units can use their full range
+    _.forEach(gwoGroup.ammo, function (ammo) {
+      mods.push(
+        {
+          file: ammo,
+          path: "lifetime",
+          op: "multiply",
+          value: percentageIncrease,
+        },
+        {
+          file: ammo,
+          path: "max_velocity",
+          op: "multiply",
+          value: percentageIncrease,
+        }
+      );
+    });
   };
 
   return {
