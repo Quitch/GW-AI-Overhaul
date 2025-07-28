@@ -591,7 +591,16 @@ function gwoCard() {
                 treasurePlanet &&
                 !_.isEmpty(system.star.cardList()) &&
                 isCardLoadout(system.star.cardList()[0]);
-              if (model.canSelect(starIndex) && ai && !loadoutPresent) {
+              const validForDeal =
+                gwoSettings && gwoSettings.staticTech
+                  ? _.isEmpty(system.star.cardList())
+                  : true;
+              if (
+                model.canSelect(starIndex) &&
+                ai &&
+                !loadoutPresent &&
+                validForDeal
+              ) {
                 deferredQueue.push(
                   chooseCards({
                     count: 1,

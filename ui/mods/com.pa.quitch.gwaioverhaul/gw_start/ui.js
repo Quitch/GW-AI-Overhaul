@@ -57,6 +57,7 @@ function gwoUI() {
       aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
+      staticTech: ko.observable(false),
     };
 
     var difficultySettings = model.gwoDifficultySettings;

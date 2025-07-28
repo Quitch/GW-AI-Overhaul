@@ -8,6 +8,7 @@
 - Eradication Tech
 - Support for the enemy and subcommanders using different AI brains
 - New "Protocol" tech cards which provide benefits to all combat units
+- Static Tech setting at war creation which prevents Available Tech at a system from ever changing
 
 ### Changed
 

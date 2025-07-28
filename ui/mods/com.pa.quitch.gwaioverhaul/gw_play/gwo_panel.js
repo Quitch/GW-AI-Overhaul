@@ -69,6 +69,11 @@ function gwoWarInfoPanel() {
           );
           options(
             model.gwoOptions,
+            model.gwoSettings.staticTech,
+            "!LOC:Static tech"
+          );
+          options(
+            model.gwoOptions,
             model.gwoSettings.cheatsUsed,
             "!LOC:dev mode"
           );
