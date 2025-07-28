@@ -132,38 +132,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     });
   };
 
-  const whichAIsAreBeingModified = function () {
-    const game = model.game();
-    const inventory = game.inventory();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
-    const guardians = ai.mirrorMode;
-    const clusterPresence = whoIsCluster();
-
-    if (!_.isEmpty(inventory.aiMods()) || clusterPresence === "Player") {
-      if (guardians) {
-        return "All";
-      } else {
-        return "SubCommanders";
-      }
-    }
-    return "None";
-  };
-
-  const managerPath = function (type) {
-    switch (type) {
-      case "fabber":
-        return "fabber_builds/";
-      case "factory":
-        return "factory_builds/";
-      case "platoon":
-        return "platoon_builds/";
-      case "template":
-        return "platoon_templates/";
-      default:
-        throw new Error("Invalid AI file type");
-    }
-  };
-
   const whoIsCluster = function () {
     const game = model.game();
     const inventory = game.inventory();
@@ -184,6 +152,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     }
     if (isEnemyCluster) {
       return "Enemy";
+    }
+    return "None";
+  };
+
+  const whichAIsAreBeingModified = function () {
+    const game = model.game();
+    const inventory = game.inventory();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const guardians = ai.mirrorMode;
+    const clusterPresence = whoIsCluster();
+
+    if (!_.isEmpty(inventory.aiMods()) || clusterPresence === "Player") {
+      if (guardians) {
+        return "All";
+      } else {
+        return "SubCommanders";
+      }
     }
     return "None";
   };
@@ -351,6 +336,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         processClusterJson(json, oldEnemyPath.length);
       }
     });
+  };
+
+  const managerPath = function (type) {
+    switch (type) {
+      case "fabber":
+        return "fabber_builds/";
+      case "factory":
+        return "factory_builds/";
+      case "platoon":
+        return "platoon_builds/";
+      case "template":
+        return "platoon_templates/";
+      default:
+        throw new Error("Invalid AI file type");
+    }
   };
 
   const addApplicableAiLoadModsToFileList = function (
