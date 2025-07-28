@@ -82,11 +82,6 @@ define([
       aiMods.push([
         {
           type: "factory",
-          op: "load",
-          value: "gwaio_upgrade_airfactory.json",
-        },
-        {
-          type: "factory",
           op: "append",
           toBuild: "AdvancedAirFabber",
           idToMod: "builders",

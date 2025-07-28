@@ -26,6 +26,7 @@ define({
       bountyModeValue: 0.5,
       factionTechHandicap: 2.5,
       alliedCommanderChance: 100,
+      eradicationModeChance: 20,
     },
     {
       difficultyName: "!LOC:Casual",
@@ -53,6 +54,7 @@ define({
       bountyModeValue: 0.5,
       factionTechHandicap: 2.5,
       alliedCommanderChance: 20,
+      eradicationModeChance: 20,
     },
     {
       difficultyName: "!LOC:Iron",
@@ -81,6 +83,7 @@ define({
       factionTechHandicap: 2,
       starting_location_evaluation_radius: 100,
       alliedCommanderChance: 20,
+      eradicationModeChance: 15,
     },
     {
       difficultyName: "!LOC:Bronze",
@@ -109,6 +112,7 @@ define({
       factionTechHandicap: 1.5,
       starting_location_evaluation_radius: 150,
       alliedCommanderChance: 15,
+      eradicationModeChance: 15,
     },
     {
       difficultyName: "!LOC:Silver",
@@ -137,6 +141,7 @@ define({
       factionTechHandicap: 1,
       starting_location_evaluation_radius: 200,
       alliedCommanderChance: 15,
+      eradicationModeChance: 10,
     },
     {
       difficultyName: "!LOC:Gold",
@@ -165,6 +170,7 @@ define({
       factionTechHandicap: 0.5,
       starting_location_evaluation_radius: 250,
       alliedCommanderChance: 10,
+      eradicationModeChance: 10,
     },
     {
       difficultyName: "!LOC:Platinum",
@@ -193,6 +199,7 @@ define({
       factionTechHandicap: 0,
       starting_location_evaluation_radius: 300,
       alliedCommanderChance: 10,
+      eradicationModeChance: 10,
     },
     {
       difficultyName: "!LOC:Diamond",
@@ -221,6 +228,7 @@ define({
       factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 400,
       alliedCommanderChance: 5,
+      eradicationModeChance: 10,
     },
     {
       difficultyName: "!LOC:Uber",
@@ -249,6 +257,7 @@ define({
       factionTechHandicap: -0.5,
       starting_location_evaluation_radius: 400,
       alliedCommanderChance: 5,
+      eradicationModeChance: 10,
     },
     {
       difficultyName: "!LOC:Custom",

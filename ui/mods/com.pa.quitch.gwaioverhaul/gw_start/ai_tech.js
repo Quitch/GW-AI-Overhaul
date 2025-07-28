@@ -6,7 +6,7 @@ define([
   const synchronousTech = [];
   const revenantsTech = [];
   const clusterTech = [];
-  const factionsTech = [
+  const factionTechs = [
     legonisTech,
     foundationTech,
     synchronousTech,
@@ -43,7 +43,7 @@ define([
       inventory.clusterUnitsImmobile,
     ];
     _.forEach(factionUnits, function (units, i) {
-      factionsTech[i][0] = multiply(units, 0.75, "build_metal_cost");
+      factionTechs[i][0] = multiply(units, 0.75, "build_metal_cost");
     });
   };
 
@@ -65,10 +65,10 @@ define([
     const ammoPaths = ["damage", "splash_damage"];
     const weaponPaths = ["ammo_capacity", "ammo_demand", "ammo_per_shot"];
     _.forEach(factionAmmo, function (ammos, i) {
-      factionsTech[i][1] = multiply(ammos, 1.25, ammoPaths);
+      factionTechs[i][1] = multiply(ammos, 1.25, ammoPaths);
     });
     _.forEach(factionWeapons, function (weapons, i) {
-      factionsTech[i][1] = factionsTech[i][1].concat(
+      factionTechs[i][1] = factionTechs[i][1].concat(
         multiply(weapons, 0.25, weaponPaths)
       );
     });
@@ -90,24 +90,17 @@ define([
       inventory.clusterCommanders,
     ];
     _.forEach(factionUnits, function (units, i) {
-      factionsTech[i][2] = multiply(units, 1.5, "max_health");
+      factionTechs[i][2] = multiply(units, 1.5, "max_health");
     });
     _.forEach(factionCommanders, function (commanders, i) {
-      factionsTech[i][2] = factionsTech[i][2].concat(
+      factionTechs[i][2] = factionTechs[i][2].concat(
         multiply(commanders, 2, "max_health")
       );
     });
   };
 
   const setupAITech3EngineTech = function () {
-    const factionsTechNoAir = [
-      legonisTech,
-      foundationTech,
-      synchronousTech,
-      revenantsTech,
-      clusterTech,
-    ];
-    const factionUnitsNoAir = [
+    const factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
@@ -127,11 +120,11 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
-      factionsTechNoAir[i][3] = multiply(factionUnits, 1.5, speedPaths);
+    _.forEach(factionUnits, function (factionUnits, i) {
+      factionTechs[i][3] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
-      factionsTech[i][3] = factionsTech[i][3].concat(
+      factionTechs[i][3] = factionTechs[i][3].concat(
         multiply(factionUnits, 2, speedPaths)
       );
     });
@@ -149,7 +142,7 @@ define([
       inventory.clusterBuildArms,
     ];
     _.forEach(factionBuildArms, function (buildArms, i) {
-      factionsTech[i][4] = multiply(
+      factionTechs[i][4] = multiply(
         buildArms,
         0.5,
         "construction_demand.energy"
@@ -158,14 +151,7 @@ define([
   };
 
   const setupAITech6CombatTech = function () {
-    const factionsTechNoAir = [
-      legonisTech,
-      foundationTech,
-      synchronousTech,
-      revenantsTech,
-      clusterTech,
-    ];
-    const factionUnitsNoAir = [
+    const factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
@@ -185,18 +171,18 @@ define([
       "navigation.acceleration",
       "navigation.turn_speed",
     ];
-    _.forEach(factionUnitsNoAir, function (factionUnits, i) {
-      factionsTechNoAir[i][6] = multiply(factionUnits, 1.5, speedPaths);
+    _.forEach(factionUnits, function (factionUnits, i) {
+      factionTechs[i][6] = multiply(factionUnits, 1.5, speedPaths);
     });
     _.forEach(factionCommanders, function (factionUnits, i) {
-      factionsTech[i][6] = factionsTech[i][6].concat(
+      factionTechs[i][6] = factionTechs[i][6].concat(
         multiply(factionUnits, 3, speedPaths)
       );
     });
     foundationTech[6] = foundationTech[6].concat(
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
-    _.forEach(factionsTech, function (faction) {
+    _.forEach(factionTechs, function (faction) {
       faction[6] = faction[6].concat(faction[1], faction[2]); // Add ammo and armour tech
     });
   };
@@ -210,7 +196,7 @@ define([
       inventory.clusterUnitsFactories,
     ];
     _.forEach(factionUnits, function (units, i) {
-      factionsTech[i][7] = multiply(units, 0.5, "factory_cooldown_time");
+      factionTechs[i][7] = multiply(units, 0.5, "factory_cooldown_time");
     });
   };
 
@@ -223,12 +209,6 @@ define([
   setupAITech7CooldownTech();
 
   return {
-    factionTechs: [
-      legonisTech,
-      foundationTech,
-      synchronousTech,
-      revenantsTech,
-      clusterTech,
-    ],
+    factionTechs: factionTechs,
   };
 });

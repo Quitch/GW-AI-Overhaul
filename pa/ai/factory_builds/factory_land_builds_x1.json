@@ -9,11 +9,6 @@
       "builders": ["BasicBotFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Bot",
-            "boolean": false
-          },
           { "test_type": "AloneOnPlanet", "boolean": false },
           { "test_type": "CanAffordBuildDemand" },
           {
@@ -31,11 +26,6 @@
           }
         ],
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Bot",
-            "boolean": false
-          },
           { "test_type": "AloneOnPlanet", "boolean": true },
           {
             "test_type": "HasPersonalityTag",
@@ -72,11 +62,6 @@
       "builders": ["BasicVehicleFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Vehicle",
-            "boolean": false
-          },
           { "test_type": "AloneOnPlanet", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
@@ -94,11 +79,6 @@
           }
         ],
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Vehicle",
-            "boolean": false
-          },
           { "test_type": "AloneOnPlanet", "boolean": false },
           {
             "test_type": "HasPersonalityTag",
@@ -109,11 +89,6 @@
           { "test_type": "CanDeployLandFromBase", "boolean": false }
         ],
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Vehicle",
-            "boolean": false
-          },
           { "test_type": "AloneOnPlanet", "boolean": true },
           { "test_type": "CanAffordBuildDemand" },
           {
@@ -145,11 +120,6 @@
       "builders": ["AdvancedBotFactory"],
       "build_conditions": [
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT2Bot",
-            "boolean": false
-          },
           { "test_type": "BaseThreatened", "boolean": false },
           { "test_type": "CanAffordBuildDemand" },
           {
@@ -176,11 +146,6 @@
         [
           {
             "test_type": "HasPersonalityTag",
-            "string0": "PenchantT2Bot",
-            "boolean": false
-          },
-          {
-            "test_type": "HasPersonalityTag",
             "string0": "Tutorial",
             "boolean": false
           },
@@ -196,11 +161,6 @@
           }
         ],
         [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT2Bot",
-            "boolean": false
-          },
           {
             "test_type": "HasPersonalityTag",
             "string0": "Tutorial",

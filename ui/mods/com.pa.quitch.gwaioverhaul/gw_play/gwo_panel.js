@@ -25,13 +25,15 @@ function gwoWarInfoPanel() {
         // War Information
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.80.2");
+        model.gwoVersion = ko.observable("5.81.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
           model.gwoDifficulty = loc(model.gwoSettings.difficulty);
           model.gwoSize = loc(model.gwoSettings.galaxySize);
           model.gwoAI = model.gwoSettings.ai || "Titans";
+          model.gwoAIAlly =
+            model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
           model.gwoDeck =
             model.gwoSettings.techCardDeck === "Expanded"
               ? loc("!LOC:Galactic War Overhaul")
@@ -64,6 +66,11 @@ function gwoWarInfoPanel() {
             model.gwoOptions,
             model.gwoSettings.easierStart,
             "!LOC:Easier start"
+          );
+          options(
+            model.gwoOptions,
+            model.gwoSettings.staticTech,
+            "!LOC:Static tech"
           );
           options(
             model.gwoOptions,

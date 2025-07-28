@@ -7,16 +7,7 @@
       "max_num_assisters": 10,
       "priority": 100,
       "builders": ["UnitCannon"],
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT1Bot",
-            "boolean": false
-          },
-          { "test_type": "CanAffordBuildDemand" }
-        ]
-      ]
+      "build_conditions": [[{ "test_type": "CanAffordBuildDemand" }]]
     },
     {
       "name": "NanoSwarm - UC",
@@ -25,16 +16,7 @@
       "max_num_assisters": 10,
       "priority": 100,
       "builders": ["UnitCannon"],
-      "build_conditions": [
-        [
-          {
-            "test_type": "HasPersonalityTag",
-            "string0": "PenchantT2Bot",
-            "boolean": false
-          },
-          { "test_type": "CanAffordBuildDemand" }
-        ]
-      ]
+      "build_conditions": [[{ "test_type": "CanAffordBuildDemand" }]]
     },
     {
       "name": "Basic AA Bot - UC",

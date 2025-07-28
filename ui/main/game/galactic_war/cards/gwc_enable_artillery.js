@@ -19,9 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (
-        gwoCard.missingUnit(inventory.units(), gwoGroup.structuresArtillery)
-      ) {
+      if (!gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery)) {
         chance = 100;
       }
       return { chance: chance };

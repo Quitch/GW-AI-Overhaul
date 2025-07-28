@@ -1,16 +1,17 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   gwoUnit
 ) {
-  const airBasicMobile = [
-    gwoUnit.airFabber,
+  const airBasicCombat = [
     gwoUnit.bumblebee,
-    gwoUnit.firefly,
     gwoUnit.hummingbird,
     gwoUnit.icarus,
     gwoUnit.pelican,
   ];
-  const airAdvancedMobile = [
-    gwoUnit.airFabberAdvanced,
+  const airBasicMobile = airBasicCombat.concat(
+    gwoUnit.airFabber,
+    gwoUnit.firefly
+  );
+  const airAdvancedCombat = [
     gwoUnit.angel,
     gwoUnit.hornet,
     gwoUnit.horsefly,
@@ -18,6 +19,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.phoenix,
     gwoUnit.wyrm,
   ];
+  const airAdvancedMobile = airAdvancedCombat.concat(gwoUnit.airFabberAdvanced);
   const airBasicAmmo = [
     gwoUnit.bumblebeeAmmo,
     gwoUnit.fireflyAmmo,
@@ -53,17 +55,20 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const airMobileNoCluster = _.filter(airMobile, function (unit) {
     return unit !== gwoUnit.angel;
   });
+  const airCombat = airBasicCombat.concat(airAdvancedCombat);
   const air = airBasic.concat(airAdvanced);
 
-  const botsBasicMobile = [
+  const botsBasicCombat = [
     gwoUnit.boom,
-    gwoUnit.botFabber,
     gwoUnit.dox,
     gwoUnit.grenadier,
     gwoUnit.spark,
     gwoUnit.stinger,
-    gwoUnit.stitch,
   ];
+  const botsBasicMobile = botsBasicCombat.concat(
+    gwoUnit.botFabber,
+    gwoUnit.stitch
+  );
   const botsBasicAmmo = [
     gwoUnit.boomAmmo,
     gwoUnit.doxAmmo,
@@ -78,15 +83,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.sparkWeapon,
     gwoUnit.stingerWeapon,
   ];
-  const botsAdvancedMobile = [
+  const botsAdvancedCombat = [
     gwoUnit.bluehawk,
-    gwoUnit.botFabberAdvanced,
     gwoUnit.colonel,
     gwoUnit.gilE,
     gwoUnit.locusts,
     gwoUnit.mend,
     gwoUnit.slammer,
   ];
+  const botsAdvancedMobile = botsAdvancedCombat.concat(
+    gwoUnit.botFabberAdvanced,
+    gwoUnit.mend
+  );
   const botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
     gwoUnit.bluehawkAmmoOrbital,
@@ -114,9 +122,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const botsMobileNoCluster = _.filter(botsMobile, function (unit) {
     return unit !== gwoUnit.colonel;
   });
+  const botsCombat = botsBasicCombat.concat(botsAdvancedCombat);
   const bots = botsBasic.concat(botsAdvanced);
 
-  const navalBasicMobile = [
+  const navalBasicCombat = [
     gwoUnit.barnacle,
     gwoUnit.barracuda,
     gwoUnit.narwhal,
@@ -124,6 +133,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.orca,
     gwoUnit.piranha,
   ];
+  const navalBasicMobile = navalBasicCombat.concat(
+    gwoUnit.barnacle,
+    gwoUnit.navalFabber
+  );
   const navalBasicAmmo = [
     gwoUnit.barracudaAmmo,
     gwoUnit.narwhalAAAmmo,
@@ -140,7 +153,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.orcaWeapon,
     gwoUnit.piranhaWeapon,
   ];
-  const navalAdvancedMobile = [
+  const navalAdvancedCombat = [
     gwoUnit.kaiju,
     gwoUnit.kraken,
     gwoUnit.leviathan,
@@ -149,6 +162,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.stingray,
     gwoUnit.typhoon,
   ];
+  const navalAdvancedMobile = navalAdvancedCombat.concat(
+    gwoUnit.navalFabberAdvanced
+  );
   const navalAdvancedAmmo = [
     gwoUnit.kaijuAmmo,
     gwoUnit.kaijuSecondaryAmmo,
@@ -180,24 +196,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const navalAmmo = navalBasicAmmo.concat(navalAdvancedAmmo);
   const navalWeapons = navalBasicWeapons.concat(navalAdvancedWeapons);
   const navalMobile = navalBasicMobile.concat(navalAdvancedMobile);
+  const navalCombat = navalBasicCombat.concat(navalAdvancedCombat);
   const naval = navalBasic.concat(navalAdvanced);
 
-  const orbitalBasicMobile = [
+  const orbitalBasicCombat = [gwoUnit.avenger];
+  const orbitalBasicMobile = orbitalBasicCombat.concat(
     gwoUnit.arkyd,
     gwoUnit.astraeus,
-    gwoUnit.avenger,
     gwoUnit.hermes,
-    gwoUnit.orbitalFabber,
-  ];
+    gwoUnit.orbitalFabber
+  );
   const orbitalBasicAmmo = [gwoUnit.avengerAmmo];
   const orbitalBasicWeapons = [gwoUnit.avengerWeapon];
-  const orbitalAdvancedMobile = [
-    gwoUnit.artemis,
-    gwoUnit.omega,
+  const orbitalAdvancedCombat = [gwoUnit.artemis, gwoUnit.omega, gwoUnit.sxx];
+  const orbitalAdvancedMobile = orbitalAdvancedCombat.concat(
     gwoUnit.radarSatelliteAdvanced,
-    gwoUnit.solarArray,
-    gwoUnit.sxx,
-  ];
+    gwoUnit.solarArray
+  );
   const orbitalAdvancedAmmo = [
     gwoUnit.artemisAmmo,
     gwoUnit.omegaAmmo,
@@ -218,6 +233,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const orbitalAmmo = orbitalBasicAmmo.concat(orbitalAdvancedAmmo);
   const orbitalWeapons = orbitalBasicWeapons.concat(orbitalAdvancedWeapons);
   const orbitalMobile = orbitalBasicMobile.concat(orbitalAdvancedMobile);
+  const orbitalCombat = orbitalBasicCombat.concat(orbitalAdvancedCombat);
   const orbital = orbitalBasic.concat(orbitalAdvanced);
 
   const structuresArtilleryBasic = [gwoUnit.lob, gwoUnit.pelter];
@@ -370,15 +386,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.zeusWeapon,
   ];
 
-  const vehiclesBasicMobile = [
+  const vehiclesBasicCombat = [
     gwoUnit.ant,
     gwoUnit.drifter,
     gwoUnit.inferno,
-    gwoUnit.skitter,
     gwoUnit.spinner,
     gwoUnit.stryker,
-    gwoUnit.vehicleFabber,
   ];
+  const vehiclesBasicMobile = vehiclesBasicCombat.concat(
+    gwoUnit.skitter,
+    gwoUnit.vehicleFabber
+  );
   const vehiclesBasicAmmo = [
     gwoUnit.antAmmo,
     gwoUnit.drifterAmmo,
@@ -395,16 +413,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.spinnerWeapon,
     gwoUnit.strykerWeapon,
   ];
-  const vehiclesAdvancedMobile = [
+  const vehiclesAdvancedCombat = [
     gwoUnit.leveler,
     gwoUnit.manhattan,
-    gwoUnit.nyx,
     gwoUnit.sheller,
     gwoUnit.storm,
     gwoUnit.vanguard,
-    gwoUnit.vehicleFabberAdvanced,
     gwoUnit.ward,
   ];
+  const vehiclesAdvancedMobile = vehiclesAdvancedCombat.concat(
+    gwoUnit.nyx,
+    gwoUnit.vehicleFabberAdvanced
+  );
   const vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
     gwoUnit.shellerAmmo,
@@ -426,6 +446,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   const vehiclesAmmo = vehiclesBasicAmmo.concat(vehiclesAdvancedAmmo);
   const vehiclesWeapons = vehiclesBasicWeapons.concat(vehiclesAdvancedWeapons);
   const vehiclesMobile = vehiclesBasicMobile.concat(vehiclesAdvancedMobile);
+  const vehiclesCombat = vehiclesBasicCombat.concat(vehiclesAdvancedCombat);
   const vehicles = vehiclesBasic.concat(vehiclesAdvanced);
 
   const unitCannonMobile = [
@@ -607,14 +628,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.energyPlantAdvanced,
     gwoUnit.jig
   );
+  const combat = airCombat.concat(
+    botsCombat,
+    navalCombat,
+    orbitalCombat,
+    vehiclesCombat,
+    structuresDefences,
+    gwoUnit.commander
+  );
 
   return {
     air: air,
     airAdvanced: airAdvanced,
+    airAdvancedCombat: airAdvancedCombat,
     airAdvancedMobile: airAdvancedMobile,
     airAmmo: airAmmo,
     airBasic: airBasic,
+    airBasicCombat: airBasicCombat,
     airBasicMobile: airBasicMobile,
+    airCombat: airCombat,
     airFactories: airFactories,
     airMobile: airMobile,
     airMobileNoCluster: airMobileNoCluster,
@@ -623,14 +655,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botFactories: botFactories,
     bots: bots,
     botsAdvanced: botsAdvanced,
+    botsAdvancedCombat: botsAdvancedCombat,
     botsAdvancedMobile: botsAdvancedMobile,
     botsAmmo: botsAmmo,
     botsBasic: botsBasic,
+    botsBasicCombat: botsBasicCombat,
     botsBasicMobile: botsBasicMobile,
+    botsCombat: botsCombat,
     botsMobile: botsMobile,
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
     clusterCommanders: clusterCommanders,
+    combat: combat,
     commanderAmmo: commanderAmmo,
     energyAll: energyAll,
     energyIntel: energyIntel,
@@ -646,22 +682,28 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     immobile: immobile,
     mobile: mobile,
     mobileNoCluster: mobileNoCluster,
-    nomadStructures: nomadStructures,
     naval: naval,
     navalAdvanced: navalAdvanced,
+    navalAdvancedCombat: navalAdvancedCombat,
     navalAdvancedMobile: navalAdvancedMobile,
     navalAmmo: navalAmmo,
     navalBasic: navalBasic,
+    navalBasicCombat: navalBasicCombat,
     navalBasicMobile: navalBasicMobile,
+    navalCombat: navalCombat,
     navalFactories: navalFactories,
     navalMobile: navalMobile,
     navalWeapons: navalWeapons,
+    nomadStructures: nomadStructures,
     orbital: orbital,
     orbitalAdvanced: orbitalAdvanced,
+    orbitalAdvancedCombat: orbitalAdvancedCombat,
     orbitalAdvancedMobile: orbitalAdvancedMobile,
     orbitalAmmo: orbitalAmmo,
     orbitalBasic: orbitalBasic,
+    orbitalBasicCombat: orbitalBasicCombat,
     orbitalBasicMobile: orbitalBasicMobile,
+    orbitalCombat: orbitalCombat,
     orbitalFactories: orbitalFactories,
     orbitalMobile: orbitalMobile,
     orbitalWeapons: orbitalWeapons,
@@ -694,6 +736,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     unitCannonMobile: unitCannonMobile,
     units: units,
     unitsNoCluster: unitsNoCluster,
+    vehicleAdvancedCombat: vehiclesAdvancedCombat,
+    vehicleBasicCombat: vehiclesBasicCombat,
     vehicleFactories: vehicleFactories,
     vehicles: vehicles,
     vehiclesAdvanced: vehiclesAdvanced,
@@ -701,6 +745,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesAmmo: vehiclesAmmo,
     vehiclesBasic: vehiclesBasic,
     vehiclesBasicMobile: vehiclesBasicMobile,
+    vehiclesCombat: vehiclesCombat,
     vehiclesMobile: vehiclesMobile,
     vehiclesWeapons: vehiclesWeapons,
     weapons: weapons,

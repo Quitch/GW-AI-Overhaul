@@ -12,7 +12,7 @@ function gwoIntelligence() {
     model.gwoAvailableTechTooltip =
       "This card will be offered as part of the first draw.";
     model.gwoGameModifiersTooltip =
-      "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.";
+      "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specifics types must be eradicated.";
     model.gwoAIBuffsTooltip =
       "Applied to AI commanders and units preferred by the faction.";
 
@@ -230,19 +230,53 @@ function gwoIntelligence() {
           return "";
         };
 
+        const eradicatorModeNameBuilder = function (ai) {
+          var modes = [];
+          if (ai.eradicationModeSubCommanders) {
+            modes.push(loc("!LOC:Colonel"));
+          }
+          if (ai.eradicationModeFactories) {
+            modes.push(loc("!LOC:Factory"));
+          }
+          if (ai.eradicationModeFabbers) {
+            modes.push(loc("!LOC:Fabber"));
+          }
+
+          var append = "";
+
+          _.forEach(modes, function (mode, i) {
+            append += " ";
+            append += mode;
+            if (i !== modes.length - 1) {
+              append += ",";
+            }
+          });
+
+          return append;
+        };
+
         const convertGameMModifiersToName = function (ai, inventory) {
           const gameModifiers = [];
+
           if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
-            gameModifiers.push("Bounties");
+            gameModifiers.push(loc("!LOC:Bounties"));
           }
           if (
             ai.landAnywhere ||
             inventory.hasCard("gwaio_enable_landanywhere")
           ) {
-            gameModifiers.push("Land Anywhere");
+            gameModifiers.push(loc("!LOC:Land Anywhere"));
           }
           if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
-            gameModifiers.push("Sudden Death");
+            gameModifiers.push(loc("!LOC:Sudden Death"));
+          }
+          if (
+            ai.eradicationMode ||
+            inventory.hasCard("gwaio_enable_eradication")
+          ) {
+            gameModifiers.push(
+              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+            );
           }
           return gameModifiers;
         };

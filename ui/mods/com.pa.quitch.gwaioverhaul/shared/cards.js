@@ -4,26 +4,19 @@ define({
       return _.includes(inventoryUnits, units);
     }
 
-    for (var unit of units) {
-      if (_.includes(inventoryUnits, unit)) {
-        return true;
-      }
-    }
-    return false;
+    return _.every(units, function (unit) {
+      return _.includes(inventoryUnits, unit);
+    });
   },
 
-  // !hasUnit() matches on AND; missingUnit() matches on OR
-  missingUnit: function (inventoryUnits, units) {
+  missingAllUnits: function (inventoryUnits, units) {
     if (_.isString(units)) {
       return !_.includes(inventoryUnits, units);
     }
 
-    for (var unit of units) {
-      if (!_.includes(inventoryUnits, unit)) {
-        return true;
-      }
-    }
-    return false;
+    return _.every(units, function (unit) {
+      return !_.includes(inventoryUnits, unit);
+    });
   },
 
   loadoutIcon: function (loadoutId) {

@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## v5.81.0 - 2025-07-28
+
+### Added
+
+- Support for Eradication Mode
+- Eradication Tech
+- Support for the enemy and subcommanders using different AI brains
+- New "Protocol" tech cards which provide benefits to all combat units
+- Static Tech setting at war creation which prevents Available Tech at a system from ever changing
+
+### Changed
+
+- Increased granularity of percentage based options for custom settings
+- Increased chance of complete basic tech when the player has no basic factories
+- Halved the chance of receiving Storage Compression Tech
+- Card descriptions use existing translations where possible
+- Titan Engine and Combat Techs have smaller movement bonuses
+
+### Bugfix
+
+- Game modifiers not being translated in the intelligence panel
+- Remove obsolete AI behaviour for Air Factory Upgrade Tech
+- Chance of complete tech was too high when you had some but not all advanced factories
+- Corrected some misalignments between the base AI and that shipping in the mod
+- TITANS and Penchant AIs recognise that they doesn't need mobile AA if no one has air tech
+
 ## v5.80.2 - 2025-07-06
 
 ### Changed

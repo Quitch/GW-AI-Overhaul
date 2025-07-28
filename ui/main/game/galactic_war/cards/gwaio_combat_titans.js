@@ -5,7 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Titan Combat Tech increases the speed of all titans by 50%, health by 50%, and damage by 25%"
+      "!LOC:Titan Combat Tech increases the speed of all titans by 20%, health by 50%, and damage by 25%"
     ),
     summarize: _.constant("!LOC:Titan Combat Tech"),
     icon: _.constant(
@@ -39,25 +39,25 @@ define([
             file: unit,
             path: "navigation.move_speed",
             op: "multiply",
-            value: 1.5,
+            value: 1.2,
           },
           {
             file: unit,
             path: "navigation.brake",
             op: "multiply",
-            value: 1.5,
+            value: 1.2,
           },
           {
             file: unit,
             path: "navigation.acceleration",
             op: "multiply",
-            value: 1.5,
+            value: 1.2,
           },
           {
             file: unit,
             path: "navigation.turn_speed",
             op: "multiply",
-            value: 1.5,
+            value: 1.2,
           }
         );
       });

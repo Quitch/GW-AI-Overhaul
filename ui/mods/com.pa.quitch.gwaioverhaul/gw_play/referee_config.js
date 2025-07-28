@@ -4,11 +4,11 @@ define([
 ], function (gwoColour, gwoAI) {
   const setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
-      return gwoAI.getAIPath("cluster");
+      return gwoAI.getAIPathDestination("cluster");
     } else if (isPlayer) {
-      return gwoAI.getAIPath("subcommander");
+      return gwoAI.getAIPathDestination("subcommander");
     }
-    return gwoAI.getAIPath("enemy");
+    return gwoAI.getAIPathDestination("enemy");
   };
 
   const applySubcommanderTacticsTech = function (personality, cards) {
@@ -246,7 +246,7 @@ define([
       const aiNewTag = ".ai" + n.toString();
       aiTag.push(aiNewTag);
     });
-    const aiInUse = gwoAI.aiInUse();
+    const aiInUse = gwoAI.aiInUse("enemy");
 
     // Set up AI System Owner
     ai = setAdvEcoMod(ai, aiInUse);
@@ -289,14 +289,16 @@ define([
       armies.push(aiArmy);
     });
 
-    const playerBountyMode = inventory.hasCard("gwaio_enable_bounties");
-    const bountyMode = ai.bountyMode || playerBountyMode;
-    const playerSuddenDeathMode = inventory.hasCard("gwaio_enable_suddendeath");
-    const suddenDeathMode = ai.suddenDeath || playerSuddenDeathMode;
+    const bountyMode =
+      ai.bountyMode || inventory.hasCard("gwaio_enable_bounties");
+    const suddenDeathMode =
+      ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath");
     const playerLandAnywhereMode = inventory.hasCard(
       "gwaio_enable_landanywhere"
     );
     const landAnywhereMode = ai.landAnywhere || playerLandAnywhereMode;
+    const eradicationMode =
+      ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication");
     const canGlassPlanets = inventory.hasCard(
       "gwaio_enable_orbitalbombardment"
     );
@@ -323,6 +325,10 @@ define([
       bounty_mode: bountyMode,
       bounty_value: ai.bountyModeValue,
       sudden_death_mode: suddenDeathMode,
+      eradication_mode: eradicationMode,
+      eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
+      eradication_mode_factories: ai.eradicationModeFactories,
+      eradication_mode_fabricators: ai.eradicationModeFabbers,
     };
     _.forEach(config.armies, function (army) {
       // eslint-disable-next-line lodash/prefer-filter

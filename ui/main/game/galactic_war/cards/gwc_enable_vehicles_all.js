@@ -21,7 +21,7 @@ define([
 
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.missingUnit(inventory.units(), gwoGroup.vehicles)) {
+      if (!gwoCard.hasUnit(inventory.units(), gwoGroup.vehicles)) {
         const dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
@@ -34,7 +34,9 @@ define([
         } else {
           chance = 25;
         }
-        if (!gwoCard.hasUnit(inventory.units(), gwoGroup.factoriesAdvanced)) {
+        if (
+          gwoCard.missingAllUnits(inventory.units(), gwoGroup.factoriesAdvanced)
+        ) {
           chance *= 3;
         }
       }

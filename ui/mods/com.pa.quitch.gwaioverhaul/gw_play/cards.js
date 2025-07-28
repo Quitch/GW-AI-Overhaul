@@ -244,6 +244,7 @@ function gwoCard() {
         "gwaio_cooldown_vehicles",
         "gwaio_damage_titans",
         "gwaio_enable_bounties",
+        "gwaio_enable_eradication",
         "gwaio_enable_factories_t1_all",
         "gwaio_enable_landanywhere",
         "gwaio_enable_orbitalbombardment",
@@ -251,6 +252,13 @@ function gwoCard() {
         "gwaio_enable_suddendeath",
         "gwaio_enable_tsunami",
         "gwaio_health_titans",
+        "gwaio_protocol_agility",
+        "gwaio_protocol_blindness",
+        "gwaio_protocol_disposability",
+        "gwaio_protocol_fortitude",
+        "gwaio_protocol_killswitch",
+        "gwaio_protocol_precision",
+        "gwaio_protocol_wrath",
         "gwaio_speed_structure",
         "gwaio_speed_titans",
         "gwaio_upgrade_advancedairfactory",
@@ -583,7 +591,16 @@ function gwoCard() {
                 treasurePlanet &&
                 !_.isEmpty(system.star.cardList()) &&
                 isCardLoadout(system.star.cardList()[0]);
-              if (model.canSelect(starIndex) && ai && !loadoutPresent) {
+              const validForDeal =
+                gwoSettings && gwoSettings.staticTech
+                  ? _.isEmpty(system.star.cardList())
+                  : true;
+              if (
+                model.canSelect(starIndex) &&
+                ai &&
+                !loadoutPresent &&
+                validForDeal
+              ) {
                 deferredQueue.push(
                   chooseCards({
                     count: 1,
@@ -615,12 +632,12 @@ function gwoCard() {
             cards[0].id === "gwc_start_subcdr" &&
             !cards[0].minions
           ) {
-            const ai = gwoSettings && gwoSettings.ai;
+            const subcommanderAI = gwoSettings && gwoSettings.aiAlly;
             _.times(2, function () {
               const subcommander = _.cloneDeep(
                 _.sample(GWFactions[playerFaction].minions)
               );
-              if (ai === "Penchant") {
+              if (subcommanderAI === "Penchant") {
                 const penchantValues = gwoAI.penchants();
                 subcommander.character =
                   subcommander.character +
@@ -724,9 +741,9 @@ function gwoCard() {
           const subcommander = _.cloneDeep(
             _.sample(GWFactions[playerFaction].minions)
           );
-          const ai = gwoSettings && gwoSettings.ai;
+          const subcommanderAI = gwoSettings && gwoSettings.aiAlly;
 
-          if (ai === "Penchant") {
+          if (subcommanderAI === "Penchant") {
             const penchantValues = gwoAI.penchants();
             subcommander.character =
               subcommander.character + (" " + loc(penchantValues.penchantName));

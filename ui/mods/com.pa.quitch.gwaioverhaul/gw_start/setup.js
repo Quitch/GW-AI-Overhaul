@@ -315,6 +315,18 @@ function gwoSetup() {
           return Math.random() * 100 <= gameModeChance;
         };
 
+        const enableAnEradicationModeTypes = function (ai) {
+          while (
+            !ai.eradicationModeSubCommanders &&
+            !ai.eradicationModeFactories &&
+            !ai.eradicationModeFabbers
+          ) {
+            ai.eradicationModeSubCommanders = gameModeEnabled(50);
+            ai.eradicationModeFactories = gameModeEnabled(50);
+            ai.eradicationModeFabbers = gameModeEnabled(50);
+          }
+        };
+
         const startCardAllyCompatibility = function (game) {
           // global for modder compatibility
           if (!model.gwoStarCardsWhichBreakAllies) {
@@ -389,7 +401,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.80.2";
+          const version = "5.81.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -637,6 +649,10 @@ function gwoSetup() {
                 );
                 ai.bountyMode = gameModeEnabled(difficulty.bountyModeChance());
                 ai.bountyModeValue = parseFloat(difficulty.bountyModeValue());
+                ai.eradicationMode = gameModeEnabled(
+                  difficulty.eradicationModeChance()
+                );
+                enableAnEradicationModeTypes(ai);
 
                 const dist = worker.star.distance();
 
@@ -761,7 +777,7 @@ function gwoSetup() {
                   );
                   allyCommander.faction = playerFaction;
                   ai.ally = allyCommander;
-                  if (difficulty.ai() === "Penchant") {
+                  if (difficulty.aiAlly() === "Penchant") {
                     setupPenchantAI(ai.ally);
                   }
                 }
@@ -907,9 +923,12 @@ function gwoSetup() {
               originSystem.gwaio.cheatsUsed = true;
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
+            originSystem.gwaio.aiAlly = model.gwoDifficultySettings.aiAlly();
             originSystem.gwaio.aiMods = [];
             originSystem.gwaio.techCardDeck =
               model.gwoDifficultySettings.techCardDeck();
+            originSystem.gwaio.staticTech =
+              model.gwoDifficultySettings.staticTech();
             // We don't need to apply the hotfix as it's for v5.17.1 and earlier
             originSystem.gwaio.treasurePlanetFixed = true;
             // We don't need to apply the hotfix as it's for v5.22.1 and earlier
