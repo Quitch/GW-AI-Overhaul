@@ -45,13 +45,17 @@ define(function () {
     },
 
     getAIPathDestination: function (type) {
+      const game = model.game();
+      const ai = game.galaxy().stars()[game.currentStar()].ai();
+      const guardians = ai.mirrorMode;
+      const aiMods = game.inventory().aiMods();
       const aiInUse = this.aiInUse(type);
       // the order of path assignments must match .player unit_map assignments in generateGameFiles()
       if (type === "cluster") {
         return "/pa/ai_cluster/";
       } else if (aiInUse === "Queller") {
         return getQuellerPath(type);
-      } else if (type === "subcommander") {
+      } else if (type === "subcommander" && !guardians && !_.isEmpty(aiMods)) {
         return "/pa/ai_subcommander/";
       } else if (aiInUse === "Penchant") {
         return penchantAiPath;
