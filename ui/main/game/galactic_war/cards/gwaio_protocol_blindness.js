@@ -74,6 +74,21 @@ define([
         value: 0,
       });
     });
+    // unit specific fixes required to accommodate the range
+    mods.push(
+      {
+        file: gwoUnit.aresWeapon,
+        path: "pitch_range",
+        op: "replace",
+        value: 89,
+      },
+      {
+        file: gwoUnit.aresWeapon,
+        path: "arc_type",
+        op: "replace",
+        value: "ARC_high",
+      }
+    );
   };
 
   return {
