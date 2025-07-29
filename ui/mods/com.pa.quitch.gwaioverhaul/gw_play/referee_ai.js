@@ -206,23 +206,24 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         op: "load",
       });
 
-      if (_.isEmpty(aiMods)) {
+      if (!aiMods.length) {
         return [];
       }
 
-      var aiManager = "";
+      const pathTypeMap = {
+        "/fabber_builds/": "fabber",
+        "/factory_builds/": "factory",
+        "/platoon_builds/": "platoon",
+        "/platoon_templates/": "template",
+      };
+      const aiManager =
+        _(pathTypeMap)
+          .keys()
+          .find(function (key) {
+            return filePathIncludes(key);
+          }) || "";
 
-      if (filePathIncludes("/fabber_builds/")) {
-        aiManager = "fabber";
-      } else if (filePathIncludes("/factory_builds/")) {
-        aiManager = "factory";
-      } else if (filePathIncludes("/platoon_builds/")) {
-        aiManager = "platoon";
-      } else if (filePathIncludes("/platoon_templates/")) {
-        aiManager = "template";
-      }
-
-      return _.filter(aiMods, { type: aiManager });
+      return _.filter(aiMods, { type: pathTypeMap[aiManager] });
     };
 
     const changeFilePath = function (aiPath, pathLength) {
