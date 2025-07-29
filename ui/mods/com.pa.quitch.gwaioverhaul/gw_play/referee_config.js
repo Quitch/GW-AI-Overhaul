@@ -148,30 +148,27 @@ define([
   };
 
   const setupGuardianPersonality = function (cards, personality, aiInUse) {
-    const totalAirCards = countCards(cards, "_air");
-    const totalBotCards = countCards(cards, "_bot");
-    const totalOrbitalCards = countCards(cards, "_orbital");
-    const totalSeaCards = countCards(cards, "_sea");
-    const totalVehicleCards = countCards(cards, "_vehicle");
-    const totalCards =
-      totalAirCards +
-      totalBotCards +
-      totalOrbitalCards +
-      totalSeaCards +
-      totalVehicleCards;
+    const allCards = {
+      air: countCards(cards, "_air"),
+      bot: countCards(cards, "_bot"),
+      orbital: countCards(cards, "_orbital"),
+      naval: countCards(cards, "_sea"),
+      vehicle: countCards(cards, "_vehicle"),
+    };
+    const totalCards = _.sum(allCards);
     if (totalCards > 0) {
-      personality.percent_air = calculatePercentage(totalAirCards, totalCards);
-      personality.percent_bot = calculatePercentage(totalBotCards, totalCards);
+      personality.percent_air = calculatePercentage(allCards.air, totalCards);
+      personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
       personality.percent_orbital = calculatePercentage(
-        totalOrbitalCards,
+        allCards.orbital,
         totalCards
       );
       personality.percent_naval = calculatePercentage(
-        totalSeaCards,
+        allCards.naval,
         totalCards
       );
       personality.percent_vehicle = calculatePercentage(
-        totalVehicleCards,
+        allCards.vehicle,
         totalCards
       );
     }
