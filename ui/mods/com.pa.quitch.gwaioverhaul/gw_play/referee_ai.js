@@ -275,44 +275,33 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       var pathLength = 0;
 
       // Apply AI mods to the file
-
-      switch (aisToModify) {
-        case "All":
-          if (isSubCommanderTechFile) {
-            // File's source is not an AI path so it needs to be copied to the AIs' paths
-            updatedFilePaths.push(
-              changeFilePath(newEnemyPath, aiTechPath.length)
-            );
-            updatedFilePaths.push(
-              changeFilePath(newSubCommanderPath, aiTechPath.length)
-            );
-          }
-          aiJsonModsInScope = aiModsInScopeOfFile();
-          break;
-
-        case "SubCommanders":
-          if (fileOwner === "enemy") {
-            break;
-          }
-
-          if (fileOwner === "shared") {
-            // Make a clean copy of the files for enemy AIs before modification of the JSON
-            configFiles[filePath] = _.cloneDeep(json);
-          }
-
-          if (isSubCommanderTechFile) {
-            pathLength = aiTechPath.length;
-          } else if (fileOwner === "shared") {
-            pathLength = oldEnemyPath.length;
-          } else if (isSubCommanderDirectory) {
-            pathLength = oldSubCommanderPath.length;
-          }
-
+      if (aisToModify == "All") {
+        if (isSubCommanderTechFile) {
+          // File's source is not an AI path so it needs to be copied to the AIs' paths
           updatedFilePaths.push(
-            changeFilePath(newSubCommanderPath, pathLength)
+            changeFilePath(newEnemyPath, aiTechPath.length)
           );
-          aiJsonModsInScope = aiModsInScopeOfFile();
-          break;
+          updatedFilePaths.push(
+            changeFilePath(newSubCommanderPath, aiTechPath.length)
+          );
+        }
+        aiJsonModsInScope = aiModsInScopeOfFile();
+      } else if (aisToModify === "SubCommanders" && fileOwner !== "enemy") {
+        if (fileOwner === "shared") {
+          // Make a clean copy of the files for enemy AIs before modification of the JSON
+          configFiles[filePath] = _.cloneDeep(json);
+        }
+
+        if (isSubCommanderTechFile) {
+          pathLength = aiTechPath.length;
+        } else if (fileOwner === "shared") {
+          pathLength = oldEnemyPath.length;
+        } else if (isSubCommanderDirectory) {
+          pathLength = oldSubCommanderPath.length;
+        }
+
+        updatedFilePaths.push(changeFilePath(newSubCommanderPath, pathLength));
+        aiJsonModsInScope = aiModsInScopeOfFile();
       }
 
       const finalFilePaths = _.isEmpty(updatedFilePaths)
