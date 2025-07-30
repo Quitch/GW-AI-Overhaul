@@ -9,6 +9,7 @@
 ### Bugfix
 
 - Correct unit tags in Nomad loadout so the AI understands the structures can hover
+- Physics and pathfinding information in Nomad structures is more comprehensive
 
 ## v5.81.0 - 2025-07-28
 

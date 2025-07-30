@@ -116,6 +116,35 @@ define([
                 path: "physics.push_sideways",
                 op: "replace",
                 value: true,
+              },
+              {
+                file: unit,
+                path: "structure",
+                op: "replace",
+                value: null,
+              },
+              {
+                file: unit,
+                path: "navigation.park_stamp.shape",
+                op: "replace",
+                value: "sphere",
+              },
+              {
+                file: unit,
+                path: "navigation.park_stamp.cost",
+                op: "replace",
+                value: 10,
+              },
+              {
+                file: unit,
+                path: "navigation.park_stamp.type_data",
+                op: "replace",
+                value: [
+                  { move_type: "land-small", stamp_type: "simple" },
+                  { move_type: "amphibious", stamp_type: "simple" },
+                  { move_type: "hover", stamp_type: "simple" },
+                  { move_type: "water-hover", stamp_type: "simple" },
+                ],
               }
             );
           });
@@ -149,6 +178,18 @@ define([
                 path: "navigation.turn_speed",
                 op: "replace",
                 value: 90,
+              },
+              {
+                file: unit,
+                path: "navigation.bank_factor",
+                op: "replace",
+                value: 5,
+              },
+              {
+                file: unit,
+                path: "navigation.hover_time",
+                op: "replace",
+                value: -1.0,
               }
             );
           });
@@ -187,8 +228,38 @@ define([
               {
                 file: unit,
                 path: "physics.radius",
-                op: "multiply",
+                op: "replace",
                 value: 5,
+              },
+              {
+                file: unit,
+                path: "physics.air_friction",
+                op: "replace",
+                value: 0.5,
+              },
+              {
+                file: unit,
+                path: "navigation.dodge_radius",
+                op: "replace",
+                value: 15,
+              },
+              {
+                file: unit,
+                path: "navigation.dodge_multiplier",
+                op: "replace",
+                value: 1.0,
+              },
+              {
+                file: unit,
+                path: "navigation.wobble_factor",
+                op: "replace",
+                value: 0.1,
+              },
+              {
+                file: unit,
+                path: "navigation.wobble_speed",
+                op: "replace",
+                value: 0.2,
               }
             );
           });
