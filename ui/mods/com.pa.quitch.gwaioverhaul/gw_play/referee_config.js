@@ -232,7 +232,13 @@ define([
     return aiTag;
   };
 
-  const setupPrimaryAi = function (ai, cards, aiTag, aiInUse, armies) {
+  const setupPrimaryAiAndMinions = function (
+    ai,
+    cards,
+    aiTag,
+    aiInUse,
+    armies
+  ) {
     ai = setAdvEcoMod(ai, aiInUse);
     const guardians = ai.mirrorMode;
 
@@ -249,13 +255,13 @@ define([
       minion = setAdvEcoMod(minion, aiInUse);
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
-      const minionIndex = index + 1; // primary AI has colour 0
-      const aiArmy = setupAIArmy(minion, minionIndex, aiTag[0], 2);
+      const colourIndex = index + 1; // primary AI has colour 0
+      const aiArmy = setupAIArmy(minion, colourIndex, aiTag[0], 2);
       armies.push(aiArmy);
     });
   };
 
-  const setupFfaAi = function (foes, aiTag, aiInUse, armies) {
+  const setupFfaAis = function (foes, aiTag, aiInUse, armies) {
     _.forEach(foes, function (foe, index) {
       foe = setAdvEcoMod(foe, aiInUse);
       foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
@@ -318,8 +324,8 @@ define([
       inventory,
       playerTag
     );
-    setupPrimaryAi(ai, cards, aiTag, aiInUse, armies);
-    setupFfaAi(ai.foes, aiTag, aiInUse, armies);
+    setupPrimaryAiAndMinions(ai, cards, aiTag, aiInUse, armies);
+    setupFfaAis(ai.foes, aiTag, aiInUse, armies);
     system.planets = modifyPlanets(inventory, system.planets);
 
     const config = {
