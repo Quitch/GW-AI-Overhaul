@@ -77,12 +77,6 @@ define([
             mods.push(
               {
                 file: unit,
-                path: "base_spec",
-                op: "replace",
-                value: "/pa/units/land/base_vehicle/base_vehicle.json",
-              },
-              {
-                file: unit,
                 path: "navigation.type",
                 op: "replace",
                 value: "Hover",
@@ -132,12 +126,6 @@ define([
           ];
           _.forEach(orbitalStructures, function (unit) {
             mods.push(
-              {
-                file: unit,
-                path: "base_spec",
-                op: "replace",
-                value: "/pa/units/orbital/base_orbital/base_orbital.json",
-              },
               {
                 file: unit,
                 path: "navigation.acceleration",
