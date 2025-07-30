@@ -6,6 +6,10 @@
 
 - Use different language for upgrade cards not using a card slot so as to take advantage of existing translated strings
 
+### Bugfix
+
+- Correct unit tags in Nomad loadout so the AI understands the structures can hover
+
 ## v5.81.0 - 2025-07-28
 
 ### Added

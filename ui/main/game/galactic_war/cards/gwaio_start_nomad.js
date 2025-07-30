@@ -192,6 +192,12 @@ define([
               },
               {
                 file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_Hover",
+              },
+              {
+                file: unit,
                 path: "physics.radius",
                 op: "multiply",
                 value: 5,
