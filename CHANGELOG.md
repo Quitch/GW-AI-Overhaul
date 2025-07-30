@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Use different language for upgrade cards not using a card slot so as to take advantage of existing translated strings
+
 ## v5.81.0 - 2025-07-28
 
 ### Added

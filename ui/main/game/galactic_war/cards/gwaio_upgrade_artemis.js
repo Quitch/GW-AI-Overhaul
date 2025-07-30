@@ -9,7 +9,7 @@ define([
         "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Artemis Upgrade Tech"),
     icon: _.constant(

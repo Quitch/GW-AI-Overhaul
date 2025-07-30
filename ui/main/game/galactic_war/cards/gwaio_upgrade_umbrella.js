@@ -9,7 +9,7 @@ define([
         "!LOC:Umbrella Upgrade Tech enables the targeting of land and surface naval units by anti-orbital defenses."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Umbrella Upgrade Tech"),
     icon: _.constant(

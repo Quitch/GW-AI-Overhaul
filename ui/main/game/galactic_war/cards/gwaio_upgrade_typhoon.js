@@ -9,7 +9,7 @@ define([
         "!LOC:Typhoon Upgrade Tech doubles the number of drones held by the Typhoon and any other unit with drones."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Typhoon Upgrade Tech"),
     icon: _.constant(

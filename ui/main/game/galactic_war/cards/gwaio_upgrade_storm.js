@@ -9,7 +9,7 @@ define([
         "!LOC:Storm Upgrade Tech enables interception of tactical missiles by the flak tank."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Storm Upgrade Tech"),
     icon: _.constant(

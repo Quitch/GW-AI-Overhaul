@@ -9,7 +9,7 @@ define([
         "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Vehicle Upgrade Tech"),
     icon: _.constant(

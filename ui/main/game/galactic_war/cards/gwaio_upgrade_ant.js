@@ -9,7 +9,7 @@ define([
         "!LOC:Ant Upgrade Tech adds splash damage to the light tank's attack."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Ant Upgrade Tech"),
     icon: _.constant(

@@ -9,7 +9,7 @@ define([
         "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Sheller Upgrade Tech"),
     icon: _.constant(

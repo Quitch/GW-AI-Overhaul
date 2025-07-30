@@ -9,7 +9,7 @@ define([
         "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Catapult Upgrade Tech"),
     icon: _.constant(

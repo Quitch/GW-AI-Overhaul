@@ -9,7 +9,7 @@ define([
         "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Pelican Upgrade Tech"),
     icon: _.constant(

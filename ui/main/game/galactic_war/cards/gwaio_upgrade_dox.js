@@ -9,7 +9,7 @@ define([
         "!LOC:Dox Upgrade Tech replaces the basic infantry's bullet weapons with flamethrowers."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Dox Upgrade Tech"),
     icon: _.constant(

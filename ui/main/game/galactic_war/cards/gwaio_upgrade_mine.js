@@ -9,7 +9,7 @@ define([
         "!LOC:Mine Upgrade Tech allows mines to explode without self-destructing."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Mine Upgrade Tech"),
     icon: _.constant(

@@ -9,7 +9,7 @@ define([
         "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Planetary Radar Upgrade Tech"),
     icon: _.constant(

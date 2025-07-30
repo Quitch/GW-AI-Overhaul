@@ -9,7 +9,7 @@ define([
         "!LOC:Halley Upgrade Tech doubles the health of the delta V engine and halves its cost."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Halley Upgrade Tech"),
     icon: _.constant(

@@ -9,7 +9,7 @@ define([
         "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Laser Defense Tower Upgrade Tech"),
     icon: _.constant(

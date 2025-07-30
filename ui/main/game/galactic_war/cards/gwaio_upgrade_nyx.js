@@ -9,7 +9,7 @@ define([
         "!LOC:Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Nyx Upgrade Tech"),
     icon: _.constant(

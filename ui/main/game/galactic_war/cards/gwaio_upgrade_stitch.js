@@ -9,7 +9,7 @@ define([
         "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Stitch Upgrade Tech"),
     icon: _.constant(

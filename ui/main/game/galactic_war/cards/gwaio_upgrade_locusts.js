@@ -7,7 +7,7 @@ define([
     describe: _.constant(
       loc("!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Locusts Upgrade Tech"),
     icon: _.constant(

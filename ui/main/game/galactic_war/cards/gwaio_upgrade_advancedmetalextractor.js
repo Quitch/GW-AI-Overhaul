@@ -9,7 +9,7 @@ define([
         "!LOC:Advanced Metal Extractor Upgrade Tech increases the metal production of this advanced economy structure by 25% but decreases its health by 50%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Advanced Metal Extractor Upgrade Tech"),
     icon: _.constant(

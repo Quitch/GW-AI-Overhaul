@@ -10,7 +10,7 @@ define([
         "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Bot Factory Upgrade Tech"),
     icon: _.constant(

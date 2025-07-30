@@ -9,7 +9,7 @@ define([
         "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Solar Array Upgrade Tech"),
     icon: _.constant(

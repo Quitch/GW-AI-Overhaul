@@ -9,7 +9,7 @@ define([
         "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Kraken Upgrade Tech"),
     icon: _.constant(

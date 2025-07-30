@@ -9,7 +9,7 @@ define([
         "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Aircraft Upgrade Tech"),
     icon: _.constant(

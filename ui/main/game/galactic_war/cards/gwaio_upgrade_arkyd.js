@@ -9,7 +9,7 @@ define([
         "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:ARKYD Upgrade Tech"),
     icon: _.constant(

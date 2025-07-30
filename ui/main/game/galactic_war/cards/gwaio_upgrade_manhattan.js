@@ -9,7 +9,7 @@ define([
         "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Manhattan Upgrade Tech"),
     icon: _.constant(

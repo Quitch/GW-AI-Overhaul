@@ -7,7 +7,7 @@ define([
     describe: _.constant(
       loc("!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Avenger Upgrade Tech"),
     icon: _.constant(

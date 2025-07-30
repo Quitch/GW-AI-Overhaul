@@ -9,7 +9,7 @@ define([
         "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Colonel Upgrade Tech"),
     icon: _.constant(

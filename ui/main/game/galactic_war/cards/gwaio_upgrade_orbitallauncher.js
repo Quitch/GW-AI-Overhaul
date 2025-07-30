@@ -10,7 +10,7 @@ define([
         "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
     icon: _.constant(

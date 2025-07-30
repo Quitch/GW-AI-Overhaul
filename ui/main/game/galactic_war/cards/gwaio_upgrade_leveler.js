@@ -9,7 +9,7 @@ define([
         "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Leveler Upgrade Tech"),
     icon: _.constant(

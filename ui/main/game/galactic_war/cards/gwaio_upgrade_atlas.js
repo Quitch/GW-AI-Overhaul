@@ -7,7 +7,7 @@ define([
     describe: _.constant(
       loc("!LOC:Atlas Upgrade Tech doubles the health of the seismic titan.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Atlas Upgrade Tech"),
     icon: _.constant(

@@ -11,7 +11,7 @@ define([
         " " +
         loc("!LOC:Doubles the rate of fire of the other weapons.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(
