@@ -321,16 +321,6 @@ define([
             });
           });
           inventory.addMods(mods);
-
-          const types = ["platoon", "template"];
-          const aiMods = _.map(types, function (type) {
-            return {
-              type: type,
-              op: "load",
-              value: CARD.id + ".json",
-            };
-          });
-          inventory.addAIMods(aiMods);
         } else {
           inventory.maxCards(inventory.maxCards() + 1);
         }
