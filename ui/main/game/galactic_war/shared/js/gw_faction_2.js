@@ -188,8 +188,7 @@ define([
     },
   ];
 
-  const shuffledPersonalties = _.shuffle(minions);
-  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomMinion = _.sample(minions);
   const randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
@@ -197,7 +196,7 @@ define([
       [153, 255, 51],
       [192, 192, 192],
     ],
-    personality: randomPersonality,
+    personality: randomMinion.personality,
     commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
   };
   minions.push(randomAI);

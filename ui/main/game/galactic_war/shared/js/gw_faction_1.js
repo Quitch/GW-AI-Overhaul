@@ -191,8 +191,7 @@ define([
     },
   ];
 
-  const shuffledPersonalties = _.shuffle(minions);
-  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomMinion = _.sample(minions);
   const randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
@@ -200,7 +199,7 @@ define([
       [153, 51, 255],
       [192, 192, 192],
     ],
-    personality: randomPersonality,
+    personality: randomMinion.personality,
     commander: "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
   };
   minions.push(randomAI);
