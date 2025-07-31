@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Use different language for upgrade cards not using a card slot so as to take advantage of existing translated strings
+- Use different wording for upgrade cards not using a card slot so as to take advantage of existing translated strings
 
 ### Bugfix
 
