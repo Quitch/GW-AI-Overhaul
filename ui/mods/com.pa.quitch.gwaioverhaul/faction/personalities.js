@@ -352,7 +352,7 @@ define({
   },
   fabber: {
     fabber_to_factory_ratio_basic: 2,
-    fabber_alone_on_planet_mod: 4,
+    fabber_to_factory_ratio_advanced: 2,
     factory_alone_on_planet_mod: 0.25,
   },
   defender: {
@@ -364,9 +364,8 @@ define({
     min_basic_fabbers: 4,
   },
   luddite: {
-    adv_eco_mod: 2,
-    adv_eco_mod_alone: 1.3,
-    basic_to_advanced_factory_ratio: 10,
+    adv_eco_mod: 3,
+    adv_eco_mod_alone: 2,
   },
   technologist: {
     adv_eco_mod: 0.5,
@@ -408,6 +407,8 @@ define({
     min_advanced_fabbers: 3,
   },
   factory: {
+    fabber_to_factory_ratio_basic: 0.5,
+    fabber_to_factory_ratio_advanced: 0.5,
     metal_demand_check: 0.99,
     energy_demand_check: 0.99,
   },

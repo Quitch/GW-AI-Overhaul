@@ -5,6 +5,7 @@
 ### Changed
 
 - Use different wording for upgrade cards not using a card slot so as to take advantage of existing translated strings
+- Fabber, Factory, and Luddite lean into their personality more
 
 ### Bugfix
 
