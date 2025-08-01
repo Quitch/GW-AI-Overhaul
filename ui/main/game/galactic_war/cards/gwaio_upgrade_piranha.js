@@ -9,7 +9,7 @@ define([
         "!LOC:Piranha Upgrade Tech changes the gunboat into a hover unit, allowing it to cross land and lava."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Piranha Upgrade Tech"),
     icon: _.constant(

@@ -9,7 +9,7 @@ define([
         "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Kaiju Upgrade Tech"),
     icon: _.constant(

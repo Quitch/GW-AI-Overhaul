@@ -9,7 +9,7 @@ define([
         "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 100%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Firefly Upgrade Tech"),
     icon: _.constant(

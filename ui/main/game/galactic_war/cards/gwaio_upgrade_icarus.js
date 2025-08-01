@@ -9,7 +9,7 @@ define([
         "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Icarus Upgrade Tech"),
     icon: _.constant(

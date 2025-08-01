@@ -9,7 +9,7 @@ define([
         "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Zeus Upgrade Tech"),
     icon: _.constant(

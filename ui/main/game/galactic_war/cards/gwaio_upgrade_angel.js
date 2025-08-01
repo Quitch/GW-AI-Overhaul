@@ -9,7 +9,7 @@ define([
         "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Angel Upgrade Tech"),
     icon: _.constant(

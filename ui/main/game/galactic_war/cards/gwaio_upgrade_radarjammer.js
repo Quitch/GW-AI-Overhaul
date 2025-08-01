@@ -9,7 +9,7 @@ define([
         "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming and radar radius of the radar jammer."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Radar Jamming Station Upgrade Tech"),
     icon: _.constant(

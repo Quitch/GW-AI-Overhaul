@@ -9,7 +9,7 @@ define([
         "!LOC:Radar Upgrade Tech increases the vision and radar radius of basic radar by 50%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Radar Upgrade Tech"),
     icon: _.constant(

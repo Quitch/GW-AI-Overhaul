@@ -9,7 +9,7 @@ define([
         "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(

@@ -192,8 +192,7 @@ define([
     },
   ];
 
-  const shuffledPersonalties = _.shuffle(minions);
-  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomMinion = _.sample(minions);
   const randomAI = {
     name: "Aryst0krat",
     character: "!LOC:Random",
@@ -201,7 +200,7 @@ define([
       [0, 255, 255],
       [192, 192, 192],
     ],
-    personality: randomPersonality,
+    personality: randomMinion.personality,
     commander:
       "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
   };

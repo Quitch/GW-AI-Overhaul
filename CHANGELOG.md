@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 5.82.0 - 2025-08-01
+
+### Changed
+
+- Use different wording for upgrade cards not using a card slot so as to take advantage of existing translated strings
+- Fabber, Factory, and Luddite lean into their personality more
+
+### Bugfix
+
+- Correct unit tags in Nomad loadout so the AI understands the structures can hover
+- Physics and pathfinding information in Nomad structures is more comprehensive
+
 ## v5.81.0 - 2025-07-28
 
 ### Added

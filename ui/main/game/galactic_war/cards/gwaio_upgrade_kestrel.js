@@ -9,7 +9,7 @@ define([
         "!LOC:Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Kestrel Upgrade Tech"),
     icon: _.constant(

@@ -9,7 +9,7 @@ define([
         "!LOC:Ares Upgrade Tech increases the range of the rolling fortress by 25%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Ares Upgrade Tech"),
     icon: _.constant(

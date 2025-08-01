@@ -11,7 +11,7 @@ define([
           "!LOC:Fires twice as fast and no longer costs metal to recharge its ammo."
         ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Lob Upgrade Tech"),
     icon: _.constant(

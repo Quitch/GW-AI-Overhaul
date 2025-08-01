@@ -9,7 +9,7 @@ define([
         "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Barnacle Upgrade Tech"),
     icon: _.constant(

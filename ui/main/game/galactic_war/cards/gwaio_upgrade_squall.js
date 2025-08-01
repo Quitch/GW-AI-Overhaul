@@ -7,7 +7,7 @@ define([
     describe: _.constant(
       loc("!LOC:Squall Upgrade Tech allows you to issue orders to drones.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Squall Upgrade Tech"),
     icon: _.constant(

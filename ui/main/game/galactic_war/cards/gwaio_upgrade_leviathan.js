@@ -9,7 +9,7 @@ define([
         "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Leviathan Upgrade Tech"),
     icon: _.constant(

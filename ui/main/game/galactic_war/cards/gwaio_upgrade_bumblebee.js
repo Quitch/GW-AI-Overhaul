@@ -9,7 +9,7 @@ define([
         "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Bumblebee Upgrade Tech"),
     icon: _.constant(

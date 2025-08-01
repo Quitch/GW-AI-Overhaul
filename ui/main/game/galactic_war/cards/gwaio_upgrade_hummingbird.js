@@ -9,7 +9,7 @@ define([
         "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Hummingbird Upgrade Tech"),
     icon: _.constant(

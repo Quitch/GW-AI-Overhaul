@@ -7,7 +7,7 @@ define([
     describe: _.constant(
       loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%.") +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(

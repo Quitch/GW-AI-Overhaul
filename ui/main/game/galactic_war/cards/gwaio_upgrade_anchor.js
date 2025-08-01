@@ -9,7 +9,7 @@ define([
         "!LOC:Anchor Upgrade Tech increases the range of the defense satellite's weapons by 25%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Anchor Upgrade Tech"),
     icon: _.constant(

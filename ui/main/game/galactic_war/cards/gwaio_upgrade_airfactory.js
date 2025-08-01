@@ -10,7 +10,7 @@ define([
         "!LOC:Air Factory Upgrade Tech enables the building of advanced units by basic air manufacturing."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Air Factory Upgrade Tech"),
     icon: _.constant(

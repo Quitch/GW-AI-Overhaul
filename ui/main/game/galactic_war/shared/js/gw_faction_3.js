@@ -188,8 +188,7 @@ define([
     },
   ];
 
-  const shuffledPersonalties = _.shuffle(minions);
-  const randomPersonality = shuffledPersonalties[0].personality;
+  const randomMinion = _.sample(minions);
   const randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
@@ -197,7 +196,7 @@ define([
       [255, 0, 0],
       [192, 192, 192],
     ],
-    personality: randomPersonality,
+    personality: randomMinion.personality,
     commander:
       "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
   };

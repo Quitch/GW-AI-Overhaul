@@ -9,7 +9,7 @@ define([
         "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Wyrm Upgrade Tech"),
     icon: _.constant(

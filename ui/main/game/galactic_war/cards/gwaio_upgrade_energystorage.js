@@ -9,7 +9,7 @@ define([
         "!LOC:Energy Storage Upgrade Tech increases the amount of energy storage by 300%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Energy Storage Upgrade Tech"),
     icon: _.constant(

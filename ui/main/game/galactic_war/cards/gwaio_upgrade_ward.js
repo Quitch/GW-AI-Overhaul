@@ -9,7 +9,7 @@ define([
         "!LOC:Ward Upgrade Tech causes the mobile anti-nuke to start fully charged."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Ward Upgrade Tech"),
     icon: _.constant(

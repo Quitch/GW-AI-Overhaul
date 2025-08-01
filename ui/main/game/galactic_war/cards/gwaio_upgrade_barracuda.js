@@ -9,7 +9,7 @@ define([
         "!LOC:Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%."
       ) +
         "<br> <br>" +
-        loc("!LOC:Does not use a Data Bank.")
+        loc("!LOC:Adds a new slot for another technology.")
     ),
     summarize: _.constant("!LOC:Barracuda Upgrade Tech"),
     icon: _.constant(
