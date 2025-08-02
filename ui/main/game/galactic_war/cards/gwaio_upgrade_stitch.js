@@ -6,7 +6,8 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator."
+        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator." +
+          " Disables the auto-repair feature."
       ) +
         "<br> <br>" +
         loc("!LOC:Adds a new slot for another technology.")
@@ -39,6 +40,12 @@ define([
         {
           file: gwoUnit.stitchBuildArm,
           path: "can_only_assist_with_buildable_items",
+          op: "replace",
+          value: false,
+        },
+        {
+          file: gwoUnit.stitchBuildArm,
+          path: "auto_repair",
           op: "replace",
           value: false,
         },

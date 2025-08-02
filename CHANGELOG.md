@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Nomad orbital structures stay in orbit
+- Support Barge and combat fabbers no longer auto repair when upgraded as a workaround for an engine limitation
 
 ## v5.82.0 - 2025-08-01
 
