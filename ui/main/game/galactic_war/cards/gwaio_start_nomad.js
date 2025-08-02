@@ -146,6 +146,12 @@ define([
                   { move_type: "hover", stamp_type: "simple" },
                   { move_type: "water-hover", stamp_type: "simple" },
                 ],
+              },
+              {
+                file: unit,
+                path: "unit_types",
+                op: "push",
+                value: "UNITTYPE_Hover",
               }
             );
           });
@@ -214,12 +220,6 @@ define([
                 path: "unit_types",
                 op: "push",
                 value: "UNITTYPE_Mobile",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_Hover",
               },
               {
                 file: unit,
