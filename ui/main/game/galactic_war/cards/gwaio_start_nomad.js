@@ -63,14 +63,15 @@ define([
             mediumStructures,
             largeStructures
           );
-          const groundStructures = _.filter(
+          const orbitalStructures = [
+            gwoUnit.anchor,
+            gwoUnit.jig,
+            gwoUnit.kessler,
+          ];
+          const groundStructures = _.reject(
             allStructures,
             function (structure) {
-              return (
-                structure !== gwoUnit.anchor &&
-                structure !== gwoUnit.jig &&
-                structure !== gwoUnit.kessler
-              );
+              return _.includes(orbitalStructures, structure);
             }
           );
           _.forEach(groundStructures, function (unit) {
@@ -148,11 +149,6 @@ define([
               }
             );
           });
-          const orbitalStructures = [
-            gwoUnit.anchor,
-            gwoUnit.jig,
-            gwoUnit.kessler,
-          ];
           _.forEach(orbitalStructures, function (unit) {
             mods.push(
               {
