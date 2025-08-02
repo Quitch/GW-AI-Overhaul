@@ -203,12 +203,6 @@ define([
             mods.push(
               {
                 file: unit,
-                path: "physics.type",
-                op: "replace",
-                value: "Mobile",
-              },
-              {
-                file: unit,
                 path: "command_caps",
                 op: "replace",
                 value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
