@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.82.1 - 2025-08-02
 
 ### Bugfix
 
