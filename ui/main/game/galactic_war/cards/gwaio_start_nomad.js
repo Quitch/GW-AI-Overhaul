@@ -157,6 +157,12 @@ define([
             mods.push(
               {
                 file: unit,
+                path: "navigation.type",
+                op: "replace",
+                value: "orbital",
+              },
+              {
+                file: unit,
                 path: "navigation.acceleration",
                 op: "replace",
                 value: 25,
