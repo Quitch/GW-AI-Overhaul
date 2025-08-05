@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Spawned units not matching regular units - fix in base game requires fixing so we're reintroducing the fix in GWO
+
 ## v5.82.1 - 2025-08-02
 
 ### Bugfix
