@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.82.3 - 2025-08-07
+
+### Bugfix
+
+- Protocol Precision causing structures to appear away from where they were built
+
+## v5.82.2 - 2025-08-05
+
+### Bugfix
+
+- Spawned units not matching regular units - fix in base game requires fixing so we're reintroducing the fix in GWO
+
 ## v5.82.1 - 2025-08-02
 
 ### Bugfix

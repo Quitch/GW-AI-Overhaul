@@ -5,7 +5,11 @@ define([
   const prepareMods = function (mods) {
     const percentageReduction = 0.85;
     const percentageIncrease = 1.15;
-    _.forEach(gwoGroup.combat, function (unit) {
+    const mobileCombatUnits = _.xor(
+      gwoGroup.combat,
+      gwoGroup.structuresDefences
+    );
+    _.forEach(mobileCombatUnits, function (unit) {
       mods.push(
         {
           file: unit,
@@ -30,7 +34,11 @@ define([
           path: "navigation.turn_speed",
           op: "multiply",
           value: percentageReduction,
-        },
+        }
+      );
+    });
+    _.forEach(gwoGroup.combat, function (unit) {
+      mods.push(
         {
           file: unit,
           path: "recon.observer.items.0.radius",
