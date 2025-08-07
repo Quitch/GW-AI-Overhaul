@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Protocol Precision causing structures to appear away from where they were built
+
 ## v5.82.2 - 2025-08-05
 
 ### Bugfix
