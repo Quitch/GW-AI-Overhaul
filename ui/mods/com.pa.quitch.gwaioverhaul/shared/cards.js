@@ -4,9 +4,12 @@ define({
       return _.includes(inventoryUnits, units);
     }
 
-    return _.every(units, function (unit) {
-      return _.includes(inventoryUnits, unit);
-    });
+    for (var unit of units) {
+      if (_.includes(inventoryUnits, unit)) {
+        return true;
+      }
+    }
+    return false;
   },
 
   missingAllUnits: function (inventoryUnits, units) {
