@@ -163,8 +163,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       return _.includes(filePath, filePathFragment);
     };
 
-    const aiTechPath = "/pa/ai_tech/";
-
     const whoseFileIsItAnyway = function (aiPaths) {
       const aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
 
@@ -242,6 +240,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const isSubCommanderDirectory = filePathStarts(
         aiPaths.subCommanderSource
       );
+      const aiTechPath = "/pa/ai_tech/";
       const isSubCommanderTechFile = filePathStarts(aiTechPath);
       var aiJsonModsInScope = [];
       var updatedFilePaths = [];
