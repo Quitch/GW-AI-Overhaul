@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Hoarder Commander not having T2 eco
+
 ## v5.82.4 - 2025-08-19
 
 ### Bugfix
