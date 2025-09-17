@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Hoarder Commander not having T2 eco
+- Protocol: Disposability reduces build costs
 
 ## v5.82.4 - 2025-08-19
 
