@@ -40,7 +40,7 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 1. Uninstall/delete any existing copy of the mod.
 2. Download the [latest release](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
-3. Extract the zip to `%localappdata%\Uber Entertainment\Planetary Annihilation\client_mods`
+3. Extract the zip to `%localappdata%\Uber Entertainment\Planetary Annihilation\client_mods` - this should create a "Galactic War Overhaul" folder under client_mods
 4. In PA Community Mods enable the Galactic War Overhaul (local) mod
 
 ## Discussion
