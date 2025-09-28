@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.82.5 - 2025-09-28
+
+### Bugfix
+
+- Hoarder Commander not having T2 eco
+- Protocol: Disposability reduces build costs (Jackson11500)
+
 ## v5.82.4 - 2025-08-19
 
 ### Bugfix
@@ -1411,7 +1418,7 @@
 - Rerolls being offered for loadouts
 - Assault Commander loadout missing the Stinger
 - Titans AI not building the Stinger from the Unit Cannon
-- Setup column being too tall for the screen causing the entire page to scroll instead of just the column - with thanks to burntcustard
+- Setup column being too tall for the screen causing the entire page to scroll instead of just the column (burntcustard)
 - Queller Sub Commanders not scouting on small planets when only vehicles were available
 - Titans AI not building torpedo launchers
 - AI uses Stitches again
@@ -2800,7 +2807,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 ## v0.8 - 2019-03-29
 
 - Fixed Casual through Gold incorrectly loading vanilla difficulty levels
-- Reduced file shadowing with thanks to wondible
+- Reduced file shadowing (JustinLove)
 - Enemy Commanders now utilise individual styles
 - Updated difficulty guidance based on more personality controls being assigned to individual Commanders
 - Updates to Commander personalities

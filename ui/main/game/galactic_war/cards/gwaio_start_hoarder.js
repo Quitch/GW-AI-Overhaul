@@ -36,7 +36,8 @@ define([
               gwoGroup.bots,
               gwoGroup.naval,
               gwoGroup.orbital,
-              gwoGroup.vehicles
+              gwoGroup.vehicles,
+              gwoGroup.starterUnitsAdvanced
             )
           );
         } else {

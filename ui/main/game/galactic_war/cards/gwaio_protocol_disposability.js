@@ -13,7 +13,7 @@ define([
         },
         {
           file: unit,
-          path: "max_health",
+          path: "build_metal_cost",
           op: "multiply",
           value: 0.7,
         },
