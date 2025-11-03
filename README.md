@@ -38,7 +38,13 @@ Be sure to check out my guide on [adding more maps to Galactic War](https://plan
 
 ## Installation
 
-1. Uninstall/delete any existing copy of the mod.
+### Community Mods (recommended)
+
+You should download and install this mod via the Planetary Annihilation: TITANS in-game [Community Mods](https://steamcommunity.com/sharedfiles/filedetails/?id=1417396826).
+
+### Local
+
+1. Remove any existing copy of the mod.
 2. Download the [latest release](https://github.com/Quitch/GW-AI-Overhaul/releases/latest).
 3. Extract the zip to `%localappdata%\Uber Entertainment\Planetary Annihilation\client_mods` - this should create a "Galactic War Overhaul" folder under client_mods
 4. In PA Community Mods enable the Galactic War Overhaul (local) mod
