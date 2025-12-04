@@ -487,19 +487,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.airFactory,
     gwoUnit.botFactory,
     gwoUnit.navalFactory,
+    gwoUnit.orbitalLauncher,
     gwoUnit.vehicleFactory,
   ];
   const factoriesAdvanced = [
     gwoUnit.airFactoryAdvanced,
     gwoUnit.botFactoryAdvanced,
     gwoUnit.navalFactoryAdvanced,
+    gwoUnit.orbitalFactory,
     gwoUnit.vehicleFactoryAdvanced,
   ];
   const factories = factoriesBasic.concat(
     factoriesAdvanced,
     gwoUnit.antiNukeLauncher,
-    gwoUnit.orbitalFactory,
-    gwoUnit.orbitalLauncher,
     gwoUnit.unitCannon
   );
 
