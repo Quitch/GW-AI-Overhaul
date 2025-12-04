@@ -34,6 +34,7 @@ define([
           chance = 25;
         }
         if (
+          gwoCard.hasUnit(inventory.units(), gwoGroup.air) &&
           gwoCard.missingAllUnits(inventory.units(), gwoGroup.factoriesAdvanced)
         ) {
           chance *= 3;

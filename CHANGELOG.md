@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Lower chance of complete air/bot/vehicle tech where you don't already have a unit in that tech branch
+
 ### Bugfix
 
 - Some cards not being being dealt under particular circumstances
