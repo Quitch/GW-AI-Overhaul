@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.82.6 - 2025-12-04
+
+### Changed
+
+- Lower chance of complete air/bot/vehicle tech if you don't already have a unit in that tech branch
+
+### Bugfix
+
+- Some cards not being being dealt under particular circumstances
+
 ## v5.82.5 - 2025-09-28
 
 ### Bugfix
