@@ -18,7 +18,6 @@ define([
       };
     },
     getContext: gwoCard.getContext,
-
     deal: function (system, context, inventory) {
       var chance = 0;
       if (!gwoCard.hasUnit(inventory.units(), gwoGroup.vehicles)) {
