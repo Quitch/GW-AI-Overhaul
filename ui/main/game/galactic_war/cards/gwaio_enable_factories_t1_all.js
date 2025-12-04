@@ -26,7 +26,7 @@ define([
         gwoUnit.botFactory,
         gwoUnit.vehicleFactory,
       ];
-      if (!gwoCard.hasUnit(inventory.units(), basicFactories)) {
+      if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
         const dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||

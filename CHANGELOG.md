@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Some cards not being being dealt under particular circumstances
+
 ## v5.82.5 - 2025-09-28
 
 ### Bugfix

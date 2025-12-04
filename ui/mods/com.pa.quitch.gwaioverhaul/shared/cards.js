@@ -12,6 +12,29 @@ define({
     return false;
   },
 
+  hasAllUnits: function (inventoryUnits, units) {
+    if (_.isString(units)) {
+      return _.includes(inventoryUnits, units);
+    }
+
+    return _.every(units, function (unit) {
+      return _.includes(inventoryUnits, unit);
+    });
+  },
+
+  missingUnit: function (inventoryUnits, units) {
+    if (_.isString(units)) {
+      return !_.includes(inventoryUnits, units);
+    }
+
+    for (var unit of units) {
+      if (!_.includes(inventoryUnits, unit)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   missingAllUnits: function (inventoryUnits, units) {
     if (_.isString(units)) {
       return !_.includes(inventoryUnits, units);
