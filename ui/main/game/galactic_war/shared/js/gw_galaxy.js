@@ -169,8 +169,8 @@ define([
       self.radius(radius);
 
       _.forEach(builder.stars, function (star, index) {
-        builder.stars[index][0] = (star[0] - min[0]) / radius[0] - 1.0;
-        builder.stars[index][1] = (star[1] - min[1]) / radius[1] - 1.0;
+        builder.stars[index][0] = (star[0] - min[0]) / radius[0] - 1;
+        builder.stars[index][1] = (star[1] - min[1]) / radius[1] - 1;
       });
 
       // Transform the stars so that they are moved towards the center in proportion to there distance from the center.
@@ -198,8 +198,8 @@ define([
         const factor = Math.pow(maxReduction * (delta / maxDelta), 2);
 
         return [
-          center[0] * factor + element[0] * (1.0 - factor) - 0.15,
-          center[1] * factor + element[1] * (1.0 - factor) + 0.15,
+          center[0] * factor + element[0] * (1 - factor) - 0.15,
+          center[1] * factor + element[1] * (1 - factor) + 0.15,
         ];
       });
 

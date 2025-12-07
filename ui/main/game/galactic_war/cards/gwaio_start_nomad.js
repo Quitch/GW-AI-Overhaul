@@ -199,7 +199,7 @@ define([
                 file: unit,
                 path: "navigation.hover_time",
                 op: "replace",
-                value: -1.0,
+                value: -1,
               }
             );
           });
@@ -245,7 +245,7 @@ define([
                 file: unit,
                 path: "navigation.dodge_multiplier",
                 op: "replace",
-                value: 1.0,
+                value: 1,
               },
               {
                 file: unit,

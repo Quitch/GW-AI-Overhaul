@@ -87,7 +87,7 @@ define([
                 file: weapon,
                 path: "rate_of_fire",
                 op: "multiply",
-                value: 2.0,
+                value: 2,
               }
             );
           });
