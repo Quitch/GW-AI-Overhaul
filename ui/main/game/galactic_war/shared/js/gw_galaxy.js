@@ -185,7 +185,7 @@ define([
 
       const deltas = _.map(builder.stars, function (element) {
         var delta = [element[0] - center[0], element[1] - center[1]];
-        delta = Math.sqrt(delta[0] * delta[0] + delta[1] * delta[1]);
+        delta = Math.hypot(delta[0], delta[1]);
 
         return delta;
       });
