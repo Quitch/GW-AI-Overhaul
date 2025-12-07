@@ -286,9 +286,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
         if (isSubCommanderTechFile) {
           // File's source is not an AI path so it needs to be copied to the AIs' paths
           updatedFilePaths.push(
-            changeFilePath(aiPaths.enemyDestination, aiTechPath.length)
-          );
-          updatedFilePaths.push(
+            changeFilePath(aiPaths.enemyDestination, aiTechPath.length),
             changeFilePath(aiPaths.subCommanderDestination, aiTechPath.length)
           );
         }

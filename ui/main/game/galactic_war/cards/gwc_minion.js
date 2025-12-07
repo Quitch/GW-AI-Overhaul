@@ -9,14 +9,14 @@ define([
     describe: function (params) {
       const minion = params.minion;
       const result = [];
-      result.push("!LOC:Adds a Sub Commander that will join you in battles.");
-      result.push("<br>");
-      result.push("!LOC:Name:");
-      result.push(" " + minion.name);
+      result.push(
+        "!LOC:Adds a Sub Commander that will join you in battles.",
+        "<br>",
+        "!LOC:Name:",
+        " " + minion.name
+      );
       if (minion.character) {
-        result.push("<br>");
-        result.push("!LOC:Personality:");
-        result.push(" " + loc(minion.character));
+        result.push("<br>", "!LOC:Personality:", " " + loc(minion.character));
         if (minion.penchant) {
           result.push(" " + loc(minion.penchant));
         }

@@ -61,18 +61,20 @@ define([
       }
     );
     _.forEach(unitsExcludingRadarScoutsCommanders, function (unit) {
-      mods.push({
-        file: unit,
-        path: "recon.observer.items.0.radius",
-        op: "replace",
-        value: 0,
-      });
-      mods.push({
-        file: unit,
-        path: "recon.observer.items.1.radius",
-        op: "replace",
-        value: 0,
-      });
+      mods.push(
+        {
+          file: unit,
+          path: "recon.observer.items.0.radius",
+          op: "replace",
+          value: 0,
+        },
+        {
+          file: unit,
+          path: "recon.observer.items.1.radius",
+          op: "replace",
+          value: 0,
+        }
+      );
     });
     // unit specific fixes required to accommodate the range
     mods.push(
