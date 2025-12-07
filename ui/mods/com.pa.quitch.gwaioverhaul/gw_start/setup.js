@@ -804,15 +804,7 @@ function gwoSetup() {
             _.forEach(game.galaxy().stars(), function (star) {
               const ai = star.ai();
               const system = star.system();
-              if (!ai) {
-                // Add some lore to neutral systems
-                if (gwoLore.neutralSystems[loreEntry]) {
-                  system.name = gwoLore.neutralSystems[loreEntry].name;
-                  system.description =
-                    gwoLore.neutralSystems[loreEntry].description;
-                  loreEntry += 1;
-                }
-              } else {
+              if (ai) {
                 _.forEach(star.system().planets, function (planet) {
                   planet.generator.shuffleLandingZones = true;
                   // Set up Foundation planets
@@ -887,6 +879,11 @@ function gwoSetup() {
                     optionalLoreEntry += 1;
                   }
                 }
+              } else if (gwoLore.neutralSystems[loreEntry]) {
+                system.name = gwoLore.neutralSystems[loreEntry].name;
+                system.description =
+                  gwoLore.neutralSystems[loreEntry].description;
+                loreEntry += 1;
               }
             });
           });

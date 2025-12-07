@@ -948,12 +948,12 @@ function gwoCard() {
                   model.exitGate().resolve();
 
                   if (playTechAudio) {
-                    if (!techAudio) {
+                    if (techAudio) {
+                      api.audio.playSound(techAudio);
+                    } else {
                       api.audio.playSound(
                         "/VO/Computer/gw/board_tech_acquired"
                       );
-                    } else {
-                      api.audio.playSound(techAudio);
                     }
                   }
                 }

@@ -18,7 +18,7 @@ define(function () {
       self.units(config.units || []);
       self.mods(config.mods || []);
       self.aiMods(config.aiMods || []);
-      self.maxCards(!_.isUndefined(config.maxCards) ? config.maxCards : 0);
+      self.maxCards(_.isUndefined(config.maxCards) ? 0 : config.maxCards);
 
       self.applyCards = function () {};
       self.cards(config.cards || []);

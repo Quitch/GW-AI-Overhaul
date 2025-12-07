@@ -63,10 +63,10 @@ function gwoRefereeChanges() {
           }
 
           const cookedFiles = _.mapValues(allFiles, function (value) {
-            if (!_.isString(value)) {
-              return JSON.stringify(value);
-            } else {
+            if (_.isString(value)) {
               return value;
+            } else {
+              return JSON.stringify(value);
             }
           });
 

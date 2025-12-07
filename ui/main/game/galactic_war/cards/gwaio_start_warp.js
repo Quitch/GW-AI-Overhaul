@@ -31,7 +31,9 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
+        if (buffCount) {
+          inventory.maxCards(inventory.maxCards() + 1);
+        } else {
           GWCStart.buff(inventory);
           inventory.addMods([
             {
@@ -55,8 +57,6 @@ define([
               },
             },
           ]);
-        } else {
-          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

@@ -137,7 +137,9 @@ function gwoCardTooltips() {
           }
           ++hoverCount;
 
-          if (!card) {
+          if (card) {
+            makeCardTooltip(card);
+          } else {
             // Delay clears for a bit to avoid flashing
             const oldCount = hoverCount;
             _.delay(function () {
@@ -147,8 +149,6 @@ function gwoCardTooltips() {
               model.hoverCard(undefined);
             }, 300);
             return;
-          } else {
-            makeCardTooltip(card);
           }
 
           var $block = $(hoverEvent.target);

@@ -29,7 +29,9 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
+        if (buffCount) {
+          inventory.maxCards(inventory.maxCards() + 1);
+        } else {
           GWCStart.buff(inventory);
 
           const unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
@@ -86,15 +88,15 @@ define([
                 root: [0, 0, 0],
                 head: [0, 0, 7],
               },
+            },
+            // Don't let the Pelican carry the Manhattan
+            {
+              file: gwoUnit.pelican,
+              path: "transporter.transportable_unit_types",
+              op: "add",
+              value: " - Important",
             }
           );
-          // Don't let the Pelican carry the Manhattan
-          mods.push({
-            file: gwoUnit.pelican,
-            path: "transporter.transportable_unit_types",
-            op: "add",
-            value: " - Important",
-          });
           inventory.addMods(mods);
 
           const aiMods = [
@@ -149,8 +151,6 @@ define([
             });
           });
           inventory.addAIMods(aiMods);
-        } else {
-          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
