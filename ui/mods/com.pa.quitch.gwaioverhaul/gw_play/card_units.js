@@ -24,6 +24,7 @@ define([
     "gwaio_anti_orbital",
     "gwaio_anti_structure",
     "gwaio_enable_tsunami",
+    "gwaio_enable_eradication",
     "gwaio_anti_commander"
   );
 

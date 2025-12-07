@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Eradication Tech no longer tries to produce a unit tooltip
+
 ## v5.82.6 - 2025-12-04
 
 ### Changed
