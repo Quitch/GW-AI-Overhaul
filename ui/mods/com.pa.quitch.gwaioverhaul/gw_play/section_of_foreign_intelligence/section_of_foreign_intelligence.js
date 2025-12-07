@@ -160,7 +160,7 @@ function gwoIntelligence() {
 
         const toFixedIfNecessary = function (value, decimals) {
           // + converts the string output of toFixed() back to a float
-          return +parseFloat(value).toFixed(decimals);
+          return +Number.parseFloat(value).toFixed(decimals);
         };
 
         const measureThreat = function (ai) {

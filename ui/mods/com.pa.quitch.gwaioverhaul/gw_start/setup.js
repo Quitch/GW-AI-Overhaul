@@ -574,8 +574,10 @@ function gwoSetup() {
               }
 
               const difficulty = model.gwoDifficultySettings;
-              const econBase = parseFloat(difficulty.econBase());
-              const econRatePerDist = parseFloat(difficulty.econRatePerDist());
+              const econBase = Number.parseFloat(difficulty.econBase());
+              const econRatePerDist = Number.parseFloat(
+                difficulty.econRatePerDist()
+              );
 
               // Set up boss system
               setAIPersonality(boss, difficulty);
@@ -589,7 +591,7 @@ function gwoSetup() {
                 boss.inventory = gwoCluster.clusterCommanders;
               }
 
-              const factionTechHandicap = parseFloat(
+              const factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
               );
               const bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
@@ -602,7 +604,7 @@ function gwoSetup() {
               );
 
               const mandatoryMinions = difficulty.mandatoryMinions();
-              const minionMod = parseFloat(difficulty.minionMod());
+              const minionMod = Number.parseFloat(difficulty.minionMod());
               const minions = GWFactions[info.faction].minions;
               var clusterType = "";
               // Set up boss minions
@@ -648,7 +650,9 @@ function gwoSetup() {
                   difficulty.suddenDeathChance()
                 );
                 ai.bountyMode = gameModeEnabled(difficulty.bountyModeChance());
-                ai.bountyModeValue = parseFloat(difficulty.bountyModeValue());
+                ai.bountyModeValue = Number.parseFloat(
+                  difficulty.bountyModeValue()
+                );
                 ai.eradicationMode = gameModeEnabled(
                   difficulty.eradicationModeChance()
                 );
@@ -838,8 +842,8 @@ function gwoSetup() {
                     ai.boss = true; // otherwise it won't display its icon
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
-                    const econBase = parseFloat(difficulty.econBase());
-                    const econRatePerDist = parseFloat(
+                    const econBase = Number.parseFloat(difficulty.econBase());
+                    const econRatePerDist = Number.parseFloat(
                       difficulty.econRatePerDist()
                     );
                     ai.econ_rate = aiEconRate(
