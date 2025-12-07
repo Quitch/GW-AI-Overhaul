@@ -186,7 +186,7 @@ function gwoSetup() {
           if (faction) {
             // Minions don't have a faction number so use the previous one
             // which should be from the primary AI and accurate
-            aiFaction = parseInt(faction);
+            aiFaction = Number.parseInt(faction);
           }
 
           const quellerTag = "queller";
@@ -730,7 +730,7 @@ function gwoSetup() {
                     const foeCommander = selectMinion(
                       GWFactions[foeFaction].minions
                     );
-                    foeCommander.faction = parseInt(foeFaction);
+                    foeCommander.faction = Number.parseInt(foeFaction);
                     setAIPersonality(foeCommander, difficulty);
                     foeCommander.econ_rate = aiEconRate(
                       econBase,

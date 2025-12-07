@@ -69,7 +69,7 @@ define(function () {
         return false;
       }
       return _.isArray(ai.faction) // was an array before v5.44.0
-        ? parseInt(ai.faction[0]) === 4
+        ? Number.parseInt(ai.faction[0]) === 4
         : ai.faction === 4;
     },
 
