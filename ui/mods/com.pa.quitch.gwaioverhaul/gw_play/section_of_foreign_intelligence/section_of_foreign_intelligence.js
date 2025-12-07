@@ -16,6 +16,201 @@ function gwoIntelligence() {
     model.gwoAIBuffsTooltip =
       "Applied to AI commanders and units preferred by the faction.";
 
+    const getNumberOfCommanders = function (commander) {
+      if (commander.bossCommanders) {
+        return commander.bossCommanders;
+      } else if (commander.commanderCount) {
+        return commander.commanderCount;
+      }
+      return 1;
+    };
+
+    const getCommanderCharacter = function (commander) {
+      var character = commander.character
+        ? loc(commander.character)
+        : loc("!LOC:None");
+      if (commander.penchantName) {
+        character = character + " " + loc(commander.penchantName);
+      }
+      return character;
+    };
+
+    const setFactionIndex = function (commander, currentFaction) {
+      return _.isUndefined(commander.faction)
+        ? currentFaction
+        : commander.faction;
+    };
+
+    const getFactionColourIndex = function (commander, index, currentFaction) {
+      const inventory = model.game().inventory();
+      const playerFaction = inventory.getTag("global", "playerFaction");
+      if (currentFaction === playerFaction) {
+        // allies appear after the player and sub commanders in colour
+        return index + inventory.minions().length + 1;
+      }
+      return commander.faction ? 0 : index + 1;
+    };
+
+    const getFactionName = function (commander, currentFaction) {
+      if (_.isUndefined(commander.faction)) {
+        return {
+          name: "",
+          tooltip: "",
+        };
+      }
+
+      const playerFaction = model
+        .game()
+        .inventory()
+        .getTag("global", "playerFaction");
+      const factionInfo = [
+        { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
+        { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
+        { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
+        { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
+        {
+          name: "Cluster",
+          tooltip:
+            "!LOC:Prefers bots and vehicles; applies tech to structures.",
+        },
+      ];
+      const faction = commander.mirrorMode
+        ? { name: "Guardians", tooltip: "!LOC:A mystery." }
+        : factionInfo[commander.faction];
+
+      if (currentFaction === playerFaction) {
+        faction.name += " (" + loc("!LOC:ALLY") + ")";
+        faction.tooltip = "!LOC:Fights for you.";
+      }
+
+      return {
+        name: faction.name,
+        tooltip: faction.tooltip,
+      };
+    };
+
+    const formattedString = function (number) {
+      const km2 = 1000000;
+      number = number / km2;
+      if (number < 1000) {
+        return number.toPrecision(3);
+      }
+      return Math.floor(number);
+    };
+
+    const calculateSurfaceArea = function (system) {
+      var area = 0;
+      _.forEach(system.planets(), function (world) {
+        if (
+          (world.generator && world.generator.biome !== "gas") ||
+          (world.planet && world.planet.biome !== "gas")
+        ) {
+          area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
+        }
+      });
+      return formattedString(area);
+    };
+
+    const toFixedIfNecessary = function (value, decimals) {
+      // + converts the string output of toFixed() back to a float
+      return +Number.parseFloat(value).toFixed(decimals);
+    };
+
+    const availableTech = function (star) {
+      const ai = star.ai();
+      const cardList = star.cardList();
+      if (
+        ai.cardName &&
+        cardList.length === 1 // Don't show when finding cards through Explore
+      ) {
+        return ai.cardName;
+      }
+      return "";
+    };
+
+    const eradicatorModeNameBuilder = function (ai) {
+      var modes = [];
+      if (ai.eradicationModeSubCommanders) {
+        modes.push(loc("!LOC:Colonel"));
+      }
+      if (ai.eradicationModeFactories) {
+        modes.push(loc("!LOC:Factory"));
+      }
+      if (ai.eradicationModeFabbers) {
+        modes.push(loc("!LOC:Fabber"));
+      }
+
+      var append = "";
+
+      _.forEach(modes, function (mode, i) {
+        append += " ";
+        append += mode;
+        if (i !== modes.length - 1) {
+          append += ",";
+        }
+      });
+
+      return append;
+    };
+
+    const convertGameMModifiersToName = function (ai, inventory) {
+      const gameModifiers = [];
+
+      if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
+        gameModifiers.push(loc("!LOC:Bounties"));
+      }
+      if (ai.landAnywhere || inventory.hasCard("gwaio_enable_landanywhere")) {
+        gameModifiers.push(loc("!LOC:Land Anywhere"));
+      }
+      if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
+        gameModifiers.push(loc("!LOC:Sudden Death"));
+      }
+      if (ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication")) {
+        gameModifiers.push(
+          loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+        );
+      }
+      return gameModifiers;
+    };
+
+    const convertBuffNumberToName = function (ai) {
+      const buffs = ai.typeOfBuffs;
+      const guardians = ai.mirrorMode;
+      const buffNames = [];
+      _.forEach(buffs, function (buff) {
+        switch (buff) {
+          case 0:
+            buffNames.push(loc("!LOC:Costs decreased"));
+            break;
+          case 1:
+            buffNames.push(loc("!LOC:Damage increased"));
+            break;
+          case 2:
+            buffNames.push(loc("!LOC:Health increased"));
+            break;
+          case 3:
+            buffNames.push(loc("!LOC:Speed increased"));
+            break;
+          case 4:
+            buffNames.push(loc("!LOC:Build faster"));
+            break;
+          case 5: // v5.11.0 and earlier only
+            buffNames.push(loc("!LOC:Commanders enhanced"));
+            break;
+          case 6:
+            buffNames.push(loc("!LOC:Combat units enhanced"));
+            break;
+          case 7:
+            buffNames.push(loc("!LOC:Factory cooldown decreased"));
+            break;
+        }
+      });
+      if (guardians) {
+        buffNames.push(loc("!LOC:Your technology bonuses"));
+      }
+      return buffNames;
+    };
+
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
@@ -27,83 +222,6 @@ function gwoIntelligence() {
           locTree($(".section-of-foreign-intelligence"));
           ko.applyBindings(model, $fi[0]);
         });
-
-        const getNumberOfCommanders = function (commander) {
-          if (commander.bossCommanders) {
-            return commander.bossCommanders;
-          } else if (commander.commanderCount) {
-            return commander.commanderCount;
-          }
-          return 1;
-        };
-
-        const getCommanderCharacter = function (commander) {
-          var character = commander.character
-            ? loc(commander.character)
-            : loc("!LOC:None");
-          if (commander.penchantName) {
-            character = character + " " + loc(commander.penchantName);
-          }
-          return character;
-        };
-
-        const setFactionIndex = function (commander, currentFaction) {
-          return _.isUndefined(commander.faction)
-            ? currentFaction
-            : commander.faction;
-        };
-
-        const getFactionColourIndex = function (
-          commander,
-          index,
-          currentFaction
-        ) {
-          const inventory = model.game().inventory();
-          const playerFaction = inventory.getTag("global", "playerFaction");
-          if (currentFaction === playerFaction) {
-            // allies appear after the player and sub commanders in colour
-            return index + inventory.minions().length + 1;
-          }
-          return commander.faction ? 0 : index + 1;
-        };
-
-        const getFactionName = function (commander, currentFaction) {
-          if (_.isUndefined(commander.faction)) {
-            return {
-              name: "",
-              tooltip: "",
-            };
-          }
-
-          const playerFaction = model
-            .game()
-            .inventory()
-            .getTag("global", "playerFaction");
-          const factionInfo = [
-            { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
-            { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
-            { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
-            { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
-            {
-              name: "Cluster",
-              tooltip:
-                "!LOC:Prefers bots and vehicles; applies tech to structures.",
-            },
-          ];
-          const faction = commander.mirrorMode
-            ? { name: "Guardians", tooltip: "!LOC:A mystery." }
-            : factionInfo[commander.faction];
-
-          if (currentFaction === playerFaction) {
-            faction.name += " (" + loc("!LOC:ALLY") + ")";
-            faction.tooltip = "!LOC:Fights for you.";
-          }
-
-          return {
-            name: faction.name,
-            tooltip: faction.tooltip,
-          };
-        };
 
         var factionIndex = 0;
 
@@ -134,33 +252,6 @@ function gwoIntelligence() {
             faction: faction.name,
             tooltip: faction.tooltip,
           };
-        };
-
-        const formattedString = function (number) {
-          const km2 = 1000000;
-          number = number / km2;
-          if (number < 1000) {
-            return number.toPrecision(3);
-          }
-          return Math.floor(number);
-        };
-
-        const calculateSurfaceArea = function (system) {
-          var area = 0;
-          _.forEach(system.planets(), function (world) {
-            if (
-              (world.generator && world.generator.biome !== "gas") ||
-              (world.planet && world.planet.biome !== "gas")
-            ) {
-              area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
-            }
-          });
-          return formattedString(area);
-        };
-
-        const toFixedIfNecessary = function (value, decimals) {
-          // + converts the string output of toFixed() back to a float
-          return +Number.parseFloat(value).toFixed(decimals);
         };
 
         const measureThreat = function (ai) {
@@ -216,107 +307,6 @@ function gwoIntelligence() {
             totalThreat *= 3;
           }
           return toFixedIfNecessary(totalThreat, 2);
-        };
-
-        const availableTech = function (star) {
-          const ai = star.ai();
-          const cardList = star.cardList();
-          if (
-            ai.cardName &&
-            cardList.length === 1 // Don't show when finding cards through Explore
-          ) {
-            return ai.cardName;
-          }
-          return "";
-        };
-
-        const eradicatorModeNameBuilder = function (ai) {
-          var modes = [];
-          if (ai.eradicationModeSubCommanders) {
-            modes.push(loc("!LOC:Colonel"));
-          }
-          if (ai.eradicationModeFactories) {
-            modes.push(loc("!LOC:Factory"));
-          }
-          if (ai.eradicationModeFabbers) {
-            modes.push(loc("!LOC:Fabber"));
-          }
-
-          var append = "";
-
-          _.forEach(modes, function (mode, i) {
-            append += " ";
-            append += mode;
-            if (i !== modes.length - 1) {
-              append += ",";
-            }
-          });
-
-          return append;
-        };
-
-        const convertGameMModifiersToName = function (ai, inventory) {
-          const gameModifiers = [];
-
-          if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
-            gameModifiers.push(loc("!LOC:Bounties"));
-          }
-          if (
-            ai.landAnywhere ||
-            inventory.hasCard("gwaio_enable_landanywhere")
-          ) {
-            gameModifiers.push(loc("!LOC:Land Anywhere"));
-          }
-          if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
-            gameModifiers.push(loc("!LOC:Sudden Death"));
-          }
-          if (
-            ai.eradicationMode ||
-            inventory.hasCard("gwaio_enable_eradication")
-          ) {
-            gameModifiers.push(
-              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
-            );
-          }
-          return gameModifiers;
-        };
-
-        const convertBuffNumberToName = function (ai) {
-          const buffs = ai.typeOfBuffs;
-          const guardians = ai.mirrorMode;
-          const buffNames = [];
-          _.forEach(buffs, function (buff) {
-            switch (buff) {
-              case 0:
-                buffNames.push(loc("!LOC:Costs decreased"));
-                break;
-              case 1:
-                buffNames.push(loc("!LOC:Damage increased"));
-                break;
-              case 2:
-                buffNames.push(loc("!LOC:Health increased"));
-                break;
-              case 3:
-                buffNames.push(loc("!LOC:Speed increased"));
-                break;
-              case 4:
-                buffNames.push(loc("!LOC:Build faster"));
-                break;
-              case 5: // v5.11.0 and earlier only
-                buffNames.push(loc("!LOC:Commanders enhanced"));
-                break;
-              case 6:
-                buffNames.push(loc("!LOC:Combat units enhanced"));
-                break;
-              case 7:
-                buffNames.push(loc("!LOC:Factory cooldown decreased"));
-                break;
-            }
-          });
-          if (guardians) {
-            buffNames.push(loc("!LOC:Your technology bonuses"));
-          }
-          return buffNames;
         };
 
         const createAIIntelligence = function (ai) {

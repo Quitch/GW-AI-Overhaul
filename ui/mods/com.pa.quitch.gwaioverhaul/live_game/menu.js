@@ -8,6 +8,10 @@ function gwoMenu() {
   gwoMenuLoaded = true;
 
   try {
+    const getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
+      return boolean ? stringIfTrue : stringIfFalse;
+    };
+
     requireGW(["shared/gw_common"], function (GW) {
       const activeGameId = ko.observable().extend({ local: "gw_active_game" });
       const hardcore = ko.observable();
@@ -18,10 +22,6 @@ function gwoMenu() {
         hardcore(game.hardcore());
         tutorial(game.isTutorial());
       });
-
-      const getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
-        return boolean ? stringIfTrue : stringIfFalse;
-      };
 
       model.menuConfigGenerator = ko.observable(function () {
         const overString = getMenuString(

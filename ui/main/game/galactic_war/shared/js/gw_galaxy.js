@@ -1,101 +1,102 @@
 // StarSystemTemplates.generate has systems scale with galaxy depth
+
+const GWGalaxy = function () {
+  const self = this;
+  self.stars = ko.observableArray();
+  self.gates = ko.observableArray();
+  self.origin = ko.observable(0);
+  self.radius = ko.observable([1, 1]);
+  self.saved = ko.observable(false);
+
+  // Map of node -> node list that share an edge, going both directions.
+  // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
+  self.neighborsMap = ko.computed(function () {
+    const edges = {};
+    _.forEach(self.gates(), function (gate) {
+      if (!_.has(edges, gate[0])) {
+        edges[gate[0]] = [];
+      }
+      if (!_.has(edges, gate[1])) {
+        edges[gate[1]] = [];
+      }
+
+      edges[gate[0]].push(gate[1]);
+      edges[gate[1]].push(gate[0]);
+    });
+
+    return edges;
+  });
+
+  self.areNeighbors = function (a, b) {
+    const neighbors = self.neighborsMap();
+    if (_.has(neighbors, a)) {
+      return _.includes(neighbors[a], b);
+    }
+  };
+
+  self.pathBetween = function (from, to, noFog) {
+    const toExplored = self.stars()[to].explored();
+
+    const neighborsMap = self.neighborsMap();
+
+    const checked = {};
+
+    const workList = [[from]];
+
+    while (workList.length > 0) {
+      var path = workList.shift();
+
+      var node = path[path.length - 1];
+      var nodeNeighbors = neighborsMap[node];
+
+      checked[node] = true;
+
+      for (var neighbor of nodeNeighbors) {
+        var other = neighbor;
+
+        if (checked[other]) {
+          continue;
+        } // ignore loop
+
+        if (other === to) {
+          var previous = _.last(path);
+
+          // prevent pathing through unexplored systems for fog of war
+
+          var explored = self.stars()[previous].explored() || toExplored;
+
+          if (!explored && !noFog) {
+            continue;
+          }
+
+          path.push(other);
+
+          return path;
+        }
+
+        var otherStar = self.stars()[other];
+        var otherVisited = otherStar.history().length > 0;
+
+        var valid = noFog ? otherVisited : otherStar.explored();
+
+        if (valid) {
+          var newPath = _.cloneDeep(path);
+          newPath.push(other);
+
+          workList.push(newPath);
+        }
+      }
+    }
+
+    return null;
+  };
+};
+
 define([
   "shared/GalaxyBuilder",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
 ], function (GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
-  const GWGalaxy = function () {
-    const self = this;
-    self.stars = ko.observableArray();
-    self.gates = ko.observableArray();
-    self.origin = ko.observable(0);
-    self.radius = ko.observable([1, 1]);
-    self.saved = ko.observable(false);
-
-    // Map of node -> node list that share an edge, going both directions.
-    // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
-    self.neighborsMap = ko.computed(function () {
-      const edges = {};
-      _.forEach(self.gates(), function (gate) {
-        if (!_.has(edges, gate[0])) {
-          edges[gate[0]] = [];
-        }
-        if (!_.has(edges, gate[1])) {
-          edges[gate[1]] = [];
-        }
-
-        edges[gate[0]].push(gate[1]);
-        edges[gate[1]].push(gate[0]);
-      });
-
-      return edges;
-    });
-
-    self.areNeighbors = function (a, b) {
-      const neighbors = self.neighborsMap();
-      if (_.has(neighbors, a)) {
-        return _.includes(neighbors[a], b);
-      }
-    };
-
-    self.pathBetween = function (from, to, noFog) {
-      const toExplored = self.stars()[to].explored();
-
-      const neighborsMap = self.neighborsMap();
-
-      const checked = {};
-
-      const workList = [[from]];
-
-      while (workList.length > 0) {
-        var path = workList.shift();
-
-        var node = path[path.length - 1];
-        var nodeNeighbors = neighborsMap[node];
-
-        checked[node] = true;
-
-        for (var neighbor of nodeNeighbors) {
-          var other = neighbor;
-
-          if (checked[other]) {
-            continue;
-          } // ignore loop
-
-          if (other === to) {
-            var previous = _.last(path);
-
-            // prevent pathing through unexplored systems for fog of war
-
-            var explored = self.stars()[previous].explored() || toExplored;
-
-            if (!explored && !noFog) {
-              continue;
-            }
-
-            path.push(other);
-
-            return path;
-          }
-
-          var otherStar = self.stars()[other];
-          var otherVisited = otherStar.history().length > 0;
-
-          var valid = noFog ? otherVisited : otherStar.explored();
-
-          if (valid) {
-            var newPath = _.cloneDeep(path);
-            newPath.push(other);
-
-            workList.push(newPath);
-          }
-        }
-      }
-
-      return null;
-    };
-  };
-
   GWGalaxy.loadSystems = function (systems, config) {
     _.forEach(_.zip(systems.stars, config.stars), function (pair) {
       GWStar.loadSystem(pair[0], pair[1]);

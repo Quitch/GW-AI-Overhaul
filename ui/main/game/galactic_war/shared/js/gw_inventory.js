@@ -1,16 +1,18 @@
 // Add aiMods()
+
+const GWInventory = function () {
+  const self = this;
+  self.units = ko.observableArray();
+  // add location to store changes to AI based on cards held
+  self.aiMods = ko.observableArray();
+  self.mods = ko.observableArray();
+  self.maxCards = ko.observable(0);
+  self.cards = ko.observableArray();
+  self.minions = ko.observableArray([]);
+  self.tags = ko.observable({});
+};
+
 define(function () {
-  const GWInventory = function () {
-    const self = this;
-    self.units = ko.observableArray();
-    // add location to store changes to AI based on cards held
-    self.aiMods = ko.observableArray();
-    self.mods = ko.observableArray();
-    self.maxCards = ko.observable(0);
-    self.cards = ko.observableArray();
-    self.minions = ko.observableArray([]);
-    self.tags = ko.observable({});
-  };
   GWInventory.prototype = {
     load: function (config) {
       const self = this;

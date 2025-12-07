@@ -16,6 +16,21 @@ function gwoCardTooltips() {
     );
     locTree($("#system-card"));
 
+    const unitInPlayerInventory = function (unit) {
+      const playerUnits = model
+        .game()
+        .inventory()
+        .units()
+        .concat("/pa/units/commanders/base_commander/base_commander.json");
+      return _.some(playerUnits, function (playerUnit) {
+        return playerUnit === unit;
+      });
+    };
+
+    const highlightUnitName = function (unitName) {
+      return "<span class='highlight'>" + unitName + "</span>";
+    };
+
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
@@ -32,21 +47,6 @@ function gwoCardTooltips() {
         } else {
           model.gwoCardsToUnits = gwoCardsToUnits.cards;
         }
-
-        const unitInPlayerInventory = function (unit) {
-          const playerUnits = model
-            .game()
-            .inventory()
-            .units()
-            .concat("/pa/units/commanders/base_commander/base_commander.json");
-          return _.some(playerUnits, function (playerUnit) {
-            return playerUnit === unit;
-          });
-        };
-
-        const highlightUnitName = function (unitName) {
-          return "<span class='highlight'>" + unitName + "</span>";
-        };
 
         const sortUnitNames = function (units) {
           return _.map(units, function (unit) {

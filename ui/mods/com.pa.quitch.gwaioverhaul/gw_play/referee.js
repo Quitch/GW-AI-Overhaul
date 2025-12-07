@@ -8,6 +8,15 @@ function gwoRefereeChanges() {
   gwoRefereeChangesLoaded = true;
 
   try {
+    const gwoReferee = function (game) {
+      const self = this;
+
+      self.game = ko.observable(game);
+      self.files = ko.observable();
+      self.localFiles = ko.observable();
+      self.config = ko.observable();
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -23,15 +32,6 @@ function gwoRefereeChanges() {
         gwoGenerateAI,
         gwoGenerateConfig
       ) {
-        const gwoReferee = function (game) {
-          const self = this;
-
-          self.game = ko.observable(game);
-          self.files = ko.observable();
-          self.localFiles = ko.observable();
-          self.config = ko.observable();
-        };
-
         gwoReferee.prototype.stripSystems = function () {
           const self = this;
 
