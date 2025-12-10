@@ -10,6 +10,7 @@
 
 - Eradication Tech no longer tries to produce a unit tooltip
 - Air Factory Upgrade Tech correctly updates the AI builds for the Angel and Wyrm
+- The Unit Cannon can no longer be unlocked if you have no units to launch from it
 
 ## v5.82.6 - 2025-12-04
 

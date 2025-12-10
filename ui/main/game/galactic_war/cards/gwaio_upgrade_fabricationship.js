@@ -36,7 +36,11 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addUnits(gwoGroup.starterUnitsAdvanced);
+      const starterUnitsAdvancedWithoutUnitCannon = _.without(
+        gwoGroup.starterUnitsAdvanced,
+        gwoUnit.unitCannon
+      );
+      inventory.addUnits(starterUnitsAdvancedWithoutUnitCannon);
 
       inventory.addMods([
         {
@@ -60,7 +64,7 @@ define([
         "PlanetSplitter",
         "TeslaGunship",
         "TML",
-        "UnitCannon",
+        "UnitCannon", // for when this unit becomes available
       ];
       const aiMods = _.map(units, function (unit) {
         return {
