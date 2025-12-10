@@ -157,7 +157,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.kaiju,
     gwoUnit.kraken,
     gwoUnit.leviathan,
-    gwoUnit.navalFabberAdvanced,
     gwoUnit.squall,
     gwoUnit.stingray,
     gwoUnit.typhoon,
