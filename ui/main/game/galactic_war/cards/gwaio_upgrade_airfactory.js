@@ -45,7 +45,9 @@ define([
         "AdvancedBomber",
         "AdvancedFighter",
         "AdvancedGunship",
+        "HeavyBomber",
         "Strafer",
+        "SupportPlatform",
       ];
       const aiMods = _.flatten(
         _.map(units, function (unit) {
