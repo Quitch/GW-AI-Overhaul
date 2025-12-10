@@ -39,19 +39,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      const newUnits = gwoGroup.starterUnitsAdvanced.concat(
-        gwoGroup.vehiclesAdvancedMobile
-      );
-      inventory.addUnits(newUnits);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Tank & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      const advancedVehiclesExcludingFabber = _.without(
+        gwoGroup.vehiclesAdvancedMobile,
+        gwoUnit.vehicleFabberAdvanced
+      );
+
+      inventory.addUnits(advancedVehiclesExcludingFabber);
 
       const units = [
         "AdvancedArmorTank",
@@ -83,25 +77,15 @@ define([
           ];
         })
       );
-      aiMods.push(
+
+      inventory.addMods([
         {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedVehicleFabber",
-          idToMod: "builders",
-          value: "BasicVehicleFactory",
+          file: gwoUnit.vehicleFactory,
+          path: "buildable_types",
+          op: "add",
+          value: " | (Tank & Mobile & FactoryBuild & Custom58)",
         },
-        {
-          type: "factory",
-          op: "new",
-          toBuild: "AdvancedVehicleFabber",
-          idToMod: "", // add to every test array
-          value: {
-            test_type: "HaveEcoForAdvanced",
-            boolean: true,
-          },
-        }
-      );
+      ]);
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

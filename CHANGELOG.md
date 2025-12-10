@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Basic factory upgrade techs no longer unlock the advanced fabricators
+
 ### Bugfix
 
 - Eradication Tech no longer tries to produce a unit tooltip

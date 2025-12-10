@@ -39,23 +39,11 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      const newUnits = gwoGroup.starterUnitsAdvanced.concat(
-        gwoGroup.navalAdvancedMobile
-      );
-      inventory.addUnits(newUnits);
-
-      inventory.addMods([
-        {
-          file: gwoUnit.navalFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Naval & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addUnits(gwoGroup.navalAdvancedCombat);
 
       const units = [
         "Battleship",
-        "MissleShip",
+        "MissleShip", // typo in the base AI files
         "MissileSub",
         "HoverShip",
         "DroneCarrier",
@@ -80,25 +68,15 @@ define([
           ];
         })
       );
-      aiMods.push(
+
+      inventory.addMods([
         {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedNavalFabber",
-          idToMod: "builders",
-          value: "BasicNavalFactory",
+          file: gwoUnit.navalFactory,
+          path: "buildable_types",
+          op: "add",
+          value: " | (Naval & Mobile & FactoryBuild & Custom58)",
         },
-        {
-          type: "factory",
-          op: "new",
-          toBuild: "AdvancedNavalFabber",
-          idToMod: "", // add to every test array
-          value: {
-            test_type: "HaveEcoForAdvanced",
-            boolean: true,
-          },
-        }
-      );
+      ]);
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

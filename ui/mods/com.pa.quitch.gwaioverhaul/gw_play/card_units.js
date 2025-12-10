@@ -40,6 +40,19 @@ define([
   const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
     return _.includes(unitsWithADeathWeapon, unit);
   });
+  const advancedBotFabbers = [
+    gwoUnit.colonel,
+    gwoUnit.mend,
+    gwoUnit.botFabberAdvanced,
+  ];
+  const advancedBotsExcludingFabbers = _.xor(
+    gwoGroup.botsAdvancedMobile,
+    advancedBotFabbers
+  );
+  const advancedVehiclesExcludingFabber = _.without(
+    gwoGroup.vehiclesAdvancedMobile,
+    gwoUnit.vehicleFabberAdvanced
+  );
 
   return {
     cards: [
@@ -331,24 +344,15 @@ define([
       { id: "gwaio_upgrade_catapult", units: [gwoUnit.catapult] },
       {
         id: "gwaio_upgrade_airfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.airFactory,
-          gwoGroup.airAdvancedMobile
-        ),
+        units: gwoGroup.airAdvancedCombat.concat(gwoUnit.airFactory),
       },
       {
         id: "gwaio_upgrade_botfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.botFactory,
-          gwoGroup.botsAdvancedMobile
-        ),
+        units: advancedBotsExcludingFabbers.concat(gwoUnit.botFactory),
       },
       {
         id: "gwaio_upgrade_navalfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.navalFactory,
-          gwoGroup.navalAdvancedMobile
-        ),
+        units: gwoGroup.navalAdvancedCombat.concat(gwoUnit.navalFactory),
       },
       {
         id: "gwaio_upgrade_orbitallauncher",
@@ -357,10 +361,7 @@ define([
       { id: "gwaio_upgrade_unitcannon", units: [gwoUnit.unitCannon] },
       {
         id: "gwaio_upgrade_vehiclefactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.vehicleFactory,
-          gwoGroup.vehiclesAdvancedMobile
-        ),
+        units: advancedVehiclesExcludingFabber.concat(gwoUnit.vehicleFactory),
       },
       { id: "gwaio_upgrade_hermes", units: [gwoUnit.hermes] },
       {
