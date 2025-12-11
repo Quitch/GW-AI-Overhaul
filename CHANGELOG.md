@@ -6,6 +6,7 @@
 
 - Basic factory upgrade techs no longer unlock the advanced fabricators
 - All damage buffs now also apply this buff to splash damage
+- Revert to base game spec generation
 
 ### Bugfix
 
