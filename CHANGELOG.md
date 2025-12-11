@@ -12,7 +12,6 @@
 
 - Eradication Tech no longer tries to produce a unit tooltip
 - Air Factory Upgrade Tech correctly updates the AI builds for the Angel and Wyrm
-- The Unit Cannon can no longer be unlocked if you have no units to launch from it
 - Fix broken translations for the upgrade descriptions of the Mend, Barnacle, and Stitch
 - Process card buffs according to order of operations and make sure that new or replacement values are added before modifiers
 
