@@ -1,3 +1,23 @@
+const multiply = function (units, multiplier, paths) {
+  var outputArray = [];
+  if (!_.isArray(paths)) {
+    paths = [paths];
+  }
+  _.forEach(paths, function (path) {
+    outputArray = outputArray.concat(
+      _.map(units, function (unit) {
+        return {
+          file: unit,
+          path: path,
+          op: "multiply",
+          value: multiplier,
+        };
+      })
+    );
+  });
+  return outputArray;
+};
+
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
 ], function (inventory) {
@@ -13,26 +33,6 @@ define([
     revenantsTech,
     clusterTech,
   ];
-
-  const multiply = function (units, multiplier, paths) {
-    var outputArray = [];
-    if (!_.isArray(paths)) {
-      paths = [paths];
-    }
-    _.forEach(paths, function (path) {
-      outputArray = outputArray.concat(
-        _.map(units, function (unit) {
-          return {
-            file: unit,
-            path: path,
-            op: "multiply",
-            value: multiplier,
-          };
-        })
-      );
-    });
-    return outputArray;
-  };
 
   const setupAITech0FabricationTech = function () {
     const factionUnits = [

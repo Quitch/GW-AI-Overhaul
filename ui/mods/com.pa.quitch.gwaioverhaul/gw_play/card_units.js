@@ -1,32 +1,33 @@
+if (!model.gwoCardsWithoutTooltip) {
+  model.gwoCardsWithoutTooltip = [];
+}
+
+model.gwoCardsWithoutTooltip.push(
+  "gwaio_anti_air",
+  "gwaio_anti_bots",
+  "gwaio_anti_commander",
+  "gwaio_anti_hover",
+  "gwaio_anti_orbital",
+  "gwaio_anti_sea",
+  "gwaio_anti_structure",
+  "gwaio_anti_vehicles",
+  "gwaio_enable_bounties",
+  "gwaio_enable_eradication",
+  "gwaio_enable_landanywhere",
+  "gwaio_enable_orbitalbombardment",
+  "gwaio_enable_suddendeath",
+  "gwaio_enable_tsunami",
+  "gwaio_upgrade_subcommander_duplication",
+  "gwaio_upgrade_subcommander_fabber",
+  "gwaio_upgrade_subcommander_tactics",
+  "gwc_add_card_slot",
+  "gwc_minion"
+);
+
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  if (!model.gwoCardsWithoutTooltip) {
-    model.gwoCardsWithoutTooltip = [];
-  }
-
-  model.gwoCardsWithoutTooltip.push(
-    "gwc_add_card_slot",
-    "gwc_minion",
-    "gwaio_upgrade_subcommander_fabber",
-    "gwaio_upgrade_subcommander_duplication",
-    "gwaio_upgrade_subcommander_tactics",
-    "gwaio_enable_bounties",
-    "gwaio_enable_suddendeath",
-    "gwaio_enable_landanywhere",
-    "gwaio_enable_orbitalbombardment",
-    "gwaio_anti_vehicles",
-    "gwaio_anti_bots",
-    "gwaio_anti_hover",
-    "gwaio_anti_sea",
-    "gwaio_anti_air",
-    "gwaio_anti_orbital",
-    "gwaio_anti_structure",
-    "gwaio_enable_tsunami",
-    "gwaio_anti_commander"
-  );
-
   const unitsWithADeathWeapon = [
     gwoUnit.wyrm,
     gwoUnit.zeus,
@@ -39,6 +40,19 @@ define([
   const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
     return _.includes(unitsWithADeathWeapon, unit);
   });
+  const advancedBotFabbers = [
+    gwoUnit.colonel,
+    gwoUnit.mend,
+    gwoUnit.botFabberAdvanced,
+  ];
+  const advancedBotsExcludingFabbers = _.xor(
+    gwoGroup.botsAdvancedMobile,
+    advancedBotFabbers
+  );
+  const advancedVehiclesExcludingFabber = _.without(
+    gwoGroup.vehiclesAdvancedMobile,
+    gwoUnit.vehicleFabberAdvanced
+  );
 
   return {
     cards: [
@@ -330,24 +344,15 @@ define([
       { id: "gwaio_upgrade_catapult", units: [gwoUnit.catapult] },
       {
         id: "gwaio_upgrade_airfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.airFactory,
-          gwoGroup.airAdvancedMobile
-        ),
+        units: gwoGroup.airAdvancedCombat.concat(gwoUnit.airFactory),
       },
       {
         id: "gwaio_upgrade_botfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.botFactory,
-          gwoGroup.botsAdvancedMobile
-        ),
+        units: advancedBotsExcludingFabbers.concat(gwoUnit.botFactory),
       },
       {
         id: "gwaio_upgrade_navalfactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.navalFactory,
-          gwoGroup.navalAdvancedMobile
-        ),
+        units: gwoGroup.navalAdvancedCombat.concat(gwoUnit.navalFactory),
       },
       {
         id: "gwaio_upgrade_orbitallauncher",
@@ -356,10 +361,7 @@ define([
       { id: "gwaio_upgrade_unitcannon", units: [gwoUnit.unitCannon] },
       {
         id: "gwaio_upgrade_vehiclefactory",
-        units: gwoGroup.starterUnitsAdvanced.concat(
-          gwoUnit.vehicleFactory,
-          gwoGroup.vehiclesAdvancedMobile
-        ),
+        units: advancedVehiclesExcludingFabber.concat(gwoUnit.vehicleFactory),
       },
       { id: "gwaio_upgrade_hermes", units: [gwoUnit.hermes] },
       {

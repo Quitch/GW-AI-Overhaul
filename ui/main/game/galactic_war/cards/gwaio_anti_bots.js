@@ -46,7 +46,7 @@ define([
               file: ammo,
               path: "armor_damage_map.AT_Bot",
               op: "multiplyOrAdd",
-              value: 2.0,
+              value: 2,
             },
           ];
         })

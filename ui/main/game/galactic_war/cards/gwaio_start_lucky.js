@@ -25,10 +25,10 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
-          GWCStart.buff(inventory);
-        } else {
+        if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
+        } else {
+          GWCStart.buff(inventory);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

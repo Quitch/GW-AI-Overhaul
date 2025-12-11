@@ -26,7 +26,9 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
+        if (buffCount) {
+          inventory.maxCards(inventory.maxCards() + 1);
+        } else {
           GWCStart.buff(inventory);
 
           const playerIsCluster =
@@ -113,16 +115,22 @@ define([
             );
           });
           _.forEach(gwoGroup.ammo, function (ammo) {
-            mods.push({
-              file: ammo,
-              path: "damage",
-              op: "multiply",
-              value: 2,
-            });
+            mods.push(
+              {
+                file: ammo,
+                path: "damage",
+                op: "multiply",
+                value: 2,
+              },
+              {
+                file: ammo,
+                path: "splash_damage",
+                op: "multiply",
+                value: 2,
+              }
+            );
           });
           inventory.addMods(mods);
-        } else {
-          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

@@ -413,6 +413,73 @@ function gwoCard() {
       });
     };
 
+    const doNotDealCard = function (
+      inventory,
+      card,
+      cardsDealt,
+      dealAddSlot,
+      testRun
+    ) {
+      // Never deal Additional Data Bank as a system's pre-dealt card
+      if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
+        return true;
+      }
+
+      if (testRun) {
+        return (
+          inventory.hasCard(card.id) &&
+          _.some(cardsDealt, { id: card.id }) &&
+          _.some(model.currentSystemCardList(), { id: card.id })
+        );
+      }
+
+      return (
+        inventory.hasCard(card.id) ||
+        _.some(cardsDealt, { id: card.id }) ||
+        _.some(model.currentSystemCardList(), function (systemCard) {
+          return systemCard.id() === card.id;
+        })
+      );
+    };
+
+    const setCardName = function (system, card) {
+      const deferred = $.Deferred();
+      if (!_.isEmpty(card)) {
+        requireGW(["cards/" + card[0].id], function (data) {
+          system.star.ai().cardName = loc(data.summarize());
+          deferred.resolve();
+        });
+      }
+      return deferred.promise();
+    };
+
+    const isCardLoadout = function (card) {
+      return _.includes(card.id, "_start_");
+    };
+
+    const testCardForMatches = function (inventory, card) {
+      model.currentSystemCardList().push(card);
+
+      const cardsDealt = [card];
+      const duplicate = doNotDealCard(inventory, card, cardsDealt, false, true);
+
+      if (!duplicate) {
+        console.error(card.id, "failed duplication test");
+      }
+    };
+
+    const applyCheatCards = function (product, inventory) {
+      inventory.cards.push(product);
+      inventory.applyCards();
+    };
+
+    const setupNewCardSlot = function (product) {
+      product.allowOverflow = true;
+      product.unique = Math.random();
+
+      return product;
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -437,35 +504,6 @@ function gwoCard() {
         const loaded = $.Deferred();
 
         setupGwoDeck(cards, deck, numberOfCards, loaded);
-
-        const doNotDealCard = function (
-          inventory,
-          card,
-          cardsDealt,
-          dealAddSlot,
-          testRun
-        ) {
-          // Never deal Additional Data Bank as a system's pre-dealt card
-          if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
-            return true;
-          }
-
-          if (testRun) {
-            return (
-              inventory.hasCard(card.id) &&
-              _.some(cardsDealt, { id: card.id }) &&
-              _.some(model.currentSystemCardList(), { id: card.id })
-            );
-          }
-
-          return (
-            inventory.hasCard(card.id) ||
-            _.some(cardsDealt, { id: card.id }) ||
-            _.some(model.currentSystemCardList(), function (systemCard) {
-              return systemCard.id() === card.id;
-            })
-          );
-        };
 
         // GWDealer.chooseCards - use our deck
         const chooseCards = function (params) {
@@ -560,21 +598,6 @@ function gwoCard() {
             result.resolve(list);
           });
           return result;
-        };
-
-        const setCardName = function (system, card) {
-          const deferred = $.Deferred();
-          if (!_.isEmpty(card)) {
-            requireGW(["cards/" + card[0].id], function (data) {
-              system.star.ai().cardName = loc(data.summarize());
-              deferred.resolve();
-            });
-          }
-          return deferred.promise();
-        };
-
-        const isCardLoadout = function (card) {
-          return _.includes(card.id, "_start_");
         };
 
         const dealCardToSelectableAI = function (win, turnState) {
@@ -758,35 +781,6 @@ function gwoCard() {
           return product;
         };
 
-        const testCardForMatches = function (inventory, card) {
-          model.currentSystemCardList().push(card);
-
-          const cardsDealt = [card];
-          const duplicate = doNotDealCard(
-            inventory,
-            card,
-            cardsDealt,
-            false,
-            true
-          );
-
-          if (!duplicate) {
-            console.error(card.id, "failed duplication test");
-          }
-        };
-
-        const applyCheatCards = function (product, inventory) {
-          inventory.cards.push(product);
-          inventory.applyCards();
-        };
-
-        const setupNewCardSlot = function (product) {
-          product.allowOverflow = true;
-          product.unique = Math.random();
-
-          return product;
-        };
-
         const expandInventorySize = function (
           galaxy,
           inventory,
@@ -948,12 +942,12 @@ function gwoCard() {
                   model.exitGate().resolve();
 
                   if (playTechAudio) {
-                    if (!techAudio) {
+                    if (techAudio) {
+                      api.audio.playSound(techAudio);
+                    } else {
                       api.audio.playSound(
                         "/VO/Computer/gw/board_tech_acquired"
                       );
-                    } else {
-                      api.audio.playSound(techAudio);
                     }
                   }
                 }

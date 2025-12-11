@@ -44,13 +44,13 @@ define([
                 file: unit,
                 path: "storage.energy",
                 op: "multiply",
-                value: 4.0,
+                value: 4,
               },
               {
                 file: unit,
                 path: "storage.metal",
                 op: "multiply",
-                value: 4.0,
+                value: 4,
               },
             ];
           })

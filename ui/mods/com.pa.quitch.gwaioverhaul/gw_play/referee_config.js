@@ -1,3 +1,185 @@
+const applySubcommanderTacticsTech = function (personality, cards) {
+  if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
+    personality.micro_type = 2;
+    personality.go_for_the_kill = true;
+    personality.priority_scout_metal_spots = true;
+    personality.enable_commander_danger_responses = true;
+    _.pull(personality.personality_tags, "SlowerExpansion");
+    personality.personality_tags.push("PreventsWaste");
+  }
+  return personality;
+};
+
+const applySubcommanderFabberTech = function (personality, cards) {
+  if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
+    personality.max_basic_fabbers = Math.round(
+      personality.max_basic_fabbers * 1.5
+    );
+    personality.max_advanced_fabbers = Math.round(
+      personality.max_advanced_fabbers * 1.5
+    );
+  }
+  return personality;
+};
+
+const applySubcommanderDuplicationTech = function (cards) {
+  if (
+    _.some(cards, {
+      id: "gwaio_upgrade_subcommander_duplication",
+    })
+  ) {
+    return 2;
+  }
+  return 1;
+};
+
+const setAdvEcoMod = function (aiRoot, brain) {
+  if (brain !== "Queller") {
+    aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
+    aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
+  }
+  return aiRoot;
+};
+
+const aiCommander = function (name, unit, landingOptions, commanderNumber) {
+  while (commanderNumber > landingOptions.length - 1) {
+    commanderNumber -= landingOptions.length;
+  }
+  return {
+    ai: true,
+    name: name,
+    commander: unit,
+    landing_policy: landingOptions[commanderNumber],
+  };
+};
+
+const getAIPersonalityName = function (ai) {
+  var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
+  if (ai.penchantName) {
+    personalityName = personalityName + " " + loc(ai.penchantName);
+  }
+  return personalityName;
+};
+
+const countCards = function (cards, type) {
+  var countOfType = 0;
+  _.forEach(cards, function (card) {
+    if (_.includes(card.id, type)) {
+      countOfType++;
+    }
+  });
+  return countOfType;
+};
+
+const calculatePercentage = function (typeCards, totalCards) {
+  return typeCards === 0 ? 0 : typeCards / totalCards;
+};
+
+const quellerGuardianPersonality = function (personality) {
+  const unitPercentages = [
+    personality.percent_vehicle,
+    personality.percent_bot,
+    personality.percent_orbital,
+    personality.percent_air,
+    personality.percent_naval,
+  ];
+  const highestValue = _.max(unitPercentages);
+  const valueIndex = unitPercentages.indexOf(highestValue);
+  const aiPersonalityTags = ["queller"];
+  switch (valueIndex) {
+    case 0:
+      aiPersonalityTags.push("tank");
+      break;
+    case 1:
+      aiPersonalityTags.push("bot");
+      break;
+    case 2:
+      aiPersonalityTags.push("orbital");
+      break;
+    case 3:
+      aiPersonalityTags.push("air");
+      break;
+    // case 4: do nothing
+  }
+  return aiPersonalityTags;
+};
+
+const setupGuardianPersonality = function (cards, personality, aiInUse) {
+  const allCards = {
+    air: countCards(cards, "_air"),
+    bot: countCards(cards, "_bot"),
+    orbital: countCards(cards, "_orbital"),
+    naval: countCards(cards, "_sea"),
+    vehicle: countCards(cards, "_vehicle"),
+  };
+  const totalCards = _.sum(allCards);
+  if (totalCards > 0) {
+    personality.percent_air = calculatePercentage(allCards.air, totalCards);
+    personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
+    personality.percent_orbital = calculatePercentage(
+      allCards.orbital,
+      totalCards
+    );
+    personality.percent_naval = calculatePercentage(allCards.naval, totalCards);
+    personality.percent_vehicle = calculatePercentage(
+      allCards.vehicle,
+      totalCards
+    );
+  }
+  if (aiInUse === "Queller") {
+    personality.personality_tags = quellerGuardianPersonality(personality);
+  }
+  return personality;
+};
+
+const glassPlanets = function (planets) {
+  const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
+  _.forEach(planets, function (planet) {
+    if (!_.includes(unglassableBiome, planet.generator.biome)) {
+      planet.generator.biome = "moon";
+    }
+  });
+  return planets;
+};
+
+const floodPlanets = function (planets) {
+  _.forEach(planets, function (planet) {
+    const floodPlanet =
+      !planet.generator.waterHeight || planet.generator.waterHeight < 50;
+    if (floodPlanet) {
+      planet.generator.waterHeight = 50;
+    }
+  });
+  return planets;
+};
+
+const setupAiTags = function (ai) {
+  const aiTag = [];
+  const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+  _.times(aiFactionCount, function (n) {
+    const aiNewTag = ".ai" + n.toString();
+    aiTag.push(aiNewTag);
+  });
+
+  return aiTag;
+};
+
+const modifyPlanets = function (inventory, planets) {
+  const canGlassPlanets = inventory.hasCard("gwaio_enable_orbitalbombardment");
+  const canFloodPlanets =
+    inventory.hasCard("gwaio_enable_tsunami") ||
+    inventory.hasCard("gwaio_start_naval");
+
+  if (canGlassPlanets) {
+    planets = glassPlanets(planets);
+  }
+  if (canFloodPlanets) {
+    planets = floodPlanets(planets);
+  }
+
+  return planets;
+};
+
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -9,69 +191,6 @@ define([
       return gwoAI.getAIPathDestination("subcommander");
     }
     return gwoAI.getAIPathDestination("enemy");
-  };
-
-  const applySubcommanderTacticsTech = function (personality, cards) {
-    if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
-      personality.micro_type = 2;
-      personality.go_for_the_kill = true;
-      personality.priority_scout_metal_spots = true;
-      personality.enable_commander_danger_responses = true;
-      _.pull(personality.personality_tags, "SlowerExpansion");
-      personality.personality_tags.push("PreventsWaste");
-    }
-    return personality;
-  };
-
-  const applySubcommanderFabberTech = function (personality, cards) {
-    if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
-      personality.max_basic_fabbers = Math.round(
-        personality.max_basic_fabbers * 1.5
-      );
-      personality.max_advanced_fabbers = Math.round(
-        personality.max_advanced_fabbers * 1.5
-      );
-    }
-    return personality;
-  };
-
-  const applySubcommanderDuplicationTech = function (cards) {
-    if (
-      _.some(cards, {
-        id: "gwaio_upgrade_subcommander_duplication",
-      })
-    ) {
-      return 2;
-    }
-    return 1;
-  };
-
-  const setAdvEcoMod = function (aiRoot, brain) {
-    if (brain !== "Queller") {
-      aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
-      aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
-    }
-    return aiRoot;
-  };
-
-  const aiCommander = function (name, unit, landingOptions, commanderNumber) {
-    while (commanderNumber > landingOptions.length - 1) {
-      commanderNumber -= landingOptions.length;
-    }
-    return {
-      ai: true,
-      name: name,
-      commander: unit,
-      landing_policy: landingOptions[commanderNumber],
-    };
-  };
-
-  const getAIPersonalityName = function (ai) {
-    var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
-    if (ai.penchantName) {
-      personalityName = personalityName + " " + loc(ai.penchantName);
-    }
-    return personalityName;
   };
 
   const setupAIArmy = function (ai, index, specTag, alliance) {
@@ -104,101 +223,6 @@ define([
     };
   };
 
-  const countCards = function (cards, type) {
-    var countOfType = 0;
-    _.forEach(cards, function (card) {
-      if (_.includes(card.id, type)) {
-        countOfType++;
-      }
-    });
-    return countOfType;
-  };
-
-  const calculatePercentage = function (typeCards, totalCards) {
-    return typeCards === 0 ? 0 : typeCards / totalCards;
-  };
-
-  const quellerGuardianPersonality = function (personality) {
-    const unitPercentages = [
-      personality.percent_vehicle,
-      personality.percent_bot,
-      personality.percent_orbital,
-      personality.percent_air,
-      personality.percent_naval,
-    ];
-    const highestValue = _.max(unitPercentages);
-    const valueIndex = unitPercentages.indexOf(highestValue);
-    const aiPersonalityTags = ["queller"];
-    switch (valueIndex) {
-      case 0:
-        aiPersonalityTags.push("tank");
-        break;
-      case 1:
-        aiPersonalityTags.push("bot");
-        break;
-      case 2:
-        aiPersonalityTags.push("orbital");
-        break;
-      case 3:
-        aiPersonalityTags.push("air");
-        break;
-      // case 4: do nothing
-    }
-    return aiPersonalityTags;
-  };
-
-  const setupGuardianPersonality = function (cards, personality, aiInUse) {
-    const allCards = {
-      air: countCards(cards, "_air"),
-      bot: countCards(cards, "_bot"),
-      orbital: countCards(cards, "_orbital"),
-      naval: countCards(cards, "_sea"),
-      vehicle: countCards(cards, "_vehicle"),
-    };
-    const totalCards = _.sum(allCards);
-    if (totalCards > 0) {
-      personality.percent_air = calculatePercentage(allCards.air, totalCards);
-      personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
-      personality.percent_orbital = calculatePercentage(
-        allCards.orbital,
-        totalCards
-      );
-      personality.percent_naval = calculatePercentage(
-        allCards.naval,
-        totalCards
-      );
-      personality.percent_vehicle = calculatePercentage(
-        allCards.vehicle,
-        totalCards
-      );
-    }
-    if (aiInUse === "Queller") {
-      personality.personality_tags = quellerGuardianPersonality(personality);
-    }
-    return personality;
-  };
-
-  const glassPlanets = function (planets) {
-    const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
-    _.forEach(planets, function (planet) {
-      if (!_.includes(unglassableBiome, planet.generator.biome)) {
-        planet.generator.biome = "moon";
-      }
-    });
-    return planets;
-  };
-
-  const floodPlanets = function (planets) {
-    _.forEach(planets, function (planet) {
-      const floodPlanet =
-        !planet.generator.waterHeight || planet.generator.waterHeight < 50;
-      if (floodPlanet) {
-        planet.generator.waterHeight = 50;
-      }
-    });
-    return planets;
-  };
-
   const setupAlliedCommanders = function (
     allies,
     cards,
@@ -219,17 +243,6 @@ define([
       const subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
       armies.push(subcommanderArmy);
     });
-  };
-
-  const setupAiTags = function (ai) {
-    const aiTag = [];
-    const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-    _.times(aiFactionCount, function (n) {
-      const aiNewTag = ".ai" + n.toString();
-      aiTag.push(aiNewTag);
-    });
-
-    return aiTag;
   };
 
   const setupPrimaryAiAndMinions = function (
@@ -270,24 +283,6 @@ define([
       const aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
       armies.push(aiArmy);
     });
-  };
-
-  const modifyPlanets = function (inventory, planets) {
-    const canGlassPlanets = inventory.hasCard(
-      "gwaio_enable_orbitalbombardment"
-    );
-    const canFloodPlanets =
-      inventory.hasCard("gwaio_enable_tsunami") ||
-      inventory.hasCard("gwaio_start_naval");
-
-    if (canGlassPlanets) {
-      planets = glassPlanets(planets);
-    }
-    if (canFloodPlanets) {
-      planets = floodPlanets(planets);
-    }
-
-    return planets;
   };
 
   return function () {

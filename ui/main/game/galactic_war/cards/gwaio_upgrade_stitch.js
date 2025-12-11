@@ -6,9 +6,10 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator." +
-          " Disables the auto-repair feature."
+        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator."
       ) +
+        " " +
+        loc("!LOC:Disables the auto-repair feature.") +
         "<br> <br>" +
         loc("!LOC:Adds a new slot for another technology.")
     ),

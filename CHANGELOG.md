@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v5.83.0 - 2025-12-11
+
+### Changed
+
+- Basic factory upgrade techs no longer unlock the advanced fabricators
+- All damage buffs now also apply this buff to splash damage
+- Revert to base game spec generation
+
+### Bugfix
+
+- Eradication Tech no longer tries to produce a unit tooltip
+- Air Factory Upgrade Tech correctly updates the AI builds for the Angel and Wyrm
+- Fix broken translations for the upgrade descriptions of the Mend, Barnacle, and Stitch
+- Process card buffs according to order of operations and make sure that new or replacement values are added before modifiers
+
 ## v5.82.6 - 2025-12-04
 
 ### Changed

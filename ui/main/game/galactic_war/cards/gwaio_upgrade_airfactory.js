@@ -39,25 +39,15 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      const newUnits = gwoGroup.starterUnitsAdvanced.concat(
-        gwoGroup.airAdvancedMobile
-      );
-      inventory.addUnits(newUnits);
-
-      inventory.addMods([
-        {
-          file: gwoUnit.airFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Air & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addUnits(gwoGroup.airAdvancedCombat);
 
       const units = [
         "AdvancedBomber",
-        "AdvancedGunship",
         "AdvancedFighter",
+        "AdvancedGunship",
+        "HeavyBomber",
         "Strafer",
+        "SupportPlatform",
       ];
       const aiMods = _.flatten(
         _.map(units, function (unit) {
@@ -79,23 +69,13 @@ define([
           ];
         })
       );
-      aiMods.push([
+
+      inventory.addMods([
         {
-          type: "factory",
-          op: "append",
-          toBuild: "AdvancedAirFabber",
-          idToMod: "builders",
-          value: "BasicAirFactory",
-        },
-        {
-          type: "factory",
-          op: "new",
-          toBuild: "AdvancedAirFabber",
-          idToMod: "", // add to every test array
-          value: {
-            test_type: "HaveEcoForAdvanced",
-            boolean: true,
-          },
+          file: gwoUnit.airFactory,
+          path: "buildable_types",
+          op: "add",
+          value: " | (Air & Mobile & FactoryBuild & Custom58)",
         },
       ]);
       inventory.addAIMods(aiMods);

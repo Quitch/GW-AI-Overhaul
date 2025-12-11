@@ -1,21 +1,21 @@
-define(function () {
-  const getQuellerPath = function (type) {
-    const quellerPath = "/pa/ai_queller/";
-    const inventory = model.game().inventory();
-    const smartSubcommanders = _.some(inventory.cards(), {
-      id: "gwaio_upgrade_subcommander_tactics",
-    });
-    if (type === "all") {
-      return quellerPath;
-    } else if (type === "enemy") {
-      return quellerPath + "q_uber/";
-    } else if (type === "subcommander" && smartSubcommanders) {
-      return quellerPath + "q_silver/";
-    }
-    // type === "subcommander"
-    return quellerPath + "q_bronze/";
-  };
+const getQuellerPath = function (type) {
+  const quellerPath = "/pa/ai_queller/";
+  const inventory = model.game().inventory();
+  const smartSubcommanders = _.some(inventory.cards(), {
+    id: "gwaio_upgrade_subcommander_tactics",
+  });
+  if (type === "all") {
+    return quellerPath;
+  } else if (type === "enemy") {
+    return quellerPath + "q_uber/";
+  } else if (type === "subcommander" && smartSubcommanders) {
+    return quellerPath + "q_silver/";
+  }
+  // type === "subcommander"
+  return quellerPath + "q_bronze/";
+};
 
+define(function () {
   const penchantAiPath = "/pa/ai_penchant/";
   const titansAiPath = "/pa/ai/";
 
@@ -69,7 +69,7 @@ define(function () {
         return false;
       }
       return _.isArray(ai.faction) // was an array before v5.44.0
-        ? parseInt(ai.faction[0]) === 4
+        ? Number.parseInt(ai.faction[0]) === 4
         : ai.faction === 4;
     },
 

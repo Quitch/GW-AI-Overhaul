@@ -26,7 +26,9 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
+        if (buffCount) {
+          inventory.maxCards(inventory.maxCards() + 1);
+        } else {
           GWCStart.buff(inventory);
 
           const mods = [];
@@ -197,7 +199,7 @@ define([
                 file: unit,
                 path: "navigation.hover_time",
                 op: "replace",
-                value: -1.0,
+                value: -1,
               }
             );
           });
@@ -243,7 +245,7 @@ define([
                 file: unit,
                 path: "navigation.dodge_multiplier",
                 op: "replace",
-                value: 1.0,
+                value: 1,
               },
               {
                 file: unit,
@@ -317,8 +319,6 @@ define([
             });
           });
           inventory.addMods(mods);
-        } else {
-          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

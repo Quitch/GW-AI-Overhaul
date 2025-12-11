@@ -25,10 +25,11 @@ define([
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
+        if (buffCount) {
+          inventory.maxCards(inventory.maxCards() + 1);
+        } else {
           GWCStart.buff(inventory);
           inventory.addUnits(gwoUnit.colonel);
-
           inventory.addMods([
             {
               file: gwoUnit.commander,
@@ -60,7 +61,6 @@ define([
               value: 0.5,
             },
           ]);
-
           inventory.addAIMods([
             {
               type: "fabber",
@@ -68,8 +68,6 @@ define([
               value: CARD.id + ".json",
             },
           ]);
-        } else {
-          inventory.maxCards(inventory.maxCards() + 1);
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);
