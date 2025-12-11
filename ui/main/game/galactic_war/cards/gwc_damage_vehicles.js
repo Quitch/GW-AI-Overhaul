@@ -25,14 +25,24 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.map(gwoGroup.vehiclesAmmo, function (unit) {
-        return {
-          file: unit,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        };
-      });
+      const mods = _.flatten(
+        _.map(gwoGroup.vehiclesAmmo, function (ammo) {
+          return [
+            {
+              file: ammo,
+              path: "damage",
+              op: "multiply",
+              value: 1.25,
+            },
+            {
+              file: ammo,
+              path: "splash_damage",
+              op: "multiply",
+              value: 1.25,
+            },
+          ];
+        })
+      );
       inventory.addMods(mods);
     },
     dull: function () {},

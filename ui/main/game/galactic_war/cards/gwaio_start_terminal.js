@@ -115,12 +115,20 @@ define([
             );
           });
           _.forEach(gwoGroup.ammo, function (ammo) {
-            mods.push({
-              file: ammo,
-              path: "damage",
-              op: "multiply",
-              value: 2,
-            });
+            mods.push(
+              {
+                file: ammo,
+                path: "damage",
+                op: "multiply",
+                value: 2,
+              },
+              {
+                file: ammo,
+                path: "splash_damage",
+                op: "multiply",
+                value: 2,
+              }
+            );
           });
           inventory.addMods(mods);
         }
