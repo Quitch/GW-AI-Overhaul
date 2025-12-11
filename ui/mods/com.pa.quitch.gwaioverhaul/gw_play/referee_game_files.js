@@ -136,6 +136,37 @@ const getAIUnitMapPath = function (titans, aiInUse) {
   }
 };
 
+const orderOfOperations = function (mods) {
+  const operationsContainer = {};
+  operationsContainer.otherOperations = [];
+  const orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
+
+  _.forEach(mods, function (mod) {
+    const operationName = mod.op;
+    const isOrderedOperation = _.includes(orderedOperations, operationName);
+
+    if (!operationsContainer[operationName] && isOrderedOperation) {
+      operationsContainer[operationName] = [];
+    }
+
+    if (isOrderedOperation) {
+      operationsContainer[operationName].push(mod);
+    } else {
+      operationsContainer.otherOperations.push(mod);
+    }
+  });
+
+  var orderedMods = [];
+  _.forEach(orderedOperations, function (operation) {
+    if (operationsContainer[operation]) {
+      orderedMods = orderedMods.concat(operationsContainer[operation]);
+    }
+  });
+  orderedMods = orderedMods.concat(operationsContainer.otherOperations);
+
+  return orderedMods;
+};
+
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
@@ -358,7 +389,9 @@ define([
         ops[mod.op](spec, mod.value);
       }
     };
-    _.forEach(mods, applyMod);
+
+    const orderedMods = orderOfOperations(mods);
+    _.forEach(orderedMods, applyMod);
   };
 
   // global for modder compatibility
