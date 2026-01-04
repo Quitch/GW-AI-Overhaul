@@ -130,7 +130,7 @@ function gwoWarInfoPanel() {
             "com.uberent.pa.PAFX", // PA-FX Titans
             "com.uberent.pa.PAFX.classic", // PA-FX Classic
             "com.pa.client.cirolog.boom", // Bigger Explosions
-            "ca.pa.metapod.effectsandstuffNikVersion", // Nik's 'How is this event legal?!' Mod Pack
+            "ca.pa.metapod.effectsandstuffNikVersion", // Nik's 'How is this even legal?!' Mod Pack
             "com.wondible.pa.gw_classic_systems", // Classic Systems for galactic war
           ];
           const modIdentifiers = _.map(mods, "identifier");
