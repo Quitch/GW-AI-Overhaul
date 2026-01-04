@@ -36,7 +36,7 @@ function gwoBugfixes() {
       }
     };
 
-    const clusterTypeFix = function (mod, securityFix, workerFix) {
+    const fixClusterType = function (mod, securityFix, workerFix) {
       const security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
       const worker = "/pa/units/air/support_platform/support_platform.json";
@@ -71,7 +71,7 @@ function gwoBugfixes() {
         const security =
           "/pa/units/land/bot_support_commander/bot_support_commander.json";
         const worker = "/pa/units/air/support_platform/support_platform.json";
-        var result = clusterTypeFix(mod, securityFix, workerFix);
+        var result = fixClusterType(mod, securityFix, workerFix);
         switch (result) {
           case security:
             securityFix = true;
