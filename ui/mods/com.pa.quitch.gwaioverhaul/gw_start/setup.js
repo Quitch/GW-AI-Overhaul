@@ -368,6 +368,9 @@ function gwoSetup() {
           const titansAITags = ["Default"];
 
           switch (difficulty.ai()) {
+            case "Penchant":
+              setupPenchantAI(ai, titansAITags);
+              break;
             case "Queller":
               personality.personality_tags =
                 personality.personality_tags.concat(
@@ -377,9 +380,6 @@ function gwoSetup() {
             case "Titans":
               personality.personality_tags =
                 personality.personality_tags.concat(titansAITags);
-              break;
-            case "Penchant":
-              setupPenchantAI(ai, titansAITags);
               break;
           }
         };
