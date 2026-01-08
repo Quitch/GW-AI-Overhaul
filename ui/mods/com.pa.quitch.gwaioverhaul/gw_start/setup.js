@@ -162,7 +162,7 @@ function gwoSetup() {
     };
 
     const setupQuellerFFATag = function (ais) {
-      if (_.isUndefined(ais)) {
+      if (!ais) {
         return;
       }
 
