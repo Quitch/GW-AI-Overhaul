@@ -378,7 +378,7 @@ function gwoSystemChanges() {
             system.ownerColor()[0] !== model.player.color()[0];
 
           // Fix Z axis issues
-          if (innerRing.visible === true) {
+          if (innerRing.visible) {
             system.mouseOver(1);
             system.mouseOver(0);
             system.mouseOut(0);
