@@ -118,8 +118,8 @@ function gwoSetup() {
     };
 
     const selectMinion = function (minions, minionName) {
-      // Cluster
-      if (minionName === "Worker" || minionName === "Security") {
+      const isCluster = minionName === "Worker" || minionName === "Security";
+      if (isCluster) {
         return _.cloneDeep(
           _.sample(
             _.filter(minions, {
