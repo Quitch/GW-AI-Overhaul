@@ -1,7 +1,13 @@
 const applyAiMods = function (json, mods) {
   const ops = {
     // fabber/factory/platoon only
-    append: function (value, toBuild, idToMod, refId, refValue) {
+    append: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+      const idToMod = mod.idToMod;
+      const refId = mod.refId;
+      const refValue = mod.refValue;
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -31,7 +37,13 @@ const applyAiMods = function (json, mods) {
       });
     },
     // fabber/factory/platoon only
-    prepend: function (value, toBuild, idToMod, refId, refValue) {
+    prepend: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+      const idToMod = mod.idToMod;
+      const refId = mod.refId;
+      const refValue = mod.refValue;
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -61,7 +73,13 @@ const applyAiMods = function (json, mods) {
       });
     },
     // fabber/factory/platoon only
-    replace: function (value, toBuild, idToMod, refId, refValue) {
+    replace: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+      const idToMod = mod.idToMod;
+      const refId = mod.refId;
+      const refValue = mod.refValue;
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -85,7 +103,10 @@ const applyAiMods = function (json, mods) {
       });
     },
     // fabber/factory/platoon only
-    remove: function (value, toBuild) {
+    remove: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -101,7 +122,11 @@ const applyAiMods = function (json, mods) {
       });
     },
     // fabber/factory/platoon only
-    new: function (value, toBuild, idToMod) {
+    new: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+      const idToMod = mod.idToMod;
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -117,7 +142,10 @@ const applyAiMods = function (json, mods) {
       });
     },
     // template only
-    squad: function (value, toBuild) {
+    squad: function (mod) {
+      const value = mod.value;
+      const toBuild = mod.toBuild;
+
       if (json.platoon_templates[toBuild]) {
         json.platoon_templates[toBuild].units.push(value);
       }
@@ -125,7 +153,7 @@ const applyAiMods = function (json, mods) {
   };
 
   _.forEach(mods, function (mod) {
-    ops[mod.op](mod.value, mod.toBuild, mod.idToMod, mod.refId, mod.refValue);
+    ops[mod.op](mod);
   });
 };
 
