@@ -107,7 +107,7 @@ const applyAiMods = function (json, mods) {
           return;
         }
 
-        if (_.isUndefined(idToMod)) {
+        if (!idToMod) {
           build.build_conditions.push(value);
         } else {
           _.forEach(build.build_conditions, function (testArray) {

@@ -307,7 +307,7 @@ function gwoSetup() {
           const result = $.Deferred();
           loaded.then(function () {
             const card = _.find(processedStartCards, { id: params.id });
-            if (_.isUndefined(card)) {
+            if (!card) {
               console.error("No matching start card ID found");
             }
             const context =
@@ -722,7 +722,7 @@ function gwoSetup() {
                 var availableFactions = _.without(aiFactions, ai.faction);
                 _.times(availableFactions.length, function () {
                   if (gameModeEnabled(difficulty.ffaChance())) {
-                    if (_.isUndefined(ai.foes)) {
+                    if (!ai.foes) {
                       ai.foes = [];
                     }
 

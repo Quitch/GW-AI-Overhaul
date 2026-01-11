@@ -832,7 +832,7 @@ function gwoCard() {
             return card === id;
           });
 
-          if (_.isUndefined(cardId)) {
+          if (!cardId) {
             console.error(
               "Unable to find a card called " + model.cheats.giveCardId()
             );
