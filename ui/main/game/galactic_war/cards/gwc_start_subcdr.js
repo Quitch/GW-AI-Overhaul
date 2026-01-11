@@ -15,12 +15,10 @@ define([
     describe: _.constant(
       "!LOC:The General Commander loadout contains very limited mobile forces and only two data banks. However, the loadout comes with two Sub Commanders that accompany you into each battle."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:General Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:General Commander",
+    }),
     getContext: function (galaxy, inventory) {
       return {
         faction: inventory.getTag("global", "playerFaction") || 0,
