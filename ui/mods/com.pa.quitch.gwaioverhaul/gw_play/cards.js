@@ -832,11 +832,7 @@ function gwoCard() {
             return card === id;
           });
 
-          if (!cardId) {
-            console.error(
-              "Unable to find a card called " + model.cheats.giveCardId()
-            );
-          } else {
+          if (cardId) {
             dealCard({
               id: cardId,
               galaxy: galaxy,
@@ -854,6 +850,10 @@ function gwoCard() {
                 gwoSave(game, true);
               });
             });
+          } else {
+            console.error(
+              "Unable to find a card called " + model.cheats.giveCardId()
+            );
           }
         };
 
