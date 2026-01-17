@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.84.0 - 2026-01-17
+
+### Changed
+
+- Equal chance of complete air/bot/vehicle tech regardless of what basic units you have
+
 ## v5.83.0 - 2025-12-11
 
 ### Changed

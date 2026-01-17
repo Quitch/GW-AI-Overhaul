@@ -15,12 +15,10 @@ define([
     describe: _.constant(
       "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:CEO Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:CEO Commander",
+    }),
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {

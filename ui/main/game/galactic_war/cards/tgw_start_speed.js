@@ -15,12 +15,10 @@ define([
     describe: _.constant(
       "!LOC:This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Swarm Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Swarm Commander",
+    }),
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {

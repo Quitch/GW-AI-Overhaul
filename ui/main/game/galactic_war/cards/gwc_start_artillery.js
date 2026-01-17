@@ -16,12 +16,10 @@ define([
     describe: _.constant(
       "!LOC:The Artillery Commander loadout contains all artillery units and reduces costs of those structures by 75%. It also enables the Commander to build radar, double barreled turrets and basic artillery turrets."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Artillery Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Artillery Commander",
+    }),
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {

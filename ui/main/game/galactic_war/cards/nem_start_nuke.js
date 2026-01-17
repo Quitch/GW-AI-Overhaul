@@ -15,12 +15,10 @@ define([
     describe: _.constant(
       "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Tactical Nuke Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Tactical Nuke Commander",
+    }),
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {

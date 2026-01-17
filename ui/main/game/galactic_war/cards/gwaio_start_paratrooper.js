@@ -19,12 +19,10 @@ define([
       ) +
         " Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
     ),
-    hint: function () {
-      return {
-        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-        description: "!LOC:Paratrooper Commander",
-      };
-    },
+    hint: _.constant({
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Paratrooper Commander",
+    }),
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {

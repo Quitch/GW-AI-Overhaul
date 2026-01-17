@@ -36,25 +36,24 @@ function gwoBugfixes() {
       }
     };
 
-    const applyClusterTypeFix = function (mod) {
+    const fixClusterType = function (mod, securityFix, workerFix) {
+      const security =
+        "/pa/units/land/bot_support_commander/bot_support_commander.json";
+      const worker = "/pa/units/air/support_platform/support_platform.json";
+
+      if (
+        (securityFix || mod.file !== security) &&
+        (workerFix >= 2 || mod.file !== worker)
+      ) {
+        return;
+      }
+
       if (mod.path === "buildable_types") {
         mod.value = mod.value + " & Custom58";
         return mod.file;
       } else if (mod.path === "unit_types") {
         mod.value.push("UNITTYPE_Custom58");
         return mod.file;
-      }
-    };
-
-    const clusterTypeFix = function (mod, securityFix, workerFix) {
-      const security =
-        "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      const worker = "/pa/units/air/support_platform/support_platform.json";
-      if (
-        (securityFix === false && mod.file === security) ||
-        (workerFix < 2 && mod.file === worker)
-      ) {
-        return applyClusterTypeFix(mod);
       }
     };
 
@@ -72,7 +71,7 @@ function gwoBugfixes() {
         const security =
           "/pa/units/land/bot_support_commander/bot_support_commander.json";
         const worker = "/pa/units/air/support_platform/support_platform.json";
-        var result = clusterTypeFix(mod, securityFix, workerFix);
+        var result = fixClusterType(mod, securityFix, workerFix);
         switch (result) {
           case security:
             securityFix = true;
@@ -81,7 +80,7 @@ function gwoBugfixes() {
             workerFix += 1;
         }
 
-        if (securityFix === true && workerFix >= 2) {
+        if (securityFix && workerFix >= 2) {
           gwoSettings.clusterFixed = true;
           break;
         }

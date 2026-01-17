@@ -107,12 +107,12 @@ const applyAiMods = function (json, mods) {
           return;
         }
 
-        if (_.isUndefined(idToMod)) {
-          build.build_conditions.push(value);
-        } else {
+        if (idToMod) {
           _.forEach(build.build_conditions, function (testArray) {
             testArray.push(value);
           });
+        } else {
+          build.build_conditions.push(value);
         }
       });
     },

@@ -52,7 +52,7 @@ function gwoIntelligence() {
     };
 
     const getFactionName = function (commander, currentFaction) {
-      if (_.isUndefined(commander.faction)) {
+      if (!commander.faction) {
         return {
           name: "",
           tooltip: "",
