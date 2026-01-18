@@ -129,15 +129,9 @@ function gwoBugfixes() {
 
       if (checkVersion("5.76.1") >= 0) {
         luckyCommanderFixed("true");
-        return;
-      }
-
-      if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
+      } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
         gwoSettings.clusterFixed = true;
-        return;
-      }
-
-      if (checkVersion("5.18.0") >= 0) {
+      } else if (checkVersion("5.18.0") >= 0) {
         gwoSettings.treasurePlanetFixed = true;
       }
     };
