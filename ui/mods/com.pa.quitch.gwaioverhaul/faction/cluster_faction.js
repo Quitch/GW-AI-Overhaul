@@ -27,10 +27,23 @@ define([
   const workerCommander = gwoUnit.angel;
   const securityName = "Security";
   const securityCommander = gwoUnit.colonel;
+  const uber = "!LOC:Uber";
+  const fabber = "!LOC:Fabber";
+  const defender = "!LOC:Defender";
+  const luddite = "!LOC:Luddite";
+  const technologist = "!LOC:Technologist";
+  const cautious = "!LOC:Cautious";
+  const aggressive = "!LOC:Aggressive";
+  const rush = "!LOC:Rush";
+  const turtle = "!LOC:Turtle";
+  const absurd = "!LOC:Absurd";
+  const factory = "!LOC:Factory";
+  const swarm = "!LOC:Swarm";
+  const economist = "!LOC:Economist";
   const minions = [
     {
       name: workerName,
-      character: "!LOC:Uber",
+      character: uber,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -40,7 +53,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Fabber",
+      character: fabber,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -50,7 +63,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Defender",
+      character: defender,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -60,7 +73,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Luddite",
+      character: luddite,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -70,7 +83,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Technologist",
+      character: technologist,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -80,7 +93,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Cautious",
+      character: cautious,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -90,7 +103,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Aggressive",
+      character: aggressive,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -100,7 +113,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Rush",
+      character: rush,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -110,7 +123,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Turtle",
+      character: turtle,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -120,7 +133,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Absurd",
+      character: absurd,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -130,7 +143,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Factory",
+      character: factory,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -140,7 +153,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Swarm",
+      character: swarm,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -150,7 +163,7 @@ define([
     },
     {
       name: workerName,
-      character: "!LOC:Economist",
+      character: economist,
       color: [
         [142, 107, 68],
         [192, 192, 192],
@@ -160,7 +173,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Uber",
+      character: uber,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -170,7 +183,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Fabber",
+      character: fabber,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -180,7 +193,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Defender",
+      character: defender,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -190,7 +203,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Luddite",
+      character: luddite,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -200,7 +213,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Technologist",
+      character: technologist,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -210,7 +223,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Cautious",
+      character: cautious,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -220,7 +233,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Aggressive",
+      character: aggressive,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -230,7 +243,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Rush",
+      character: rush,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -240,7 +253,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Turtle",
+      character: turtle,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -250,7 +263,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Absurd",
+      character: absurd,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -260,7 +273,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Factory",
+      character: factory,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -270,7 +283,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Swarm",
+      character: swarm,
       color: [
         [70, 70, 70],
         [192, 192, 192],
@@ -280,7 +293,7 @@ define([
     },
     {
       name: securityName,
-      character: "!LOC:Economist",
+      character: economist,
       color: [
         [70, 70, 70],
         [192, 192, 192],
