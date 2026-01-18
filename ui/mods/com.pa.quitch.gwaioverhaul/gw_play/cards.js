@@ -31,11 +31,8 @@ function gwoCard() {
       "gwaio_start_hoarder",
     ];
 
-    const isLuckyCommander = function (inventory) {
-      return inventory.hasCard("gwaio_start_lucky");
-    };
-
-    const numCardsToOffer = isLuckyCommander(game.inventory()) ? 4 : 3;
+    const isLuckyCommander = game.inventory().hasCard("gwaio_start_lucky");
+    const numCardsToOffer = isLuckyCommander ? 4 : 3;
 
     model.rerollTech = function () {
       var cardsOffered = 0;
