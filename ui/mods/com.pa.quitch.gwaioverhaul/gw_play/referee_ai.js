@@ -1,3 +1,7 @@
+const game = model.game();
+const inventory = game.inventory();
+const ai = game.galaxy().stars()[game.currentStar()].ai();
+
 const applyAiMods = function (json, mods) {
   const ops = {
     // fabber/factory/platoon only
@@ -130,9 +134,6 @@ const applyAiMods = function (json, mods) {
 };
 
 const whichAIsAreBeingModified = function (clusterPresence) {
-  const game = model.game();
-  const inventory = game.inventory();
-  const ai = game.galaxy().stars()[game.currentStar()].ai();
   const guardians = ai.mirrorMode;
 
   if (!_.isEmpty(inventory.aiMods()) || clusterPresence === "Player") {
@@ -210,7 +211,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     };
 
     const aiModsInScopeOfFile = function () {
-      const aiMods = _.reject(model.game().inventory().aiMods(), {
+      const aiMods = _.reject(inventory.aiMods(), {
         op: "load",
       });
 
@@ -341,7 +342,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
 
     api.file.list(aiPath, true).then(function (fileList) {
       const aisToModify = whichAIsAreBeingModified(clusterPresence);
-      const inventory = model.game().inventory();
 
       addApplicableAiLoadModsToFileList(
         aiPath,
@@ -377,9 +377,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
   };
 
   const whoIsCluster = function () {
-    const game = model.game();
-    const inventory = game.inventory();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
