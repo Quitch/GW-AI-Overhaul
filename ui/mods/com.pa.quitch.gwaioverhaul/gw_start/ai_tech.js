@@ -33,6 +33,13 @@ define([
     revenantsTech,
     clusterTech,
   ];
+  const factionCommanders = [
+    inventory.commanderUnits, // Legonis Machina
+    inventory.commanderUnits, // Foundation
+    inventory.commanderUnits, // Synchronous
+    inventory.commanderUnits, // Revenants
+    inventory.clusterCommanders,
+  ];
 
   const setupAITech0FabricationTech = function () {
     const factionUnits = [
@@ -82,13 +89,6 @@ define([
       inventory.revenantsUnits,
       inventory.clusterUnitsImmobile,
     ];
-    const factionCommanders = [
-      inventory.commanderUnits, // Legonis Machina
-      inventory.commanderUnits, // Foundation
-      inventory.commanderUnits, // Synchronous
-      inventory.commanderUnits, // Revenants
-      inventory.clusterCommanders,
-    ];
     _.forEach(factionUnits, function (units, i) {
       factionTechs[i][2] = multiply(units, 1.5, "max_health");
     });
@@ -106,13 +106,6 @@ define([
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
-    ];
-    const factionCommanders = [
-      inventory.commanderUnits, // Legonis Machina
-      inventory.commanderUnits, // Foundation
-      inventory.commanderUnits, // Synchronous
-      inventory.commanderUnits, // Revenants
-      inventory.clusterCommanders,
     ];
     const speedPaths = [
       "navigation.move_speed",
@@ -157,13 +150,6 @@ define([
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
-    ];
-    const factionCommanders = [
-      inventory.commanderUnits, // Legonis Machina
-      inventory.commanderUnits, // Foundation
-      inventory.commanderUnits, // Synchronous
-      inventory.commanderUnits, // Revenants
-      inventory.clusterCommanders,
     ];
     const speedPaths = [
       "navigation.move_speed",
