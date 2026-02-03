@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Titan Tech now accessible even if you only advance on the Orbital tech track
+
 ## v5.84.0 - 2026-01-17
 
 ### Changed
