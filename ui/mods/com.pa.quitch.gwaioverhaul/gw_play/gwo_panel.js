@@ -107,7 +107,7 @@ function gwoWarInfoPanel() {
           };
 
           model.devMode.subscribe(function () {
-            if (model.devMode()) {
+            if (model.devMode() === true) {
               cheatsDetected();
             }
           });

@@ -42,7 +42,7 @@ function gwoBugfixes() {
       const worker = "/pa/units/air/support_platform/support_platform.json";
 
       if (
-        (securityFix || mod.file !== security) &&
+        (securityFix === true || mod.file !== security) &&
         (workerFix >= 2 || mod.file !== worker)
       ) {
         return;
@@ -80,7 +80,7 @@ function gwoBugfixes() {
             workerFix += 1;
         }
 
-        if (securityFix && workerFix >= 2) {
+        if (securityFix === true && workerFix >= 2) {
           gwoSettings.clusterFixed = true;
           break;
         }
