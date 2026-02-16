@@ -316,7 +316,7 @@ define([
       const aiX1MapLoad = titans ? $.get("spec:/" + aiUnitMapTitansPath) : {};
       $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
         function (unitsGet, aiMapGet, aiX1MapGet) {
-          const inventory = self.game().inventory();
+          const inventory = game.inventory();
 
           const units = parse(unitsGet[0]).units;
           const aiUnitMap = parse(aiMapGet[0]);

@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (gwoCard, gwoGroup, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,7 +20,10 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
+      if (
+        gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory)
+      ) {
         chance = 150;
       }
       return { chance: chance };

@@ -584,7 +584,7 @@ function gwoSetup() {
 
               boss.inventory = [];
 
-              if (boss.isCluster) {
+              if (boss.isCluster === true) {
                 boss.inventory = gwoCluster.clusterCommanders;
               }
 
@@ -615,7 +615,7 @@ function gwoSetup() {
               if (numMinions > 0) {
                 boss.minions = [];
 
-                if (boss.isCluster) {
+                if (boss.isCluster === true) {
                   clusterType = "Security";
                   totalMinions = 1;
                 }
@@ -629,7 +629,7 @@ function gwoSetup() {
                     maxDist,
                     numMinions
                   );
-                  if (boss.isCluster) {
+                  if (boss.isCluster === true) {
                     minion.commanderCount = numMinions;
                   }
                   boss.minions.push(minion);
@@ -669,7 +669,7 @@ function gwoSetup() {
 
                 ai.inventory = [];
 
-                if (ai.isCluster) {
+                if (ai.isCluster === true) {
                   ai.inventory = gwoCluster.clusterCommanders;
                 }
 
@@ -688,7 +688,7 @@ function gwoSetup() {
 
                   totalMinions = numMinions;
                   var clusterWorkers = 0;
-                  if (ai.isCluster) {
+                  if (ai.isCluster === true) {
                     clusterType = "Worker";
                     clusterWorkers = clusterCommanderCount(
                       numMinions,
@@ -710,7 +710,7 @@ function gwoSetup() {
                         dist,
                         numMinions
                       );
-                      if (ai.isCluster) {
+                      if (ai.isCluster === true) {
                         minion.commanderCount = clusterWorkers;
                       }
                       ai.minions.push(minion);
@@ -750,7 +750,7 @@ function gwoSetup() {
                     foeCommander.commanderCount = numFoes;
 
                     foeCommander.inventory = [];
-                    if (foeCommander.isCluster) {
+                    if (foeCommander.isCluster === true) {
                       foeCommander.inventory = gwoCluster.clusterCommanders;
                     }
 
@@ -806,7 +806,7 @@ function gwoSetup() {
                   planet.generator.shuffleLandingZones = true;
                   // Set up Foundation planets
                   if (
-                    !sharedSystemsForGalacticWarActive &&
+                    sharedSystemsForGalacticWarActive === false &&
                     ai.faction === 1 &&
                     !ai.boss
                   ) {
@@ -818,7 +818,7 @@ function gwoSetup() {
                   const difficulty = model.gwoDifficultySettings;
 
                   // Set up The Guardians' treasure planet
-                  if (!treasurePlanetSetup) {
+                  if (treasurePlanetSetup === false) {
                     treasurePlanetSetup = true;
                     delete ai.commanderCount;
                     delete ai.minions;
@@ -886,7 +886,7 @@ function gwoSetup() {
           });
 
           const warInfo = finishAis.then(function () {
-            if (warGenerationFailed) {
+            if (warGenerationFailed === true) {
               return;
             }
 
@@ -917,7 +917,7 @@ function gwoSetup() {
               model.gwoDifficultySettings.simpleSystems();
             originSystem.gwaio.easierStart =
               model.gwoDifficultySettings.easierStart();
-            if (model.devMode()) {
+            if (model.devMode() === true) {
               originSystem.gwaio.cheatsUsed = true;
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
@@ -934,7 +934,10 @@ function gwoSetup() {
           });
 
           const finishSetup = warInfo.then(function () {
-            if (model.makeGameBusy() !== busyToken || warGenerationFailed) {
+            if (
+              model.makeGameBusy() !== busyToken ||
+              warGenerationFailed === true
+            ) {
               return;
             }
 
@@ -945,7 +948,7 @@ function gwoSetup() {
           });
 
           finishSetup.then(function () {
-            if (warGenerationFailed) {
+            if (warGenerationFailed === true) {
               warGenerationFailure();
               return;
             }

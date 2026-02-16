@@ -42,7 +42,7 @@ function gwoBugfixes() {
       const worker = "/pa/units/air/support_platform/support_platform.json";
 
       if (
-        (securityFix || mod.file !== security) &&
+        (securityFix === true || mod.file !== security) &&
         (workerFix >= 2 || mod.file !== worker)
       ) {
         return;
@@ -80,7 +80,7 @@ function gwoBugfixes() {
             workerFix += 1;
         }
 
-        if (securityFix && workerFix >= 2) {
+        if (securityFix === true && workerFix >= 2) {
           gwoSettings.clusterFixed = true;
           break;
         }
@@ -129,15 +129,9 @@ function gwoBugfixes() {
 
       if (checkVersion("5.76.1") >= 0) {
         luckyCommanderFixed("true");
-        return;
-      }
-
-      if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
+      } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
         gwoSettings.clusterFixed = true;
-        return;
-      }
-
-      if (checkVersion("5.18.0") >= 0) {
+      } else if (checkVersion("5.18.0") >= 0) {
         gwoSettings.treasurePlanetFixed = true;
       }
     };

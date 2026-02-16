@@ -25,7 +25,7 @@ function gwoWarInfoPanel() {
         // War Information
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.84.0");
+        model.gwoVersion = ko.observable("5.84.1");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -107,7 +107,7 @@ function gwoWarInfoPanel() {
           };
 
           model.devMode.subscribe(function () {
-            if (model.devMode()) {
+            if (model.devMode() === true) {
               cheatsDetected();
             }
           });

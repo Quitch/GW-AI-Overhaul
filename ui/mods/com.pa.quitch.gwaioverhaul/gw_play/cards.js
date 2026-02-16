@@ -31,11 +31,8 @@ function gwoCard() {
       "gwaio_start_hoarder",
     ];
 
-    const isLuckyCommander = function (inventory) {
-      return inventory.hasCard("gwaio_start_lucky");
-    };
-
-    const numCardsToOffer = isLuckyCommander(game.inventory()) ? 4 : 3;
+    const isLuckyCommander = game.inventory().hasCard("gwaio_start_lucky");
+    const numCardsToOffer = isLuckyCommander ? 4 : 3;
 
     model.rerollTech = function () {
       var cardsOffered = 0;
@@ -142,7 +139,9 @@ function gwoCard() {
           self.icon(card.icon && card.icon(data));
           self.iconPlaceholder(!self.icon() && (self.summary() || self.desc()));
           self.audio(card.audio && card.audio(data));
-          self.visible(card.visible || !!(card.visible && card.visible(data)));
+          self.visible(
+            card.visible === true || !!(card.visible && card.visible(data))
+          );
         }
         completed.resolve(card);
       };
@@ -419,7 +418,7 @@ function gwoCard() {
       testRun
     ) {
       // Never deal Additional Data Bank as a system's pre-dealt card
-      if (card.id === "gwc_add_card_slot" && !dealAddSlot) {
+      if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
         return true;
       }
 

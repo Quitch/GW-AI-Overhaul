@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v5.84.1 - 2026-02-16
+
+### Changed
+
+- Titan Tech now accessible even if you only advance on the Orbital tech track
+
+### Bugfix
+
+- Fix dealing of empty slots
+
 ## v5.84.0 - 2026-01-17
 
 ### Changed
