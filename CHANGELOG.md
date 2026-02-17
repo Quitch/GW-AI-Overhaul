@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.84.2 - 2026-02-17
+
+### Bugfix
+
+- Correct displayed version
+
 ## v5.84.1 - 2026-02-16
 
 ### Changed
