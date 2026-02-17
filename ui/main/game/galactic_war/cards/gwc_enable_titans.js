@@ -22,7 +22,8 @@ define([
       var chance = 0;
       if (
         gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
-        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory)
+        (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
+          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber))
       ) {
         chance = 150;
       }
