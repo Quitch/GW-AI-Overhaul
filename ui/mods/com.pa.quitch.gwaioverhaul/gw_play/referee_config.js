@@ -330,7 +330,8 @@ define([
         commander: inventory.getTag("global", "commander"),
       },
       system: currentStar.system(),
-      land_anywhere: inventory.hasCard("gwaio_enable_landanywhere"),
+      land_anywhere:
+        ai.landAnywhere || inventory.hasCard("gwaio_enable_landanywhere"),
       bounty_mode: ai.bountyMode || inventory.hasCard("gwaio_enable_bounties"),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
