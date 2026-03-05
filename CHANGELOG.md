@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.84.3 - 2026-03-05
+
+### Bugfix
+
+- Fixed land anywhere system modifier not being applied
+
 ## v5.84.2 - 2026-02-17
 
 ### Bugfix
