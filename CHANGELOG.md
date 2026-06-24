@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.85.0 - 2026-06-24
+
+### Added
+
+- Galactic War mod key to mod info
+
 ## v5.84.3 - 2026-03-05
 
 ### Bugfix
