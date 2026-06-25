@@ -5,6 +5,7 @@
 ### Changed
 
 - Beginner and Casual add additional commanders over time
+- Enemy numbers scaled by player count
 
 ## v5.86.0 - 2026-06-25
 
