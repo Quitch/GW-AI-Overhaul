@@ -955,6 +955,7 @@ function gwoCard() {
           $.when(dealStarCards).then(
             function () {
               if (
+                model.currentSystemCardList() &&
                 model.currentSystemCardList()[0] &&
                 model.currentSystemCardList()[0].isLoadout()
               ) {
