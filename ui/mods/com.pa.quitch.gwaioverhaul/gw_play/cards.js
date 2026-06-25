@@ -954,7 +954,10 @@ function gwoCard() {
 
           $.when(dealStarCards).then(
             function () {
-              if (model.currentSystemCardList()[0].isLoadout()) {
+              if (
+                model.currentSystemCardList()[0] &&
+                model.currentSystemCardList()[0].isLoadout()
+              ) {
                 model.gwoOfferRerolls(false);
               }
               gwoSave(game, false);
