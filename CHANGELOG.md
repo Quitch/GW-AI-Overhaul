@@ -5,7 +5,7 @@
 ### Added
 
 - First pass Galactic War co-op support
-  - Syncs pre-dealt planet techs so every player see the same thing
+  - Syncs pre-dealt planet techs so every player sees the same thing
   - Supports all co-op settings
   - Scales systems according to number of initially configured players
   - Limitation: only one player will show on the GWO panel
