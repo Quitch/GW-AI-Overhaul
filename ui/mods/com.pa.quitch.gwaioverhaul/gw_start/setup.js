@@ -398,7 +398,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.86.0";
+          const version = "5.87.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -427,7 +427,7 @@ function gwoSetup() {
             const numFactions = model.newGameSizeIndex() + 1;
             aiFactions = _.sample(aiFactions, numFactions);
           }
-          const coopPlayersForGeneration = game.coopPlayers();
+          const playerCount = game.coopPlayers();
 
           model.updateCommander();
           game
@@ -441,7 +441,7 @@ function gwoSetup() {
             difficultyIndex: selectedDifficulty,
             systemTemplates: systemTemplates,
             content: game.content(),
-            coopPlayersForSystemGeneration: coopPlayersForGeneration,
+            coopPlayersForSystemGeneration: playerCount,
             minStarDistance: 2,
             maxStarDistance: 4,
             maxConnections: 4,
@@ -609,8 +609,10 @@ function gwoSetup() {
                 gwoTech.factionTechs
               );
 
-              const mandatoryMinions = difficulty.mandatoryMinions();
-              const minionMod = Number.parseFloat(difficulty.minionMod());
+              const mandatoryMinions =
+                difficulty.mandatoryMinions() * playerCount;
+              const minionMod =
+                Number.parseFloat(difficulty.minionMod()) * playerCount;
               const minions = GWFactions[info.faction].minions;
               var clusterType = "";
               // Set up boss minions

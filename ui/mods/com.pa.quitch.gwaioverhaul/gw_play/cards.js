@@ -34,13 +34,18 @@ function gwoCard() {
     const isLuckyCommander = game.inventory().hasCard("gwaio_start_lucky");
     const numCardsToOffer = isLuckyCommander ? 4 : 3;
 
-    model.rerollTech = function () {
-      var cardsOffered = 0;
+    const cardsOfferedCount = function (offer) {
+      var cardsToOffer = offer;
+
       if (game.inventory().handIsFull()) {
-        cardsOffered = numCardsToOffer + 1;
-      } else {
-        cardsOffered = numCardsToOffer;
+        cardsToOffer++;
       }
+
+      return cardsToOffer;
+    };
+
+    model.rerollTech = function () {
+      var cardsOffered = cardsOfferedCount(numCardsToOffer);
       const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (model.gwoRerollsUsed() >= cardsOffered - 1) {
@@ -527,10 +532,7 @@ function gwoCard() {
             const list = [];
 
             _.times(count, function () {
-              var fullHand = [];
-              var hand = [];
-
-              fullHand = _.map(cards, function (card) {
+              var fullHand = _.map(cards, function (card) {
                 const context = cardContexts[card.id];
                 const cardChance =
                   card.deal && card.deal(star, context, inventory);
@@ -554,7 +556,7 @@ function gwoCard() {
                 return deal;
               });
 
-              hand = _.filter(fullHand, function (deal) {
+              var hand = _.filter(fullHand, function (deal) {
                 return !!deal && !!deal.chance;
               });
 
@@ -887,12 +889,7 @@ function gwoCard() {
 
           api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-          var cardsOffered = 0;
-          if (inventory.handIsFull()) {
-            cardsOffered = numCardsToOffer + 1;
-          } else {
-            cardsOffered = numCardsToOffer;
-          }
+          var cardsOffered = cardsOfferedCount(numCardsToOffer);
           const star = game.galaxy().stars()[game.currentStar()];
           const startLoadoutCards = filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []

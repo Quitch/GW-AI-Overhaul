@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v5.87.0 - 2026-05-25
+
+### Changed
+
+- Beginner and Casual add additional commanders over time
+- Enemy numbers scaled by player count
+
 ## v5.86.1 - 2026-06-25
 
 ### Bugfix
