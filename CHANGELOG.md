@@ -7,12 +7,18 @@
 - Beginner and Casual add additional commanders over time
 - Enemy numbers scaled by player count
 
+## v5.86.1 - 2026-06-25
+
+### Bugfix
+
+- Exploring after winning a battle properly displays cards
+
 ## v5.86.0 - 2026-06-25
 
 ### Added
 
 - First pass Galactic War co-op support
-  - Syncs pre-dealt planet techs so every player see the same thing
+  - Syncs pre-dealt planet techs so every player sees the same thing
   - Supports all co-op settings
   - Scales systems according to number of initially configured players
   - Limitation: only one player will show on the GWO panel

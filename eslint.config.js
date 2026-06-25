@@ -1,5 +1,4 @@
 import js from "@eslint/js";
-import lodash from "eslint-plugin-lodash";
 import prettier from "eslint-config-prettier/flat";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
@@ -36,13 +35,10 @@ export default defineConfig([
       },
       sourceType: "script",
     },
-    plugins: { js, lodash },
-    extends: ["js/recommended", "lodash/v3"],
+    plugins: { js },
+    extends: ["js/recommended"],
     rules: {
       curly: ["error", "all"],
-      "lodash/prefer-lodash-method": ["error", { ignoreMethods: ["split"] }],
-      "lodash/prefer-map": "off",
-      "lodash/prefer-noop": "off",
     },
   },
   {
