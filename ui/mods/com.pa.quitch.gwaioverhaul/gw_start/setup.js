@@ -398,7 +398,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.85.0";
+          const version = "5.86.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -406,6 +406,13 @@ function gwoSetup() {
           game.mode(model.mode());
           game.hardcore(model.newGameHardcore());
           game.content(api.content.activeContent());
+          game.coopPlayers(model.normalizedNewGameCoopPlayers());
+          game.coopPlayersSpecified(true);
+          game.lockCoopPlayers(model.newGameLockCoopPlayers());
+          game.perPlayerTechCards(model.newGamePerPlayerTechCards());
+          game.sharedByDefault(
+            game.perPlayerTechCards() ? false : model.newGameSharedByDefault()
+          );
 
           const selectedDifficulty =
             model.gwoDifficultySettings.difficultyLevel();
@@ -420,6 +427,7 @@ function gwoSetup() {
             const numFactions = model.newGameSizeIndex() + 1;
             aiFactions = _.sample(aiFactions, numFactions);
           }
+          const coopPlayersForGeneration = game.coopPlayers();
 
           model.updateCommander();
           game
@@ -433,6 +441,7 @@ function gwoSetup() {
             difficultyIndex: selectedDifficulty,
             systemTemplates: systemTemplates,
             content: game.content(),
+            coopPlayersForSystemGeneration: coopPlayersForGeneration,
             minStarDistance: 2,
             maxStarDistance: 4,
             maxConnections: 4,
@@ -944,6 +953,20 @@ function gwoSetup() {
             model.makeGameBusy(false);
             model.newGame(game);
             model.updateCommander();
+            if (game.perPlayerTechCards()) {
+              const displayName = ko
+                .observable()
+                .extend({ session: "displayName" });
+              game.upsertCoopPlayerInventoryData({
+                playerId: model.uberId(),
+                playerName: displayName(),
+                commander: model.selectedCommander(),
+                loadoutCardId: model.activeStartCard().id(),
+                inventory: game.inventory().save(),
+                techCardDealCount: 0,
+                updatedAt: _.now(),
+              });
+            }
             return game;
           });
 

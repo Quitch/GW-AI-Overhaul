@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v5.86.0 - 2026-06-25
+
+### Added
+
+- First pass Galactic War co-op support
+  - Syncs pre-dealt planet techs so every player see the same thing
+  - Supports all co-op settings
+  - Scales systems according to number of initially configured players
+  - Limitation: only one player will show on the GWO panel
+  - Limitation: only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+  - Limitation: doesn't scale difficulty with player numbers
+
 ## v5.85.0 - 2026-06-24
 
 ### Added

@@ -267,25 +267,30 @@ function gwoSystemChanges() {
     });
 
     model.canMove = ko.computed(function () {
-      if (model.player.moving()) {
+      if (
+        model.player.moving() ||
+        (model.isCampaignViewer() && !model.gwCampaignReplayingAction)
+      ) {
         return false;
       }
+
       const from = game.currentStar();
       const to = model.selection.star();
-      if (to < 0 || to > galaxy.stars().length) {
+
+      if (
+        to < 0 ||
+        to > galaxy.stars().length ||
+        !model.canSelectOrMovePrefix() ||
+        from === to
+      ) {
         return false;
       }
-      if (!model.canSelectOrMovePrefix()) {
-        return false;
-      }
-      if (from === to) {
-        return false;
-      }
+
       return galaxy.pathBetween(from, to, model.cheats.noFog());
     });
 
     model.displayMove = ko.computed(function () {
-      return model.canMove();
+      return model.canShowCampaignActionButtons() && model.canMove();
     });
 
     model.displayFight = ko.computed(function () {

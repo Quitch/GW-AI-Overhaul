@@ -477,6 +477,12 @@ function gwoCard() {
       return product;
     };
 
+    const filterStartLoadoutCards = function (cards) {
+      return _.filter(cards || [], function (card) {
+        return isStartLoadoutCard(card);
+      });
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -628,6 +634,10 @@ function gwoCard() {
                     addSlot: false,
                   }).then(function (card) {
                     system.star.cardList(card);
+                    model.sendCampaignAction("sync_star_cards", {
+                      star: system.star,
+                      cards: system.star.cardList(),
+                    });
                     return setCardName(system, card);
                   })
                 );
@@ -860,8 +870,17 @@ function gwoCard() {
 
         // gw_play self.explore - call our chooseCards()
         model.explore = function () {
-          if (!game || !game.explore()) {
+          if (
+            !game ||
+            !game.explore() ||
+            (model.isCampaignViewer() && !model.gwCampaignReplayingAction) ||
+            model.gwCampaignPlayerSetupBlocked()
+          ) {
             return;
+          }
+
+          if (!model.gwCampaignReplayingAction) {
+            model.sendCampaignAction("explore", { star: game.currentStar() });
           }
 
           model.scanning(true);
@@ -875,6 +894,9 @@ function gwoCard() {
             cardsOffered = numCardsToOffer;
           }
           const star = game.galaxy().stars()[game.currentStar()];
+          const startLoadoutCards = filterStartLoadoutCards(
+            star && _.isFunction(star.cardList) ? star.cardList() : []
+          );
           const dealStarCards = chooseCards({
             count:
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
@@ -897,23 +919,114 @@ function gwoCard() {
               const cardList = result.concat(star.cardList());
               star.cardList(cardList);
             }
-          });
-          $.when(dealStarCards).then(function () {
-            if (model.currentSystemCardList()[0].isLoadout()) {
-              model.gwoOfferRerolls(false);
+
+            if (!model.gwCampaignReplayingAction) {
+              model.sendCampaignAction("sync_star_cards", {
+                star: game.currentStar(),
+                cards: star.cardList(),
+              });
             }
-            gwoSave(game, false);
-            _.delay(function () {
-              model.scanning(false);
-            }, 2000);
+
+            var dealEntry;
+
+            if (
+              (ok || startLoadoutCards.length) &&
+              _.isArray(star.cardList()) &&
+              star.cardList().length &&
+              game &&
+              _.isFunction(game.recordHostTechCardDeal)
+            ) {
+              dealEntry = game.recordHostTechCardDeal(game.currentStar(), {
+                startLoadoutCards: startLoadoutCards,
+              });
+            }
+
+            if (!dealEntry) {
+              return $.Deferred().resolve([]).promise();
+            }
+
+            return model.dealCoopPlayerPendingTechCards(
+              game.currentStar(),
+              star,
+              {
+                dealIndex: dealEntry && dealEntry.dealIndex,
+                startLoadoutCards: startLoadoutCards,
+              }
+            );
           });
+
+          $.when(dealStarCards).then(
+            function () {
+              if (model.currentSystemCardList()[0].isLoadout()) {
+                model.gwoOfferRerolls(false);
+              }
+              gwoSave(game, false);
+              _.delay(function () {
+                model.scanning(false);
+              }, 2000);
+            },
+            function (reason) {
+              console.error(
+                "[GW COOP] failed to deal co-op player pending tech cards: " +
+                  reason
+              );
+              model.scanning(false);
+            }
+          );
         };
 
         // call dealCardToSelectableAI() so systems' cards update when player acquires a card
         model.win = function (selectedCardIndex) {
+          if (
+            model.canUseCoopTechChoice() &&
+            model.isCampaignViewer() &&
+            !model.gwCampaignReplayingAction
+          ) {
+            var tech_card = model.currentSystemCardList()[selectedCardIndex];
+            var tech_audio =
+              tech_card && tech_card.audio() ? tech_card.audio().found : null;
+
+            model.submitCoopTechCardChoice(selectedCardIndex).then(
+              function () {
+                if (tech_audio) {
+                  api.audio.playSound(tech_audio);
+                } else {
+                  api.audio.playSound("/VO/Computer/gw/board_tech_acquired");
+                }
+              },
+              function (reason) {
+                console.error(
+                  "[GW COOP] failed to acquire co-op tech choice: " + reason
+                );
+              }
+            );
+            return;
+          }
+
+          if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
+            return;
+          }
+
+          if (!model.gwCampaignReplayingAction) {
+            model.sendCampaignAction("win_choice", {
+              selectedCardIndex: selectedCardIndex,
+            });
+          }
+
+          var actionCardList = model.currentSystemActionCardList();
+          if (
+            selectedCardIndex !== -1 &&
+            (!actionCardList || !actionCardList[selectedCardIndex])
+          ) {
+            console.error(
+              "[GW COOP] Cannot apply win choice without current system card data."
+            );
+            return;
+          }
+
           model.exitGate($.Deferred());
 
-          const techCard = model.currentSystemCardList()[selectedCardIndex];
+          const techCard = actionCardList && actionCardList[selectedCardIndex];
           const techAudio =
             techCard && techCard.audio() ? techCard.audio().found : null;
           const playTechAudio = !!techCard;
@@ -922,6 +1035,10 @@ function gwoCard() {
             if (!didWin) {
               console.error("Failed winning turn", game);
               return;
+            }
+
+            if (model.isCampaignViewer()) {
+              model.syncViewerStarsFromGame("win_applied");
             }
 
             model.maybePlayCaptureSound();

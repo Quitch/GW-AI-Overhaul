@@ -240,13 +240,19 @@ define([
       // Generate the planets, increasing the size based on the distance from the start.
       const starGenerators = _.map(self.stars(), function (star) {
         var systemSize = 0;
+        const coopSystemPlayerBonus = Math.max(
+          0,
+          Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
+        );
         if (
           model.gwoDifficultySettings &&
           !model.gwoDifficultySettings.systemScaling()
         ) {
-          systemSize = Math.floor(Math.random() * 10 + 1);
+          systemSize = Math.floor(
+            Math.random() * 10 + 1 + coopSystemPlayerBonus
+          );
         } else {
-          systemSize = star.distance();
+          systemSize = star.distance() + coopSystemPlayerBonus;
         }
         return StarSystemTemplates.generate({
           players: systemSize,
