@@ -479,7 +479,7 @@ function gwoCard() {
 
     const filterStartLoadoutCards = function (cards) {
       return _.filter(cards || [], function (card) {
-        return isStartLoadoutCard(card);
+        return isCardLoadout(card);
       });
     };
 
