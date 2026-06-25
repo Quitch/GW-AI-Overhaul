@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Exploring after winning a battle properly displays cards
+
 ## v5.86.0 - 2026-06-25
 
 ### Added
