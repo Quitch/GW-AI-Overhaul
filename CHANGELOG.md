@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Beginner and Casual add additional commanders over time
+
 ## v5.86.0 - 2026-06-25
 
 ### Added
