@@ -45,6 +45,10 @@ function gwoCard() {
     };
 
     model.rerollTech = function () {
+      if (model.canChooseCoopTechCards && model.canChooseCoopTechCards()) {
+        return;
+      }
+
       var cardsOffered = cardsOfferedCount(numCardsToOffer);
       const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
@@ -1010,7 +1014,7 @@ function gwoCard() {
 
           if (!model.gwCampaignReplayingAction) {
             model.sendCampaignAction("win_choice", {
-              selectedCardIndex: selectedCardIndex,
+              selected_card_index: selectedCardIndex,
             });
           }
 
