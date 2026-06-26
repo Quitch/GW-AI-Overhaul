@@ -157,11 +157,9 @@ define([
         if (!_.isArray(attribute)) {
           attribute = _.isEmpty(attribute) ? [] : [attribute];
         }
-        var args = [];
+        var args = [attribute, value];
         if (_.isArray(value)) {
           args = [attribute].concat(value);
-        } else {
-          args = [attribute, value];
         }
         return _.pull.apply(this, args);
       },
@@ -388,8 +386,21 @@ define([
           GW.specs
             .genUnitSpecs(playerSpecs, playerTag)
             .then(function (playerSpecFiles) {
-              var playerFilesClassic = {};
-              var playerFilesX1 = {};
+              var playerFilesClassic = _.assign(
+                {
+                  "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
+                },
+                playerSpecFiles
+              );
+              var playerFilesX1 = titans
+                ? _.assign(
+                    {
+                      "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
+                        playerX1AIUnitMap,
+                    },
+                    playerSpecFiles
+                  )
+                : {};
               const playerIsCluster =
                 inventory.getTag("global", "playerFaction") === 4;
               const guardians = ai.mirrorMode;
@@ -480,22 +491,6 @@ define([
                   ? _.assign(
                       {
                         "/pa/ai_penchant/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
                           playerX1AIUnitMap,
                       },
                       playerSpecFiles
