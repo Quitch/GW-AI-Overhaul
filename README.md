@@ -142,6 +142,12 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 ### Known issues
 
 - Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server to ON and Local Server Multi-Threading to OFF.
+- Non-host players cannot reroll tech
+- Enemy systems do not use the faction colour
+- The loadout and subcommanders on the GWO panel will always be those of the host player
+- Only one player is displayed on the GWO panel
+- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+- Guardians will only mirror the host's tech
 
 ## Recommended mods
 
