@@ -21,9 +21,12 @@
   - Syncs pre-dealt planet techs so every player sees the same thing
   - Supports all co-op settings
   - Scales systems according to number of initially configured players
-  - Limitation: only one player will show on the GWO panel
-  - Limitation: only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
-  - Limitation: doesn't scale difficulty with player numbers
+
+### Known Issues
+
+- Only one player will show on the GWO panel
+- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+- Doesn't scale difficulty with player numbers
 
 ## v5.85.0 - 2026-06-24
 
