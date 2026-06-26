@@ -391,8 +391,7 @@ function gwoSystemChanges() {
 
           if (system.star.ai() && !system.star.ai().treasurePlanet) {
             // Assign faction colour, not minion colour, to each system
-            var outerColour = [];
-            outerColour = normalizedColor(GWFactions[ai.faction]);
+            const outerColour = normalizedColor(GWFactions[ai.faction]);
             system.ownerColor(outerColour.concat(3));
           }
 

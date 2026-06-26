@@ -45,6 +45,10 @@ function gwoCard() {
     };
 
     model.rerollTech = function () {
+      if (model.canChooseCoopTechCards && model.canChooseCoopTechCards()) {
+        return;
+      }
+
       var cardsOffered = cardsOfferedCount(numCardsToOffer);
       const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
@@ -954,7 +958,11 @@ function gwoCard() {
 
           $.when(dealStarCards).then(
             function () {
-              if (model.currentSystemCardList()[0].isLoadout()) {
+              if (
+                model.currentSystemCardList() &&
+                model.currentSystemCardList()[0] &&
+                model.currentSystemCardList()[0].isLoadout()
+              ) {
                 model.gwoOfferRerolls(false);
               }
               gwoSave(game, false);
@@ -1006,7 +1014,7 @@ function gwoCard() {
 
           if (!model.gwCampaignReplayingAction) {
             model.sendCampaignAction("win_choice", {
-              selectedCardIndex: selectedCardIndex,
+              selected_card_index: selectedCardIndex,
             });
           }
 
