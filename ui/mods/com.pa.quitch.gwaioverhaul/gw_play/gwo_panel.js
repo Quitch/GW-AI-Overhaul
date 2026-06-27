@@ -22,7 +22,7 @@ function gwoWarInfoPanel() {
           ko.applyBindings(model, $fi[0]);
         });
 
-        // War Information
+        /* War Information */
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
         model.gwoVersion = ko.observable("5.87.1");
@@ -113,6 +113,7 @@ function gwoWarInfoPanel() {
           });
         }
 
+        /* Co-op Information */
         const coopText = function (setting) {
           if (setting) {
             return loc("!LOC:Shared");
@@ -136,8 +137,8 @@ function gwoWarInfoPanel() {
           ? loc("!LOC:Locked")
           : loc("!LOC:Unlocked");
 
+        /* Incompatible Mods */
         model.gwoIncompatibleMods = ko.observableArray([]);
-
         api.mods.getMounted("client").then(function (mods) {
           const incompatibleMods = [
             "com.heiz.aurora_arty", // Aurora-Artillery
@@ -170,7 +171,7 @@ function gwoWarInfoPanel() {
           model.gwoIncompatibleMods(incompatibleModNames);
         });
 
-        // Player Information
+        /* Player Information */
         const inventory = game.inventory();
 
         const factions = [
