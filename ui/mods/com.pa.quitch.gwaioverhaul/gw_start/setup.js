@@ -42,6 +42,10 @@ function gwoSetup() {
       }
     });
 
+    // Remove the Separate Loadout feature due to a bug pending base game fix
+    $(".coop-setup-summary > div").eq(3).remove();
+    $(".gw-start-coop-settings-body > div").eq(2).remove();
+
     const randomPercentageAdjustment = function (min, max) {
       return Math.random() * (max - min) + min;
     };

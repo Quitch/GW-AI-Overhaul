@@ -10,6 +10,7 @@ function gwoCoop() {
   gwoCoopLoaded = true;
 
   try {
+    model.gwCampaignPerPlayerTechCards(false);
   } catch (e) {
     console.error(e);
     console.error(JSON.stringify(e));
