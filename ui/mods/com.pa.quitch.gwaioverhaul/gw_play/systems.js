@@ -389,12 +389,6 @@ function gwoSystemChanges() {
             system.mouseOut(0);
           }
 
-          if (system.star.ai() && !system.star.ai().treasurePlanet) {
-            // Assign faction colour, not minion colour, to each system
-            const outerColour = normalizedColor(GWFactions[ai.faction]);
-            system.ownerColor(outerColour.concat(3));
-          }
-
           // Dependencies. These will cause the base code that updates color to rerun
           // so we have to run under the same conditions, and pray we run later than that code.
           system.connected();

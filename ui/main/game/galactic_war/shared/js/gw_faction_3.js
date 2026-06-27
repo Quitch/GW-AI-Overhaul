@@ -25,30 +25,21 @@ define([
     {
       name: "Betadyne",
       character: "!LOC:Space Invader",
-      color: [
-        [255, 204, 204],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.spaceInvader,
       commander: "/pa/units/commanders/raptor_betadyne/raptor_betadyne.json",
     },
     {
       name: "Centurion",
       character: "!LOC:Astronaut",
-      color: [
-        [255, 153, 153],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.astronaut,
       commander: "/pa/units/commanders/raptor_centurion/raptor_centurion.json",
     },
     {
       name: "Diremachine",
       character: "!LOC:Uber",
-      color: [
-        [255, 102, 102],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.uber,
       commander:
         "/pa/units/commanders/raptor_diremachine/raptor_diremachine.json",
@@ -56,30 +47,21 @@ define([
     {
       name: "Iwmiked",
       character: "!LOC:Fabber",
-      color: [
-        [204, 0, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.fabber,
       commander: "/pa/units/commanders/raptor_iwmiked/raptor_iwmiked.json",
     },
     {
       name: "Majuju",
       character: "!LOC:Defender",
-      color: [
-        [153, 0, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.defender,
       commander: "/pa/units/commanders/raptor_majuju/raptor_majuju.json",
     },
     {
       name: "Nefelpitou",
       character: "!LOC:Luddite",
-      color: [
-        [255, 204, 153],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.luddite,
       commander:
         "/pa/units/commanders/raptor_nefelpitou/raptor_nefelpitou.json",
@@ -87,10 +69,7 @@ define([
     {
       name: "Invictus",
       character: "!LOC:Technologist",
-      color: [
-        [255, 178, 102],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.technologist,
       commander:
         "/pa/units/commanders/imperial_invictus/imperial_invictus.json",
@@ -98,20 +77,14 @@ define([
     {
       name: "Rallus",
       character: "!LOC:Cautious",
-      color: [
-        [255, 153, 51],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.cautious,
       commander: "/pa/units/commanders/raptor_rallus/raptor_rallus.json",
     },
     {
       name: "Stickman9000",
       character: "!LOC:Aggressive",
-      color: [
-        [255, 128, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.aggressive,
       commander:
         "/pa/units/commanders/raptor_stickman9000/raptor_stickman9000.json",
@@ -119,70 +92,49 @@ define([
     {
       name: "Zaazzaa",
       character: "!LOC:Rush",
-      color: [
-        [204, 102, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.rush,
       commander: "/pa/units/commanders/raptor_zaazzaa/raptor_zaazzaa.json",
     },
     {
       name: "Aeson",
       character: "!LOC:Turtle",
-      color: [
-        [255, 255, 204],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.turtle,
       commander: "/pa/units/commanders/tank_aeson/tank_aeson.json",
     },
     {
       name: "Banditks",
       character: "!LOC:Original",
-      color: [
-        [255, 255, 153],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.revenantsOriginal,
       commander: "/pa/units/commanders/tank_banditks/tank_banditks.json",
     },
     {
       name: "SPZ58624",
       character: "!LOC:Absurd",
-      color: [
-        [255, 255, 102],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.absurd,
       commander: "/pa/units/commanders/raptor_spz58624/raptor_spz58624.json",
     },
     {
       name: "XOV",
       character: "!LOC:Factory",
-      color: [
-        [255, 255, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.factory,
       commander: "/pa/units/commanders/raptor_xov/raptor_xov.json",
     },
     {
       name: "Reaver",
       character: "!LOC:Swarm",
-      color: [
-        [204, 204, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.swarm,
       commander: "/pa/units/commanders/tank_reaver/tank_reaver.json",
     },
     {
       name: "Sadiga",
       character: "!LOC:Economist",
-      color: [
-        [153, 153, 0],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.economist,
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
@@ -192,10 +144,7 @@ define([
   const randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
-    color: [
-      [255, 0, 0],
-      [192, 192, 192],
-    ],
+    color: factionColour,
     personality: randomMinion.personality,
     commander:
       "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",

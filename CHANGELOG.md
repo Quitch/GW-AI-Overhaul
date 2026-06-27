@@ -8,6 +8,10 @@
 - GWO panel displays your co-op settings when you call for reinforcements
 - Support multiple human players on the GWO panel
 
+### Bugfix
+
+- Systems display faction colours
+
 ## v5.87.1 - 2026-06-26
 
 ### Bugfix
