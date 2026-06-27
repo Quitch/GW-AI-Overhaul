@@ -89,10 +89,7 @@ function gwoWarInfoPanel() {
             requireGW(
               ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
               function (gwoSave) {
-                const game = model.game();
-                const galaxy = game.galaxy();
-                const originSystem = galaxy.stars()[galaxy.origin()].system();
-                const gwoSettings = originSystem.gwaio;
+                const gwoSettings = model.gwoSettings;
                 if (gwoSettings && !gwoSettings.cheatsUsed) {
                   gwoSettings.cheatsUsed = true;
                   options(
