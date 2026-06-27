@@ -113,6 +113,29 @@ function gwoWarInfoPanel() {
           });
         }
 
+        const coopText = function (setting) {
+          if (setting) {
+            return loc("!LOC:Shared");
+          }
+          return loc("!LOC:Separate");
+        };
+
+        const playerCount = model.gwoSettings.coopPlayerScalingCount;
+        const playerOrPlayers =
+          playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
+        model.gwoCoopPlayerScaling = playerCount
+          ? playerCount + " " + playerOrPlayers
+          : loc("!LOC:Unknown");
+        model.gwoCoopArmyControl = ko.observable(
+          coopText(model.gwCampaignSharedControl())
+        );
+        model.gwoCoopTechControl = coopText(
+          model.gwCampaignPerPlayerTechCards()
+        );
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
+          ? loc("!LOC:Locked")
+          : loc("!LOC:Unlocked");
+
         model.gwoIncompatibleMods = ko.observableArray([]);
 
         api.mods.getMounted("client").then(function (mods) {

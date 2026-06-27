@@ -946,6 +946,7 @@ function gwoSetup() {
             originSystem.gwaio.treasurePlanetFixed = true;
             // We don't need to apply the hotfix as it's for v5.22.1 and earlier
             originSystem.gwaio.clusterFixed = true;
+            originSystem.gwaio.coopPlayerScalingCount = playerCount;
           });
 
           const finishSetup = warInfo.then(function () {

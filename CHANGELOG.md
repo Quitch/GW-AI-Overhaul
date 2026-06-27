@@ -5,6 +5,7 @@
 ### Changed
 
 - Disable per-player tech owing to on-going issues pending the next game patch
+- GWO panel displays your co-op settings when you call for reinforcements
 
 ## v5.87.1 - 2026-06-26
 

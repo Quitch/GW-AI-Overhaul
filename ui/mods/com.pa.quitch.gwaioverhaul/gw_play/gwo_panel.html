@@ -59,6 +59,31 @@
       </div>
     </div>
     <!-- /ko -->
+    <h3 id="co-op-settings" data-bind="visible:$root.gwCampaignEnabled()">
+      <loc>Co-Op Settings</loc>
+    </h3>
+    <!-- ko if: $root.gwCampaignEnabled() -->
+    <div class="table">
+      <div class="tablebody">
+        <div class="tr">
+          <div class="td"><loc>Scaling For:</loc></div>
+          <div class="data" data-bind="text: $root.gwoCoopPlayerScaling"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Armies:</loc></div>
+          <div class="data" data-bind="text: $root.gwoCoopArmyControl"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Tech:</loc></div>
+          <div class="data" data-bind="text: $root.gwoCoopTechControl"></div>
+        </div>
+        <div class="tr">
+          <div class="td"><loc>Player Slots:</loc></div>
+          <div class="data" data-bind="text: $root.gwoCoopLockedSlots"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
     <h3
       id="incompatible-mods"
       data-bind="visible:$root.gwoIncompatibleMods().length > 0"
