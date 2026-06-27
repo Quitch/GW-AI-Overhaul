@@ -126,9 +126,9 @@ function gwoWarInfoPanel() {
         model.gwoCoopPlayerScaling = playerCount
           ? playerCount + " " + playerOrPlayers
           : loc("!LOC:Unknown");
-        model.gwoCoopArmyControl = ko.observable(
-          coopText(model.gwCampaignSharedControl())
-        );
+        model.gwoCoopArmyControl = ko.computed(function () {
+          return coopText(model.gwCampaignSharedControl());
+        });
         model.gwoCoopTechControl = coopText(
           model.gwCampaignPerPlayerTechCards()
         );
