@@ -11,6 +11,7 @@
 ### Bugfix
 
 - Systems display faction colours
+- Allies properly identified on the intelligence panel
 
 ## v5.87.1 - 2026-06-26
 
