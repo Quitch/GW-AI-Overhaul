@@ -218,14 +218,37 @@ function gwoWarInfoPanel() {
           };
         };
 
+        var coopCampaign = !!model.gwCampaignActive();
+        model.gwCampaignActive.subscribe(function (active) {
+          coopCampaign = !!active;
+        });
+
         model.gwoPlayer = ko.computed(function () {
-          const commanders = [
+          const playerColour = gwoColour.rgb(
+            inventory.getTag("global", "playerColor")
+          );
+          const character = loc("!LOC:Human");
+          var commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
               character: loc("!LOC:Human"),
             },
           ];
+
+          if (coopCampaign) {
+            commanders = _.map(
+              model.gwCampaignConnectedClients(),
+              function (client) {
+                return {
+                  name: client.name,
+                  color: playerColour,
+                  character: character,
+                };
+              }
+            );
+          }
+
           const subcommanders = inventory.minions();
           _.forEach(subcommanders, function (subcommander, index) {
             commanders.push(intelligence(subcommander, index));
