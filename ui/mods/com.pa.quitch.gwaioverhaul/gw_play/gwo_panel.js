@@ -128,7 +128,7 @@ function gwoWarInfoPanel() {
           return coopText(model.gwCampaignSharedControl());
         });
         model.gwoCoopTechControl = coopText(
-          model.gwCampaignPerPlayerTechCards()
+          !model.gwCampaignPerPlayerTechCards()
         );
         model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
           ? loc("!LOC:Locked")
