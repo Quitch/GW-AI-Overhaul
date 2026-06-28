@@ -13,6 +13,11 @@
 - Systems display faction colours
 - Allies properly identified on the intelligence panel
 
+### Known Issues
+
+- Non-host players cannot reroll tech - pending support in PA for moddable operators
+- Per-player tech is not supported - pending next PA patch which should resolve this
+
 ## v5.87.1 - 2026-06-26
 
 ### Bugfix
