@@ -13,15 +13,6 @@ function gwoWarInfoPanel() {
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
-        const url =
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
-        $.get(url, function (html) {
-          const $fi = $(html);
-          $("#header").append($fi);
-          locTree($("#gwo-panel"));
-          ko.applyBindings(model, $fi[0]);
-        });
-
         /* War Information */
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -118,7 +109,9 @@ function gwoWarInfoPanel() {
           return loc("!LOC:Separate");
         };
 
-        const playerCount = model.gwoSettings.coopPlayerScalingCount;
+        const coopPlayerScalingCount =
+          model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
+        const playerCount = coopPlayerScalingCount || 1;
         const playerOrPlayers =
           playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
         model.gwoCoopPlayerScaling = playerCount
@@ -254,6 +247,15 @@ function gwoWarInfoPanel() {
             commanders.push(intelligence(subcommander, index));
           });
           return commanders;
+        });
+
+        const url =
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
+        $.get(url, function (html) {
+          const $fi = $(html);
+          $("#header").append($fi);
+          locTree($("#gwo-panel"));
+          ko.applyBindings(model, $fi[0]);
         });
       }
     );
