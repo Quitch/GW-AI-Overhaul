@@ -12,7 +12,7 @@ function gwoIntelligence() {
     model.gwoAvailableTechTooltip =
       "This card will be offered as part of the first draw.";
     model.gwoGameModifiersTooltip =
-      "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specifics types must be eradicated.";
+      "BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specific types must be eradicated.";
     model.gwoAIBuffsTooltip =
       "Applied to AI commanders and units preferred by the faction.";
 
