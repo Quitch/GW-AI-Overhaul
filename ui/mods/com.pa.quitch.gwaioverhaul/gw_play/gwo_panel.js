@@ -13,19 +13,10 @@ function gwoWarInfoPanel() {
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
-        const url =
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
-        $.get(url, function (html) {
-          const $fi = $(html);
-          $("#header").append($fi);
-          locTree($("#gwo-panel"));
-          ko.applyBindings(model, $fi[0]);
-        });
-
-        // War Information
+        /* War Information */
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.87.1");
+        model.gwoVersion = ko.observable("5.88.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -89,10 +80,7 @@ function gwoWarInfoPanel() {
             requireGW(
               ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
               function (gwoSave) {
-                const game = model.game();
-                const galaxy = game.galaxy();
-                const originSystem = galaxy.stars()[galaxy.origin()].system();
-                const gwoSettings = originSystem.gwaio;
+                const gwoSettings = model.gwoSettings;
                 if (gwoSettings && !gwoSettings.cheatsUsed) {
                   gwoSettings.cheatsUsed = true;
                   options(
@@ -113,8 +101,34 @@ function gwoWarInfoPanel() {
           });
         }
 
-        model.gwoIncompatibleMods = ko.observableArray([]);
+        /* Co-op Information */
+        const coopText = function (setting) {
+          if (setting) {
+            return loc("!LOC:Shared");
+          }
+          return loc("!LOC:Separate");
+        };
 
+        const coopPlayerScalingCount =
+          model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
+        const playerCount = coopPlayerScalingCount || 1;
+        const playerOrPlayers =
+          playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
+        model.gwoCoopPlayerScaling = playerCount
+          ? playerCount + " " + playerOrPlayers
+          : loc("!LOC:Unknown");
+        model.gwoCoopArmyControl = ko.computed(function () {
+          return coopText(model.gwCampaignSharedControl());
+        });
+        model.gwoCoopTechControl = coopText(
+          !model.gwCampaignPerPlayerTechCards()
+        );
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
+          ? loc("!LOC:Locked")
+          : loc("!LOC:Unlocked");
+
+        /* Incompatible Mods */
+        model.gwoIncompatibleMods = ko.observableArray([]);
         api.mods.getMounted("client").then(function (mods) {
           const incompatibleMods = [
             "com.heiz.aurora_arty", // Aurora-Artillery
@@ -147,7 +161,7 @@ function gwoWarInfoPanel() {
           model.gwoIncompatibleMods(incompatibleModNames);
         });
 
-        // Player Information
+        /* Player Information */
         const inventory = game.inventory();
 
         const factions = [
@@ -197,19 +211,51 @@ function gwoWarInfoPanel() {
           };
         };
 
+        var coopCampaign = !!model.gwCampaignActive();
+        model.gwCampaignActive.subscribe(function (active) {
+          coopCampaign = !!active;
+        });
+
         model.gwoPlayer = ko.computed(function () {
-          const commanders = [
+          const playerColour = gwoColour.rgb(
+            inventory.getTag("global", "playerColor")
+          );
+          const character = loc("!LOC:Human");
+          var commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
               character: loc("!LOC:Human"),
             },
           ];
+
+          if (coopCampaign) {
+            commanders = _.map(
+              model.gwCampaignConnectedClients(),
+              function (client) {
+                return {
+                  name: client.name,
+                  color: playerColour,
+                  character: character,
+                };
+              }
+            );
+          }
+
           const subcommanders = inventory.minions();
           _.forEach(subcommanders, function (subcommander, index) {
             commanders.push(intelligence(subcommander, index));
           });
           return commanders;
+        });
+
+        const url =
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
+        $.get(url, function (html) {
+          const $fi = $(html);
+          $("#header").append($fi);
+          locTree($("#gwo-panel"));
+          ko.applyBindings(model, $fi[0]);
         });
       }
     );

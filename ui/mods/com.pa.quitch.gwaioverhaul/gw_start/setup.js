@@ -42,6 +42,10 @@ function gwoSetup() {
       }
     });
 
+    // Remove the Separate Loadout feature due to a bug pending base game fix
+    $(".coop-setup-summary > div").eq(3).remove();
+    $(".gw-start-coop-settings-body > div").eq(2).remove();
+
     const randomPercentageAdjustment = function (min, max) {
       return Math.random() * (max - min) + min;
     };
@@ -398,7 +402,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.87.1";
+          const version = "5.88.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -942,6 +946,7 @@ function gwoSetup() {
             originSystem.gwaio.treasurePlanetFixed = true;
             // We don't need to apply the hotfix as it's for v5.22.1 and earlier
             originSystem.gwaio.clusterFixed = true;
+            originSystem.gwaio.coopPlayerScalingCount = playerCount;
           });
 
           const finishSetup = warInfo.then(function () {

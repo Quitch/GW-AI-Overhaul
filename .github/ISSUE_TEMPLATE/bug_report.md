@@ -46,7 +46,8 @@ Taken from the top-right GWO panel:
 - Version:
 - Difficulty:
 - Size:
-- AI:
+- Enemy AI:
+- Allied AI:
 - Options:
 
 ## Additional context

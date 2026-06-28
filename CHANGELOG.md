@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v5.88.0 - 2026-06-28
+
+### Changed
+
+- Disable per-player tech owing to on-going issues pending the next game patch
+- GWO panel displays your co-op settings when you call for reinforcements
+- Support multiple human players on the GWO panel
+
+### Bugfix
+
+- Systems display faction colours
+- Allies properly identified on the intelligence panel
+
+### Known Issues
+
+- Non-host players cannot reroll tech - pending support in PA for moddable operators
+- Per-player tech is not supported - pending next PA patch which should resolve this
+
 ## v5.87.1 - 2026-06-26
 
 ### Bugfix
