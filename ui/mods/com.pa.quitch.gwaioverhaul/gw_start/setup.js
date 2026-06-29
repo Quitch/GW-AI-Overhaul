@@ -219,6 +219,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
       ],
       function (
         GW,
@@ -232,67 +233,15 @@ function gwoSetup() {
         gwoBank,
         gwoLore,
         gwoDifficulty,
-        gwoAI
+        gwoAI,
+        loadouts
       ) {
-        if (!model.gwoNewStartCards) {
-          model.gwoNewStartCards = [];
-        }
-        model.gwoNewStartCards.push(
-          { id: "gwaio_start_ceo" },
-          { id: "gwaio_start_paratrooper" },
-          { id: "nem_start_deepspace" },
-          { id: "nem_start_nuke" },
-          { id: "nem_start_planetary" },
-          { id: "nem_start_tower_rush" },
-          { id: "gwaio_start_tourist" },
-          { id: "gwaio_start_rapid" },
-          { id: "tgw_start_speed" },
-          { id: "tgw_start_tank" },
-          { id: "gwaio_start_nomad" },
-          { id: "gwaio_start_backpacker" },
-          { id: "gwaio_start_hoarder" },
-          { id: "gwaio_start_warp" },
-          { id: "gwaio_start_terminal" },
-          { id: "gwaio_start_lucky" }
-        );
-        if (!model.gwoStartingCards) {
-          model.gwoStartingCards = [];
-        }
-        model.gwoStartingCards.push(
-          { id: "gwc_start_vehicle" },
-          { id: "gwc_start_air" },
-          { id: "gwc_start_orbital" },
-          { id: "gwc_start_bot" },
-          { id: "gwaio_start_naval" }
-        );
-        const lockedBaseCards = [
-          { id: "gwc_start_artillery" },
-          { id: "gwc_start_subcdr" },
-          { id: "gwc_start_combatcdr" },
-          { id: "gwc_start_allfactory" },
-          { id: "gwc_start_storage" },
-        ];
-        const allCards = model.gwoStartingCards.concat(
-          lockedBaseCards,
-          model.gwoNewStartCards
-        );
-        const startCards = _.map(allCards, function (cardData) {
-          if (
-            _.includes(model.gwoStartingCards, cardData) ||
-            GW.bank.hasStartCard(cardData) ||
-            gwoBank.hasStartCard(cardData)
-          ) {
-            return model.makeKnown(cardData);
-          } else {
-            return model.makeUnknown(cardData);
-          }
-        });
-        model.startCards(startCards);
-
+        model.startCards(loadouts.startCards);
         const processedStartCards = {};
-        var loadCount = allCards.length;
+        var loadCount = loadouts.allCards.length;
         const loaded = $.Deferred();
-        _.forEach(allCards, function (card) {
+
+        _.forEach(loadouts.allCards, function (card) {
           requireGW(["cards/" + card.id], function (cardFile) {
             cardFile.id = card.id;
             processedStartCards[card.id] = cardFile;
@@ -806,7 +755,7 @@ function gwoSetup() {
             var treasurePlanetSetup = false;
             var loreEntry = 0;
             var optionalLoreEntry = 0;
-            const treasureCards = lockedBaseCards.concat(
+            const treasureCards = loadouts.lockedBaseCards.concat(
               model.gwoNewStartCards
             );
             _.forEach(game.galaxy().stars(), function (star) {
