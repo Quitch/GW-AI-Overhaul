@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Support for per-player tech
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed

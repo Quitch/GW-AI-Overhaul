@@ -55,6 +55,9 @@
     "start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
+    ],
+    "gw_coop_per_player_loadout": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js"
     ]
   },
   "priority": 200,
