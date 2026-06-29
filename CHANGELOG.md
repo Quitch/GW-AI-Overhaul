@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Added subheadings to custom AI settings to make it easier to find them
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed
