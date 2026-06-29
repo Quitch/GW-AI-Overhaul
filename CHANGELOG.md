@@ -6,6 +6,10 @@
 
 - Added subheadings to custom AI settings to make it easier to find them
 
+### Bugfix
+
+- AI settings shows the correct setting for the Beginner and Casual reinforcement system
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed
