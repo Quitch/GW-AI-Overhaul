@@ -7,7 +7,7 @@ const getConnectedPlayerCount = function (options) {
   if (_.isArray(connectedClients) && connectedClients.length)
     return connectedClients.length;
 
-  console.log("[GW COOP] Per-player tech referee has no connected players.");
+  console.error("[GW COOP] Per-player tech referee has no connected players.");
   return 0;
 };
 
@@ -146,7 +146,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const config = referee && _.isFunction(referee.config) && referee.config();
 
     if (!config || !_.isArray(config.armies)) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee received invalid battle config."
       );
       done.resolve(false);
@@ -155,7 +155,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     // No options means no co-op.
     if (!options || !options.active) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee called without co-op options."
       );
       done.resolve(true);
@@ -164,7 +164,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     // Likewise no per-player tech means this referee is out of a job.
     if (!options.perPlayerTechCards) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee called without per-player tech enabled."
       );
       done.resolve(true);
@@ -173,7 +173,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     const playerCount = getConnectedPlayerCount(options);
     if (playerCount < 1) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee has no connected players."
       );
       config.per_player_tech_ready = false;
@@ -186,7 +186,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     const sharedControl = !!options.sharedControl;
     if (sharedControl) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee does not support shared control."
       );
       config.per_player_tech_ready = false;
@@ -197,7 +197,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     const humanArmies = collectHumanArmies(config);
     if (humanArmies.length < 1) {
-      console.log("[GW COOP] Per-player tech referee has no human armies.");
+      console.error("[GW COOP] Per-player tech referee has no human armies.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -205,7 +205,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     }
 
     if (playerCount !== humanArmies.length) {
-      console.log(
+      console.error(
         "[GW COOP] Per-player tech referee has a mismatch between connected players and human armies."
       );
       config.per_player_tech_ready = false;
@@ -217,7 +217,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const files = _.isFunction(referee.files) && referee.files();
 
     if (!files || !_.isObject(files)) {
-      console.log("[GW COOP] Per-player tech referee has no files.");
+      console.error("[GW COOP] Per-player tech referee has no files.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -227,7 +227,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const game = _.isFunction(referee.game) && referee.game();
 
     if (!game) {
-      console.log("[GW COOP] Per-player tech referee has no game.");
+      console.error("[GW COOP] Per-player tech referee has no game.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -237,7 +237,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const inventory = _.isFunction(game.inventory) && game.inventory();
 
     if (!inventory) {
-      console.log("[GW COOP] Per-player tech referee has no inventory.");
+      console.error("[GW COOP] Per-player tech referee has no inventory.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -249,11 +249,8 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       !_.isFunction(inventory.mods) ||
       !_.isFunction(inventory.minions)
     ) {
-      console.log(
-        "[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions."
-      );
-      console.log(
-        "[GW COOP] Per-player tech game inventory is: " +
+      console.error(
+        "[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: " +
           JSON.stringify(inventory)
       );
       config.per_player_tech_ready = false;
@@ -265,7 +262,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const player = config.player;
 
     if (!player || !_.isObject(player)) {
-      console.log("[GW COOP] Per-player tech referee has no player.");
+      console.error("[GW COOP] Per-player tech referee has no player.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -275,7 +272,9 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const playerCommander = player.commander;
 
     if (!playerCommander || !_.isString(playerCommander)) {
-      console.log("[GW COOP] Per-player tech referee has no player commander.");
+      console.error(
+        "[GW COOP] Per-player tech referee has no player commander."
+      );
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -285,7 +284,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     const playerColor = inventory.getTag("global", "playerColor");
 
     if (!_.isArray(playerColor) || playerColor.length < 2) {
-      console.log("[GW COOP] Per-player tech referee has no player color.");
+      console.error("[GW COOP] Per-player tech referee has no player color.");
       config.per_player_tech_ready = false;
       referee.config(config);
       done.resolve(false);
@@ -320,7 +319,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
         game.findCoopPlayerInventoryData(connectedClient);
 
       if (!inventoryDataRecord) {
-        console.log(
+        console.error(
           "[GW COOP] Missing co-op player inventory data for client " +
             JSON.stringify(connectedClient)
         );
@@ -334,7 +333,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
         !_.isString(inventoryDataRecord.commander) ||
         !inventoryDataRecord.inventory
       ) {
-        console.log(
+        console.error(
           "[GW COOP] Invalid co-op player inventory data for client " +
             JSON.stringify(connectedClient)
         );
@@ -350,7 +349,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
         !_.isFunction(loadedInventory.mods) ||
         !_.isFunction(loadedInventory.minions)
       ) {
-        console.log(
+        console.error(
           "[GW COOP] Invalid co-op player inventory for client " +
             JSON.stringify(connectedClient)
         );
@@ -381,16 +380,12 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       const thisPlayersFiles = Array.prototype.slice.call(arguments);
       const generatedFiles = {};
 
-      console.log("[GW COOP] Generating player-specific files.");
-
       // Arguments is an array of the resolved values from the promises.
       for (var element of thisPlayersFiles) {
         _.assign(generatedFiles, element);
       }
 
       const mergedFiles = _.assign({}, files, generatedFiles);
-
-      console.log("[GW COOP] Merged " + _.keys(mergedFiles).length + " files.");
 
       referee.files(mergedFiles);
       config.files = mergedFiles;
@@ -439,9 +434,6 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
       config.per_player_tech_ready = true;
       config.per_player_tech_tags = playerTags;
-      console.log(
-        "[GW COOP] Per-player tech tags: " + JSON.stringify(playerTags)
-      );
       referee.config(config);
       done.resolve(true);
     });
