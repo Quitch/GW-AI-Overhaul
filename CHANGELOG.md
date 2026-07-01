@@ -9,6 +9,7 @@
 ### Bugfix
 
 - AI settings shows the correct setting for the Beginner and Casual reinforcement system
+- Protocol Blindness no longer removes radar from any unit
 
 ## v5.88.0 - 2026-06-28
 
