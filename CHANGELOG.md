@@ -6,6 +6,10 @@
 
 - Support for per-player tech
 
+### Bugfix
+
+- Show "Host Choosing Tech" for viewers when playing with shared tech and the host is exploring a system
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed
