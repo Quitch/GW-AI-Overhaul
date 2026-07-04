@@ -112,7 +112,7 @@ function gwoCard() {
       }
       star.cardList([]);
       game.turnState("begin");
-      model.explore();
+      model.explore(true);
     };
 
     const setupTechRerolls = function () {
@@ -947,12 +947,15 @@ function gwoCard() {
         /* Cheat code end */
 
         // gw_play self.explore - call our chooseCards()
-        model.explore = function () {
+        model.explore = function (force) {
           if (
             !game ||
             !game.explore() ||
             (model.isCampaignViewer() && !model.gwCampaignReplayingAction) ||
-            model.gwCampaignPlayerSetupBlocked()
+            // For normal player-triggered exploration, block if co-op players
+            // are still selecting loadouts or pending tech cards. For a host
+            // reroll, force the correct deal path even while that state is set.
+            (!force && model.gwCampaignPlayerSetupBlocked())
           ) {
             return;
           }
