@@ -12,6 +12,10 @@
 - Protocol Blindness no longer removes radar from any unit
 - Galactic War replaced with Galactic War Overhaul on the new main menu
 
+### Known Issues
+
+- Cluster have two different system colours
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed
