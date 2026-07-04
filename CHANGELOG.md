@@ -10,6 +10,14 @@
 
 - Show "Host Choosing Tech" for viewers when playing with shared tech and the host is exploring a system
 
+### Known Issues
+
+- The loadout and subcommanders on the GWO panel will always be those of the host player
+- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+- Some allied AIs may not use the selected ally AI brain
+- Guardians will only mirror the host's tech
+- Lucky Commander only works for the host player
+
 ## v5.88.0 - 2026-06-28
 
 ### Changed
