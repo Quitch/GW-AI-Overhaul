@@ -171,3 +171,4 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod
 - Tristan, who created the casual, iron, and diamond icons
 - tatapstar for the mod's icon
+- Diruslupus, for their invaluable assistance in getting co-op support implemented
