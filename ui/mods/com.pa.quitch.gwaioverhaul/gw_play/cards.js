@@ -31,8 +31,7 @@ function gwoCard() {
       "gwaio_start_hoarder",
     ];
 
-    const isLuckyCommander = game.inventory().hasCard("gwaio_start_lucky");
-    const numCardsToOffer = isLuckyCommander ? 4 : 3;
+    const numCardsToOffer = 3;
 
     const cardsOfferedCount = function (offer, techInventory) {
       var cardsToOffer = offer;
@@ -42,6 +41,14 @@ function gwoCard() {
         inventoryToCheck &&
         _.isFunction(inventoryToCheck.handIsFull) &&
         inventoryToCheck.handIsFull()
+      ) {
+        cardsToOffer++;
+      }
+
+      if (
+        inventoryToCheck &&
+        _.isFunction(inventoryToCheck.hasCard) &&
+        inventoryToCheck.hasCard("gwaio_start_lucky")
       ) {
         cardsToOffer++;
       }
