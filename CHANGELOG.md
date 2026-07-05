@@ -12,7 +12,6 @@
 
 ### Known Issues
 
-- The subcommanders on the GWO panel will always be those of the host player
 - Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
 - Some allied AIs may not use the selected ally AI brain
 - Guardians will only mirror the host's tech
