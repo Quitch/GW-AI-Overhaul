@@ -460,6 +460,251 @@ function gwoCard() {
           return result;
         };
 
+        const isStartLoadoutCardId = function (cardId) {
+          return _.isString(cardId) && _.includes(cardId, "_start_");
+        };
+
+        const buildPendingStartLoadoutCard = function (card) {
+          const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
+          if (
+            result &&
+            isStartLoadoutCardId(result.id) &&
+            _.isUndefined(result.allowOverflow)
+          ) {
+            result.allowOverflow = true;
+          }
+
+          return result;
+        };
+
+        // GWO override of the host-side co-op pending tech deal path.
+        //
+        // In stock gw_play.js, the host always deals exactly 3 cards to viewers
+        // when creating pending tech cards. That base implementation does not
+        // account for GWO-specific bonus card rules such as:
+        //   - extra offer when the player has a full hand
+        //   - extra offer when the player has `gwaio_start_lucky`
+        //
+        // We implement this here as `model.dealCoopPlayerPendingTechCards`
+        // so the mod-local version takes precedence over the stock `self`
+        // implementation and keeps all special offering logic inside the mod.
+        model.dealCoopPlayerPendingTechCards = function (
+          starIndex,
+          star,
+          options
+        ) {
+          const result = $.Deferred();
+          const dealOptions = options || {};
+          const startLoadoutCards = filterStartLoadoutCards(
+            dealOptions.startLoadoutCards
+          );
+
+          if (
+            !model.gwCampaignActive() ||
+            !model.isCampaignHost() ||
+            !model.gwCampaignPerPlayerTechCards()
+          ) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          const connectedClients = _.isArray(model.gwCampaignConnectedClients())
+            ? model.gwCampaignConnectedClients()
+            : [];
+          const sourceClients = _.isArray(dealOptions.clients)
+            ? dealOptions.clients
+            : connectedClients;
+          const viewers = _.filter(sourceClients, function (client) {
+            return client && client.role === "viewer";
+          });
+
+          if (!viewers.length) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          const updates = [];
+          const jobs = [];
+          const targets = [];
+          var validationError;
+
+          _.forEach(viewers, function (client) {
+            if (validationError) {
+              return;
+            }
+
+            const record = game.findCoopPlayerInventoryData({
+              id: client.id,
+              name: client.name,
+            });
+            if (!record) {
+              validationError =
+                "Missing inventory data for pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            if (!record.inventory) {
+              validationError =
+                "Missing saved inventory for pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            if (record.pendingTechCards) {
+              validationError =
+                "Client already has pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            const dealIndex = dealOptions.dealIndex;
+            if (
+              _.isNumber(dealIndex) &&
+              model.getCoopPlayerTechCardDealCount(record) >= dealIndex
+            ) {
+              return;
+            }
+
+            var startLoadoutCard;
+            if (startLoadoutCards.length) {
+              if (!_.isArray(record.unlockedStartCardIds)) {
+                console.log(
+                  "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
+                    client.id +
+                    " name=" +
+                    client.name
+                );
+              }
+
+              startLoadoutCard = _.find(startLoadoutCards, function (card) {
+                return !model.recordHasUnlockedStartCard(record, card);
+              });
+            }
+
+            targets.push({
+              client: client,
+              record: record,
+              dealIndex: dealIndex,
+              startLoadoutCard: startLoadoutCard,
+            });
+          });
+
+          if (validationError) {
+            result.reject(validationError);
+            return result.promise();
+          }
+
+          if (!targets.length) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          _.forEach(targets, function (target) {
+            const client = target.client;
+            const record = target.record;
+            const job = $.Deferred();
+            jobs.push(job.promise());
+
+            if (target.startLoadoutCard) {
+              updates.push({
+                client_id: client.id,
+                client_name: client.name,
+                pendingTechCards: {
+                  star: starIndex,
+                  cards: [
+                    buildPendingStartLoadoutCard(target.startLoadoutCard),
+                  ],
+                  dealIndex: target.dealIndex,
+                  updatedAt: _.now(),
+                },
+              });
+              job.resolve();
+              return;
+            }
+
+            const inventory = new GWInventory();
+            inventory.load(_.cloneDeep(record.inventory));
+
+            const dealCards = function () {
+              const cardsOffered = cardsOfferedCount(
+                numCardsToOffer,
+                inventory
+              );
+              chooseCards({
+                inventory: inventory,
+                count: cardsOffered,
+                star: star,
+              }).then(function (cards) {
+                const pendingTechCards = {
+                  star: starIndex,
+                  cards: cards || [],
+                  dealIndex: target.dealIndex,
+                  cardsOffered: cardsOffered,
+                  updatedAt: _.now(),
+                };
+                updates.push({
+                  client_id: client.id,
+                  client_name: client.name,
+                  pendingTechCards: pendingTechCards,
+                });
+                job.resolve();
+              });
+            };
+
+            if (inventory.cards().length) {
+              inventory.applyCards(dealCards);
+            } else {
+              dealCards();
+            }
+          });
+
+          $.when.apply($, jobs).then(function () {
+            if (!updates.length) {
+              result.resolve([]);
+              return;
+            }
+
+            const payload = {
+              players: updates,
+              host_tech_card_deal_count: game.hostTechCardDealCount(),
+              host_tech_card_deal_history: game.hostTechCardDealHistory(),
+            };
+
+            if (_.isFunction(model.send_message)) {
+              model.send_message(
+                "set_player_pending_tech_cards",
+                payload,
+                function (success, response) {
+                  if (!success) {
+                    result.reject(
+                      "set_player_pending_tech_cards failed response=" +
+                        JSON.stringify(response || {})
+                    );
+                    return;
+                  }
+
+                  result.resolve(updates);
+                }
+              );
+            } else {
+              model.sendCampaignAction(
+                "set_player_pending_tech_cards",
+                payload
+              );
+              result.resolve(updates);
+            }
+          });
+
+          return result.promise();
+        };
+
         const rerollPendingTechRequest = "gwo_reroll_pending_tech";
         const rerollPendingTechResult = "gwo_reroll_pending_tech_result";
 
@@ -968,7 +1213,7 @@ function gwoCard() {
 
           api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-          var cardsOffered = cardsOfferedCount(numCardsToOffer);
+          var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
           const star = game.galaxy().stars()[game.currentStar()];
           const startLoadoutCards = filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
