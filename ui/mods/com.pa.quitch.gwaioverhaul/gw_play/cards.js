@@ -1192,7 +1192,7 @@ function gwoCard() {
             // For normal player-triggered exploration, block if co-op players
             // are still selecting loadouts or pending tech cards. For a host
             // reroll, force the correct deal path even while that state is set.
-            (!force && model.gwCampaignPlayerSetupBlocked())
+            (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked())
           ) {
             return;
           }
@@ -1243,6 +1243,7 @@ function gwoCard() {
             var dealEntry;
 
             if (
+              force !== true &&
               (ok || startLoadoutCards.length) &&
               _.isArray(star.cardList()) &&
               star.cardList().length &&
