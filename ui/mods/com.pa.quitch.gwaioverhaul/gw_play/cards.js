@@ -569,7 +569,7 @@ function gwoCard() {
             var startLoadoutCard;
             if (startLoadoutCards.length) {
               if (!_.isArray(record.unlockedStartCardIds)) {
-                console.log(
+                console.error(
                   "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
                     client.id +
                     " name=" +
