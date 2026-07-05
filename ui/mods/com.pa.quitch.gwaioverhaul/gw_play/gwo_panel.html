@@ -103,7 +103,10 @@
     </div>
     <!-- /ko -->
     <h3 data-bind="text: $root.gwoFactionName"></h3>
-    <div class="td" data-bind="text: $root.gwoLoadout"></div>
+    <div
+      class="td"
+      data-bind="visible: !$root.gwCampaignPerPlayerTechCards(), text: $root.gwoLoadout"
+    ></div>
     <ul data-bind="foreach: $root.gwoPlayer">
       <li class="commander">
         <div class="div-player-icon">

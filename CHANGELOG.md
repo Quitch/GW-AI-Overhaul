@@ -2,12 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Support for per-player tech
+
 ### Changed
 
 - Added subheadings to custom AI settings to make it easier to find them
 
 ### Bugfix
 
+- Show "Host Choosing Tech" for viewers when playing with shared tech and the host is exploring a system
 - AI settings shows the correct setting for the Beginner and Casual reinforcement system
 - Protocol Blindness no longer removes radar from any unit
 - Galactic War replaced with Galactic War Overhaul on the new main menu
@@ -15,6 +20,11 @@
 ### Known Issues
 
 - Cluster have two different system colours
+- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+- Some allied AIs may not use the selected ally AI brain
+- Guardians will only mirror the host's tech
+- General Commander temporarily removed from selection for viewers
+- Viewers cannot freely delete cards
 
 ## v5.88.0 - 2026-06-28
 

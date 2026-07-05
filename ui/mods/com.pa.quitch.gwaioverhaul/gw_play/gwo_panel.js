@@ -242,7 +242,26 @@ function gwoWarInfoPanel() {
             );
           }
 
-          const subcommanders = inventory.minions();
+          const coopInventoryData =
+            game.coopPlayerInventoryData &&
+            _.isFunction(game.coopPlayerInventoryData)
+              ? game.coopPlayerInventoryData()
+              : [];
+          var mergedSubcommanders = [];
+
+          _.forEach(coopInventoryData, function (inventoryData) {
+            const inventoryEntry = inventoryData && inventoryData.inventory;
+            if (inventoryEntry && _.isArray(inventoryEntry.minions)) {
+              mergedSubcommanders = mergedSubcommanders.concat(
+                inventoryEntry.minions
+              );
+            }
+          });
+
+          const subcommanders = mergedSubcommanders.length
+            ? mergedSubcommanders
+            : inventory.minions();
+
           _.forEach(subcommanders, function (subcommander, index) {
             commanders.push(intelligence(subcommander, index));
           });
