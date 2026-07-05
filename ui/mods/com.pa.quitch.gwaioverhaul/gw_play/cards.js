@@ -307,10 +307,6 @@ function gwoCard() {
       return deferred.promise();
     };
 
-    const isCardLoadout = function (card) {
-      return _.includes(card.id, "_start_");
-    };
-
     const testCardForMatches = function (inventory, card) {
       model.currentSystemCardList().push(card);
 
@@ -334,10 +330,27 @@ function gwoCard() {
       return product;
     };
 
+    const isStartLoadoutCardId = function (cardId) {
+      return _.isString(cardId) && _.includes(cardId, "_start_");
+    };
+
     const filterStartLoadoutCards = function (cards) {
       return _.filter(cards || [], function (card) {
-        return isCardLoadout(card);
+        return isStartLoadoutCardId(card.id);
       });
+    };
+
+    const buildPendingStartLoadoutCard = function (card) {
+      const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
+      if (
+        result &&
+        isStartLoadoutCardId(result.id) &&
+        _.isUndefined(result.allowOverflow)
+      ) {
+        result.allowOverflow = true;
+      }
+
+      return result;
     };
 
     requireGW(
@@ -457,23 +470,6 @@ function gwoCard() {
 
             result.resolve(list);
           });
-          return result;
-        };
-
-        const isStartLoadoutCardId = function (cardId) {
-          return _.isString(cardId) && _.includes(cardId, "_start_");
-        };
-
-        const buildPendingStartLoadoutCard = function (card) {
-          const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
-          if (
-            result &&
-            isStartLoadoutCardId(result.id) &&
-            _.isUndefined(result.allowOverflow)
-          ) {
-            result.allowOverflow = true;
-          }
-
           return result;
         };
 
@@ -943,7 +939,7 @@ function gwoCard() {
               const loadoutPresent =
                 treasurePlanet &&
                 !_.isEmpty(system.star.cardList()) &&
-                isCardLoadout(system.star.cardList()[0]);
+                isStartLoadoutCardId(system.star.cardList()[0].id);
               const validForDeal =
                 gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
