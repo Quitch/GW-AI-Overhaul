@@ -17,6 +17,7 @@
 - Some allied AIs may not use the selected ally AI brain
 - Guardians will only mirror the host's tech
 - General Commander temporarily removed from selection for viewers
+- Viewers cannot freely delete cards
 
 ## v5.88.0 - 2026-06-28
 
