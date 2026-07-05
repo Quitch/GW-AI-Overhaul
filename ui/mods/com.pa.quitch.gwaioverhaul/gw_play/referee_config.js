@@ -164,11 +164,28 @@ const setupAiTags = function (ai) {
   return aiTag;
 };
 
-const modifyPlanets = function (inventory, planets) {
-  const canGlassPlanets = inventory.hasCard("gwaio_enable_orbitalbombardment");
+const checkInventoriesForCard = function (inventory, cardId, game) {
+  const coopPlayerInventoryData =
+    game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
+      ? game.coopPlayerInventoryData()
+      : [];
+  return (
+    inventory.hasCard(cardId) ||
+    _.some(coopPlayerInventoryData, function (data) {
+      return _.some(data.inventory.cards, { id: cardId });
+    })
+  );
+};
+
+const modifyPlanets = function (inventory, planets, game) {
+  const canGlassPlanets = checkInventoriesForCard(
+    inventory,
+    "gwaio_enable_orbitalbombardment",
+    game
+  );
   const canFloodPlanets =
-    inventory.hasCard("gwaio_enable_tsunami") ||
-    inventory.hasCard("gwaio_start_naval");
+    checkInventoriesForCard(inventory, "gwaio_enable_tsunami", game) ||
+    checkInventoriesForCard(inventory, "gwaio_start_naval", game);
 
   if (canGlassPlanets) {
     planets = glassPlanets(planets);
@@ -321,7 +338,7 @@ define([
     );
     setupPrimaryAiAndMinions(ai, cards, aiTag, aiInUse, armies);
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
-    system.planets = modifyPlanets(inventory, system.planets);
+    system.planets = modifyPlanets(inventory, system.planets, game);
 
     const config = {
       files: self.files(),

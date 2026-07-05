@@ -7,6 +7,7 @@
 - Don't deal Sub Commander Fabber Tech when Queller is the allied AI
 - Cluster use the same colour for all systems
 - Guardians use the tech of all players
+- Planet modifying tech is used no matter which player holds it
 
 ## v5.89.0 - 2026-07-05
 
