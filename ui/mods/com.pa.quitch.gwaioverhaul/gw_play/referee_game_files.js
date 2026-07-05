@@ -42,6 +42,22 @@ const orderOfOperations = function (mods) {
   return orderedMods;
 };
 
+const guardianMods = function (game, mods) {
+  const perPlayerLoadouts =
+    game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData);
+
+  if (perPlayerLoadouts) {
+    var playerMods = [];
+    _.forEach(game.coopPlayerInventoryData(), function (playerData) {
+      playerMods = playerMods.concat(playerData.inventory.mods);
+    });
+
+    return playerMods;
+  }
+
+  return mods;
+};
+
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
@@ -364,7 +380,9 @@ define([
                       : ai.foes[currentCount - 1].inventory;
                   const guardians = ai.mirrorMode;
                   if (guardians) {
-                    aiInventory = aiInventory.concat(inventory.mods());
+                    aiInventory = aiInventory.concat(
+                      guardianMods(game, inventory.mods)
+                    );
                   }
                   modSpecs(aiFiles, aiInventory, aiTag[n]);
                 }

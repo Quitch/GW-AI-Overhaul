@@ -144,7 +144,6 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server Multi-Threading to OFF.
 - Only the host will be able to use techs which modify subcommanders
 - Some allied AIs may not use the selected ally AI brain
-- Guardians will only mirror the host's tech
 - General Commander temporarily removed from selection for viewers
 - Viewers cannot freely delete cards
 
