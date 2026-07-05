@@ -4,8 +4,9 @@ const armyHasAI = function (army) {
 
 const getConnectedPlayerCount = function (options) {
   const connectedClients = options && options.connectedClients;
-  if (_.isArray(connectedClients) && connectedClients.length)
+  if (_.isArray(connectedClients) && connectedClients.length) {
     return connectedClients.length;
+  }
 
   console.error("[GW COOP] Per-player tech referee has no connected players.");
   return 0;
@@ -15,7 +16,9 @@ const collectHumanArmies = function (config) {
   const humanArmies = [];
 
   _.forEach(config.armies, function (army) {
-    if (!armyHasAI(army)) humanArmies.push(army);
+    if (!armyHasAI(army)) {
+      humanArmies.push(army);
+    }
   });
 
   return humanArmies;
@@ -35,13 +38,18 @@ const stringEndsWith = function (value, suffix) {
 };
 
 const stripKnownSpecTag = function (value) {
-  if (!_.isString(value)) return value;
+  if (!_.isString(value)) {
+    return value;
+  }
 
-  if (stringEndsWith(value, ".player"))
+  if (stringEndsWith(value, ".player")) {
     return value.slice(0, -".player".length);
+  }
 
   const match = value.match(/\.player\d+$/);
-  if (match) return value.slice(0, -match[0].length);
+  if (match) {
+    return value.slice(0, -match[0].length);
+  }
 
   return value;
 };
