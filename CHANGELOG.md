@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Don't deal Sub Commander Fabber Tech when Queller is the allied AI
+- Cluster use the same colour for all systems
 
 ## v5.89.0 - 2026-07-05
 

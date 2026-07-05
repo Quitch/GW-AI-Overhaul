@@ -45,7 +45,7 @@ define([
       name: workerName,
       character: uber,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.uber,
@@ -55,7 +55,7 @@ define([
       name: workerName,
       character: fabber,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.fabber,
@@ -65,7 +65,7 @@ define([
       name: workerName,
       character: defender,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.defender,
@@ -75,7 +75,7 @@ define([
       name: workerName,
       character: luddite,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.luddite,
@@ -85,7 +85,7 @@ define([
       name: workerName,
       character: technologist,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.technologist,
@@ -95,7 +95,7 @@ define([
       name: workerName,
       character: cautious,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.cautious,
@@ -105,7 +105,7 @@ define([
       name: workerName,
       character: aggressive,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.aggressive,
@@ -115,7 +115,7 @@ define([
       name: workerName,
       character: rush,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.rush,
@@ -125,7 +125,7 @@ define([
       name: workerName,
       character: turtle,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.turtle,
@@ -135,7 +135,7 @@ define([
       name: workerName,
       character: absurd,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.absurd,
@@ -145,7 +145,7 @@ define([
       name: workerName,
       character: factory,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.factory,
@@ -155,7 +155,7 @@ define([
       name: workerName,
       character: swarm,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.swarm,
@@ -165,7 +165,7 @@ define([
       name: workerName,
       character: economist,
       color: [
-        [142, 107, 68],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.economist,
@@ -175,7 +175,7 @@ define([
       name: securityName,
       character: uber,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.uber,
@@ -185,7 +185,7 @@ define([
       name: securityName,
       character: fabber,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.fabber,
@@ -195,7 +195,7 @@ define([
       name: securityName,
       character: defender,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.defender,
@@ -205,7 +205,7 @@ define([
       name: securityName,
       character: luddite,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.luddite,
@@ -215,7 +215,7 @@ define([
       name: securityName,
       character: technologist,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.technologist,
@@ -225,7 +225,7 @@ define([
       name: securityName,
       character: cautious,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.cautious,
@@ -235,7 +235,7 @@ define([
       name: securityName,
       character: aggressive,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.aggressive,
@@ -245,7 +245,7 @@ define([
       name: securityName,
       character: rush,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.rush,
@@ -255,7 +255,7 @@ define([
       name: securityName,
       character: turtle,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.turtle,
@@ -265,7 +265,7 @@ define([
       name: securityName,
       character: absurd,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.absurd,
@@ -275,7 +275,7 @@ define([
       name: securityName,
       character: factory,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.factory,
@@ -285,7 +285,7 @@ define([
       name: securityName,
       character: swarm,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.swarm,
@@ -295,7 +295,7 @@ define([
       name: securityName,
       character: economist,
       color: [
-        [70, 70, 70],
+        [128, 128, 128],
         [192, 192, 192],
       ],
       personality: personalities.economist,
@@ -310,7 +310,7 @@ define([
     name: workerName,
     character: "!LOC:Random",
     color: [
-      [142, 107, 68],
+      [128, 128, 128],
       [192, 192, 192],
     ],
     personality: randomWorkerPersonality,

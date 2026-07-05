@@ -109,8 +109,10 @@ define({
     ];
     const clusterColours = [
       [128, 128, 128],
+      [142, 107, 68],
       [166, 166, 166],
       [90, 90, 90],
+      [70, 70, 70],
     ];
     const factions = [
       legonisColours,
