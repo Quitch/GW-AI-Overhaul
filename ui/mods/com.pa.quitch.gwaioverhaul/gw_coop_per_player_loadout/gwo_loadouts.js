@@ -15,10 +15,16 @@ function gwoLoadouts() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
       ],
       function (loadouts, GWInventory, gwoDeal) {
-        model.startCards(loadouts.startCards);
+        // "Temporarily" until the dealing of its minions is fixed
+        const removeGeneralCommander = function (cards) {
+          return _.reject(cards, function (card) {
+            return card.id() === "gwc_start_subcdr";
+          });
+        };
+        const startCards = removeGeneralCommander(loadouts.startCards);
 
+        model.startCards(startCards);
         model.gwoCards = gwoDeal.setupGwoCards();
-        console.debug("GWO cards loaded:", model.gwoCards);
 
         const cards = [];
         const deck = [];

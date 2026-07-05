@@ -16,7 +16,7 @@
 - Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
 - Some allied AIs may not use the selected ally AI brain
 - Guardians will only mirror the host's tech
-- General Commander does not create minion cards for viewers
+- General Commander temporarily removed from selection for viewers
 
 ## v5.88.0 - 2026-06-28
 
