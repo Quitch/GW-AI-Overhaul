@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Don't deal Sub Commander Fabber Tech when Queller is the allied AI
+
 ## v5.89.0 - 2026-07-05
 
 ### Added
