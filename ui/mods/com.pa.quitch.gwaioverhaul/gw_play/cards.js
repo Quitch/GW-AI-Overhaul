@@ -481,13 +481,7 @@ function gwoCard() {
         //
         // In stock gw_play.js, the host always deals exactly 3 cards to viewers
         // when creating pending tech cards. That base implementation does not
-        // account for GWO-specific bonus card rules such as:
-        //   - extra offer when the player has a full hand
-        //   - extra offer when the player has `gwaio_start_lucky`
-        //
-        // We implement this here as `model.dealCoopPlayerPendingTechCards`
-        // so the mod-local version takes precedence over the stock `self`
-        // implementation and keeps all special offering logic inside the mod.
+        // account for GWO-specific bonus card rules
         model.dealCoopPlayerPendingTechCards = function (
           starIndex,
           star,
@@ -1032,11 +1026,9 @@ function gwoCard() {
         };
         dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
-        /* Cheat code start */
-
-        // Cheats use our deck
-
         /* end of GWO implementation of GWDealer */
+
+        /* Cheat code start */
 
         const testMinions = function (product, inventory) {
           _.forEach(GWFactions, function (faction) {
