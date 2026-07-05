@@ -361,7 +361,6 @@ define([
     };
 
     _.forEach(config.armies, function (army) {
-      // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function (slot) {
         if (slot.ai) {
           if (army.alliance_group === 1) {
