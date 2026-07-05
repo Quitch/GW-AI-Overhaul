@@ -142,8 +142,12 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 ### Known issues
 
 - Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server Multi-Threading to OFF.
-- Non-host players cannot reroll tech - pending support in PA for moddable operators
-- Per-player tech is not supported - pending next PA patch which should resolve this
+- Cluster have two different system colours
+- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
+- Some allied AIs may not use the selected ally AI brain
+- Guardians will only mirror the host's tech
+- General Commander temporarily removed from selection for viewers
+- Viewers cannot freely delete cards
 
 ## Recommended mods
 
@@ -171,3 +175,4 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - trialq, whose discontinued Galactic War Loadouts mod has been partially included in this mod
 - Tristan, who created the casual, iron, and diamond icons
 - tatapstar for the mod's icon
+- Diruslupus, for their invaluable assistance in getting co-op support implemented

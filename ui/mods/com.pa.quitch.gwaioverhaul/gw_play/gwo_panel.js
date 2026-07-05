@@ -16,7 +16,7 @@ function gwoWarInfoPanel() {
         /* War Information */
         const galaxy = game.galaxy();
         const originSystem = galaxy.stars()[galaxy.origin()].system();
-        model.gwoVersion = ko.observable("5.88.0");
+        model.gwoVersion = ko.observable("5.89.0");
         model.gwoSettings = originSystem.gwaio;
 
         if (model.gwoSettings) {
@@ -242,7 +242,26 @@ function gwoWarInfoPanel() {
             );
           }
 
-          const subcommanders = inventory.minions();
+          const coopInventoryData =
+            game.coopPlayerInventoryData &&
+            _.isFunction(game.coopPlayerInventoryData)
+              ? game.coopPlayerInventoryData()
+              : [];
+          var mergedSubcommanders = [];
+
+          _.forEach(coopInventoryData, function (inventoryData) {
+            const inventoryEntry = inventoryData && inventoryData.inventory;
+            if (inventoryEntry && _.isArray(inventoryEntry.minions)) {
+              mergedSubcommanders = mergedSubcommanders.concat(
+                inventoryEntry.minions
+              );
+            }
+          });
+
+          const subcommanders = mergedSubcommanders.length
+            ? mergedSubcommanders
+            : inventory.minions();
+
           _.forEach(subcommanders, function (subcommander, index) {
             commanders.push(intelligence(subcommander, index));
           });

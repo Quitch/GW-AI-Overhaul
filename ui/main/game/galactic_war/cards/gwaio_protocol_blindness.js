@@ -45,36 +45,72 @@ define([
       function (unit) {
         return _.includes(
           [
+            gwoUnit.antiNukeLauncher,
+            gwoUnit.arkyd,
             gwoUnit.commander,
-            gwoUnit.skitter,
-            gwoUnit.hermes,
             gwoUnit.firefly,
+            gwoUnit.hermes,
+            gwoUnit.manhattan,
+            gwoUnit.nyx,
+            // gwoUnit.planetaryRadar - uses slot 2+ for radar vision
             gwoUnit.radar,
             gwoUnit.radarAdvanced,
-            gwoUnit.nyx,
             gwoUnit.radarSatelliteAdvanced,
-            gwoUnit.arkyd,
-            gwoUnit.stingray,
+            gwoUnit.skitter,
+            // gwoUnit.stingray - uses slot 2+ for radar vision
+            gwoUnit.torpedoLauncher,
+            gwoUnit.torpedoLauncherAdvanced,
+            gwoUnit.ward,
           ],
           unit
         );
       }
     );
+    const radarsWithRadarVisionInSlot0 = [
+      gwoUnit.arkyd,
+      gwoUnit.radarSatelliteAdvanced,
+    ];
+    const radarsWithRadarVisionInSlot1 = [
+      gwoUnit.antiNukeLauncher,
+      gwoUnit.manhattan,
+      gwoUnit.nyx,
+      gwoUnit.radar,
+      gwoUnit.radarAdvanced,
+      gwoUnit.torpedoLauncher,
+      gwoUnit.torpedoLauncherAdvanced,
+      gwoUnit.ward,
+    ];
     _.forEach(unitsExcludingRadarScoutsCommanders, function (unit) {
       mods.push(
         {
           file: unit,
           path: "recon.observer.items.0.radius",
-          op: "replace",
+          op: "multiply", // can't use replace due to Planetary Radar using it - potential timing issue
           value: 0,
         },
         {
           file: unit,
           path: "recon.observer.items.1.radius",
-          op: "replace",
+          op: "multiply", // can't use replace due to Planetary Radar using it - potential timing issue
           value: 0,
         }
       );
+    });
+    _.forEach(radarsWithRadarVisionInSlot1, function (unit) {
+      mods.push({
+        file: unit,
+        path: "recon.observer.items.0.radius",
+        op: "replace",
+        value: 0,
+      });
+    });
+    _.forEach(radarsWithRadarVisionInSlot0, function (unit) {
+      mods.push({
+        file: unit,
+        path: "recon.observer.items.1.radius",
+        op: "replace",
+        value: 0,
+      });
     });
     // unit specific fixes required to accommodate the range
     mods.push(

@@ -31,21 +31,76 @@ function gwoCard() {
       "gwaio_start_hoarder",
     ];
 
-    const isLuckyCommander = game.inventory().hasCard("gwaio_start_lucky");
-    const numCardsToOffer = isLuckyCommander ? 4 : 3;
+    const numCardsToOffer = 3;
 
-    const cardsOfferedCount = function (offer) {
+    const cardsOfferedCount = function (offer, techInventory) {
       var cardsToOffer = offer;
+      const inventoryToCheck = techInventory || game.inventory();
 
-      if (game.inventory().handIsFull()) {
+      if (
+        inventoryToCheck &&
+        _.isFunction(inventoryToCheck.handIsFull) &&
+        inventoryToCheck.handIsFull()
+      ) {
+        cardsToOffer++;
+      }
+
+      if (
+        inventoryToCheck &&
+        _.isFunction(inventoryToCheck.hasCard) &&
+        inventoryToCheck.hasCard("gwaio_start_lucky")
+      ) {
         cardsToOffer++;
       }
 
       return cardsToOffer;
     };
 
+    const currentCoopPendingTechCards = function () {
+      if (
+        model.currentCoopPendingTechCards &&
+        model.canChooseCoopTechCards &&
+        model.canChooseCoopTechCards()
+      ) {
+        return model.currentCoopPendingTechCards();
+      }
+
+      return undefined;
+    };
+
+    const pendingCardsContainLoadout = function (pendingTechCards) {
+      return !!(
+        pendingTechCards &&
+        _.isArray(pendingTechCards.cards) &&
+        pendingTechCards.cards.length &&
+        _.includes(pendingTechCards.cards[0].id, "_start_")
+      );
+    };
+
     model.rerollTech = function () {
-      if (model.canChooseCoopTechCards && model.canChooseCoopTechCards()) {
+      const pendingTechCards = currentCoopPendingTechCards();
+      if (pendingTechCards) {
+        if (
+          pendingCardsContainLoadout(pendingTechCards) ||
+          !model.sendCampaignViewerOperator ||
+          !model.gwCampaignConnected() ||
+          model.gwoRerollPending()
+        ) {
+          return;
+        }
+
+        model.gwoRerollPending(true);
+        model.scanning(true);
+        model.sendCampaignViewerOperator(
+          "gwo_reroll_pending_tech",
+          {
+            star: pendingTechCards.star,
+            deal_index: pendingTechCards.dealIndex,
+          },
+          {
+            request_id: _.uniqueId("gwo_reroll_"),
+          }
+        );
         return;
       }
 
@@ -57,11 +112,12 @@ function gwoCard() {
       }
       star.cardList([]);
       game.turnState("begin");
-      model.explore();
+      model.explore(true);
     };
 
     const setupTechRerolls = function () {
       model.gwoOfferRerolls = ko.observable(true);
+      model.gwoRerollPending = ko.observable(false);
       model.gwoRerollsUsed = ko
         .observable(0)
         .extend({ session: "gwo_rerolls_used" }); // prevent UI refresh exploits
@@ -88,7 +144,44 @@ function gwoCard() {
         if (game.turnState() === "end") {
           model.gwoRerollsUsed(0);
           model.gwoOfferRerolls(true);
+          model.gwoRerollPending(false);
         }
+      });
+
+      var coopPendingRerollKey = "";
+      ko.computed(function () {
+        const pendingTechCards = currentCoopPendingTechCards();
+        if (!pendingTechCards) {
+          model.gwoRerollPending(false);
+          coopPendingRerollKey = "";
+          return;
+        }
+
+        const key = [
+          pendingTechCards.star,
+          pendingTechCards.dealIndex,
+          pendingTechCards.updatedAt,
+          pendingTechCards.cardsOffered,
+          pendingTechCards.rerollsUsed,
+          pendingTechCards.cards && pendingTechCards.cards.length,
+        ].join("|");
+        if (key === coopPendingRerollKey) {
+          return;
+        }
+
+        coopPendingRerollKey = key;
+        const cardsOffered = _.isNumber(pendingTechCards.cardsOffered)
+          ? pendingTechCards.cardsOffered
+          : Math.max(numCardsToOffer, pendingTechCards.cards.length);
+        const rerollsUsed = _.isNumber(pendingTechCards.rerollsUsed)
+          ? pendingTechCards.rerollsUsed
+          : Math.max(0, cardsOffered - pendingTechCards.cards.length);
+        model.gwoRerollsUsed(rerollsUsed);
+        model.gwoOfferRerolls(
+          !pendingCardsContainLoadout(pendingTechCards) &&
+            rerollsUsed < cardsOffered - 1
+        );
+        model.gwoRerollPending(false);
       });
 
       $(".div_options_bar").replaceWith(
@@ -174,251 +267,6 @@ function gwoCard() {
       });
     };
 
-    const setupGwoCards = function (gwoSettings) {
-      const basicCards = [
-        "gwc_add_card_slot",
-        "gwc_bld_efficiency_cdr",
-        "gwc_bld_efficiency_fabs",
-        "gwc_combat_air",
-        "gwc_combat_bots",
-        "gwc_combat_commander",
-        "gwc_combat_orbital",
-        "gwc_combat_sea",
-        "gwc_combat_structures",
-        "gwc_combat_vehicles",
-        "gwc_cost_air",
-        "gwc_cost_artillery",
-        "gwc_cost_bots",
-        "gwc_cost_defenses",
-        "gwc_cost_economy",
-        "gwc_cost_orbital",
-        "gwc_cost_sea",
-        "gwc_cost_super_weapons",
-        "gwc_cost_titans",
-        "gwc_cost_vehicles",
-        "gwc_damage_air",
-        "gwc_damage_artillery",
-        "gwc_damage_bots",
-        "gwc_damage_commander",
-        "gwc_damage_defenses",
-        "gwc_damage_orbital",
-        "gwc_damage_sea",
-        "gwc_damage_vehicles",
-        "gwc_enable_air_all",
-        "gwc_enable_air_t1",
-        "gwc_enable_artillery",
-        "gwc_enable_bots_all",
-        "gwc_enable_bots_t1",
-        "gwc_enable_defenses_t2",
-        "gwc_enable_orbital_all",
-        "gwc_enable_sea_all",
-        "gwc_enable_titans",
-        "gwc_enable_vehicles_all",
-        "gwc_enable_vehicles_t1",
-        "gwc_energy_efficiency_all",
-        "gwc_health_air",
-        "gwc_health_bots",
-        "gwc_health_commander",
-        "gwc_health_orbital",
-        "gwc_health_sea",
-        "gwc_health_structures",
-        "gwc_health_vehicles",
-        "gwc_minion",
-        "gwc_speed_air",
-        "gwc_speed_bots",
-        "gwc_speed_commander",
-        "gwc_speed_orbital",
-        "gwc_speed_sea",
-        "gwc_speed_vehicles",
-        "gwc_storage_1",
-        "gwc_storage_and_buff",
-      ];
-      const expandedCards = [
-        "gwaio_anti_air",
-        "gwaio_anti_bots",
-        "gwaio_anti_commander",
-        "gwaio_anti_hover",
-        "gwaio_anti_orbital",
-        "gwaio_anti_sea",
-        "gwaio_anti_structure",
-        "gwaio_anti_vehicles",
-        "gwaio_combat_titans",
-        "gwaio_cooldown_air",
-        "gwaio_cooldown_bots",
-        "gwaio_cooldown_orbital",
-        "gwaio_cooldown_sea",
-        "gwaio_cooldown_vehicles",
-        "gwaio_damage_titans",
-        "gwaio_enable_bounties",
-        "gwaio_enable_eradication",
-        "gwaio_enable_factories_t1_all",
-        "gwaio_enable_landanywhere",
-        "gwaio_enable_orbitalbombardment",
-        "gwaio_enable_planetaryradar",
-        "gwaio_enable_suddendeath",
-        "gwaio_enable_tsunami",
-        "gwaio_health_titans",
-        "gwaio_protocol_agility",
-        "gwaio_protocol_blindness",
-        "gwaio_protocol_disposability",
-        "gwaio_protocol_fortitude",
-        "gwaio_protocol_killswitch",
-        "gwaio_protocol_precision",
-        "gwaio_protocol_wrath",
-        "gwaio_speed_structure",
-        "gwaio_speed_titans",
-        "gwaio_upgrade_advancedairfactory",
-        "gwaio_upgrade_advancedbotfactory",
-        "gwaio_upgrade_advancedenergyplant",
-        "gwaio_upgrade_advancedfabricationaircraft",
-        "gwaio_upgrade_advancedfabricationbot",
-        "gwaio_upgrade_advancedfabricationship",
-        "gwaio_upgrade_advancedfabricationvehicle",
-        "gwaio_upgrade_advancedlaserdefensetower",
-        "gwaio_upgrade_advancedmetalextractor",
-        "gwaio_upgrade_advancednavalfactory",
-        "gwaio_upgrade_advancedradar",
-        "gwaio_upgrade_advancedradarsatellite",
-        "gwaio_upgrade_advancedtorpedolauncher",
-        "gwaio_upgrade_advancedvehiclefactory",
-        "gwaio_upgrade_airfactory",
-        "gwaio_upgrade_anchor",
-        "gwaio_upgrade_angel",
-        "gwaio_upgrade_ant",
-        "gwaio_upgrade_antinuke",
-        "gwaio_upgrade_ares",
-        "gwaio_upgrade_arkyd",
-        "gwaio_upgrade_artemis",
-        "gwaio_upgrade_astraeus",
-        "gwaio_upgrade_atlas",
-        "gwaio_upgrade_avenger",
-        "gwaio_upgrade_barnacle",
-        "gwaio_upgrade_barracuda",
-        "gwaio_upgrade_bluehawk",
-        "gwaio_upgrade_boom",
-        "gwaio_upgrade_botfactory",
-        "gwaio_upgrade_bumblebee",
-        "gwaio_upgrade_catalyst",
-        "gwaio_upgrade_catapult",
-        "gwaio_upgrade_colonel",
-        "gwaio_upgrade_dox",
-        "gwaio_upgrade_drifter",
-        "gwaio_upgrade_energyplant",
-        "gwaio_upgrade_energystorage",
-        "gwaio_upgrade_fabricationaircraft",
-        "gwaio_upgrade_fabricationbot",
-        "gwaio_upgrade_fabricationship",
-        "gwaio_upgrade_fabricationvehicle",
-        "gwaio_upgrade_firefly",
-        "gwaio_upgrade_flak",
-        "gwaio_upgrade_galata",
-        "gwaio_upgrade_gile",
-        "gwaio_upgrade_grenadier",
-        "gwaio_upgrade_halley",
-        "gwaio_upgrade_helios",
-        "gwaio_upgrade_hermes",
-        "gwaio_upgrade_holkins",
-        "gwaio_upgrade_hornet",
-        "gwaio_upgrade_horsefly",
-        "gwaio_upgrade_hummingbird",
-        "gwaio_upgrade_icarus",
-        "gwaio_upgrade_inferno",
-        "gwaio_upgrade_jig",
-        "gwaio_upgrade_kaiju",
-        "gwaio_upgrade_kessler",
-        "gwaio_upgrade_kestrel",
-        "gwaio_upgrade_kraken",
-        "gwaio_upgrade_laserdefensetower",
-        "gwaio_upgrade_leveler",
-        "gwaio_upgrade_leviathan",
-        "gwaio_upgrade_lob",
-        "gwaio_upgrade_locusts",
-        "gwaio_upgrade_manhattan",
-        "gwaio_upgrade_mend",
-        "gwaio_upgrade_metalextractor",
-        "gwaio_upgrade_metalstorage",
-        "gwaio_upgrade_mine",
-        "gwaio_upgrade_narwhal",
-        "gwaio_upgrade_navalfactory",
-        "gwaio_upgrade_nukes",
-        "gwaio_upgrade_nyx",
-        "gwaio_upgrade_omega",
-        "gwaio_upgrade_orbitalfabricationbot",
-        "gwaio_upgrade_orbitalfactory",
-        "gwaio_upgrade_orbitallauncher",
-        "gwaio_upgrade_orca",
-        "gwaio_upgrade_pelican",
-        "gwaio_upgrade_pelter",
-        "gwaio_upgrade_phoenix",
-        "gwaio_upgrade_piranha",
-        "gwaio_upgrade_planetaryradar",
-        "gwaio_upgrade_radar",
-        "gwaio_upgrade_radarjammer",
-        "gwaio_upgrade_ragnarok",
-        "gwaio_upgrade_sheller",
-        "gwaio_upgrade_singlelaserdefensetower",
-        "gwaio_upgrade_skitter",
-        "gwaio_upgrade_slammer",
-        "gwaio_upgrade_solararray",
-        "gwaio_upgrade_spark",
-        "gwaio_upgrade_spinner",
-        "gwaio_upgrade_squall",
-        "gwaio_upgrade_stinger",
-        "gwaio_upgrade_stingray",
-        "gwaio_upgrade_stitch",
-        "gwaio_upgrade_storm",
-        "gwaio_upgrade_stryker",
-        "gwaio_upgrade_subcommander_duplication",
-        "gwaio_upgrade_subcommander_fabber",
-        "gwaio_upgrade_subcommander_tactics",
-        "gwaio_upgrade_sxx",
-        "gwaio_upgrade_teleporter",
-        "gwaio_upgrade_torpedolauncher",
-        "gwaio_upgrade_typhoon",
-        "gwaio_upgrade_ubercannon_structure",
-        "gwaio_upgrade_umbrella",
-        "gwaio_upgrade_unitcannon",
-        "gwaio_upgrade_vanguard",
-        "gwaio_upgrade_vehiclefactory",
-        "gwaio_upgrade_wall",
-        "gwaio_upgrade_ward",
-        "gwaio_upgrade_wyrm",
-        "gwaio_upgrade_zeus",
-        // not enabled in vanilla GW
-        "gwc_cost_intel",
-        "gwc_energy_efficiency_intel",
-        "gwc_energy_efficiency_weapons",
-      ];
-
-      if (!model.gwoCards) {
-        model.gwoCards = [];
-      }
-
-      if (
-        !gwoSettings || // non-GWO saves
-        !gwoSettings.techCardDeck || // v5.35.0 and earlier
-        gwoSettings.techCardDeck === "Expanded"
-      ) {
-        return model.gwoCards.concat(basicCards, expandedCards);
-      }
-
-      return model.gwoCards.concat(basicCards);
-    };
-
-    const setupGwoDeck = function (cards, deck, cardsRemaining, promise) {
-      _.forEach(model.gwoCards, function (cardId) {
-        requireGW(["cards/" + cardId], function (card) {
-          card.id = cardId;
-          cards.push(card);
-          deck.push(cardId);
-          --cardsRemaining;
-          if (cardsRemaining === 0) {
-            promise.resolve();
-          }
-        });
-      });
-    };
-
     const doNotDealCard = function (
       inventory,
       card,
@@ -499,8 +347,10 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+        "shared/gw_inventory",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
       ],
-      function (GW, GWFactions, gwoAI, gwoSave, gwoBank) {
+      function (GW, GWFactions, gwoAI, gwoSave, gwoBank, GWInventory, gwoDeal) {
         const inventory = game.inventory();
         const playerFaction = inventory.getTag("global", "playerFaction");
         const galaxy = game.galaxy();
@@ -508,14 +358,14 @@ function gwoCard() {
 
         /* Start of GWO implementation of GWDealer */
 
-        model.gwoCards = setupGwoCards(gwoSettings);
+        model.gwoCards = gwoDeal.setupGwoCards(gwoSettings);
 
         const cards = [];
         const deck = [];
         const numberOfCards = model.gwoCards.length;
         const loaded = $.Deferred();
 
-        setupGwoDeck(cards, deck, numberOfCards, loaded);
+        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
         // GWDealer.chooseCards - use our deck
         const chooseCards = function (params) {
@@ -523,13 +373,14 @@ function gwoCard() {
           const count = params.count;
           const star = params.star;
           const dealAddSlot = params.addSlot;
+          const dealInventory = params.inventory || inventory;
           const cardContexts = {};
 
           const result = $.Deferred();
           loaded.then(function () {
             _.forEach(cards, function (card) {
               if (card.getContext && !cardContexts[card.id]) {
-                cardContexts[card.id] = card.getContext(galaxy, inventory);
+                cardContexts[card.id] = card.getContext(galaxy, dealInventory);
               }
             });
 
@@ -539,9 +390,9 @@ function gwoCard() {
               var fullHand = _.map(cards, function (card) {
                 const context = cardContexts[card.id];
                 const cardChance =
-                  card.deal && card.deal(star, context, inventory);
+                  card.deal && card.deal(star, context, dealInventory);
                 const match = doNotDealCard(
-                  inventory,
+                  dealInventory,
                   card,
                   list,
                   dealAddSlot,
@@ -608,6 +459,476 @@ function gwoCard() {
           });
           return result;
         };
+
+        const isStartLoadoutCardId = function (cardId) {
+          return _.isString(cardId) && _.includes(cardId, "_start_");
+        };
+
+        const buildPendingStartLoadoutCard = function (card) {
+          const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
+          if (
+            result &&
+            isStartLoadoutCardId(result.id) &&
+            _.isUndefined(result.allowOverflow)
+          ) {
+            result.allowOverflow = true;
+          }
+
+          return result;
+        };
+
+        // GWO override of the host-side co-op pending tech deal path.
+        //
+        // In stock gw_play.js, the host always deals exactly 3 cards to viewers
+        // when creating pending tech cards. That base implementation does not
+        // account for GWO-specific bonus card rules
+        model.dealCoopPlayerPendingTechCards = function (
+          starIndex,
+          star,
+          options
+        ) {
+          const result = $.Deferred();
+          const dealOptions = options || {};
+          const startLoadoutCards = filterStartLoadoutCards(
+            dealOptions.startLoadoutCards
+          );
+
+          if (
+            !model.gwCampaignActive() ||
+            !model.isCampaignHost() ||
+            !model.gwCampaignPerPlayerTechCards()
+          ) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          const connectedClients = _.isArray(model.gwCampaignConnectedClients())
+            ? model.gwCampaignConnectedClients()
+            : [];
+          const sourceClients = _.isArray(dealOptions.clients)
+            ? dealOptions.clients
+            : connectedClients;
+          const viewers = _.filter(sourceClients, function (client) {
+            return client && client.role === "viewer";
+          });
+
+          if (!viewers.length) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          const updates = [];
+          const jobs = [];
+          const targets = [];
+          var validationError;
+
+          _.forEach(viewers, function (client) {
+            if (validationError) {
+              return;
+            }
+
+            const record = game.findCoopPlayerInventoryData({
+              id: client.id,
+              name: client.name,
+            });
+            if (!record) {
+              validationError =
+                "Missing inventory data for pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            if (!record.inventory) {
+              validationError =
+                "Missing saved inventory for pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            if (record.pendingTechCards) {
+              validationError =
+                "Client already has pending tech cards client=" +
+                client.id +
+                " name=" +
+                client.name;
+              return;
+            }
+
+            const dealIndex = dealOptions.dealIndex;
+            if (
+              _.isNumber(dealIndex) &&
+              model.getCoopPlayerTechCardDealCount(record) >= dealIndex
+            ) {
+              return;
+            }
+
+            var startLoadoutCard;
+            if (startLoadoutCards.length) {
+              if (!_.isArray(record.unlockedStartCardIds)) {
+                console.error(
+                  "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
+                    client.id +
+                    " name=" +
+                    client.name
+                );
+              }
+
+              startLoadoutCard = _.find(startLoadoutCards, function (card) {
+                return !model.recordHasUnlockedStartCard(record, card);
+              });
+            }
+
+            targets.push({
+              client: client,
+              record: record,
+              dealIndex: dealIndex,
+              startLoadoutCard: startLoadoutCard,
+            });
+          });
+
+          if (validationError) {
+            result.reject(validationError);
+            return result.promise();
+          }
+
+          if (!targets.length) {
+            result.resolve([]);
+            return result.promise();
+          }
+
+          _.forEach(targets, function (target) {
+            const client = target.client;
+            const record = target.record;
+            const job = $.Deferred();
+            jobs.push(job.promise());
+
+            if (target.startLoadoutCard) {
+              updates.push({
+                client_id: client.id,
+                client_name: client.name,
+                pendingTechCards: {
+                  star: starIndex,
+                  cards: [
+                    buildPendingStartLoadoutCard(target.startLoadoutCard),
+                  ],
+                  dealIndex: target.dealIndex,
+                  updatedAt: _.now(),
+                },
+              });
+              job.resolve();
+              return;
+            }
+
+            const inventory = new GWInventory();
+            inventory.load(_.cloneDeep(record.inventory));
+
+            const dealCards = function () {
+              const cardsOffered = cardsOfferedCount(
+                numCardsToOffer,
+                inventory
+              );
+              chooseCards({
+                inventory: inventory,
+                count: cardsOffered,
+                star: star,
+              }).then(function (cards) {
+                const pendingTechCards = {
+                  star: starIndex,
+                  cards: cards || [],
+                  dealIndex: target.dealIndex,
+                  cardsOffered: cardsOffered,
+                  updatedAt: _.now(),
+                };
+                updates.push({
+                  client_id: client.id,
+                  client_name: client.name,
+                  pendingTechCards: pendingTechCards,
+                });
+                job.resolve();
+              });
+            };
+
+            if (inventory.cards().length) {
+              inventory.applyCards(dealCards);
+            } else {
+              dealCards();
+            }
+          });
+
+          $.when.apply($, jobs).then(function () {
+            if (!updates.length) {
+              result.resolve([]);
+              return;
+            }
+
+            const payload = {
+              players: updates,
+              host_tech_card_deal_count: game.hostTechCardDealCount(),
+              host_tech_card_deal_history: game.hostTechCardDealHistory(),
+            };
+
+            if (_.isFunction(model.send_message)) {
+              model.send_message(
+                "set_player_pending_tech_cards",
+                payload,
+                function (success, response) {
+                  if (!success) {
+                    result.reject(
+                      "set_player_pending_tech_cards failed response=" +
+                        JSON.stringify(response || {})
+                    );
+                    return;
+                  }
+
+                  result.resolve(updates);
+                }
+              );
+            } else {
+              model.sendCampaignAction(
+                "set_player_pending_tech_cards",
+                payload
+              );
+              result.resolve(updates);
+            }
+          });
+
+          return result.promise();
+        };
+
+        const rerollPendingTechRequest = "gwo_reroll_pending_tech";
+        const rerollPendingTechResult = "gwo_reroll_pending_tech_result";
+
+        const sendPendingTechRerollResult = function (
+          clientId,
+          requestId,
+          payload
+        ) {
+          if (!model.sendCampaignHostOperator) {
+            return;
+          }
+
+          model.sendCampaignHostOperator(rerollPendingTechResult, payload, {
+            target_client_id: clientId,
+            request_id: requestId,
+          });
+        };
+
+        const failPendingTechReroll = function (operator, reason) {
+          console.error("[GW COOP] failed to reroll pending tech: " + reason);
+          if (_.isUndefined(operator.client_id)) {
+            return;
+          }
+
+          sendPendingTechRerollResult(operator.client_id, operator.request_id, {
+            client_id: operator.client_id,
+            client_name: operator.client_name,
+            error: reason,
+          });
+        };
+
+        const applyPendingTechRerollResult = function (operator) {
+          const payload = operator.payload || {};
+          model.gwoRerollPending(false);
+          model.scanning(false);
+
+          if (payload.error) {
+            console.error(
+              "[GW COOP] pending tech reroll failed: " + payload.error
+            );
+            return;
+          }
+
+          const pendingTechCards = payload.pendingTechCards;
+          if (
+            !pendingTechCards ||
+            !_.isNumber(pendingTechCards.star) ||
+            !_.isArray(pendingTechCards.cards)
+          ) {
+            console.error("[GW COOP] invalid pending tech reroll result");
+            return;
+          }
+
+          const record = game.findCoopPlayerInventoryData({
+            id: payload.client_id,
+            name: payload.client_name,
+          });
+          if (!record || !record.inventory) {
+            console.error(
+              "[GW COOP] missing inventory for pending tech reroll result"
+            );
+            return;
+          }
+
+          const nextRecord = _.assign({}, _.cloneDeep(record), {
+            pendingTechCards: pendingTechCards,
+            updatedAt: payload.updated_at || _.now(),
+          });
+
+          if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+            console.error(
+              "[GW COOP] failed to apply pending tech reroll result"
+            );
+            return;
+          }
+
+          if (_.isNumber(payload.rerolls_used)) {
+            model.gwoRerollsUsed(payload.rerolls_used);
+          }
+          model.gwoOfferRerolls(payload.offer_rerolls === true);
+          model.prepareCoopPlayerInventories();
+
+          GW.manifest.saveGame(game).then(
+            function () {},
+            function (err) {
+              console.error("[GW COOP] failed to save rerolled tech", err);
+            }
+          );
+        };
+
+        const rerollPendingTechForCoopPlayer = function (operator) {
+          if (
+            !model.isCampaignHost() ||
+            !model.gwCampaignPerPlayerTechCards()
+          ) {
+            return;
+          }
+
+          const payload = operator.payload || {};
+          const record = game.findCoopPlayerInventoryData({
+            id: operator.client_id,
+            name: operator.client_name,
+          });
+
+          if (!record || !record.inventory || !record.pendingTechCards) {
+            failPendingTechReroll(operator, "missing pending tech cards");
+            return;
+          }
+
+          const pendingTechCards = record.pendingTechCards;
+          if (
+            !_.isNumber(pendingTechCards.star) ||
+            !_.isArray(pendingTechCards.cards)
+          ) {
+            failPendingTechReroll(operator, "invalid pending tech cards");
+            return;
+          }
+
+          if (
+            _.isNumber(payload.star) &&
+            payload.star !== pendingTechCards.star
+          ) {
+            failPendingTechReroll(operator, "stale pending tech star");
+            return;
+          }
+
+          if (
+            _.isNumber(payload.deal_index) &&
+            _.isNumber(pendingTechCards.dealIndex) &&
+            payload.deal_index !== pendingTechCards.dealIndex
+          ) {
+            failPendingTechReroll(operator, "stale pending tech deal index");
+            return;
+          }
+
+          if (pendingCardsContainLoadout(pendingTechCards)) {
+            failPendingTechReroll(operator, "loadout cards cannot be rerolled");
+            return;
+          }
+
+          const star = galaxy.stars()[pendingTechCards.star];
+          if (!star) {
+            failPendingTechReroll(operator, "missing pending tech star");
+            return;
+          }
+
+          const playerInventory = new GWInventory();
+          playerInventory.load(_.cloneDeep(record.inventory));
+
+          const dealCards = function () {
+            const cardsOffered = cardsOfferedCount(
+              numCardsToOffer,
+              playerInventory
+            );
+            const rerollsUsed = Math.max(
+              0,
+              cardsOffered - pendingTechCards.cards.length
+            );
+            const nextRerollsUsed = rerollsUsed + 1;
+
+            if (nextRerollsUsed > cardsOffered - 1) {
+              failPendingTechReroll(operator, "no pending tech rerolls remain");
+              return;
+            }
+
+            const cardCount = cardsOffered - nextRerollsUsed;
+            chooseCards({
+              inventory: playerInventory,
+              count: cardCount,
+              star: star,
+            }).then(function (cards) {
+              const updatedAt = _.now();
+              const nextPendingTechCards = {
+                star: pendingTechCards.star,
+                cards: cards || [],
+                dealIndex: pendingTechCards.dealIndex,
+                cardsOffered: cardsOffered,
+                rerollsUsed: nextRerollsUsed,
+                updatedAt: updatedAt,
+              };
+              const nextRecord = _.assign({}, _.cloneDeep(record), {
+                pendingTechCards: nextPendingTechCards,
+                updatedAt: updatedAt,
+              });
+
+              if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+                failPendingTechReroll(
+                  operator,
+                  "failed to store rerolled pending tech"
+                );
+                return;
+              }
+
+              model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
+              sendPendingTechRerollResult(
+                operator.client_id,
+                operator.request_id,
+                {
+                  client_id: operator.client_id,
+                  client_name: operator.client_name,
+                  pendingTechCards: nextPendingTechCards,
+                  rerolls_used: nextRerollsUsed,
+                  offer_rerolls: nextRerollsUsed < cardsOffered - 1,
+                  updated_at: updatedAt,
+                }
+              );
+              gwoSave(game, false);
+            });
+          };
+
+          if (playerInventory.cards().length) {
+            playerInventory.applyCards(dealCards);
+          } else {
+            dealCards();
+          }
+        };
+
+        if (model.registerCampaignViewerOperatorHandler) {
+          model.registerCampaignViewerOperatorHandler(
+            rerollPendingTechRequest,
+            rerollPendingTechForCoopPlayer
+          );
+        }
+
+        if (model.registerCampaignHostOperatorHandler) {
+          model.registerCampaignHostOperatorHandler(
+            rerollPendingTechResult,
+            applyPendingTechRerollResult
+          );
+        }
 
         const dealCardToSelectableAI = function (win, turnState) {
           const deferred = $.Deferred();
@@ -705,36 +1026,9 @@ function gwoCard() {
         };
         dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
-        /* Cheat code start */
-
-        // Cheats use our deck
-        const dealCard = function (params) {
-          const result = $.Deferred();
-          loaded.then(function () {
-            const card = _.find(model.gwoCards, function (cardId) {
-              return cardId === params.id;
-            });
-
-            // Simulate a deal
-            const context =
-              card.getContext &&
-              card.getContext(params.galaxy, params.inventory);
-
-            const deal = card.deal && card.deal(params.star, context);
-            const product = { id: params.id };
-            const cardParams = deal && deal.params;
-            if (cardParams && _.isObject(cardParams)) {
-              _.assign(product, cardParams);
-            }
-            card.keep && card.keep(deal, context);
-            card.releaseContext && card.releaseContext(context);
-
-            result.resolve(product);
-          });
-          return result;
-        };
-
         /* end of GWO implementation of GWDealer */
+
+        /* Cheat code start */
 
         const testMinions = function (product, inventory) {
           _.forEach(GWFactions, function (faction) {
@@ -802,15 +1096,20 @@ function gwoCard() {
         ) {
           const sizeDifference = inventory.cards().length - maxCards;
           _.times(sizeDifference, function () {
-            dealCard({
-              id: "gwc_add_card_slot",
-              galaxy: galaxy,
-              inventory: inventory,
-              star: star,
-            }).then(function (product) {
-              product = setupNewCardSlot(product);
-              applyCheatCards(product, inventory);
-            });
+            gwoDeal
+              .dealCard(
+                {
+                  id: "gwc_add_card_slot",
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: star,
+                },
+                loaded
+              )
+              .then(function (product) {
+                product = setupNewCardSlot(product);
+                applyCheatCards(product, inventory);
+              });
           });
         };
 
@@ -820,23 +1119,28 @@ function gwoCard() {
           const maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
 
           _.forEach(model.gwoCards, function (cardId) {
-            dealCard({
-              id: cardId,
-              galaxy: galaxy,
-              inventory: inventory,
-              star: star,
-            }).then(function (product) {
-              if (product.id === "gwc_minion") {
-                testMinions(product, inventory);
-                product = dealSubCommander(product);
-              } else if (product.id === "gwc_add_card_slot") {
-                product = setupNewCardSlot(product);
-              }
-              applyCheatCards(product, inventory);
-              if (!product.unique) {
-                testCardForMatches(inventory, product);
-              }
-            });
+            gwoDeal
+              .dealCard(
+                {
+                  id: cardId,
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: star,
+                },
+                loaded
+              )
+              .then(function (product) {
+                if (product.id === "gwc_minion") {
+                  testMinions(product, inventory);
+                  product = dealSubCommander(product);
+                } else if (product.id === "gwc_add_card_slot") {
+                  product = setupNewCardSlot(product);
+                }
+                applyCheatCards(product, inventory);
+                if (!product.unique) {
+                  testCardForMatches(inventory, product);
+                }
+              });
           });
           expandInventorySize(galaxy, inventory, star, maxCards);
         };
@@ -848,23 +1152,28 @@ function gwoCard() {
           });
 
           if (cardId) {
-            dealCard({
-              id: cardId,
-              galaxy: galaxy,
-              inventory: inventory,
-              star: galaxy.stars()[game.currentStar()],
-            }).then(function (product) {
-              if (product.id === "gwc_minion") {
-                product = dealSubCommander(product);
-              } else if (product.id === "gwc_add_card_slot") {
-                product = setupNewCardSlot(product);
-              }
-              inventory.cards.push(product);
-              inventory.applyCards();
-              dealCardToSelectableAI(false).then(function () {
-                gwoSave(game, true);
+            gwoDeal
+              .dealCard(
+                {
+                  id: cardId,
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: galaxy.stars()[game.currentStar()],
+                },
+                loaded
+              )
+              .then(function (product) {
+                if (product.id === "gwc_minion") {
+                  product = dealSubCommander(product);
+                } else if (product.id === "gwc_add_card_slot") {
+                  product = setupNewCardSlot(product);
+                }
+                inventory.cards.push(product);
+                inventory.applyCards();
+                dealCardToSelectableAI(false).then(function () {
+                  gwoSave(game, true);
+                });
               });
-            });
           } else {
             console.error(
               "Unable to find a card called " + model.cheats.giveCardId()
@@ -875,12 +1184,15 @@ function gwoCard() {
         /* Cheat code end */
 
         // gw_play self.explore - call our chooseCards()
-        model.explore = function () {
+        model.explore = function (force) {
           if (
             !game ||
             !game.explore() ||
             (model.isCampaignViewer() && !model.gwCampaignReplayingAction) ||
-            model.gwCampaignPlayerSetupBlocked()
+            // For normal player-triggered exploration, block if co-op players
+            // are still selecting loadouts or pending tech cards. For a host
+            // reroll, force the correct deal path even while that state is set.
+            (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked())
           ) {
             return;
           }
@@ -893,7 +1205,7 @@ function gwoCard() {
 
           api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-          var cardsOffered = cardsOfferedCount(numCardsToOffer);
+          var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
           const star = game.galaxy().stars()[game.currentStar()];
           const startLoadoutCards = filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
@@ -931,6 +1243,7 @@ function gwoCard() {
             var dealEntry;
 
             if (
+              force !== true &&
               (ok || startLoadoutCards.length) &&
               _.isArray(star.cardList()) &&
               star.cardList().length &&

@@ -25,8 +25,6 @@ function gwoBugfixes() {
       return;
     }
 
-    model.gwCampaignPerPlayerTechCards(false);
-
     const fixTreasurePlanetCardList = function (star) {
       if (gwoSettings.treasurePlanetFixed) {
         return;

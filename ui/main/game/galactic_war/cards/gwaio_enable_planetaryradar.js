@@ -94,8 +94,8 @@ define([
               uses_energy: true,
             },
             {
-              layer: "surface_and_air",
-              channel: "radar",
+              layer: "underwater",
+              channel: "sight",
               shape: "capsule",
               radius: 9999,
               uses_energy: true,
@@ -108,8 +108,8 @@ define([
               uses_energy: true,
             },
             {
-              layer: "underwater",
-              channel: "sight",
+              layer: "surface_and_air",
+              channel: "radar",
               shape: "capsule",
               radius: 9999,
               uses_energy: true,
