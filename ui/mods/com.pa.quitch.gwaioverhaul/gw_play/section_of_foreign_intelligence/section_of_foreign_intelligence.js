@@ -153,19 +153,46 @@ function gwoIntelligence() {
       return append;
     };
 
+    const checkInventoriesForCard = function (inventory, cardId) {
+      const game = model.game();
+      const coopPlayerInventoryData =
+        game.coopPlayerInventoryData &&
+        _.isFunction(game.coopPlayerInventoryData)
+          ? game.coopPlayerInventoryData()
+          : [];
+      return (
+        inventory.hasCard(cardId) ||
+        _.some(coopPlayerInventoryData, function (data) {
+          return _.some(data.inventory.cards, { id: cardId });
+        })
+      );
+    };
+
     const convertGameMModifiersToName = function (ai, inventory) {
       const gameModifiers = [];
 
-      if (ai.bountyMode || inventory.hasCard("gwaio_enable_bounties")) {
+      if (
+        ai.bountyMode ||
+        checkInventoriesForCard(inventory, "gwaio_enable_bounties")
+      ) {
         gameModifiers.push(loc("!LOC:Bounties"));
       }
-      if (ai.landAnywhere || inventory.hasCard("gwaio_enable_landanywhere")) {
+      if (
+        ai.landAnywhere ||
+        checkInventoriesForCard(inventory, "gwaio_enable_landanywhere")
+      ) {
         gameModifiers.push(loc("!LOC:Land Anywhere"));
       }
-      if (ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath")) {
+      if (
+        ai.suddenDeath ||
+        checkInventoriesForCard(inventory, "gwaio_enable_suddendeath")
+      ) {
         gameModifiers.push(loc("!LOC:Sudden Death"));
       }
-      if (ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication")) {
+      if (
+        ai.eradicationMode ||
+        checkInventoriesForCard(inventory, "gwaio_enable_eradication")
+      ) {
         gameModifiers.push(
           loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
         );

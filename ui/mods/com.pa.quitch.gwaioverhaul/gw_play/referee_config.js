@@ -348,13 +348,18 @@ define([
       },
       system: currentStar.system(),
       land_anywhere:
-        ai.landAnywhere || inventory.hasCard("gwaio_enable_landanywhere"),
-      bounty_mode: ai.bountyMode || inventory.hasCard("gwaio_enable_bounties"),
+        ai.landAnywhere ||
+        checkInventoriesForCard(inventory, "gwaio_enable_landanywhere", game),
+      bounty_mode:
+        ai.bountyMode ||
+        checkInventoriesForCard(inventory, "gwaio_enable_bounties", game),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
-        ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath"),
+        ai.suddenDeath ||
+        checkInventoriesForCard(inventory, "gwaio_enable_suddendeath", game),
       eradication_mode:
-        ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication"),
+        ai.eradicationMode ||
+        checkInventoriesForCard(inventory, "gwaio_enable_eradication", game),
       eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
       eradication_mode_factories: ai.eradicationModeFactories,
       eradication_mode_fabricators: ai.eradicationModeFabbers,
