@@ -205,6 +205,10 @@ function gwoSetup() {
       }
     };
 
+    const bossCommanderCount = function (difficulty, playerCount) {
+      return difficulty.bossCommanders() * playerCount;
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -347,7 +351,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.89.0";
+          const version = "5.90.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -537,7 +541,10 @@ function gwoSetup() {
               // Set up boss system
               setAIPersonality(boss, difficulty);
               boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
-              const bossCommanders = difficulty.bossCommanders();
+              const bossCommanders = bossCommanderCount(
+                difficulty,
+                playerCount
+              );
               boss.bossCommanders = bossCommanders;
 
               boss.inventory = [];
@@ -800,7 +807,10 @@ function gwoSetup() {
                       econRatePerDist,
                       maxDist
                     );
-                    ai.bossCommanders = difficulty.bossCommanders();
+                    ai.bossCommanders = bossCommanderCount(
+                      difficulty,
+                      playerCount
+                    );
                     ai.name = "The Guardians";
                     ai.character = "!LOC:Unknown";
                     ai.color = [

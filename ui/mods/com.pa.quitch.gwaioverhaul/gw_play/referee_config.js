@@ -164,26 +164,31 @@ const setupAiTags = function (ai) {
   return aiTag;
 };
 
-const modifyPlanets = function (inventory, planets) {
-  const canGlassPlanets = inventory.hasCard("gwaio_enable_orbitalbombardment");
-  const canFloodPlanets =
-    inventory.hasCard("gwaio_enable_tsunami") ||
-    inventory.hasCard("gwaio_start_naval");
-
-  if (canGlassPlanets) {
-    planets = glassPlanets(planets);
-  }
-  if (canFloodPlanets) {
-    planets = floodPlanets(planets);
-  }
-
-  return planets;
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (gwoColour, gwoAI) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (gwoColour, gwoAI, gwoCards) {
+  const modifyPlanets = function (inventory, planets, game) {
+    const canGlassPlanets = gwoCards.hasCard(
+      inventory,
+      "gwaio_enable_orbitalbombardment",
+      game
+    );
+    const canFloodPlanets =
+      gwoCards.hasCard(inventory, "gwaio_enable_tsunami", game) ||
+      gwoCards.hasCard(inventory, "gwaio_start_naval", game);
+
+    if (canGlassPlanets) {
+      planets = glassPlanets(planets);
+    }
+    if (canFloodPlanets) {
+      planets = floodPlanets(planets);
+    }
+
+    return planets;
+  };
+
   const setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
@@ -321,7 +326,7 @@ define([
     );
     setupPrimaryAiAndMinions(ai, cards, aiTag, aiInUse, armies);
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
-    system.planets = modifyPlanets(inventory, system.planets);
+    system.planets = modifyPlanets(inventory, system.planets, game);
 
     const config = {
       files: self.files(),
@@ -331,20 +336,24 @@ define([
       },
       system: currentStar.system(),
       land_anywhere:
-        ai.landAnywhere || inventory.hasCard("gwaio_enable_landanywhere"),
-      bounty_mode: ai.bountyMode || inventory.hasCard("gwaio_enable_bounties"),
+        ai.landAnywhere ||
+        gwoCards.hasCard(inventory, "gwaio_enable_landanywhere", game),
+      bounty_mode:
+        ai.bountyMode ||
+        gwoCards.hasCard(inventory, "gwaio_enable_bounties", game),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
-        ai.suddenDeath || inventory.hasCard("gwaio_enable_suddendeath"),
+        ai.suddenDeath ||
+        gwoCards.hasCard(inventory, "gwaio_enable_suddendeath", game),
       eradication_mode:
-        ai.eradicationMode || inventory.hasCard("gwaio_enable_eradication"),
+        ai.eradicationMode ||
+        gwoCards.hasCard(inventory, "gwaio_enable_eradication", game),
       eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
       eradication_mode_factories: ai.eradicationModeFactories,
       eradication_mode_fabricators: ai.eradicationModeFabbers,
     };
 
     _.forEach(config.armies, function (army) {
-      // eslint-disable-next-line lodash/prefer-filter
       _.forEach(army.slots, function (slot) {
         if (slot.ai) {
           if (army.alliance_group === 1) {

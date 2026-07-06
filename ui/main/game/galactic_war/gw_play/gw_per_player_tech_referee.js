@@ -4,8 +4,9 @@ const armyHasAI = function (army) {
 
 const getConnectedPlayerCount = function (options) {
   const connectedClients = options && options.connectedClients;
-  if (_.isArray(connectedClients) && connectedClients.length)
+  if (_.isArray(connectedClients) && connectedClients.length) {
     return connectedClients.length;
+  }
 
   console.error("[GW COOP] Per-player tech referee has no connected players.");
   return 0;
@@ -15,7 +16,9 @@ const collectHumanArmies = function (config) {
   const humanArmies = [];
 
   _.forEach(config.armies, function (army) {
-    if (!armyHasAI(army)) humanArmies.push(army);
+    if (!armyHasAI(army)) {
+      humanArmies.push(army);
+    }
   });
 
   return humanArmies;
@@ -35,20 +38,43 @@ const stringEndsWith = function (value, suffix) {
 };
 
 const stripKnownSpecTag = function (value) {
-  if (!_.isString(value)) return value;
+  if (!_.isString(value)) {
+    return value;
+  }
 
-  if (stringEndsWith(value, ".player"))
+  if (stringEndsWith(value, ".player")) {
     return value.slice(0, -".player".length);
+  }
 
   const match = value.match(/\.player\d+$/);
-  if (match) return value.slice(0, -match[0].length);
+  if (match) {
+    return value.slice(0, -match[0].length);
+  }
 
   return value;
 };
 
-define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
+define([
+  "shared/gw_common",
+  "shared/gw_inventory",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
+], function (GW, GWInventory, gwoUnit, gwoSpecs) {
+  if (!model.gwoSpecs) {
+    model.gwoSpecs = [];
+  }
+  // files not assigned by default that we wish to mod
+  model.gwoSpecs.push(
+    gwoUnit.fireflyAmmo,
+    gwoUnit.fireflyWeapon,
+    gwoUnit.orcaTorpedo,
+    gwoUnit.orcaTorpedoAmmo,
+    gwoUnit.skitterAmmo,
+    gwoUnit.skitterWeapon
+  );
+
   const loadInventoryFromRecord = function (record) {
-    var inventory = new GWInventory();
+    const inventory = new GWInventory();
     inventory.load(_.cloneDeep(record.inventory));
     return inventory;
   };
@@ -70,9 +96,10 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       const playerX1AIUnitMap = titans
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
+      const playerSpecs = inventory.units().concat(model.gwoSpecs);
 
       GW.specs
-        .genUnitSpecs(inventory.units(), playerTag)
+        .genUnitSpecs(playerSpecs, playerTag)
         .then(function (playerSpecFiles) {
           const classicPath = "/pa/ai/unit_maps/ai_unit_map.json" + playerTag;
           const x1Path = "/pa/ai/unit_maps/ai_unit_map_x1.json" + playerTag;
@@ -91,7 +118,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
             playerFilesX1,
             playerSpecFiles
           );
-          GW.specs.modSpecs(playerFiles, inventory.mods(), playerTag);
+          gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
           done.resolve(playerFiles);
         });
     });
@@ -370,7 +397,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
 
     // We've already generated the .player tag, so we just need to generate subsequent tags.
     for (var i = 1; i < playerTags.length; i++) {
-      const thisPlayersInventory = playerInventories[i];
+      var thisPlayersInventory = playerInventories[i];
       playerSpecPromises.push(
         generateUnitSpecsForPlayer(thisPlayersInventory, playerTags[i])
       );

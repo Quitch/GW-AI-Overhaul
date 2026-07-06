@@ -49,7 +49,7 @@ define({
     const highestDifficultyDefeated = ko
       .observableArray()
       .extend({ local: "gwaio_victory_" + loadoutId });
-    var icon = -1;
+    var icon;
     var hardcore = false;
 
     if (_.isArray(highestDifficultyDefeated())) {
@@ -127,5 +127,19 @@ define({
         return card.id === t2Card;
       });
     });
+  },
+
+  hasCard: function (inventory, cardId) {
+    const game = model.game();
+    const coopPlayerInventoryData =
+      game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
+        ? game.coopPlayerInventoryData()
+        : [];
+    return (
+      inventory.hasCard(cardId) ||
+      _.some(coopPlayerInventoryData, function (data) {
+        return _.some(data.inventory.cards, { id: cardId });
+      })
+    );
   },
 });

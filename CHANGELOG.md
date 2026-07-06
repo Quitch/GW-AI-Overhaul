@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Scale up boss commander numbers by the number of configured players
+- Chance of being dealt a subcommander now considers all player inventories
+- GWO panel only loads for GWO wars
+
+### Bugfix
+
+- Don't deal Sub Commander Fabber Tech when Queller is the allied AI
+- Cluster use the same colour for all systems
+- Guardians use the tech of all players
+- Planet and game settings tech is used no matter which player holds it
+- Viewers will get their own tech in battle and not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
+- Viewers apply mods to files not used in the vanilla game
+- GWO specific tech mod operations now work for viewers
+- GWO panel properly loads for viewers
+
+### Known Issues
+
+- Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting.
+- Only the host will be able to use techs which modify subcommanders
+- Viewer minions will use base AI
+- General Commander temporarily removed from selection for viewers
+- Viewers cannot freely delete cards - this is a PA issue
+- Available Tech will show different cards to different players when per-player tech is in use
+
 ## v5.89.0 - 2026-07-05
 
 ### Added

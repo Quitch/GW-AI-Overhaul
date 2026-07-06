@@ -141,13 +141,12 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ### Known issues
 
-- Some users have reported instances of the sim freezing while the UI continues to respond. If this occurs, go to Settings - Server and set Local Server Multi-Threading to OFF.
-- Cluster have two different system colours
-- Only the host will be able to use techs which modify things outside of units e.g. smarter subcommanders and flood tech
-- Some allied AIs may not use the selected ally AI brain
-- Guardians will only mirror the host's tech
+- Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting.
+- Only the host will be able to use techs which modify subcommanders
+- Viewer minions will use base AI
 - General Commander temporarily removed from selection for viewers
 - Viewers cannot freely delete cards
+- Available Tech will show different cards to different players when per-player tech is in use
 
 ## Recommended mods
 
