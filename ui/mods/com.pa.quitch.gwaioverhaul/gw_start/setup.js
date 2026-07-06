@@ -205,6 +205,10 @@ function gwoSetup() {
       }
     };
 
+    const bossCommanderCount = function (difficulty, playerCount) {
+      return difficulty.bossCommanders() + playerCount * 2;
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -331,10 +335,6 @@ function gwoSetup() {
                 personality.personality_tags.concat(titansAITags);
               break;
           }
-        };
-
-        const bossCommanderCount = function (difficulty, playerCount) {
-          return difficulty.bossCommanders() + playerCount * 2;
         };
 
         // replicates the functionality of model.makeGame() but
