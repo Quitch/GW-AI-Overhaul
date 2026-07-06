@@ -58,7 +58,8 @@ define([
   "shared/gw_common",
   "shared/gw_inventory",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, GWInventory, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
+], function (GW, GWInventory, gwoUnit, gwoSpecs) {
   if (!model.gwoSpecs) {
     model.gwoSpecs = [];
   }
@@ -117,7 +118,7 @@ define([
             playerFilesX1,
             playerSpecFiles
           );
-          GW.specs.modSpecs(playerFiles, inventory.mods(), playerTag);
+          gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
           done.resolve(playerFiles);
         });
     });

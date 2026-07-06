@@ -1,0 +1,236 @@
+const orderOfOperations = function (mods) {
+  const operationsContainer = {};
+  operationsContainer.otherOperations = [];
+  const orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
+
+  _.forEach(mods, function (mod) {
+    const operationName = mod.op;
+    const isOrderedOperation = _.includes(orderedOperations, operationName);
+
+    if (!operationsContainer[operationName] && isOrderedOperation) {
+      operationsContainer[operationName] = [];
+    }
+
+    if (isOrderedOperation) {
+      operationsContainer[operationName].push(mod);
+    } else {
+      operationsContainer.otherOperations.push(mod);
+    }
+  });
+
+  var orderedMods = [];
+  _.forEach(orderedOperations, function (operation) {
+    if (operationsContainer[operation]) {
+      orderedMods = orderedMods.concat(operationsContainer[operation]);
+    }
+  });
+  orderedMods = orderedMods.concat(operationsContainer.otherOperations);
+
+  return orderedMods;
+};
+
+const flattenBaseSpecs = function (spec, specs, tag) {
+  if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
+    return spec;
+  }
+
+  var base = specs[spec.base_spec];
+  if (!base) {
+    base = specs[spec.base_spec + tag];
+    if (!base) {
+      return spec;
+    }
+  }
+
+  spec = _.cloneDeep(spec);
+  delete spec.base_spec;
+
+  const flattenedSpec = flattenBaseSpecs(base, specs, tag);
+
+  if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
+    // avoid issues with _.merge()
+    delete flattenedSpec.ammo_id;
+  }
+
+  return _.merge({}, flattenedSpec, spec);
+};
+
+define(function () {
+  return {
+    mod: function (specs, mods, specTag) {
+      const load = function (specId) {
+        var taggedId = specId;
+        if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
+          taggedId = specId + specTag;
+          if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
+            return;
+          }
+        }
+        var result = specs[taggedId];
+        if (result) {
+          specs[taggedId] = result = flattenBaseSpecs(result, specs, specTag);
+        }
+        return result;
+      };
+
+      const ops = {
+        multiply: function (attribute, value) {
+          return _.isNumber(attribute) ? attribute * value : 0;
+        },
+        add: function (attribute, value) {
+          return _.isNumber(attribute) || _.isString(attribute)
+            ? attribute + value
+            : value;
+        },
+        replace: function (attribute, value) {
+          return value;
+        },
+        merge: function (attribute, value) {
+          return _.assign({}, attribute, value);
+        },
+        push: function (attribute, value) {
+          if (!_.isArray(attribute)) {
+            attribute = _.isEmpty(attribute) ? [] : [attribute];
+          }
+          if (_.isArray(value)) {
+            attribute = attribute.concat(value);
+          } else {
+            attribute.push(value);
+          }
+          return attribute;
+        },
+        eval: function (attribute, value) {
+          return new Function("attribute", value)(attribute);
+        },
+        clone: function (attribute, value) {
+          var loaded = load(attribute);
+          if (loaded) {
+            loaded = _.cloneDeep(loaded);
+          }
+          specs[value + specTag] = loaded || attribute;
+        },
+        tag: function (attribute) {
+          // hack fix for mirrorMode due to the fact that
+          // `attribute` was retaining the previous `specTag`s
+          // and I couldn't track down why
+          const cleanAttribute = attribute.slice(
+            0,
+            attribute.lastIndexOf(".json") + 5
+          );
+          return cleanAttribute + specTag;
+        },
+        pull: function (attribute, value) {
+          if (!_.isArray(attribute)) {
+            attribute = _.isEmpty(attribute) ? [] : [attribute];
+          }
+          var args = [attribute, value];
+          if (_.isArray(value)) {
+            args = [attribute].concat(value);
+          }
+          return _.pull.apply(this, args);
+        },
+        // New op to remove text in a string
+        wipe: function (attribute, value) {
+          if (!_.isString(attribute)) {
+            attribute = attribute.toString();
+          }
+          if (!_.isArray(value)) {
+            value = [value, ""];
+          }
+          return attribute.replace(value[0], value[1]);
+        },
+        // New op to prepend to arrays
+        prepend: function prepend(attribute, value) {
+          if (!_.isArray(attribute)) {
+            attribute = _.isEmpty(attribute) ? [] : [attribute];
+          }
+          attribute.unshift(value);
+          if (_.isArray(value)) {
+            attribute = _.flatten(attribute);
+          }
+          return attribute;
+        },
+        multiplyOrAdd: function (attribute, value) {
+          return _.isNumber(attribute) ? attribute * value : value;
+        },
+      };
+
+      const applyMod = function (mod) {
+        var spec = load(mod.file);
+        if (!spec) {
+          return console.warn("Warning: File not found in mod", mod);
+        }
+        if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
+          return console.error("Invalid operation in mod", mod);
+        }
+
+        const originalPath = (mod.path || "").split(".");
+        const path = originalPath.reverse();
+
+        const reportError = function (error, step) {
+          console.error(
+            error,
+            spec[step],
+            "spec",
+            spec,
+            "mod",
+            mod,
+            "path",
+            originalPath.slice(0, -path.length).join(".")
+          );
+        };
+
+        const opDefaults = {
+          push: [],
+          pull: [],
+        };
+
+        const cookStep = function (step, op) {
+          if (_.isArray(spec)) {
+            if (step === "+") {
+              step = spec.length;
+              spec.push({});
+            } else {
+              step = Number(step);
+            }
+          } else if (
+            path.length &&
+            !Object.prototype.hasOwnProperty.call(spec, step)
+          ) {
+            spec[step] = op ? opDefaults[op] || {} : {};
+          }
+          return step;
+        };
+
+        while (path.length > 1) {
+          var level = path.pop();
+          cookStep(level);
+
+          if (_.isString(spec[level])) {
+            var newSpec = load(spec[level]);
+            if (!newSpec) {
+              reportError("Undefined mod spec encountered,", level);
+              return;
+            }
+            spec = newSpec;
+          } else if (_.isObject(spec[level])) {
+            spec = spec[level];
+          } else {
+            reportError("Invalid attribute encountered,", level);
+            return;
+          }
+        }
+
+        if (path.length && path[0]) {
+          const leaf = cookStep(path[0], mod.op);
+          spec[leaf] = ops[mod.op](spec[leaf], mod.value);
+        } else {
+          ops[mod.op](spec, mod.value);
+        }
+      };
+
+      const orderedMods = orderOfOperations(mods);
+      _.forEach(orderedMods, applyMod);
+    },
+  };
+});
