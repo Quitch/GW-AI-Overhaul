@@ -19,6 +19,15 @@
 - GWO specific mod operations now work for viewers
 - GWO panel properly load for viewers
 
+### Known Issues
+
+- Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting.
+- Only the host will be able to use techs which modify subcommanders
+- Viewer minions will use base AI
+- General Commander temporarily removed from selection for viewers
+- Viewers cannot freely delete cards - this is a PA issue
+- Available Tech will show different cards to different players when per-player tech is in use
+
 ## v5.89.0 - 2026-07-05
 
 ### Added
