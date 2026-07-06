@@ -333,6 +333,10 @@ function gwoSetup() {
           }
         };
 
+        const bossCommanderCount = function (difficulty, playerCount) {
+          return difficulty.bossCommanders() + playerCount * 2;
+        };
+
         // replicates the functionality of model.makeGame() but
         // only generates the galaxy once the player clicks Go To War
         model.navToNewGame = function () {
@@ -537,7 +541,10 @@ function gwoSetup() {
               // Set up boss system
               setAIPersonality(boss, difficulty);
               boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
-              const bossCommanders = difficulty.bossCommanders();
+              const bossCommanders = bossCommanderCount(
+                difficulty,
+                playerCount
+              );
               boss.bossCommanders = bossCommanders;
 
               boss.inventory = [];
@@ -800,7 +807,10 @@ function gwoSetup() {
                       econRatePerDist,
                       maxDist
                     );
-                    ai.bossCommanders = difficulty.bossCommanders();
+                    ai.bossCommanders = bossCommanderCount(
+                      difficulty,
+                      playerCount
+                    );
                     ai.name = "The Guardians";
                     ai.character = "!LOC:Unknown";
                     ai.color = [

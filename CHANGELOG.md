@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Scale up boss numbers by the number of configured players
+
 ### Bugfix
 
 - Don't deal Sub Commander Fabber Tech when Queller is the allied AI
