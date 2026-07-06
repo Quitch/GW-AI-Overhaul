@@ -5,6 +5,7 @@
 ### Changed
 
 - Scale up boss numbers by the number of configured players
+- Chance of being dealt a subcommander now considers all player inventories
 
 ### Bugfix
 

@@ -4,6 +4,19 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
+  const coopMinionCount = function () {
+    const game = model.game();
+    const coopPlayerInventoryData =
+      game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
+        ? game.coopPlayerInventoryData()
+        : [];
+    var minionCount = 0;
+    _.forEach(coopPlayerInventoryData, function (playerData) {
+      minionCount += playerData.inventory.minions.length;
+    });
+    return minionCount;
+  };
+
   return {
     visible: _.constant(true),
     describe: function (params) {
@@ -53,7 +66,10 @@ define([
       ) {
         chance = 0;
       } else if (inventory.minions) {
-        chance = chance / (inventory.minions().length + 1);
+        const hostMinionCount = inventory.minions().length;
+        const allMinionCount = coopMinionCount();
+        const totalMinions = Math.max(hostMinionCount, allMinionCount);
+        chance = chance / (totalMinions + 1);
       }
 
       const minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
