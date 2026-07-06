@@ -206,7 +206,7 @@ function gwoSetup() {
     };
 
     const bossCommanderCount = function (difficulty, playerCount) {
-      return difficulty.bossCommanders() + (playerCount - 1) * 2;
+      return difficulty.bossCommanders() * playerCount;
     };
 
     requireGW(
