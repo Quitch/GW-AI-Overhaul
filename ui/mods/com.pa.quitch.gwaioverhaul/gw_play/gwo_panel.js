@@ -1,105 +1,94 @@
 var gwoWarInfoPanelLoaded;
 
-function gwoWarInfoPanel() {
-  const game = model.game();
-
-  if (gwoWarInfoPanelLoaded || game.isTutorial()) {
-    return;
-  }
-
-  gwoWarInfoPanelLoaded = true;
-
+function gwoWarInfoPanel(gwoSettings) {
   try {
+    const game = model.game();
+    model.gwoSettings = gwoSettings;
+    model.gwoDifficulty = loc(model.gwoSettings.difficulty);
+    model.gwoSize = loc(model.gwoSettings.galaxySize);
+    model.gwoAI = model.gwoSettings.ai || "Titans";
+    model.gwoAIAlly =
+      model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
+    model.gwoDeck =
+      model.gwoSettings.techCardDeck === "Expanded"
+        ? loc("!LOC:Galactic War Overhaul")
+        : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
+          loc("!LOC:Galactic War Overhaul");
+    const coopPlayerScalingCount =
+      model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
+    const playerCount = coopPlayerScalingCount || 1;
+    const playerOrPlayers =
+      playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
+    model.gwoCoopPlayerScaling = playerCount
+      ? playerCount + " " + playerOrPlayers
+      : loc("!LOC:Unknown");
+
+    const options = function (optionsList, setting, text) {
+      if (setting) {
+        optionsList.push(loc(text));
+      }
+    };
+
+    model.gwoOptions = ko.observableArray([]);
+    options(
+      model.gwoOptions,
+      model.gwoSettings.factionScaling,
+      "!LOC:Faction scaling"
+    );
+    options(
+      model.gwoOptions,
+      model.gwoSettings.systemScaling,
+      "!LOC:System scaling"
+    );
+    options(
+      model.gwoOptions,
+      model.gwoSettings.simpleSystems,
+      "!LOC:Easy Systems"
+    );
+    options(
+      model.gwoOptions,
+      model.gwoSettings.easierStart,
+      "!LOC:Easier start"
+    );
+    options(model.gwoOptions, model.gwoSettings.staticTech, "!LOC:Static tech");
+    options(model.gwoOptions, model.gwoSettings.cheatsUsed, "!LOC:dev mode");
+    options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
+    // deprecated - pre-v5.27.0 support only
+    options(
+      model.gwoOptions,
+      model.gwoSettings.tougherCommanders,
+      "!LOC:Tougher commanders"
+    );
+
+    const cheatsDetected = function () {
+      requireGW(
+        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
+        function (gwoSave) {
+          const gwoSettings = model.gwoSettings;
+          if (gwoSettings && !gwoSettings.cheatsUsed) {
+            gwoSettings.cheatsUsed = true;
+            options(
+              model.gwoOptions,
+              model.gwoSettings.cheatsUsed,
+              "!LOC:dev mode"
+            );
+            gwoSave(game, true);
+          }
+        }
+      );
+    };
+
+    model.devMode.subscribe(function () {
+      if (model.devMode() === true) {
+        cheatsDetected();
+      }
+    });
+
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        const galaxy = game.galaxy();
-        const originSystem = galaxy.stars()[galaxy.origin()].system();
         model.gwoVersion = ko.observable("5.89.0");
-        model.gwoSettings = originSystem.gwaio;
-
-        if (model.gwoSettings) {
-          model.gwoDifficulty = loc(model.gwoSettings.difficulty);
-          model.gwoSize = loc(model.gwoSettings.galaxySize);
-          model.gwoAI = model.gwoSettings.ai || "Titans";
-          model.gwoAIAlly =
-            model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
-          model.gwoDeck =
-            model.gwoSettings.techCardDeck === "Expanded"
-              ? loc("!LOC:Galactic War Overhaul")
-              : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
-                loc("!LOC:Galactic War Overhaul");
-
-          const options = function (optionsList, setting, text) {
-            if (setting) {
-              optionsList.push(loc(text));
-            }
-          };
-
-          model.gwoOptions = ko.observableArray([]);
-          options(
-            model.gwoOptions,
-            model.gwoSettings.factionScaling,
-            "!LOC:Faction scaling"
-          );
-          options(
-            model.gwoOptions,
-            model.gwoSettings.systemScaling,
-            "!LOC:System scaling"
-          );
-          options(
-            model.gwoOptions,
-            model.gwoSettings.simpleSystems,
-            "!LOC:Easy Systems"
-          );
-          options(
-            model.gwoOptions,
-            model.gwoSettings.easierStart,
-            "!LOC:Easier start"
-          );
-          options(
-            model.gwoOptions,
-            model.gwoSettings.staticTech,
-            "!LOC:Static tech"
-          );
-          options(
-            model.gwoOptions,
-            model.gwoSettings.cheatsUsed,
-            "!LOC:dev mode"
-          );
-          options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
-          // deprecated - pre-v5.27.0 support only
-          options(
-            model.gwoOptions,
-            model.gwoSettings.tougherCommanders,
-            "!LOC:Tougher commanders"
-          );
-
-          const cheatsDetected = function () {
-            requireGW(
-              ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-              function (gwoSave) {
-                const gwoSettings = model.gwoSettings;
-                if (gwoSettings && !gwoSettings.cheatsUsed) {
-                  gwoSettings.cheatsUsed = true;
-                  options(
-                    model.gwoOptions,
-                    model.gwoSettings.cheatsUsed,
-                    "!LOC:dev mode"
-                  );
-                  gwoSave(game, true);
-                }
-              }
-            );
-          };
-
-          model.devMode.subscribe(function () {
-            if (model.devMode() === true) {
-              cheatsDetected();
-            }
-          });
-        }
 
         /* Co-op Information */
         const coopText = function (setting) {
@@ -109,14 +98,6 @@ function gwoWarInfoPanel() {
           return loc("!LOC:Separate");
         };
 
-        const coopPlayerScalingCount =
-          model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
-        const playerCount = coopPlayerScalingCount || 1;
-        const playerOrPlayers =
-          playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
-        model.gwoCoopPlayerScaling = playerCount
-          ? playerCount + " " + playerOrPlayers
-          : loc("!LOC:Unknown");
         model.gwoCoopArmyControl = ko.computed(function () {
           return coopText(model.gwCampaignSharedControl());
         });
@@ -283,4 +264,27 @@ function gwoWarInfoPanel() {
     console.error(JSON.stringify(e));
   }
 }
-gwoWarInfoPanel();
+
+ko.computed(function () {
+  const game = model.game();
+  const galaxy = game.galaxy();
+  const originSystem = galaxy.stars()[galaxy.origin()].system();
+  if (
+    _.isObject(originSystem.gwaio) &&
+    !game.isTutorial() &&
+    !gwoWarInfoPanelLoaded
+  ) {
+    console.log("GWO settings found and panel loading");
+    gwoWarInfoPanelLoaded = true;
+    gwoWarInfoPanel(originSystem.gwaio);
+  } else {
+    console.warn(
+      "Tried to load GWO panel and failed. GWO settings found:",
+      _.isObject(originSystem.gwaio),
+      "This is a Galactic War:",
+      !game.isTutorial(),
+      "Panel not yet loaded:",
+      !gwoWarInfoPanelLoaded
+    );
+  }
+});

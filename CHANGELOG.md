@@ -6,6 +6,7 @@
 
 - Scale up boss commander numbers by the number of configured players
 - Chance of being dealt a subcommander now considers all player inventories
+- GWO panel only loads for GWO wars
 
 ### Bugfix
 
@@ -16,6 +17,7 @@
 - Viewers will get their own tech in battle and not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
 - Viewers apply mods to files not used in the vanilla game
 - GWO specific mod operations now work for viewers
+- GWO panel properly load for viewers
 
 ## v5.89.0 - 2026-07-05
 
