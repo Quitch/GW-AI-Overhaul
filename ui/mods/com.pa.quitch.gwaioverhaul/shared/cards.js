@@ -49,7 +49,7 @@ define({
     const highestDifficultyDefeated = ko
       .observableArray()
       .extend({ local: "gwaio_victory_" + loadoutId });
-    var icon = -1;
+    var icon;
     var hardcore = false;
 
     if (_.isArray(highestDifficultyDefeated())) {
