@@ -16,8 +16,8 @@
 - Planet and game settings tech is used no matter which player holds it
 - Viewers will get their own tech in battle and not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
 - Viewers apply mods to files not used in the vanilla game
-- GWO specific mod operations now work for viewers
-- GWO panel properly load for viewers
+- GWO specific tech mod operations now work for viewers
+- GWO panel properly loads for viewers
 
 ### Known Issues
 
