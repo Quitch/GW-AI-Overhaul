@@ -54,7 +54,24 @@ const stripKnownSpecTag = function (value) {
   return value;
 };
 
-define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
+define([
+  "shared/gw_common",
+  "shared/gw_inventory",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GW, GWInventory, gwoUnit) {
+  if (!model.gwoSpecs) {
+    model.gwoSpecs = [];
+  }
+  // files not assigned by default that we wish to mod
+  model.gwoSpecs.push(
+    gwoUnit.fireflyAmmo,
+    gwoUnit.fireflyWeapon,
+    gwoUnit.orcaTorpedo,
+    gwoUnit.orcaTorpedoAmmo,
+    gwoUnit.skitterAmmo,
+    gwoUnit.skitterWeapon
+  );
+
   const loadInventoryFromRecord = function (record) {
     const inventory = new GWInventory();
     inventory.load(_.cloneDeep(record.inventory));
@@ -78,9 +95,10 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       const playerX1AIUnitMap = titans
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
+      const playerSpecs = inventory.units().concat(model.gwoSpecs);
 
       GW.specs
-        .genUnitSpecs(inventory.units(), playerTag)
+        .genUnitSpecs(playerSpecs, playerTag)
         .then(function (playerSpecFiles) {
           const classicPath = "/pa/ai/unit_maps/ai_unit_map.json" + playerTag;
           const x1Path = "/pa/ai/unit_maps/ai_unit_map_x1.json" + playerTag;
