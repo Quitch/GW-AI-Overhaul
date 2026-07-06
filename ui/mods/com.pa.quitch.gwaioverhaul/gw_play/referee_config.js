@@ -164,43 +164,31 @@ const setupAiTags = function (ai) {
   return aiTag;
 };
 
-const checkInventoriesForCard = function (inventory, cardId, game) {
-  const coopPlayerInventoryData =
-    game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
-      ? game.coopPlayerInventoryData()
-      : [];
-  return (
-    inventory.hasCard(cardId) ||
-    _.some(coopPlayerInventoryData, function (data) {
-      return _.some(data.inventory.cards, { id: cardId });
-    })
-  );
-};
-
-const modifyPlanets = function (inventory, planets, game) {
-  const canGlassPlanets = checkInventoriesForCard(
-    inventory,
-    "gwaio_enable_orbitalbombardment",
-    game
-  );
-  const canFloodPlanets =
-    checkInventoriesForCard(inventory, "gwaio_enable_tsunami", game) ||
-    checkInventoriesForCard(inventory, "gwaio_start_naval", game);
-
-  if (canGlassPlanets) {
-    planets = glassPlanets(planets);
-  }
-  if (canFloodPlanets) {
-    planets = floodPlanets(planets);
-  }
-
-  return planets;
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (gwoColour, gwoAI) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (gwoColour, gwoAI, gwoCards) {
+  const modifyPlanets = function (inventory, planets, game) {
+    const canGlassPlanets = gwoCards.hasCard(
+      inventory,
+      "gwaio_enable_orbitalbombardment",
+      game
+    );
+    const canFloodPlanets =
+      gwoCards.hasCard(inventory, "gwaio_enable_tsunami", game) ||
+      gwoCards.hasCard(inventory, "gwaio_start_naval", game);
+
+    if (canGlassPlanets) {
+      planets = glassPlanets(planets);
+    }
+    if (canFloodPlanets) {
+      planets = floodPlanets(planets);
+    }
+
+    return planets;
+  };
+
   const setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
@@ -349,17 +337,17 @@ define([
       system: currentStar.system(),
       land_anywhere:
         ai.landAnywhere ||
-        checkInventoriesForCard(inventory, "gwaio_enable_landanywhere", game),
+        gwoCards.hasCard(inventory, "gwaio_enable_landanywhere", game),
       bounty_mode:
         ai.bountyMode ||
-        checkInventoriesForCard(inventory, "gwaio_enable_bounties", game),
+        gwoCards.hasCard(inventory, "gwaio_enable_bounties", game),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
         ai.suddenDeath ||
-        checkInventoriesForCard(inventory, "gwaio_enable_suddendeath", game),
+        gwoCards.hasCard(inventory, "gwaio_enable_suddendeath", game),
       eradication_mode:
         ai.eradicationMode ||
-        checkInventoriesForCard(inventory, "gwaio_enable_eradication", game),
+        gwoCards.hasCard(inventory, "gwaio_enable_eradication", game),
       eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
       eradication_mode_factories: ai.eradicationModeFactories,
       eradication_mode_fabricators: ai.eradicationModeFabbers,

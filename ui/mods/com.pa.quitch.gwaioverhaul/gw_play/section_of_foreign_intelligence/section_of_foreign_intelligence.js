@@ -153,53 +153,6 @@ function gwoIntelligence() {
       return append;
     };
 
-    const checkInventoriesForCard = function (inventory, cardId) {
-      const game = model.game();
-      const coopPlayerInventoryData =
-        game.coopPlayerInventoryData &&
-        _.isFunction(game.coopPlayerInventoryData)
-          ? game.coopPlayerInventoryData()
-          : [];
-      return (
-        inventory.hasCard(cardId) ||
-        _.some(coopPlayerInventoryData, function (data) {
-          return _.some(data.inventory.cards, { id: cardId });
-        })
-      );
-    };
-
-    const convertGameMModifiersToName = function (ai, inventory) {
-      const gameModifiers = [];
-
-      if (
-        ai.bountyMode ||
-        checkInventoriesForCard(inventory, "gwaio_enable_bounties")
-      ) {
-        gameModifiers.push(loc("!LOC:Bounties"));
-      }
-      if (
-        ai.landAnywhere ||
-        checkInventoriesForCard(inventory, "gwaio_enable_landanywhere")
-      ) {
-        gameModifiers.push(loc("!LOC:Land Anywhere"));
-      }
-      if (
-        ai.suddenDeath ||
-        checkInventoriesForCard(inventory, "gwaio_enable_suddendeath")
-      ) {
-        gameModifiers.push(loc("!LOC:Sudden Death"));
-      }
-      if (
-        ai.eradicationMode ||
-        checkInventoriesForCard(inventory, "gwaio_enable_eradication")
-      ) {
-        gameModifiers.push(
-          loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
-        );
-      }
-      return gameModifiers;
-    };
-
     const convertBuffNumberToName = function (ai) {
       const buffs = ai.typeOfBuffs;
       const guardians = ai.mirrorMode;
@@ -239,8 +192,11 @@ function gwoIntelligence() {
     };
 
     requireGW(
-      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
-      function (gwoColour) {
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+      ],
+      function (gwoColour, gwoCards) {
         const url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -249,6 +205,38 @@ function gwoIntelligence() {
           locTree($(".section-of-foreign-intelligence"));
           ko.applyBindings(model, $fi[0]);
         });
+
+        const convertGameMModifiersToName = function (ai, inventory) {
+          const gameModifiers = [];
+
+          if (
+            ai.bountyMode ||
+            gwoCards.hasCard(inventory, "gwaio_enable_bounties")
+          ) {
+            gameModifiers.push(loc("!LOC:Bounties"));
+          }
+          if (
+            ai.landAnywhere ||
+            gwoCards.hasCard(inventory, "gwaio_enable_landanywhere")
+          ) {
+            gameModifiers.push(loc("!LOC:Land Anywhere"));
+          }
+          if (
+            ai.suddenDeath ||
+            gwoCards.hasCard(inventory, "gwaio_enable_suddendeath")
+          ) {
+            gameModifiers.push(loc("!LOC:Sudden Death"));
+          }
+          if (
+            ai.eradicationMode ||
+            gwoCards.hasCard(inventory, "gwaio_enable_eradication")
+          ) {
+            gameModifiers.push(
+              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+            );
+          }
+          return gameModifiers;
+        };
 
         var factionIndex = 0;
 

@@ -128,4 +128,18 @@ define({
       });
     });
   },
+
+  hasCard: function (inventory, cardId) {
+    const game = model.game();
+    const coopPlayerInventoryData =
+      game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
+        ? game.coopPlayerInventoryData()
+        : [];
+    return (
+      inventory.hasCard(cardId) ||
+      _.some(coopPlayerInventoryData, function (data) {
+        return _.some(data.inventory.cards, { id: cardId });
+      })
+    );
+  },
 });
