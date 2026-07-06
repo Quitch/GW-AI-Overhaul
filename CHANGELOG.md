@@ -9,7 +9,7 @@
 - Guardians use the tech of all players
 - Planet modifying tech is used no matter which player holds it
 - Game settings modifying tech is used no matter which player holds it
-- Viewers will get their own tech in battle not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
+- Viewers will get their own tech in battle and not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
 
 ## v5.89.0 - 2026-07-05
 
