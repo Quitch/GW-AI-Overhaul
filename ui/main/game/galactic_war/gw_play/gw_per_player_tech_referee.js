@@ -1,9 +1,9 @@
-var armyHasAI = function (army) {
+const armyHasAI = function (army) {
   return !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
 };
 
-var getConnectedPlayerCount = function (options) {
-  var connectedClients = options && options.connectedClients;
+const getConnectedPlayerCount = function (options) {
+  const connectedClients = options && options.connectedClients;
   if (_.isArray(connectedClients) && connectedClients.length) {
     return connectedClients.length;
   }
@@ -12,8 +12,8 @@ var getConnectedPlayerCount = function (options) {
   return 0;
 };
 
-var collectHumanArmies = function (config) {
-  var humanArmies = [];
+const collectHumanArmies = function (config) {
+  const humanArmies = [];
 
   _.forEach(config.armies, function (army) {
     if (!armyHasAI(army)) {
@@ -24,7 +24,7 @@ var collectHumanArmies = function (config) {
   return humanArmies;
 };
 
-var getPlayerTagGivenIndex = function (index) {
+const getPlayerTagGivenIndex = function (index) {
   // Host is still .player, and then subsequent players are .player0, .player1, etc.
   if (index === 0) {
     return ".player";
@@ -33,11 +33,11 @@ var getPlayerTagGivenIndex = function (index) {
   }
 };
 
-var stringEndsWith = function (value, suffix) {
+const stringEndsWith = function (value, suffix) {
   return _.isString(value) && value.slice(-suffix.length) === suffix;
 };
 
-var stripKnownSpecTag = function (value) {
+const stripKnownSpecTag = function (value) {
   if (!_.isString(value)) {
     return value;
   }
@@ -46,7 +46,7 @@ var stripKnownSpecTag = function (value) {
     return value.slice(0, -".player".length);
   }
 
-  var match = value.match(/\.player\d+$/);
+  const match = value.match(/\.player\d+$/);
   if (match) {
     return value.slice(0, -match[0].length);
   }
@@ -55,45 +55,45 @@ var stripKnownSpecTag = function (value) {
 };
 
 define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
-  var loadInventoryFromRecord = function (record) {
-    var inventory = new GWInventory();
+  const loadInventoryFromRecord = function (record) {
+    const inventory = new GWInventory();
     inventory.load(_.cloneDeep(record.inventory));
     return inventory;
   };
 
   // Helper function which takes in a player's inventory and their tag,
   // and generates the appropriate unit specs.
-  var generateUnitSpecsForPlayer = function (inventory, playerTag) {
-    var done = $.Deferred();
-    var titans = api.content.usingTitans();
-    var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
-    var aiX1MapLoad = titans
+  const generateUnitSpecsForPlayer = function (inventory, playerTag) {
+    const done = $.Deferred();
+    const titans = api.content.usingTitans();
+    const aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
+    const aiX1MapLoad = titans
       ? $.get("spec://pa/ai/unit_maps/ai_unit_map_x1.json")
       : {};
     $.when(aiMapLoad, aiX1MapLoad).then(function (aiMapGet, aiX1MapGet) {
-      var aiUnitMap = parse(aiMapGet[0]);
-      var aiX1UnitMap = parse(aiX1MapGet[0]);
+      const aiUnitMap = parse(aiMapGet[0]);
+      const aiX1UnitMap = parse(aiX1MapGet[0]);
 
-      var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-      var playerX1AIUnitMap = titans
+      const playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
+      const playerX1AIUnitMap = titans
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
 
       GW.specs
         .genUnitSpecs(inventory.units(), playerTag)
         .then(function (playerSpecFiles) {
-          var classicPath = "/pa/ai/unit_maps/ai_unit_map.json" + playerTag;
-          var x1Path = "/pa/ai/unit_maps/ai_unit_map_x1.json" + playerTag;
+          const classicPath = "/pa/ai/unit_maps/ai_unit_map.json" + playerTag;
+          const x1Path = "/pa/ai/unit_maps/ai_unit_map_x1.json" + playerTag;
 
-          var playerFilesClassic = {};
+          const playerFilesClassic = {};
           playerFilesClassic[classicPath] = playerAIUnitMap;
 
-          var playerFilesX1 = {};
+          const playerFilesX1 = {};
           if (titans) {
             playerFilesX1[x1Path] = playerX1AIUnitMap;
           }
 
-          var playerFiles = _.assign(
+          const playerFiles = _.assign(
             {},
             playerFilesClassic,
             playerFilesX1,
@@ -145,13 +145,13 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
   //             length must match the number of prepared human armies.
   //             Each client object within the array has an id, name, role ('host' or 'viewer')
   //             and loading status (loading = true or loading = false).
-  var apply = function (referee, options) {
-    var done = $.Deferred();
+  const apply = function (referee, options) {
+    const done = $.Deferred();
 
     // ERROR CHECKING
     // ==============
 
-    var config = referee && _.isFunction(referee.config) && referee.config();
+    const config = referee && _.isFunction(referee.config) && referee.config();
 
     if (!config || !_.isArray(config.armies)) {
       console.error(
@@ -179,7 +179,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var playerCount = getConnectedPlayerCount(options);
+    const playerCount = getConnectedPlayerCount(options);
     if (playerCount < 1) {
       console.error(
         "[GW COOP] Per-player tech referee has no connected players."
@@ -190,9 +190,9 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var connectedClients = options.connectedClients;
+    const connectedClients = options.connectedClients;
 
-    var sharedControl = !!options.sharedControl;
+    const sharedControl = !!options.sharedControl;
     if (sharedControl) {
       console.error(
         "[GW COOP] Per-player tech referee does not support shared control."
@@ -203,7 +203,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var humanArmies = collectHumanArmies(config);
+    const humanArmies = collectHumanArmies(config);
     if (humanArmies.length < 1) {
       console.error("[GW COOP] Per-player tech referee has no human armies.");
       config.per_player_tech_ready = false;
@@ -222,7 +222,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var files = _.isFunction(referee.files) && referee.files();
+    const files = _.isFunction(referee.files) && referee.files();
 
     if (!files || !_.isObject(files)) {
       console.error("[GW COOP] Per-player tech referee has no files.");
@@ -232,7 +232,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var game = _.isFunction(referee.game) && referee.game();
+    const game = _.isFunction(referee.game) && referee.game();
 
     if (!game) {
       console.error("[GW COOP] Per-player tech referee has no game.");
@@ -242,7 +242,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var inventory = _.isFunction(game.inventory) && game.inventory();
+    const inventory = _.isFunction(game.inventory) && game.inventory();
 
     if (!inventory) {
       console.error("[GW COOP] Per-player tech referee has no inventory.");
@@ -267,7 +267,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var player = config.player;
+    const player = config.player;
 
     if (!player || !_.isObject(player)) {
       console.error("[GW COOP] Per-player tech referee has no player.");
@@ -277,7 +277,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var playerCommander = player.commander;
+    const playerCommander = player.commander;
 
     if (!playerCommander || !_.isString(playerCommander)) {
       console.error(
@@ -289,7 +289,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       return done.promise();
     }
 
-    var playerColor = inventory.getTag("global", "playerColor");
+    const playerColor = inventory.getTag("global", "playerColor");
 
     if (!_.isArray(playerColor) || playerColor.length < 2) {
       console.error("[GW COOP] Per-player tech referee has no player color.");
@@ -302,12 +302,12 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     // ERROR CHECKING DONE
     // ===================
 
-    var playerTags = _.map(_.range(0, playerCount), getPlayerTagGivenIndex);
+    const playerTags = _.map(_.range(0, playerCount), getPlayerTagGivenIndex);
 
-    var baseCommander = stripKnownSpecTag(playerCommander);
+    const baseCommander = stripKnownSpecTag(playerCommander);
 
-    var playerInventories = [];
-    var playerCommanders = [];
+    const playerInventories = [];
+    const playerCommanders = [];
     playerInventories[0] = inventory;
     playerCommanders[0] = baseCommander;
 
@@ -321,8 +321,8 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
       clientIndex < connectedClients.length;
       clientIndex++
     ) {
-      var connectedClient = connectedClients[clientIndex];
-      var inventoryDataRecord =
+      const connectedClient = connectedClients[clientIndex];
+      const inventoryDataRecord =
         _.isFunction(game.findCoopPlayerInventoryData) &&
         game.findCoopPlayerInventoryData(connectedClient);
 
@@ -351,7 +351,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
         return done.promise();
       }
 
-      var loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
+      const loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
       if (
         !_.isFunction(loadedInventory.units) ||
         !_.isFunction(loadedInventory.mods) ||
@@ -374,7 +374,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     }
 
     // Keeps track of all the promises for generating player-specific specs.
-    var playerSpecPromises = [];
+    const playerSpecPromises = [];
 
     // We've already generated the .player tag, so we just need to generate subsequent tags.
     for (var i = 1; i < playerTags.length; i++) {
@@ -385,15 +385,15 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
     }
 
     $.when.apply($, playerSpecPromises).then(function () {
-      var thisPlayersFiles = Array.prototype.slice.call(arguments);
-      var generatedFiles = {};
+      const thisPlayersFiles = Array.prototype.slice.call(arguments);
+      const generatedFiles = {};
 
       // Arguments is an array of the resolved values from the promises.
       for (var element of thisPlayersFiles) {
         _.assign(generatedFiles, element);
       }
 
-      var mergedFiles = _.assign({}, files, generatedFiles);
+      const mergedFiles = _.assign({}, files, generatedFiles);
 
       referee.files(mergedFiles);
       config.files = mergedFiles;
@@ -412,7 +412,7 @@ define(["shared/gw_common", "shared/gw_inventory"], function (GW, GWInventory) {
         // Now for each player we need to generate their minions and give those minions
         // this player's tag as well.
 
-        var thisPlayersInventory = playerInventories[index];
+        const thisPlayersInventory = playerInventories[index];
         _.forEach(thisPlayersInventory.minions(), function (minion) {
           // We skip the host's minions since those are already included in the config from the main referee.
           // We check if we're the host by seeing if the tag is .player, since the host is always .player.
