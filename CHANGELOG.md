@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Scale up boss numbers by the number of configured players
+- Scale up boss commander numbers by the number of configured players
 - Chance of being dealt a subcommander now considers all player inventories
 
 ### Bugfix
@@ -12,8 +12,7 @@
 - Don't deal Sub Commander Fabber Tech when Queller is the allied AI
 - Cluster use the same colour for all systems
 - Guardians use the tech of all players
-- Planet modifying tech is used no matter which player holds it
-- Game settings modifying tech is used no matter which player holds it
+- Planet and game settings tech is used no matter which player holds it
 - Viewers will get their own tech in battle and not that of the second player - with thanks to ImmortalLegends (TheClump) and bobmanzoidzo
 
 ## v5.89.0 - 2026-07-05
