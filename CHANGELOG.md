@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- GWO sets a default lobby name to distinguish it from vanilla campaigns
+
 ## v5.90.1 - 2026-07-07
 
 ### Bugfix
