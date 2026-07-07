@@ -340,8 +340,8 @@ define([
       clientIndex < connectedClients.length;
       clientIndex++
     ) {
-      const connectedClient = connectedClients[clientIndex];
-      const inventoryDataRecord =
+      var connectedClient = connectedClients[clientIndex];
+      var inventoryDataRecord =
         _.isFunction(game.findCoopPlayerInventoryData) &&
         game.findCoopPlayerInventoryData(connectedClient);
 
@@ -370,7 +370,7 @@ define([
         return done.promise();
       }
 
-      const loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
+      var loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
       if (
         !_.isFunction(loadedInventory.units) ||
         !_.isFunction(loadedInventory.mods) ||
