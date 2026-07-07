@@ -5,7 +5,7 @@
 ### Changed
 
 - GWO sets a default lobby name to distinguish it from vanilla campaigns
-- Players' now display their loadout in the character field on the GWO panel when playing co-op with separate tech
+- Players' now display their loadout in the character field on the GWO panel
 
 ## v5.90.1 - 2026-07-07
 
