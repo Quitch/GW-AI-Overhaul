@@ -91,7 +91,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        model.gwoVersion = ko.observable("5.90.1");
+        model.gwoVersion = ko.observable("5.91.0");
 
         /* Co-op Information */
         const coopText = function (setting) {
