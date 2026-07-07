@@ -217,9 +217,9 @@ function gwoWarInfoPanel(gwoSettings) {
             commanders = _.map(
               model.gwCampaignConnectedClients(),
               function (client) {
-                var commanderCharacter = ko.observable(human);
+                const commanderCharacter = ko.observable(human);
 
-                var record =
+                const record =
                   game.findCoopPlayerInventoryData &&
                   game.findCoopPlayerInventoryData({
                     id: client.id,
