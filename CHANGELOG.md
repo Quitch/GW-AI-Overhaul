@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Viewers will get their own tech in battle and not that of the second player - but like, for real this time
+
 ## v5.90.0 - 2026-07-06
 
 ### Changed
