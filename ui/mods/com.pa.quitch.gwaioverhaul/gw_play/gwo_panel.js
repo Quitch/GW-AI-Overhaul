@@ -204,12 +204,12 @@ function gwoWarInfoPanel(gwoSettings) {
           const playerColour = gwoColour.rgb(
             inventory.getTag("global", "playerColor")
           );
-          const character = loc("!LOC:Human");
+          const human = loc("!LOC:Human");
           var commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
-              character: loc("!LOC:Human"),
+              character: human,
             },
           ];
 
@@ -217,10 +217,25 @@ function gwoWarInfoPanel(gwoSettings) {
             commanders = _.map(
               model.gwCampaignConnectedClients(),
               function (client) {
+                var commanderCharacter = ko.observable(human);
+
+                var record =
+                  game.findCoopPlayerInventoryData &&
+                  game.findCoopPlayerInventoryData({
+                    id: client.id,
+                    name: client.name,
+                  });
+
+                if (record && record.loadoutCardId) {
+                  requireGW(["cards/" + record.loadoutCardId], function (card) {
+                    commanderCharacter(loc(card.summarize()));
+                  });
+                }
+
                 return {
                   name: client.name,
                   color: playerColour,
-                  character: character,
+                  character: commanderCharacter,
                 };
               }
             );
