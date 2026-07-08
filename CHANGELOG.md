@@ -10,6 +10,7 @@
 
 - AI Settings headers use translated text
 - If more players connect than the war is scaled for you will not earn a loadout badge at the end of the war
+- Only the host is eligible to earn a loadout badge when per-player tech is in use - I will look to change this later
 
 ### Bugfix
 
