@@ -889,6 +889,8 @@ function gwoSetup() {
               model.gwoDifficultySettings.systemScaling();
             originSystem.gwaio.simpleSystems =
               model.gwoDifficultySettings.simpleSystems();
+            originSystem.gwaio.largePlanets =
+              model.gwoDifficultySettings.largePlanets();
             originSystem.gwaio.easierStart =
               model.gwoDifficultySettings.easierStart();
             if (model.devMode() === true) {

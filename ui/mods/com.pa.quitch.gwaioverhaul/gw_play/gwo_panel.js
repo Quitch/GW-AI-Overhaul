@@ -50,6 +50,11 @@ function gwoWarInfoPanel(gwoSettings) {
     );
     options(
       model.gwoOptions,
+      model.gwoSettings.largePlanets,
+      "!LOC:Large Planets"
+    );
+    options(
+      model.gwoOptions,
       model.gwoSettings.easierStart,
       "!LOC:Easier start"
     );
