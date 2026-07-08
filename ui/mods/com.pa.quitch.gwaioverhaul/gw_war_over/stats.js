@@ -12,8 +12,10 @@ function gwoWarOverLoadoutStats() {
     const game = model.game();
     const galaxy = game.galaxy();
     const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const noBadge =
+      gwoSettings && (gwoSettings.cheatsUsed || gwoSettings.tooManyPlayers);
 
-    if (!gwoSettings || gwoSettings.cheatsUsed || game.gameState() !== "won") {
+    if (!gwoSettings || noBadge || game.gameState() !== "won") {
       return;
     }
 

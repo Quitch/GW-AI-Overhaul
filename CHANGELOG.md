@@ -9,6 +9,7 @@
 ### Changed
 
 - AI Settings headers use translated text
+- If more players connect than the war is scaled for you will not earn a loadout badge at the end of the war
 
 ### Bugfix
 

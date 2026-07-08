@@ -26,6 +26,24 @@ function gwoWarInfoPanel(gwoSettings) {
       "GWO Co-op - " + loc("Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
 
+    model.gwCampaignConnectedClients.subscribe(function () {
+      const playerScaling = gwoSettings.coopPlayerScalingCount;
+      if (
+        model.gwCampaignConnectedClients &&
+        _.isFunction(model.gwCampaignConnectedClients) &&
+        playerScaling &&
+        model.gwCampaignConnectedClients().length > playerScaling
+      ) {
+        gwoSettings.tooManyPlayers = true;
+        requireGW(
+          ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
+          function (gwoSave) {
+            gwoSave(game, true);
+          }
+        );
+      }
+    });
+
     const options = function (optionsList, setting, text) {
       if (setting) {
         optionsList.push(loc(text));
@@ -75,6 +93,7 @@ function gwoWarInfoPanel(gwoSettings) {
           const gwoSettings = model.gwoSettings;
           if (gwoSettings && !gwoSettings.cheatsUsed) {
             gwoSettings.cheatsUsed = true;
+            gwoSettings.noBadge = true;
             options(
               model.gwoOptions,
               model.gwoSettings.cheatsUsed,
