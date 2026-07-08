@@ -42,6 +42,20 @@
     </label>
   </div>
   <div>
+    <label style="text-transform: none" id="large-planets">
+      <input
+        type="checkbox"
+        data-bind="checked: $root.gwoDifficultySettings.largePlanets"
+      />
+      <loc>Large Planets</loc>
+      <span
+        class="info_tip"
+        data-bind="tooltip: '!LOC:Use larger planets and systems.'"
+        >?</span
+      >
+    </label>
+  </div>
+  <div>
     <label style="text-transform: none" id="easier-start">
       <input
         type="checkbox"

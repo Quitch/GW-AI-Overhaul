@@ -23,8 +23,26 @@ function gwoWarInfoPanel(gwoSettings) {
       ? playerCount + " " + playerOrPlayers
       : loc("!LOC:Unknown");
     const lobbyTitle =
-      "GWO Co-op - " + model.gwoDifficulty + " " + loc("Difficulty");
+      "GWO Co-op - " + loc("Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
+
+    model.gwCampaignConnectedClients.subscribe(function () {
+      const playerScaling = gwoSettings.coopPlayerScalingCount;
+      if (
+        model.gwCampaignConnectedClients &&
+        _.isFunction(model.gwCampaignConnectedClients) &&
+        playerScaling &&
+        model.gwCampaignConnectedClients().length > playerScaling
+      ) {
+        gwoSettings.tooManyPlayers = true;
+        requireGW(
+          ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
+          function (gwoSave) {
+            gwoSave(game, true);
+          }
+        );
+      }
+    });
 
     const options = function (optionsList, setting, text) {
       if (setting) {
@@ -50,6 +68,11 @@ function gwoWarInfoPanel(gwoSettings) {
     );
     options(
       model.gwoOptions,
+      model.gwoSettings.largePlanets,
+      "!LOC:Large Planets"
+    );
+    options(
+      model.gwoOptions,
       model.gwoSettings.easierStart,
       "!LOC:Easier start"
     );
@@ -70,6 +93,7 @@ function gwoWarInfoPanel(gwoSettings) {
           const gwoSettings = model.gwoSettings;
           if (gwoSettings && !gwoSettings.cheatsUsed) {
             gwoSettings.cheatsUsed = true;
+            gwoSettings.noBadge = true;
             options(
               model.gwoOptions,
               model.gwoSettings.cheatsUsed,
@@ -91,7 +115,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        model.gwoVersion = ko.observable("5.91.0");
+        model.gwoVersion = ko.observable("5.92.0");
 
         /* Co-op Information */
         const coopText = function (setting) {
@@ -217,9 +241,9 @@ function gwoWarInfoPanel(gwoSettings) {
             commanders = _.map(
               model.gwCampaignConnectedClients(),
               function (client) {
-                var commanderCharacter = ko.observable(human);
+                const commanderCharacter = ko.observable(human);
 
-                var record =
+                const record =
                   game.findCoopPlayerInventoryData &&
                   game.findCoopPlayerInventoryData({
                     id: client.id,

@@ -1,11 +1,28 @@
 # CHANGELOG
 
+## v5.92.0 - 2026-07-08
+
+### Added
+
+- Option to force use of larger planets and systems from the pool
+
+### Changed
+
+- AI Settings headers use translated text
+- If more players connect than the war is scaled for you will not earn a loadout badge at the end of the war
+- Only the host is eligible to earn a loadout badge when per-player tech is in use - I will look to change this later
+
+### Bugfix
+
+- Change default lobby title so that "Difficulty" is translated
+- Hide Easy Systems option when Shared Systems for Galactic War is active
+
 ## v5.91.0 - 2026-07-07
 
 ### Changed
 
 - GWO sets a default lobby name to distinguish it from vanilla campaigns
-- Players' now display their loadout in the character field on the GWO panel when playing co-op with separate tech
+- Players' now display their loadout in the character field on the GWO panel
 
 ## v5.90.1 - 2026-07-07
 

@@ -37,8 +37,10 @@ function gwoSetup() {
         // Remove features this mod can't use
         $("#system-scaling").remove();
         model.gwoDifficultySettings.systemScaling(false);
-        $("#gwo-system-size").remove();
+        $("#system-size").remove();
         model.gwoDifficultySettings.simpleSystems(false);
+        $("#large-planets").remove();
+        model.gwoDifficultySettings.largePlanets(false);
       }
     });
 
@@ -351,7 +353,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.91.0";
+          const version = "5.92.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -381,6 +383,7 @@ function gwoSetup() {
             aiFactions = _.sample(aiFactions, numFactions);
           }
           const playerCount = game.coopPlayers();
+          const largePlanets = model.gwoDifficultySettings.largePlanets();
 
           model.updateCommander();
           game
@@ -399,6 +402,7 @@ function gwoSetup() {
             maxStarDistance: 4,
             maxConnections: 4,
             minimumDistanceBonus: 8,
+            largePlanets: largePlanets,
           });
 
           const dealStartCard = buildGalaxy.then(function (galaxy) {
@@ -885,6 +889,8 @@ function gwoSetup() {
               model.gwoDifficultySettings.systemScaling();
             originSystem.gwaio.simpleSystems =
               model.gwoDifficultySettings.simpleSystems();
+            originSystem.gwaio.largePlanets =
+              model.gwoDifficultySettings.largePlanets();
             originSystem.gwaio.easierStart =
               model.gwoDifficultySettings.easierStart();
             if (model.devMode() === true) {
