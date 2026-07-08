@@ -6,6 +6,10 @@
 
 - Option to force use of larger planets and systems from the pool
 
+### Changed
+
+- AI Settings headers use translated text
+
 ### Bugfix
 
 - Change default lobby title so that "Difficulty" is translated
