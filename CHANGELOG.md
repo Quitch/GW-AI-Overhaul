@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Option to force use of larger planets and systems from the pool
+
 ### Bugfix
 
 - Change default lobby title so that "Difficulty" is translated.

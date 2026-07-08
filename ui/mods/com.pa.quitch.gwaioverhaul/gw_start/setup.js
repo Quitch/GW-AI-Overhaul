@@ -39,6 +39,8 @@ function gwoSetup() {
         model.gwoDifficultySettings.systemScaling(false);
         $("#gwo-system-size").remove();
         model.gwoDifficultySettings.simpleSystems(false);
+        $("#large-planets").remove();
+        model.gwoDifficultySettings.largePlanets(false);
       }
     });
 
@@ -381,6 +383,7 @@ function gwoSetup() {
             aiFactions = _.sample(aiFactions, numFactions);
           }
           const playerCount = game.coopPlayers();
+          const largePlanets = model.gwoDifficultySettings.largePlanets();
 
           model.updateCommander();
           game
@@ -399,6 +402,7 @@ function gwoSetup() {
             maxStarDistance: 4,
             maxConnections: 4,
             minimumDistanceBonus: 8,
+            largePlanets: largePlanets,
           });
 
           const dealStartCard = buildGalaxy.then(function (galaxy) {

@@ -58,6 +58,7 @@ function gwoUI() {
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
+      largePlanets: ko.observable(false),
     };
 
     var difficultySettings = model.gwoDifficultySettings;

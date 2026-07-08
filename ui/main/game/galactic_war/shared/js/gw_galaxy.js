@@ -254,6 +254,12 @@ define([
         } else {
           systemSize = star.distance() + coopSystemPlayerBonus;
         }
+        if (
+          model.gwoDifficultySettings &&
+          model.gwoDifficultySettings.largePlanets()
+        ) {
+          systemSize += 4;
+        }
         return StarSystemTemplates.generate({
           players: systemSize,
           seed: rng() * rng(),
