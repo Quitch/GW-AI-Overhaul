@@ -37,7 +37,7 @@ function gwoSetup() {
         // Remove features this mod can't use
         $("#system-scaling").remove();
         model.gwoDifficultySettings.systemScaling(false);
-        $("#gwo-system-size").remove();
+        $("#system-size").remove();
         model.gwoDifficultySettings.simpleSystems(false);
         $("#large-planets").remove();
         model.gwoDifficultySettings.largePlanets(false);

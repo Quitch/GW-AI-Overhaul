@@ -8,7 +8,8 @@
 
 ### Bugfix
 
-- Change default lobby title so that "Difficulty" is translated.
+- Change default lobby title so that "Difficulty" is translated
+- Hide Easy Systems option when Shared Systems for Galactic War is active
 
 ## v5.91.0 - 2026-07-07
 
