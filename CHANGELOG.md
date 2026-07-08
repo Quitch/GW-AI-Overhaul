@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v5.92.1 - 2026-07-08
+
+### Bugfix
+
+- Fix UI failure on war over screen
+
 ## v5.92.0 - 2026-07-08
 
 ### Added
