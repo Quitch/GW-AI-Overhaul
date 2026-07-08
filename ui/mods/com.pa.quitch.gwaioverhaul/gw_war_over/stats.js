@@ -15,14 +15,7 @@ function gwoWarOverLoadoutStats() {
     const noBadge =
       gwoSettings && (gwoSettings.cheatsUsed || gwoSettings.tooManyPlayers);
 
-    if (
-      !gwoSettings ||
-      noBadge ||
-      game.gameState() !== "won" ||
-      (model.gwCampaignActive() &&
-        !model.isCampaignHost() &&
-        model.gwCampaignPerPlayerTechCards())
-    ) {
+    if (!gwoSettings || noBadge || game.gameState() !== "won") {
       return;
     }
 
