@@ -239,7 +239,7 @@ define([
 
       // Generate the planets, increasing the size based on the distance from the start.
       const starGenerators = _.map(self.stars(), function (star) {
-        var systemSize = 0;
+        var systemSize;
         const coopSystemPlayerBonus = Math.max(
           0,
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
