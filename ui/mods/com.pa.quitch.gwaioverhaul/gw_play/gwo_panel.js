@@ -23,7 +23,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ? playerCount + " " + playerOrPlayers
       : loc("!LOC:Unknown");
     const lobbyTitle =
-      "GWO Co-op - " + model.gwoDifficulty + " " + loc("Difficulty");
+      "GWO Co-op - " + loc("Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
 
     const options = function (optionsList, setting, text) {

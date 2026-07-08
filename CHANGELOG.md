@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Change default lobby title so that "Difficulty" is translated.
+
 ## v5.91.0 - 2026-07-07
 
 ### Changed
