@@ -11,6 +11,7 @@
 
 - Available Tech properly synced between all players
 - When multiple players have a full tech bank they will all be offered a new card slot
+- Viewers can now select the General Commander again
 
 ## v5.92.1 - 2026-07-08
 

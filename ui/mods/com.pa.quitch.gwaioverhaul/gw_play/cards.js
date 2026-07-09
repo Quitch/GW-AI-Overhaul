@@ -1110,39 +1110,20 @@ function gwoCard() {
           return deferred.promise();
         };
 
-        const setupGeneralCommander = function () {
-          const cards = inventory.cards();
-          if (
-            cards.length === 1 &&
-            cards[0].id === "gwc_start_subcdr" &&
-            !cards[0].minions
-          ) {
-            const subcommanderAI = gwoSettings && gwoSettings.aiAlly;
-            _.times(2, function () {
-              const subcommander = _.cloneDeep(
-                _.sample(GWFactions[playerFaction].minions)
-              );
-              if (subcommanderAI === "Penchant") {
-                const penchantValues = gwoAI.penchants();
-                subcommander.character =
-                  subcommander.character +
-                  (" " + loc(penchantValues.penchantName));
-                subcommander.personality.personality_tags =
-                  subcommander.personality.personality_tags.concat(
-                    penchantValues.penchants
-                  );
-              }
-              cards.push({
-                id: "gwc_minion",
-                minion: subcommander,
-                unique: Math.random(),
-              });
+        requireGW(
+          [
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
+          ],
+          function (cardsStartSubcdr) {
+            const setupGeneralCommander = cardsStartSubcdr({
+              game: game,
+              gwoSettings: gwoSettings,
+              playerFaction: playerFaction,
+              inventory: inventory,
             });
-            inventory.applyCards();
-            gwoSave(game, false);
+            setupGeneralCommander();
           }
-        };
-        setupGeneralCommander();
+        );
 
         const dealCardToSelectableAIWhenWarStarts = function (settings) {
           if (settings && !settings.firstDealComplete) {
