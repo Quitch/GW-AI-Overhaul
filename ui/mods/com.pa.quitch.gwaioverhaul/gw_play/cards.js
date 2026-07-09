@@ -927,6 +927,10 @@ function gwoCard() {
         }
 
         const dealCardToSelectableAI = function (win, turnState) {
+          if (model.isCampaignViewer()) {
+            return;
+          }
+
           const deferred = $.Deferred();
 
           // Avoid running twice after winning a fight
