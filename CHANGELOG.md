@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Default Ally AI changed to Queller
+
 ## v5.92.1 - 2026-07-08
 
 ### Bugfix

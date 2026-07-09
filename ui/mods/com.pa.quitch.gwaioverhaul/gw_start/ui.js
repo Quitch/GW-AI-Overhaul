@@ -56,7 +56,7 @@ function gwoUI() {
       personalityTags: ko.observableArray(),
       aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
-      aiAlly: ko.observable("Penchant"),
+      aiAlly: ko.observable("Queller"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
     };
