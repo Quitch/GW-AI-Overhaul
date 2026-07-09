@@ -87,6 +87,8 @@ function gwoSetup() {
           return revenantsTags;
         case 4:
           return clusterTags;
+        default:
+          throw new Error("Undefined faction");
       }
     };
 
