@@ -87,6 +87,8 @@ function gwoSetup() {
           return revenantsTags;
         case 4:
           return clusterTags;
+        default:
+          throw new Error("Undefined faction");
       }
     };
 
@@ -353,7 +355,7 @@ function gwoSetup() {
           const busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.92.1";
+          const version = "5.93.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           const game = new GW.Game();
@@ -628,7 +630,7 @@ function gwoSetup() {
 
                 const dist = worker.star.distance();
 
-                numMinions = countMinions(mandatoryMinions, dist, minionMod);
+                numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
                 setAIPersonality(ai, difficulty);
                 ai.econ_rate = aiEconRate(
