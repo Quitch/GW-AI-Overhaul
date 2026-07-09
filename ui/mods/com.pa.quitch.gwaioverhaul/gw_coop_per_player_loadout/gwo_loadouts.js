@@ -8,6 +8,13 @@ function gwoLoadouts() {
   gwoLoadoutsLoaded = true;
 
   try {
+    // "Temporarily" until the dealing of its minions is fixed
+    const removeGeneralCommander = function (cards) {
+      return _.reject(cards, function (card) {
+        return card.id() === "gwc_start_subcdr";
+      });
+    };
+
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
@@ -15,12 +22,6 @@ function gwoLoadouts() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
       ],
       function (loadouts, GWInventory, gwoDeal) {
-        // "Temporarily" until the dealing of its minions is fixed
-        const removeGeneralCommander = function (cards) {
-          return _.reject(cards, function (card) {
-            return card.id() === "gwc_start_subcdr";
-          });
-        };
         const startCards = removeGeneralCommander(loadouts.startCards);
 
         model.startCards(startCards);
