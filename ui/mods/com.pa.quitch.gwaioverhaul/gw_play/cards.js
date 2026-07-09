@@ -380,7 +380,7 @@ function gwoCard() {
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
-        // GWDealer.chooseCards - use our deck
+        // dealer.chooseCards() replacement - use our deck
         const chooseCards = function (params) {
           const rng = params.rng || new Math.seedrandom();
           const count = params.count;
