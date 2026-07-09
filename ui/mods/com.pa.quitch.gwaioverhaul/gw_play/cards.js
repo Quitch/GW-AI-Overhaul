@@ -272,8 +272,24 @@ function gwoCard() {
       card,
       cardsDealt,
       dealAddSlot,
-      testRun
+      testRun,
+      systemCards // allow duplicates across players, but not within a single player's deal
     ) {
+      const cardsInSystem = _.isArray(systemCards)
+        ? systemCards
+        : model.currentSystemCardList();
+      const systemHasCard = _.some(cardsInSystem, function (systemCard) {
+        if (!systemCard) {
+          return false;
+        }
+
+        if (_.isFunction(systemCard.id)) {
+          return systemCard.id() === card.id;
+        }
+
+        return systemCard.id === card.id;
+      });
+
       // Never deal Additional Data Bank as a system's pre-dealt card
       if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
         return true;
@@ -283,16 +299,14 @@ function gwoCard() {
         return (
           inventory.hasCard(card.id) &&
           _.some(cardsDealt, { id: card.id }) &&
-          _.some(model.currentSystemCardList(), { id: card.id })
+          systemHasCard
         );
       }
 
       return (
         inventory.hasCard(card.id) ||
         _.some(cardsDealt, { id: card.id }) ||
-        _.some(model.currentSystemCardList(), function (systemCard) {
-          return systemCard.id() === card.id;
-        })
+        systemHasCard
       );
     };
 
@@ -488,6 +502,7 @@ function gwoCard() {
           const count = params.count;
           const star = params.star;
           const dealAddSlot = params.addSlot;
+          const systemCards = params.systemCards;
           const dealInventory = params.inventory || inventory;
           const cardContexts = {};
 
@@ -511,7 +526,8 @@ function gwoCard() {
                   card,
                   list,
                   dealAddSlot,
-                  false
+                  false,
+                  systemCards
                 );
 
                 if (match) {
@@ -733,6 +749,7 @@ function gwoCard() {
                 inventory: inventory,
                 count: cardsOffered,
                 star: star,
+                systemCards: [],
               }).then(function (cards) {
                 const pendingTechCards = {
                   star: starIndex,
@@ -967,6 +984,7 @@ function gwoCard() {
               inventory: playerInventory,
               count: cardCount,
               star: star,
+              systemCards: [],
             }).then(function (cards) {
               const updatedAt = _.now();
               const nextPendingTechCards = {
@@ -1065,6 +1083,10 @@ function gwoCard() {
                     count: 1,
                     star: system.star,
                     addSlot: false,
+                    systemCards:
+                      system.star && _.isFunction(system.star.cardList)
+                        ? system.star.cardList()
+                        : [],
                   }).then(function (card) {
                     system.star.cardList(card);
                     model.sendCampaignAction("sync_star_cards", {
@@ -1320,6 +1342,7 @@ function gwoCard() {
             count:
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
             star: star,
+            systemCards: star.cardList(),
           }).then(function (result) {
             var ok = true;
 

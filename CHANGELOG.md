@@ -5,10 +5,12 @@
 ### Changed
 
 - Default Ally AI changed to Queller
+- Multiple players can now be dealt the same card
 
 ### Bugfix
 
 - Available Tech properly synced between all players
+- When multiple players have a full tech bank they will all be offered a new card slot
 
 ## v5.92.1 - 2026-07-08
 
