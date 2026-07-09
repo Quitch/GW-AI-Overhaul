@@ -928,7 +928,7 @@ function gwoCard() {
 
         const dealCardToSelectableAI = function (win, turnState) {
           if (model.isCampaignViewer()) {
-            return;
+            return $.when().promise(); // already resolved jQuery promise
           }
 
           const deferred = $.Deferred();
