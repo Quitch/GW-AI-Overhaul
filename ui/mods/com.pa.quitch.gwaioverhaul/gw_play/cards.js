@@ -958,7 +958,7 @@ function gwoCard() {
                   }).then(function (card) {
                     system.star.cardList(card);
                     model.sendCampaignAction("sync_star_cards", {
-                      star: system.star,
+                      star: starIndex,
                       cards: system.star.cardList(),
                     });
                     return setCardName(system, card);
