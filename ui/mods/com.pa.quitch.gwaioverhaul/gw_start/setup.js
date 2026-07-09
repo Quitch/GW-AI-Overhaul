@@ -628,7 +628,7 @@ function gwoSetup() {
 
                 const dist = worker.star.distance();
 
-                numMinions = countMinions(mandatoryMinions, dist, minionMod);
+                numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
                 setAIPersonality(ai, difficulty);
                 ai.econ_rate = aiEconRate(
