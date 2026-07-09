@@ -6,6 +6,10 @@
 
 - Default Ally AI changed to Queller
 
+### Bugfix
+
+- Available Tech properly synced between all players
+
 ## v5.92.1 - 2026-07-08
 
 ### Bugfix

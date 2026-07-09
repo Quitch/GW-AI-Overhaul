@@ -296,14 +296,116 @@ function gwoCard() {
       );
     };
 
-    const setCardName = function (system, card) {
-      const deferred = $.Deferred();
-      if (!_.isEmpty(card)) {
-        requireGW(["cards/" + card[0].id], function (data) {
-          system.star.ai().cardName = loc(data.summarize());
-          deferred.resolve();
-        });
+    const setCardNameSyncOperator = "gwo_sync_star_card_name";
+
+    const sendSyncedStarCardName = function (starIndex, cardId) {
+      if (
+        !_.isNumber(starIndex) ||
+        _.isNaN(starIndex) ||
+        !_.isString(cardId) ||
+        !cardId.length ||
+        !model.sendCampaignHostOperator ||
+        !_.isFunction(model.isCampaignHost) ||
+        !_.isFunction(model.gwCampaignConnected)
+      ) {
+        return;
       }
+
+      model.sendCampaignHostOperator(setCardNameSyncOperator, {
+        star: starIndex,
+        card_id: cardId,
+      });
+    };
+
+    const setAiCardName = function (star, cardName) {
+      if (!star || !_.isFunction(star.ai)) {
+        return false;
+      }
+
+      const ai = star.ai();
+      if (!ai) {
+        return false;
+      }
+
+      ai.cardName = cardName;
+      return true;
+    };
+
+    const applyCardNameToStarIndex = function (starIndex, cardName) {
+      var applied = false;
+
+      const systems =
+        model.galaxy && _.isFunction(model.galaxy.systems)
+          ? model.galaxy.systems()
+          : undefined;
+      const system = _.isArray(systems) ? systems[starIndex] : undefined;
+      if (system && system.star) {
+        applied = setAiCardName(system.star, cardName) || applied;
+      }
+
+      const gameGalaxy =
+        game && _.isFunction(game.galaxy) ? game.galaxy() : undefined;
+      const stars =
+        gameGalaxy && _.isFunction(gameGalaxy.stars)
+          ? gameGalaxy.stars()
+          : undefined;
+      const gameStar = _.isArray(stars) ? stars[starIndex] : undefined;
+      applied = setAiCardName(gameStar, cardName) || applied;
+
+      return applied;
+    };
+
+    const isValidSyncedStarCardNamePayload = function (payload) {
+      return (
+        _.isNumber(payload.star) &&
+        !_.isNaN(payload.star) &&
+        _.isString(payload.card_id) &&
+        !!payload.card_id.length
+      );
+    };
+
+    const applySyncedStarCardName = function (operator) {
+      const payload = operator && operator.payload ? operator.payload : {};
+      if (!isValidSyncedStarCardNamePayload(payload)) {
+        console.error("[GW COOP] invalid synced star card name payload");
+        return;
+      }
+
+      requireGW(["cards/" + payload.card_id], function (data) {
+        if (!data || !_.isFunction(data.summarize)) {
+          console.error(
+            "[GW COOP] card summarize unavailable for synced card name id=" +
+              payload.card_id
+          );
+          return;
+        }
+
+        const cardName = loc(data.summarize());
+        if (!applyCardNameToStarIndex(payload.star, cardName)) {
+          console.error(
+            "[GW COOP] unable to apply synced star card name for star=" +
+              payload.star
+          );
+        }
+      });
+    };
+
+    const setCardName = function (system, card, starIndex) {
+      const deferred = $.Deferred();
+      const firstCard = card && card[0];
+      if (!firstCard || !firstCard.id) {
+        deferred.resolve();
+        return deferred.promise();
+      }
+
+      requireGW(["cards/" + firstCard.id], function (data) {
+        if (data && _.isFunction(data.summarize)) {
+          system.star.ai().cardName = loc(data.summarize());
+          sendSyncedStarCardName(starIndex, firstCard.id);
+        }
+        deferred.resolve();
+      });
+
       return deferred.promise();
     };
 
@@ -924,6 +1026,10 @@ function gwoCard() {
             rerollPendingTechResult,
             applyPendingTechRerollResult
           );
+          model.registerCampaignHostOperatorHandler(
+            setCardNameSyncOperator,
+            applySyncedStarCardName
+          );
         }
 
         const dealCardToSelectableAI = function (win, turnState) {
@@ -965,7 +1071,7 @@ function gwoCard() {
                       star: starIndex,
                       cards: system.star.cardList(),
                     });
-                    return setCardName(system, card);
+                    return setCardName(system, card, starIndex);
                   })
                 );
               }

@@ -146,7 +146,6 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Viewers' subcommanders will use base AI
 - General Commander temporarily removed from selection for viewers
 - Viewers cannot freely delete cards
-- Available Tech will show different cards to different players when per-player tech is in use
 
 ## Recommended mods
 
