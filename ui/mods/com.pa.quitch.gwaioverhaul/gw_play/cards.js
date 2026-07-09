@@ -442,7 +442,7 @@ function gwoCard() {
                 var index = 0;
                 for (
                   ;
-                  roll >= hand[index].chance && index < hand.length;
+                  index < hand.length && roll >= hand[index].chance;
                   ++index
                 ) {
                   roll -= hand[index].chance;
