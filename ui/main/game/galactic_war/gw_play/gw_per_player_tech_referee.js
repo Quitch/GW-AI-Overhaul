@@ -58,8 +58,19 @@ define([
   "shared/gw_common",
   "shared/gw_inventory",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
-], function (GW, GWInventory, gwoUnit, gwoSpecs) {
+], function (
+  GW,
+  GWInventory,
+  gwoUnit,
+  gwoAI,
+  subcommanderTech,
+  refereeAIPaths,
+  gwoSpecs
+) {
   if (!model.gwoSpecs) {
     model.gwoSpecs = [];
   }
@@ -101,15 +112,35 @@ define([
       GW.specs
         .genUnitSpecs(playerSpecs, playerTag)
         .then(function (playerSpecFiles) {
-          const classicPath = "/pa/ai/unit_maps/ai_unit_map.json" + playerTag;
-          const x1Path = "/pa/ai/unit_maps/ai_unit_map_x1.json" + playerTag;
-
           const playerFilesClassic = {};
-          playerFilesClassic[classicPath] = playerAIUnitMap;
-
           const playerFilesX1 = {};
-          if (titans) {
-            playerFilesX1[x1Path] = playerX1AIUnitMap;
+          if (playerTag === ".player") {
+            playerFilesClassic["/pa/ai/unit_maps/ai_unit_map.json.player"] =
+              playerAIUnitMap;
+            if (titans) {
+              playerFilesX1["/pa/ai/unit_maps/ai_unit_map_x1.json.player"] =
+                playerX1AIUnitMap;
+            }
+          } else {
+            const aiInUse = gwoAI.aiInUse("subcommander");
+            const playerScopedPath = refereeAIPaths.getAIPathDestination(
+              "subcommander",
+              aiInUse,
+              {
+                guardians: false,
+                aiMods: inventory.aiMods(),
+                scopeToken: playerTag,
+              }
+            );
+
+            playerFilesClassic[
+              playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
+            ] = playerAIUnitMap;
+            if (titans) {
+              playerFilesX1[
+                playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
+              ] = playerX1AIUnitMap;
+            }
           }
 
           const playerFiles = _.assign(
@@ -432,30 +463,63 @@ define([
         // this player's tag as well.
 
         const thisPlayersInventory = playerInventories[index];
+        const viewerAiPath = refereeAIPaths.getAIPathDestination(
+          "subcommander",
+          gwoAI.aiInUse("subcommander"),
+          {
+            guardians: false,
+            aiMods: thisPlayersInventory.aiMods(),
+            smartSubcommanders: _.some(thisPlayersInventory.cards(), {
+              id: "gwaio_upgrade_subcommander_tactics",
+            }),
+            scopeToken:
+              playerTags[index] === ".player" ? undefined : playerTags[index],
+          }
+        );
+        const minionCount = subcommanderTech.applySubcommanderDuplicationTech(
+          thisPlayersInventory.cards()
+        );
         _.forEach(thisPlayersInventory.minions(), function (minion) {
           // We skip the host's minions since those are already included in the config from the main referee.
-          // We check if we're the host by seeing if the tag is .player, since the host is always .player.
+          // We check if this is the host slot by seeing if the tag is .player, since the host is always .player.
           if (playerTags[index] === ".player") {
             return;
           }
 
-          config.armies.push({
-            slots: [
-              {
-                ai: true,
-                name: minion.name || "Helper",
-                commander:
-                  stripKnownSpecTag(
-                    minion.commander || playerCommanders[index]
-                  ) + playerTags[index],
-              },
-            ],
-            color: minion.color || [playerColor[0], playerColor[1]],
-            econ_rate: minion.econ_rate || 1,
-            personality: minion.personality,
-            spec_tag: playerTags[index],
-            alliance_group: 1,
-          });
+          var minionPersonality = _.cloneDeep(minion.personality);
+          subcommanderTech.applySubcommanderTacticsTech(
+            minionPersonality,
+            thisPlayersInventory.cards()
+          );
+          subcommanderTech.applySubcommanderFabberTech(
+            minionPersonality,
+            thisPlayersInventory.cards()
+          );
+          minionPersonality.ai_path = viewerAiPath;
+
+          for (
+            var duplicateIndex = 0;
+            duplicateIndex < minionCount;
+            duplicateIndex++
+          ) {
+            config.armies.push({
+              slots: [
+                {
+                  ai: true,
+                  name: minion.name || "Helper",
+                  commander:
+                    stripKnownSpecTag(
+                      minion.commander || playerCommanders[index]
+                    ) + playerTags[index],
+                },
+              ],
+              color: minion.color || [playerColor[0], playerColor[1]],
+              econ_rate: minion.econ_rate || 1,
+              personality: minionPersonality,
+              spec_tag: playerTags[index],
+              alliance_group: 1,
+            });
+          }
         });
       });
 

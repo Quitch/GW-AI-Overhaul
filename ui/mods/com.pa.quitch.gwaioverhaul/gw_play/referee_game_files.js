@@ -50,6 +50,107 @@ define([
     return -1;
   };
 
+  const buildAiFactionFiles = function (params) {
+    var currentCount = params.currentCount;
+    var ai = params.ai;
+    var aiTag = params.aiTag;
+    var aiUnitMap = params.aiUnitMap;
+    var aiX1UnitMap = params.aiX1UnitMap;
+    var aiSpecs = params.aiSpecs;
+    var aiUnitMapPath = params.aiUnitMapPath;
+    var aiUnitMapTitansPath = params.aiUnitMapTitansPath;
+    var clusterUnitMapPath = params.clusterUnitMapPath;
+    var clusterUnitMapTitansPath = params.clusterUnitMapTitansPath;
+    var titans = params.titans;
+    var game = params.game;
+    var inventory = params.inventory;
+    var aiFactionDeferred = params.aiFactionDeferred;
+
+    const enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[currentCount]);
+    const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
+      aiX1UnitMap,
+      aiTag[currentCount]
+    );
+
+    return GW.specs.genUnitSpecs(aiSpecs, aiTag[currentCount]).then(function (
+      aiSpecFiles
+    ) {
+      var unitMapPath = aiUnitMapPath;
+      var unitMapTitansPath = aiUnitMapTitansPath;
+      if (clusterArmyIndex(ai) === currentCount) {
+        unitMapPath = clusterUnitMapPath;
+        unitMapTitansPath = clusterUnitMapTitansPath;
+      }
+
+      const enemyAIUnitMapFile = unitMapPath + aiTag[currentCount];
+      const enemyAIUnitMapPair = {};
+      enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+      const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[currentCount];
+      const enemyX1AIUnitMapPair = {};
+      enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
+      const aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
+      const aiFilesX1 = titans ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles) : {};
+      const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+
+      if (ai.inventory) {
+        var aiInventory =
+          currentCount === 0 ? ai.inventory : ai.foes[currentCount - 1].inventory;
+        const guardians = ai.mirrorMode;
+        if (guardians) {
+          aiInventory = aiInventory.concat(guardianMods(game, inventory.mods));
+        }
+        gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
+      }
+      aiFactionDeferred.resolve(aiFiles);
+    });
+  };
+
+  const buildPlayerFiles = function (params) {
+    var playerAIUnitMap = params.playerAIUnitMap;
+    var playerX1AIUnitMap = params.playerX1AIUnitMap;
+    var playerSpecFiles = params.playerSpecFiles;
+    var inventory = params.inventory;
+    var titans = params.titans;
+
+    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    const hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
+    var playerFilesClassic;
+    var playerFilesX1;
+
+    if (playerIsCluster) {
+      playerFilesClassic = _.assign(
+        {
+          "/pa/ai_cluster/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
+        },
+        playerSpecFiles
+      );
+      playerFilesX1 = titans
+        ? _.assign(
+            {
+              "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
+                playerX1AIUnitMap,
+            },
+            playerSpecFiles
+          )
+        : {};
+    } else {
+      playerFilesClassic = _.assign({}, playerSpecFiles);
+      playerFilesClassic[
+        hostSubcommanderPath + "unit_maps/ai_unit_map.json.player"
+      ] = playerAIUnitMap;
+      playerFilesX1 = {};
+      if (titans) {
+        playerFilesX1[
+          hostSubcommanderPath + "unit_maps/ai_unit_map_x1.json.player"
+        ] = playerX1AIUnitMap;
+      }
+    }
+
+    const playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+    gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
+    return playerFiles;
+  };
+
   // global for modder compatibility
   if (!model.gwoSpecs) {
     model.gwoSpecs = [];
@@ -107,54 +208,24 @@ define([
           const clusterUnitMapTitansPath =
             "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
           _.times(aiFactionCount, function (n) {
-            const currentCount = n;
-            const enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[n]);
-            const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
-              aiX1UnitMap,
-              aiTag[n]
-            );
             const aiSpecs = units.concat(model.gwoSpecs);
 
-            GW.specs
-              .genUnitSpecs(aiSpecs, aiTag[n])
-              .then(function (aiSpecFiles) {
-                var unitMapPath = aiUnitMapPath;
-                var unitMapTitansPath = aiUnitMapTitansPath;
-                if (clusterArmyIndex(ai) === currentCount) {
-                  unitMapPath = clusterUnitMapPath;
-                  unitMapTitansPath = clusterUnitMapTitansPath;
-                }
-
-                const enemyAIUnitMapFile = unitMapPath + aiTag[n];
-                const enemyAIUnitMapPair = {};
-                enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-                const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[n];
-                const enemyX1AIUnitMapPair = {};
-                enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-                const aiFilesClassic = _.assign(
-                  enemyAIUnitMapPair,
-                  aiSpecFiles
-                );
-                const aiFilesX1 = titans
-                  ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
-                  : {};
-                const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-
-                if (ai.inventory) {
-                  var aiInventory =
-                    currentCount === 0
-                      ? ai.inventory
-                      : ai.foes[currentCount - 1].inventory;
-                  const guardians = ai.mirrorMode;
-                  if (guardians) {
-                    aiInventory = aiInventory.concat(
-                      guardianMods(game, inventory.mods)
-                    );
-                  }
-                  gwoSpecs.mod(aiFiles, aiInventory, aiTag[n]);
-                }
-                aiFactions[currentCount].resolve(aiFiles);
-              });
+            buildAiFactionFiles({
+              currentCount: n,
+              ai: ai,
+              aiTag: aiTag,
+              aiUnitMap: aiUnitMap,
+              aiX1UnitMap: aiX1UnitMap,
+              aiSpecs: aiSpecs,
+              aiUnitMapPath: aiUnitMapPath,
+              aiUnitMapTitansPath: aiUnitMapTitansPath,
+              clusterUnitMapPath: clusterUnitMapPath,
+              clusterUnitMapTitansPath: clusterUnitMapTitansPath,
+              titans: titans,
+              game: game,
+              inventory: inventory,
+              aiFactionDeferred: aiFactions[n],
+            });
           });
 
           const playerTag = ".player";
@@ -171,124 +242,15 @@ define([
           GW.specs
             .genUnitSpecs(playerSpecs, playerTag)
             .then(function (playerSpecFiles) {
-              var playerFilesClassic = _.assign(
-                {
-                  "/pa/ai/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
-                },
-                playerSpecFiles
-              );
-              var playerFilesX1 = titans
-                ? _.assign(
-                    {
-                      "/pa/ai/unit_maps/ai_unit_map_x1.json.player":
-                        playerX1AIUnitMap,
-                    },
-                    playerSpecFiles
-                  )
-                : {};
-              const playerIsCluster =
-                inventory.getTag("global", "playerFaction") === 4;
-              const guardians = ai.mirrorMode;
-              const subcommanderAI = gwoAI.aiInUse("subcommander");
-              // the order of unit_map assignments must match getAIPathDestination()
-              if (playerIsCluster) {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai_cluster/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else if (
-                subcommanderAI === "Queller" &&
-                _.some(inventory.cards(), {
-                  id: "gwaio_upgrade_subcommander_tactics",
+              playerFileGen.resolve(
+                buildPlayerFiles({
+                  playerAIUnitMap: playerAIUnitMap,
+                  playerX1AIUnitMap: playerX1AIUnitMap,
+                  playerSpecFiles: playerSpecFiles,
+                  inventory: inventory,
+                  titans: titans,
                 })
-              ) {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai_queller/q_silver/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_queller/q_silver/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else if (subcommanderAI === "Queller") {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_queller/q_bronze/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else if (!_.isEmpty(inventory.aiMods()) && !guardians) {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai_subcommander/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_subcommander/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              } else if (subcommanderAI === "Penchant") {
-                playerFilesClassic = _.assign(
-                  {
-                    "/pa/ai_penchant/unit_maps/ai_unit_map.json.player":
-                      playerAIUnitMap,
-                  },
-                  playerSpecFiles
-                );
-                playerFilesX1 = titans
-                  ? _.assign(
-                      {
-                        "/pa/ai_penchant/unit_maps/ai_unit_map_x1.json.player":
-                          playerX1AIUnitMap,
-                      },
-                      playerSpecFiles
-                    )
-                  : {};
-              }
-              const playerFiles = _.assign(
-                {},
-                playerFilesClassic,
-                playerFilesX1
               );
-              gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
-              playerFileGen.resolve(playerFiles);
             });
         }
       );

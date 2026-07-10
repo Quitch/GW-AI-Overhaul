@@ -1,38 +1,3 @@
-const applySubcommanderTacticsTech = function (personality, cards) {
-  if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
-    personality.micro_type = 2;
-    personality.go_for_the_kill = true;
-    personality.priority_scout_metal_spots = true;
-    personality.enable_commander_danger_responses = true;
-    _.pull(personality.personality_tags, "SlowerExpansion");
-    personality.personality_tags.push("PreventsWaste");
-  }
-  return personality;
-};
-
-const applySubcommanderFabberTech = function (personality, cards) {
-  if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
-    personality.max_basic_fabbers = Math.round(
-      personality.max_basic_fabbers * 1.5
-    );
-    personality.max_advanced_fabbers = Math.round(
-      personality.max_advanced_fabbers * 1.5
-    );
-  }
-  return personality;
-};
-
-const applySubcommanderDuplicationTech = function (cards) {
-  if (
-    _.some(cards, {
-      id: "gwaio_upgrade_subcommander_duplication",
-    })
-  ) {
-    return 2;
-  }
-  return 1;
-};
-
 const setAdvEcoMod = function (aiRoot, brain) {
   if (brain !== "Queller") {
     aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
@@ -168,7 +133,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], function (gwoColour, gwoAI, gwoCards) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+], function (gwoColour, gwoAI, gwoCards, subcommanderTech) {
+  const applySubcommanderTacticsTech =
+    subcommanderTech.applySubcommanderTacticsTech;
+  const applySubcommanderFabberTech =
+    subcommanderTech.applySubcommanderFabberTech;
+  const applySubcommanderDuplicationTech =
+    subcommanderTech.applySubcommanderDuplicationTech;
+
   const modifyPlanets = function (inventory, planets, game) {
     const canGlassPlanets = gwoCards.hasCard(
       inventory,

@@ -129,13 +129,24 @@ const applyAiMods = function (json, mods) {
   });
 };
 
-const whichAIsAreBeingModified = function (clusterPresence) {
+const getRefereeInventoryAiMods = function (inventory) {
+  if (!inventory) {
+    return [];
+  }
+
+  if (_.isFunction(inventory.aiMods)) {
+    return inventory.aiMods();
+  }
+
+  return inventory.aiMods || [];
+};
+
+const whichAIsAreBeingModified = function (clusterPresence, inventory) {
   const game = model.game();
-  const inventory = game.inventory();
   const ai = game.galaxy().stars()[game.currentStar()].ai();
   const guardians = ai.mirrorMode;
 
-  if (!_.isEmpty(inventory.aiMods()) || clusterPresence === "Player") {
+  if (!_.isEmpty(getRefereeInventoryAiMods(inventory)) || clusterPresence === "Player") {
     if (guardians) {
       return "All";
     } else {
@@ -172,7 +183,7 @@ const addApplicableAiLoadModsToFileList = function (
     aiPaths.enemySource === aiPaths.subCommanderSource;
 
   if (isSubCommanderDirectory || aisToModify === "All") {
-    const aiLoadMods = _.filter(inventory.aiMods(), { op: "load" });
+    const aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), { op: "load" });
 
     _.forEach(aiLoadMods, function (file) {
       fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
@@ -180,15 +191,20 @@ const addApplicableAiLoadModsToFileList = function (
   }
 };
 
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
-  gwoAI
-) {
+define(
+  [
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
+  ],
+  function (gwoAI, refereeAIPaths) {
   const processFilesInDirectory = function (
     filePath,
     configFiles,
     aisToModify,
     aiPaths,
-    clusterPresence
+    clusterPresence,
+    inventory,
+    scopeToken
   ) {
     const filePathStarts = function (filePathFragment) {
       return _.startsWith(filePath, filePathFragment);
@@ -210,7 +226,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     };
 
     const aiModsInScopeOfFile = function () {
-      const aiMods = _.reject(model.game().inventory().aiMods(), {
+      const aiMods = _.reject(getRefereeInventoryAiMods(inventory), {
         op: "load",
       });
 
@@ -261,7 +277,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       const clusterOps = clusterAIModsInScopeOfFile() || [];
       const clusterJson = _.cloneDeep(json);
       const clusterFilePath = changeFilePath(
-        gwoAI.getAIPathDestination("cluster"),
+        refereeAIPaths.getAIPathDestination("cluster", gwoAI.aiInUse("subcommander"), {
+          scopeToken: scopeToken,
+        }),
         pathLength
       );
 
@@ -280,6 +298,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       var aiJsonModsInScope = [];
       var updatedFilePaths = [];
       var pathLength = 0;
+
+      inventory = inventory || model.game().inventory();
 
       // Apply AI mods to the file
       if (aisToModify == "All") {
@@ -335,13 +355,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
     aiPath,
     configFiles,
     aiPaths,
-    clusterPresence
+    clusterPresence,
+    inventory,
+    scopeToken,
+    forceSubCommanderScope
   ) {
     const deferred = $.Deferred();
 
     api.file.list(aiPath, true).then(function (fileList) {
-      const aisToModify = whichAIsAreBeingModified(clusterPresence);
-      const inventory = model.game().inventory();
+      const aisToModify = forceSubCommanderScope
+        ? "SubCommanders"
+        : whichAIsAreBeingModified(clusterPresence, inventory);
 
       addApplicableAiLoadModsToFileList(
         aiPath,
@@ -364,7 +388,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
           configFiles,
           aisToModify,
           aiPaths,
-          clusterPresence
+          clusterPresence,
+          inventory,
+          scopeToken
         );
       });
 
@@ -417,9 +443,69 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
       ? [aiPaths.enemySource]
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
     const clusterPresence = whoIsCluster();
+    const game = model.game();
+    const coopPlayerInventoryData = _.isFunction(game.coopPlayerInventoryData)
+      ? game.coopPlayerInventoryData()
+      : [];
 
     var promises = _.map(aiPathsToProcess, function (aiPath) {
-      return processDirectories(aiPath, configFiles, aiPaths, clusterPresence);
+      return processDirectories(
+        aiPath,
+        configFiles,
+        aiPaths,
+        clusterPresence,
+        game.inventory(),
+        undefined,
+        false
+      );
+    });
+
+    _.forEach(coopPlayerInventoryData, function (playerData, index) {
+      if (!index) {
+        return;
+      }
+
+      if (!playerData || !playerData.inventory) {
+        return;
+      }
+
+      var viewerInventory = playerData.inventory;
+      var viewerPlayerTag = ".player" + (index - 1);
+      var viewerScopeToken = refereeAIPaths.getScopeToken(
+        viewerPlayerTag,
+        viewerPlayerTag
+      );
+      var viewerAiMods = getRefereeInventoryAiMods(viewerInventory);
+      var viewerCards = _.isFunction(viewerInventory.cards)
+        ? viewerInventory.cards()
+        : viewerInventory.cards || [];
+      var viewerSmartSubcommanders = _.some(viewerCards, {
+        id: "gwaio_upgrade_subcommander_tactics",
+      });
+      var viewerSubCommanderDestination = refereeAIPaths.getAIPathDestination(
+        "subcommander",
+        gwoAI.aiInUse("subcommander"),
+        {
+          aiMods: viewerAiMods,
+          smartSubcommanders: viewerSmartSubcommanders,
+          scopeToken: viewerPlayerTag,
+        }
+      );
+      var viewerAiPaths = _.assign({}, aiPaths, {
+        subCommanderDestination: viewerSubCommanderDestination,
+      });
+
+      promises.push(
+        processDirectories(
+          aiPaths.subCommanderSource,
+          configFiles,
+          viewerAiPaths,
+          clusterPresence,
+          viewerInventory,
+          viewerScopeToken,
+          true
+        )
+      );
     });
 
     Promise.all(promises).then(function () {
