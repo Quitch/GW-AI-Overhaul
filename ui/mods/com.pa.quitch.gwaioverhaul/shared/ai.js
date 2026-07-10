@@ -49,7 +49,7 @@ define([
           aiMods: getInventoryAiMods(inventory),
           smartSubcommanders: hasSmartSubcommanders(inventory),
           scopeToken:
-            type === "subcommander" && ai.mirrorMode ? "guardians" : undefined,
+            type === "enemy" && ai.mirrorMode ? "guardians" : undefined,
         },
         options || {}
       );

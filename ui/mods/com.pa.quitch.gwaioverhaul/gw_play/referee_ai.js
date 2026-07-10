@@ -331,6 +331,18 @@ define(
         aiJsonModsInScope = aiModsInScopeOfFile();
       }
 
+      // Scoped enemy destinations (such as Guardians) must include a full AI file tree
+      // so ai_path lookups resolve against the same destination directory.
+      if (
+        fileOwner === "enemy" &&
+        aiPaths.enemyDestination !== aiPaths.enemySource
+      ) {
+        pathLength = aiPaths.enemySource.length;
+        updatedFilePaths.push(
+          changeFilePath(aiPaths.enemyDestination, pathLength)
+        );
+      }
+
       const finalFilePaths = _.isEmpty(updatedFilePaths)
         ? [filePath]
         : updatedFilePaths;

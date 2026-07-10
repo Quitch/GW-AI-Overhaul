@@ -11,6 +11,11 @@ const getAIUnitMapPath = function (titans, aiInUse) {
   }
 };
 
+const getAIUnitMapDestinationPath = function (titans, aiPath) {
+  const append = titans ? "_x1.json" : ".json";
+  return aiPath + "unit_maps/ai_unit_map" + append;
+};
+
 const guardianMods = function (game, mods) {
   const perPlayerLoadouts =
     game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData);
@@ -57,8 +62,8 @@ define([
     var aiUnitMap = params.aiUnitMap;
     var aiX1UnitMap = params.aiX1UnitMap;
     var aiSpecs = params.aiSpecs;
-    var aiUnitMapPath = params.aiUnitMapPath;
-    var aiUnitMapTitansPath = params.aiUnitMapTitansPath;
+    var aiUnitMapDestinationPath = params.aiUnitMapDestinationPath;
+    var aiUnitMapTitansDestinationPath = params.aiUnitMapTitansDestinationPath;
     var clusterUnitMapPath = params.clusterUnitMapPath;
     var clusterUnitMapTitansPath = params.clusterUnitMapTitansPath;
     var titans = params.titans;
@@ -75,8 +80,8 @@ define([
     return GW.specs.genUnitSpecs(aiSpecs, aiTag[currentCount]).then(function (
       aiSpecFiles
     ) {
-      var unitMapPath = aiUnitMapPath;
-      var unitMapTitansPath = aiUnitMapTitansPath;
+      var unitMapPath = aiUnitMapDestinationPath;
+      var unitMapTitansPath = aiUnitMapTitansDestinationPath;
       if (clusterArmyIndex(ai) === currentCount) {
         unitMapPath = clusterUnitMapPath;
         unitMapTitansPath = clusterUnitMapTitansPath;
@@ -190,12 +195,23 @@ define([
       const filesToProcess = [playerFileGen];
 
       const enemyAI = gwoAI.aiInUse("enemy");
-      const aiUnitMapPath = getAIUnitMapPath(false, enemyAI);
-      const aiUnitMapTitansPath = getAIUnitMapPath(true, enemyAI);
+      const aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
+      const aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
+      const enemyDestinationPath = gwoAI.getAIPathDestination("enemy");
+      const aiUnitMapDestinationPath = getAIUnitMapDestinationPath(
+        false,
+        enemyDestinationPath
+      );
+      const aiUnitMapTitansDestinationPath = getAIUnitMapDestinationPath(
+        true,
+        enemyDestinationPath
+      );
 
       const unitsLoad = $.get("spec://pa/units/unit_list.json");
-      const aiMapLoad = $.get("spec:/" + aiUnitMapPath);
-      const aiX1MapLoad = titans ? $.get("spec:/" + aiUnitMapTitansPath) : {};
+      const aiMapLoad = $.get("spec:/" + aiUnitMapSourcePath);
+      const aiX1MapLoad = titans
+        ? $.get("spec:/" + aiUnitMapTitansSourcePath)
+        : {};
       $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
         function (unitsGet, aiMapGet, aiX1MapGet) {
           const inventory = game.inventory();
@@ -217,8 +233,8 @@ define([
               aiUnitMap: aiUnitMap,
               aiX1UnitMap: aiX1UnitMap,
               aiSpecs: aiSpecs,
-              aiUnitMapPath: aiUnitMapPath,
-              aiUnitMapTitansPath: aiUnitMapTitansPath,
+              aiUnitMapDestinationPath: aiUnitMapDestinationPath,
+              aiUnitMapTitansDestinationPath: aiUnitMapTitansDestinationPath,
               clusterUnitMapPath: clusterUnitMapPath,
               clusterUnitMapTitansPath: clusterUnitMapTitansPath,
               titans: titans,
