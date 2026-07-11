@@ -10,6 +10,7 @@
 
 - Fix "Difficulty:" not being translated in the default lobby title
 - Cluster Security with Random personality uses the proper colour
+- Removed duplicate commander colours from the base game factions
 
 ## v6.0.0 - 2026-07-11
 
