@@ -519,13 +519,6 @@ define([
         )
       : game.inventory();
 
-    if (guardians && model.gwoDebugAI) {
-      console.log(
-        "[GWAIO] Guardian merged aiMods count:",
-        getRefereeInventoryAiMods(playerAiModInventory).length
-      );
-    }
-
     var promises = _.map(aiPathsToProcess, function (aiPath) {
       return processDirectories(
         aiPath,
