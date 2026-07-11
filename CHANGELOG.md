@@ -12,6 +12,7 @@ At this point support for all features in co-op has been implemented
 ### Changed
 
 - All war options have been moved into a new Game Options panel to reduce clutter
+- Reverted default Ally AI to Penchant
 
 ### Bugfix
 
