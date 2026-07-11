@@ -9,6 +9,10 @@ At this point support for all features in co-op has been implemented
 - Support for per-player subcommander AI profiles
 - Ability for Guardians to apply AI mods from all players
 
+### Changed
+
+- All war options have been moved into a new Game Options panel to reduce clutter
+
 ### Bugfix
 
 - Guardians loading tech cards from players who are not connected to the war

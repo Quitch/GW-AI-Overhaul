@@ -35,11 +35,11 @@ function gwoSetup() {
           }
         });
         // Remove features this mod can't use
-        $("#system-scaling").remove();
+        $("#system-scaling").closest(".gwo-game-option-row").remove();
         model.gwoDifficultySettings.systemScaling(false);
-        $("#system-size").remove();
+        $("#system-size").closest(".gwo-game-option-row").remove();
         model.gwoDifficultySettings.simpleSystems(false);
-        $("#large-planets").remove();
+        $("#large-planets").closest(".gwo-game-option-row").remove();
         model.gwoDifficultySettings.largePlanets(false);
       }
     });

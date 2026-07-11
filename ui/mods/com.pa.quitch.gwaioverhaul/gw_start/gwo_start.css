@@ -13,6 +13,40 @@
   flex-grow: 1;
 }
 
+#gwo-game-options-panel {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#gwo-game-options-panel .coop-setup-configure {
+  text-transform: uppercase;
+}
+
+.gwo-game-options-modal-panel {
+  width: 520px;
+}
+
+.gwo-game-options-body {
+  margin-bottom: 20px;
+}
+
+.gwo-game-option-row {
+  margin: 0;
+  padding: 4px 0;
+  border-bottom: 1px solid #2d3840;
+}
+
+.gwo-game-option-row:last-child {
+  border-bottom: 0;
+}
+
+.gwo-game-option-row .info_tip {
+  margin-left: 8px;
+}
+
 #gwo-ai-settings {
   width: 300px;
 }

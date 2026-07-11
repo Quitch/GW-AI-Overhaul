@@ -106,6 +106,57 @@ function gwoUI() {
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
+    model.gwoGameOptionsDraft = {
+      hardcore: ko.observable(false),
+      factionScaling: ko.observable(false),
+      systemScaling: ko.observable(false),
+      simpleSystems: ko.observable(false),
+      largePlanets: ko.observable(false),
+      easierStart: ko.observable(false),
+      paLore: ko.observable(false),
+      staticTech: ko.observable(false),
+    };
+
+    var syncGwoGameOptionsDraft = function () {
+      var draft = model.gwoGameOptionsDraft;
+      draft.hardcore(model.newGameHardcore());
+      draft.factionScaling(difficultySettings.factionScaling());
+      draft.systemScaling(difficultySettings.systemScaling());
+      draft.simpleSystems(difficultySettings.simpleSystems());
+      draft.largePlanets(difficultySettings.largePlanets());
+      draft.easierStart(difficultySettings.easierStart());
+      draft.paLore(difficultySettings.paLore());
+      draft.staticTech(difficultySettings.staticTech());
+    };
+
+    model.gwoGameOptionsModalVisible = ko.observable(false);
+    model.openGwoGameOptionsModal = function () {
+      syncGwoGameOptionsDraft();
+      model.gwoGameOptionsModalVisible(true);
+    };
+    model.closeGwoGameOptionsModal = function () {
+      syncGwoGameOptionsDraft();
+      model.gwoGameOptionsModalVisible(false);
+    };
+    model.applyGwoGameOptionsModal = function () {
+      var draft = model.gwoGameOptionsDraft;
+      model.newGameHardcore(draft.hardcore());
+      difficultySettings.factionScaling(draft.factionScaling());
+      difficultySettings.systemScaling(draft.systemScaling());
+      difficultySettings.simpleSystems(draft.simpleSystems());
+      difficultySettings.largePlanets(draft.largePlanets());
+      difficultySettings.easierStart(draft.easierStart());
+      difficultySettings.paLore(draft.paLore());
+      difficultySettings.staticTech(draft.staticTech());
+      model.gwoGameOptionsModalVisible(false);
+    };
+    model.toggleGwoBooleanSetting = function (setting) {
+      setting(!setting());
+    };
+    model.gwoBooleanSettingText = function (setting) {
+      return setting() ? loc("!LOC:ON") : loc("!LOC:OFF");
+    };
+
     var addHtml = {
       path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
       before: function (classOrId, file) {
@@ -124,7 +175,9 @@ function gwoUI() {
     var gameDifficultyLabelId = "#game-difficulty-label";
     var gameDifficultyId = "#game-difficulty";
 
-    addHtml.after("#game-settings-label", "difficulty_options.html");
+    $("#game-settings-label")
+      .closest(".form-group")
+      .replaceWith(loadHtml(addHtml.path + "difficulty_options.html"));
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
@@ -133,6 +186,8 @@ function gwoUI() {
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");
     addHtml.after("#new-game-right", "ai_settings.html");
     locTree($(gameDifficultyId));
+    locTree($("#gwo-game-options-panel"));
+    locTree($("#gwo-game-options-modal"));
     locTree($("#difficulty-options"));
     locTree($("#custom-difficulty-settings"));
     locTree($("#difficulty-cards"));
