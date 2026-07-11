@@ -12,6 +12,7 @@ function gwoSetup() {
 
     var enableGoToWar = ko.observable(true);
     var sharedSystemsForGalacticWarActive = false;
+    var defaultNewGameName = model.newGameName();
 
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
@@ -213,6 +214,40 @@ function gwoSetup() {
       return difficulty.bossCommanders() * playerCount;
     };
 
+    var galaxySizeNames = [
+      "!LOC:Small",
+      "!LOC:Medium",
+      "!LOC:Large",
+      "!LOC:Epic",
+      "!LOC:Uber",
+      // Support Bigger Galactic War mod
+      "!LOC:Vast",
+      "!LOC:Gigantic",
+      "!LOC:Ridiculous",
+      "!LOC:Marathon",
+    ];
+
+    var generatedWarName = function (
+      selectedDifficulty,
+      playerCount,
+      sizeIndex,
+      startCard,
+      difficulties
+    ) {
+      var difficultyName = loc(difficulties[selectedDifficulty].difficultyName);
+      var players = playerCount + " " + loc("!LOC:Players");
+      var sizeName = loc(galaxySizeNames[sizeIndex] || galaxySizeNames[1]);
+      var startCardSummary =
+        startCard && startCard.summary ? loc(startCard.summary()) : "";
+
+      return _.compact([
+        difficultyName,
+        players,
+        sizeName,
+        startCardSummary,
+      ]).join(" - ");
+    };
+
     requireGW(
       [
         "shared/gw_common",
@@ -359,7 +394,6 @@ function gwoSetup() {
           console.log("War created using Galactic War Overhaul v" + version);
 
           var game = new GW.Game();
-          game.name(model.newGameName());
           game.mode(model.mode());
           game.hardcore(model.newGameHardcore());
           game.content(api.content.activeContent());
@@ -386,6 +420,20 @@ function gwoSetup() {
           }
           var playerCount = game.coopPlayers();
           var largePlanets = model.gwoDifficultySettings.largePlanets();
+          var startCard = model.activeStartCard();
+
+          if (model.newGameName() === defaultNewGameName) {
+            model.newGameName(
+              generatedWarName(
+                selectedDifficulty,
+                playerCount,
+                model.newGameSizeIndex(),
+                startCard,
+                gwoDifficulty.difficulties
+              )
+            );
+          }
+          game.name(model.newGameName());
 
           model.updateCommander();
           game
@@ -413,16 +461,14 @@ function gwoSetup() {
             }
 
             return gwoDealStartCard({
-              id: model.activeStartCard().id(),
+              id: startCard.id(),
               inventory: game.inventory(),
               galaxy: galaxy,
               star: galaxy.stars()[galaxy.origin()],
             }).then(function (startCardProduct) {
               game
                 .inventory()
-                .cards.push(
-                  startCardProduct || { id: model.activeStartCard().id() }
-                );
+                .cards.push(startCardProduct || { id: startCard.id() });
             });
           });
 
@@ -870,18 +916,8 @@ function gwoSetup() {
             originSystem.gwaio.version = version;
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
-            originSystem.gwaio.galaxySize = [
-              "!LOC:Small",
-              "!LOC:Medium",
-              "!LOC:Large",
-              "!LOC:Epic",
-              "!LOC:Uber",
-              // Support Bigger Galactic War mod
-              "!LOC:Vast",
-              "!LOC:Gigantic",
-              "!LOC:Ridiculous",
-              "!LOC:Marathon",
-            ][model.newGameSizeIndex()];
+            originSystem.gwaio.galaxySize =
+              galaxySizeNames[model.newGameSizeIndex()];
             originSystem.gwaio.factionScaling =
               model.gwoDifficultySettings.factionScaling();
             originSystem.gwaio.systemScaling =
@@ -928,7 +964,7 @@ function gwoSetup() {
                 playerId: model.uberId(),
                 playerName: displayName(),
                 commander: model.selectedCommander(),
-                loadoutCardId: model.activeStartCard().id(),
+                loadoutCardId: startCard.id(),
                 inventory: game.inventory().save(),
                 techCardDealCount: 0,
                 updatedAt: _.now(),

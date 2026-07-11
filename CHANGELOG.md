@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- If you don't change the war name then GWO will set a new default name on war launch
+
 ### Bugfix
 
 - Fix "Difficulty:" not being translated in the default lobby title
