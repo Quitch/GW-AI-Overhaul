@@ -6,6 +6,10 @@
 
 - If you don't change the war name then GWO will set a new default name on war launch
 
+### Changed
+
+- Subcommanders try to maximise contrast in colour between them
+
 ### Bugfix
 
 - Fix "Difficulty:" not being translated in the default lobby title
