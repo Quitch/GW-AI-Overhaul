@@ -1,4 +1,20 @@
-# CHANGELOG
+# v6.1.0 - 2026-07-11
+
+## Unreleased
+
+### Added
+
+- If you don't change the war name then GWO will set a new default name on war launch
+
+### Changed
+
+- Subcommanders try to maximise contrast in colour between them
+
+### Bugfix
+
+- Fix "Difficulty:" not being translated in the default lobby title
+- Cluster Security with Random personality uses the proper colour
+- Removed duplicate commander colours from the base game factions
 
 ## v6.0.0 - 2026-07-11
 

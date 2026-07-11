@@ -1,11 +1,5 @@
 var gwoWarInfoPanelLoaded;
 
-function gwoHasDuplicatedSubcommanders(playerCards) {
-  return _.some(playerCards, {
-    id: "gwaio_upgrade_subcommander_duplication",
-  });
-}
-
 function gwoWarInfoPanel(gwoSettings) {
   try {
     var game = model.game();
@@ -29,7 +23,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ? playerCount + " " + playerOrPlayers
       : loc("!LOC:Unknown");
     var lobbyTitle =
-      "GWO Co-op - " + loc("Difficulty:") + " " + model.gwoDifficulty;
+      "GWO Co-op - " + loc("!LOC:Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
 
     model.gwCampaignConnectedClients.subscribe(function () {
@@ -117,11 +111,17 @@ function gwoWarInfoPanel(gwoSettings) {
       }
     });
 
+    function gwoHasDuplicatedSubcommanders(playerCards) {
+      return _.some(playerCards, {
+        id: "gwaio_upgrade_subcommander_duplication",
+      });
+    }
+
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        model.gwoVersion = ko.observable("6.0.0");
+        model.gwoVersion = ko.observable("6.1.0");
 
         /* Co-op Information */
         var coopText = function (setting) {

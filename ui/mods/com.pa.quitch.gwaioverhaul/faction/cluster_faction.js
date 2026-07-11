@@ -40,264 +40,187 @@ define([
   var factory = "!LOC:Factory";
   var swarm = "!LOC:Swarm";
   var economist = "!LOC:Economist";
+  var random = "!LOC:Random";
   var minions = [
     {
       name: workerName,
       character: uber,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.uber,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: fabber,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.fabber,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: defender,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.defender,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: luddite,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.luddite,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: technologist,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.technologist,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: cautious,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.cautious,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: aggressive,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.aggressive,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: rush,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.rush,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: turtle,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.turtle,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: absurd,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.absurd,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: factory,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.factory,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: swarm,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.swarm,
       commander: workerCommander,
     },
     {
       name: workerName,
       character: economist,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.economist,
       commander: workerCommander,
     },
     {
       name: securityName,
       character: uber,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.uber,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: fabber,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.fabber,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: defender,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.defender,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: luddite,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.luddite,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: technologist,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.technologist,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: cautious,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.cautious,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: aggressive,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.aggressive,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: rush,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.rush,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: turtle,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.turtle,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: absurd,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.absurd,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: factory,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.factory,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: swarm,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.swarm,
       commander: securityCommander,
     },
     {
       name: securityName,
       character: economist,
-      color: [
-        [128, 128, 128],
-        [192, 192, 192],
-      ],
+      color: factionColour,
       personality: personalities.economist,
       commander: securityCommander,
     },
@@ -308,21 +231,15 @@ define([
   var randomSecurityPersonality = shuffledPersonalties[1].personality;
   var randomWorkerAI = {
     name: workerName,
-    character: "!LOC:Random",
-    color: [
-      [128, 128, 128],
-      [192, 192, 192],
-    ],
+    character: random,
+    color: factionColour,
     personality: randomWorkerPersonality,
     commander: workerCommander,
   };
   var randomSecurityAI = {
     name: securityName,
-    character: "!LOC:Random",
-    color: [
-      [70, 70, 70],
-      [192, 192, 192],
-    ],
+    character: random,
+    color: factionColour,
     personality: randomSecurityPersonality,
     commander: securityCommander,
   };
