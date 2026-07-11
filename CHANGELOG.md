@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## Unreleased
+
+At this point support for all features in co-op has been implemented
+
+### Added
+
+- Support for per-player subcommander AI profiles
+- Ability for Guardians to apply AI mods from all players
+
+### Bugfix
+
+- Guardians loading tech cards from players who are not connected to the war
+- GWO Panel loading subcommanders from players who are not connected to the war
+
 ## v5.93.0 - 2026-07-09
 
 ### Changed
