@@ -6,6 +6,8 @@ define([
 ], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
   const coopMinionCount = function () {
     const game = model.game();
+    // This will include players who are not currently in the game, but we still count their minions.
+    // This is important for the case where a player leaves the game, but may rejoin.
     const coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
         ? game.coopPlayerInventoryData()
