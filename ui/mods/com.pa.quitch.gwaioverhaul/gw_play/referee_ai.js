@@ -146,7 +146,10 @@ const whichAIsAreBeingModified = function (clusterPresence, inventory) {
   const ai = game.galaxy().stars()[game.currentStar()].ai();
   const guardians = ai.mirrorMode;
 
-  if (!_.isEmpty(getRefereeInventoryAiMods(inventory)) || clusterPresence === "Player") {
+  if (
+    !_.isEmpty(getRefereeInventoryAiMods(inventory)) ||
+    clusterPresence === "Player"
+  ) {
     if (guardians) {
       return "All";
     } else {
@@ -183,7 +186,9 @@ const addApplicableAiLoadModsToFileList = function (
     aiPaths.enemySource === aiPaths.subCommanderSource;
 
   if (isSubCommanderDirectory || aisToModify === "All") {
-    const aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), { op: "load" });
+    const aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
+      op: "load",
+    });
 
     _.forEach(aiLoadMods, function (file) {
       fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
@@ -191,12 +196,10 @@ const addApplicableAiLoadModsToFileList = function (
   }
 };
 
-define(
-  [
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-  ],
-  function (gwoAI, refereeAIPaths) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
+], function (gwoAI, refereeAIPaths) {
   const processFilesInDirectory = function (
     filePath,
     configFiles,
@@ -277,9 +280,13 @@ define(
       const clusterOps = clusterAIModsInScopeOfFile() || [];
       const clusterJson = _.cloneDeep(json);
       const clusterFilePath = changeFilePath(
-        refereeAIPaths.getAIPathDestination("cluster", gwoAI.aiInUse("subcommander"), {
-          scopeToken: scopeToken,
-        }),
+        refereeAIPaths.getAIPathDestination(
+          "cluster",
+          gwoAI.aiInUse("subcommander"),
+          {
+            scopeToken: scopeToken,
+          }
+        ),
         pathLength
       );
 
@@ -456,8 +463,8 @@ define(
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
     const clusterPresence = whoIsCluster();
     const game = model.game();
-    const coopPlayerInventoryData = _.isFunction(game.coopPlayerInventoryData)
-      ? game.coopPlayerInventoryData()
+    const connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+      ? model.gwCampaignConnectedClients()
       : [];
 
     var promises = _.map(aiPathsToProcess, function (aiPath) {
@@ -472,17 +479,26 @@ define(
       );
     });
 
-    _.forEach(coopPlayerInventoryData, function (playerData, index) {
-      if (!index) {
+    var viewerIndex = 0;
+
+    _.forEach(connectedClients, function (client) {
+      if (!client || client.role !== "viewer") {
         return;
       }
+
+      const playerData =
+        game.findCoopPlayerInventoryData &&
+        game.findCoopPlayerInventoryData({
+          id: client.id,
+          name: client.name,
+        });
 
       if (!playerData || !playerData.inventory) {
         return;
       }
 
       var viewerInventory = playerData.inventory;
-      var viewerPlayerTag = ".player" + (index - 1);
+      var viewerPlayerTag = ".player" + viewerIndex;
       var viewerScopeToken = refereeAIPaths.getScopeToken(
         viewerPlayerTag,
         viewerPlayerTag
@@ -518,6 +534,8 @@ define(
           true
         )
       );
+
+      viewerIndex += 1;
     });
 
     Promise.all(promises).then(function () {

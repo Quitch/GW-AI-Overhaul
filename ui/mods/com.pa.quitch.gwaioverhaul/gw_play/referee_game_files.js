@@ -17,12 +17,28 @@ const getAIUnitMapDestinationPath = function (titans, aiPath) {
 };
 
 const guardianMods = function (game, mods) {
-  const perPlayerLoadouts =
-    game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData);
+  const connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+    ? model.gwCampaignConnectedClients()
+    : [];
 
-  if (perPlayerLoadouts) {
+  if (connectedClients.length) {
     var playerMods = [];
-    _.forEach(game.coopPlayerInventoryData(), function (playerData) {
+    _.forEach(connectedClients, function (client) {
+      if (!client || client.role !== "viewer") {
+        return;
+      }
+
+      var playerData =
+        game.findCoopPlayerInventoryData &&
+        game.findCoopPlayerInventoryData({
+          id: client.id,
+          name: client.name,
+        });
+
+      if (!playerData || !playerData.inventory) {
+        return;
+      }
+
       playerMods = playerMods.concat(playerData.inventory.mods);
     });
 
@@ -71,43 +87,52 @@ define([
     var inventory = params.inventory;
     var aiFactionDeferred = params.aiFactionDeferred;
 
-    const enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[currentCount]);
+    const enemyAIUnitMap = GW.specs.genAIUnitMap(
+      aiUnitMap,
+      aiTag[currentCount]
+    );
     const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
       aiX1UnitMap,
       aiTag[currentCount]
     );
 
-    return GW.specs.genUnitSpecs(aiSpecs, aiTag[currentCount]).then(function (
-      aiSpecFiles
-    ) {
-      var unitMapPath = aiUnitMapDestinationPath;
-      var unitMapTitansPath = aiUnitMapTitansDestinationPath;
-      if (clusterArmyIndex(ai) === currentCount) {
-        unitMapPath = clusterUnitMapPath;
-        unitMapTitansPath = clusterUnitMapTitansPath;
-      }
-
-      const enemyAIUnitMapFile = unitMapPath + aiTag[currentCount];
-      const enemyAIUnitMapPair = {};
-      enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-      const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[currentCount];
-      const enemyX1AIUnitMapPair = {};
-      enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-      const aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-      const aiFilesX1 = titans ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles) : {};
-      const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
-
-      if (ai.inventory) {
-        var aiInventory =
-          currentCount === 0 ? ai.inventory : ai.foes[currentCount - 1].inventory;
-        const guardians = ai.mirrorMode;
-        if (guardians) {
-          aiInventory = aiInventory.concat(guardianMods(game, inventory.mods));
+    return GW.specs
+      .genUnitSpecs(aiSpecs, aiTag[currentCount])
+      .then(function (aiSpecFiles) {
+        var unitMapPath = aiUnitMapDestinationPath;
+        var unitMapTitansPath = aiUnitMapTitansDestinationPath;
+        if (clusterArmyIndex(ai) === currentCount) {
+          unitMapPath = clusterUnitMapPath;
+          unitMapTitansPath = clusterUnitMapTitansPath;
         }
-        gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
-      }
-      aiFactionDeferred.resolve(aiFiles);
-    });
+
+        const enemyAIUnitMapFile = unitMapPath + aiTag[currentCount];
+        const enemyAIUnitMapPair = {};
+        enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
+        const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[currentCount];
+        const enemyX1AIUnitMapPair = {};
+        enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
+        const aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
+        const aiFilesX1 = titans
+          ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
+          : {};
+        const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+
+        if (ai.inventory) {
+          var aiInventory =
+            currentCount === 0
+              ? ai.inventory
+              : ai.foes[currentCount - 1].inventory;
+          const guardians = ai.mirrorMode;
+          if (guardians) {
+            aiInventory = aiInventory.concat(
+              guardianMods(game, inventory.mods)
+            );
+          }
+          gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
+        }
+        aiFactionDeferred.resolve(aiFiles);
+      });
   };
 
   const buildPlayerFiles = function (params) {
