@@ -265,14 +265,20 @@ function gwoWarInfoPanel(gwoSettings) {
             );
           }
 
-          const coopInventoryData =
-            game.coopPlayerInventoryData &&
-            _.isFunction(game.coopPlayerInventoryData)
-              ? game.coopPlayerInventoryData()
-              : [];
+          const connectedClients = _.isFunction(
+            model.gwCampaignConnectedClients
+          )
+            ? model.gwCampaignConnectedClients()
+            : [];
           var mergedSubcommanders = [];
 
-          _.forEach(coopInventoryData, function (inventoryData) {
+          _.forEach(connectedClients, function (client) {
+            const inventoryData =
+              game.findCoopPlayerInventoryData &&
+              game.findCoopPlayerInventoryData({
+                id: client.id,
+                name: client.name,
+              });
             const inventoryEntry = inventoryData && inventoryData.inventory;
             if (inventoryEntry && _.isArray(inventoryEntry.minions)) {
               mergedSubcommanders = mergedSubcommanders.concat(
