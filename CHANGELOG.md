@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## v6.0.0 - 2026-07-11
+
+At this point support for all features in co-op has been implemented
+
+### Added
+
+- Support for per-player subcommander AI profiles
+- Ability for Guardians to apply AI mods from all players
+- Scuffed translations for Terminal and Lucky Commander
+
+### Changed
+
+- All war options have been moved into a new Game Options panel to reduce clutter
+- Reverted default Ally AI to Penchant
+
+### Bugfix
+
+- Guardians no longer load tech cards from players who are not connected to the war
+- GWO Panel no longer loads subcommanders from players who are not connected to the war
+- Viewers no longer see loadout names flicker when selecting cards
+- Warp Commander uses its scuffed translation when locked
+
+### Known Issues
+
+- Viewers cannot freely delete cards
+- When the Host deletes a card their subcommanders will disappear from the GWO panel until they are dealt a new card
+
 ## v5.93.0 - 2026-07-09
 
 ### Changed

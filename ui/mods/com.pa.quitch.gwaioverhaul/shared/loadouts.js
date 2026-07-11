@@ -33,18 +33,18 @@ define([
     { id: "gwc_start_bot" },
     { id: "gwaio_start_naval" }
   );
-  const lockedBaseCards = [
+  var lockedBaseCards = [
     { id: "gwc_start_artillery" },
     { id: "gwc_start_subcdr" },
     { id: "gwc_start_combatcdr" },
     { id: "gwc_start_allfactory" },
     { id: "gwc_start_storage" },
   ];
-  const allCards = model.gwoStartingCards.concat(
+  var allCards = model.gwoStartingCards.concat(
     lockedBaseCards,
     model.gwoNewStartCards
   );
-  const startCards = _.map(allCards, function (cardData) {
+  var startCards = _.map(allCards, function (cardData) {
     if (
       _.includes(model.gwoStartingCards, cardData) ||
       GW.bank.hasStartCard(cardData) ||

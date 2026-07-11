@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.map(gwoGroup.airMobile, function (unit) {
+      var mods = _.map(gwoGroup.airMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

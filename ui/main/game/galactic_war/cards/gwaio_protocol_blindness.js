@@ -3,8 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoGroup, gwoUnit) {
-  const prepareMods = function (mods) {
-    const rangePercentageIncrease = 1.5;
+  var prepareMods = function (mods) {
+    var rangePercentageIncrease = 1.5;
     _.forEach(gwoGroup.units, function (unit) {
       mods.push({
         file: unit,
@@ -40,7 +40,7 @@ define([
     });
     // We have to exclude radar due to the ordering of their vision
     // being different from other units.
-    const unitsExcludingRadarScoutsCommanders = _.reject(
+    var unitsExcludingRadarScoutsCommanders = _.reject(
       gwoGroup.units,
       function (unit) {
         return _.includes(
@@ -66,11 +66,11 @@ define([
         );
       }
     );
-    const radarsWithRadarVisionInSlot0 = [
+    var radarsWithRadarVisionInSlot0 = [
       gwoUnit.arkyd,
       gwoUnit.radarSatelliteAdvanced,
     ];
-    const radarsWithRadarVisionInSlot1 = [
+    var radarsWithRadarVisionInSlot1 = [
       gwoUnit.antiNukeLauncher,
       gwoUnit.manhattan,
       gwoUnit.nyx,
@@ -148,7 +148,7 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       prepareMods(mods);
       inventory.addMods(mods);
     },

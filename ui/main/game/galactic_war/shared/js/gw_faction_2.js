@@ -2,12 +2,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
-  const factionName = "Synchronous";
-  const factionColour = [
+  var factionName = "Synchronous";
+  var factionColour = [
     [126, 226, 101],
     [192, 192, 192],
   ];
-  const baselinePersonality = {
+  var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -15,13 +15,13 @@ define([
     personality: personalities.synchronous,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  const boss = {
+  var boss = {
     name: "Metrarch the Machinist",
     character: "!LOC:Boss",
     personality: personalities.synchronousBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  const minions = [
+  var minions = [
     {
       name: "Potbelly79",
       character: "!LOC:Grunt",
@@ -140,8 +140,8 @@ define([
     },
   ];
 
-  const randomMinion = _.sample(minions);
-  const randomAI = {
+  var randomMinion = _.sample(minions);
+  var randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
     color: factionColour,

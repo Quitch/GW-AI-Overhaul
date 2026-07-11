@@ -16,7 +16,7 @@ function gwoIntelligence() {
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
-    const getNumberOfCommanders = function (commander) {
+    var getNumberOfCommanders = function (commander) {
       if (commander.bossCommanders) {
         return commander.bossCommanders;
       } else if (commander.commanderCount) {
@@ -25,7 +25,7 @@ function gwoIntelligence() {
       return 1;
     };
 
-    const getCommanderCharacter = function (commander) {
+    var getCommanderCharacter = function (commander) {
       var character = commander.character
         ? loc(commander.character)
         : loc("!LOC:None");
@@ -35,15 +35,15 @@ function gwoIntelligence() {
       return character;
     };
 
-    const setFactionIndex = function (commander, currentFaction) {
+    var setFactionIndex = function (commander, currentFaction) {
       return _.isUndefined(commander.faction)
         ? currentFaction
         : commander.faction;
     };
 
-    const getFactionColourIndex = function (commander, index, currentFaction) {
-      const inventory = model.game().inventory();
-      const playerFaction = inventory.getTag("global", "playerFaction");
+    var getFactionColourIndex = function (commander, index, currentFaction) {
+      var inventory = model.game().inventory();
+      var playerFaction = inventory.getTag("global", "playerFaction");
       if (currentFaction === playerFaction) {
         // allies appear after the player and sub commanders in colour
         return index + inventory.minions().length + 1;
@@ -51,7 +51,7 @@ function gwoIntelligence() {
       return commander.faction ? 0 : index + 1;
     };
 
-    const getFactionName = function (commander, currentFaction) {
+    var getFactionName = function (commander, currentFaction) {
       if (_.isUndefined(commander.faction)) {
         return {
           name: "",
@@ -59,11 +59,11 @@ function gwoIntelligence() {
         };
       }
 
-      const playerFaction = model
+      var playerFaction = model
         .game()
         .inventory()
         .getTag("global", "playerFaction");
-      const factionInfo = [
+      var factionInfo = [
         { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
         { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
         { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
@@ -74,7 +74,7 @@ function gwoIntelligence() {
             "!LOC:Prefers bots and vehicles; applies tech to structures.",
         },
       ];
-      const faction = commander.mirrorMode
+      var faction = commander.mirrorMode
         ? { name: "Guardians", tooltip: "!LOC:A mystery." }
         : factionInfo[commander.faction];
 
@@ -89,8 +89,8 @@ function gwoIntelligence() {
       };
     };
 
-    const formattedString = function (number) {
-      const km2 = 1000000;
+    var formattedString = function (number) {
+      var km2 = 1000000;
       number = number / km2;
       if (number < 1000) {
         return number.toPrecision(3);
@@ -98,7 +98,7 @@ function gwoIntelligence() {
       return Math.floor(number);
     };
 
-    const calculateSurfaceArea = function (system) {
+    var calculateSurfaceArea = function (system) {
       var area = 0;
       _.forEach(system.planets(), function (world) {
         if (
@@ -111,14 +111,14 @@ function gwoIntelligence() {
       return formattedString(area);
     };
 
-    const toFixedIfNecessary = function (value, decimals) {
+    var toFixedIfNecessary = function (value, decimals) {
       // + converts the string output of toFixed() back to a float
       return +Number.parseFloat(value).toFixed(decimals);
     };
 
-    const availableTech = function (star) {
-      const ai = star.ai();
-      const cardList = star.cardList();
+    var availableTech = function (star) {
+      var ai = star.ai();
+      var cardList = star.cardList();
       if (
         ai.cardName &&
         cardList.length === 1 // Don't show when finding cards through Explore
@@ -128,7 +128,7 @@ function gwoIntelligence() {
       return "";
     };
 
-    const eradicatorModeNameBuilder = function (ai) {
+    var eradicatorModeNameBuilder = function (ai) {
       var modes = [];
       if (ai.eradicationModeSubCommanders) {
         modes.push(loc("!LOC:Colonel"));
@@ -153,10 +153,10 @@ function gwoIntelligence() {
       return append;
     };
 
-    const convertBuffNumberToName = function (ai) {
-      const buffs = ai.typeOfBuffs;
-      const guardians = ai.mirrorMode;
-      const buffNames = [];
+    var convertBuffNumberToName = function (ai) {
+      var buffs = ai.typeOfBuffs;
+      var guardians = ai.mirrorMode;
+      var buffNames = [];
       _.forEach(buffs, function (buff) {
         switch (buff) {
           case 0:
@@ -197,17 +197,17 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
       ],
       function (gwoColour, gwoCards) {
-        const url =
+        var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
-          const $fi = $(html);
+          var $fi = $(html);
           $("#system-detail").append($fi);
           locTree($(".section-of-foreign-intelligence"));
           ko.applyBindings(model, $fi[0]);
         });
 
-        const convertGameMModifiersToName = function (ai, inventory) {
-          const gameModifiers = [];
+        var convertGameMModifiersToName = function (ai, inventory) {
+          var gameModifiers = [];
 
           if (
             ai.bountyMode ||
@@ -240,17 +240,17 @@ function gwoIntelligence() {
 
         var factionIndex = 0;
 
-        const intelligence = function (commander, index) {
+        var intelligence = function (commander, index) {
           factionIndex = setFactionIndex(commander, factionIndex);
-          const adjustedIndex = getFactionColourIndex(
+          var adjustedIndex = getFactionColourIndex(
             commander,
             index,
             factionIndex
           );
           var name = commander.name;
           var eco = commander.econ_rate;
-          const numCommanders = getNumberOfCommanders(commander);
-          const faction = getFactionName(commander, factionIndex);
+          var numCommanders = getNumberOfCommanders(commander);
+          var faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
@@ -269,7 +269,7 @@ function gwoIntelligence() {
           };
         };
 
-        const measureThreat = function (ai) {
+        var measureThreat = function (ai) {
           var commanders = [];
           var totalThreat = 0;
           commanders.push(intelligence(ai, 0));
@@ -317,26 +317,26 @@ function gwoIntelligence() {
                 totalThreat *= 1.5;
             }
           });
-          const guardians = ai.mirrorMode;
+          var guardians = ai.mirrorMode;
           if (guardians) {
             totalThreat *= 3;
           }
           return toFixedIfNecessary(totalThreat, 2);
         };
 
-        const createAIIntelligence = function (ai) {
+        var createAIIntelligence = function (ai) {
           var commanders = [];
           commanders.push(intelligence(ai, 0));
           if (ai.minions) {
-            const minions = _.map(ai.minions, intelligence);
+            var minions = _.map(ai.minions, intelligence);
             commanders = commanders.concat(minions);
           }
           if (ai.foes) {
-            const foes = _.map(ai.foes, intelligence);
+            var foes = _.map(ai.foes, intelligence);
             commanders = commanders.concat(foes);
           }
           if (ai.ally) {
-            const commander = intelligence(ai.ally, 0);
+            var commander = intelligence(ai.ally, 0);
             commanders.push(commander);
           }
           return commanders;
@@ -350,10 +350,10 @@ function gwoIntelligence() {
         model.gwoAis = ko.observableArray([]);
 
         model.generateIntelligence = ko.computed(function () {
-          const inventory = model.game().inventory();
-          const system = model.selection.system();
-          const star = system.star;
-          const ai = star.ai();
+          var inventory = model.game().inventory();
+          var system = model.selection.system();
+          var star = system.star;
+          var ai = star.ai();
           model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
           if (!ai) {
             model.gwoSystemThreat(0);

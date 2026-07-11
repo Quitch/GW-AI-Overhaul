@@ -21,7 +21,7 @@ define([
       return { chance: 30 };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       _.forEach(gwoGroup.navalMobile, function (unit) {
         mods.push(
           {

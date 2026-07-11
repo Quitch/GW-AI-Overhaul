@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Planetary Excavation Commander"),
@@ -30,11 +30,8 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          const units = [
-            gwoUnit.metalExtractorAdvanced,
-            gwoUnit.metalExtractor,
-          ];
-          const mods = _.flatten(
+          var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
+          var mods = _.flatten(
             _.map(units, function (unit) {
               return [
                 {
@@ -76,8 +73,8 @@ define([
           );
           inventory.addMods(mods);
 
-          const structures = ["BasicMetalExtractor", "AdvancedMetalExtractor"];
-          const aiMods = [
+          var structures = ["BasicMetalExtractor", "AdvancedMetalExtractor"];
+          var aiMods = [
             {
               type: "fabber",
               op: "remove",

@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Tourist Commander"),
@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      const english = _.includes(i18n.detectLanguage(), "en");
+      var english = _.includes(i18n.detectLanguage(), "en");
       if (english) {
         return "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories.";
       }
@@ -56,7 +56,7 @@ define([
       }
     },
     dull: function (inventory) {
-      const units = [
+      var units = [
         gwoUnit.metalExtractorAdvanced,
         gwoUnit.metalExtractor,
         gwoUnit.jig,

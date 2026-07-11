@@ -46,7 +46,7 @@ define({
   },
 
   loadoutIcon: function (loadoutId) {
-    const highestDifficultyDefeated = ko
+    var highestDifficultyDefeated = ko
       .observableArray()
       .extend({ local: "gwaio_victory_" + loadoutId });
     var icon;
@@ -59,8 +59,8 @@ define({
       icon = highestDifficultyDefeated();
     }
 
-    const iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
-    const append = hardcore ? "_hardcore.png" : ".png";
+    var iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
+    var append = hardcore ? "_hardcore.png" : ".png";
 
     switch (icon) {
       case -1: {
@@ -98,7 +98,7 @@ define({
 
   applyDulls: function (card, inventory, units) {
     if (inventory.lookupCard(card) === 0) {
-      const buffCount = inventory.getTag("", "buffCount", 0);
+      var buffCount = inventory.getTag("", "buffCount", 0);
       if (buffCount) {
         inventory.removeUnits(units);
         inventory.setTag("", "buffCount", undefined);
@@ -130,8 +130,8 @@ define({
   },
 
   hasCard: function (inventory, cardId) {
-    const game = model.game();
-    const coopPlayerInventoryData =
+    var game = model.game();
+    var coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
         ? game.coopPlayerInventoryData()
         : [];

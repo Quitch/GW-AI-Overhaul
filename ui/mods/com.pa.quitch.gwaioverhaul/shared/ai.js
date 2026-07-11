@@ -1,28 +1,28 @@
-const getQuellerPath = function (type) {
-  const quellerPath = "/pa/ai_queller/";
-  const inventory = model.game().inventory();
-  const smartSubcommanders = _.some(inventory.cards(), {
-    id: "gwaio_upgrade_subcommander_tactics",
-  });
-  if (type === "all") {
-    return quellerPath;
-  } else if (type === "enemy") {
-    return quellerPath + "q_uber/";
-  } else if (type === "subcommander" && smartSubcommanders) {
-    return quellerPath + "q_silver/";
+var getInventoryAiMods = function (inventory) {
+  if (!inventory) {
+    return [];
   }
-  // type === "subcommander"
-  return quellerPath + "q_bronze/";
+
+  if (_.isFunction(inventory.aiMods)) {
+    return inventory.aiMods();
+  }
+
+  return inventory.aiMods || [];
 };
 
-define(function () {
-  const penchantAiPath = "/pa/ai_penchant/";
-  const titansAiPath = "/pa/ai/";
+var hasSmartSubcommanders = function (inventory) {
+  return _.some(inventory.cards(), {
+    id: "gwaio_upgrade_subcommander_tactics",
+  });
+};
 
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
+], function (refereeAIPaths) {
   return {
     aiInUse: function (alignment) {
-      const galaxy = model.game().galaxy();
-      const originSystem = galaxy.stars()[galaxy.origin()].system();
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (originSystem.gwaio) {
         if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
           return originSystem.gwaio.aiAlly;
@@ -33,38 +33,31 @@ define(function () {
     },
 
     getAIPathSource: function (type) {
-      const aiInUse = this.aiInUse(type);
-      switch (aiInUse) {
-        case "Penchant":
-          return penchantAiPath;
-        case "Queller":
-          return getQuellerPath(type);
-        default:
-          return titansAiPath;
-      }
+      var aiInUse = this.aiInUse(type);
+      return refereeAIPaths.getAIPathSource(type, aiInUse);
     },
 
-    getAIPathDestination: function (type) {
-      const game = model.game();
-      const ai = game.galaxy().stars()[game.currentStar()].ai();
-      const guardians = ai.mirrorMode;
-      const aiMods = game.inventory().aiMods();
-      const aiInUse = this.aiInUse(type);
-      // the order of path assignments must match .player unit_map assignments in generateGameFiles()
-      if (type === "cluster") {
-        return "/pa/ai_cluster/";
-      } else if (aiInUse === "Queller") {
-        return getQuellerPath(type);
-      } else if (type === "subcommander" && !guardians && !_.isEmpty(aiMods)) {
-        return "/pa/ai_subcommander/";
-      } else if (aiInUse === "Penchant") {
-        return penchantAiPath;
-      }
-      return titansAiPath;
+    getAIPathDestination: function (type, options) {
+      var game = model.game();
+      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var inventory = game.inventory();
+      var aiInUse = this.aiInUse(type);
+      var settings = _.assign(
+        {
+          guardians: !!ai.mirrorMode,
+          aiMods: getInventoryAiMods(inventory),
+          smartSubcommanders: hasSmartSubcommanders(inventory),
+          scopeToken:
+            type === "enemy" && ai.mirrorMode ? "guardians" : undefined,
+        },
+        options || {}
+      );
+
+      return refereeAIPaths.getAIPathDestination(type, aiInUse, settings);
     },
 
     isCluster: function (ai) {
-      const guardians = ai.mirrorMode;
+      var guardians = ai.mirrorMode;
       if (guardians) {
         return false;
       }
@@ -74,7 +67,7 @@ define(function () {
     },
 
     penchants: function () {
-      const penchants = [
+      var penchants = [
         { name: "", tags: "" }, // Vanilla - no changes
         { name: "!LOC:Artillery", tags: ["Artillery"] },
         {
@@ -178,7 +171,7 @@ define(function () {
         { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
         { name: "!LOC:Minelayer", tags: ["Minelayer"] },
       ];
-      const penchant = _.sample(penchants);
+      var penchant = _.sample(penchants);
 
       return {
         penchants: penchant.tags,

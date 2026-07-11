@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.flatten(
+      var mods = _.flatten(
         _.map(gwoGroup.airAmmo, function (ammo) {
           return [
             {

@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
 
   return {
     visible: _.constant(false),
@@ -89,7 +89,7 @@ define([
             },
           ]);
 
-          const structures = [
+          var structures = [
             "BasicAirDefense",
             "BasicAirFactory",
             "BasicArtillery",
@@ -104,7 +104,7 @@ define([
             "Umbrella",
             "Wall",
           ];
-          const aiMods = _.map(structures, function (structure) {
+          var aiMods = _.map(structures, function (structure) {
             return {
               type: "fabber",
               op: "append",
@@ -123,7 +123,7 @@ define([
       }
     },
     dull: function (inventory) {
-      const units = [
+      var units = [
         gwoUnit.energyPlantAdvanced,
         gwoUnit.energyPlant,
         gwoUnit.metalExtractorAdvanced,

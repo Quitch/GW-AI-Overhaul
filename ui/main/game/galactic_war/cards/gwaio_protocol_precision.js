@@ -2,13 +2,10 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoGroup) {
-  const prepareMods = function (mods) {
-    const percentageReduction = 0.85;
-    const percentageIncrease = 1.15;
-    const mobileCombatUnits = _.xor(
-      gwoGroup.combat,
-      gwoGroup.structuresDefences
-    );
+  var prepareMods = function (mods) {
+    var percentageReduction = 0.85;
+    var percentageIncrease = 1.15;
+    var mobileCombatUnits = _.xor(gwoGroup.combat, gwoGroup.structuresDefences);
     _.forEach(mobileCombatUnits, function (unit) {
       mods.push(
         {
@@ -99,7 +96,7 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       prepareMods(mods);
       inventory.addMods(mods);
     },

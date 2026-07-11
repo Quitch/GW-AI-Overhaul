@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       _.forEach(gwoGroup.structuresArtilleryAmmo, function (ammo) {
         mods.push(
           {

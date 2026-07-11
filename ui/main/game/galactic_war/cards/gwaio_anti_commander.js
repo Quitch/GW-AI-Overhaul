@@ -19,7 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 40;
-      const hasAntiTech = _.some(
+      var hasAntiTech = _.some(
         model.game().inventory().cards(),
         function (card) {
           return _.startsWith(card.id, "gwaio_anti_");
@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.flatten(
+      var mods = _.flatten(
         _.map(gwoGroup.ammo, function (ammo) {
           return [
             {

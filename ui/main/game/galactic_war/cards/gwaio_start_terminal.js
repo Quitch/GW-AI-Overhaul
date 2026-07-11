@@ -6,20 +6,37 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
-    summarize: _.constant("!LOC:Terminal Commander"),
+    summarize: function () {
+      var english = _.includes(i18n.detectLanguage(), "en");
+      if (english) {
+        return "!LOC:Terminal Commander";
+      }
+      return loc("!LOC:Deathmark") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
+    },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
       "!LOC:You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!"
     ),
-    hint: _.constant({
-      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-      description: "!LOC:Terminal Commander",
-    }),
+    hint: function () {
+      var english = _.includes(i18n.detectLanguage(), "en");
+      var icon =
+        "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
+      if (english) {
+        return {
+          icon: icon,
+          description: "!LOC:Terminal Commander",
+        };
+      }
+      return {
+        icon: icon,
+        description: loc("!LOC:Deathmark") + " " + loc("!LOC:Commander"), // scuffed translation using existing strings
+      };
+    },
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
@@ -29,10 +46,10 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          const playerIsCluster =
+          var playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
-          const mods = [];
-          const mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
+          var mods = [];
+          var mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
 
           if (playerIsCluster) {
             _.forEach(gwoGroup.unitsNoCluster, function (unit) {

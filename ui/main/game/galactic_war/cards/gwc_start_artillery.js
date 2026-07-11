@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Artillery Commander"),
@@ -30,8 +30,8 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.structuresArtillery.concat(gwoUnit.dox));
 
-          const mods = [];
-          const units = [
+          var mods = [];
+          var units = [
             gwoUnit.pelter,
             gwoUnit.lob,
             gwoUnit.laserDefenseTower,
@@ -45,7 +45,7 @@ define([
               value: "UNITTYPE_CmdBuild",
             });
           });
-          const costUnits = [gwoUnit.holkins, gwoUnit.pelter, gwoUnit.lob];
+          var costUnits = [gwoUnit.holkins, gwoUnit.pelter, gwoUnit.lob];
           _.forEach(costUnits, function (unit) {
             mods.push({
               file: unit,
@@ -56,12 +56,8 @@ define([
           });
           inventory.addMods(mods);
 
-          const structures = [
-            "BasicRadar",
-            "BasicLandDefense",
-            "BasicArtillery",
-          ];
-          const aiMods = _.map(structures, function (structure) {
+          var structures = ["BasicRadar", "BasicLandDefense", "BasicArtillery"];
+          var aiMods = _.map(structures, function (structure) {
             return {
               type: "factory",
               op: "append",

@@ -142,9 +142,8 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 ### Known issues
 
 - Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting.
-- Only the host will be able to use techs which modify subcommanders
-- Viewers' subcommanders will use base AI
 - Viewers cannot freely delete cards
+- When the Host deletes a card their subcommanders will disappear from the GWO panel until they are dealt a new card
 
 ## Recommended mods
 

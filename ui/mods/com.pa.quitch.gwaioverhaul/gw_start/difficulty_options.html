@@ -1,100 +1,230 @@
-<div id="difficulty-options">
-  <div>
-    <label style="text-transform: none" id="faction-scaling">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.factionScaling"
-      />
-      <loc>Faction Scaling</loc>
-      <!-- Use a variable for the tooltip because PA Inc wants to avoid escaping characters in HTML -->
-      <span class="info_tip" data-bind="tooltip: gwoFactionScalingTooltip"
-        >?</span
-      >
-    </label>
+<div id="gwo-game-options-panel" class="coop-setup-panel">
+  <div
+    class="coop-setup-configure"
+    data-bind="click: openGwoGameOptionsModal, click_sound: 'default', rollover_sound: 'default'"
+  >
+    <loc>Game Options</loc>
   </div>
-  <div>
-    <!-- Removed if Shared Systems for Galactic War is loaded -->
-    <label style="text-transform: none" id="system-scaling">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.systemScaling"
-      />
-      <loc>System Scaling</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:System size determined by distance into the galaxy.'"
-        >?</span
+</div>
+
+<div
+  id="gwo-game-options-modal"
+  class="gw-start-coop-settings-modal attendmouse"
+  data-bind="visible: gwoGameOptionsModalVisible()"
+  style="display: none"
+>
+  <div class="gw-start-coop-settings-panel gwo-game-options-modal-panel">
+    <div
+      class="gw-start-coop-settings-close"
+      data-bind="click: closeGwoGameOptionsModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <noloc>X</noloc>
+    </div>
+    <div class="gw-start-coop-settings-title"><loc>Game Options</loc></div>
+
+    <div class="gw-start-coop-settings-intro">
+      <div class="gw-start-coop-settings-intro-text">
+        <loc>Configure campaign options.</loc>
+      </div>
+    </div>
+
+    <div
+      id="difficulty-options"
+      class="gw-start-coop-settings-body gwo-game-options-body"
+    >
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="game-settings-row"
       >
-    </label>
-  </div>
-  <div>
-    <label style="text-transform: none" id="system-size">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.simpleSystems"
-      />
-      <loc>Easy Systems</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Use smaller, mostly single planet systems.'"
-        >?</span
+        <div class="gw-start-coop-switch-label" id="game-settings-label">
+          <loc>Hardcore</loc>
+          <span
+            id="game-settings"
+            class="info_tip"
+            data-bind="tooltip: '!LOC:Permanent death. No restarts when your commander is annihilated.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.hardcore }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.hardcore); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.hardcore)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="faction-scaling-row"
       >
-    </label>
-  </div>
-  <div>
-    <label style="text-transform: none" id="large-planets">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.largePlanets"
-      />
-      <loc>Large Planets</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Use larger planets and systems.'"
-        >?</span
+        <div class="gw-start-coop-switch-label" id="faction-scaling">
+          <loc>Faction Scaling</loc>
+          <span class="info_tip" data-bind="tooltip: gwoFactionScalingTooltip"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.factionScaling }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.factionScaling); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.factionScaling)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="system-scaling-row"
       >
-    </label>
-  </div>
-  <div>
-    <label style="text-transform: none" id="easier-start">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.easierStart"
-      />
-      <loc>Easier Start</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:More neutral systems with free technology.'"
-        >?</span
+        <!-- Removed if Shared Systems for Galactic War is loaded -->
+        <div class="gw-start-coop-switch-label" id="system-scaling">
+          <loc>System Scaling</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:System size determined by distance into the galaxy.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.systemScaling }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.systemScaling); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.systemScaling)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="system-size-row"
       >
-    </label>
-  </div>
-  <div>
-    <label style="text-transform: none" id="pa-lore">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.paLore"
-      />
-      <loc>System Lore</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Display the original pre-release Galactic War lore in the Planetary Intelligence panel.'"
-        >?</span
+        <div class="gw-start-coop-switch-label" id="system-size">
+          <loc>Easy Systems</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:Use smaller, mostly single planet systems.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.simpleSystems }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.simpleSystems); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.simpleSystems)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="large-planets-row"
       >
-    </label>
-  </div>
-  <div>
-    <label style="text-transform: none" id="static-tech">
-      <input
-        type="checkbox"
-        data-bind="checked: $root.gwoDifficultySettings.staticTech"
-      />
-      <loc>Static Tech</loc>
-      <span
-        class="info_tip"
-        data-bind="tooltip: '!LOC:Available Tech in a system never changes.'"
-        >?</span
+        <div class="gw-start-coop-switch-label" id="large-planets">
+          <loc>Large Planets</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:Encounter large planets and systems much sooner.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.largePlanets }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.largePlanets); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.largePlanets)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="easier-start-row"
       >
-    </label>
+        <div class="gw-start-coop-switch-label" id="easier-start">
+          <loc>Easier Start</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:More neutral systems with free technology.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.easierStart }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.easierStart); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.easierStart)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="pa-lore-row"
+      >
+        <div class="gw-start-coop-switch-label" id="pa-lore">
+          <loc>System Lore</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:Display the original pre-release Galactic War lore in the Planetary Intelligence panel.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.paLore }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.paLore); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.paLore)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
+        id="static-tech-row"
+      >
+        <div class="gw-start-coop-switch-label" id="static-tech">
+          <loc>Static Tech</loc>
+          <span
+            class="info_tip"
+            data-bind="tooltip: '!LOC:Available Tech in a system never changes.'"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.staticTech }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.staticTech); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.staticTech)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="gw-start-coop-settings-apply btn_hero"
+      data-bind="click: applyGwoGameOptionsModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <div class="btn_label" style="padding: 0px 40px">
+        <loc>Apply Settings</loc>
+      </div>
+    </div>
   </div>
 </div>

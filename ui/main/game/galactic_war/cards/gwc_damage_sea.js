@@ -21,7 +21,7 @@ define([
       return { chance: 35 };
     },
     buff: function (inventory) {
-      const mods = _.flatten(
+      var mods = _.flatten(
         _.map(gwoGroup.navalAmmo, function (ammo) {
           return [
             {

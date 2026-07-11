@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
@@ -32,20 +32,20 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          const unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
-          const units = unitCannons.concat(gwoGroup.unitCannonMobile);
+          var unitCannons = [gwoUnit.lob, gwoUnit.unitCannon];
+          var units = unitCannons.concat(gwoGroup.unitCannonMobile);
           inventory.addUnits(units);
 
-          const mobileLandUnits = gwoGroup.botsMobile.concat(
+          var mobileLandUnits = gwoGroup.botsMobile.concat(
             gwoGroup.vehiclesMobile
           );
-          const landUnitsNotInUnitCannon = _.filter(
+          var landUnitsNotInUnitCannon = _.filter(
             mobileLandUnits,
             function (unit) {
               return !_.includes(gwoGroup.unitCannonMobile, unit);
             }
           );
-          const mods = _.flatten(
+          var mods = _.flatten(
             _.map(unitCannons, function (unit) {
               return [
                 {
@@ -97,7 +97,7 @@ define([
           );
           inventory.addMods(mods);
 
-          const aiMods = [
+          var aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -118,7 +118,7 @@ define([
               value: "gwaio_upgrade_leveler.json", // Queller AI
             },
           ];
-          const factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
+          var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
           _.forEach(factoryArtillery, function (structure) {
             aiMods.push({
               type: "fabber",
@@ -128,7 +128,7 @@ define([
               value: "Commander",
             });
           });
-          const mobileLand = [
+          var mobileLand = [
             "SupportCommander",
             "AdvancedArtilleryBot",
             "TMLBot",

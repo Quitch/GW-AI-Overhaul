@@ -16,8 +16,8 @@ function gwoCardTooltips() {
     );
     locTree($("#system-card"));
 
-    const unitInPlayerInventory = function (unit) {
-      const playerUnits = model
+    var unitInPlayerInventory = function (unit) {
+      var playerUnits = model
         .game()
         .inventory()
         .units()
@@ -27,7 +27,7 @@ function gwoCardTooltips() {
       });
     };
 
-    const highlightUnitName = function (unitName) {
+    var highlightUnitName = function (unitName) {
       return "<span class='highlight'>" + unitName + "</span>";
     };
 
@@ -48,9 +48,9 @@ function gwoCardTooltips() {
           model.gwoCardsToUnits = gwoCardsToUnits.cards;
         }
 
-        const sortUnitNames = function (units) {
+        var sortUnitNames = function (units) {
           return _.map(units, function (unit) {
-            const unitNameIndex = _.findIndex(gwoUnitToNames.units, {
+            var unitNameIndex = _.findIndex(gwoUnitToNames.units, {
               path: unit,
             });
 
@@ -61,17 +61,15 @@ function gwoCardTooltips() {
               return loc("!LOC:Unknown Unit");
             }
 
-            const translatedName = loc(
-              gwoUnitToNames.units[unitNameIndex].name
-            );
-            const formattedName = unitInPlayerInventory(unit)
+            var translatedName = loc(gwoUnitToNames.units[unitNameIndex].name);
+            var formattedName = unitInPlayerInventory(unit)
               ? translatedName
               : highlightUnitName(translatedName);
             return formattedName;
           }).sort();
         };
 
-        const makeCardTooltip = function (card, hoverIndex) {
+        var makeCardTooltip = function (card, hoverIndex) {
           if (card.isLoadout()) {
             return;
           }
@@ -83,8 +81,8 @@ function gwoCardTooltips() {
             hoverIndex += 1;
           }
 
-          const cardId = card.id();
-          const cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
+          var cardId = card.id();
+          var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
             id: cardId,
           });
 
@@ -97,9 +95,9 @@ function gwoCardTooltips() {
             return;
           }
 
-          const units = model.gwoCardsToUnits[cardUnitsIndex].units;
+          var units = model.gwoCardsToUnits[cardUnitsIndex].units;
           if (units) {
-            const affectedUnits = sortUnitNames(units);
+            var affectedUnits = sortUnitNames(units);
 
             // set up the final tooltip
             model.gwoTechCardTooltip()[hoverIndex] = _.map(
@@ -141,7 +139,7 @@ function gwoCardTooltips() {
             makeCardTooltip(card);
           } else {
             // Delay clears for a bit to avoid flashing
-            const oldCount = hoverCount;
+            var oldCount = hoverCount;
             _.delay(function () {
               if (oldCount !== hoverCount) {
                 return;
@@ -155,7 +153,7 @@ function gwoCardTooltips() {
           if (!$block.is(".one-card")) {
             $block = $block.parent(".one-card");
           }
-          const left = $block.offset().left + $block.width() / 2;
+          var left = $block.offset().left + $block.width() / 2;
           model.hoverOffset(left.toString() + "px");
           model.hoverCard(card);
         };

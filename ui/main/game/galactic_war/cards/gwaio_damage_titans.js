@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.flatten(
+      var mods = _.flatten(
         _.map(gwoGroup.titansAmmo, function (ammo) {
           return [
             ({

@@ -6,7 +6,7 @@ define({
   },
 
   pick: function (faction, minionColour, count) {
-    const legonisColours = [
+    var legonisColours = [
       [0, 176, 255],
       [153, 204, 255],
       [102, 178, 255],
@@ -32,7 +32,7 @@ define({
       [204, 229, 255],
       [0, 255, 255],
     ];
-    const foundationColours = [
+    var foundationColours = [
       [145, 87, 199],
       [229, 204, 255],
       [204, 153, 255],
@@ -57,7 +57,7 @@ define({
       [255, 102, 178],
       [255, 51, 153],
     ];
-    const synchronousColours = [
+    var synchronousColours = [
       [126, 226, 101],
       [229, 255, 204],
       [204, 255, 153],
@@ -82,7 +82,7 @@ define({
       [0, 204, 102],
       [0, 255, 128],
     ];
-    const revenantsColours = [
+    var revenantsColours = [
       [236, 34, 35],
       [255, 204, 204],
       [255, 153, 153],
@@ -107,14 +107,14 @@ define({
       [204, 204, 0],
       [153, 153, 0],
     ];
-    const clusterColours = [
+    var clusterColours = [
       [128, 128, 128],
       [142, 107, 68],
       [166, 166, 166],
       [90, 90, 90],
       [70, 70, 70],
     ];
-    const factions = [
+    var factions = [
       legonisColours,
       foundationColours,
       synchronousColours,
@@ -127,8 +127,8 @@ define({
       return minionColour;
     }
 
-    const guardianColour = [255, 255, 255];
-    const secondaryColour = [192, 192, 192];
+    var guardianColour = [255, 255, 255];
+    var secondaryColour = [192, 192, 192];
 
     if (_.isEqual(minionColour[0], guardianColour)) {
       return [guardianColour, secondaryColour];

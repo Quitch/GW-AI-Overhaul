@@ -1,7 +1,7 @@
 var gwoBugfixesLoaded;
 
 function gwoBugfixes() {
-  const game = model.game();
+  var game = model.game();
 
   if (gwoBugfixesLoaded || game.isTutorial()) {
     return;
@@ -10,11 +10,11 @@ function gwoBugfixes() {
   gwoBugfixesLoaded = true;
 
   try {
-    const galaxy = game.galaxy();
-    const luckyCommanderFixed = ko
+    var galaxy = game.galaxy();
+    var luckyCommanderFixed = ko
       .observable()
       .extend({ local: "gwaio_lucky_commander_fixed" });
-    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
@@ -25,7 +25,7 @@ function gwoBugfixes() {
       return;
     }
 
-    const fixTreasurePlanetCardList = function (star) {
+    var fixTreasurePlanetCardList = function (star) {
       if (gwoSettings.treasurePlanetFixed) {
         return;
       }
@@ -36,10 +36,10 @@ function gwoBugfixes() {
       }
     };
 
-    const fixClusterType = function (mod, securityFix, workerFix) {
-      const security =
+    var fixClusterType = function (mod, securityFix, workerFix) {
+      var security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      const worker = "/pa/units/air/support_platform/support_platform.json";
+      var worker = "/pa/units/air/support_platform/support_platform.json";
 
       if (
         (securityFix === true || mod.file !== security) &&
@@ -57,8 +57,8 @@ function gwoBugfixes() {
       }
     };
 
-    const fixClusterCommanderTypes = function (star) {
-      const ai = star.ai();
+    var fixClusterCommanderTypes = function (star) {
+      var ai = star.ai();
 
       if (gwoSettings.clusterFixed || !ai || !ai.isCluster) {
         return;
@@ -68,9 +68,9 @@ function gwoBugfixes() {
       var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
 
       for (var mod of ai.inventory) {
-        const security =
+        var security =
           "/pa/units/land/bot_support_commander/bot_support_commander.json";
-        const worker = "/pa/units/air/support_platform/support_platform.json";
+        var worker = "/pa/units/air/support_platform/support_platform.json";
         var result = fixClusterType(mod, securityFix, workerFix);
         switch (result) {
           case security:
@@ -87,18 +87,18 @@ function gwoBugfixes() {
       }
     };
 
-    const fixLuckyCommanderLocalStorageVariable = function () {
+    var fixLuckyCommanderLocalStorageVariable = function () {
       if (luckyCommanderFixed()) {
         return;
       }
 
-      const unlockedVanillaStartCards = ko
+      var unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
-      const unlockedGwoStartCards = ko
+      var unlockedGwoStartCards = ko
         .observableArray()
         .extend({ local: "gwaio_bank" });
-      const index = _.findIndex(
+      var index = _.findIndex(
         unlockedVanillaStartCards().startCards,
         "id",
         "gwaio_start_lucky"
@@ -116,15 +116,15 @@ function gwoBugfixes() {
       luckyCommanderFixed("true");
     };
 
-    const checkVersion = function (fixedVersion) {
+    var checkVersion = function (fixedVersion) {
       return gwoSettings.version.localeCompare(fixedVersion, undefined, {
         numeric: true,
         sensitivity: "base",
       });
     };
 
-    const checkIfPatchesNeeded = function () {
-      const playerIsCluster =
+    var checkIfPatchesNeeded = function () {
+      var playerIsCluster =
         model.game().inventory().getTag("global", "playerFaction") === 4;
 
       if (checkVersion("5.76.1") >= 0) {
@@ -136,7 +136,7 @@ function gwoBugfixes() {
       }
     };
 
-    const applyFixes = function () {
+    var applyFixes = function () {
       for (var star of galaxy.stars()) {
         if (gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed) {
           break;

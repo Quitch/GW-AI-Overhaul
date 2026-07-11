@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (inventory, gwoUnit) {
-  const clusterCommanderTech = [
+  var clusterCommanderTech = [
     {
       file: gwoUnit.colonel,
       path: "tools.0.spec_id",

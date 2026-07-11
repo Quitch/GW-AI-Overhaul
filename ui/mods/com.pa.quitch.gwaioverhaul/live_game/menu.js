@@ -8,43 +8,43 @@ function gwoMenu() {
   gwoMenuLoaded = true;
 
   try {
-    const getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
+    var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
       return boolean ? stringIfTrue : stringIfFalse;
     };
 
     requireGW(["shared/gw_common"], function (GW) {
-      const activeGameId = ko.observable().extend({ local: "gw_active_game" });
-      const hardcore = ko.observable();
-      const tutorial = ko.observable(false);
+      var activeGameId = ko.observable().extend({ local: "gw_active_game" });
+      var hardcore = ko.observable();
+      var tutorial = ko.observable(false);
 
-      const gameLoader = GW.manifest.loadGame(activeGameId());
+      var gameLoader = GW.manifest.loadGame(activeGameId());
       gameLoader.then(function (game) {
         hardcore(game.hardcore());
         tutorial(game.isTutorial());
       });
 
       model.menuConfigGenerator = ko.observable(function () {
-        const overString = getMenuString(
+        var overString = getMenuString(
           tutorial(),
           "!LOC:Continue Tutorial",
           "!LOC:Continue War"
         );
-        const exitString = getMenuString(
+        var exitString = getMenuString(
           hardcore(),
           "!LOC:Abandon War",
           "!LOC:Surrender"
         );
 
-        const getMenuAction = function (boolean) {
+        var getMenuAction = function (boolean) {
           if (boolean) {
             return "menuReturnToWar";
           }
           return getMenuString(hardcore(), "menuAbandonWar", "menuSurrender");
         };
 
-        const playerLost = model.gameOver() || model.defeated();
+        var playerLost = model.gameOver() || model.defeated();
 
-        const menu = [
+        var menu = [
           {
             label: "!LOC:Pause Game",
             action: "menuPauseGame",
@@ -88,7 +88,7 @@ function gwoMenu() {
           });
         }
 
-        const translatedMenu = _.map(menu, function (entry) {
+        var translatedMenu = _.map(menu, function (entry) {
           return {
             label: loc(entry.label),
             action: entry.action,

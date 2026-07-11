@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GW, GWCStart, GWCStorage, gwoCard, gwoUnit) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Storage Commander"),
@@ -38,7 +38,7 @@ define([
       }
     },
     dull: function (inventory) {
-      const units = [gwoUnit.inferno, gwoUnit.vanguard];
+      var units = [gwoUnit.inferno, gwoUnit.vanguard];
       gwoCard.applyDulls(CARD, inventory, units);
     },
   };
