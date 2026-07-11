@@ -33,7 +33,9 @@ function gwoLoadouts() {
         ) {
           var result = $.Deferred();
           var dealInventory = new GWInventory();
+          var playerFaction = model.playerFactionIndex();
           dealInventory.setTag("global", "commander", commander);
+          dealInventory.setTag("global", "playerFaction", playerFaction);
 
           gwoDeal
             .dealCard(
@@ -53,6 +55,7 @@ function gwoLoadouts() {
                   tags: {
                     global: {
                       commander: commander,
+                      playerFaction: playerFaction,
                     },
                   },
                 });
