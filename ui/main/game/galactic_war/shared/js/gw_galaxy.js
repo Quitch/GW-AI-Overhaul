@@ -1,7 +1,7 @@
 // StarSystemTemplates.generate has systems scale with galaxy depth
 
-const GWGalaxy = function () {
-  const self = this;
+var GWGalaxy = function () {
+  var self = this;
   self.stars = ko.observableArray();
   self.gates = ko.observableArray();
   self.origin = ko.observable(0);
@@ -11,7 +11,7 @@ const GWGalaxy = function () {
   // Map of node -> node list that share an edge, going both directions.
   // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
   self.neighborsMap = ko.computed(function () {
-    const edges = {};
+    var edges = {};
     _.forEach(self.gates(), function (gate) {
       if (!_.has(edges, gate[0])) {
         edges[gate[0]] = [];
@@ -28,20 +28,20 @@ const GWGalaxy = function () {
   });
 
   self.areNeighbors = function (a, b) {
-    const neighbors = self.neighborsMap();
+    var neighbors = self.neighborsMap();
     if (_.has(neighbors, a)) {
       return _.includes(neighbors[a], b);
     }
   };
 
   self.pathBetween = function (from, to, noFog) {
-    const toExplored = self.stars()[to].explored();
+    var toExplored = self.stars()[to].explored();
 
-    const neighborsMap = self.neighborsMap();
+    var neighborsMap = self.neighborsMap();
 
-    const checked = {};
+    var checked = {};
 
-    const workList = [[from]];
+    var workList = [[from]];
 
     while (workList.length > 0) {
       var path = workList.shift();
@@ -105,7 +105,7 @@ define([
   };
 
   GWGalaxy.saveSystems = function (config) {
-    const stars = _.map(config.stars, GWStar.saveSystem);
+    var stars = _.map(config.stars, GWStar.saveSystem);
     // If we have already been saved, throw away the results.
     if (config.saved) {
       return {};
@@ -117,11 +117,11 @@ define([
 
   GWGalaxy.prototype = {
     load: function (config) {
-      const self = this;
+      var self = this;
       config = config || {};
       self.stars(
         _.map(config.stars || [], function (star) {
-          const result = new GWStar();
+          var result = new GWStar();
           result.load(star);
           return result;
         })
@@ -132,15 +132,15 @@ define([
       self.saved(!!config.saved);
     },
     save: function () {
-      const self = this;
+      var self = this;
 
       // Handle the stars explicitly, since they tend to be big, and write differently when saved.
-      const stars = self.stars;
+      var stars = self.stars;
       delete self.stars;
-      const result = ko.toJS(self);
+      var result = ko.toJS(self);
       self.stars = stars;
 
-      const saved = self.saved();
+      var saved = self.saved();
       result.stars = _.map(stars(), function (star) {
         return star.save(saved);
       });
@@ -148,24 +148,24 @@ define([
       return result;
     },
     build: function (config) {
-      const self = this;
+      var self = this;
       config = config || {};
 
-      const rng = new Math.seedrandom(config.seed || 0);
+      var rng = new Math.seedrandom(config.seed || 0);
 
-      const builder = new GalaxyBuilder(config);
+      var builder = new GalaxyBuilder(config);
       builder.build();
 
       // Re-normalize the stars
-      const min = builder.stars[0].slice(0);
-      const max = builder.stars[0].slice(0);
+      var min = builder.stars[0].slice(0);
+      var max = builder.stars[0].slice(0);
       _.forEach(builder.stars, function (star) {
         min[0] = Math.min(min[0], star[0]);
         min[1] = Math.min(min[1], star[1]);
         max[0] = Math.max(max[0], star[0]);
         max[1] = Math.max(max[1], star[1]);
       });
-      const radius = [(max[0] - min[0]) / 2, (max[1] - min[1]) / 2];
+      var radius = [(max[0] - min[0]) / 2, (max[1] - min[1]) / 2];
       self.radius(radius);
 
       _.forEach(builder.stars, function (star, index) {
@@ -183,19 +183,19 @@ define([
         center[1] / builder.stars.length,
       ];
 
-      const deltas = _.map(builder.stars, function (element) {
+      var deltas = _.map(builder.stars, function (element) {
         var delta = [element[0] - center[0], element[1] - center[1]];
         delta = Math.hypot(delta[0], delta[1]);
 
         return delta;
       });
 
-      const maxDelta = _.max(deltas);
-      const maxReduction = 0.35;
+      var maxDelta = _.max(deltas);
+      var maxReduction = 0.35;
 
       builder.stars = _.map(builder.stars, function (element, index) {
-        const delta = deltas[index];
-        const factor = Math.pow(maxReduction * (delta / maxDelta), 2);
+        var delta = deltas[index];
+        var factor = Math.pow(maxReduction * (delta / maxDelta), 2);
 
         return [
           center[0] * factor + element[0] * (1 - factor) - 0.15,
@@ -205,7 +205,7 @@ define([
 
       self.stars(
         _.map(builder.stars || [], function (star) {
-          const result = new GWStar();
+          var result = new GWStar();
           result.coordinates(star.concat([rng()]));
           return result;
         })
@@ -215,7 +215,7 @@ define([
       var bestStar = 0;
       var bestDistance = Infinity;
       _.forEach(self.stars(), function (star, index) {
-        const distance = star.coordinates()[0] + -star.coordinates()[1];
+        var distance = star.coordinates()[0] + -star.coordinates()[1];
         if (distance < bestDistance) {
           bestDistance = distance;
           bestStar = index;
@@ -232,15 +232,15 @@ define([
       });
 
       self.difficultyIndex = config.difficultyIndex;
-      const StarSystemTemplates = chooseStarSystemTemplates(
+      var StarSystemTemplates = chooseStarSystemTemplates(
         config.content,
         config.useEasierSystemTemplate
       );
 
       // Generate the planets, increasing the size based on the distance from the start.
-      const starGenerators = _.map(self.stars(), function (star) {
+      var starGenerators = _.map(self.stars(), function (star) {
         var systemSize;
-        const coopSystemPlayerBonus = Math.max(
+        var coopSystemPlayerBonus = Math.max(
           0,
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
         );

@@ -2,12 +2,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
-  const factionName = "Revenants";
-  const factionColour = [
+  var factionName = "Revenants";
+  var factionColour = [
     [236, 34, 35],
     [192, 192, 192],
   ];
-  const baselinePersonality = {
+  var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -15,13 +15,13 @@ define([
     personality: personalities.revenants,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  const boss = {
+  var boss = {
     name: "First Seeker Osiris",
     character: "!LOC:Boss",
     personality: personalities.revenantsBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  const minions = [
+  var minions = [
     {
       name: "Betadyne",
       character: "!LOC:Space Invader",
@@ -140,8 +140,8 @@ define([
     },
   ];
 
-  const randomMinion = _.sample(minions);
-  const randomAI = {
+  var randomMinion = _.sample(minions);
+  var randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
     color: factionColour,

@@ -25,7 +25,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.map(gwoGroup.airFactories, function (unit) {
+      var mods = _.map(gwoGroup.airFactories, function (unit) {
         return {
           file: unit,
           path: "factory_cooldown_time",

@@ -21,7 +21,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 100;
-      const dist = system.distance();
+      var dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
         (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 5) ||
@@ -34,7 +34,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const units = gwoGroup.energyIntel.concat(
+      var units = gwoGroup.energyIntel.concat(
         gwoUnit.hermes,
         gwoUnit.skitter,
         gwoUnit.firefly,
@@ -43,7 +43,7 @@ define([
         gwoUnit.barnacle,
         gwoUnit.teleporter
       );
-      const mods = _.map(units, function (unit) {
+      var mods = _.map(units, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

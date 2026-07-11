@@ -40,25 +40,25 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
 
-      const advancedBotFabbers = [
+      var advancedBotFabbers = [
         gwoUnit.colonel,
         gwoUnit.mend,
         gwoUnit.botFabberAdvanced,
       ];
-      const advancedBotsWithoutFabbers = _.xor(
+      var advancedBotsWithoutFabbers = _.xor(
         gwoGroup.botsAdvancedMobile,
         advancedBotFabbers
       );
 
       inventory.addUnits(advancedBotsWithoutFabbers);
 
-      const advancedNonFabberBots = [
+      var advancedNonFabberBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",
         "NanoSwarm",
         "TMLBot",
       ];
-      const unitBuilds = _.map(advancedNonFabberBots, function (unit) {
+      var unitBuilds = _.map(advancedNonFabberBots, function (unit) {
         return {
           type: "factory",
           op: "append",
@@ -71,7 +71,7 @@ define([
       });
       // We apply AI priority changes to ALL combat units so that even
       // unaffected ones will be handled properly by T2 factories
-      const advancedCombatBots = [
+      var advancedCombatBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",
         "AdvancedBotCombatFabber",
@@ -79,7 +79,7 @@ define([
         "SupportCommander",
         "TMLBot",
       ];
-      const unitPriority = _.map(advancedCombatBots, function (unit) {
+      var unitPriority = _.map(advancedCombatBots, function (unit) {
         return {
           type: "factory",
           op: "replace",
@@ -90,7 +90,7 @@ define([
           refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
         };
       });
-      const aiMods = unitBuilds.concat(unitPriority);
+      var aiMods = unitBuilds.concat(unitPriority);
 
       inventory.addMods([
         {

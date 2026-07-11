@@ -3,12 +3,12 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (planets, gwoUnit, personalities) {
-  const factionName = "Cluster";
-  const factionColour = [
+  var factionName = "Cluster";
+  var factionColour = [
     [128, 128, 128],
     [192, 192, 192],
   ];
-  const baselinePersonality = {
+  var baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -17,30 +17,30 @@ define([
     personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  const boss = {
+  var boss = {
     name: "Node",
     character: "!LOC:Boss",
     personality: personalities.clusterBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  const workerName = "Worker";
-  const workerCommander = gwoUnit.angel;
-  const securityName = "Security";
-  const securityCommander = gwoUnit.colonel;
-  const uber = "!LOC:Uber";
-  const fabber = "!LOC:Fabber";
-  const defender = "!LOC:Defender";
-  const luddite = "!LOC:Luddite";
-  const technologist = "!LOC:Technologist";
-  const cautious = "!LOC:Cautious";
-  const aggressive = "!LOC:Aggressive";
-  const rush = "!LOC:Rush";
-  const turtle = "!LOC:Turtle";
-  const absurd = "!LOC:Absurd";
-  const factory = "!LOC:Factory";
-  const swarm = "!LOC:Swarm";
-  const economist = "!LOC:Economist";
-  const minions = [
+  var workerName = "Worker";
+  var workerCommander = gwoUnit.angel;
+  var securityName = "Security";
+  var securityCommander = gwoUnit.colonel;
+  var uber = "!LOC:Uber";
+  var fabber = "!LOC:Fabber";
+  var defender = "!LOC:Defender";
+  var luddite = "!LOC:Luddite";
+  var technologist = "!LOC:Technologist";
+  var cautious = "!LOC:Cautious";
+  var aggressive = "!LOC:Aggressive";
+  var rush = "!LOC:Rush";
+  var turtle = "!LOC:Turtle";
+  var absurd = "!LOC:Absurd";
+  var factory = "!LOC:Factory";
+  var swarm = "!LOC:Swarm";
+  var economist = "!LOC:Economist";
+  var minions = [
     {
       name: workerName,
       character: uber,
@@ -303,10 +303,10 @@ define([
     },
   ];
 
-  const shuffledPersonalties = _.shuffle(minions);
-  const randomWorkerPersonality = shuffledPersonalties[0].personality;
-  const randomSecurityPersonality = shuffledPersonalties[1].personality;
-  const randomWorkerAI = {
+  var shuffledPersonalties = _.shuffle(minions);
+  var randomWorkerPersonality = shuffledPersonalties[0].personality;
+  var randomSecurityPersonality = shuffledPersonalties[1].personality;
+  var randomWorkerAI = {
     name: workerName,
     character: "!LOC:Random",
     color: [
@@ -316,7 +316,7 @@ define([
     personality: randomWorkerPersonality,
     commander: workerCommander,
   };
-  const randomSecurityAI = {
+  var randomSecurityAI = {
     name: securityName,
     character: "!LOC:Random",
     color: [

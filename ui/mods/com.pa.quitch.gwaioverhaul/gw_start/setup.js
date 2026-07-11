@@ -10,7 +10,7 @@ function gwoSetup() {
   try {
     model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
 
-    const enableGoToWar = ko.observable(true);
+    var enableGoToWar = ko.observable(true);
     var sharedSystemsForGalacticWarActive = false;
 
     // We change how we monitor model.ready() to prevent
@@ -20,7 +20,7 @@ function gwoSetup() {
     });
 
     api.mods.getMounted("client", true).then(function (mods) {
-      const modMounted = function (modIdentifier) {
+      var modMounted = function (modIdentifier) {
         return _.some(mods, { identifier: modIdentifier });
       };
       // Shared Systems for Galactic War
@@ -44,15 +44,15 @@ function gwoSetup() {
       }
     });
 
-    const randomPercentageAdjustment = function (min, max) {
+    var randomPercentageAdjustment = function (min, max) {
       return Math.random() * (max - min) + min;
     };
 
-    const aiEcoMinionReduction = function (eco, ecoStep, minions) {
+    var aiEcoMinionReduction = function (eco, ecoStep, minions) {
       return eco - minions * ecoStep;
     };
 
-    const aiEconRate = function (ecoBase, ecoStep, distance, minions) {
+    var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
       var eco =
         (ecoBase + distance * ecoStep) * randomPercentageAdjustment(0.9, 1.1);
       if (minions) {
@@ -62,19 +62,19 @@ function gwoSetup() {
     };
 
     var aiFaction = 0;
-    const getQuellerAITag = function (faction) {
+    var getQuellerAITag = function (faction) {
       if (faction) {
         // Minions don't have a faction number so use the previous one
         // which should be from the primary AI and accurate
         aiFaction = Number.parseInt(faction);
       }
 
-      const quellerTag = "queller";
-      const legonisMachinaTags = ["tank", quellerTag];
-      const foundationTags = ["air", quellerTag];
-      const synchronousTags = ["bot", quellerTag];
-      const revenantsTags = ["orbital", quellerTag];
-      const clusterTags = ["land", quellerTag];
+      var quellerTag = "queller";
+      var legonisMachinaTags = ["tank", quellerTag];
+      var foundationTags = ["air", quellerTag];
+      var synchronousTags = ["bot", quellerTag];
+      var revenantsTags = ["orbital", quellerTag];
+      var clusterTags = ["land", quellerTag];
 
       switch (aiFaction) {
         case 0:
@@ -92,37 +92,37 @@ function gwoSetup() {
       }
     };
 
-    const parseBoolean = function (string) {
+    var parseBoolean = function (string) {
       return string === "true";
     };
 
-    const selectAIBuffs = function (numberOfBuffs) {
-      const buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
+    var selectAIBuffs = function (numberOfBuffs) {
+      var buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
       return _.sample(buffType, numberOfBuffs);
     };
 
-    const setupAIBuffs = function (distance, buffDistanceDelay) {
-      const numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
+    var setupAIBuffs = function (distance, buffDistanceDelay) {
+      var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
       return selectAIBuffs(numberBuffs);
     };
 
-    const aiTech = function (buffs, inventory, faction, tech) {
+    var aiTech = function (buffs, inventory, faction, tech) {
       _.times(buffs.length, function (n) {
         inventory = inventory.concat(tech[faction][buffs[n]]);
       });
       return inventory;
     };
 
-    const countMinions = function (minionBase, minionStep, distance) {
+    var countMinions = function (minionBase, minionStep, distance) {
       return Math.floor(minionBase + distance * minionStep);
     };
 
-    const clusterCommanderCount = function (minionCount, bossCommanders) {
+    var clusterCommanderCount = function (minionCount, bossCommanders) {
       return minionCount + Math.floor(bossCommanders / 2);
     };
 
-    const selectMinion = function (minions, minionName) {
-      const isCluster = minionName === "Worker" || minionName === "Security";
+    var selectMinion = function (minions, minionName) {
+      var isCluster = minionName === "Worker" || minionName === "Security";
       if (isCluster) {
         return _.cloneDeep(
           _.sample(
@@ -135,11 +135,11 @@ function gwoSetup() {
       return _.cloneDeep(_.sample(minions));
     };
 
-    const gameModeEnabled = function (gameModeChance) {
+    var gameModeEnabled = function (gameModeChance) {
       return Math.random() * 100 <= gameModeChance;
     };
 
-    const enableAnEradicationModeTypes = function (ai) {
+    var enableAnEradicationModeTypes = function (ai) {
       while (
         !ai.eradicationModeSubCommanders &&
         !ai.eradicationModeFactories &&
@@ -151,7 +151,7 @@ function gwoSetup() {
       }
     };
 
-    const startCardAllyCompatibility = function (game) {
+    var startCardAllyCompatibility = function (game) {
       // global for modder compatibility
       if (!model.gwoStarCardsWhichBreakAllies) {
         model.gwoStarCardsWhichBreakAllies = [];
@@ -165,12 +165,12 @@ function gwoSetup() {
       });
     };
 
-    const setupQuellerFFATag = function (ais) {
+    var setupQuellerFFATag = function (ais) {
       if (!ais) {
         return;
       }
 
-      const ffa = ["ffa", "platoon"];
+      var ffa = ["ffa", "platoon"];
 
       if (_.isArray(ais)) {
         _.forEach(ais, function (ai) {
@@ -183,10 +183,10 @@ function gwoSetup() {
       }
     };
 
-    const saveDifficultySettings = function () {
-      const difficultySettings = model.gwoDifficultySettings;
-      const previousSettings = difficultySettings.previousSettings();
-      const settingNames = _.keys(model.gwoDifficultySettings);
+    var saveDifficultySettings = function () {
+      var difficultySettings = model.gwoDifficultySettings;
+      var previousSettings = difficultySettings.previousSettings();
+      var settingNames = _.keys(model.gwoDifficultySettings);
       _.pull(settingNames, "previousSettings");
       difficultySettings.personalityTags($("#gwo-personality-picker").val());
       _.forEach(settingNames, function (name, i) {
@@ -197,7 +197,7 @@ function gwoSetup() {
 
     var warGenerationAttempts = 0;
 
-    const warGenerationFailure = function () {
+    var warGenerationFailure = function () {
       model.makeGameBusy(false);
       enableGoToWar(true);
       if (warGenerationAttempts < 5) {
@@ -209,7 +209,7 @@ function gwoSetup() {
       }
     };
 
-    const bossCommanderCount = function (difficulty, playerCount) {
+    var bossCommanderCount = function (difficulty, playerCount) {
       return difficulty.bossCommanders() * playerCount;
     };
 
@@ -245,9 +245,9 @@ function gwoSetup() {
         loadouts
       ) {
         model.startCards(loadouts.startCards);
-        const processedStartCards = {};
+        var processedStartCards = {};
         var loadCount = loadouts.allCards.length;
-        const loaded = $.Deferred();
+        var loaded = $.Deferred();
 
         _.forEach(loadouts.allCards, function (card) {
           requireGW(["cards/" + card.id], function (cardFile) {
@@ -260,19 +260,19 @@ function gwoSetup() {
           });
         });
 
-        const gwoDealStartCard = function (params) {
-          const result = $.Deferred();
+        var gwoDealStartCard = function (params) {
+          var result = $.Deferred();
           loaded.then(function () {
-            const card = _.find(processedStartCards, { id: params.id });
+            var card = _.find(processedStartCards, { id: params.id });
             if (!card) {
               console.error("No matching start card ID found");
             }
-            const context =
+            var context =
               card.getContext &&
               card.getContext(params.galaxy, params.inventory);
-            const deal = card.deal && card.deal(params.star, context);
-            const product = { id: params.id };
-            const cardParams = deal && deal.params;
+            var deal = card.deal && card.deal(params.star, context);
+            var product = { id: params.id };
+            var cardParams = deal && deal.params;
             if (cardParams && _.isObject(cardParams)) {
               _.assign(product, cardParams);
             }
@@ -283,8 +283,8 @@ function gwoSetup() {
           return result;
         };
 
-        const setupPenchantAI = function (ai, titansAITags) {
-          const penchantValues = gwoAI.penchants();
+        var setupPenchantAI = function (ai, titansAITags) {
+          var penchantValues = gwoAI.penchants();
           ai.personality.personality_tags =
             ai.personality.personality_tags.concat(
               penchantValues.penchants,
@@ -293,9 +293,9 @@ function gwoSetup() {
           ai.penchantName = penchantValues.penchantName;
         };
 
-        const setAIPersonality = function (ai, difficulty) {
-          const personalityId = "#gwo-personality-picker";
-          const personality = ai.personality;
+        var setAIPersonality = function (ai, difficulty) {
+          var personalityId = "#gwo-personality-picker";
+          var personality = ai.personality;
 
           personality.micro_type = difficulty.microType();
           personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
@@ -322,7 +322,7 @@ function gwoSetup() {
               difficulty.startingLocationEvaluationRadius();
           }
 
-          const titansAITags = ["Default"];
+          var titansAITags = ["Default"];
 
           switch (difficulty.ai()) {
             case "Penchant":
@@ -352,13 +352,13 @@ function gwoSetup() {
           var warGenerationFailed = false;
           warGenerationAttempts++;
 
-          const busyToken = {};
+          var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          const version = "5.93.0";
+          var version = "5.93.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
-          const game = new GW.Game();
+          var game = new GW.Game();
           game.name(model.newGameName());
           game.mode(model.mode());
           game.hardcore(model.newGameHardcore());
@@ -371,21 +371,21 @@ function gwoSetup() {
             game.perPlayerTechCards() ? false : model.newGameSharedByDefault()
           );
 
-          const selectedDifficulty =
+          var selectedDifficulty =
             model.gwoDifficultySettings.difficultyLevel();
-          const systemTemplates = model.gwoDifficultySettings.simpleSystems()
+          var systemTemplates = model.gwoDifficultySettings.simpleSystems()
             ? easySystemTemplates
             : star_system_templates;
-          const sizes = GW.balance.numberOfSystems;
-          const size = sizes[model.newGameSizeIndex()] || 40;
+          var sizes = GW.balance.numberOfSystems;
+          var size = sizes[model.newGameSizeIndex()] || 40;
           var aiFactions = _.range(GWFactions.length);
           aiFactions.splice(model.playerFactionIndex(), 1);
           if (model.gwoDifficultySettings.factionScaling()) {
-            const numFactions = model.newGameSizeIndex() + 1;
+            var numFactions = model.newGameSizeIndex() + 1;
             aiFactions = _.sample(aiFactions, numFactions);
           }
-          const playerCount = game.coopPlayers();
-          const largePlanets = model.gwoDifficultySettings.largePlanets();
+          var playerCount = game.coopPlayers();
+          var largePlanets = model.gwoDifficultySettings.largePlanets();
 
           model.updateCommander();
           game
@@ -393,7 +393,7 @@ function gwoSetup() {
             .setTag("global", "playerFaction", model.playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
 
-          const buildGalaxy = game.galaxy().build({
+          var buildGalaxy = game.galaxy().build({
             seed: model.newGameSeed(),
             size: size,
             difficultyIndex: selectedDifficulty,
@@ -407,7 +407,7 @@ function gwoSetup() {
             largePlanets: largePlanets,
           });
 
-          const dealStartCard = buildGalaxy.then(function (galaxy) {
+          var dealStartCard = buildGalaxy.then(function (galaxy) {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
@@ -426,26 +426,26 @@ function gwoSetup() {
             });
           });
 
-          const moveIn = dealStartCard.then(function () {
+          var moveIn = dealStartCard.then(function () {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
-            const galaxy = game.galaxy();
+            var galaxy = game.galaxy();
             game.move(galaxy.origin());
-            const star = galaxy.stars()[game.currentStar()];
+            var star = galaxy.stars()[game.currentStar()];
             star.explored(true);
             game.gameState(GW.Game.gameStates.active);
           });
 
-          const populate = moveIn.then(function () {
+          var populate = moveIn.then(function () {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
 
             // Scatter some AIs
             aiFactions = _.shuffle(aiFactions);
-            const teams = _.map(aiFactions, GWTeams.getTeam);
-            const teamInfo = _.map(teams, function (team, teamIndex) {
+            var teams = _.map(aiFactions, GWTeams.getTeam);
+            var teamInfo = _.map(teams, function (team, teamIndex) {
               return {
                 team: team,
                 workers: [],
@@ -466,14 +466,14 @@ function gwoSetup() {
               spawn: function () {},
               canSpread: _.constant(true),
               spread: function (star, ai) {
-                const team = teams[ai.team];
+                var team = teams[ai.team];
                 // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
                 // to preserve personality_tags
-                const makeWorker = function () {
+                var makeWorker = function () {
                   if (team.workers) {
                     _.assign(ai, _.cloneDeep(_.sample(team.workers)));
                   } else if (team.remainingMinions) {
-                    const minion = _.sample(
+                    var minion = _.sample(
                       team.remainingMinions.length
                         ? team.remainingMinions
                         : team.faction.minions
@@ -511,12 +511,12 @@ function gwoSetup() {
             });
           });
 
-          const finishAis = populate.then(function (teamInfo) {
+          var finishAis = populate.then(function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
 
-            const maxDist = _.reduce(
+            var maxDist = _.reduce(
               game.galaxy().stars(),
               function (value, star) {
                 return Math.max(star.distance(), value);
@@ -526,7 +526,7 @@ function gwoSetup() {
 
             // Set up the AI
             _.forEach(teamInfo, function (info) {
-              const boss = info.boss;
+              var boss = info.boss;
 
               if (!boss) {
                 console.warn(
@@ -538,19 +538,16 @@ function gwoSetup() {
                 return;
               }
 
-              const difficulty = model.gwoDifficultySettings;
-              const econBase = Number.parseFloat(difficulty.econBase());
-              const econRatePerDist = Number.parseFloat(
+              var difficulty = model.gwoDifficultySettings;
+              var econBase = Number.parseFloat(difficulty.econBase());
+              var econRatePerDist = Number.parseFloat(
                 difficulty.econRatePerDist()
               );
 
               // Set up boss system
               setAIPersonality(boss, difficulty);
               boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
-              const bossCommanders = bossCommanderCount(
-                difficulty,
-                playerCount
-              );
+              var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
 
               boss.inventory = [];
@@ -559,10 +556,10 @@ function gwoSetup() {
                 boss.inventory = gwoCluster.clusterCommanders;
               }
 
-              const factionTechHandicap = Number.parseFloat(
+              var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
               );
-              const bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
+              var bossBuffs = setupAIBuffs(maxDist, factionTechHandicap);
               boss.typeOfBuffs = bossBuffs; // for intelligence reports
               boss.inventory = aiTech(
                 bossBuffs,
@@ -571,11 +568,11 @@ function gwoSetup() {
                 gwoTech.factionTechs
               );
 
-              const mandatoryMinions =
+              var mandatoryMinions =
                 difficulty.mandatoryMinions() * playerCount;
-              const minionMod =
+              var minionMod =
                 Number.parseFloat(difficulty.minionMod()) * playerCount;
-              const minions = GWFactions[info.faction].minions;
+              var minions = GWFactions[info.faction].minions;
               var clusterType = "";
               // Set up boss minions
               var numMinions = countMinions(
@@ -594,7 +591,7 @@ function gwoSetup() {
                 }
 
                 _.times(totalMinions, function () {
-                  const minion = selectMinion(minions, clusterType);
+                  var minion = selectMinion(minions, clusterType);
                   setAIPersonality(minion, difficulty);
                   minion.econ_rate = aiEconRate(
                     econBase,
@@ -611,7 +608,7 @@ function gwoSetup() {
 
               // Set up non-boss AI system
               _.forEach(info.workers, function (worker) {
-                const ai = worker.ai;
+                var ai = worker.ai;
 
                 ai.landAnywhere = gameModeEnabled(
                   difficulty.landAnywhereChance()
@@ -628,7 +625,7 @@ function gwoSetup() {
                 );
                 enableAnEradicationModeTypes(ai);
 
-                const dist = worker.star.distance();
+                var dist = worker.star.distance();
 
                 numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
@@ -646,7 +643,7 @@ function gwoSetup() {
                   ai.inventory = gwoCluster.clusterCommanders;
                 }
 
-                const workerBuffs = setupAIBuffs(dist, factionTechHandicap);
+                var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
                 ai.typeOfBuffs = workerBuffs; // for intelligence reports
                 ai.inventory = aiTech(
                   workerBuffs,
@@ -675,7 +672,7 @@ function gwoSetup() {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
                     _.times(totalMinions, function () {
-                      const minion = selectMinion(minions, clusterType);
+                      var minion = selectMinion(minions, clusterType);
                       setAIPersonality(minion, difficulty);
                       minion.econ_rate = aiEconRate(
                         econBase,
@@ -700,8 +697,8 @@ function gwoSetup() {
                     }
 
                     availableFactions = _.shuffle(availableFactions);
-                    const foeFaction = availableFactions.splice(0, 1);
-                    const foeCommander = selectMinion(
+                    var foeFaction = availableFactions.splice(0, 1);
+                    var foeCommander = selectMinion(
                       GWFactions[foeFaction].minions
                     );
                     foeCommander.faction = Number.parseInt(foeFaction);
@@ -739,14 +736,14 @@ function gwoSetup() {
                 });
 
                 // Set up allied commander
-                const startCardBreaksAllies = startCardAllyCompatibility(game);
+                var startCardBreaksAllies = startCardAllyCompatibility(game);
 
                 if (
                   !startCardBreaksAllies &&
                   gameModeEnabled(difficulty.alliedCommanderChance())
                 ) {
-                  const playerFaction = model.playerFactionIndex();
-                  const allyCommander = selectMinion(
+                  var playerFaction = model.playerFactionIndex();
+                  var allyCommander = selectMinion(
                     GWFactions[playerFaction].minions
                   );
                   allyCommander.faction = playerFaction;
@@ -768,12 +765,12 @@ function gwoSetup() {
             var treasurePlanetSetup = false;
             var loreEntry = 0;
             var optionalLoreEntry = 0;
-            const treasureCards = loadouts.lockedBaseCards.concat(
+            var treasureCards = loadouts.lockedBaseCards.concat(
               model.gwoNewStartCards
             );
             _.forEach(game.galaxy().stars(), function (star) {
-              const ai = star.ai();
-              const system = star.system();
+              var ai = star.ai();
+              var system = star.system();
               if (ai) {
                 _.forEach(star.system().planets, function (planet) {
                   planet.generator.shuffleLandingZones = true;
@@ -788,7 +785,7 @@ function gwoSetup() {
                 });
 
                 if (!ai.bossCommanders) {
-                  const difficulty = model.gwoDifficultySettings;
+                  var difficulty = model.gwoDifficultySettings;
 
                   // Set up The Guardians' treasure planet
                   if (treasurePlanetSetup === false) {
@@ -804,8 +801,8 @@ function gwoSetup() {
                     ai.boss = true; // otherwise it won't display its icon
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
-                    const econBase = Number.parseFloat(difficulty.econBase());
-                    const econRatePerDist = Number.parseFloat(
+                    var econBase = Number.parseFloat(difficulty.econBase());
+                    var econRatePerDist = Number.parseFloat(
                       difficulty.econRatePerDist()
                     );
                     ai.econ_rate = aiEconRate(
@@ -825,7 +822,7 @@ function gwoSetup() {
                     ];
                     ai.commander =
                       "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-                    const lockedStartCards = _.filter(
+                    var lockedStartCards = _.filter(
                       treasureCards,
                       function (card) {
                         return (
@@ -837,7 +834,7 @@ function gwoSetup() {
 
                     // Deal a loadout to the treasure planet
                     if (!_.isEmpty(lockedStartCards)) {
-                      const treasurePlanetCard = _.sample(lockedStartCards);
+                      var treasurePlanetCard = _.sample(lockedStartCards);
                       _.assign(treasurePlanetCard, { allowOverflow: true });
                       star.cardList().push(treasurePlanetCard);
                       system.description =
@@ -861,14 +858,14 @@ function gwoSetup() {
             });
           });
 
-          const warInfo = finishAis.then(function () {
+          var warInfo = finishAis.then(function () {
             if (warGenerationFailed === true) {
               return;
             }
 
             // Hacky way to store war information for the gw_play scene
-            const galaxy = game.galaxy();
-            const originSystem = galaxy.stars()[galaxy.origin()].system();
+            var galaxy = game.galaxy();
+            var originSystem = galaxy.stars()[galaxy.origin()].system();
             originSystem.gwaio = {};
             originSystem.gwaio.version = version;
             originSystem.gwaio.difficulty =
@@ -912,7 +909,7 @@ function gwoSetup() {
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
           });
 
-          const finishSetup = warInfo.then(function () {
+          var finishSetup = warInfo.then(function () {
             if (
               model.makeGameBusy() !== busyToken ||
               warGenerationFailed === true
@@ -924,7 +921,7 @@ function gwoSetup() {
             model.newGame(game);
             model.updateCommander();
             if (game.perPlayerTechCards()) {
-              const displayName = ko
+              var displayName = ko
                 .observable()
                 .extend({ session: "displayName" });
               game.upsertCoopPlayerInventoryData({
@@ -948,7 +945,7 @@ function gwoSetup() {
 
             saveDifficultySettings();
 
-            const save = GW.manifest.saveGame(model.newGame());
+            var save = GW.manifest.saveGame(model.newGame());
             model.activeGameId(model.newGame().id);
             save.then(function () {
               model.lastSceneUrl(

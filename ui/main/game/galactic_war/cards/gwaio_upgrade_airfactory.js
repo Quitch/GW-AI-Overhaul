@@ -41,7 +41,7 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.airAdvancedCombat);
 
-      const units = [
+      var units = [
         "AdvancedBomber",
         "AdvancedFighter",
         "AdvancedGunship",
@@ -49,7 +49,7 @@ define([
         "Strafer",
         "SupportPlatform",
       ];
-      const aiMods = _.flatten(
+      var aiMods = _.flatten(
         _.map(units, function (unit) {
           return [
             {

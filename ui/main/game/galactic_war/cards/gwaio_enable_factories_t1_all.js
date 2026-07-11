@@ -21,13 +21,13 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      const basicFactories = [
+      var basicFactories = [
         gwoUnit.airFactory,
         gwoUnit.botFactory,
         gwoUnit.vehicleFactory,
       ];
       if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
-        const dist = system.distance();
+        var dist = system.distance();
         if (
           (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
           (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||

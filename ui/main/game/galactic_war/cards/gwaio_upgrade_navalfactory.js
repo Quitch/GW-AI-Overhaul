@@ -41,14 +41,14 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.navalAdvancedCombat);
 
-      const units = [
+      var units = [
         "Battleship",
         "MissleShip", // typo in the base AI files
         "MissileSub",
         "HoverShip",
         "DroneCarrier",
       ];
-      const aiMods = _.flatten(
+      var aiMods = _.flatten(
         _.map(units, function (unit) {
           return [
             {

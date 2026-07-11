@@ -1,11 +1,11 @@
-const orderOfOperations = function (mods) {
-  const operationsContainer = {};
+var orderOfOperations = function (mods) {
+  var operationsContainer = {};
   operationsContainer.otherOperations = [];
-  const orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
+  var orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
 
   _.forEach(mods, function (mod) {
-    const operationName = mod.op;
-    const isOrderedOperation = _.includes(orderedOperations, operationName);
+    var operationName = mod.op;
+    var isOrderedOperation = _.includes(orderedOperations, operationName);
 
     if (!operationsContainer[operationName] && isOrderedOperation) {
       operationsContainer[operationName] = [];
@@ -29,7 +29,7 @@ const orderOfOperations = function (mods) {
   return orderedMods;
 };
 
-const flattenBaseSpecs = function (spec, specs, tag) {
+var flattenBaseSpecs = function (spec, specs, tag) {
   if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
     return spec;
   }
@@ -45,7 +45,7 @@ const flattenBaseSpecs = function (spec, specs, tag) {
   spec = _.cloneDeep(spec);
   delete spec.base_spec;
 
-  const flattenedSpec = flattenBaseSpecs(base, specs, tag);
+  var flattenedSpec = flattenBaseSpecs(base, specs, tag);
 
   if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
     // avoid issues with _.merge()
@@ -58,7 +58,7 @@ const flattenBaseSpecs = function (spec, specs, tag) {
 define(function () {
   return {
     mod: function (specs, mods, specTag) {
-      const load = function (specId) {
+      var load = function (specId) {
         var taggedId = specId;
         if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
           taggedId = specId + specTag;
@@ -73,7 +73,7 @@ define(function () {
         return result;
       };
 
-      const ops = {
+      var ops = {
         multiply: function (attribute, value) {
           return _.isNumber(attribute) ? attribute * value : 0;
         },
@@ -113,7 +113,7 @@ define(function () {
           // hack fix for mirrorMode due to the fact that
           // `attribute` was retaining the previous `specTag`s
           // and I couldn't track down why
-          const cleanAttribute = attribute.slice(
+          var cleanAttribute = attribute.slice(
             0,
             attribute.lastIndexOf(".json") + 5
           );
@@ -155,7 +155,7 @@ define(function () {
         },
       };
 
-      const applyMod = function (mod) {
+      var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
           return console.warn("Warning: File not found in mod", mod);
@@ -164,10 +164,10 @@ define(function () {
           return console.error("Invalid operation in mod", mod);
         }
 
-        const originalPath = (mod.path || "").split(".");
-        const path = originalPath.reverse();
+        var originalPath = (mod.path || "").split(".");
+        var path = originalPath.reverse();
 
-        const reportError = function (error, step) {
+        var reportError = function (error, step) {
           console.error(
             error,
             spec[step],
@@ -180,12 +180,12 @@ define(function () {
           );
         };
 
-        const opDefaults = {
+        var opDefaults = {
           push: [],
           pull: [],
         };
 
-        const cookStep = function (step, op) {
+        var cookStep = function (step, op) {
           if (_.isArray(spec)) {
             if (step === "+") {
               step = spec.length;
@@ -222,14 +222,14 @@ define(function () {
         }
 
         if (path.length && path[0]) {
-          const leaf = cookStep(path[0], mod.op);
+          var leaf = cookStep(path[0], mod.op);
           spec[leaf] = ops[mod.op](spec[leaf], mod.value);
         } else {
           ops[mod.op](spec, mod.value);
         }
       };
 
-      const orderedMods = orderOfOperations(mods);
+      var orderedMods = orderOfOperations(mods);
       _.forEach(orderedMods, applyMod);
     },
   };

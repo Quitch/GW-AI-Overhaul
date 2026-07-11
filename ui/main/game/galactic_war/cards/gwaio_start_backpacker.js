@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Backpacker Commander"),

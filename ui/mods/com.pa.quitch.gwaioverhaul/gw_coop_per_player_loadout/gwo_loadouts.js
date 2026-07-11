@@ -101,9 +101,9 @@ function gwoLoadouts() {
         model.startCards(loadouts.startCards);
         model.gwoCards = gwoDeal.setupGwoCards();
 
-        const cards = [];
-        const deck = [];
-        const numberOfCards = model.gwoCards.length;
+        var cards = [];
+        var deck = [];
+        var numberOfCards = model.gwoCards.length;
         var loaded = $.Deferred();
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);

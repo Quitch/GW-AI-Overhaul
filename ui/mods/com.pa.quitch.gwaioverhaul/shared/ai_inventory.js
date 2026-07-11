@@ -2,32 +2,32 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  const commanderUnits = [gwoUnit.commander];
-  const legonisUnitsImmobile = [
+  var commanderUnits = [gwoUnit.commander];
+  var legonisUnitsImmobile = [
     gwoUnit.vehicleFactory,
     gwoUnit.vehicleFactoryAdvanced,
   ];
-  const legonisUnitsMobile = gwoGroup.vehiclesMobile.concat(gwoUnit.ares);
-  const foundationUnitsImmobile = [
+  var legonisUnitsMobile = gwoGroup.vehiclesMobile.concat(gwoUnit.ares);
+  var foundationUnitsImmobile = [
     gwoUnit.airFactory,
     gwoUnit.airFactoryAdvanced,
     gwoUnit.navalFactory,
     gwoUnit.navalFactoryAdvanced,
   ];
-  const foundationUnitsMobileAir = gwoGroup.airMobile.concat(
+  var foundationUnitsMobileAir = gwoGroup.airMobile.concat(
     gwoUnit.zeus,
     gwoUnit.squall
   );
-  const foundationUnitsMobileNaval = _.without(
+  var foundationUnitsMobileNaval = _.without(
     gwoGroup.navalMobile,
     gwoUnit.squall
   );
-  const synchronousUnitsImmobile = [
+  var synchronousUnitsImmobile = [
     gwoUnit.botFactoryAdvanced,
     gwoUnit.botFactory,
   ];
-  const synchronousUnitsMobile = gwoGroup.botsMobile.concat(gwoUnit.atlas);
-  const revenantsUnitsImmobile = [
+  var synchronousUnitsMobile = gwoGroup.botsMobile.concat(gwoUnit.atlas);
+  var revenantsUnitsImmobile = [
     gwoUnit.anchor,
     gwoUnit.antiNukeLauncher,
     gwoUnit.catalyst,
@@ -41,54 +41,51 @@ define([
     gwoUnit.umbrella,
     gwoUnit.unitCannon,
   ];
-  const revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobile.concat(
+  var revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobile.concat(
     gwoUnit.antiNukeLauncherAmmo,
     gwoUnit.nukeLauncherAmmo
   );
-  const revenantsUnitsFactories = [
+  var revenantsUnitsFactories = [
     gwoUnit.antiNukeLauncher,
     gwoUnit.nukeLauncher,
     gwoUnit.orbitalFactory,
     gwoUnit.orbitalLauncher,
   ];
-  const revenantsUnitsMobile = gwoGroup.orbitalMobile.concat(gwoUnit.helios);
-  const clusterCommanders = commanderUnits.concat(
-    gwoUnit.angel,
-    gwoUnit.colonel
-  );
-  const clusterUnitsMobile = clusterCommanders;
-  const clusterUnitsImmobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
-  const clusterUnitsFactories = gwoGroup.factories;
+  var revenantsUnitsMobile = gwoGroup.orbitalMobile.concat(gwoUnit.helios);
+  var clusterCommanders = commanderUnits.concat(gwoUnit.angel, gwoUnit.colonel);
+  var clusterUnitsMobile = clusterCommanders;
+  var clusterUnitsImmobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
+  var clusterUnitsFactories = gwoGroup.factories;
 
-  const commanderAmmo = [
+  var commanderAmmo = [
     gwoUnit.commanderAAAmmo,
     gwoUnit.commanderAmmo,
     gwoUnit.commanderSecondaryAmmo,
     gwoUnit.commanderTorpedoLandAmmo,
     gwoUnit.commanderTorpedoWaterAmmo,
   ];
-  const legonisAmmo = gwoGroup.vehiclesAmmo.concat(
+  var legonisAmmo = gwoGroup.vehiclesAmmo.concat(
     gwoUnit.aresAmmo,
     gwoUnit.aresSecondaryAmmo
   );
-  const foundationAmmo = gwoGroup.airAmmo.concat(
+  var foundationAmmo = gwoGroup.airAmmo.concat(
     gwoGroup.navalAmmo,
     gwoUnit.zeusAmmo
   );
-  const synchronousAmmo = gwoGroup.botsAmmo.concat(gwoUnit.atlasAmmo);
-  const revenantsAmmo = gwoGroup.orbitalAmmo.concat(
+  var synchronousAmmo = gwoGroup.botsAmmo.concat(gwoUnit.atlasAmmo);
+  var revenantsAmmo = gwoGroup.orbitalAmmo.concat(
     gwoUnit.anchorAmmoAG,
     gwoUnit.anchorAmmoAO,
     gwoUnit.heliosAmmo,
     gwoUnit.kesslerAmmo
   );
-  const clusterCommanderAmmo = [gwoUnit.angelAmmo, gwoUnit.colonelAmmo];
-  const clusterAmmo = gwoGroup.structuresDefencesAmmo.concat(
+  var clusterCommanderAmmo = [gwoUnit.angelAmmo, gwoUnit.colonelAmmo];
+  var clusterAmmo = gwoGroup.structuresDefencesAmmo.concat(
     gwoGroup.structuresArtilleryAmmo
   );
 
-  const commanderWeapons = [gwoUnit.commanderSecondary];
-  const foundationWeapons = [
+  var commanderWeapons = [gwoUnit.commanderSecondary];
+  var foundationWeapons = [
     gwoUnit.bumblebeeWeapon,
     gwoUnit.hornetWeapon,
     gwoUnit.icarusWeapon,
@@ -96,23 +93,23 @@ define([
     gwoUnit.wyrmWeapon,
     gwoUnit.zeusWeapon,
   ];
-  const synchronousWeapons = [gwoUnit.lobWeapon, gwoUnit.sparkWeapon];
-  const revenantsWeapons = [gwoUnit.sxxWeapon, gwoUnit.artemisWeapon];
-  const clusterWeapons = [
+  var synchronousWeapons = [gwoUnit.lobWeapon, gwoUnit.sparkWeapon];
+  var revenantsWeapons = [gwoUnit.sxxWeapon, gwoUnit.artemisWeapon];
+  var clusterWeapons = [
     gwoUnit.holkinsWeapon,
     gwoUnit.lobWeapon,
     gwoUnit.pelterWeapon,
     gwoUnit.ragnarokWeapon,
   ];
 
-  const commanderBuildArms = [gwoUnit.commanderBuildArm];
-  const legonisBuildArms = [
+  var commanderBuildArms = [gwoUnit.commanderBuildArm];
+  var legonisBuildArms = [
     gwoUnit.vehicleFabberAdvancedBuildArm,
     gwoUnit.vehicleFabberBuildArm,
     gwoUnit.vehicleFactoryAdvancedBuildArm,
     gwoUnit.vehicleFactoryBuildArm,
   ];
-  const foundationBuildArms = [
+  var foundationBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
     gwoUnit.airFabberBuildArm,
     gwoUnit.airFactoryAdvancedBuildArm,
@@ -124,7 +121,7 @@ define([
     gwoUnit.navalFactoryAdvancedBuildArm,
     gwoUnit.navalFactoryBuildArm,
   ];
-  const synchronousBuildArms = [
+  var synchronousBuildArms = [
     gwoUnit.botFabberAdvancedBuildArm,
     gwoUnit.botFabberBuildArm,
     gwoUnit.botFactoryAdvancedBuildArm,
@@ -133,7 +130,7 @@ define([
     gwoUnit.mendBuildArm,
     gwoUnit.stitchBuildArm,
   ];
-  const revenantsBuildArms = [
+  var revenantsBuildArms = [
     gwoUnit.antiNukeLauncherBuildArm,
     gwoUnit.nukeLauncherBuildArm,
     gwoUnit.orbitalFabberBuildArm,
@@ -141,7 +138,7 @@ define([
     gwoUnit.orbitalLauncherBuildArm,
     gwoUnit.unitCannonBuildArm,
   ];
-  const clusterBuildArms = [
+  var clusterBuildArms = [
     gwoUnit.airFactoryAdvancedBuildArm,
     gwoUnit.airFactoryBuildArm,
     gwoUnit.antiNukeLauncherBuildArm,

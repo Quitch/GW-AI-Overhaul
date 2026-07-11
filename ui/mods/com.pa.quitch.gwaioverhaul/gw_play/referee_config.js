@@ -1,4 +1,4 @@
-const setAdvEcoMod = function (aiRoot, brain) {
+var setAdvEcoMod = function (aiRoot, brain) {
   if (brain !== "Queller") {
     aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
     aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
@@ -6,7 +6,7 @@ const setAdvEcoMod = function (aiRoot, brain) {
   return aiRoot;
 };
 
-const aiCommander = function (name, unit, landingOptions, commanderNumber) {
+var aiCommander = function (name, unit, landingOptions, commanderNumber) {
   while (commanderNumber > landingOptions.length - 1) {
     commanderNumber -= landingOptions.length;
   }
@@ -18,7 +18,7 @@ const aiCommander = function (name, unit, landingOptions, commanderNumber) {
   };
 };
 
-const getAIPersonalityName = function (ai) {
+var getAIPersonalityName = function (ai) {
   var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
   if (ai.penchantName) {
     personalityName = personalityName + " " + loc(ai.penchantName);
@@ -26,7 +26,7 @@ const getAIPersonalityName = function (ai) {
   return personalityName;
 };
 
-const countCards = function (cards, type) {
+var countCards = function (cards, type) {
   var countOfType = 0;
   _.forEach(cards, function (card) {
     if (_.includes(card.id, type)) {
@@ -36,21 +36,21 @@ const countCards = function (cards, type) {
   return countOfType;
 };
 
-const calculatePercentage = function (typeCards, totalCards) {
+var calculatePercentage = function (typeCards, totalCards) {
   return typeCards === 0 ? 0 : typeCards / totalCards;
 };
 
-const quellerGuardianPersonality = function (personality) {
-  const unitPercentages = [
+var quellerGuardianPersonality = function (personality) {
+  var unitPercentages = [
     personality.percent_vehicle,
     personality.percent_bot,
     personality.percent_orbital,
     personality.percent_air,
     personality.percent_naval,
   ];
-  const highestValue = _.max(unitPercentages);
-  const valueIndex = unitPercentages.indexOf(highestValue);
-  const aiPersonalityTags = ["queller"];
+  var highestValue = _.max(unitPercentages);
+  var valueIndex = unitPercentages.indexOf(highestValue);
+  var aiPersonalityTags = ["queller"];
   switch (valueIndex) {
     case 0:
       aiPersonalityTags.push("tank");
@@ -69,15 +69,15 @@ const quellerGuardianPersonality = function (personality) {
   return aiPersonalityTags;
 };
 
-const setupGuardianPersonality = function (cards, personality, aiInUse) {
-  const allCards = {
+var setupGuardianPersonality = function (cards, personality, aiInUse) {
+  var allCards = {
     air: countCards(cards, "_air"),
     bot: countCards(cards, "_bot"),
     orbital: countCards(cards, "_orbital"),
     naval: countCards(cards, "_sea"),
     vehicle: countCards(cards, "_vehicle"),
   };
-  const totalCards = _.sum(allCards);
+  var totalCards = _.sum(allCards);
   if (totalCards > 0) {
     personality.percent_air = calculatePercentage(allCards.air, totalCards);
     personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
@@ -97,8 +97,8 @@ const setupGuardianPersonality = function (cards, personality, aiInUse) {
   return personality;
 };
 
-const glassPlanets = function (planets) {
-  const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
+var glassPlanets = function (planets) {
+  var unglassableBiome = ["moon", "asteroid", "gas", "metal"];
   _.forEach(planets, function (planet) {
     if (!_.includes(unglassableBiome, planet.generator.biome)) {
       planet.generator.biome = "moon";
@@ -107,9 +107,9 @@ const glassPlanets = function (planets) {
   return planets;
 };
 
-const floodPlanets = function (planets) {
+var floodPlanets = function (planets) {
   _.forEach(planets, function (planet) {
-    const floodPlanet =
+    var floodPlanet =
       !planet.generator.waterHeight || planet.generator.waterHeight < 50;
     if (floodPlanet) {
       planet.generator.waterHeight = 50;
@@ -118,11 +118,11 @@ const floodPlanets = function (planets) {
   return planets;
 };
 
-const setupAiTags = function (ai) {
-  const aiTag = [];
-  const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+var setupAiTags = function (ai) {
+  var aiTag = [];
+  var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
   _.times(aiFactionCount, function (n) {
-    const aiNewTag = ".ai" + n.toString();
+    var aiNewTag = ".ai" + n.toString();
     aiTag.push(aiNewTag);
   });
 
@@ -135,20 +135,20 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 ], function (gwoColour, gwoAI, gwoCards, subcommanderTech) {
-  const applySubcommanderTacticsTech =
+  var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
-  const applySubcommanderFabberTech =
+  var applySubcommanderFabberTech =
     subcommanderTech.applySubcommanderFabberTech;
-  const applySubcommanderDuplicationTech =
+  var applySubcommanderDuplicationTech =
     subcommanderTech.applySubcommanderDuplicationTech;
 
-  const modifyPlanets = function (inventory, planets, game) {
-    const canGlassPlanets = gwoCards.hasCard(
+  var modifyPlanets = function (inventory, planets, game) {
+    var canGlassPlanets = gwoCards.hasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
       game
     );
-    const canFloodPlanets =
+    var canFloodPlanets =
       gwoCards.hasCard(inventory, "gwaio_enable_tsunami", game) ||
       gwoCards.hasCard(inventory, "gwaio_start_naval", game);
 
@@ -162,7 +162,7 @@ define([
     return planets;
   };
 
-  const setAIPath = function (isCluster, isPlayer) {
+  var setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
     } else if (isPlayer) {
@@ -171,9 +171,9 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
-  const setupAIArmy = function (ai, index, specTag, alliance) {
-    const slotsArray = [];
-    const aiLandingOptions = _.shuffle([
+  var setupAIArmy = function (ai, index, specTag, alliance) {
+    var slotsArray = [];
+    var aiLandingOptions = _.shuffle([
       "off_player_planet",
       "on_player_planet",
       "no_restriction",
@@ -201,15 +201,15 @@ define([
     };
   };
 
-  const setupAlliedCommanders = function (
+  var setupAlliedCommanders = function (
     allies,
     cards,
     armies,
     inventory,
     playerTag
   ) {
-    const playerFaction = inventory.getTag("global", "playerFaction");
-    const playerIsCluster = playerFaction === 4;
+    var playerFaction = inventory.getTag("global", "playerFaction");
+    var playerIsCluster = playerFaction === 4;
 
     _.forEach(allies, function (ally, index) {
       ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
@@ -217,62 +217,56 @@ define([
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
-      const allyIndex = index + 1;
-      const subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
+      var allyIndex = index + 1;
+      var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
       armies.push(subcommanderArmy);
     });
   };
 
-  const setupPrimaryAiAndMinions = function (
-    ai,
-    cards,
-    aiTag,
-    aiInUse,
-    armies
-  ) {
+  var setupPrimaryAiAndMinions = function (ai, cards, aiTag, aiInUse, armies) {
     ai = setAdvEcoMod(ai, aiInUse);
-    const guardians = ai.mirrorMode;
+    var guardians = ai.mirrorMode;
 
     if (guardians) {
       ai.personality = setupGuardianPersonality(cards, ai.personality, aiInUse);
     }
 
-    const aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
+    var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
     armies.push(aiArmy);
-    const aiPath = setAIPath(gwoAI.isCluster(ai), false);
+    var aiPath = setAIPath(gwoAI.isCluster(ai), false);
     ai.personality.ai_path = aiPath;
 
     _.forEach(ai.minions, function (minion, index) {
       minion = setAdvEcoMod(minion, aiInUse);
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
-      const colourIndex = index + 1; // primary AI has colour 0
-      const aiArmy = setupAIArmy(minion, colourIndex, aiTag[0], 2);
+      var colourIndex = index + 1; // primary AI has colour 0
+      var aiArmy = setupAIArmy(minion, colourIndex, aiTag[0], 2);
       armies.push(aiArmy);
     });
   };
 
-  const setupFfaAis = function (foes, aiTag, aiInUse, armies) {
+  var setupFfaAis = function (foes, aiTag, aiInUse, armies) {
     _.forEach(foes, function (foe, index) {
       foe = setAdvEcoMod(foe, aiInUse);
       foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
-      const foeTag = index + 1; // 0 taken by primary AI
-      const foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
-      const aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
+      var foeTag = index + 1; // 0 taken by primary AI
+      var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
+      var aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
       armies.push(aiArmy);
     });
   };
 
   return function () {
-    const self = this;
+    var self = this;
 
     // Set up the player
-    const game = self.game();
-    const inventory = game.inventory();
-    const cards = inventory.cards();
-    const playerName = ko.observable().extend({ session: "displayName" });
-    const playerTag = ".player";
-    const armies = [
+    var game = self.game();
+    var inventory = game.inventory();
+    var cards = inventory.cards();
+    var playerName = ko.observable().extend({ session: "displayName" });
+    var playerTag = ".player";
+    var armies = [
       {
         slots: [{ name: playerName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
@@ -281,14 +275,14 @@ define([
         alliance_group: 1,
       },
     ];
-    const currentStar = game.galaxy().stars()[game.currentStar()];
-    const system = currentStar.system();
+    var currentStar = game.galaxy().stars()[game.currentStar()];
+    var system = currentStar.system();
     var ai = currentStar.ai();
-    const alliedCommanders = _.isUndefined(ai.ally)
+    var alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
-    const aiInUse = gwoAI.aiInUse("enemy");
-    const aiTag = setupAiTags(ai);
+    var aiInUse = gwoAI.aiInUse("enemy");
+    var aiTag = setupAiTags(ai);
 
     setupAlliedCommanders(
       alliedCommanders,
@@ -301,7 +295,7 @@ define([
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
     system.planets = modifyPlanets(inventory, system.planets, game);
 
-    const config = {
+    var config = {
       files: self.files(),
       armies: armies,
       player: {

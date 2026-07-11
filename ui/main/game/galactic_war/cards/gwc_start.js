@@ -17,13 +17,13 @@ define([
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
 
-      const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
       if (playerIsCluster) {
         inventory.addMods(gwoCluster.clusterCommanders);
       }
 
-      const commander = inventory.getTag("global", "commander");
-      const starterUnits = gwoGroup.structuresEcoBasic.concat(
+      var commander = inventory.getTag("global", "commander");
+      var starterUnits = gwoGroup.structuresEcoBasic.concat(
         gwoGroup.structuresDefencesBasic,
         gwoGroup.structuresIntelBasic,
         gwoGroup.navalBasic,

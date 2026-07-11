@@ -35,7 +35,7 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      const mods = [
+      var mods = [
         {
           file: gwoUnit.singleLaserDefenseTower,
           path: "tools",

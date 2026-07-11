@@ -23,12 +23,12 @@ define([
     },
     getContext: gwoCard.getContext,
     deal: function () {
-      const chance = 30;
+      var chance = 30;
       return { chance: chance };
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      const mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
+      var mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
         return {
           file: fabberBuildArm,
           path: "reclaim_types",

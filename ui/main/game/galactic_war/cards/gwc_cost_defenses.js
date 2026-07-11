@@ -22,7 +22,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = _.map(gwoGroup.structuresDefences, function (unit) {
+      var mods = _.map(gwoGroup.structuresDefences, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

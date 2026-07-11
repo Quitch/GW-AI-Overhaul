@@ -9,29 +9,29 @@ function gwoWarOverLoadoutStats() {
   gwoWarOverLoadoutStatsLoaded = true;
 
   try {
-    const game = model.game();
-    const galaxy = game.galaxy();
-    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-    const noBadge =
+    var game = model.game();
+    var galaxy = game.galaxy();
+    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    var noBadge =
       gwoSettings && (gwoSettings.cheatsUsed || gwoSettings.tooManyPlayers);
 
     if (!gwoSettings || noBadge || game.gameState() !== "won") {
       return;
     }
 
-    const getPreviousBest = function (defeatedDifficulties) {
+    var getPreviousBest = function (defeatedDifficulties) {
       return _.isArray(defeatedDifficulties)
         ? defeatedDifficulties[0]
         : defeatedDifficulties;
     };
 
-    const loadoutId = game.inventory().cards()[0].id;
-    const defeatedDifficulties = ko
+    var loadoutId = game.inventory().cards()[0].id;
+    var defeatedDifficulties = ko
       .observable()
       .extend({ local: "gwaio_victory_" + loadoutId });
-    const previousBest = getPreviousBest(defeatedDifficulties());
+    var previousBest = getPreviousBest(defeatedDifficulties());
 
-    const isNewHighScore = function (currentDifficulty, previousBest) {
+    var isNewHighScore = function (currentDifficulty, previousBest) {
       return (
         currentDifficulty > previousBest ||
         (currentDifficulty === previousBest && game.hardcore()) ||
@@ -39,7 +39,7 @@ function gwoWarOverLoadoutStats() {
       );
     };
 
-    const difficultyLevels = [
+    var difficultyLevels = [
       "!LOC:Beginner",
       "!LOC:Casual",
       "!LOC:Iron",
@@ -50,7 +50,7 @@ function gwoWarOverLoadoutStats() {
       "!LOC:Diamond",
       "!LOC:Uber",
     ];
-    const currentDifficultyIndex =
+    var currentDifficultyIndex =
       _.findIndex(difficultyLevels, function (difficulty) {
         return difficulty === gwoSettings.difficulty;
       }) - 1; // Adjust for added "Beginner" level

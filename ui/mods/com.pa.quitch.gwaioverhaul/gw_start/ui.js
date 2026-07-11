@@ -8,7 +8,7 @@ function gwoUI() {
   gwoUILoaded = true;
 
   try {
-    const koNumeric = function (value, precision) {
+    var koNumeric = function (value, precision) {
       return ko.observable(value).extend({ numeric: precision });
     };
 
@@ -71,14 +71,14 @@ function gwoUI() {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
-    const restorePreviousSettings = function (settings) {
-      const previousSettings = settings.previousSettings();
+    var restorePreviousSettings = function (settings) {
+      var previousSettings = settings.previousSettings();
 
       if (_.isEmpty(previousSettings)) {
         return settings;
       }
 
-      const settingNames = _.keys(settings);
+      var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
       _.forEach(settingNames, function (name, i) {
         settings[name](previousSettings[i]);
@@ -106,7 +106,7 @@ function gwoUI() {
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
-    const addHtml = {
+    var addHtml = {
       path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
       before: function (classOrId, file) {
         $(classOrId).before(loadHtml(this.path + file));
@@ -121,8 +121,8 @@ function gwoUI() {
         $(classOrId).replaceWith(loadHtml(this.path + file));
       },
     };
-    const gameDifficultyLabelId = "#game-difficulty-label";
-    const gameDifficultyId = "#game-difficulty";
+    var gameDifficultyLabelId = "#game-difficulty-label";
+    var gameDifficultyId = "#game-difficulty";
 
     addHtml.after("#game-settings-label", "difficulty_options.html");
     addHtml.before("#faction-select", "faction_tooltip.html");
@@ -155,8 +155,8 @@ function gwoUI() {
       ],
       function (gwoDifficulty) {
         ko.computed(function () {
-          const selectedDifficulty = difficultySettings.difficultyLevel();
-          const difficulties = gwoDifficulty.difficulties;
+          var selectedDifficulty = difficultySettings.difficultyLevel();
+          var difficulties = gwoDifficulty.difficulties;
           if (difficulties[selectedDifficulty].customDifficulty) {
             $("#custom-difficulty-settings select").attr("disabled", false);
             $("select").selectpicker("refresh");

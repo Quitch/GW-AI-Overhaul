@@ -3,8 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoGroup, gwoUnit) {
-  const prepareMods = function (mods) {
-    const deathAmmo = [
+  var prepareMods = function (mods) {
+    var deathAmmo = [
       gwoUnit.wyrmDeath,
       gwoUnit.zeusDeath,
       gwoUnit.commanderDeath,
@@ -25,7 +25,7 @@ define([
       });
     });
 
-    const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
+    var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
       return _.includes(
         [
           gwoUnit.wyrm,
@@ -74,7 +74,7 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       prepareMods(mods);
       inventory.addMods(mods);
     },

@@ -5,17 +5,17 @@ define([
   "shared/gw_inventory",
 ], function (GWFactions, gwoAI, gwoSave, GWInventory) {
   return function (params) {
-    const game = params.game;
-    const gwoSettings = params.gwoSettings;
-    const playerFaction = params.playerFaction;
-    const inventory =
+    var game = params.game;
+    var gwoSettings = params.gwoSettings;
+    var playerFaction = params.playerFaction;
+    var inventory =
       params.inventory ||
       (game && _.isFunction(game.inventory) ? game.inventory() : undefined);
 
-    const setupGeneralCommanderRequest = "gwo_setup_general_commander";
-    const setupGeneralCommanderResult = "gwo_setup_general_commander_result";
+    var setupGeneralCommanderRequest = "gwo_setup_general_commander";
+    var setupGeneralCommanderResult = "gwo_setup_general_commander_result";
 
-    const inventoryNeedsGeneralCommanderSetup = function (cards) {
+    var inventoryNeedsGeneralCommanderSetup = function (cards) {
       return !!(
         _.isArray(cards) &&
         cards.length === 1 &&
@@ -25,13 +25,13 @@ define([
       );
     };
 
-    const applyPenchantToSubcommander = function (subcommander) {
+    var applyPenchantToSubcommander = function (subcommander) {
       var subcommanderAI = gwoSettings && gwoSettings.aiAlly;
       if (subcommanderAI !== "Penchant") {
         return;
       }
 
-      const penchantValues = gwoAI.penchants();
+      var penchantValues = gwoAI.penchants();
       subcommander.character =
         subcommander.character + (" " + loc(penchantValues.penchantName));
       subcommander.personality.personality_tags =
@@ -40,32 +40,32 @@ define([
         );
     };
 
-    const resolveFactionMinions = function (factionIndex) {
-      const chosenFaction = GWFactions[factionIndex];
+    var resolveFactionMinions = function (factionIndex) {
+      var chosenFaction = GWFactions[factionIndex];
       if (chosenFaction && _.isArray(chosenFaction.minions)) {
         return chosenFaction.minions;
       }
 
-      const fallbackFaction = GWFactions[playerFaction];
+      var fallbackFaction = GWFactions[playerFaction];
       return fallbackFaction && _.isArray(fallbackFaction.minions)
         ? fallbackFaction.minions
         : [];
     };
 
-    const buildGeneralCommanderMinions = function (factionIndex) {
-      const minionPool = resolveFactionMinions(factionIndex);
-      const minions = [];
+    var buildGeneralCommanderMinions = function (factionIndex) {
+      var minionPool = resolveFactionMinions(factionIndex);
+      var minions = [];
       if (!minionPool.length) {
         return minions;
       }
 
       _.times(2, function () {
-        const baseSubcommander = _.sample(minionPool);
+        var baseSubcommander = _.sample(minionPool);
         if (!baseSubcommander) {
           return;
         }
 
-        const subcommander = _.cloneDeep(baseSubcommander);
+        var subcommander = _.cloneDeep(baseSubcommander);
         applyPenchantToSubcommander(subcommander);
         minions.push({
           id: "gwc_minion",
@@ -77,7 +77,7 @@ define([
       return minions;
     };
 
-    const appendGeneralCommanderMinions = function (cards, factionIndex) {
+    var appendGeneralCommanderMinions = function (cards, factionIndex) {
       var minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
@@ -95,7 +95,7 @@ define([
       return true;
     };
 
-    const sendGeneralCommanderSetupResult = function (
+    var sendGeneralCommanderSetupResult = function (
       clientId,
       requestId,
       payload
@@ -110,7 +110,7 @@ define([
       });
     };
 
-    const failGeneralCommanderSetup = function (operator, reason) {
+    var failGeneralCommanderSetup = function (operator, reason) {
       console.error("[GW COOP] failed to setup general commander: " + reason);
       if (_.isUndefined(operator.client_id)) {
         return;
@@ -123,8 +123,8 @@ define([
       });
     };
 
-    const applyGeneralCommanderSetupResult = function (operator) {
-      const payload = operator && operator.payload ? operator.payload : {};
+    var applyGeneralCommanderSetupResult = function (operator) {
+      var payload = operator && operator.payload ? operator.payload : {};
       if (model.gwoGeneralCommanderSetupPending) {
         model.gwoGeneralCommanderSetupPending(false);
       }
@@ -145,7 +145,7 @@ define([
       }
     };
 
-    const setupGeneralCommanderForViewer = function () {
+    var setupGeneralCommanderForViewer = function () {
       var record;
       var recordInventory;
       var cards;
@@ -187,7 +187,7 @@ define([
       return true;
     };
 
-    const setupGeneralCommanderForCoopPlayer = function (operator) {
+    var setupGeneralCommanderForCoopPlayer = function (operator) {
       var record;
       var recordInventory;
       var cards;

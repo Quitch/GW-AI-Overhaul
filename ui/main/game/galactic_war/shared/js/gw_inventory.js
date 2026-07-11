@@ -1,7 +1,7 @@
 // Add aiMods()
 
-const GWInventory = function () {
-  const self = this;
+var GWInventory = function () {
+  var self = this;
   self.units = ko.observableArray();
   // add location to store changes to AI based on cards held
   self.aiMods = ko.observableArray();
@@ -15,7 +15,7 @@ const GWInventory = function () {
 define(function () {
   GWInventory.prototype = {
     load: function (config) {
-      const self = this;
+      var self = this;
       config = config || {};
       self.units(config.units || []);
       self.mods(config.mods || []);
@@ -33,44 +33,44 @@ define(function () {
       return ko.toJS(this);
     },
     addUnits: function (add) {
-      const self = this;
+      var self = this;
       self.units(self.units().concat(add));
     },
     // GWO - updated to remove multiple copies of a unit
     removeUnits: function (remove) {
-      const self = this;
+      var self = this;
       _.forEach(remove, function (unit) {
         _.pull(self.units(), unit);
       });
     },
     addAIMods: function (aiMods) {
-      const self = this;
+      var self = this;
       self.aiMods(self.aiMods().concat(aiMods));
     },
     addMods: function (mods) {
-      const self = this;
+      var self = this;
       self.mods(self.mods().concat(mods));
     },
     isApplyingCards: _.constant(false),
     applyCards: function (done) {
-      const self = this;
-      const cards = self.cards().slice();
+      var self = this;
+      var cards = self.cards().slice();
 
       // Apply an override to this object to indicate that we are busy.
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
       var curCard = "";
-      const protoGetTag = _.bind(self.getTag, self);
+      var protoGetTag = _.bind(self.getTag, self);
       self.getTag = function (context, name, def) {
         return protoGetTag(context || curCard, name, def);
       };
-      const protoSetTag = _.bind(self.setTag, self);
+      var protoSetTag = _.bind(self.setTag, self);
       self.setTag = function (context, name, value) {
         return protoSetTag(context || curCard, name, value);
       };
       var dirty = false;
       // Clean-up function that gets called when everything is done.
-      const finishApplyCards = function () {
+      var finishApplyCards = function () {
         delete self.getTag;
         delete self.applyCards;
         delete self.isApplyingCards;
@@ -88,7 +88,7 @@ define(function () {
           return;
         }
         if (done) {
-          const wrap = done;
+          var wrap = done;
           done = function () {
             wrap();
             _.delay(queueDone);
@@ -100,13 +100,13 @@ define(function () {
 
       var cardCount;
       var finishPhase;
-      const finishCard = function () {
+      var finishCard = function () {
         --cardCount;
         if (!cardCount) {
           finishPhase();
         }
       };
-      const applyCardOp = function (op, cardParams) {
+      var applyCardOp = function (op, cardParams) {
         var cardId;
         if (_.isString(cardParams)) {
           cardId = cardParams;
@@ -127,15 +127,15 @@ define(function () {
           }
         );
       };
-      const resetCardCount = function () {
+      var resetCardCount = function () {
         cardCount = cards.length;
       };
-      const applyDulls = function () {
+      var applyDulls = function () {
         resetCardCount();
         finishPhase = finishApplyCards;
         _.forEach(cards, _.bind(applyCardOp, self, "dull"));
       };
-      const applyBuffs = function () {
+      var applyBuffs = function () {
         resetCardCount();
         finishPhase = applyDulls;
         _.forEach(cards, _.bind(applyCardOp, self, "buff"));
@@ -150,27 +150,27 @@ define(function () {
       applyBuffs();
     },
     hasCard: function (id) {
-      const self = this;
+      var self = this;
       return _.some(self.cards(), function (card) {
         return id === card.id && !card.unique;
       });
     },
     hasCardLike: function (test) {
-      const ok = test && test.id;
+      var ok = test && test.id;
       if (!ok) {
         return false;
       }
 
-      const self = this;
+      var self = this;
       return _.some(self.cards(), { id: test.id() });
     },
     lookupCard: function (test) {
-      const self = this;
-      const cardSearch = _.isString(test) ? { id: test } : test;
+      var self = this;
+      var cardSearch = _.isString(test) ? { id: test } : test;
       return _.findIndex(self.cards(), cardSearch);
     },
     canFitCard: function (test) {
-      const self = this;
+      var self = this;
       // This is an unfortunate bit of back-channel information.  The
       // card parameters are supposed to be opaque, but this is the best
       // channel for communicating between the card & the inventory.
@@ -183,22 +183,22 @@ define(function () {
     },
 
     handIsFull: function () {
-      const self = this;
+      var self = this;
       return self.cards().length >= self.maxCards();
     },
 
     // Get a tag value.  When called during card processing, an empty
     // context will be replaced with the current card.
     getTag: function (context, name, def) {
-      const self = this;
-      const tags = self.tags();
+      var self = this;
+      var tags = self.tags();
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
         if (_.isUndefined(def)) {
           return;
         }
         tags[context] = {};
       }
-      const tagContext = tags[context];
+      var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
         if (_.isUndefined(def)) {
           return;
@@ -208,8 +208,8 @@ define(function () {
       return tagContext[name];
     },
     setTag: function (context, name, value) {
-      const self = this;
-      const tags = self.tags();
+      var self = this;
+      var tags = self.tags();
       if (_.isUndefined(value)) {
         if (tags[context]) {
           delete tags[context][name];

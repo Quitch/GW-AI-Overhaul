@@ -4,11 +4,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 ], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
-  const coopMinionCount = function () {
-    const game = model.game();
+  var coopMinionCount = function () {
+    var game = model.game();
     // This will include players who are not currently in the game, but we still count their minions.
     // This is important for the case where a player leaves the game, but may rejoin.
-    const coopPlayerInventoryData =
+    var coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
         ? game.coopPlayerInventoryData()
         : [];
@@ -22,8 +22,8 @@ define([
   return {
     visible: _.constant(true),
     describe: function (params) {
-      const minion = params.minion;
-      const result = [];
+      var minion = params.minion;
+      var result = [];
       result.push(
         "!LOC:Adds a Sub Commander that will join you in battles.",
         "<br>",
@@ -55,7 +55,7 @@ define([
     },
     deal: function (system, context, inventory) {
       var chance = 100;
-      const aiOpeningFactories = [
+      var aiOpeningFactories = [
         gwoUnit.vehicleFactory,
         gwoUnit.botFactory,
         gwoUnit.airFactory,
@@ -68,20 +68,20 @@ define([
       ) {
         chance = 0;
       } else if (inventory.minions) {
-        const hostMinionCount = inventory.minions().length;
-        const allMinionCount = coopMinionCount();
-        const totalMinions = Math.max(hostMinionCount, allMinionCount);
+        var hostMinionCount = inventory.minions().length;
+        var allMinionCount = coopMinionCount();
+        var totalMinions = Math.max(hostMinionCount, allMinionCount);
         chance = chance / (totalMinions + 1);
       }
 
-      const minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
-      const galaxy = model.game().galaxy();
-      const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
+      var galaxy = model.game().galaxy();
+      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
 
       if (gwoSettings) {
-        const ai = gwoSettings.ai;
+        var ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          const penchantValues = gwoAI.penchants();
+          var penchantValues = gwoAI.penchants();
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
@@ -100,7 +100,7 @@ define([
       };
     },
     buff: function (inventory, params) {
-      const minion = params.minion;
+      var minion = params.minion;
       inventory.minions.push(minion);
       if (minion.commander) {
         inventory.addUnits([minion.commander]);

@@ -1,4 +1,4 @@
-const multiply = function (units, multiplier, paths) {
+var multiply = function (units, multiplier, paths) {
   var outputArray = [];
   if (!_.isArray(paths)) {
     paths = [paths];
@@ -21,19 +21,19 @@ const multiply = function (units, multiplier, paths) {
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
 ], function (inventory) {
-  const legonisTech = [];
-  const foundationTech = [];
-  const synchronousTech = [];
-  const revenantsTech = [];
-  const clusterTech = [];
-  const factionTechs = [
+  var legonisTech = [];
+  var foundationTech = [];
+  var synchronousTech = [];
+  var revenantsTech = [];
+  var clusterTech = [];
+  var factionTechs = [
     legonisTech,
     foundationTech,
     synchronousTech,
     revenantsTech,
     clusterTech,
   ];
-  const factionCommanders = [
+  var factionCommanders = [
     inventory.commanderUnits, // Legonis Machina
     inventory.commanderUnits, // Foundation
     inventory.commanderUnits, // Synchronous
@@ -41,8 +41,8 @@ define([
     inventory.clusterCommanders,
   ];
 
-  const setupAITech0FabricationTech = function () {
-    const factionUnits = [
+  var setupAITech0FabricationTech = function () {
+    var factionUnits = [
       inventory.legonisUnits,
       inventory.foundationUnits,
       inventory.synchronousUnits,
@@ -54,23 +54,23 @@ define([
     });
   };
 
-  const setupAITech1AmmunitionTech = function () {
-    const factionAmmo = [
+  var setupAITech1AmmunitionTech = function () {
+    var factionAmmo = [
       inventory.legonisAmmo,
       inventory.foundationAmmo,
       inventory.synchronousAmmo,
       inventory.revenantsAmmo,
       inventory.clusterAmmo,
     ];
-    const factionWeapons = [
+    var factionWeapons = [
       inventory.legonisWeapons,
       inventory.foundationWeapons,
       inventory.synchronousWeapons,
       inventory.revenantsWeapons,
       inventory.clusterWeapons,
     ];
-    const ammoPaths = ["damage", "splash_damage"];
-    const weaponPaths = ["ammo_capacity", "ammo_demand", "ammo_per_shot"];
+    var ammoPaths = ["damage", "splash_damage"];
+    var weaponPaths = ["ammo_capacity", "ammo_demand", "ammo_per_shot"];
     _.forEach(factionAmmo, function (ammos, i) {
       factionTechs[i][1] = multiply(ammos, 1.25, ammoPaths);
     });
@@ -81,8 +81,8 @@ define([
     });
   };
 
-  const setupAITech2ArmourTech = function () {
-    const factionUnits = [
+  var setupAITech2ArmourTech = function () {
+    var factionUnits = [
       inventory.legonisUnits,
       inventory.foundationUnits,
       inventory.synchronousUnits,
@@ -99,15 +99,15 @@ define([
     });
   };
 
-  const setupAITech3EngineTech = function () {
-    const factionUnits = [
+  var setupAITech3EngineTech = function () {
+    var factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
     ];
-    const speedPaths = [
+    var speedPaths = [
       "navigation.move_speed",
       "navigation.brake",
       "navigation.acceleration",
@@ -126,8 +126,8 @@ define([
     );
   };
 
-  const setupAITech4EfficiencyTech = function () {
-    const factionBuildArms = [
+  var setupAITech4EfficiencyTech = function () {
+    var factionBuildArms = [
       inventory.legonisBuildArms,
       inventory.foundationBuildArms,
       inventory.synchronousBuildArms,
@@ -143,15 +143,15 @@ define([
     });
   };
 
-  const setupAITech6CombatTech = function () {
-    const factionUnits = [
+  var setupAITech6CombatTech = function () {
+    var factionUnits = [
       inventory.legonisUnitsMobile,
       inventory.foundationUnitsMobileNaval,
       inventory.synchronousUnitsMobile,
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
     ];
-    const speedPaths = [
+    var speedPaths = [
       "navigation.move_speed",
       "navigation.brake",
       "navigation.acceleration",
@@ -173,8 +173,8 @@ define([
     });
   };
 
-  const setupAITech7CooldownTech = function () {
-    const factionUnits = [
+  var setupAITech7CooldownTech = function () {
+    var factionUnits = [
       inventory.legonisUnitsImmobile,
       inventory.foundationUnitsImmobile,
       inventory.synchronousUnitsImmobile,

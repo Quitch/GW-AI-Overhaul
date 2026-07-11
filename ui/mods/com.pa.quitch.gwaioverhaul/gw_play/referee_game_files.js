@@ -1,5 +1,5 @@
-const getAIUnitMapPath = function (titans, aiInUse) {
-  const append = titans ? "_x1.json" : ".json";
+var getAIUnitMapPath = function (titans, aiInUse) {
+  var append = titans ? "_x1.json" : ".json";
 
   switch (aiInUse) {
     case "Queller":
@@ -11,13 +11,13 @@ const getAIUnitMapPath = function (titans, aiInUse) {
   }
 };
 
-const getAIUnitMapDestinationPath = function (titans, aiPath) {
-  const append = titans ? "_x1.json" : ".json";
+var getAIUnitMapDestinationPath = function (titans, aiPath) {
+  var append = titans ? "_x1.json" : ".json";
   return aiPath + "unit_maps/ai_unit_map" + append;
 };
 
-const guardianMods = function (game, mods) {
-  const connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+var guardianMods = function (game, mods) {
+  var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
     ? model.gwCampaignConnectedClients()
     : [];
 
@@ -54,14 +54,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
 ], function (GW, gwoUnit, gwoAI, gwoSpecs) {
-  const clusterArmyIndex = function (ai) {
-    const guardians = ai.mirrorMode;
+  var clusterArmyIndex = function (ai) {
+    var guardians = ai.mirrorMode;
     if (guardians) {
       return -1;
     } else if (ai.faction === 4) {
       return 0;
     } else if (ai.foes) {
-      const index = _.findIndex(ai.foes, function (foe) {
+      var index = _.findIndex(ai.foes, function (foe) {
         return gwoAI.isCluster(foe);
       });
       if (index !== -1) {
@@ -71,7 +71,7 @@ define([
     return -1;
   };
 
-  const buildAiFactionFiles = function (params) {
+  var buildAiFactionFiles = function (params) {
     var currentCount = params.currentCount;
     var ai = params.ai;
     var aiTag = params.aiTag;
@@ -87,11 +87,8 @@ define([
     var inventory = params.inventory;
     var aiFactionDeferred = params.aiFactionDeferred;
 
-    const enemyAIUnitMap = GW.specs.genAIUnitMap(
-      aiUnitMap,
-      aiTag[currentCount]
-    );
-    const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
+    var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[currentCount]);
+    var enemyX1AIUnitMap = GW.specs.genAIUnitMap(
       aiX1UnitMap,
       aiTag[currentCount]
     );
@@ -106,24 +103,24 @@ define([
           unitMapTitansPath = clusterUnitMapTitansPath;
         }
 
-        const enemyAIUnitMapFile = unitMapPath + aiTag[currentCount];
-        const enemyAIUnitMapPair = {};
+        var enemyAIUnitMapFile = unitMapPath + aiTag[currentCount];
+        var enemyAIUnitMapPair = {};
         enemyAIUnitMapPair[enemyAIUnitMapFile] = enemyAIUnitMap;
-        const enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[currentCount];
-        const enemyX1AIUnitMapPair = {};
+        var enemyX1AIUnitMapFile = unitMapTitansPath + aiTag[currentCount];
+        var enemyX1AIUnitMapPair = {};
         enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
-        const aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-        const aiFilesX1 = titans
+        var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
+        var aiFilesX1 = titans
           ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
           : {};
-        const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+        var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
         if (ai.inventory) {
           var aiInventory =
             currentCount === 0
               ? ai.inventory
               : ai.foes[currentCount - 1].inventory;
-          const guardians = ai.mirrorMode;
+          var guardians = ai.mirrorMode;
           if (guardians) {
             aiInventory = aiInventory.concat(
               guardianMods(game, inventory.mods)
@@ -135,15 +132,15 @@ define([
       });
   };
 
-  const buildPlayerFiles = function (params) {
+  var buildPlayerFiles = function (params) {
     var playerAIUnitMap = params.playerAIUnitMap;
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
     var playerSpecFiles = params.playerSpecFiles;
     var inventory = params.inventory;
     var titans = params.titans;
 
-    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    const hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
+    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
     var playerFilesClassic;
     var playerFilesX1;
 
@@ -176,7 +173,7 @@ define([
       }
     }
 
-    const playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+    var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
     gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
     return playerFiles;
   };
@@ -196,60 +193,59 @@ define([
   );
 
   return function () {
-    const self = this;
+    var self = this;
 
     // Game file generation cannot use previously mounted files.  That would be bad.
-    const done = $.Deferred();
+    var done = $.Deferred();
 
     // community mods will hook unmountAllMemoryFiles to remount client mods
     api.file.unmountAllMemoryFiles().always(function () {
-      const titans = api.content.usingTitans();
+      var titans = api.content.usingTitans();
 
-      const game = self.game();
-      const ai = game.galaxy().stars()[game.currentStar()].ai();
-      const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-      const aiTag = [];
-      const aiFactions = [];
+      var game = self.game();
+      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+      var aiTag = [];
+      var aiFactions = [];
       _.times(aiFactionCount, function (n) {
-        const aiNewTag = ".ai" + n;
+        var aiNewTag = ".ai" + n;
         aiTag.push(aiNewTag);
         aiFactions.push($.Deferred());
       });
 
-      const playerFileGen = $.Deferred();
-      const filesToProcess = [playerFileGen];
+      var playerFileGen = $.Deferred();
+      var filesToProcess = [playerFileGen];
 
-      const enemyAI = gwoAI.aiInUse("enemy");
-      const aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
-      const aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
-      const enemyDestinationPath = gwoAI.getAIPathDestination("enemy");
-      const aiUnitMapDestinationPath = getAIUnitMapDestinationPath(
+      var enemyAI = gwoAI.aiInUse("enemy");
+      var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
+      var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
+      var enemyDestinationPath = gwoAI.getAIPathDestination("enemy");
+      var aiUnitMapDestinationPath = getAIUnitMapDestinationPath(
         false,
         enemyDestinationPath
       );
-      const aiUnitMapTitansDestinationPath = getAIUnitMapDestinationPath(
+      var aiUnitMapTitansDestinationPath = getAIUnitMapDestinationPath(
         true,
         enemyDestinationPath
       );
 
-      const unitsLoad = $.get("spec://pa/units/unit_list.json");
-      const aiMapLoad = $.get("spec:/" + aiUnitMapSourcePath);
-      const aiX1MapLoad = titans
+      var unitsLoad = $.get("spec://pa/units/unit_list.json");
+      var aiMapLoad = $.get("spec:/" + aiUnitMapSourcePath);
+      var aiX1MapLoad = titans
         ? $.get("spec:/" + aiUnitMapTitansSourcePath)
         : {};
       $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
         function (unitsGet, aiMapGet, aiX1MapGet) {
-          const inventory = game.inventory();
+          var inventory = game.inventory();
 
-          const units = parse(unitsGet[0]).units;
-          const aiUnitMap = parse(aiMapGet[0]);
-          const aiX1UnitMap = parse(aiX1MapGet[0]);
-          const clusterUnitMapPath =
-            "/pa/ai_cluster/unit_maps/ai_unit_map.json";
-          const clusterUnitMapTitansPath =
+          var units = parse(unitsGet[0]).units;
+          var aiUnitMap = parse(aiMapGet[0]);
+          var aiX1UnitMap = parse(aiX1MapGet[0]);
+          var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
+          var clusterUnitMapTitansPath =
             "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
           _.times(aiFactionCount, function (n) {
-            const aiSpecs = units.concat(model.gwoSpecs);
+            var aiSpecs = units.concat(model.gwoSpecs);
 
             buildAiFactionFiles({
               currentCount: n,
@@ -269,16 +265,16 @@ define([
             });
           });
 
-          const playerTag = ".player";
+          var playerTag = ".player";
 
-          const playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-          const playerX1AIUnitMap = titans
+          var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
+          var playerX1AIUnitMap = titans
             ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
             : {};
-          const additionalPlayerSpecs = _.isUndefined(ai.ally)
+          var additionalPlayerSpecs = _.isUndefined(ai.ally)
             ? model.gwoSpecs
             : model.gwoSpecs.concat(ai.ally.commander);
-          const playerSpecs = inventory.units().concat(additionalPlayerSpecs);
+          var playerSpecs = inventory.units().concat(additionalPlayerSpecs);
 
           GW.specs
             .genUnitSpecs(playerSpecs, playerTag)

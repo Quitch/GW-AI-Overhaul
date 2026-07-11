@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
 ], function (module, GW, GWCStart, gwoBank, gwoCard) {
-  const CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Lucky Commander"),

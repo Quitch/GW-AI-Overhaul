@@ -50,14 +50,14 @@ define([
         },
       ]);
 
-      const units = [
+      var units = [
         "SolarArray",
         "OrbitalDeathLaser",
         "AdvancedRadarSattelite",
         "OrbitalRailgun",
         "OrbitalBattleShip",
       ];
-      const aiMods = _.flatten(
+      var aiMods = _.flatten(
         _.map(units, function (unit) {
           return [
             {

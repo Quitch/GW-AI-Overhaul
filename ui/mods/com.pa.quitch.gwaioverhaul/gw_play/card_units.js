@@ -28,7 +28,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  const unitsWithADeathWeapon = [
+  var unitsWithADeathWeapon = [
     gwoUnit.wyrm,
     gwoUnit.zeus,
     gwoUnit.commander,
@@ -37,19 +37,19 @@ define([
     gwoUnit.atlas,
     gwoUnit.jig,
   ];
-  const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
+  var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
     return _.includes(unitsWithADeathWeapon, unit);
   });
-  const advancedBotFabbers = [
+  var advancedBotFabbers = [
     gwoUnit.colonel,
     gwoUnit.mend,
     gwoUnit.botFabberAdvanced,
   ];
-  const advancedBotsExcludingFabbers = _.xor(
+  var advancedBotsExcludingFabbers = _.xor(
     gwoGroup.botsAdvancedMobile,
     advancedBotFabbers
   );
-  const advancedVehiclesExcludingFabber = _.without(
+  var advancedVehiclesExcludingFabber = _.without(
     gwoGroup.vehiclesAdvancedMobile,
     gwoUnit.vehicleFabberAdvanced
   );

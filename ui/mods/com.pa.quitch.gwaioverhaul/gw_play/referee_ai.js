@@ -1,5 +1,5 @@
-const applyAiMods = function (json, mods) {
-  const ops = {
+var applyAiMods = function (json, mods) {
+  var ops = {
     // fabber/factory/platoon only
     append: function (value, toBuild, idToMod, refId, refValue) {
       _.forEach(json.build_list, function (build) {
@@ -7,7 +7,7 @@ const applyAiMods = function (json, mods) {
           return;
         }
 
-        const validMatch =
+        var validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           build[idToMod];
 
@@ -37,7 +37,7 @@ const applyAiMods = function (json, mods) {
           return;
         }
 
-        const validMatch =
+        var validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           build[idToMod];
 
@@ -67,7 +67,7 @@ const applyAiMods = function (json, mods) {
           return;
         }
 
-        const validMatch =
+        var validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           build[idToMod];
 
@@ -129,7 +129,7 @@ const applyAiMods = function (json, mods) {
   });
 };
 
-const getRefereeInventoryAiMods = function (inventory) {
+var getRefereeInventoryAiMods = function (inventory) {
   if (!inventory) {
     return [];
   }
@@ -141,7 +141,7 @@ const getRefereeInventoryAiMods = function (inventory) {
   return inventory.aiMods || [];
 };
 
-const getConnectedClientAiMods = function (game, connectedClients) {
+var getConnectedClientAiMods = function (game, connectedClients) {
   var connectedClientAiMods = [];
 
   _.forEach(connectedClients, function (client) {
@@ -168,7 +168,7 @@ const getConnectedClientAiMods = function (game, connectedClients) {
   return connectedClientAiMods;
 };
 
-const getInventoryWithAllPlayerAiMods = function (
+var getInventoryWithAllPlayerAiMods = function (
   inventory,
   game,
   connectedClients
@@ -184,10 +184,10 @@ const getInventoryWithAllPlayerAiMods = function (
   };
 };
 
-const whichAIsAreBeingModified = function (clusterPresence, inventory) {
-  const game = model.game();
-  const ai = game.galaxy().stars()[game.currentStar()].ai();
-  const guardians = ai.mirrorMode;
+var whichAIsAreBeingModified = function (clusterPresence, inventory) {
+  var game = model.game();
+  var ai = game.galaxy().stars()[game.currentStar()].ai();
+  var guardians = ai.mirrorMode;
 
   if (
     !_.isEmpty(getRefereeInventoryAiMods(inventory)) ||
@@ -202,7 +202,7 @@ const whichAIsAreBeingModified = function (clusterPresence, inventory) {
   return "None";
 };
 
-const managerPath = function (type) {
+var managerPath = function (type) {
   switch (type) {
     case "fabber":
       return "fabber_builds/";
@@ -217,19 +217,19 @@ const managerPath = function (type) {
   }
 };
 
-const addApplicableAiLoadModsToFileList = function (
+var addApplicableAiLoadModsToFileList = function (
   aiPath,
   fileList,
   inventory,
   aisToModify,
   aiPaths
 ) {
-  const isSubCommanderDirectory =
+  var isSubCommanderDirectory =
     aiPath === aiPaths.subCommanderSource ||
     aiPaths.enemySource === aiPaths.subCommanderSource;
 
   if (isSubCommanderDirectory || aisToModify === "All") {
-    const aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
+    var aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
       op: "load",
     });
 
@@ -243,7 +243,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 ], function (gwoAI, refereeAIPaths) {
-  const processFilesInDirectory = function (
+  var processFilesInDirectory = function (
     filePath,
     configFiles,
     aisToModify,
@@ -252,16 +252,16 @@ define([
     inventory,
     scopeToken
   ) {
-    const filePathStarts = function (filePathFragment) {
+    var filePathStarts = function (filePathFragment) {
       return _.startsWith(filePath, filePathFragment);
     };
 
-    const filePathIncludes = function (filePathFragment) {
+    var filePathIncludes = function (filePathFragment) {
       return _.includes(filePath, filePathFragment);
     };
 
-    const whoseFileIsItAnyway = function (aiPaths) {
-      const aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
+    var whoseFileIsItAnyway = function (aiPaths) {
+      var aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
 
       if (aisShareAPath) {
         return "shared";
@@ -271,8 +271,8 @@ define([
       return "subcommander";
     };
 
-    const aiModsInScopeOfFile = function () {
-      const aiMods = _.reject(getRefereeInventoryAiMods(inventory), {
+    var aiModsInScopeOfFile = function () {
+      var aiMods = _.reject(getRefereeInventoryAiMods(inventory), {
         op: "load",
       });
 
@@ -280,13 +280,13 @@ define([
         return [];
       }
 
-      const pathTypeMap = {
+      var pathTypeMap = {
         "/fabber_builds/": "fabber",
         "/factory_builds/": "factory",
         "/platoon_builds/": "platoon",
         "/platoon_templates/": "template",
       };
-      const aiManager =
+      var aiManager =
         _(pathTypeMap)
           .keys()
           .find(function (key) {
@@ -296,16 +296,16 @@ define([
       return _.filter(aiMods, { type: pathTypeMap[aiManager] });
     };
 
-    const changeFilePath = function (aiPath, pathLength) {
+    var changeFilePath = function (aiPath, pathLength) {
       return aiPath + filePath.slice(pathLength);
     };
 
-    const clusterAIModsInScopeOfFile = function () {
+    var clusterAIModsInScopeOfFile = function () {
       if (!filePathIncludes("/factory_builds/")) {
         return;
       }
 
-      const clusterCommanders = ["SupportPlatform", "SupportCommander"];
+      var clusterCommanders = ["SupportPlatform", "SupportCommander"];
 
       return _.map(clusterCommanders, function (commander) {
         return {
@@ -319,10 +319,10 @@ define([
     };
 
     // built on the assumption that the Guardians are never Cluster
-    const processClusterJson = function (json, pathLength) {
-      const clusterOps = clusterAIModsInScopeOfFile() || [];
-      const clusterJson = _.cloneDeep(json);
-      const clusterFilePath = changeFilePath(
+    var processClusterJson = function (json, pathLength) {
+      var clusterOps = clusterAIModsInScopeOfFile() || [];
+      var clusterJson = _.cloneDeep(json);
+      var clusterFilePath = changeFilePath(
         refereeAIPaths.getAIPathDestination(
           "cluster",
           gwoAI.aiInUse("subcommander"),
@@ -339,12 +339,10 @@ define([
     };
 
     return $.getJSON("coui:/" + filePath).then(function (json) {
-      const fileOwner = whoseFileIsItAnyway(aiPaths);
-      const isSubCommanderDirectory = filePathStarts(
-        aiPaths.subCommanderSource
-      );
-      const aiTechPath = "/pa/ai_tech/";
-      const isSubCommanderTechFile = filePathStarts(aiTechPath);
+      var fileOwner = whoseFileIsItAnyway(aiPaths);
+      var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
+      var aiTechPath = "/pa/ai_tech/";
+      var isSubCommanderTechFile = filePathStarts(aiTechPath);
       var aiJsonModsInScope = [];
       var updatedFilePaths = [];
       var pathLength = 0;
@@ -393,7 +391,7 @@ define([
         );
       }
 
-      const finalFilePaths = _.isEmpty(updatedFilePaths)
+      var finalFilePaths = _.isEmpty(updatedFilePaths)
         ? [filePath]
         : updatedFilePaths;
 
@@ -413,7 +411,7 @@ define([
     });
   };
 
-  const processDirectories = function (
+  var processDirectories = function (
     aiPath,
     configFiles,
     aiPaths,
@@ -422,10 +420,10 @@ define([
     scopeToken,
     forceSubCommanderScope
   ) {
-    const deferred = $.Deferred();
+    var deferred = $.Deferred();
 
     api.file.list(aiPath, true).then(function (fileList) {
-      const aisToModify = forceSubCommanderScope
+      var aisToModify = forceSubCommanderScope
         ? "SubCommanders"
         : whichAIsAreBeingModified(clusterPresence, inventory);
 
@@ -464,16 +462,16 @@ define([
     return deferred.promise();
   };
 
-  const whoIsCluster = function () {
-    const game = model.game();
-    const inventory = game.inventory();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
-    const alliedCommanders = _.isUndefined(ai.ally)
+  var whoIsCluster = function () {
+    var game = model.game();
+    var inventory = game.inventory();
+    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
-    const numberOfAllies = alliedCommanders.length;
-    const isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
-    const isEnemyCluster =
+    var numberOfAllies = alliedCommanders.length;
+    var isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
+    var isEnemyCluster =
       gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {
         return gwoAI.isCluster(foe);
@@ -490,28 +488,28 @@ define([
 
   // parse AI files, apply AI mods, and load the results into self.files()
   return function () {
-    const deferred = $.Deferred();
+    var deferred = $.Deferred();
 
-    const self = this;
-    const configFiles = self.files(); // JSON files passed to the server
-    const aiPaths = {
+    var self = this;
+    var configFiles = self.files(); // JSON files passed to the server
+    var aiPaths = {
       enemySource: gwoAI.getAIPathSource("enemy"),
       enemyDestination: gwoAI.getAIPathDestination("enemy"),
       subCommanderSource: gwoAI.getAIPathSource("subcommander"),
       subCommanderDestination: gwoAI.getAIPathDestination("subcommander"),
     };
-    const aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
-    const aiPathsToProcess = aisShareAPath
+    var aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
+    var aiPathsToProcess = aisShareAPath
       ? [aiPaths.enemySource]
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
-    const clusterPresence = whoIsCluster();
-    const game = model.game();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
-    const guardians = ai.mirrorMode;
-    const connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+    var clusterPresence = whoIsCluster();
+    var game = model.game();
+    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var guardians = ai.mirrorMode;
+    var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
       ? model.gwCampaignConnectedClients()
       : [];
-    const playerAiModInventory = guardians
+    var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
           game,
@@ -538,7 +536,7 @@ define([
         return;
       }
 
-      const playerData =
+      var playerData =
         game.findCoopPlayerInventoryData &&
         game.findCoopPlayerInventoryData({
           id: client.id,

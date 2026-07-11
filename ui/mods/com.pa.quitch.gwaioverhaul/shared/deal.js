@@ -1,6 +1,6 @@
 define({
   setupGwoCards: function (gwoSettings) {
-    const loadouts = [
+    var loadouts = [
       "gwaio_start_backpacker",
       "gwaio_start_ceo",
       "gwaio_start_hoarder",
@@ -28,7 +28,7 @@ define({
       "tgw_start_speed",
       "tgw_start_tank",
     ];
-    const basicCards = [
+    var basicCards = [
       "gwc_add_card_slot",
       "gwc_bld_efficiency_cdr",
       "gwc_bld_efficiency_fabs",
@@ -86,7 +86,7 @@ define({
       "gwc_storage_1",
       "gwc_storage_and_buff",
     ];
-    const expandedCards = [
+    var expandedCards = [
       "gwaio_anti_air",
       "gwaio_anti_bots",
       "gwaio_anti_commander",
@@ -273,9 +273,9 @@ define({
 
   dealCard: function (params, loaded) {
     console.debug("Dealing GWO card:", params.id, "with params:", params);
-    const result = $.Deferred();
+    var result = $.Deferred();
     loaded.then(function () {
-      const card = _.find(model.gwoCards, function (cardId) {
+      var card = _.find(model.gwoCards, function (cardId) {
         return cardId === params.id;
       });
 
@@ -285,12 +285,12 @@ define({
       }
 
       // Simulate a deal
-      const context =
+      var context =
         card.getContext && card.getContext(params.galaxy, params.inventory);
 
-      const deal = card.deal && card.deal(params.star, context);
-      const product = { id: params.id };
-      const cardParams = deal && deal.params;
+      var deal = card.deal && card.deal(params.star, context);
+      var product = { id: params.id };
+      var cardParams = deal && deal.params;
       if (cardParams && _.isObject(cardParams)) {
         _.assign(product, cardParams);
       }

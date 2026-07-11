@@ -40,20 +40,20 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
 
-      const advancedVehiclesExcludingFabber = _.without(
+      var advancedVehiclesExcludingFabber = _.without(
         gwoGroup.vehiclesAdvancedMobile,
         gwoUnit.vehicleFabberAdvanced
       );
 
       inventory.addUnits(advancedVehiclesExcludingFabber);
 
-      const units = [
+      var units = [
         "AdvancedArmorTank",
         "AdvancedArtilleryVehicle",
         "AdvancedLaserTank",
         "FlakTank",
       ];
-      const aiMods = _.flatten(
+      var aiMods = _.flatten(
         _.map(units, function (unit) {
           return [
             {

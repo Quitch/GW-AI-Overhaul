@@ -1,4 +1,4 @@
-const getInventoryAiMods = function (inventory) {
+var getInventoryAiMods = function (inventory) {
   if (!inventory) {
     return [];
   }
@@ -10,7 +10,7 @@ const getInventoryAiMods = function (inventory) {
   return inventory.aiMods || [];
 };
 
-const hasSmartSubcommanders = function (inventory) {
+var hasSmartSubcommanders = function (inventory) {
   return _.some(inventory.cards(), {
     id: "gwaio_upgrade_subcommander_tactics",
   });
@@ -19,11 +19,10 @@ const hasSmartSubcommanders = function (inventory) {
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 ], function (refereeAIPaths) {
-
   return {
     aiInUse: function (alignment) {
-      const galaxy = model.game().galaxy();
-      const originSystem = galaxy.stars()[galaxy.origin()].system();
+      var galaxy = model.game().galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (originSystem.gwaio) {
         if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
           return originSystem.gwaio.aiAlly;
@@ -34,16 +33,16 @@ define([
     },
 
     getAIPathSource: function (type) {
-      const aiInUse = this.aiInUse(type);
+      var aiInUse = this.aiInUse(type);
       return refereeAIPaths.getAIPathSource(type, aiInUse);
     },
 
     getAIPathDestination: function (type, options) {
-      const game = model.game();
-      const ai = game.galaxy().stars()[game.currentStar()].ai();
-      const inventory = game.inventory();
-      const aiInUse = this.aiInUse(type);
-      const settings = _.assign(
+      var game = model.game();
+      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var inventory = game.inventory();
+      var aiInUse = this.aiInUse(type);
+      var settings = _.assign(
         {
           guardians: !!ai.mirrorMode,
           aiMods: getInventoryAiMods(inventory),
@@ -58,7 +57,7 @@ define([
     },
 
     isCluster: function (ai) {
-      const guardians = ai.mirrorMode;
+      var guardians = ai.mirrorMode;
       if (guardians) {
         return false;
       }
@@ -68,7 +67,7 @@ define([
     },
 
     penchants: function () {
-      const penchants = [
+      var penchants = [
         { name: "", tags: "" }, // Vanilla - no changes
         { name: "!LOC:Artillery", tags: ["Artillery"] },
         {
@@ -172,7 +171,7 @@ define([
         { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
         { name: "!LOC:Minelayer", tags: ["Minelayer"] },
       ];
-      const penchant = _.sample(penchants);
+      var penchant = _.sample(penchants);
 
       return {
         penchants: penchant.tags,

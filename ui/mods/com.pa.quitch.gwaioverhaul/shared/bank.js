@@ -1,20 +1,20 @@
 /* We want to write our start cards to a different localStorage key so that if
    the mod is uninstalled the gw_start loadout list isn't messed up by 404s */
 define(function () {
-  const LS_KEY = "gwaio_bank";
+  var LS_KEY = "gwaio_bank";
 
   var self;
 
   var loading = false;
 
-  const gwoBank = function () {
+  var gwoBank = function () {
     self = this;
 
     self.startCards = ko.observableArray();
     self.startCards.subscribe(function (value) {
       self.save();
 
-      const unlocked = value.length;
+      var unlocked = value.length;
 
       if (!unlocked) {
         return;
@@ -33,14 +33,14 @@ define(function () {
   gwoBank.prototype = {
     load: function () {
       loading = true;
-      const bankJson = localStorage[LS_KEY];
+      var bankJson = localStorage[LS_KEY];
       if (!_.isString(bankJson)) {
         self.startCards([]);
         loading = false;
         return;
       }
 
-      const config = JSON.parse(bankJson);
+      var config = JSON.parse(bankJson);
       self.startCards(config.startCards);
       loading = false;
     },

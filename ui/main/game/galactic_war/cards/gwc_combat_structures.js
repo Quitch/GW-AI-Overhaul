@@ -20,7 +20,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 28;
-      const dist = system.distance();
+      var dist = system.distance();
       if (
         (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
         (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function (inventory) {
-      const mods = [];
+      var mods = [];
       _.forEach(gwoGroup.structures, function (unit) {
         mods.push({
           file: unit,
