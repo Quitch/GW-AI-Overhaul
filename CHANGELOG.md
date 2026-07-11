@@ -13,6 +13,7 @@ At this point support for all features in co-op has been implemented
 
 - Guardians loading tech cards from players who are not connected to the war
 - GWO Panel loading subcommanders from players who are not connected to the war
+- Viewers no longer see loadout names flicker when selecting cards
 
 ## v5.93.0 - 2026-07-09
 

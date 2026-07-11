@@ -224,52 +224,81 @@ function gwoWarInfoPanel(gwoSettings) {
           coopCampaign = !!active;
         });
 
+        // Keep commander view models stable so async loadout text does not reset during computed reevaluations - prevents flickering.
+        var coopCommanderCache = {};
+
+        var updateCoopCommander = function (client, playerColour, human) {
+          var cacheKey =
+            String(client.id || "") + "::" + String(client.name || "");
+          var commander = coopCommanderCache[cacheKey];
+          var record;
+          var loadoutCardId;
+
+          if (!commander) {
+            commander = {
+              name: client.name,
+              color: playerColour,
+              character: ko.observable(human),
+              loadoutResolved: false,
+            };
+            coopCommanderCache[cacheKey] = commander;
+          }
+
+          commander.name = client.name;
+          commander.color = playerColour;
+
+          if (!commander.loadoutResolved) {
+            record =
+              game.findCoopPlayerInventoryData &&
+              game.findCoopPlayerInventoryData({
+                id: client.id,
+                name: client.name,
+              });
+            loadoutCardId = record && record.loadoutCardId;
+
+            if (loadoutCardId) {
+              commander.loadoutResolved = true;
+              requireGW(["cards/" + loadoutCardId], function (card) {
+                commander.character(loc(card.summarize()));
+              });
+            }
+          }
+
+          return commander;
+        };
+
         model.gwoPlayer = ko.computed(function () {
-          const playerColour = gwoColour.rgb(
+          var playerColour = gwoColour.rgb(
             inventory.getTag("global", "playerColor")
           );
-          const human = loc("!LOC:Human");
+          var human = loc("!LOC:Human");
           var commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
-              character: human,
+              character: model.gwoLoadout,
             },
           ];
-
-          if (coopCampaign) {
-            commanders = _.map(
-              model.gwCampaignConnectedClients(),
-              function (client) {
-                const commanderCharacter = ko.observable(human);
-
-                const record =
-                  game.findCoopPlayerInventoryData &&
-                  game.findCoopPlayerInventoryData({
-                    id: client.id,
-                    name: client.name,
-                  });
-
-                if (record && record.loadoutCardId) {
-                  requireGW(["cards/" + record.loadoutCardId], function (card) {
-                    commanderCharacter(loc(card.summarize()));
-                  });
-                }
-
-                return {
-                  name: client.name,
-                  color: playerColour,
-                  character: commanderCharacter,
-                };
-              }
-            );
-          }
-
-          const connectedClients = _.isFunction(
-            model.gwCampaignConnectedClients
-          )
+          var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
             ? model.gwCampaignConnectedClients()
             : [];
+          var activeCommanderKeys = {};
+
+          if (coopCampaign) {
+            commanders = _.map(connectedClients, function (client) {
+              var cacheKey =
+                String(client.id || "") + "::" + String(client.name || "");
+              activeCommanderKeys[cacheKey] = true;
+              return updateCoopCommander(client, playerColour, human);
+            });
+
+            _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
+              if (!activeCommanderKeys[cacheKey]) {
+                delete coopCommanderCache[cacheKey];
+              }
+            });
+          }
+
           var mergedSubcommanders = [];
 
           _.forEach(connectedClients, function (client) {
