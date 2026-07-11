@@ -40,6 +40,7 @@ define([
   var factory = "!LOC:Factory";
   var swarm = "!LOC:Swarm";
   var economist = "!LOC:Economist";
+  var random = "!LOC:Random";
   var minions = [
     {
       name: workerName,
@@ -230,14 +231,14 @@ define([
   var randomSecurityPersonality = shuffledPersonalties[1].personality;
   var randomWorkerAI = {
     name: workerName,
-    character: "!LOC:Random",
+    character: random,
     color: factionColour,
     personality: randomWorkerPersonality,
     commander: workerCommander,
   };
   var randomSecurityAI = {
     name: securityName,
-    character: "!LOC:Random",
+    character: random,
     color: factionColour,
     personality: randomSecurityPersonality,
     commander: securityCommander,
