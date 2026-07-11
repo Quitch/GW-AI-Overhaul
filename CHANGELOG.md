@@ -17,8 +17,8 @@ At this point support for all features in co-op has been implemented
 
 ### Bugfix
 
-- Guardians loading tech cards from players who are not connected to the war
-- GWO Panel loading subcommanders from players who are not connected to the war
+- Guardians no longer load tech cards from players who are not connected to the war
+- GWO Panel no longer loads subcommanders from players who are not connected to the war
 - Viewers no longer see loadout names flicker when selecting cards
 - Warp Commander uses its scuffed translation when locked
 
