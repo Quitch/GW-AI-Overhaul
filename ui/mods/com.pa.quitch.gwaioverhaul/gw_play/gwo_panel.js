@@ -1,11 +1,5 @@
 var gwoWarInfoPanelLoaded;
 
-function gwoHasDuplicatedSubcommanders(playerCards) {
-  return _.some(playerCards, {
-    id: "gwaio_upgrade_subcommander_duplication",
-  });
-}
-
 function gwoWarInfoPanel(gwoSettings) {
   try {
     var game = model.game();
@@ -116,6 +110,12 @@ function gwoWarInfoPanel(gwoSettings) {
         cheatsDetected();
       }
     });
+
+    function gwoHasDuplicatedSubcommanders(playerCards) {
+      return _.some(playerCards, {
+        id: "gwaio_upgrade_subcommander_duplication",
+      });
+    }
 
     requireGW(
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
