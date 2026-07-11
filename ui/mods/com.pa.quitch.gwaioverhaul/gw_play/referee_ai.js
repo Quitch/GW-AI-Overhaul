@@ -141,6 +141,49 @@ const getRefereeInventoryAiMods = function (inventory) {
   return inventory.aiMods || [];
 };
 
+const getConnectedClientAiMods = function (game, connectedClients) {
+  var connectedClientAiMods = [];
+
+  _.forEach(connectedClients, function (client) {
+    if (!client || client.role !== "viewer") {
+      return;
+    }
+
+    var playerData =
+      game.findCoopPlayerInventoryData &&
+      game.findCoopPlayerInventoryData({
+        id: client.id,
+        name: client.name,
+      });
+
+    if (!playerData || !playerData.inventory) {
+      return;
+    }
+
+    connectedClientAiMods = connectedClientAiMods.concat(
+      getRefereeInventoryAiMods(playerData.inventory)
+    );
+  });
+
+  return connectedClientAiMods;
+};
+
+const getInventoryWithAllPlayerAiMods = function (
+  inventory,
+  game,
+  connectedClients
+) {
+  var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
+    getConnectedClientAiMods(game, connectedClients)
+  );
+
+  return {
+    aiMods: function () {
+      return allPlayerAiMods;
+    },
+  };
+};
+
 const whichAIsAreBeingModified = function (clusterPresence, inventory) {
   const game = model.game();
   const ai = game.galaxy().stars()[game.currentStar()].ai();
@@ -463,9 +506,25 @@ define([
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
     const clusterPresence = whoIsCluster();
     const game = model.game();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const guardians = ai.mirrorMode;
     const connectedClients = _.isFunction(model.gwCampaignConnectedClients)
       ? model.gwCampaignConnectedClients()
       : [];
+    const playerAiModInventory = guardians
+      ? getInventoryWithAllPlayerAiMods(
+          game.inventory(),
+          game,
+          connectedClients
+        )
+      : game.inventory();
+
+    if (guardians && model.gwoDebugAI) {
+      console.log(
+        "[GWAIO] Guardian merged aiMods count:",
+        getRefereeInventoryAiMods(playerAiModInventory).length
+      );
+    }
 
     var promises = _.map(aiPathsToProcess, function (aiPath) {
       return processDirectories(
@@ -473,7 +532,7 @@ define([
         configFiles,
         aiPaths,
         clusterPresence,
-        game.inventory(),
+        playerAiModInventory,
         undefined,
         false
       );
