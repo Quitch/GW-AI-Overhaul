@@ -22,6 +22,11 @@ At this point support for all features in co-op has been implemented
 - Viewers no longer see loadout names flicker when selecting cards
 - Warp Commander uses its scuffed translation when locked
 
+### Known Issues
+
+- Viewers cannot freely delete cards
+- When the Host deletes a card their subcommanders will disappear from the GWO panel until they are dealt a new card
+
 ## v5.93.0 - 2026-07-09
 
 ### Changed
