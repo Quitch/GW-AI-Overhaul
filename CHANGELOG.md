@@ -8,6 +8,7 @@ At this point support for all features in co-op has been implemented
 
 - Support for per-player subcommander AI profiles
 - Ability for Guardians to apply AI mods from all players
+- Scuffed translations for Terminal and Lucky Commander
 
 ### Changed
 
