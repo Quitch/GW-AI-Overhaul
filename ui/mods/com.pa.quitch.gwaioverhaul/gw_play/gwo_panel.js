@@ -1,5 +1,11 @@
 var gwoWarInfoPanelLoaded;
 
+function gwoHasDuplicatedSubcommanders(playerCards) {
+  return _.some(playerCards, {
+    id: "gwaio_upgrade_subcommander_duplication",
+  });
+}
+
 function gwoWarInfoPanel(gwoSettings) {
   try {
     var game = model.game();
@@ -190,7 +196,8 @@ function gwoWarInfoPanel(gwoSettings) {
           model.gwoLoadout(loc(card.summarize()));
         });
 
-        var intelligence = function (subcommander, index) {
+        var intelligence = function (subcommanderData, index) {
+          var subcommander = subcommanderData.subcommander;
           var personality = subcommander.character
             ? loc(subcommander.character)
             : loc("!LOC:None");
@@ -199,11 +206,7 @@ function gwoWarInfoPanel(gwoSettings) {
           }
           // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
-          if (
-            _.some(cards, {
-              id: "gwaio_upgrade_subcommander_duplication",
-            })
-          ) {
+          if (gwoHasDuplicatedSubcommanders(subcommanderData.cards)) {
             subcommanderName += " x2";
           }
           return {
@@ -309,19 +312,33 @@ function gwoWarInfoPanel(gwoSettings) {
                 name: client.name,
               });
             var inventoryEntry = inventoryData && inventoryData.inventory;
+            var inventoryCards =
+              inventoryEntry && _.isArray(inventoryEntry.cards)
+                ? inventoryEntry.cards
+                : [];
             if (inventoryEntry && _.isArray(inventoryEntry.minions)) {
               mergedSubcommanders = mergedSubcommanders.concat(
-                inventoryEntry.minions
+                _.map(inventoryEntry.minions, function (minion) {
+                  return {
+                    subcommander: minion,
+                    cards: inventoryCards,
+                  };
+                })
               );
             }
           });
 
           var subcommanders = mergedSubcommanders.length
             ? mergedSubcommanders
-            : inventory.minions();
+            : _.map(inventory.minions(), function (minion) {
+                return {
+                  subcommander: minion,
+                  cards: cards,
+                };
+              });
 
-          _.forEach(subcommanders, function (subcommander, index) {
-            commanders.push(intelligence(subcommander, index));
+          _.forEach(subcommanders, function (subcommanderData, index) {
+            commanders.push(intelligence(subcommanderData, index));
           });
           return commanders;
         });
