@@ -9,6 +9,7 @@
 ### Bugfix
 
 - Fix "Difficulty:" not being translated in the default lobby title
+- Cluster Security with Random personality uses the proper colour
 
 ## v6.0.0 - 2026-07-11
 
