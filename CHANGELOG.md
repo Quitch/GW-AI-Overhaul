@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v6.0.0 - 2026-07-11
 
 At this point support for all features in co-op has been implemented
 
