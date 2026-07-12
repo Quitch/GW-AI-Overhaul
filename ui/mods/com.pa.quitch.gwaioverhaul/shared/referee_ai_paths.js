@@ -107,15 +107,6 @@ define(function () {
       return appendScope(basePath, scopeToken);
     },
 
-    getAIUnitMapPath: function (type, aiInUse, options, titans) {
-      var append = titans ? "_x1.json" : ".json";
-      return (
-        this.getAIPathDestination(type, aiInUse, options) +
-        "unit_maps/ai_unit_map" +
-        append
-      );
-    },
-
     getPlayerScopedPath: function (basePath, identity, fallbackToken) {
       return appendScope(basePath, getScopeToken(identity, fallbackToken));
     },
