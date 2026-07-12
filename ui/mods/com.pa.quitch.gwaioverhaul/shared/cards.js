@@ -135,10 +135,42 @@ define({
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
         ? game.coopPlayerInventoryData()
         : [];
+    var connectedClients =
+      _.isFunction(model.gwCampaignConnectedClients) &&
+      _.isArray(model.gwCampaignConnectedClients())
+        ? model.gwCampaignConnectedClients()
+        : [];
+
+    var isConnectedPlayerInventory = function (data) {
+      return _.some(connectedClients, function (client) {
+        if (!client || !data) {
+          return false;
+        }
+
+        var clientId = client.id;
+        var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
+        if (!_.isUndefined(clientId) && !_.isUndefined(dataId)) {
+          return clientId === dataId;
+        }
+
+        var clientName = client.name;
+        var dataName = data.name || data.playerName;
+        return !!clientName && !!dataName && clientName === dataName;
+      });
+    };
+
     return (
       inventory.hasCard(cardId) ||
       _.some(coopPlayerInventoryData, function (data) {
-        return _.some(data.inventory.cards, { id: cardId });
+        if (!isConnectedPlayerInventory(data)) {
+          return false;
+        }
+
+        return (
+          data.inventory &&
+          _.isArray(data.inventory.cards) &&
+          _.some(data.inventory.cards, { id: cardId })
+        );
       })
     );
   },

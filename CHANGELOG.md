@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Only apply game mode and planet modifying cards from connected players
+
 ## v6.1.0 - 2026-07-11
 
 ### Added
