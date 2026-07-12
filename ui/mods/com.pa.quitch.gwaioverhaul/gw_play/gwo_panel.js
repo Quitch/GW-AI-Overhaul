@@ -359,7 +359,7 @@ function gwoWarInfoPanel(gwoSettings) {
   }
 }
 
-ko.computed(function () {
+var gwoPanelLoader = ko.computed(function () {
   var game = model.game();
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -371,6 +371,7 @@ ko.computed(function () {
     console.log("GWO settings found and panel loading");
     gwoWarInfoPanelLoaded = true;
     gwoWarInfoPanel(originSystem.gwaio);
+    gwoPanelLoader.dispose();
   } else {
     console.warn(
       "Tried to load GWO panel and failed. GWO settings found:",
