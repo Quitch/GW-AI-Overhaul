@@ -136,7 +136,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, gwoCards, subcommanderTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+], function (gwoColour, gwoAI, gwoCards, subcommanderTech, gwoDifficulty) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -173,6 +174,31 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
+  var getDifficultySettings = function (difficultyName) {
+    return _.find(gwoDifficulty.difficulties, {
+      difficultyName: difficultyName,
+    });
+  };
+
+  var getAIEconFloor = function (difficultyName) {
+    var difficultySettings = getDifficultySettings(difficultyName);
+    var econFloor = difficultySettings
+      ? difficultySettings.econBase + difficultySettings.econRatePerDist
+      : 0.4;
+
+    return econFloor;
+  };
+
+  var setAIEconRate = function (aiEconRate) {
+    var game = model.game();
+    var galaxy = game.galaxy();
+    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    var gwoSettings = originSystem.gwaio ? originSystem.gwaio : {};
+    var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
+
+    return Math.max(aiEconRate, getAIEconFloor(difficultyName));
+  };
+
   var setupAIArmy = function (ai, index, specTag, alliance) {
     var slotsArray = [];
     var aiLandingOptions = _.shuffle([
@@ -196,7 +222,7 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: ai.econ_rate,
+      econ_rate: setAIEconRate(ai.econ_rate), // v6.1.0 and earlier didn't have econFloor safeguards
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,
