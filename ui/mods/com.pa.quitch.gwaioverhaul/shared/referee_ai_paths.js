@@ -65,9 +65,7 @@ define(function () {
   return {
     sanitizeToken: sanitizeToken,
 
-    getScopeToken: function (identity, fallbackToken) {
-      return getScopeToken(identity, fallbackToken);
-    },
+    getScopeToken: getScopeToken,
 
     getAIPathSource: function (type, aiInUse) {
       switch (aiInUse) {
