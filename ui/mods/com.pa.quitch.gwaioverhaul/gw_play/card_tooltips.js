@@ -74,6 +74,18 @@ function gwoCardTooltips() {
             return;
           }
 
+          var cardId = card.id();
+          var noTooltip = _.some(
+            model.gwoCardsWithoutTooltip,
+            function (cardWithoutTooltip) {
+              return cardWithoutTooltip === cardId;
+            }
+          );
+
+          if (noTooltip) {
+            return;
+          }
+
           // Ensure inventory hovers work at the same time as the new tech display
           if (_.isUndefined(hoverIndex)) {
             hoverIndex = 0;
@@ -81,7 +93,6 @@ function gwoCardTooltips() {
             hoverIndex += 1;
           }
 
-          var cardId = card.id();
           var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
             id: cardId,
           });

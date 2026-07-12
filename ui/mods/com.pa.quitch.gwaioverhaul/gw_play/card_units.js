@@ -11,6 +11,7 @@ model.gwoCardsWithoutTooltip.push(
   "gwaio_anti_sea",
   "gwaio_anti_structure",
   "gwaio_anti_vehicles",
+  "gwaio_enable_bot_aa",
   "gwaio_enable_bounties",
   "gwaio_enable_eradication",
   "gwaio_enable_landanywhere",
@@ -56,8 +57,6 @@ define([
 
   return {
     cards: [
-      { id: "gwaio_enable_bot_aa" },
-      { id: "gwc_add_card_slot" },
       { id: "gwc_bld_efficiency_cdr", units: [gwoUnit.commander] },
       {
         id: "gwc_bld_efficiency_fabs",
@@ -246,7 +245,6 @@ define([
       { id: "gwc_health_sea", units: gwoGroup.navalMobile },
       { id: "gwc_health_structures", units: gwoGroup.structures },
       { id: "gwc_health_vehicles", units: gwoGroup.vehiclesMobile },
-      { id: "gwc_minion" },
       { id: "gwc_speed_air", units: gwoGroup.airMobile },
       { id: "gwc_speed_bots", units: gwoGroup.botsMobile },
       { id: "gwc_speed_commander", units: [gwoUnit.commander] },
@@ -457,9 +455,6 @@ define([
         id: "gwaio_upgrade_planetaryradar",
         units: [gwoUnit.deepSpaceOrbitalRadar],
       },
-      { id: "gwaio_upgrade_subcommander_duplication" },
-      { id: "gwaio_upgrade_subcommander_fabber" },
-      { id: "gwaio_upgrade_subcommander_tactics" },
       { id: "gwaio_health_titans", units: gwoGroup.titans },
       { id: "gwaio_damage_titans", units: gwoGroup.titans },
       { id: "gwaio_speed_titans", units: gwoGroup.titans },
@@ -470,19 +465,6 @@ define([
       { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
       { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
-      { id: "gwaio_enable_bounties" },
-      { id: "gwaio_enable_suddendeath" },
-      { id: "gwaio_enable_landanywhere" },
-      { id: "gwaio_enable_orbitalbombardment" },
-      { id: "gwaio_anti_vehicles" },
-      { id: "gwaio_anti_bots" },
-      { id: "gwaio_anti_hover" },
-      { id: "gwaio_anti_sea" },
-      { id: "gwaio_anti_air" },
-      { id: "gwaio_anti_orbital" },
-      { id: "gwaio_anti_structure" },
-      { id: "gwaio_enable_tsunami" },
-      { id: "gwaio_anti_commander" },
       {
         id: "gwaio_enable_factories_t1_all",
         units: gwoGroup.airBasic.concat(
