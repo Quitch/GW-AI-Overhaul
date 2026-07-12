@@ -930,7 +930,7 @@ function gwoSetup() {
               model.gwoDifficultySettings.largePlanets();
             originSystem.gwaio.easierStart =
               model.gwoDifficultySettings.easierStart();
-            if (model.devMode() === true) {
+            if (model.devMode()) {
               originSystem.gwaio.cheatsUsed = true;
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
