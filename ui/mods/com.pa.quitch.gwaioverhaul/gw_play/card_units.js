@@ -1,30 +1,3 @@
-if (!model.gwoCardsWithoutTooltip) {
-  model.gwoCardsWithoutTooltip = [];
-}
-
-model.gwoCardsWithoutTooltip.push(
-  "gwaio_anti_air",
-  "gwaio_anti_bots",
-  "gwaio_anti_commander",
-  "gwaio_anti_hover",
-  "gwaio_anti_orbital",
-  "gwaio_anti_sea",
-  "gwaio_anti_structure",
-  "gwaio_anti_vehicles",
-  "gwaio_enable_bot_aa",
-  "gwaio_enable_bounties",
-  "gwaio_enable_eradication",
-  "gwaio_enable_landanywhere",
-  "gwaio_enable_orbitalbombardment",
-  "gwaio_enable_suddendeath",
-  "gwaio_enable_tsunami",
-  "gwaio_upgrade_subcommander_duplication",
-  "gwaio_upgrade_subcommander_fabber",
-  "gwaio_upgrade_subcommander_tactics",
-  "gwc_add_card_slot",
-  "gwc_minion"
-);
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
