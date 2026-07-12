@@ -1,5 +1,13 @@
 function gwoWarInfoPanel(gwoSettings) {
   try {
+    var deckName = function (deckName) {
+      if (!deckName || deckName === "Expanded") {
+        return loc("!LOC:Galactic War Overhaul");
+      }
+
+      return loc(deckName);
+    };
+
     var game = model.game();
     model.gwoSettings = gwoSettings;
     model.gwoDifficulty = loc(model.gwoSettings.difficulty);
@@ -7,11 +15,7 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoAI = model.gwoSettings.ai || "Titans";
     model.gwoAIAlly =
       model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
-    model.gwoDeck =
-      model.gwoSettings.techCardDeck === "Expanded"
-        ? loc("!LOC:Galactic War Overhaul")
-        : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
-          loc("!LOC:Galactic War Overhaul");
+    model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
     var coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
     var playerCount = coopPlayerScalingCount || 1;
