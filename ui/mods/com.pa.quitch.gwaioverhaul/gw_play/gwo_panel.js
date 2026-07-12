@@ -277,6 +277,8 @@ function gwoWarInfoPanel(gwoSettings) {
               return updateCoopCommander(client, playerColour, human);
             });
 
+            // Leaving the co-op campaign causes a page refresh and a cache reinitialisation,
+            // so we don't need to worry about cleaning up the cache in that case.
             _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
               if (!activeCommanderKeys[cacheKey]) {
                 delete coopCommanderCache[cacheKey];
