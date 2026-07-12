@@ -63,7 +63,7 @@ function gwoWarInfoPanel(gwoSettings) {
       [model.gwoSettings.easierStart, "!LOC:Easier start"],
       [model.gwoSettings.staticTech, "!LOC:Static tech"],
       [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
-      [game.hardcore(), "!LOC:Hardcore mode"],
+      [game.hardcore(), "!LOC:Hardcore mode"], // despite being an observable, this is a static value
       [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
     ];
     for (var element of optionDefs) {
@@ -118,9 +118,9 @@ function gwoWarInfoPanel(gwoSettings) {
           return coopText(model.gwCampaignSharedControl());
         });
         model.gwoCoopTechControl = coopText(
-          !model.gwCampaignPerPlayerTechCards() //despite being an observable, this is a static value
+          !model.gwCampaignPerPlayerTechCards() // despite being an observable, this is a static value
         );
-        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked() //despite being an observable, this is a static value
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked() // despite being an observable, this is a static value
           ? loc("!LOC:Locked")
           : loc("!LOC:Unlocked");
 
