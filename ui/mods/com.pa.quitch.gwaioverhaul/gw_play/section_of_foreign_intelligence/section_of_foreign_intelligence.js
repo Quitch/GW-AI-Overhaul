@@ -17,12 +17,7 @@ function gwoIntelligence() {
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
     var getNumberOfCommanders = function (commander) {
-      if (commander.bossCommanders) {
-        return commander.bossCommanders;
-      } else if (commander.commanderCount) {
-        return commander.commanderCount;
-      }
-      return 1;
+      return commander.bossCommanders || commander.commanderCount || 1;
     };
 
     var getCommanderCharacter = function (commander) {
