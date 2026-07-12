@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Only apply game mode and planet modifying cards from connected players
+- Guardians base their playstyle on the cards of all players not just the host
 
 ## v6.1.0 - 2026-07-11
 

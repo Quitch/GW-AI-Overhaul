@@ -223,12 +223,22 @@ define([
     });
   };
 
-  var setupPrimaryAiAndMinions = function (ai, cards, aiTag, aiInUse, armies) {
+  var setupPrimaryAiAndMinions = function (
+    ai,
+    connectedPlayerCards,
+    aiTag,
+    aiInUse,
+    armies
+  ) {
     ai = setAdvEcoMod(ai, aiInUse);
     var guardians = ai.mirrorMode;
 
     if (guardians) {
-      ai.personality = setupGuardianPersonality(cards, ai.personality, aiInUse);
+      ai.personality = setupGuardianPersonality(
+        connectedPlayerCards,
+        ai.personality,
+        aiInUse
+      );
     }
 
     var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
@@ -264,6 +274,10 @@ define([
     var game = self.game();
     var inventory = game.inventory();
     var cards = inventory.cards();
+    var connectedPlayerCards = gwoCards.getAllConnectedPlayerCards(
+      inventory,
+      game
+    );
     var playerName = ko.observable().extend({ session: "displayName" });
     var playerTag = ".player";
     var armies = [
@@ -291,7 +305,7 @@ define([
       inventory,
       playerTag
     );
-    setupPrimaryAiAndMinions(ai, cards, aiTag, aiInUse, armies);
+    setupPrimaryAiAndMinions(ai, connectedPlayerCards, aiTag, aiInUse, armies);
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
     system.planets = modifyPlanets(inventory, system.planets, game);
 

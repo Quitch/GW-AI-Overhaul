@@ -1,3 +1,28 @@
+var getConnectedClients = function () {
+  return _.isFunction(model.gwCampaignConnectedClients) &&
+    _.isArray(model.gwCampaignConnectedClients())
+    ? model.gwCampaignConnectedClients()
+    : [];
+};
+
+var isConnectedPlayerInventory = function (data, connectedClients) {
+  return _.some(connectedClients, function (client) {
+    if (!client || !data) {
+      return false;
+    }
+
+    var clientId = client.id;
+    var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
+    if (!_.isUndefined(clientId) && !_.isUndefined(dataId)) {
+      return clientId === dataId;
+    }
+
+    var clientName = client.name;
+    var dataName = data.name || data.playerName;
+    return !!clientName && !!dataName && clientName === dataName;
+  });
+};
+
 define({
   hasUnit: function (inventoryUnits, units) {
     if (_.isString(units)) {
@@ -129,40 +154,43 @@ define({
     });
   },
 
-  anyPlayerHasCard: function (hostInventory, cardId) {
-    var game = model.game();
+  getAllConnectedPlayerCards: function (hostInventory, game) {
+    var activeGame = game || model.game();
+    var connectedClients = getConnectedClients();
     var coopPlayerInventoryData =
-      game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
-        ? game.coopPlayerInventoryData()
+      activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
+        ? activeGame.coopPlayerInventoryData()
         : [];
-    var connectedClients =
-      _.isFunction(model.gwCampaignConnectedClients) &&
-      _.isArray(model.gwCampaignConnectedClients())
-        ? model.gwCampaignConnectedClients()
+    var allCards =
+      hostInventory && _.isFunction(hostInventory.cards)
+        ? hostInventory.cards().slice(0)
         : [];
 
-    var isConnectedPlayerInventory = function (data) {
-      return _.some(connectedClients, function (client) {
-        if (!client || !data) {
-          return false;
-        }
+    _.forEach(coopPlayerInventoryData, function (data) {
+      if (!isConnectedPlayerInventory(data, connectedClients)) {
+        return;
+      }
 
-        var clientId = client.id;
-        var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
-        if (!_.isUndefined(clientId) && !_.isUndefined(dataId)) {
-          return clientId === dataId;
-        }
+      if (data.inventory && _.isArray(data.inventory.cards)) {
+        allCards = allCards.concat(data.inventory.cards);
+      }
+    });
 
-        var clientName = client.name;
-        var dataName = data.name || data.playerName;
-        return !!clientName && !!dataName && clientName === dataName;
-      });
-    };
+    return allCards;
+  },
+
+  anyPlayerHasCard: function (hostInventory, cardId, game) {
+    var activeGame = game || model.game();
+    var coopPlayerInventoryData =
+      activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
+        ? activeGame.coopPlayerInventoryData()
+        : [];
+    var connectedClients = getConnectedClients();
 
     return (
       hostInventory.hasCard(cardId) ||
       _.some(coopPlayerInventoryData, function (data) {
-        if (!isConnectedPlayerInventory(data)) {
+        if (!isConnectedPlayerInventory(data, connectedClients)) {
           return false;
         }
 
