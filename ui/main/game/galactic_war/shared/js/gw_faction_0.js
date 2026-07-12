@@ -55,7 +55,6 @@ define([
       name: "Mjon",
       character: "!LOC:Defender",
       color: factionColour,
-      econ_rate: 1,
       personality: personalities.defender,
       commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
     },
