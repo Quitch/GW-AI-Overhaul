@@ -64,7 +64,9 @@ var quellerGuardianPersonality = function (personality) {
     case 3:
       aiPersonalityTags.push("air");
       break;
-    // case 4: Queller has no naval personality tag, so we don't add anything for that case
+    default:
+      // falls through - Queller has no naval personality tag
+      break;
   }
   return aiPersonalityTags;
 };

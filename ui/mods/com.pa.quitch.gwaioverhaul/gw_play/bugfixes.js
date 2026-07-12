@@ -78,6 +78,10 @@ function gwoBugfixes() {
             break;
           case worker:
             workerFix += 1;
+            break;
+          default:
+            // falls through
+            break;
         }
 
         if (securityFix === true && workerFix >= 2) {

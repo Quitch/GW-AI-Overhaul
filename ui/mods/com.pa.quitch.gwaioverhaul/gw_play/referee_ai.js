@@ -213,7 +213,7 @@ var managerPath = function (type) {
     case "template":
       return "platoon_templates/";
     default:
-      console.error("Invalid AI file type:", type);
+      throw new Error("Invalid AI file type: " + type);
   }
 };
 

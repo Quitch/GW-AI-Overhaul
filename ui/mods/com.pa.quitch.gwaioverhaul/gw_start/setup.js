@@ -89,7 +89,7 @@ function gwoSetup() {
         case 4:
           return clusterTags;
         default:
-          throw new Error("Undefined faction");
+          throw new Error("Undefined faction: " + aiFaction);
       }
     };
 
@@ -375,6 +375,8 @@ function gwoSetup() {
               personality.personality_tags =
                 personality.personality_tags.concat(titansAITags);
               break;
+            default:
+              throw new Error("Undefined AI type: " + difficulty.ai());
           }
         };
 

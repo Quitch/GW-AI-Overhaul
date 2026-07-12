@@ -178,6 +178,8 @@ function gwoIntelligence() {
           case 7:
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
+          default:
+            throw new Error("Undefined buff type: " + buff);
         }
       });
       if (guardians) {
@@ -310,6 +312,9 @@ function gwoIntelligence() {
                 break;
               case 6: // combat
                 totalThreat *= 1.5;
+                break;
+              default:
+                throw new Error("Undefined buff type: " + buff);
             }
           });
           var guardians = ai.mirrorMode;
