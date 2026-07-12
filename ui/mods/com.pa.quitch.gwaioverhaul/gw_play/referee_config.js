@@ -143,14 +143,14 @@ define([
     subcommanderTech.applySubcommanderDuplicationTech;
 
   var modifyPlanets = function (inventory, planets, game) {
-    var canGlassPlanets = gwoCards.hasCard(
+    var canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
       game
     );
     var canFloodPlanets =
-      gwoCards.hasCard(inventory, "gwaio_enable_tsunami", game) ||
-      gwoCards.hasCard(inventory, "gwaio_start_naval", game);
+      gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_tsunami", game) ||
+      gwoCards.anyPlayerHasCard(inventory, "gwaio_start_naval", game);
 
     if (canGlassPlanets) {
       planets = glassPlanets(planets);
@@ -304,17 +304,17 @@ define([
       system: currentStar.system(),
       land_anywhere:
         ai.landAnywhere ||
-        gwoCards.hasCard(inventory, "gwaio_enable_landanywhere", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere", game),
       bounty_mode:
         ai.bountyMode ||
-        gwoCards.hasCard(inventory, "gwaio_enable_bounties", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties", game),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
         ai.suddenDeath ||
-        gwoCards.hasCard(inventory, "gwaio_enable_suddendeath", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath", game),
       eradication_mode:
         ai.eradicationMode ||
-        gwoCards.hasCard(inventory, "gwaio_enable_eradication", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication", game),
       eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
       eradication_mode_factories: ai.eradicationModeFactories,
       eradication_mode_fabricators: ai.eradicationModeFabbers,

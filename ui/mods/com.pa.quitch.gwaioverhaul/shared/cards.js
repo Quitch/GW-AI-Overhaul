@@ -129,7 +129,7 @@ define({
     });
   },
 
-  hasCard: function (inventory, cardId) {
+  anyPlayerHasCard: function (inventory, cardId) {
     var game = model.game();
     var coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)

@@ -211,25 +211,25 @@ function gwoIntelligence() {
 
           if (
             ai.bountyMode ||
-            gwoCards.hasCard(inventory, "gwaio_enable_bounties")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties")
           ) {
             gameModifiers.push(loc("!LOC:Bounties"));
           }
           if (
             ai.landAnywhere ||
-            gwoCards.hasCard(inventory, "gwaio_enable_landanywhere")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere")
           ) {
             gameModifiers.push(loc("!LOC:Land Anywhere"));
           }
           if (
             ai.suddenDeath ||
-            gwoCards.hasCard(inventory, "gwaio_enable_suddendeath")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath")
           ) {
             gameModifiers.push(loc("!LOC:Sudden Death"));
           }
           if (
             ai.eradicationMode ||
-            gwoCards.hasCard(inventory, "gwaio_enable_eradication")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
               loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
