@@ -102,11 +102,9 @@ function gwoBugfixes() {
       var unlockedGwoStartCards = ko
         .observableArray()
         .extend({ local: "gwaio_bank" });
-      var index = _.findIndex(
-        unlockedVanillaStartCards().startCards,
-        "id",
-        "gwaio_start_lucky"
-      );
+      var index = _.findIndex(unlockedVanillaStartCards().startCards, {
+        id: "gwaio_start_lucky",
+      });
 
       if (index !== -1) {
         unlockedVanillaStartCards().startCards.splice(index, 1);
