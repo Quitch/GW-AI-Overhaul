@@ -221,6 +221,9 @@ function gwoWarInfoPanel(gwoSettings) {
           var record;
           var loadoutCardId;
           var isHost = client.role === "host";
+          var usesHostLoadout =
+            isHost ||
+            (client.role === "viewer" && !model.gwCampaignPerPlayerTechCards());
 
           if (!commander) {
             commander = {
@@ -230,8 +233,10 @@ function gwoWarInfoPanel(gwoSettings) {
               // game.findCoopPlayerInventoryData never returns a record for the host
               // (it only tracks synced remote clients), so without this the host's
               // character observable would stay stuck on "human" forever.
-              character: isHost ? model.gwoLoadout : ko.observable(human),
-              loadoutResolved: isHost,
+              character: usesHostLoadout
+                ? model.gwoLoadout
+                : ko.observable(human),
+              loadoutResolved: usesHostLoadout,
             };
             coopCommanderCache[cacheKey] = commander;
           }
