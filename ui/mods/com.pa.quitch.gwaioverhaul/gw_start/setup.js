@@ -56,10 +56,11 @@ function gwoSetup() {
     var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
       var eco =
         (ecoBase + distance * ecoStep) * randomPercentageAdjustment(0.9, 1.1);
+      var ecoFloor = ecoBase + ecoStep;
       if (minions) {
         eco = aiEcoMinionReduction(eco, ecoStep, minions);
       }
-      return eco;
+      return Math.max(ecoFloor, eco);
     };
 
     var aiFaction = 0;
