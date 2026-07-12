@@ -135,9 +135,9 @@ function gwoWarInfoPanel(gwoSettings) {
           return coopText(model.gwCampaignSharedControl());
         });
         model.gwoCoopTechControl = coopText(
-          !model.gwCampaignPerPlayerTechCards()
+          !model.gwCampaignPerPlayerTechCards() //despite being an observable, this is a static value
         );
-        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked() //despite being an observable, this is a static value
           ? loc("!LOC:Locked")
           : loc("!LOC:Unlocked");
 
