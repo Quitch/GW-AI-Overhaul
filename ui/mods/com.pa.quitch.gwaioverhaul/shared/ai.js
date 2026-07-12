@@ -35,15 +35,15 @@ define([
     aiInUse: aiInUse,
 
     getAIPathSource: function (type) {
-      var aiInUse = aiInUse(type);
-      return refereeAIPaths.getAIPathSource(type, aiInUse);
+      var currentAiInUse = aiInUse(type);
+      return refereeAIPaths.getAIPathSource(type, currentAiInUse);
     },
 
     getAIPathDestination: function (type, options) {
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
       var inventory = game.inventory();
-      var aiInUse = aiInUse(type);
+      var currentAiInUse = aiInUse(type);
       var settings = _.assign(
         {
           guardians: !!ai.mirrorMode,
@@ -55,7 +55,11 @@ define([
         options || {}
       );
 
-      return refereeAIPaths.getAIPathDestination(type, aiInUse, settings);
+      return refereeAIPaths.getAIPathDestination(
+        type,
+        currentAiInUse,
+        settings
+      );
     },
 
     isCluster: function (ai) {
