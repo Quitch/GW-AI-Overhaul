@@ -129,7 +129,7 @@ define({
     });
   },
 
-  anyPlayerHasCard: function (inventory, cardId) {
+  anyPlayerHasCard: function (hostInventory, cardId) {
     var game = model.game();
     var coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
@@ -160,7 +160,7 @@ define({
     };
 
     return (
-      inventory.hasCard(cardId) ||
+      hostInventory.hasCard(cardId) ||
       _.some(coopPlayerInventoryData, function (data) {
         if (!isConnectedPlayerInventory(data)) {
           return false;
