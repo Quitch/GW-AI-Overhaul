@@ -1,6 +1,6 @@
 var setAdvEcoMod = function (ai, brain) {
   if (brain !== "Queller") {
-    (ai, (brain.personality.adv_eco_mod *= ai.econ_rate));
+    ai.personality.adv_eco_mod *= ai.econ_rate;
     ai.personality.adv_eco_mod_alone *= ai.econ_rate;
   }
   return ai;
