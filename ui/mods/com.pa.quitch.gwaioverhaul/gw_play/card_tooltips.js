@@ -39,19 +39,17 @@ function gwoCardTooltips() {
       function (gwoUnitToNames, gwoCardsToUnits) {
         model.gwoTechCardTooltip = ko.observableArray([]);
 
-        // support for modders to add to the tooltip system
-        if (model.gwoCardsToUnits) {
-          model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
-            gwoCardsToUnits.cards
-          );
-        } else {
-          model.gwoCardsToUnits = gwoCardsToUnits.cards;
-        }
-
-        if (!model.gwoCardsWithoutTooltip) {
-          model.gwoCardsWithoutTooltip = [];
-        }
-
+        // global for modder compatibility
+        model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
+          ? model.gwoCardsToUnits
+          : [];
+        model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
+          gwoCardsToUnits.cards
+        );
+        // global for modder compatibility
+        model.gwoCardsWithoutTooltip = _.isArray(model.gwoCardsWithoutTooltip)
+          ? model.gwoCardsWithoutTooltip
+          : [];
         model.gwoCardsWithoutTooltip.push(
           "gwaio_anti_air",
           "gwaio_anti_bots",

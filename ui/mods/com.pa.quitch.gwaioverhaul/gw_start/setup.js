@@ -154,9 +154,11 @@ function gwoSetup() {
 
     var startCardAllyCompatibility = function (game) {
       // global for modder compatibility
-      if (!model.gwoStarCardsWhichBreakAllies) {
-        model.gwoStarCardsWhichBreakAllies = [];
-      }
+      model.gwoStarCardsWhichBreakAllies = _.isArray(
+        model.gwoStarCardsWhichBreakAllies
+      )
+        ? model.gwoStarCardsWhichBreakAllies
+        : [];
       model.gwoStarCardsWhichBreakAllies.push(
         "nem_start_deepspace",
         "gwaio_start_tourist"

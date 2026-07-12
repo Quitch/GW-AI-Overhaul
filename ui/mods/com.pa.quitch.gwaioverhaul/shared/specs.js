@@ -55,7 +55,9 @@ var flattenBaseSpecs = function (spec, specs, tag) {
   return _.merge({}, flattenedSpec, spec);
 };
 
-define(function () {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
+  gwoUnit
+) {
   return {
     mod: function (specs, mods, specTag) {
       var load = function (specId) {
@@ -232,5 +234,13 @@ define(function () {
       var orderedMods = orderOfOperations(mods);
       _.forEach(orderedMods, applyMod);
     },
+    additionalSpecs: [
+      gwoUnit.fireflyAmmo,
+      gwoUnit.fireflyWeapon,
+      gwoUnit.orcaTorpedo,
+      gwoUnit.orcaTorpedoAmmo,
+      gwoUnit.skitterAmmo,
+      gwoUnit.skitterWeapon,
+    ],
   };
 });
