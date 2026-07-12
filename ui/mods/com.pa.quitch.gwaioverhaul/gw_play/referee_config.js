@@ -1,9 +1,9 @@
-var setAdvEcoMod = function (aiRoot, brain) {
+var setAdvEcoMod = function (ai, brain) {
   if (brain !== "Queller") {
-    aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
-    aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
+    (ai, (brain.personality.adv_eco_mod *= ai.econ_rate));
+    ai.personality.adv_eco_mod_alone *= ai.econ_rate;
   }
-  return aiRoot;
+  return ai;
 };
 
 var aiCommander = function (name, unit, landingOptions, commanderNumber) {
