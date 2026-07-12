@@ -51,40 +51,20 @@ function gwoWarInfoPanel(gwoSettings) {
     };
 
     model.gwoOptions = ko.observableArray([]);
-    options(
-      model.gwoOptions,
-      model.gwoSettings.factionScaling,
-      "!LOC:Faction scaling"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.systemScaling,
-      "!LOC:System scaling"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.simpleSystems,
-      "!LOC:Easy Systems"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.largePlanets,
-      "!LOC:Large Planets"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.easierStart,
-      "!LOC:Easier start"
-    );
-    options(model.gwoOptions, model.gwoSettings.staticTech, "!LOC:Static tech");
-    options(model.gwoOptions, model.gwoSettings.cheatsUsed, "!LOC:dev mode");
-    options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
-    // deprecated - pre-v5.27.0 support only
-    options(
-      model.gwoOptions,
-      model.gwoSettings.tougherCommanders,
-      "!LOC:Tougher commanders"
-    );
+    var optionDefs = [
+      [model.gwoSettings.factionScaling, "!LOC:Faction scaling"],
+      [model.gwoSettings.systemScaling, "!LOC:System scaling"],
+      [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
+      [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
+      [model.gwoSettings.easierStart, "!LOC:Easier start"],
+      [model.gwoSettings.staticTech, "!LOC:Static tech"],
+      [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
+      [game.hardcore(), "!LOC:Hardcore mode"],
+      [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
+    ];
+    for (var element of optionDefs) {
+      options(model.gwoOptions, element[0], element[1]);
+    }
 
     var cheatsDetected = function () {
       requireGW(
@@ -187,9 +167,7 @@ function gwoWarInfoPanel(gwoSettings) {
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
-
         var cards = inventory.cards();
-
         var loadoutId = cards[0].id;
         model.gwoLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
