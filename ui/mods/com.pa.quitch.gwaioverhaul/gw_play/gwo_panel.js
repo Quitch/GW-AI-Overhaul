@@ -47,6 +47,33 @@ function gwoWarInfoPanel(gwoSettings) {
         );
       }
     });
+    var cheatsDetected = function () {
+      requireGW(
+        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
+        function (gwoSave) {
+          var gwoSettings = model.gwoSettings;
+          if (gwoSettings && !gwoSettings.cheatsUsed) {
+            gwoSettings.cheatsUsed = true;
+            options(
+              model.gwoOptions,
+              model.gwoSettings.cheatsUsed,
+              "!LOC:dev mode"
+            );
+            gwoSave(game, true);
+          }
+        }
+      );
+    };
+
+    if (model.devMode()) {
+      cheatsDetected();
+    }
+
+    model.devMode.subscribe(function () {
+      if (model.devMode()) {
+        cheatsDetected();
+      }
+    });
 
     var options = function (optionsList, setting, text) {
       if (setting) {
@@ -69,30 +96,6 @@ function gwoWarInfoPanel(gwoSettings) {
     for (var element of optionDefs) {
       options(model.gwoOptions, element[0], element[1]);
     }
-
-    var cheatsDetected = function () {
-      requireGW(
-        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-        function (gwoSave) {
-          var gwoSettings = model.gwoSettings;
-          if (gwoSettings && !gwoSettings.cheatsUsed) {
-            gwoSettings.cheatsUsed = true;
-            options(
-              model.gwoOptions,
-              model.gwoSettings.cheatsUsed,
-              "!LOC:dev mode"
-            );
-            gwoSave(game, true);
-          }
-        }
-      );
-    };
-
-    model.devMode.subscribe(function () {
-      if (model.devMode()) {
-        cheatsDetected();
-      }
-    });
 
     function gwoHasDuplicatedSubcommanders(playerCards) {
       return _.some(playerCards, {
