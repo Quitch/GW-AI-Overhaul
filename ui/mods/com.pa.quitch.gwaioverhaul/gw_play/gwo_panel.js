@@ -342,6 +342,9 @@ function gwoWarInfoPanel(gwoSettings) {
   }
 }
 
+var gwoPanelLoaderInitialized = false;
+var gwoPanelLoaderNeedsDispose = false;
+
 var gwoPanelLoader = ko.computed(function () {
   var game = model.game();
   var galaxy = game.galaxy();
@@ -354,7 +357,11 @@ var gwoPanelLoader = ko.computed(function () {
     console.log("GWO settings found and panel loading");
     gwoWarInfoPanel(originSystem.gwaio);
     gwoWarInfoPanelLoaded = true;
-    gwoPanelLoader.dispose();
+    if (gwoPanelLoaderInitialized) {
+      gwoPanelLoader.dispose();
+    } else {
+      gwoPanelLoaderNeedsDispose = true;
+    }
   } else {
     console.warn(
       "Tried to load GWO panel and failed. GWO settings found:",
@@ -366,3 +373,8 @@ var gwoPanelLoader = ko.computed(function () {
     );
   }
 });
+
+gwoPanelLoaderInitialized = true;
+if (gwoPanelLoaderNeedsDispose) {
+  gwoPanelLoader.dispose();
+}
