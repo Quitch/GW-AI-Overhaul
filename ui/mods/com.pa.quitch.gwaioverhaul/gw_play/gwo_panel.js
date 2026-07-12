@@ -220,13 +220,18 @@ function gwoWarInfoPanel(gwoSettings) {
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
+          var isHost = client.role === "host";
 
           if (!commander) {
             commander = {
               name: client.name,
               color: playerColour,
-              character: ko.observable(human),
-              loadoutResolved: false,
+              // The host's own loadout is already resolved locally via model.gwoLoadout.
+              // game.findCoopPlayerInventoryData never returns a record for the host
+              // (it only tracks synced remote clients), so without this the host's
+              // character observable would stay stuck on "human" forever.
+              character: isHost ? model.gwoLoadout : ko.observable(human),
+              loadoutResolved: isHost,
             };
             coopCommanderCache[cacheKey] = commander;
           }

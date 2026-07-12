@@ -8,6 +8,7 @@
 - Guardians base their playstyle on the cards of all players not just the host
 - Dev mode properly detected when activated prior to loading a save
 - Enemies have negative eco when commander numbers increased too quickly
+- Host loadout showing as Human
 
 ## v6.1.0 - 2026-07-11
 
