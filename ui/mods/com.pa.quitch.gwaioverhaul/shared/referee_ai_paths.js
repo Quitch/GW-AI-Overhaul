@@ -50,6 +50,10 @@ var appendScope = function (basePath, scopeToken) {
   return basePath + "player_" + scopeToken + "/";
 };
 
+var getPlayerScopedPath = function (basePath, identity, fallbackToken) {
+  return appendScope(basePath, getScopeToken(identity, fallbackToken));
+};
+
 var getQuellerPath = function (type, smartSubcommanders) {
   if (type === "all") {
     return quellerPath;
@@ -105,10 +109,6 @@ define(function () {
       return appendScope(basePath, scopeToken);
     },
 
-    getPlayerScopedPath: function (basePath, identity, fallbackToken) {
-      return appendScope(basePath, getScopeToken(identity, fallbackToken));
-    },
-
     getPlayerScopedUnitMapPath: function (
       basePath,
       identity,
@@ -117,7 +117,7 @@ define(function () {
     ) {
       var append = titans ? "_x1.json" : ".json";
       return (
-        this.getPlayerScopedPath(basePath, identity, fallbackToken) +
+        getPlayerScopedPath(basePath, identity, fallbackToken) +
         "unit_maps/ai_unit_map" +
         append
       );
