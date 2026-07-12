@@ -77,7 +77,6 @@ function gwoWarInfoPanel(gwoSettings) {
           var gwoSettings = model.gwoSettings;
           if (gwoSettings && !gwoSettings.cheatsUsed) {
             gwoSettings.cheatsUsed = true;
-            gwoSettings.noBadge = true;
             options(
               model.gwoOptions,
               model.gwoSettings.cheatsUsed,
