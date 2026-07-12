@@ -16,24 +16,26 @@ var hasSmartSubcommanders = function (inventory) {
   });
 };
 
+var aiInUse = function (alignment) {
+  var galaxy = model.game().galaxy();
+  var originSystem = galaxy.stars()[galaxy.origin()].system();
+  if (originSystem.gwaio) {
+    if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
+      return originSystem.gwaio.aiAlly;
+    }
+    return originSystem.gwaio.ai;
+  }
+  return "Titans";
+};
+
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 ], function (refereeAIPaths) {
   return {
-    aiInUse: function (alignment) {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (originSystem.gwaio) {
-        if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
-          return originSystem.gwaio.aiAlly;
-        }
-        return originSystem.gwaio.ai;
-      }
-      return "Titans";
-    },
+    aiInUse: aiInUse,
 
     getAIPathSource: function (type) {
-      var aiInUse = this.aiInUse(type);
+      var aiInUse = aiInUse(type);
       return refereeAIPaths.getAIPathSource(type, aiInUse);
     },
 
@@ -41,7 +43,7 @@ define([
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
       var inventory = game.inventory();
-      var aiInUse = this.aiInUse(type);
+      var aiInUse = aiInUse(type);
       var settings = _.assign(
         {
           guardians: !!ai.mirrorMode,
