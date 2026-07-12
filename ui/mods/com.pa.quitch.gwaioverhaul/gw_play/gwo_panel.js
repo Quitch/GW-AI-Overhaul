@@ -168,7 +168,7 @@ function gwoWarInfoPanel(gwoSettings) {
           );
           var incompatibleModNames = _.sortBy(
             _.map(incompatibleModsInUse, function (incompatibleMod) {
-              var index = _.findIndex(mods, "identifier", incompatibleMod);
+              var index = _.findIndex(mods, { identifier: incompatibleMod });
               return mods[index].display_name;
             })
           );
