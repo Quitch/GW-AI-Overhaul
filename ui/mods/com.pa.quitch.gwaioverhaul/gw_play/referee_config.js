@@ -182,9 +182,7 @@ define([
 
   var getAIEconFloor = function (difficultyName) {
     var difficultySettings = getDifficultySettings(difficultyName);
-    var econFloor = difficultySettings
-      ? difficultySettings.econBase + difficultySettings.econRatePerDist
-      : 0.4;
+    var econFloor = difficultySettings ? difficultySettings.econBase : 1;
 
     return econFloor;
   };
