@@ -1,11 +1,3 @@
-var setAdvEcoMod = function (ai, brain) {
-  if (brain !== "Queller") {
-    ai.personality.adv_eco_mod *= ai.econ_rate;
-    ai.personality.adv_eco_mod_alone *= ai.econ_rate;
-  }
-  return ai;
-};
-
 var aiCommander = function (name, unit, landingOptions, commanderNumber) {
   while (commanderNumber > landingOptions.length - 1) {
     commanderNumber -= landingOptions.length;
@@ -136,14 +128,21 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
-], function (gwoColour, gwoAI, gwoCards, subcommanderTech, gwoDifficulty) {
+], function (gwoColour, gwoAI, gwoCards, subcommanderTech) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
     subcommanderTech.applySubcommanderFabberTech;
   var applySubcommanderDuplicationTech =
     subcommanderTech.applySubcommanderDuplicationTech;
+
+  var setAdvEcoMod = function (ai, brain) {
+    if (brain !== "Queller") {
+      ai.personality.adv_eco_mod *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+      ai.personality.adv_eco_mod_alone *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+    }
+    return ai;
+  };
 
   var modifyPlanets = function (inventory, planets, game) {
     var canGlassPlanets = gwoCards.anyPlayerHasCard(
@@ -174,29 +173,6 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
-  var getDifficultySettings = function (difficultyName) {
-    return _.find(gwoDifficulty.difficulties, {
-      difficultyName: difficultyName,
-    });
-  };
-
-  var getAIEconFloor = function (difficultyName) {
-    var difficultySettings = getDifficultySettings(difficultyName);
-    var econFloor = difficultySettings ? difficultySettings.econBase : 1;
-
-    return econFloor;
-  };
-
-  var setAIEconRate = function (aiEconRate) {
-    var game = model.game();
-    var galaxy = game.galaxy();
-    var originSystem = galaxy.stars()[galaxy.origin()].system();
-    var gwoSettings = originSystem.gwaio ? originSystem.gwaio : {};
-    var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
-
-    return Math.max(aiEconRate, getAIEconFloor(difficultyName));
-  };
-
   var setupAIArmy = function (ai, index, specTag, alliance) {
     var slotsArray = [];
     var aiLandingOptions = _.shuffle([
@@ -220,7 +196,7 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: setAIEconRate(ai.econ_rate), // co-op games in older wars could result in negative eco - so we can't trust ai.econ_rate to be valid.
+      econ_rate: gwoAI.setAIEconRate(ai.econ_rate), // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,

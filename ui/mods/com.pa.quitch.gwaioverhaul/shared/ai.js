@@ -30,7 +30,23 @@ var aiInUse = function (alignment) {
 
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-], function (refereeAIPaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+], function (refereeAIPaths, gwoDifficulty) {
+  var getDifficultySettings = function (difficultyName) {
+    return _.find(gwoDifficulty.difficulties, {
+      difficultyName: difficultyName,
+    });
+  };
+
+  var getAIEconFloor = function (difficultyName) {
+    var difficultySettings = getDifficultySettings(difficultyName);
+    var econFloor = difficultySettings
+      ? difficultySettings.econBase + difficultySettings.econRatePerDist
+      : 1;
+
+    return econFloor;
+  };
+
   return {
     aiInUse: aiInUse,
 
@@ -183,6 +199,16 @@ define([
         penchants: penchant.tags,
         penchantName: penchant.name,
       };
+    },
+
+    setAIEconRate: function (aiEconRate) {
+      var game = model.game();
+      var galaxy = game.galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      var gwoSettings = originSystem.gwaio ? originSystem.gwaio : {};
+      var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
+
+      return Math.max(aiEconRate, getAIEconFloor(difficultyName));
     },
   };
 });

@@ -192,8 +192,9 @@ function gwoIntelligence() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
-      function (gwoColour, gwoCards) {
+      function (gwoColour, gwoCards, gwoAI) {
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -245,7 +246,7 @@ function gwoIntelligence() {
             factionIndex
           );
           var name = commander.name;
-          var eco = commander.econ_rate;
+          var eco = gwoAI.setAIEconRate(commander.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
           var numCommanders = getNumberOfCommanders(commander);
           var faction = getFactionName(commander, factionIndex);
 
@@ -283,7 +284,10 @@ function gwoIntelligence() {
                 // legacy GWO support
                 commanderCount = army.landing_policy.length;
               }
-              totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
+              totalThreat +=
+                gwoAI.setAIEconRate(army.econ_rate) * // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+                0.4 *
+                (commanderCount - 1);
             });
           }
           _.times(commanders.length, function (n) {
