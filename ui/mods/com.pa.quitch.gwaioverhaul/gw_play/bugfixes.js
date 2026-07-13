@@ -26,10 +26,6 @@ function gwoBugfixes() {
     }
 
     var fixTreasurePlanetCardList = function (star) {
-      if (gwoSettings.treasurePlanetFixed) {
-        return;
-      }
-
       if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
@@ -57,13 +53,7 @@ function gwoBugfixes() {
       }
     };
 
-    var fixClusterCommanderTypes = function (star) {
-      var ai = star.ai();
-
-      if (gwoSettings.clusterFixed || !ai || !ai.isCluster) {
-        return;
-      }
-
+    var fixClusterCommanderTypes = function (ai) {
       var securityFix = false; // we have to fix `unit_types`
       var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
       var security =
@@ -92,10 +82,6 @@ function gwoBugfixes() {
     };
 
     var fixLuckyCommanderLocalStorageVariable = function () {
-      if (luckyCommanderFixed()) {
-        return;
-      }
-
       var unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
@@ -147,11 +133,25 @@ function gwoBugfixes() {
           break;
         }
 
-        fixTreasurePlanetCardList(star);
-        fixClusterCommanderTypes(star);
+        if (!gwoSettings.treasurePlanetFixed) {
+          fixTreasurePlanetCardList(star);
+        }
+
+        if (
+          !gwoSettings.clusterFixed &&
+          ko.isObservable(star.ai) &&
+          star.ai().isCluster
+        ) {
+          fixClusterCommanderTypes(star.ai());
+        }
       }
 
-      fixLuckyCommanderLocalStorageVariable();
+      gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
+      gwoSettings.clusterFixed = true; // Cluster might not exist
+
+      if (!luckyCommanderFixed()) {
+        fixLuckyCommanderLocalStorageVariable();
+      }
     };
 
     checkIfPatchesNeeded();
