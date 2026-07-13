@@ -33,11 +33,17 @@ var applySubcommanderDuplicationTech = function (cards) {
   return 1;
 };
 
-define(function () {
+var hasSmartSubcommanders = function (inventory) {
+  return _.some(inventory.cards(), {
+    id: "gwaio_upgrade_subcommander_tactics",
+  });
+};
 
+define(function () {
   return {
     applySubcommanderTacticsTech: applySubcommanderTacticsTech,
     applySubcommanderFabberTech: applySubcommanderFabberTech,
     applySubcommanderDuplicationTech: applySubcommanderDuplicationTech,
+    hasSmartSubcommanders: hasSmartSubcommanders,
   };
 });
