@@ -33,6 +33,7 @@ function gwoBugfixes() {
     };
 
     var fixClusterType = function (mod) {
+      // Worker needs two fixes but each fix is applied in a separate mod
       if (mod.path === "buildable_types") {
         mod.value = mod.value + " & Custom58";
         return mod.file;
