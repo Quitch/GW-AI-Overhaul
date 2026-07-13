@@ -83,7 +83,7 @@ function gwoSystemChanges() {
       if (!params.noCache) {
         // Note: Extra pixel compensates for bad filtering on the edges
         result.cache(-1, -1, params.size[0] + 2, params.size[1] + 2);
-        $(result.image).load(function () {
+        $(result.image).on("load", function () {
           result.updateCache();
         });
       }
