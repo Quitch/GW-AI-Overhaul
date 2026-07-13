@@ -144,7 +144,7 @@ function gwoBugfixes() {
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
 
-      if (!luckyCommanderFixed()) {
+      if (luckyCommanderFixed() !== "true") {
         fixLuckyCommanderLocalStorageVariable();
       }
     };
