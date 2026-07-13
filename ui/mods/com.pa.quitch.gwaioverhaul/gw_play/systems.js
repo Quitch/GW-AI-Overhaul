@@ -267,22 +267,26 @@ function gwoSystemChanges() {
     });
 
     model.canMove = ko.computed(function () {
-      if (
-        model.player.moving() ||
-        (model.isCampaignViewer() && !model.gwCampaignReplayingAction)
-      ) {
+      if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
+        return false;
+      }
+
+      if (model.player.moving()) {
         return false;
       }
 
       var from = game.currentStar();
       var to = model.selection.star();
 
-      if (
-        to < 0 ||
-        to > galaxy.stars().length ||
-        !model.canSelectOrMovePrefix() ||
-        from === to
-      ) {
+      if (to < 0 || to >= galaxy.stars().length) {
+        return false;
+      }
+
+      if (!model.canSelectOrMovePrefix()) {
+        return false;
+      }
+
+      if (from === to) {
         return false;
       }
 

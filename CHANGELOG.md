@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Correct an error in the base game's move validation
+
 ## v6.2.0 - 2026-07-13
 
 ### Changed
