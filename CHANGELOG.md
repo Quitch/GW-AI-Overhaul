@@ -13,7 +13,7 @@
 - Dev mode properly detected when activated prior to loading a save
 - Enemies have negative eco when commander numbers increased too quickly
 - Host loadout showing as Human
-- Viewer loadout showing as Human was per-player tech was disabled
+- Viewer loadout showing as Human when per-player tech was disabled
 
 ## v6.1.0 - 2026-07-11
 
