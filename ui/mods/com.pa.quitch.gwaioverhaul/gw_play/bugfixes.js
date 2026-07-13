@@ -52,20 +52,20 @@ function gwoBugfixes() {
       var worker = "/pa/units/air/support_platform/support_platform.json";
 
       for (var mod of ai.inventory) {
-        var result =
-          (securityFix === true || mod.file !== security) &&
-          (workerFix >= 2 || mod.file !== worker)
-            ? null
-            : fixClusterType(mod, security);
+        var isSecurityCandidate = securityFix !== true && mod.file === security;
+        var isWorkerCandidate = workerFix < 2 && mod.file === worker;
+
+        if (!isSecurityCandidate && !isWorkerCandidate) {
+          continue;
+        }
+
+        var result = fixClusterType(mod, security);
         switch (result) {
           case security:
             securityFix = true;
             break;
           case worker:
             workerFix += 1;
-            break;
-          default:
-            // falls through
             break;
         }
 
