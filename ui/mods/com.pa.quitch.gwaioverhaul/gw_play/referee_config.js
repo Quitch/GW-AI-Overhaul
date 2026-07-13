@@ -220,7 +220,7 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: setAIEconRate(ai.econ_rate), // v6.1.0 and earlier didn't have econFloor safeguards
+      econ_rate: setAIEconRate(ai.econ_rate), // co-op games in older wars could result in negative eco - so we can't trust ai.econ_rate to be valid.
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,
