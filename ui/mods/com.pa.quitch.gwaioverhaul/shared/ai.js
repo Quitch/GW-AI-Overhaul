@@ -16,32 +16,50 @@ var hasSmartSubcommanders = function (inventory) {
   });
 };
 
+var aiInUse = function (alignment) {
+  var galaxy = model.game().galaxy();
+  var originSystem = galaxy.stars()[galaxy.origin()].system();
+  if (originSystem.gwaio) {
+    if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
+      return originSystem.gwaio.aiAlly;
+    }
+    return originSystem.gwaio.ai;
+  }
+  return "Titans";
+};
+
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-], function (refereeAIPaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+], function (refereeAIPaths, gwoDifficulty) {
+  var getDifficultySettings = function (difficultyName) {
+    return _.find(gwoDifficulty.difficulties, {
+      difficultyName: difficultyName,
+    });
+  };
+
+  var getAIEconFloor = function (difficultyName) {
+    var difficultySettings = getDifficultySettings(difficultyName);
+    var econFloor = difficultySettings
+      ? difficultySettings.econBase + difficultySettings.econRatePerDist
+      : 1;
+
+    return econFloor;
+  };
+
   return {
-    aiInUse: function (alignment) {
-      var galaxy = model.game().galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      if (originSystem.gwaio) {
-        if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
-          return originSystem.gwaio.aiAlly;
-        }
-        return originSystem.gwaio.ai;
-      }
-      return "Titans";
-    },
+    aiInUse: aiInUse,
 
     getAIPathSource: function (type) {
-      var aiInUse = this.aiInUse(type);
-      return refereeAIPaths.getAIPathSource(type, aiInUse);
+      var currentAiInUse = aiInUse(type);
+      return refereeAIPaths.getAIPathSource(type, currentAiInUse);
     },
 
     getAIPathDestination: function (type, options) {
       var game = model.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
       var inventory = game.inventory();
-      var aiInUse = this.aiInUse(type);
+      var currentAiInUse = aiInUse(type);
       var settings = _.assign(
         {
           guardians: !!ai.mirrorMode,
@@ -53,7 +71,11 @@ define([
         options || {}
       );
 
-      return refereeAIPaths.getAIPathDestination(type, aiInUse, settings);
+      return refereeAIPaths.getAIPathDestination(
+        type,
+        currentAiInUse,
+        settings
+      );
     },
 
     isCluster: function (ai) {
@@ -177,6 +199,16 @@ define([
         penchants: penchant.tags,
         penchantName: penchant.name,
       };
+    },
+
+    setAIEconRate: function (aiEconRate) {
+      var game = model.game();
+      var galaxy = game.galaxy();
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      var gwoSettings = originSystem.gwaio ? originSystem.gwaio : {};
+      var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
+
+      return Math.max(aiEconRate, getAIEconFloor(difficultyName));
     },
   };
 });

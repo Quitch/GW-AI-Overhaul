@@ -242,10 +242,8 @@ define({
       "gwc_energy_efficiency_intel",
       "gwc_energy_efficiency_weapons",
     ];
-
-    if (!model.gwoCards) {
-      model.gwoCards = [];
-    }
+    // global for modder compatibility
+    model.gwoCards = _.isArray(model.gwoCards) ? model.gwoCards : [];
 
     if (
       !gwoSettings || // non-GWO saves

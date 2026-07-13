@@ -1,11 +1,3 @@
-var setAdvEcoMod = function (aiRoot, brain) {
-  if (brain !== "Queller") {
-    aiRoot.personality.adv_eco_mod *= aiRoot.econ_rate;
-    aiRoot.personality.adv_eco_mod_alone *= aiRoot.econ_rate;
-  }
-  return aiRoot;
-};
-
 var aiCommander = function (name, unit, landingOptions, commanderNumber) {
   while (commanderNumber > landingOptions.length - 1) {
     commanderNumber -= landingOptions.length;
@@ -64,7 +56,9 @@ var quellerGuardianPersonality = function (personality) {
     case 3:
       aiPersonalityTags.push("air");
       break;
-    // case 4: do nothing
+    default:
+      // falls through - Queller has no naval personality tag
+      break;
   }
   return aiPersonalityTags;
 };
@@ -142,15 +136,23 @@ define([
   var applySubcommanderDuplicationTech =
     subcommanderTech.applySubcommanderDuplicationTech;
 
+  var setAdvEcoMod = function (ai, brain) {
+    if (brain !== "Queller") {
+      ai.personality.adv_eco_mod *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+      ai.personality.adv_eco_mod_alone *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+    }
+    return ai;
+  };
+
   var modifyPlanets = function (inventory, planets, game) {
-    var canGlassPlanets = gwoCards.hasCard(
+    var canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
       game
     );
     var canFloodPlanets =
-      gwoCards.hasCard(inventory, "gwaio_enable_tsunami", game) ||
-      gwoCards.hasCard(inventory, "gwaio_start_naval", game);
+      gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_tsunami", game) ||
+      gwoCards.anyPlayerHasCard(inventory, "gwaio_start_naval", game);
 
     if (canGlassPlanets) {
       planets = glassPlanets(planets);
@@ -194,7 +196,7 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: ai.econ_rate,
+      econ_rate: gwoAI.setAIEconRate(ai.econ_rate), // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,
@@ -223,12 +225,22 @@ define([
     });
   };
 
-  var setupPrimaryAiAndMinions = function (ai, cards, aiTag, aiInUse, armies) {
+  var setupPrimaryAiAndMinions = function (
+    ai,
+    connectedPlayerCards,
+    aiTag,
+    aiInUse,
+    armies
+  ) {
     ai = setAdvEcoMod(ai, aiInUse);
     var guardians = ai.mirrorMode;
 
     if (guardians) {
-      ai.personality = setupGuardianPersonality(cards, ai.personality, aiInUse);
+      ai.personality = setupGuardianPersonality(
+        connectedPlayerCards,
+        ai.personality,
+        aiInUse
+      );
     }
 
     var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
@@ -264,6 +276,10 @@ define([
     var game = self.game();
     var inventory = game.inventory();
     var cards = inventory.cards();
+    var connectedPlayerCards = gwoCards.getAllConnectedPlayerCards(
+      inventory,
+      game
+    );
     var playerName = ko.observable().extend({ session: "displayName" });
     var playerTag = ".player";
     var armies = [
@@ -291,7 +307,7 @@ define([
       inventory,
       playerTag
     );
-    setupPrimaryAiAndMinions(ai, cards, aiTag, aiInUse, armies);
+    setupPrimaryAiAndMinions(ai, connectedPlayerCards, aiTag, aiInUse, armies);
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
     system.planets = modifyPlanets(inventory, system.planets, game);
 
@@ -304,17 +320,17 @@ define([
       system: currentStar.system(),
       land_anywhere:
         ai.landAnywhere ||
-        gwoCards.hasCard(inventory, "gwaio_enable_landanywhere", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere", game),
       bounty_mode:
         ai.bountyMode ||
-        gwoCards.hasCard(inventory, "gwaio_enable_bounties", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties", game),
       bounty_value: ai.bountyModeValue,
       sudden_death_mode:
         ai.suddenDeath ||
-        gwoCards.hasCard(inventory, "gwaio_enable_suddendeath", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath", game),
       eradication_mode:
         ai.eradicationMode ||
-        gwoCards.hasCard(inventory, "gwaio_enable_eradication", game),
+        gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication", game),
       eradication_mode_sub_commanders: ai.eradicationModeSubCommanders,
       eradication_mode_factories: ai.eradicationModeFactories,
       eradication_mode_fabricators: ai.eradicationModeFabbers,

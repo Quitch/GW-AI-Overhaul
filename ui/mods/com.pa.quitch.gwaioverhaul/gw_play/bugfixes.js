@@ -66,11 +66,11 @@ function gwoBugfixes() {
 
       var securityFix = false; // we have to fix `unit_types`
       var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+      var security =
+        "/pa/units/land/bot_support_commander/bot_support_commander.json";
+      var worker = "/pa/units/air/support_platform/support_platform.json";
 
       for (var mod of ai.inventory) {
-        var security =
-          "/pa/units/land/bot_support_commander/bot_support_commander.json";
-        var worker = "/pa/units/air/support_platform/support_platform.json";
         var result = fixClusterType(mod, securityFix, workerFix);
         switch (result) {
           case security:
@@ -78,6 +78,10 @@ function gwoBugfixes() {
             break;
           case worker:
             workerFix += 1;
+            break;
+          default:
+            // falls through
+            break;
         }
 
         if (securityFix === true && workerFix >= 2) {
@@ -98,11 +102,9 @@ function gwoBugfixes() {
       var unlockedGwoStartCards = ko
         .observableArray()
         .extend({ local: "gwaio_bank" });
-      var index = _.findIndex(
-        unlockedVanillaStartCards().startCards,
-        "id",
-        "gwaio_start_lucky"
-      );
+      var index = _.findIndex(unlockedVanillaStartCards().startCards, {
+        id: "gwaio_start_lucky",
+      });
 
       if (index !== -1) {
         unlockedVanillaStartCards().startCards.splice(index, 1);

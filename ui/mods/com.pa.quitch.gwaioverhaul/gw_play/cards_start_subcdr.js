@@ -161,7 +161,7 @@ define([
         return false;
       }
 
-      if (!model.gwoGeneralCommanderSetupPending) {
+      if (!ko.isObservable(model.gwoGeneralCommanderSetupPending)) {
         model.gwoGeneralCommanderSetupPending = ko.observable(false);
       }
 

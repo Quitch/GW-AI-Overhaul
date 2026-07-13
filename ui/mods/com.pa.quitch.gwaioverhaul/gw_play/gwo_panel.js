@@ -2,6 +2,14 @@ var gwoWarInfoPanelLoaded;
 
 function gwoWarInfoPanel(gwoSettings) {
   try {
+    var deckName = function (deckName) {
+      if (!deckName || deckName === "Expanded") {
+        return loc("!LOC:Galactic War Overhaul");
+      }
+
+      return loc(deckName);
+    };
+
     var game = model.game();
     model.gwoSettings = gwoSettings;
     model.gwoDifficulty = loc(model.gwoSettings.difficulty);
@@ -9,11 +17,7 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoAI = model.gwoSettings.ai || "Titans";
     model.gwoAIAlly =
       model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
-    model.gwoDeck =
-      model.gwoSettings.techCardDeck === "Expanded"
-        ? loc("!LOC:Galactic War Overhaul")
-        : loc("!LOC:" + model.gwoSettings.techCardDeck) ||
-          loc("!LOC:Galactic War Overhaul");
+    model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
     var coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
     var playerCount = coopPlayerScalingCount || 1;
@@ -43,49 +47,6 @@ function gwoWarInfoPanel(gwoSettings) {
         );
       }
     });
-
-    var options = function (optionsList, setting, text) {
-      if (setting) {
-        optionsList.push(loc(text));
-      }
-    };
-
-    model.gwoOptions = ko.observableArray([]);
-    options(
-      model.gwoOptions,
-      model.gwoSettings.factionScaling,
-      "!LOC:Faction scaling"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.systemScaling,
-      "!LOC:System scaling"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.simpleSystems,
-      "!LOC:Easy Systems"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.largePlanets,
-      "!LOC:Large Planets"
-    );
-    options(
-      model.gwoOptions,
-      model.gwoSettings.easierStart,
-      "!LOC:Easier start"
-    );
-    options(model.gwoOptions, model.gwoSettings.staticTech, "!LOC:Static tech");
-    options(model.gwoOptions, model.gwoSettings.cheatsUsed, "!LOC:dev mode");
-    options(model.gwoOptions, game.hardcore(), "!LOC:Hardcore mode");
-    // deprecated - pre-v5.27.0 support only
-    options(
-      model.gwoOptions,
-      model.gwoSettings.tougherCommanders,
-      "!LOC:Tougher commanders"
-    );
-
     var cheatsDetected = function () {
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
@@ -93,7 +54,6 @@ function gwoWarInfoPanel(gwoSettings) {
           var gwoSettings = model.gwoSettings;
           if (gwoSettings && !gwoSettings.cheatsUsed) {
             gwoSettings.cheatsUsed = true;
-            gwoSettings.noBadge = true;
             options(
               model.gwoOptions,
               model.gwoSettings.cheatsUsed,
@@ -105,11 +65,37 @@ function gwoWarInfoPanel(gwoSettings) {
       );
     };
 
+    if (model.devMode()) {
+      cheatsDetected();
+    }
+
     model.devMode.subscribe(function () {
-      if (model.devMode() === true) {
+      if (model.devMode()) {
         cheatsDetected();
       }
     });
+
+    var options = function (optionsList, setting, text) {
+      if (setting) {
+        optionsList.push(loc(text));
+      }
+    };
+
+    model.gwoOptions = ko.observableArray([]);
+    var optionDefs = [
+      [model.gwoSettings.factionScaling, "!LOC:Faction scaling"],
+      [model.gwoSettings.systemScaling, "!LOC:System scaling"],
+      [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
+      [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
+      [model.gwoSettings.easierStart, "!LOC:Easier start"],
+      [model.gwoSettings.staticTech, "!LOC:Static tech"],
+      [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
+      [game.hardcore(), "!LOC:Hardcore mode"], // despite being an observable, this is a static value
+      [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
+    ];
+    for (var element of optionDefs) {
+      options(model.gwoOptions, element[0], element[1]);
+    }
 
     function gwoHasDuplicatedSubcommanders(playerCards) {
       return _.some(playerCards, {
@@ -121,7 +107,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        model.gwoVersion = ko.observable("6.1.0");
+        model.gwoVersion = ko.observable("6.2.0");
 
         /* Co-op Information */
         var coopText = function (setting) {
@@ -135,9 +121,9 @@ function gwoWarInfoPanel(gwoSettings) {
           return coopText(model.gwCampaignSharedControl());
         });
         model.gwoCoopTechControl = coopText(
-          !model.gwCampaignPerPlayerTechCards()
+          !model.gwCampaignPerPlayerTechCards() // despite being an observable, this is a static value
         );
-        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked() // despite being an observable, this is a static value
           ? loc("!LOC:Locked")
           : loc("!LOC:Unlocked");
 
@@ -168,7 +154,7 @@ function gwoWarInfoPanel(gwoSettings) {
           );
           var incompatibleModNames = _.sortBy(
             _.map(incompatibleModsInUse, function (incompatibleMod) {
-              var index = _.findIndex(mods, "identifier", incompatibleMod);
+              var index = _.findIndex(mods, { identifier: incompatibleMod });
               return mods[index].display_name;
             })
           );
@@ -187,9 +173,7 @@ function gwoWarInfoPanel(gwoSettings) {
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
-
         var cards = inventory.cards();
-
         var loadoutId = cards[0].id;
         model.gwoLoadout = ko.observable("");
         requireGW(["cards/" + loadoutId], function (card) {
@@ -236,13 +220,23 @@ function gwoWarInfoPanel(gwoSettings) {
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
+          var isHost = client.role === "host";
+          var usesHostLoadout =
+            isHost ||
+            (client.role === "viewer" && !model.gwCampaignPerPlayerTechCards());
 
           if (!commander) {
             commander = {
               name: client.name,
               color: playerColour,
-              character: ko.observable(human),
-              loadoutResolved: false,
+              // The host's own loadout is already resolved locally via model.gwoLoadout.
+              // game.findCoopPlayerInventoryData never returns a record for the host
+              // (it only tracks synced remote clients), so without this the host's
+              // character observable would stay stuck on "human" forever.
+              character: usesHostLoadout
+                ? model.gwoLoadout
+                : ko.observable(human),
+              loadoutResolved: usesHostLoadout,
             };
             coopCommanderCache[cacheKey] = commander;
           }
@@ -295,6 +289,8 @@ function gwoWarInfoPanel(gwoSettings) {
               return updateCoopCommander(client, playerColour, human);
             });
 
+            // Leaving the co-op campaign causes a page refresh and a cache reinitialisation,
+            // so we don't need to worry about cleaning up the cache in that case.
             _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
               if (!activeCommanderKeys[cacheKey]) {
                 delete coopCommanderCache[cacheKey];
@@ -359,7 +355,10 @@ function gwoWarInfoPanel(gwoSettings) {
   }
 }
 
-ko.computed(function () {
+var gwoPanelLoaderInitialized = false;
+var gwoPanelLoaderNeedsDispose = false;
+
+var gwoPanelLoader = ko.computed(function () {
   var game = model.game();
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
@@ -369,16 +368,26 @@ ko.computed(function () {
     !gwoWarInfoPanelLoaded
   ) {
     console.log("GWO settings found and panel loading");
-    gwoWarInfoPanelLoaded = true;
     gwoWarInfoPanel(originSystem.gwaio);
+    gwoWarInfoPanelLoaded = true;
+    if (gwoPanelLoaderInitialized) {
+      gwoPanelLoader.dispose();
+    } else {
+      gwoPanelLoaderNeedsDispose = true;
+    }
   } else {
     console.warn(
       "Tried to load GWO panel and failed. GWO settings found:",
       _.isObject(originSystem.gwaio),
       "This is a Galactic War:",
       !game.isTutorial(),
-      "Panel not yet loaded:",
-      !gwoWarInfoPanelLoaded
+      "GWO panel already loaded:",
+      gwoWarInfoPanelLoaded
     );
   }
 });
+
+gwoPanelLoaderInitialized = true;
+if (gwoPanelLoaderNeedsDispose) {
+  gwoPanelLoader.dispose();
+}

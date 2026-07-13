@@ -178,19 +178,9 @@ define([
     return playerFiles;
   };
 
-  // global for modder compatibility
-  if (!model.gwoSpecs) {
-    model.gwoSpecs = [];
-  }
-  // files not assigned by default that we wish to mod
-  model.gwoSpecs.push(
-    gwoUnit.fireflyAmmo,
-    gwoUnit.fireflyWeapon,
-    gwoUnit.orcaTorpedo,
-    gwoUnit.orcaTorpedoAmmo,
-    gwoUnit.skitterAmmo,
-    gwoUnit.skitterWeapon
-  );
+  // Files not assigned by default that we wish to mod - global for modder compatibility
+  model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
+  model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
   return function () {
     var self = this;

@@ -45,23 +45,6 @@ function gwoSetup() {
       }
     });
 
-    var randomPercentageAdjustment = function (min, max) {
-      return Math.random() * (max - min) + min;
-    };
-
-    var aiEcoMinionReduction = function (eco, ecoStep, minions) {
-      return eco - minions * ecoStep;
-    };
-
-    var aiEconRate = function (ecoBase, ecoStep, distance, minions) {
-      var eco =
-        (ecoBase + distance * ecoStep) * randomPercentageAdjustment(0.9, 1.1);
-      if (minions) {
-        eco = aiEcoMinionReduction(eco, ecoStep, minions);
-      }
-      return eco;
-    };
-
     var aiFaction = 0;
     var getQuellerAITag = function (faction) {
       if (faction) {
@@ -89,7 +72,7 @@ function gwoSetup() {
         case 4:
           return clusterTags;
         default:
-          throw new Error("Undefined faction");
+          throw new Error("Undefined faction: " + aiFaction);
       }
     };
 
@@ -136,6 +119,57 @@ function gwoSetup() {
       return _.cloneDeep(_.sample(minions));
     };
 
+    var randomPercentageAdjustment = function (min, max) {
+      return Math.random() * (max - min) + min;
+    };
+
+    var aiEcoMinionReduction = function (
+      eco,
+      ecoStep,
+      distance,
+      minionBase,
+      minionStep
+    ) {
+      var minions = 0;
+      var previousMinions = 0;
+
+      if (distance > 0) {
+        minions = countMinions(minionBase, minionStep, distance);
+        previousMinions = countMinions(minionBase, minionStep, distance - 1);
+      }
+
+      if (minions > previousMinions) {
+        return eco - ecoStep;
+      }
+
+      return eco;
+    };
+
+    // playerCount is optional; omit it (e.g. for a boss's own econ rate)
+    // to skip the minion-count reduction entirely.
+    var aiEconRate = function (distance, playerCount) {
+      var difficulty = model.gwoDifficultySettings;
+      var ecoBase = Number.parseFloat(difficulty.econBase());
+      var ecoStep = Number.parseFloat(difficulty.econRatePerDist());
+      var eco =
+        (ecoBase + distance * ecoStep) * randomPercentageAdjustment(0.9, 1.1);
+
+      if (playerCount) {
+        var minionBase = difficulty.mandatoryMinions() * playerCount;
+        var minionStep =
+          Number.parseFloat(difficulty.minionMod()) * playerCount;
+        eco = aiEcoMinionReduction(
+          eco,
+          ecoStep,
+          distance,
+          minionBase,
+          minionStep
+        );
+      }
+
+      return Math.max(ecoBase, eco);
+    };
+
     var gameModeEnabled = function (gameModeChance) {
       return Math.random() * 100 <= gameModeChance;
     };
@@ -154,9 +188,11 @@ function gwoSetup() {
 
     var startCardAllyCompatibility = function (game) {
       // global for modder compatibility
-      if (!model.gwoStarCardsWhichBreakAllies) {
-        model.gwoStarCardsWhichBreakAllies = [];
-      }
+      model.gwoStarCardsWhichBreakAllies = _.isArray(
+        model.gwoStarCardsWhichBreakAllies
+      )
+        ? model.gwoStarCardsWhichBreakAllies
+        : [];
       model.gwoStarCardsWhichBreakAllies.push(
         "nem_start_deepspace",
         "gwaio_start_tourist"
@@ -373,6 +409,8 @@ function gwoSetup() {
               personality.personality_tags =
                 personality.personality_tags.concat(titansAITags);
               break;
+            default:
+              throw new Error("Undefined AI type: " + difficulty.ai());
           }
         };
 
@@ -390,7 +428,7 @@ function gwoSetup() {
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          var version = "6.1.0";
+          var version = "6.2.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           var game = new GW.Game();
@@ -585,14 +623,10 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
-              var econBase = Number.parseFloat(difficulty.econBase());
-              var econRatePerDist = Number.parseFloat(
-                difficulty.econRatePerDist()
-              );
 
               // Set up boss system
               setAIPersonality(boss, difficulty);
-              boss.econ_rate = aiEconRate(econBase, econRatePerDist, maxDist);
+              boss.econ_rate = aiEconRate(maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
 
@@ -639,12 +673,7 @@ function gwoSetup() {
                 _.times(totalMinions, function () {
                   var minion = selectMinion(minions, clusterType);
                   setAIPersonality(minion, difficulty);
-                  minion.econ_rate = aiEconRate(
-                    econBase,
-                    econRatePerDist,
-                    maxDist,
-                    numMinions
-                  );
+                  minion.econ_rate = aiEconRate(maxDist, playerCount);
                   if (boss.isCluster === true) {
                     minion.commanderCount = numMinions;
                   }
@@ -676,12 +705,7 @@ function gwoSetup() {
                 numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
                 setAIPersonality(ai, difficulty);
-                ai.econ_rate = aiEconRate(
-                  econBase,
-                  econRatePerDist,
-                  dist,
-                  numMinions
-                );
+                ai.econ_rate = aiEconRate(dist, playerCount);
 
                 ai.inventory = [];
 
@@ -720,12 +744,7 @@ function gwoSetup() {
                     _.times(totalMinions, function () {
                       var minion = selectMinion(minions, clusterType);
                       setAIPersonality(minion, difficulty);
-                      minion.econ_rate = aiEconRate(
-                        econBase,
-                        econRatePerDist,
-                        dist,
-                        numMinions
-                      );
+                      minion.econ_rate = aiEconRate(dist, playerCount);
                       if (ai.isCluster === true) {
                         minion.commanderCount = clusterWorkers;
                       }
@@ -749,12 +768,7 @@ function gwoSetup() {
                     );
                     foeCommander.faction = Number.parseInt(foeFaction);
                     setAIPersonality(foeCommander, difficulty);
-                    foeCommander.econ_rate = aiEconRate(
-                      econBase,
-                      econRatePerDist,
-                      dist,
-                      numMinions
-                    );
+                    foeCommander.econ_rate = aiEconRate(dist, playerCount);
                     var numFoes = Math.round((numMinions + 1) / 2);
                     // Cluster Workers get additional commanders in place of armies
                     if (foeCommander.name === "Worker") {
@@ -847,15 +861,7 @@ function gwoSetup() {
                     ai.boss = true; // otherwise it won't display its icon
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
-                    var econBase = Number.parseFloat(difficulty.econBase());
-                    var econRatePerDist = Number.parseFloat(
-                      difficulty.econRatePerDist()
-                    );
-                    ai.econ_rate = aiEconRate(
-                      econBase,
-                      econRatePerDist,
-                      maxDist
-                    );
+                    ai.econ_rate = aiEconRate(maxDist);
                     ai.bossCommanders = bossCommanderCount(
                       difficulty,
                       playerCount
@@ -928,7 +934,7 @@ function gwoSetup() {
               model.gwoDifficultySettings.largePlanets();
             originSystem.gwaio.easierStart =
               model.gwoDifficultySettings.easierStart();
-            if (model.devMode() === true) {
+            if (model.devMode()) {
               originSystem.gwaio.cheatsUsed = true;
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();

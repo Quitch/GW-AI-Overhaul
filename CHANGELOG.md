@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v6.2.0 - 2026-07-13
+
+### Changed
+
+- Changed AI eco scaling to accommodate the more rapid minion growth introduced by co-op
+
+### Bugfix
+
+- Only apply game mode and planet modifying cards from connected players
+- Guardians base their playstyle on the cards of all players not just the host
+- Dev mode properly detected when activated prior to loading a save
+- Enemies have negative eco when commander numbers increased too quickly
+- Host loadout showing as Human
+- Viewer loadout showing as Human when per-player tech was disabled
+
 ## v6.1.0 - 2026-07-11
 
 ### Added

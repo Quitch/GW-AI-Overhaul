@@ -17,12 +17,7 @@ function gwoIntelligence() {
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
     var getNumberOfCommanders = function (commander) {
-      if (commander.bossCommanders) {
-        return commander.bossCommanders;
-      } else if (commander.commanderCount) {
-        return commander.commanderCount;
-      }
-      return 1;
+      return commander.bossCommanders || commander.commanderCount || 1;
     };
 
     var getCommanderCharacter = function (commander) {
@@ -183,6 +178,8 @@ function gwoIntelligence() {
           case 7:
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
+          default:
+            throw new Error("Undefined buff type: " + buff);
         }
       });
       if (guardians) {
@@ -195,8 +192,9 @@ function gwoIntelligence() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
-      function (gwoColour, gwoCards) {
+      function (gwoColour, gwoCards, gwoAI) {
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -211,25 +209,25 @@ function gwoIntelligence() {
 
           if (
             ai.bountyMode ||
-            gwoCards.hasCard(inventory, "gwaio_enable_bounties")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties")
           ) {
             gameModifiers.push(loc("!LOC:Bounties"));
           }
           if (
             ai.landAnywhere ||
-            gwoCards.hasCard(inventory, "gwaio_enable_landanywhere")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere")
           ) {
             gameModifiers.push(loc("!LOC:Land Anywhere"));
           }
           if (
             ai.suddenDeath ||
-            gwoCards.hasCard(inventory, "gwaio_enable_suddendeath")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath")
           ) {
             gameModifiers.push(loc("!LOC:Sudden Death"));
           }
           if (
             ai.eradicationMode ||
-            gwoCards.hasCard(inventory, "gwaio_enable_eradication")
+            gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
               loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
@@ -248,7 +246,7 @@ function gwoIntelligence() {
             factionIndex
           );
           var name = commander.name;
-          var eco = commander.econ_rate;
+          var eco = gwoAI.setAIEconRate(commander.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
           var numCommanders = getNumberOfCommanders(commander);
           var faction = getFactionName(commander, factionIndex);
 
@@ -286,7 +284,10 @@ function gwoIntelligence() {
                 // legacy GWO support
                 commanderCount = army.landing_policy.length;
               }
-              totalThreat += army.econ_rate * 0.4 * (commanderCount - 1);
+              totalThreat +=
+                gwoAI.setAIEconRate(army.econ_rate) * // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+                0.4 *
+                (commanderCount - 1);
             });
           }
           _.times(commanders.length, function (n) {
@@ -315,6 +316,9 @@ function gwoIntelligence() {
                 break;
               case 6: // combat
                 totalThreat *= 1.5;
+                break;
+              default:
+                throw new Error("Undefined buff type: " + buff);
             }
           });
           var guardians = ai.mirrorMode;
