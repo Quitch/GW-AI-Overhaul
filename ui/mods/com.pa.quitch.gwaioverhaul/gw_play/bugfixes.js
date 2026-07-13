@@ -32,15 +32,16 @@ function gwoBugfixes() {
       }
     };
 
-    var fixClusterType = function (mod) {
+    var fixClusterType = function (mod, security) {
       // Worker needs two fixes but each fix is applied in a separate mod
       if (mod.path === "buildable_types") {
         mod.value = mod.value + " & Custom58";
         return mod.file;
-      } else if (mod.path === "unit_types") {
+      } else if (mod.file === security && mod.path === "unit_types") {
         mod.value.push("UNITTYPE_Custom58");
         return mod.file;
       }
+      return null;
     };
 
     var fixClusterCommanderTypes = function (ai) {
@@ -55,7 +56,7 @@ function gwoBugfixes() {
           (securityFix === true || mod.file !== security) &&
           (workerFix >= 2 || mod.file !== worker)
             ? null
-            : fixClusterType(mod);
+            : fixClusterType(mod, security);
         switch (result) {
           case security:
             securityFix = true;
