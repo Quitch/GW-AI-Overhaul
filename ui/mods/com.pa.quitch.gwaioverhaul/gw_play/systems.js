@@ -299,6 +299,7 @@ function gwoSystemChanges() {
 
     model.displayFight = ko.computed(function () {
       return (
+        model.canShowCampaignActionButtons() &&
         model.canFight() &&
         !model.allowLoad() &&
         model.selection.star() === game.currentStar()
