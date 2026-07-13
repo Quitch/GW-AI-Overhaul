@@ -131,8 +131,11 @@ function gwoBugfixes() {
 
       if (checkVersion("5.76.1") >= 0) {
         luckyCommanderFixed("true");
+        gwoSettings.clusterFixed = true;
+        gwoSettings.treasurePlanetFixed = true;
       } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
         gwoSettings.clusterFixed = true;
+        gwoSettings.treasurePlanetFixed = true;
       } else if (checkVersion("5.18.0") >= 0) {
         gwoSettings.treasurePlanetFixed = true;
       }
@@ -147,9 +150,6 @@ function gwoBugfixes() {
         fixTreasurePlanetCardList(star);
         fixClusterCommanderTypes(star);
       }
-
-      gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
-      gwoSettings.clusterFixed = true; // Cluster might not exist
 
       fixLuckyCommanderLocalStorageVariable();
     };
