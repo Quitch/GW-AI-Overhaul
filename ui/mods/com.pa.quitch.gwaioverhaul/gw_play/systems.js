@@ -358,24 +358,28 @@ function gwoSystemChanges() {
           return;
         }
 
-        // Colour inner ring to match ally or other faction present
-        var innerRing = {};
-        if (ai.ally || ai.foes) {
-          var innerColour = ai.ally
-            ? normalizedColor(GWFactions[ai.ally.faction])
-            : normalizedColor(GWFactions[ai.foes[0].faction]);
-          innerRing = createBitmap({
-            url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-            size: [240, 240],
-            color: innerColour.concat(7),
-            scale: 0.71,
-            alpha: 0.8,
-          });
-          var scaleInnerRing = new createjs.Container();
-          scaleInnerRing.addChild(innerRing);
-          scaleInnerRing.z = 0;
-          system.systemDisplay.addChild(scaleInnerRing);
+        if (!ai.ally && !ai.foes) {
+          return;
         }
+
+        // Colour inner ring to match ally or other faction present
+        var innerColour = ai.ally
+          ? normalizedColor(GWFactions[ai.ally.faction])
+          : normalizedColor(GWFactions[ai.foes[0].faction]);
+
+        var innerRing = createBitmap({
+          url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+          size: [240, 240],
+          color: innerColour.concat(7),
+          scale: 0.71,
+          alpha: 0.8,
+        });
+
+        var scaleInnerRing = new createjs.Container();
+        scaleInnerRing.addChild(innerRing);
+        scaleInnerRing.z = 0;
+        system.systemDisplay.addChild(scaleInnerRing);
+
         innerRing.visible = false;
 
         ko.computed(function () {
