@@ -207,47 +207,44 @@ function gwoSystemChanges() {
             var temperature = loc("!LOC:Temperature:");
             var waterHeight = loc("!LOC:Water Height:");
 
-            model.gwoPlanetData = _.map(
-              self.system().planets(),
-              function (planet) {
-                var tooltip = radius + " " + planet.generator.radius;
+            model.gwoPlanetData = _.map(newSystem.planets(), function (planet) {
+              var tooltip = radius + " " + planet.generator.radius;
 
-                if (planet.generator.biome === "gas") {
-                  return tooltip;
-                }
-
-                if (planet.metal_spots) {
-                  tooltip +=
-                    "<br>" + metalSpots + " " + planet.metal_spots.length;
-                } else {
-                  tooltip +=
-                    "<br>" +
-                    metalClusters +
-                    " " +
-                    Math.round(planet.generator.metalClusters) +
-                    "<br>" +
-                    metalDensity +
-                    " " +
-                    Math.round(planet.generator.metalDensity);
-                }
-                if (
-                  planet.generator.biome !== "metal" &&
-                  planet.generator.biome !== "metal_boss" &&
-                  planet.generator.biome !== "moon"
-                ) {
-                  tooltip +=
-                    "<br>" +
-                    temperature +
-                    " " +
-                    Math.round(planet.generator.temperature) +
-                    "<br>" +
-                    waterHeight +
-                    " " +
-                    Math.round(planet.generator.waterHeight);
-                }
+              if (planet.generator.biome === "gas") {
                 return tooltip;
               }
-            );
+
+              if (planet.metal_spots) {
+                tooltip +=
+                  "<br>" + metalSpots + " " + planet.metal_spots.length;
+              } else {
+                tooltip +=
+                  "<br>" +
+                  metalClusters +
+                  " " +
+                  Math.round(planet.generator.metalClusters) +
+                  "<br>" +
+                  metalDensity +
+                  " " +
+                  Math.round(planet.generator.metalDensity);
+              }
+              if (
+                planet.generator.biome !== "metal" &&
+                planet.generator.biome !== "metal_boss" &&
+                planet.generator.biome !== "moon"
+              ) {
+                tooltip +=
+                  "<br>" +
+                  temperature +
+                  " " +
+                  Math.round(planet.generator.temperature) +
+                  "<br>" +
+                  waterHeight +
+                  " " +
+                  Math.round(planet.generator.waterHeight);
+              }
+              return tooltip;
+            });
           }
         });
       }
