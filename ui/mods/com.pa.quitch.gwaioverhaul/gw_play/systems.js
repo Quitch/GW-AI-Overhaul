@@ -324,15 +324,14 @@ function gwoSystemChanges() {
           if (ai && ai.team === defeatedTeam) {
             var replacementAI = _.first(ai.foes);
             if (replacementAI) {
-              _.forEach(_.keys(replacementAI), function (key) {
-                star.ai()[key] = replacementAI[key];
-              });
+              var newAI = _.extend({}, ai, replacementAI);
+              newAI.foes = _.rest(ai.foes);
+              delete newAI.minions;
 
               var factionColor = normalizedColor(GWFactions[ai.faction]);
               system.ownerColor(factionColor.concat(3));
 
-              star.ai().foes = _.rest(ai.foes);
-              delete star.ai().minions;
+              star.ai(newAI);
             } else {
               star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
