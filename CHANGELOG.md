@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Changed AI eco scaling to accommodate the more rapid minion growth introduced by co-op
+
 ### Bugfix
 
 - Only apply game mode and planet modifying cards from connected players
