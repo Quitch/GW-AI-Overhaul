@@ -96,7 +96,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
       var ops = {
         multiply: function (attribute, value) {
-          return _.isNumber(attribute) ? attribute * value : 0;
+          if (!_.isNumber(attribute)) {
+            console.warn(
+              "multiply op: attribute is not a number, leaving unchanged:",
+              attribute
+            );
+            return attribute;
+          }
+          return attribute * value;
         },
         add: function (attribute, value) {
           return _.isNumber(attribute) || _.isString(attribute)
