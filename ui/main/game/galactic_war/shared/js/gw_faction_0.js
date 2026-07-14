@@ -143,12 +143,12 @@ define([
     },
   ];
 
-  var randomMinion = _.sample(minions);
+  var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Aryst0krat",
     character: "!LOC:Random",
     color: factionColour,
-    personality: randomMinion.personality,
+    personality: randomPersonality,
     commander:
       "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",
   };

@@ -226,18 +226,20 @@ define([
     },
   ];
 
+  var randomWorkerPersonality = _.sample(minions).personality;
+  var randomSecurityPersonality = _.sample(minions).personality;
   var randomWorkerAI = {
     name: workerName,
     character: random,
     color: factionColour,
-    personality: _.sample(minions).personality,
+    personality: randomWorkerPersonality,
     commander: workerCommander,
   };
   var randomSecurityAI = {
     name: securityName,
     character: random,
     color: factionColour,
-    personality: _.sample(minions).personality,
+    personality: randomSecurityPersonality,
     commander: securityCommander,
   };
   minions.push(randomWorkerAI, randomSecurityAI);

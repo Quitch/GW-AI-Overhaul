@@ -143,12 +143,12 @@ define([
     },
   ];
 
-  var randomMinion = _.sample(minions);
+  var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
     color: factionColour,
-    personality: randomMinion.personality,
+    personality: randomPersonality,
     commander: "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
   };
   minions.push(randomAI);

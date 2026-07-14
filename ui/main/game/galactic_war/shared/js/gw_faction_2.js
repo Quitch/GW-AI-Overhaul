@@ -140,12 +140,12 @@ define([
     },
   ];
 
-  var randomMinion = _.sample(minions);
+  var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
     color: factionColour,
-    personality: randomMinion.personality,
+    personality: randomPersonality,
     commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
   };
   minions.push(randomAI);

@@ -140,12 +140,12 @@ define([
     },
   ];
 
-  var randomMinion = _.sample(minions);
+  var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
     color: factionColour,
-    personality: randomMinion.personality,
+    personality: randomPersonality,
     commander:
       "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
   };
