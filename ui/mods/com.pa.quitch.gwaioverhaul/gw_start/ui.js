@@ -8,6 +8,19 @@ function gwoUI() {
   gwoUILoaded = true;
 
   try {
+    ko.extenders.stringBoolean = function (target) {
+      var result = ko.computed({
+        read: function () {
+          return target() ? "true" : "false";
+        },
+        write: function (newValue) {
+          target(newValue === true || newValue === "true");
+        },
+      });
+      result.raw = target;
+      return result;
+    };
+
     var koNumeric = function (value, precision) {
       return ko.observable(value).extend({ numeric: precision });
     };
@@ -34,15 +47,19 @@ function gwoUI() {
       paLore: ko.observable(true),
       techCardDeck: ko.observable("Expanded"),
       customDifficulty: ko.observable(false),
-      goForKill: ko.observable("false"),
+      goForKill: ko.observable(false).extend({ stringBoolean: true }),
       microType: koNumeric(0, 0),
       mandatoryMinions: koNumeric(0, 0),
       minionMod: koNumeric(0, 2),
-      priorityScoutMetalSpots: ko.observable("false"),
+      priorityScoutMetalSpots: ko
+        .observable(false)
+        .extend({ stringBoolean: true }),
       factoryBuildDelayMin: koNumeric(0, 0),
       factoryBuildDelayMax: koNumeric(0, 0),
       unableToExpandDelay: koNumeric(0, 0),
-      enableCommanderDangerResponses: ko.observable("false"),
+      enableCommanderDangerResponses: ko
+        .observable(false)
+        .extend({ stringBoolean: true }),
       perExpansionDelay: koNumeric(0, 0),
       econBase: koNumeric(0, 3),
       econRatePerDist: koNumeric(0, 3),

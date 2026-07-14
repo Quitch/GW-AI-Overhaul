@@ -76,10 +76,6 @@ function gwoSetup() {
       }
     };
 
-    var parseBoolean = function (string) {
-      return string === "true";
-    };
-
     var selectAIBuffs = function (numberOfBuffs) {
       var buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
       return _.sample(buffType, numberOfBuffs);
@@ -368,18 +364,16 @@ function gwoSetup() {
           var personality = ai.personality;
 
           personality.micro_type = difficulty.microType();
-          personality.go_for_the_kill = parseBoolean(difficulty.goForKill());
-          personality.priority_scout_metal_spots = parseBoolean(
-            difficulty.priorityScoutMetalSpots()
-          );
+          personality.go_for_the_kill = difficulty.goForKill();
+          personality.priority_scout_metal_spots =
+            difficulty.priorityScoutMetalSpots();
           personality.factory_build_delay_min =
             difficulty.factoryBuildDelayMin();
           personality.factory_build_delay_max =
             difficulty.factoryBuildDelayMax();
           personality.unable_to_expand_delay = difficulty.unableToExpandDelay();
-          personality.enable_commander_danger_responses = parseBoolean(
-            difficulty.enableCommanderDangerResponses()
-          );
+          personality.enable_commander_danger_responses =
+            difficulty.enableCommanderDangerResponses();
           personality.per_expansion_delay = difficulty.perExpansionDelay();
           personality.max_basic_fabbers = difficulty.maxBasicFabbers();
           personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
