@@ -200,7 +200,9 @@ function gwoUI() {
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     } else {
-      $("select option[value*='Queller']").prop("disabled", true);
+      $("select option[value*='Queller']")
+        .prop("disabled", true)
+        .selectpicker("refresh");
     }
 
     // Track difficulty settings so AI Settings' fields display correct values
