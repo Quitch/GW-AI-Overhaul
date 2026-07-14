@@ -1,248 +1,248 @@
-var applyAiMods = function (json, mods) {
-  var ops = {
-    // fabber/factory/platoon only
-    append: function (value, toBuild, idToMod, refId, refValue) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          build[idToMod];
-
-        if (validMatch && _.isArray(build[idToMod])) {
-          build[idToMod] = build[idToMod].concat(value);
-        } else if (validMatch) {
-          build[idToMod] += value;
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              if (test[refId] === refValue) {
-                if (_.isArray(test[idToMod])) {
-                  test[idToMod] = test[idToMod].concat(value);
-                } else if (test[idToMod]) {
-                  test[idToMod] += value;
-                }
-              }
-            });
-          });
-        }
-      });
-    },
-    // fabber/factory/platoon only
-    prepend: function (value, toBuild, idToMod, refId, refValue) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          build[idToMod];
-
-        if (validMatch && _.isArray(build[idToMod])) {
-          build[idToMod] = value.concat(build[idToMod]);
-        } else if (validMatch) {
-          build[idToMod] = value + build[idToMod];
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              if (test[refId] === refValue) {
-                if (_.isArray(test[idToMod])) {
-                  test[idToMod] = value.concat(test[idToMod]);
-                } else if (test[idToMod]) {
-                  test[idToMod] = value + test[idToMod];
-                }
-              }
-            });
-          });
-        }
-      });
-    },
-    // fabber/factory/platoon only
-    replace: function (value, toBuild, idToMod, refId, refValue) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          build[idToMod];
-
-        if (validMatch) {
-          build[idToMod] = value;
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              if (test[refId] === refValue && test[idToMod]) {
-                test[idToMod] = value;
-              }
-            });
-          });
-        }
-      });
-    },
-    // fabber/factory/platoon only
-    remove: function (value, toBuild) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        _.forEach(build.build_conditions, function (testArray) {
-          _.remove(testArray, function (object) {
-            if (_.isEqual(object, value)) {
-              return object;
-            }
-          });
-        });
-      });
-    },
-    // fabber/factory/platoon only
-    new: function (value, toBuild, idToMod) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        if (idToMod) {
-          _.forEach(build.build_conditions, function (testArray) {
-            testArray.push(value);
-          });
-        } else {
-          build.build_conditions.push(value);
-        }
-      });
-    },
-    // template only
-    squad: function (value, toBuild) {
-      if (json.platoon_templates[toBuild]) {
-        json.platoon_templates[toBuild].units.push(value);
-      }
-    },
-  };
-
-  _.forEach(mods, function (mod) {
-    ops[mod.op](mod.value, mod.toBuild, mod.idToMod, mod.refId, mod.refValue);
-  });
-};
-
-var getRefereeInventoryAiMods = function (inventory) {
-  if (!inventory) {
-    return [];
-  }
-
-  if (_.isFunction(inventory.aiMods)) {
-    return inventory.aiMods();
-  }
-
-  return inventory.aiMods || [];
-};
-
-var getConnectedClientAiMods = function (game, connectedClients) {
-  var connectedClientAiMods = [];
-
-  _.forEach(connectedClients, function (client) {
-    if (!client || client.role !== "viewer") {
-      return;
-    }
-
-    var playerData =
-      game.findCoopPlayerInventoryData &&
-      game.findCoopPlayerInventoryData({
-        id: client.id,
-        name: client.name,
-      });
-
-    if (!playerData || !playerData.inventory) {
-      return;
-    }
-
-    connectedClientAiMods = connectedClientAiMods.concat(
-      getRefereeInventoryAiMods(playerData.inventory)
-    );
-  });
-
-  return connectedClientAiMods;
-};
-
-var getInventoryWithAllPlayerAiMods = function (
-  inventory,
-  game,
-  connectedClients
-) {
-  var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
-    getConnectedClientAiMods(game, connectedClients)
-  );
-
-  return {
-    aiMods: function () {
-      return allPlayerAiMods;
-    },
-  };
-};
-
-var whichAIsAreBeingModified = function (clusterPresence, inventory) {
-  var game = model.game();
-  var ai = game.galaxy().stars()[game.currentStar()].ai();
-  var guardians = ai.mirrorMode;
-
-  if (
-    !_.isEmpty(getRefereeInventoryAiMods(inventory)) ||
-    clusterPresence === "Player"
-  ) {
-    if (guardians) {
-      return "All";
-    } else {
-      return "SubCommanders";
-    }
-  }
-  return "None";
-};
-
-var managerPath = function (type) {
-  switch (type) {
-    case "fabber":
-      return "fabber_builds/";
-    case "factory":
-      return "factory_builds/";
-    case "platoon":
-      return "platoon_builds/";
-    case "template":
-      return "platoon_templates/";
-    default:
-      throw new Error("Invalid AI file type: " + type);
-  }
-};
-
-var addApplicableAiLoadModsToFileList = function (
-  aiPath,
-  fileList,
-  inventory,
-  aisToModify,
-  aiPaths
-) {
-  var isSubCommanderDirectory =
-    aiPath === aiPaths.subCommanderSource ||
-    aiPaths.enemySource === aiPaths.subCommanderSource;
-
-  if (isSubCommanderDirectory || aisToModify === "All") {
-    var aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
-      op: "load",
-    });
-
-    _.forEach(aiLoadMods, function (file) {
-      fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
-    });
-  }
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 ], function (gwoAI, refereeAIPaths) {
+  var applyAiMods = function (json, mods) {
+    var ops = {
+      // fabber/factory/platoon only
+      append: function (value, toBuild, idToMod, refId, refValue) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          var validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch && _.isArray(build[idToMod])) {
+            build[idToMod] = build[idToMod].concat(value);
+          } else if (validMatch) {
+            build[idToMod] += value;
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue) {
+                  if (_.isArray(test[idToMod])) {
+                    test[idToMod] = test[idToMod].concat(value);
+                  } else if (test[idToMod]) {
+                    test[idToMod] += value;
+                  }
+                }
+              });
+            });
+          }
+        });
+      },
+      // fabber/factory/platoon only
+      prepend: function (value, toBuild, idToMod, refId, refValue) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          var validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch && _.isArray(build[idToMod])) {
+            build[idToMod] = value.concat(build[idToMod]);
+          } else if (validMatch) {
+            build[idToMod] = value + build[idToMod];
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue) {
+                  if (_.isArray(test[idToMod])) {
+                    test[idToMod] = value.concat(test[idToMod]);
+                  } else if (test[idToMod]) {
+                    test[idToMod] = value + test[idToMod];
+                  }
+                }
+              });
+            });
+          }
+        });
+      },
+      // fabber/factory/platoon only
+      replace: function (value, toBuild, idToMod, refId, refValue) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          var validMatch =
+            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+            build[idToMod];
+
+          if (validMatch) {
+            build[idToMod] = value;
+          } else {
+            _.forEach(build.build_conditions, function (testArray) {
+              _.forEach(testArray, function (test) {
+                if (test[refId] === refValue && test[idToMod]) {
+                  test[idToMod] = value;
+                }
+              });
+            });
+          }
+        });
+      },
+      // fabber/factory/platoon only
+      remove: function (value, toBuild) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          _.forEach(build.build_conditions, function (testArray) {
+            _.remove(testArray, function (object) {
+              if (_.isEqual(object, value)) {
+                return object;
+              }
+            });
+          });
+        });
+      },
+      // fabber/factory/platoon only
+      new: function (value, toBuild, idToMod) {
+        _.forEach(json.build_list, function (build) {
+          if (build.to_build !== toBuild) {
+            return;
+          }
+
+          if (idToMod) {
+            _.forEach(build.build_conditions, function (testArray) {
+              testArray.push(value);
+            });
+          } else {
+            build.build_conditions.push(value);
+          }
+        });
+      },
+      // template only
+      squad: function (value, toBuild) {
+        if (json.platoon_templates[toBuild]) {
+          json.platoon_templates[toBuild].units.push(value);
+        }
+      },
+    };
+
+    _.forEach(mods, function (mod) {
+      ops[mod.op](mod.value, mod.toBuild, mod.idToMod, mod.refId, mod.refValue);
+    });
+  };
+
+  var getRefereeInventoryAiMods = function (inventory) {
+    if (!inventory) {
+      return [];
+    }
+
+    if (_.isFunction(inventory.aiMods)) {
+      return inventory.aiMods();
+    }
+
+    return inventory.aiMods || [];
+  };
+
+  var getConnectedClientAiMods = function (game, connectedClients) {
+    var connectedClientAiMods = [];
+
+    _.forEach(connectedClients, function (client) {
+      if (!client || client.role !== "viewer") {
+        return;
+      }
+
+      var playerData =
+        game.findCoopPlayerInventoryData &&
+        game.findCoopPlayerInventoryData({
+          id: client.id,
+          name: client.name,
+        });
+
+      if (!playerData || !playerData.inventory) {
+        return;
+      }
+
+      connectedClientAiMods = connectedClientAiMods.concat(
+        getRefereeInventoryAiMods(playerData.inventory)
+      );
+    });
+
+    return connectedClientAiMods;
+  };
+
+  var getInventoryWithAllPlayerAiMods = function (
+    inventory,
+    game,
+    connectedClients
+  ) {
+    var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
+      getConnectedClientAiMods(game, connectedClients)
+    );
+
+    return {
+      aiMods: function () {
+        return allPlayerAiMods;
+      },
+    };
+  };
+
+  var whichAIsAreBeingModified = function (clusterPresence, inventory) {
+    var game = model.game();
+    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var guardians = ai.mirrorMode;
+
+    if (
+      !_.isEmpty(getRefereeInventoryAiMods(inventory)) ||
+      clusterPresence === "Player"
+    ) {
+      if (guardians) {
+        return "All";
+      } else {
+        return "SubCommanders";
+      }
+    }
+    return "None";
+  };
+
+  var managerPath = function (type) {
+    switch (type) {
+      case "fabber":
+        return "fabber_builds/";
+      case "factory":
+        return "factory_builds/";
+      case "platoon":
+        return "platoon_builds/";
+      case "template":
+        return "platoon_templates/";
+      default:
+        throw new Error("Invalid AI file type: " + type);
+    }
+  };
+
+  var addApplicableAiLoadModsToFileList = function (
+    aiPath,
+    fileList,
+    inventory,
+    aisToModify,
+    aiPaths
+  ) {
+    var isSubCommanderDirectory =
+      aiPath === aiPaths.subCommanderSource ||
+      aiPaths.enemySource === aiPaths.subCommanderSource;
+
+    if (isSubCommanderDirectory || aisToModify === "All") {
+      var aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
+        op: "load",
+      });
+
+      _.forEach(aiLoadMods, function (file) {
+        fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
+      });
+    }
+  };
+
   var processFilesInDirectory = function (
     filePath,
     configFiles,

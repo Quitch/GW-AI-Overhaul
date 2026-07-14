@@ -1,128 +1,3 @@
-var aiCommander = function (name, unit, landingOptions, commanderNumber) {
-  while (commanderNumber > landingOptions.length - 1) {
-    commanderNumber -= landingOptions.length;
-  }
-  return {
-    ai: true,
-    name: name,
-    commander: unit,
-    landing_policy: landingOptions[commanderNumber],
-  };
-};
-
-var getAIPersonalityName = function (ai) {
-  var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
-  if (ai.penchantName) {
-    personalityName = personalityName + " " + loc(ai.penchantName);
-  }
-  return personalityName;
-};
-
-var countCards = function (cards, type) {
-  var countOfType = 0;
-  _.forEach(cards, function (card) {
-    if (_.includes(card.id, type)) {
-      countOfType++;
-    }
-  });
-  return countOfType;
-};
-
-var calculatePercentage = function (typeCards, totalCards) {
-  return typeCards === 0 ? 0 : typeCards / totalCards;
-};
-
-var quellerGuardianPersonality = function (personality) {
-  var unitPercentages = [
-    personality.percent_vehicle,
-    personality.percent_bot,
-    personality.percent_orbital,
-    personality.percent_air,
-    personality.percent_naval,
-  ];
-  var highestValue = _.max(unitPercentages);
-  var valueIndex = unitPercentages.indexOf(highestValue);
-  var aiPersonalityTags = ["queller"];
-  switch (valueIndex) {
-    case 0:
-      aiPersonalityTags.push("tank");
-      break;
-    case 1:
-      aiPersonalityTags.push("bot");
-      break;
-    case 2:
-      aiPersonalityTags.push("orbital");
-      break;
-    case 3:
-      aiPersonalityTags.push("air");
-      break;
-    default:
-      // falls through - Queller has no naval personality tag
-      break;
-  }
-  return aiPersonalityTags;
-};
-
-var setupGuardianPersonality = function (cards, personality, aiInUse) {
-  var allCards = {
-    air: countCards(cards, "_air"),
-    bot: countCards(cards, "_bot"),
-    orbital: countCards(cards, "_orbital"),
-    naval: countCards(cards, "_sea"),
-    vehicle: countCards(cards, "_vehicle"),
-  };
-  var totalCards = _.sum(allCards);
-  if (totalCards > 0) {
-    personality.percent_air = calculatePercentage(allCards.air, totalCards);
-    personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
-    personality.percent_orbital = calculatePercentage(
-      allCards.orbital,
-      totalCards
-    );
-    personality.percent_naval = calculatePercentage(allCards.naval, totalCards);
-    personality.percent_vehicle = calculatePercentage(
-      allCards.vehicle,
-      totalCards
-    );
-  }
-  if (aiInUse === "Queller") {
-    personality.personality_tags = quellerGuardianPersonality(personality);
-  }
-  return personality;
-};
-
-var glassPlanets = function (planets) {
-  var unglassableBiome = ["moon", "asteroid", "gas", "metal"];
-  _.forEach(planets, function (planet) {
-    if (!_.includes(unglassableBiome, planet.generator.biome)) {
-      planet.generator.biome = "moon";
-    }
-  });
-  return planets;
-};
-
-var floodPlanets = function (planets) {
-  _.forEach(planets, function (planet) {
-    var floodPlanet =
-      !planet.generator.waterHeight || planet.generator.waterHeight < 50;
-    if (floodPlanet) {
-      planet.generator.waterHeight = 50;
-    }
-  });
-  return planets;
-};
-
-var setupAiTags = function (ai) {
-  var aiTag = [];
-  var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-  _.times(aiFactionCount, function (n) {
-    var aiNewTag = ".ai" + n.toString();
-    aiTag.push(aiNewTag);
-  });
-
-  return aiTag;
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -135,6 +10,134 @@ define([
     subcommanderTech.applySubcommanderFabberTech;
   var applySubcommanderDuplicationTech =
     subcommanderTech.applySubcommanderDuplicationTech;
+
+  var aiCommander = function (name, unit, landingOptions, commanderNumber) {
+    while (commanderNumber > landingOptions.length - 1) {
+      commanderNumber -= landingOptions.length;
+    }
+    return {
+      ai: true,
+      name: name,
+      commander: unit,
+      landing_policy: landingOptions[commanderNumber],
+    };
+  };
+
+  var getAIPersonalityName = function (ai) {
+    var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
+    if (ai.penchantName) {
+      personalityName = personalityName + " " + loc(ai.penchantName);
+    }
+    return personalityName;
+  };
+
+  var countCards = function (cards, type) {
+    var countOfType = 0;
+    _.forEach(cards, function (card) {
+      if (_.includes(card.id, type)) {
+        countOfType++;
+      }
+    });
+    return countOfType;
+  };
+
+  var calculatePercentage = function (typeCards, totalCards) {
+    return typeCards === 0 ? 0 : typeCards / totalCards;
+  };
+
+  var quellerGuardianPersonality = function (personality) {
+    var unitPercentages = [
+      personality.percent_vehicle,
+      personality.percent_bot,
+      personality.percent_orbital,
+      personality.percent_air,
+      personality.percent_naval,
+    ];
+    var highestValue = _.max(unitPercentages);
+    var valueIndex = unitPercentages.indexOf(highestValue);
+    var aiPersonalityTags = ["queller"];
+    switch (valueIndex) {
+      case 0:
+        aiPersonalityTags.push("tank");
+        break;
+      case 1:
+        aiPersonalityTags.push("bot");
+        break;
+      case 2:
+        aiPersonalityTags.push("orbital");
+        break;
+      case 3:
+        aiPersonalityTags.push("air");
+        break;
+      default:
+        // falls through - Queller has no naval personality tag
+        break;
+    }
+    return aiPersonalityTags;
+  };
+
+  var setupGuardianPersonality = function (cards, personality, aiInUse) {
+    var allCards = {
+      air: countCards(cards, "_air"),
+      bot: countCards(cards, "_bot"),
+      orbital: countCards(cards, "_orbital"),
+      naval: countCards(cards, "_sea"),
+      vehicle: countCards(cards, "_vehicle"),
+    };
+    var totalCards = _.sum(allCards);
+    if (totalCards > 0) {
+      personality.percent_air = calculatePercentage(allCards.air, totalCards);
+      personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
+      personality.percent_orbital = calculatePercentage(
+        allCards.orbital,
+        totalCards
+      );
+      personality.percent_naval = calculatePercentage(
+        allCards.naval,
+        totalCards
+      );
+      personality.percent_vehicle = calculatePercentage(
+        allCards.vehicle,
+        totalCards
+      );
+    }
+    if (aiInUse === "Queller") {
+      personality.personality_tags = quellerGuardianPersonality(personality);
+    }
+    return personality;
+  };
+
+  var glassPlanets = function (planets) {
+    var unglassableBiome = ["moon", "asteroid", "gas", "metal"];
+    _.forEach(planets, function (planet) {
+      if (!_.includes(unglassableBiome, planet.generator.biome)) {
+        planet.generator.biome = "moon";
+      }
+    });
+    return planets;
+  };
+
+  var floodPlanets = function (planets) {
+    _.forEach(planets, function (planet) {
+      var floodPlanet =
+        !planet.generator.waterHeight || planet.generator.waterHeight < 50;
+      if (floodPlanet) {
+        planet.generator.waterHeight = 50;
+      }
+    });
+    return planets;
+  };
+
+  var setupAiTags = function (ai) {
+    var aiTag = [];
+    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+    _.times(aiFactionCount, function (n) {
+      var aiNewTag = ".ai" + n.toString();
+      aiTag.push(aiNewTag);
+    });
+
+    return aiTag;
+  };
 
   var setAdvEcoMod = function (ai, brain) {
     if (brain !== "Queller") {

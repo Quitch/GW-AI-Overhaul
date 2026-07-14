@@ -1,63 +1,63 @@
-var orderOfOperations = function (mods) {
-  var operationsContainer = {};
-  operationsContainer.otherOperations = [];
-  var orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
-
-  _.forEach(mods, function (mod) {
-    var operationName = mod.op;
-    var isOrderedOperation = _.includes(orderedOperations, operationName);
-
-    if (!operationsContainer[operationName] && isOrderedOperation) {
-      operationsContainer[operationName] = [];
-    }
-
-    if (isOrderedOperation) {
-      operationsContainer[operationName].push(mod);
-    } else {
-      operationsContainer.otherOperations.push(mod);
-    }
-  });
-
-  var orderedMods = [];
-  _.forEach(orderedOperations, function (operation) {
-    if (operationsContainer[operation]) {
-      orderedMods = orderedMods.concat(operationsContainer[operation]);
-    }
-  });
-  orderedMods = orderedMods.concat(operationsContainer.otherOperations);
-
-  return orderedMods;
-};
-
-var flattenBaseSpecs = function (spec, specs, tag) {
-  if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
-    return spec;
-  }
-
-  var base = specs[spec.base_spec];
-  if (!base) {
-    base = specs[spec.base_spec + tag];
-    if (!base) {
-      return spec;
-    }
-  }
-
-  spec = _.cloneDeep(spec);
-  delete spec.base_spec;
-
-  var flattenedSpec = flattenBaseSpecs(base, specs, tag);
-
-  if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
-    // avoid issues with _.merge()
-    delete flattenedSpec.ammo_id;
-  }
-
-  return _.merge({}, flattenedSpec, spec);
-};
-
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   gwoUnit
 ) {
+  var orderOfOperations = function (mods) {
+    var operationsContainer = {};
+    operationsContainer.otherOperations = [];
+    var orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
+
+    _.forEach(mods, function (mod) {
+      var operationName = mod.op;
+      var isOrderedOperation = _.includes(orderedOperations, operationName);
+
+      if (!operationsContainer[operationName] && isOrderedOperation) {
+        operationsContainer[operationName] = [];
+      }
+
+      if (isOrderedOperation) {
+        operationsContainer[operationName].push(mod);
+      } else {
+        operationsContainer.otherOperations.push(mod);
+      }
+    });
+
+    var orderedMods = [];
+    _.forEach(orderedOperations, function (operation) {
+      if (operationsContainer[operation]) {
+        orderedMods = orderedMods.concat(operationsContainer[operation]);
+      }
+    });
+    orderedMods = orderedMods.concat(operationsContainer.otherOperations);
+
+    return orderedMods;
+  };
+
+  var flattenBaseSpecs = function (spec, specs, tag) {
+    if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
+      return spec;
+    }
+
+    var base = specs[spec.base_spec];
+    if (!base) {
+      base = specs[spec.base_spec + tag];
+      if (!base) {
+        return spec;
+      }
+    }
+
+    spec = _.cloneDeep(spec);
+    delete spec.base_spec;
+
+    var flattenedSpec = flattenBaseSpecs(base, specs, tag);
+
+    if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
+      // avoid issues with _.merge()
+      delete flattenedSpec.ammo_id;
+    }
+
+    return _.merge({}, flattenedSpec, spec);
+  };
+
   return {
     mod: function (specs, mods, specTag) {
       var load = function (specId) {

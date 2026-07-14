@@ -1,59 +1,59 @@
-var getAIUnitMapPath = function (titans, aiInUse) {
-  var append = titans ? "_x1.json" : ".json";
-
-  switch (aiInUse) {
-    case "Queller":
-      return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
-    case "Penchant":
-      return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
-    default:
-      return "/pa/ai/unit_maps/ai_unit_map" + append;
-  }
-};
-
-var getAIUnitMapDestinationPath = function (titans, aiPath) {
-  var append = titans ? "_x1.json" : ".json";
-  return aiPath + "unit_maps/ai_unit_map" + append;
-};
-
-var guardianMods = function (game, mods) {
-  var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
-    ? model.gwCampaignConnectedClients()
-    : [];
-
-  if (connectedClients.length) {
-    var playerMods = [];
-    _.forEach(connectedClients, function (client) {
-      if (!client || client.role !== "viewer") {
-        return;
-      }
-
-      var playerData =
-        game.findCoopPlayerInventoryData &&
-        game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
-
-      if (!playerData || !playerData.inventory) {
-        return;
-      }
-
-      playerMods = playerMods.concat(playerData.inventory.mods);
-    });
-
-    return playerMods;
-  }
-
-  return mods;
-};
-
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
 ], function (GW, gwoUnit, gwoAI, gwoSpecs) {
+  var getAIUnitMapPath = function (titans, aiInUse) {
+    var append = titans ? "_x1.json" : ".json";
+
+    switch (aiInUse) {
+      case "Queller":
+        return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
+      case "Penchant":
+        return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
+      default:
+        return "/pa/ai/unit_maps/ai_unit_map" + append;
+    }
+  };
+
+  var getAIUnitMapDestinationPath = function (titans, aiPath) {
+    var append = titans ? "_x1.json" : ".json";
+    return aiPath + "unit_maps/ai_unit_map" + append;
+  };
+
+  var guardianMods = function (game, mods) {
+    var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+      ? model.gwCampaignConnectedClients()
+      : [];
+
+    if (connectedClients.length) {
+      var playerMods = [];
+      _.forEach(connectedClients, function (client) {
+        if (!client || client.role !== "viewer") {
+          return;
+        }
+
+        var playerData =
+          game.findCoopPlayerInventoryData &&
+          game.findCoopPlayerInventoryData({
+            id: client.id,
+            name: client.name,
+          });
+
+        if (!playerData || !playerData.inventory) {
+          return;
+        }
+
+        playerMods = playerMods.concat(playerData.inventory.mods);
+      });
+
+      return playerMods;
+    }
+
+    return mods;
+  };
+
   var clusterArmyIndex = function (ai) {
     var guardians = ai.mirrorMode;
     if (guardians) {

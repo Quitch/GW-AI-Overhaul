@@ -1,32 +1,32 @@
-var getInventoryAiMods = function (inventory) {
-  if (!inventory) {
-    return [];
-  }
-
-  if (_.isFunction(inventory.aiMods)) {
-    return inventory.aiMods();
-  }
-
-  return inventory.aiMods || [];
-};
-
-var aiInUse = function (alignment) {
-  var galaxy = model.game().galaxy();
-  var originSystem = galaxy.stars()[galaxy.origin()].system();
-  if (originSystem.gwaio) {
-    if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
-      return originSystem.gwaio.aiAlly;
-    }
-    return originSystem.gwaio.ai;
-  }
-  return "Titans";
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 ], function (refereeAIPaths, gwoDifficulty, subcommanderTech) {
+  var getInventoryAiMods = function (inventory) {
+    if (!inventory) {
+      return [];
+    }
+
+    if (_.isFunction(inventory.aiMods)) {
+      return inventory.aiMods();
+    }
+
+    return inventory.aiMods || [];
+  };
+
+  var aiInUse = function (alignment) {
+    var galaxy = model.game().galaxy();
+    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    if (originSystem.gwaio) {
+      if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
+        return originSystem.gwaio.aiAlly;
+      }
+      return originSystem.gwaio.ai;
+    }
+    return "Titans";
+  };
+
   var getDifficultySettings = function (difficultyName) {
     return _.find(gwoDifficulty.difficulties, {
       difficultyName: difficultyName,
