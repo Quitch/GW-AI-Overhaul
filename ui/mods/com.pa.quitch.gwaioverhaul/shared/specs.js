@@ -144,7 +144,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           if (loaded) {
             loaded = _.cloneDeep(loaded);
           }
-          specs[value + specTag] = loaded || attribute;
+          specs[value + specTag] = loaded !== undefined ? loaded : attribute;
           return attribute;
         },
         tag: function (attribute) {
