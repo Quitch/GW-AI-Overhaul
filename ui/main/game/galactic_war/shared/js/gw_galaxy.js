@@ -211,7 +211,7 @@ define([
       var bestStar = 0;
       var bestDistance = Infinity;
       _.forEach(self.stars(), function (star, index) {
-        var distance = star.coordinates()[0] + -star.coordinates()[1];
+        var distance = star.coordinates()[0] - star.coordinates()[1];
         if (distance < bestDistance) {
           bestDistance = distance;
           bestStar = index;
