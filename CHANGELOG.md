@@ -9,7 +9,7 @@
 - Minor improvements to code performance
 - Fix a base game bug where the game could crash if you selected an isolated star
 - Distribution of planets will now always be the same for a given seed when system scaling is disabled
-- Properly notify UI of unit removal
+- Properly notify UI of unit removal from inventory
 - Stopped Legonis Machina boss overriding certain difficulty settings
 
 ## v6.2.0 - 2026-07-13
