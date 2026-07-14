@@ -246,9 +246,7 @@ define([
           model.gwoDifficultySettings &&
           !model.gwoDifficultySettings.systemScaling()
         ) {
-          systemSize = Math.floor(
-            Math.random() * 10 + 1 + coopSystemPlayerBonus
-          );
+          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
         } else {
           systemSize = star.distance() + coopSystemPlayerBonus;
         }

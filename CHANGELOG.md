@@ -8,6 +8,7 @@
 - Align fight button detection with the latest game logic
 - Minor improvements to code performance
 - Fix a base game bug where the game could crash if you selected an isolated star
+- Distribution of planets will now always be the same for a given seed when system scaling is disabled
 
 ## v6.2.0 - 2026-07-13
 
