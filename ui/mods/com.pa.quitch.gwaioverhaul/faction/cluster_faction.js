@@ -41,7 +41,7 @@ define([
   var swarm = "!LOC:Swarm";
   var economist = "!LOC:Economist";
   var random = "!LOC:Random";
-  var minions = [
+  var workerMinions = [
     {
       name: workerName,
       character: uber,
@@ -133,6 +133,8 @@ define([
       personality: personalities.economist,
       commander: workerCommander,
     },
+  ];
+  var securityMinions = [
     {
       name: securityName,
       character: uber,
@@ -225,9 +227,10 @@ define([
       commander: securityCommander,
     },
   ];
+  var minions = workerMinions.concat(securityMinions);
 
-  var randomWorkerPersonality = _.sample(minions).personality;
-  var randomSecurityPersonality = _.sample(minions).personality;
+  var randomWorkerPersonality = _.sample(workerMinions).personality;
+  var randomSecurityPersonality = _.sample(securityMinions).personality;
   var randomWorkerAI = {
     name: workerName,
     character: random,
