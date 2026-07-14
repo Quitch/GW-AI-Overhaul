@@ -130,7 +130,6 @@ define([
   var randomAI = {
     name: "Aryst0krat",
     character: "!LOC:Random",
-    color: factionColour,
     personality: randomPersonality,
     commander:
       "/pa/units/commanders/imperial_aryst0krat/imperial_aryst0krat.json",

@@ -127,7 +127,6 @@ define([
   var randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
-    color: factionColour,
     personality: randomPersonality,
     commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
   };
