@@ -14,6 +14,10 @@ function gwoUI() {
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
+      // Holds a name-keyed snapshot of the last saved settings, e.g.
+      // { hardcore: true, factionScaling: false, ... } - see
+      // restorePreviousSettings/snapshotSettingsForSave below. May still
+      // contain a legacy positional array for players with v6.20 and earlier saves.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -54,7 +58,7 @@ function gwoUI() {
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
+      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain legacy previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
@@ -71,6 +75,19 @@ function gwoUI() {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
+    // Restores previously-saved settings onto `settings`.
+    //
+    // previousSettings is expected to be a name-keyed object, e.g.
+    // { hardcore: true, factionScaling: false, ... }, so a value is only
+    // ever written into the setting it was saved from - adding, removing,
+    // or reordering settings in gwoDifficultySettings can never cause a
+    // saved value to be silently assigned to the wrong setting.
+    //
+    // Older saves (from before this change) may still be sitting in
+    // localStorage as a positional array. That legacy shape is supported
+    // on a best-effort basis: restore only proceeds if the array length
+    // still matches the current setting count, otherwise it's treated as
+    // unusable and skipped rather than risk a mismatched restore.
     var restorePreviousSettings = function (settings) {
       var previousSettings = settings.previousSettings();
 
@@ -80,12 +97,32 @@ function gwoUI() {
 
       var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
-      _.forEach(settingNames, function (name, i) {
-        settings[name](previousSettings[i]);
-      });
+
+      if (_.isArray(previousSettings)) {
+        if (previousSettings.length !== settingNames.length) {
+          console.error(
+            "gwoUI: previousSettings is a legacy array of length " +
+              previousSettings.length +
+              " but there are now " +
+              settingNames.length +
+              " settings; skipping restore to avoid misassigning values."
+          );
+          return settings;
+        }
+        _.forEach(settingNames, function (name, i) {
+          settings[name](previousSettings[i]);
+        });
+      } else {
+        _.forEach(settingNames, function (name) {
+          if (_.has(previousSettings, name)) {
+            settings[name](previousSettings[name]);
+          }
+        });
+      }
+
       _.defer(function () {
         $("#gwo-personality-picker")
-          .selectpicker("val", model.gwoDifficultySettings.personalityTags())
+          .selectpicker("val", settings.personalityTags())
           .trigger("change");
       });
       model.playerFactionIndex(settings.playerFaction());

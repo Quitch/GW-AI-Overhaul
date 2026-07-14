@@ -221,15 +221,14 @@ function gwoSetup() {
     };
 
     var saveDifficultySettings = function () {
-      var difficultySettings = model.gwoDifficultySettings;
-      var previousSettings = difficultySettings.previousSettings();
-      var settingNames = _.keys(model.gwoDifficultySettings);
+      var settings = model.gwoDifficultySettings;
+      var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
-      difficultySettings.personalityTags($("#gwo-personality-picker").val());
-      _.forEach(settingNames, function (name, i) {
-        previousSettings[i] = difficultySettings[name]();
+      var snapshot = {};
+      _.forEach(settingNames, function (name) {
+        snapshot[name] = settings[name]();
       });
-      difficultySettings.previousSettings.valueHasMutated();
+      settings.previousSettings(snapshot);
     };
 
     var warGenerationAttempts = 0;
