@@ -40,7 +40,7 @@ define(function () {
     removeUnits: function (remove) {
       var self = this;
       _.forEach(remove, function (unit) {
-        _.pull(self.units(), unit);
+        self.units.remove(unit);
       });
     },
     addAIMods: function (aiMods) {
