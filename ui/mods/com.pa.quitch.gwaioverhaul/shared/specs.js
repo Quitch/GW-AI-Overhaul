@@ -45,17 +45,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       }
     }
 
-    spec = _.cloneDeep(spec);
-    delete spec.base_spec;
-
+    var specCopy = _.omit(spec, "base_spec");
     var flattenedSpec = flattenBaseSpecs(base, specs, tag);
 
-    if (_.isArray(spec.ammo_id) && flattenedSpec.ammo_id) {
-      // avoid issues with _.merge()
+    if (_.isArray(specCopy.ammo_id) && flattenedSpec.ammo_id) {
       delete flattenedSpec.ammo_id;
     }
 
-    return _.merge({}, flattenedSpec, spec);
+    return _.cloneDeep(_.merge({}, flattenedSpec, specCopy));
   };
 
   return {
