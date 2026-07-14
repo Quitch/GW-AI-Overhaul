@@ -148,13 +148,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return attribute;
         },
         tag: function (attribute) {
+          var jsonIndex = attribute.lastIndexOf(".json");
+          if (jsonIndex === -1) {
+            console.warn(
+              "tag op: attribute does not contain '.json':",
+              attribute
+            );
+            return attribute + specTag;
+          }
           // hack fix for mirrorMode due to the fact that
           // `attribute` was retaining the previous `specTag`s
           // and I couldn't track down why
-          var cleanAttribute = attribute.slice(
-            0,
-            attribute.lastIndexOf(".json") + 5
-          );
+          var cleanAttribute = attribute.slice(0, jsonIndex + 5);
           return cleanAttribute + specTag;
         },
         pull: function (attribute, value) {
