@@ -52,13 +52,11 @@ var GWGalaxy = function () {
       checked[node] = true;
 
       for (var neighbor of nodeNeighbors) {
-        var other = neighbor;
-
-        if (checked[other]) {
+        if (checked[neighbor]) {
           continue;
         } // ignore loop
 
-        if (other === to) {
+        if (neighbor === to) {
           var previous = _.last(path);
 
           // prevent pathing through unexplored systems for fog of war
@@ -69,19 +67,19 @@ var GWGalaxy = function () {
             continue;
           }
 
-          path.push(other);
+          path.push(neighbor);
 
           return path;
         }
 
-        var otherStar = self.stars()[other];
+        var otherStar = self.stars()[neighbor];
         var otherVisited = otherStar.history().length > 0;
 
         var valid = noFog ? otherVisited : otherStar.explored();
 
         if (valid) {
           var newPath = _.cloneDeep(path);
-          newPath.push(other);
+          newPath.push(neighbor);
 
           workList.push(newPath);
         }
