@@ -191,11 +191,14 @@ define(function () {
     getTag: function (context, name, def) {
       var self = this;
       var tags = self.tags();
+      var mutated = false;
+
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
         if (_.isUndefined(def)) {
           return;
         }
         tags[context] = {};
+        mutated = true;
       }
       var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
@@ -203,15 +206,23 @@ define(function () {
           return;
         }
         tagContext[name] = def;
+        mutated = true;
+      }
+
+      if (mutated) {
+        self.tags.valueHasMutated();
       }
       return tagContext[name];
     },
     setTag: function (context, name, value) {
       var self = this;
       var tags = self.tags();
+      var mutated = false;
+
       if (_.isUndefined(value)) {
         if (tags[context]) {
           delete tags[context][name];
+          mutated = true;
           if (_.isEmpty(tags[context])) {
             delete tags[context];
           }
@@ -221,6 +232,11 @@ define(function () {
           tags[context] = {};
         }
         tags[context][name] = value;
+        mutated = true;
+      }
+
+      if (mutated) {
+        self.tags.valueHasMutated();
       }
     },
   };
