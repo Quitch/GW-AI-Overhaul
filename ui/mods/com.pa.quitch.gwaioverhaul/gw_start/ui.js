@@ -75,7 +75,7 @@ function gwoUI() {
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain legacy previous settings integrity
+      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.20 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
@@ -100,7 +100,7 @@ function gwoUI() {
     // or reordering settings in gwoDifficultySettings can never cause a
     // saved value to be silently assigned to the wrong setting.
     //
-    // Older saves (from before this change) may still be sitting in
+    // Older saves (v6.20 and earlier) may still be sitting in
     // localStorage as a positional array. That legacy shape is supported
     // on a best-effort basis: restore only proceeds if the array length
     // still matches the current setting count, otherwise it's treated as
