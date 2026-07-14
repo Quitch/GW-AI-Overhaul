@@ -7,6 +7,7 @@
 - Correct an error in the base game's move validation
 - Align fight button detection with the latest game logic
 - Minor improvements to code performance
+- Fix a base game bug where the game could crash if you selected an isolated star
 
 ## v6.2.0 - 2026-07-13
 
