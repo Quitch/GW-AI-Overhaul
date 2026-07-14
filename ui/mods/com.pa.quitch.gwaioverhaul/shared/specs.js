@@ -33,26 +33,44 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   };
 
   var flattenBaseSpecs = function (spec, specs, tag) {
-    if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
-      return _.cloneDeep(spec);
-    }
+    var visited = [];
 
-    var base = specs[spec.base_spec];
-    if (!base) {
-      base = specs[spec.base_spec + tag];
-      if (!base) {
+    function resolve(spec) {
+      if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
         return _.cloneDeep(spec);
       }
+
+      var baseKey = spec.base_spec;
+      var base = specs[baseKey];
+      if (!base) {
+        baseKey = spec.base_spec + tag;
+        base = specs[baseKey];
+        if (!base) {
+          return _.cloneDeep(spec);
+        }
+      }
+
+      if (visited.indexOf(baseKey) !== -1) {
+        console.warn(
+          'flattenBaseSpecs: circular base_spec reference detected at "' +
+            baseKey +
+            '" - stopping inheritance here.'
+        );
+        return _.cloneDeep(_.omit(spec, "base_spec"));
+      }
+      visited.push(baseKey);
+
+      var specCopy = _.omit(spec, "base_spec");
+      var flattenedSpec = resolve(base);
+
+      if (_.isArray(specCopy.ammo_id) && flattenedSpec.ammo_id) {
+        delete flattenedSpec.ammo_id;
+      }
+
+      return _.cloneDeep(_.merge({}, flattenedSpec, specCopy));
     }
 
-    var specCopy = _.omit(spec, "base_spec");
-    var flattenedSpec = flattenBaseSpecs(base, specs, tag);
-
-    if (_.isArray(specCopy.ammo_id) && flattenedSpec.ammo_id) {
-      delete flattenedSpec.ammo_id;
-    }
-
-    return _.cloneDeep(_.merge({}, flattenedSpec, specCopy));
+    return resolve(spec);
   };
 
   function isNullish(value) {
