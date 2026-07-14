@@ -108,6 +108,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             loaded = _.cloneDeep(loaded);
           }
           specs[value + specTag] = loaded || attribute;
+          return attribute;
         },
         tag: function (attribute) {
           // hack fix for mirrorMode due to the fact that
