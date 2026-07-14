@@ -4,7 +4,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var orderOfOperations = function (mods) {
     var operationsContainer = {};
     operationsContainer.otherOperations = [];
-    var orderedOperations = ["replace", "multiplyOrAdd", "multiply", "add"]; // multiplyOrAdd before multiply because it can create new values
+    var orderedOperations = ["replace", "multiplyOrCreate", "multiply", "add"];
 
     _.forEach(mods, function (mod) {
       var operationName = mod.op;
@@ -193,7 +193,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return attribute;
         },
-        multiplyOrAdd: function (attribute, value) {
+        multiplyOrCreate: function (attribute, value) {
           return _.isNumber(attribute) ? attribute * value : value;
         },
       };

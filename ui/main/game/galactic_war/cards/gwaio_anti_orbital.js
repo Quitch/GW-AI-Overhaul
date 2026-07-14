@@ -39,13 +39,13 @@ define([
             {
               file: ammo,
               path: "armor_damage_map.AT_Orbital",
-              op: "multiplyOrAdd",
+              op: "multiplyOrCreate",
               value: 2,
             },
             {
               file: ammo,
               path: "armor_damage_map.AT_Air",
-              op: "multiplyOrAdd",
+              op: "multiplyOrCreate",
               value: 0.5,
             },
           ];
