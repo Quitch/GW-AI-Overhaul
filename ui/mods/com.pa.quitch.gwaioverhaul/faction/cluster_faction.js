@@ -228,7 +228,6 @@ define([
     },
   ];
   var minions = workerMinions.concat(securityMinions);
-
   var randomWorkerPersonality = _.sample(workerMinions).personality;
   var randomSecurityPersonality = _.sample(securityMinions).personality;
   var randomWorkerAI = {

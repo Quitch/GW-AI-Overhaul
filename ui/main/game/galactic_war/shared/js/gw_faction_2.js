@@ -139,7 +139,6 @@ define([
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
-
   var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Shadowdaemon",

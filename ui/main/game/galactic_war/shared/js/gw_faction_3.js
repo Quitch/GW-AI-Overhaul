@@ -139,7 +139,6 @@ define([
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
   ];
-
   var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Enderstryke71",

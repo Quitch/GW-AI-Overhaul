@@ -142,7 +142,6 @@ define([
       commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
     },
   ];
-
   var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Stelarch",

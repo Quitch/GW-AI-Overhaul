@@ -142,7 +142,6 @@ define([
         "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json",
     },
   ];
-
   var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Aryst0krat",
