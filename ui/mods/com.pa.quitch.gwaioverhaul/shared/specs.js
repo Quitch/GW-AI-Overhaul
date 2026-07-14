@@ -55,6 +55,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     return _.cloneDeep(_.merge({}, flattenedSpec, specCopy));
   };
 
+  function isNullish(value) {
+    return value === undefined || value === null;
+  }
+
   return {
     mod: function (specs, mods, specTag) {
       var load = function (specId) {
@@ -89,7 +93,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
         push: function (attribute, value) {
           if (!_.isArray(attribute)) {
-            attribute = _.isEmpty(attribute) ? [] : [attribute];
+            attribute = isNullish(attribute) ? [] : [attribute];
           }
           if (_.isArray(value)) {
             attribute = attribute.concat(value);
@@ -122,7 +126,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
         pull: function (attribute, value) {
           if (!_.isArray(attribute)) {
-            attribute = _.isEmpty(attribute) ? [] : [attribute];
+            attribute = isNullish(attribute) ? [] : [attribute];
           }
           var args = [attribute, value];
           if (_.isArray(value)) {
@@ -143,7 +147,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         // New op to prepend to arrays
         prepend: function prepend(attribute, value) {
           if (!_.isArray(attribute)) {
-            attribute = _.isEmpty(attribute) ? [] : [attribute];
+            attribute = isNullish(attribute) ? [] : [attribute];
           }
           attribute.unshift(value);
           if (_.isArray(value)) {
