@@ -59,19 +59,16 @@ define([
     })
   );
   var randomCharacter = "!LOC:Random";
-  var randomWorkerAI = {
-    name: workerName,
-    character: randomCharacter,
-    personality: _.sample(minions).personality,
-    commander: workerCommander,
-  };
-  var randomSecurityAI = {
-    name: securityName,
-    character: randomCharacter,
-    personality: _.sample(minions).personality,
-    commander: securityCommander,
-  };
-  minions.push(randomWorkerAI, randomSecurityAI);
+  var randomAIs = _.map(roles, function (role) {
+    return {
+      name: role.name,
+      character: randomCharacter,
+      personality: _.sample(characterTypes).personality,
+      commander: role.commander,
+    };
+  });
+
+  minions = minions.concat(randomAIs);
 
   return {
     name: factionName,
