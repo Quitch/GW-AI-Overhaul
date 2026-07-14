@@ -154,6 +154,8 @@ define(function () {
         return id === card.id && !card.unique;
       });
     },
+    // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
+    // or in case the game itself uses it in the future. No idea why id() is a function here.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {
