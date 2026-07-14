@@ -34,14 +34,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var flattenBaseSpecs = function (spec, specs, tag) {
     if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
-      return spec;
+      return _.cloneDeep(spec);
     }
 
     var base = specs[spec.base_spec];
     if (!base) {
       base = specs[spec.base_spec + tag];
       if (!base) {
-        return spec;
+        return _.cloneDeep(spec);
       }
     }
 
