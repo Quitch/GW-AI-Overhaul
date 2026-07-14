@@ -57,11 +57,9 @@ var GWGalaxy = function () {
         } // ignore loop
 
         if (neighbor === to) {
-          var previous = _.last(path);
-
           // prevent pathing through unexplored systems for fog of war
 
-          var explored = self.stars()[previous].explored() || toExplored;
+          var explored = self.stars()[node].explored() || toExplored;
 
           if (!explored && !noFog) {
             continue;
