@@ -25,21 +25,18 @@ define([
     {
       name: "Potbelly79",
       character: "!LOC:Grunt",
-      color: factionColour,
       personality: personalities.grunt,
       commander: "/pa/units/commanders/quad_potbelly79/quad_potbelly79.json",
     },
     {
       name: "Raventhornn",
       character: "!LOC:Dragoon",
-      color: factionColour,
       personality: personalities.dragoon,
       commander: "/pa/units/commanders/quad_raventhornn/quad_raventhornn.json",
     },
     {
       name: "SacrificialLamb",
       character: "!LOC:Uber",
-      color: factionColour,
       personality: personalities.uber,
       commander:
         "/pa/units/commanders/quad_sacrificiallamb/quad_sacrificiallamb.json",
@@ -47,14 +44,12 @@ define([
     {
       name: "Spartandano",
       character: "!LOC:Fabber",
-      color: factionColour,
       personality: personalities.fabber,
       commander: "/pa/units/commanders/quad_spartandano/quad_spartandano.json",
     },
     {
       name: "Xenosentry",
       character: "!LOC:Defender",
-      color: factionColour,
       personality: personalities.defender,
       commander:
         "/pa/units/commanders/quad_spiderofmean/quad_spiderofmean.json",
@@ -62,28 +57,24 @@ define([
     {
       name: "TheFlax",
       character: "!LOC:Luddite",
-      color: factionColour,
       personality: personalities.luddite,
       commander: "/pa/units/commanders/quad_theflax/quad_theflax.json",
     },
     {
       name: "Tokamaktech",
       character: "!LOC:Technologist",
-      color: factionColour,
       personality: personalities.technologist,
       commander: "/pa/units/commanders/quad_tokamaktech/quad_tokamaktech.json",
     },
     {
       name: "Twoboots",
       character: "!LOC:Cautious",
-      color: factionColour,
       personality: personalities.cautious,
       commander: "/pa/units/commanders/quad_twoboots/quad_twoboots.json",
     },
     {
       name: "XenosentryPrime",
       character: "!LOC:Aggressive",
-      color: factionColour,
       personality: personalities.aggressive,
       commander:
         "/pa/units/commanders/quad_xenosentryprime/quad_xenosentryprime.json",
@@ -91,42 +82,36 @@ define([
     {
       name: "Xinthar",
       character: "!LOC:Rush",
-      color: factionColour,
       personality: personalities.rush,
       commander: "/pa/units/commanders/quad_xinthar/quad_xinthar.json",
     },
     {
       name: "Beast",
       character: "!LOC:Turtle",
-      color: factionColour,
       personality: personalities.turtle,
       commander: "/pa/units/commanders/raptor_beast/raptor_beast.json",
     },
     {
       name: "Beniesk",
       character: "!LOC:Original",
-      color: factionColour,
       personality: personalities.synchronousOriginal,
       commander: "/pa/units/commanders/raptor_beniesk/raptor_beniesk.json",
     },
     {
       name: "Locust",
       character: "!LOC:Absurd",
-      color: factionColour,
       personality: personalities.absurd,
       commander: "/pa/units/commanders/quad_locust/quad_locust.json",
     },
     {
       name: "Zancrowe",
       character: "!LOC:Factory",
-      color: factionColour,
       personality: personalities.factory,
       commander: "/pa/units/commanders/quad_zancrowe/quad_zancrowe.json",
     },
     {
       name: "Damubbster",
       character: "!LOC:Swarm",
-      color: factionColour,
       personality: personalities.swarm,
       commander:
         "/pa/units/commanders/raptor_damubbster/raptor_damubbster.json",
@@ -134,7 +119,6 @@ define([
     {
       name: "Raizell",
       character: "!LOC:Economist",
-      color: factionColour,
       personality: personalities.economist,
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },

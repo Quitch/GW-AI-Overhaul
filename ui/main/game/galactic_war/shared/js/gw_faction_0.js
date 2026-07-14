@@ -25,28 +25,24 @@ define([
     {
       name: "Able",
       character: "!LOC:Armor",
-      color: factionColour,
       personality: personalities.armour,
       commander: "/pa/units/commanders/imperial_able/imperial_able.json",
     },
     {
       name: "AceAI",
       character: "!LOC:Roboticist",
-      color: factionColour,
       personality: personalities.roboticist,
       commander: "/pa/units/commanders/imperial_aceal/imperial_aceal.json",
     },
     {
       name: "Alpha",
       character: "!LOC:Uber",
-      color: factionColour,
       personality: personalities.uber,
       commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
     },
     {
       name: "Chronoblip",
       character: "!LOC:Fabber",
-      color: factionColour,
       personality: personalities.fabber,
       commander:
         "/pa/units/commanders/imperial_chronoblip/imperial_chronoblip.json",
@@ -54,21 +50,18 @@ define([
     {
       name: "Mjon",
       character: "!LOC:Defender",
-      color: factionColour,
       personality: personalities.defender,
       commander: "/pa/units/commanders/imperial_mjon/imperial_mjon.json",
     },
     {
       name: "Delta",
       character: "!LOC:Luddite",
-      color: factionColour,
       personality: personalities.luddite,
       commander: "/pa/units/commanders/imperial_delta/imperial_delta.json",
     },
     {
       name: "Enzomatrix",
       character: "!LOC:Technologist",
-      color: factionColour,
       personality: personalities.technologist,
       commander:
         "/pa/units/commanders/imperial_enzomatrix/imperial_enzomatrix.json",
@@ -76,7 +69,6 @@ define([
     {
       name: "Fiveleafclover",
       character: "!LOC:Cautious",
-      color: factionColour,
       personality: personalities.cautious,
       commander:
         "/pa/units/commanders/imperial_fiveleafclover/imperial_fiveleafclover.json",
@@ -84,35 +76,30 @@ define([
     {
       name: "Gamma",
       character: "!LOC:Aggressive",
-      color: factionColour,
       personality: personalities.aggressive,
       commander: "/pa/units/commanders/imperial_gamma/imperial_gamma.json",
     },
     {
       name: "Gnugfur",
       character: "!LOC:Rush",
-      color: factionColour,
       personality: personalities.rush,
       commander: "/pa/units/commanders/imperial_gnugfur/imperial_gnugfur.json",
     },
     {
       name: "Nemicus",
       character: "!LOC:Turtle",
-      color: factionColour,
       personality: personalities.turtle,
       commander: "/pa/units/commanders/raptor_nemicus/raptor_nemicus.json",
     },
     {
       name: "Kapowaz",
       character: "!LOC:Original",
-      color: factionColour,
       personality: personalities.legonisMachinaOriginal,
       commander: "/pa/units/commanders/imperial_kapowaz/imperial_kapowaz.json",
     },
     {
       name: "JT100010117",
       character: "!LOC:Absurd",
-      color: factionColour,
       personality: personalities.absurd,
       commander:
         "/pa/units/commanders/imperial_jt100010117/imperial_jt100010117.json",
@@ -120,7 +107,6 @@ define([
     {
       name: "Kevin4001",
       character: "!LOC:Factory",
-      color: factionColour,
       personality: personalities.factory,
       commander:
         "/pa/units/commanders/imperial_kevin4001/imperial_kevin4001.json",
@@ -128,7 +114,6 @@ define([
     {
       name: "Mostlikely",
       character: "!LOC:Swarm",
-      color: factionColour,
       personality: personalities.swarm,
       commander:
         "/pa/units/commanders/imperial_mostlikely/imperial_mostlikely.json",
@@ -136,7 +121,6 @@ define([
     {
       name: "Nagasher",
       character: "!LOC:Economist",
-      color: factionColour,
       personality: personalities.economist,
       commander:
         "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json",

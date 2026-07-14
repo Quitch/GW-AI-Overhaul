@@ -52,7 +52,6 @@ define([
         return {
           name: role.name,
           character: type.character,
-          color: factionColour,
           personality: type.personality,
           commander: role.commander,
         };
@@ -63,14 +62,12 @@ define([
   var randomWorkerAI = {
     name: workerName,
     character: randomCharacter,
-    color: factionColour,
     personality: _.sample(minions).personality,
     commander: workerCommander,
   };
   var randomSecurityAI = {
     name: securityName,
     character: randomCharacter,
-    color: factionColour,
     personality: _.sample(minions).personality,
     commander: securityCommander,
   };
