@@ -194,6 +194,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return attribute;
         },
         multiplyOrCreate: function (attribute, value) {
+          if (!_.isNumber(attribute) && !isNullish(attribute)) {
+            console.warn(
+              "multiplyOrCreate: attribute is not a number or nullish, leaving unchanged:",
+              attribute
+            );
+            return attribute;
+          }
           return _.isNumber(attribute) ? attribute * value : value;
         },
       };
