@@ -150,7 +150,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         tag: function (attribute) {
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
-            console.warn(
+            console.error(
               "tag op: attribute does not contain '.json':",
               attribute
             );
@@ -180,7 +180,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           if (!_.isArray(value)) {
             value = [value, ""];
           }
-          return attribute.replace(value[0], value[1]);
+          return attribute.split(value[0]).join(value[1]);
         },
         // New op to prepend to arrays
         prepend: function prepend(attribute, value) {
