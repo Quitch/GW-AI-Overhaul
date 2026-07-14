@@ -170,7 +170,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           if (_.isArray(value)) {
             args = [attribute].concat(value);
           }
-          return _.pull.apply(this, args);
+          return _.pull.apply(null, args);
         },
         // New op to remove text in a string
         wipe: function (attribute, value) {
