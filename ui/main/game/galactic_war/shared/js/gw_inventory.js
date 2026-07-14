@@ -182,12 +182,10 @@ define(function () {
       }
       return self.cards().length < self.maxCards();
     },
-
     handIsFull: function () {
       var self = this;
       return self.cards().length >= self.maxCards();
     },
-
     // Get a tag value.  When called during card processing, an empty
     // context will be replaced with the current card.
     getTag: function (context, name, def) {
