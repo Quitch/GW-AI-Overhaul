@@ -7,7 +7,7 @@ define(function () {
     self.mods = ko.observableArray();
     self.maxCards = ko.observable(0);
     self.cards = ko.observableArray();
-    self.minions = ko.observableArray([]);
+    self.minions = ko.observableArray();
     self.tags = ko.observable({});
   };
 
