@@ -98,6 +98,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return attribute;
         },
+        // unsafe, but mods can run whatever they want anyway, so this is just a convenience for them
         eval: function (attribute, value) {
           return new Function("attribute", value)(attribute);
         },
