@@ -200,7 +200,7 @@ define([
       });
 
       self.stars(
-        _.map(builder.stars || [], function (star) {
+        _.map(builder.stars, function (star) {
           var result = new GWStar();
           result.coordinates(star.concat([rng()]));
           return result;
