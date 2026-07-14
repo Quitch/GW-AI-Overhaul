@@ -72,6 +72,7 @@ define(function () {
       // Clean-up function that gets called when everything is done.
       var finishApplyCards = function () {
         delete self.getTag;
+        delete self.setTag;
         delete self.applyCards;
         delete self.isApplyingCards;
         if (dirty) {
