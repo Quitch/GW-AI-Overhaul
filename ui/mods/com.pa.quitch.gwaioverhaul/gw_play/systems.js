@@ -328,7 +328,7 @@ function gwoSystemChanges() {
               newAI.foes = _.rest(ai.foes);
               delete newAI.minions;
 
-              var factionColor = normalizedColor(GWFactions[ai.faction]);
+              var factionColor = normalizedColor(GWFactions[newAI.faction]);
               system.ownerColor(factionColor.concat(3));
 
               star.ai(newAI);
