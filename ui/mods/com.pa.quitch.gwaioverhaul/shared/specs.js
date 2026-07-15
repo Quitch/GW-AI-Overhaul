@@ -106,14 +106,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return attribute * value;
         },
         add: function (attribute, value) {
-          if (!_.isNumber(attribute) && !_.isString(attribute)) {
+          if (
+            !_.isNumber(attribute) &&
+            !_.isString(attribute) &&
+            !isNullish(attribute)
+          ) {
             console.warn(
               "multiply add: attribute is not a number, string, or nullish, leaving unchanged:",
               attribute
             );
             return attribute;
-          }
-          if (isNullish(attribute)) {
+          } else if (isNullish(attribute)) {
             return value;
           }
           return attribute + value;
