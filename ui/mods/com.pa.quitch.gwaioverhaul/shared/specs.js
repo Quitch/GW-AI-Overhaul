@@ -68,6 +68,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         delete flattenedSpec.ammo_id;
       }
 
+      // Specs contain only plain objects, arrays, and primitive values, so we should not need to
+      // cloneDeep() here. _.merge() will create a new object and not mutate either of its arguments.
       return _.merge({}, flattenedSpec, specCopy);
     }
 
