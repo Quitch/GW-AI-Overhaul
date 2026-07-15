@@ -33,7 +33,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   };
 
   var flattenBaseSpecs = function (spec, specs, tag) {
-    var visited = [];
+    var visited = {}; // Use object as hash map
 
     function resolve(spec) {
       if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
@@ -50,7 +50,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       }
 
-      if (visited.indexOf(baseKey) !== -1) {
+      if (visited[baseKey]) {
         console.warn(
           'flattenBaseSpecs: circular base_spec reference detected at "' +
             baseKey +
@@ -58,7 +58,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         );
         return _.cloneDeep(_.omit(spec, "base_spec"));
       }
-      visited.push(baseKey);
+      visited[baseKey] = true;
 
       var specCopy = _.omit(spec, "base_spec");
       var flattenedSpec = resolve(base);
