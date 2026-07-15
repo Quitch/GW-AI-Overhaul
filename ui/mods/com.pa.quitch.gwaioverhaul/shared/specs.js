@@ -63,7 +63,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var specCopy = _.omit(spec, "base_spec");
       var flattenedSpec = resolve(base);
 
-      if (_.isArray(specCopy.ammo_id) && flattenedSpec.ammo_id) {
+      // Fixes a bug with torpedo launcher ammo where _.merge() smears a string over an array
+      if (_.isArray(specCopy.ammo_id) && !_.isArray(flattenedSpec.ammo_id)) {
         delete flattenedSpec.ammo_id;
       }
 
