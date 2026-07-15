@@ -158,7 +158,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
               "tag op: attribute does not contain '.json':",
               attribute
             );
-            return attribute + specTag;
+            return attribute;
           }
           // hack fix for mirrorMode due to the fact that
           // `attribute` was retaining the previous `specTag`s
