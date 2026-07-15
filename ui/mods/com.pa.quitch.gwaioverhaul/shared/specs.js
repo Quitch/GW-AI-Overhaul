@@ -32,6 +32,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     return orderedMods;
   };
 
+  // Arrays in specs represent complete lists (ammo layers, unit type tags,
+  // target priorities, muzzle bones, recon items, etc). A derived spec's
+  // array should fully replace the base's array rather than be merged
+  // index-by-index, which is _.merge's default array behavior and the root
+  // cause of the ammo_id string/array corruption this used to special-case
+  // around (and which silently corrupts any other array field too, once the
+  // base and child arrays differ in length).
+  function replaceArrays(destVal, srcVal) {
+    if (_.isArray(srcVal)) {
+      return _.cloneDeep(srcVal);
+    }
+    // returning undefined falls through to _.merge's default behavior
+    // for everything that isn't an array (objects still merge key-by-key,
+    // which is the desired behavior for things like `events` and `audio`).
+  }
+
   var flattenBaseSpecs = function (spec, specs, tag) {
     var visited = {}; // Use object as hash map
 
@@ -40,13 +56,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         return _.cloneDeep(spec);
       }
 
-      var baseKey = spec.base_spec;
+      var baseKey = spec.base_spec + tag;
       var base = specs[baseKey];
       if (!base) {
-        baseKey = spec.base_spec + tag;
+        baseKey = spec.base_spec;
         base = specs[baseKey];
         if (!base) {
-          return _.cloneDeep(spec);
+          console.warn(
+            'flattenBaseSpecs: base_spec "' +
+              spec.base_spec +
+              '" not found in specs (checked "' +
+              spec.base_spec +
+              tag +
+              '" and "' +
+              spec.base_spec +
+              '") - dropping base_spec reference and returning spec as-is.'
+          );
+          return _.cloneDeep(_.omit(spec, "base_spec"));
         }
       }
 
@@ -63,14 +89,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var specCopy = _.omit(spec, "base_spec");
       var flattenedSpec = resolve(base);
 
-      // Fixes a bug with torpedo launcher ammo where _.merge() smears a string over an array
-      if (_.isArray(specCopy.ammo_id) && flattenedSpec.ammo_id) {
-        delete flattenedSpec.ammo_id;
-      }
-
-      // Specs contain only plain objects, arrays, and primitive values, so we should not need to
-      // cloneDeep() here. _.merge() will create a new object and not mutate either of its arguments.
-      return _.merge({}, flattenedSpec, specCopy);
+      // Specs contain only plain objects, arrays, and primitive values.
+      // _.merge() creates a new object and does not mutate its arguments, and
+      // replaceArrays() clones any array it returns, so no extra cloneDeep()
+      // is needed here.
+      return _.merge({}, flattenedSpec, specCopy, replaceArrays);
     }
 
     return resolve(spec);
