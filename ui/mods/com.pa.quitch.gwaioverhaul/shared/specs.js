@@ -209,6 +209,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
       };
 
+      // Ops that mutate their target in place or write to `specs` directly, and so
+      // still do something useful when applied to the whole spec with no path.
+      // Every other op only returns a new value, so a pathless mod for it is a no-op.
+      var opsWithoutPath = {
+        eval: true,
+        clone: true,
+      };
+
       var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
@@ -278,8 +286,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         if (path.length && path[0]) {
           var leaf = cookStep(path[0], mod.op);
           spec[leaf] = ops[mod.op](spec[leaf], mod.value);
-        } else {
+        } else if (opsWithoutPath[mod.op]) {
           ops[mod.op](spec, mod.value);
+        } else {
+          console.error(
+            "Invalid mod: op '" +
+              mod.op +
+              "' requires a path, but none was given",
+            mod
+          );
         }
       };
 
