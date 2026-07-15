@@ -215,7 +215,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
 
         var originalPath = (mod.path || "").split(".");
-        var path = originalPath.reverse();
+        var path = originalPath.slice().reverse();
 
         var reportError = function (error, step) {
           console.error(
