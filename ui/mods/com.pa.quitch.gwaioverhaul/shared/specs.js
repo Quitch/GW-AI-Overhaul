@@ -257,7 +257,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         };
 
         while (path.length > 1) {
-          var level = path.pop();
+          var level = cookStep(path.pop());
           cookStep(level);
 
           if (_.isString(spec[level])) {
