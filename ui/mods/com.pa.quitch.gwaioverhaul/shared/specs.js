@@ -68,7 +68,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         delete flattenedSpec.ammo_id;
       }
 
-      return _.cloneDeep(_.merge({}, flattenedSpec, specCopy));
+      return _.merge({}, flattenedSpec, specCopy);
     }
 
     return resolve(spec);
