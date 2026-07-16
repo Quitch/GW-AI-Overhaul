@@ -154,6 +154,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return value;
         },
         merge: function (attribute, value) {
+          if (!_.isObject(attribute)) {
+            console.error(
+              "merge: attribute is not an object. Leaving unchanged:",
+              attribute
+            );
+            return attribute;
+          }
           return _.assign({}, attribute, value);
         },
         push: function (attribute, value) {
