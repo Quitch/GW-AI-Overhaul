@@ -114,7 +114,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
         }
         var result = specs[taggedId];
-        if (result) {
+        if (
+          result &&
+          Object.prototype.hasOwnProperty.call(result, "base_spec")
+        ) {
           specs[taggedId] = result = flattenBaseSpecs(result, specs, specTag);
         }
         return result;
