@@ -47,10 +47,10 @@ function gwoSetup() {
 
     var aiFaction = 0;
     var getQuellerAITag = function (faction) {
-      if (faction) {
+      if (_.isNumber(faction)) {
         // Minions don't have a faction number so use the previous one
         // which should be from the primary AI and accurate
-        aiFaction = Number.parseInt(faction);
+        aiFaction = faction;
       }
 
       var quellerTag = "queller";

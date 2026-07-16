@@ -11,6 +11,7 @@
 - Distribution of planets will now always be the same for a given seed when system scaling is disabled
 - Properly notify UI of unit removal from inventory
 - Stopped Legonis Machina boss overriding certain difficulty settings
+- Queller not always loading the right personality when playing as Legonis Machina
 
 ## v6.2.0 - 2026-07-13
 
