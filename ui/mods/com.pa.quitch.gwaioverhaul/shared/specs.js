@@ -332,7 +332,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       };
 
       var orderedMods = orderOfOperations(mods);
-      _.forEach(orderedMods, applyMod);
+      _.forEach(orderedMods, function (mod) {
+        try {
+          applyMod(mod);
+        } catch (e) {
+          console.error("specs.mod: applyMod threw, skipping mod", mod, e);
+        }
+      });
     },
     additionalSpecs: [
       gwoUnit.fireflyAmmo,
