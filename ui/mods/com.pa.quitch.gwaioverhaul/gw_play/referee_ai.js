@@ -350,7 +350,7 @@ define([
       inventory = inventory || model.game().inventory();
 
       // Apply AI mods to the file
-      if (aisToModify == "All") {
+      if (aisToModify === "All") {
         if (isSubCommanderTechFile) {
           // File's source is not an AI path so it needs to be copied to the AIs' paths
           updatedFilePaths.push(
