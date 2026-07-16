@@ -141,7 +141,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             !isNullish(attribute)
           ) {
             console.warn(
-              "multiply add: attribute is not a number, string, or nullish, leaving unchanged:",
+              "add op: attribute is not a number, string, or nullish. Leaving unchanged:",
               attribute
             );
             return attribute;
