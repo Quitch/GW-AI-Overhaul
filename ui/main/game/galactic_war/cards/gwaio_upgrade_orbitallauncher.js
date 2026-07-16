@@ -66,6 +66,7 @@ define([
               toBuild: unit,
               idToMod: "builders",
               value: "OrbitalLauncher",
+              matchAll: true,
             },
             {
               type: "factory",
@@ -73,6 +74,7 @@ define([
               toBuild: unit,
               idToMod: "priority",
               value: 100,
+              matchAll: true,
             },
           ];
         })

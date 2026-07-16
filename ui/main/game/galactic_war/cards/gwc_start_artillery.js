@@ -64,6 +64,7 @@ define([
               toBuild: structure,
               idToMod: "builders",
               value: "Commander",
+              matchAll: true,
             };
           });
           inventory.addAIMods(aiMods);

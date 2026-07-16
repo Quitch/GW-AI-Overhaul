@@ -111,6 +111,7 @@ define([
               toBuild: structure,
               idToMod: "builders",
               value: "OrbitalFabber",
+              matchAll: true,
             };
           });
           inventory.addAIMods(aiMods);

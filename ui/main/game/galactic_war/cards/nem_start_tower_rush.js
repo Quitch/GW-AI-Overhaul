@@ -138,6 +138,7 @@ define([
                   toBuild: structure,
                   idToMod: "builders",
                   value: "Commander",
+                  matchAll: true,
                 },
                 {
                   type: "fabber",
@@ -145,6 +146,7 @@ define([
                   toBuild: structure,
                   idToMod: "builders",
                   value: "AnyBasicFabber",
+                  matchAll: true,
                 },
               ];
             })

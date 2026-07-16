@@ -126,6 +126,7 @@ define([
               toBuild: structure,
               idToMod: "builders",
               value: "Commander",
+              matchAll: true,
             });
           });
           var mobileLand = [
@@ -146,6 +147,7 @@ define([
               toBuild: unit,
               idToMod: "builders",
               value: "UnitCannon",
+              matchAll: true,
             });
           });
           inventory.addAIMods(aiMods);

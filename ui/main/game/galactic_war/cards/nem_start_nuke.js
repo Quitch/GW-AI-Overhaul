@@ -113,6 +113,7 @@ define([
               toBuild: "NukeSilo",
               idToMod: "builders",
               value: "AnyBasicFabber",
+              matchAll: true,
             },
           ]);
         }

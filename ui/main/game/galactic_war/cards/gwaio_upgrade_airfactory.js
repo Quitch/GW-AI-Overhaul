@@ -58,6 +58,7 @@ define([
               toBuild: unit,
               idToMod: "builders",
               value: "BasicAirFactory",
+              matchAll: true,
             },
             {
               type: "factory",
@@ -65,6 +66,7 @@ define([
               toBuild: unit,
               idToMod: "priority",
               value: 97,
+              matchAll: true,
             },
           ];
         })
