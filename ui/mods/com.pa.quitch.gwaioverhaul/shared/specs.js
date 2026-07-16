@@ -169,13 +169,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return new Function("attribute", value)(attribute);
         },
         clone: function (attribute, value) {
-          var loaded = load(attribute);
+          var loaded = _.isString(attribute) ? load(attribute) : attribute;
           if (loaded) {
             loaded = _.cloneDeep(loaded);
           }
           specs[value + specTag] = loaded !== undefined ? loaded : attribute;
           return attribute;
         },
+
         tag: function (attribute) {
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
