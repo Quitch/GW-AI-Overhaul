@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (inventory, gwoUnit) {
-  var clusterCommanderTech = [
+  var clusterSubCommanderTech = [
     {
       file: gwoUnit.colonel,
       path: "tools.0.spec_id",
@@ -89,9 +89,9 @@ define([
       ],
     },
   ];
-  _.forEach(inventory.clusterCommanders, function (commander) {
+  _.forEach(inventory.clusterSubCommanders, function (commander) {
     // match with key Commander stats
-    clusterCommanderTech.push(
+    clusterSubCommanderTech.push(
       {
         file: commander,
         path: "build_metal_cost",
@@ -150,6 +150,6 @@ define([
   });
 
   return {
-    clusterCommanders: clusterCommanderTech,
+    clusterCommanders: clusterSubCommanderTech,
   };
 });
