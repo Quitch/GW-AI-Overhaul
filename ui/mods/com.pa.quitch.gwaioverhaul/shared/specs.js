@@ -127,7 +127,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         multiply: function (attribute, value) {
           if (!_.isNumber(attribute)) {
             console.warn(
-              "multiply op: attribute is not a number, leaving unchanged:",
+              "multiply: attribute is not a number. Leaving unchanged:",
               attribute
             );
             return attribute;
@@ -141,7 +141,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             !isNullish(attribute)
           ) {
             console.warn(
-              "add op: attribute is not a number, string, or nullish. Leaving unchanged:",
+              "add: attribute is not a number, string, or nullish. Leaving unchanged:",
               attribute
             );
             return attribute;
@@ -183,7 +183,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         tag: function (attribute) {
           if (!_.isString(attribute)) {
             console.error(
-              "tag op: attribute is not a string, leaving unchanged:",
+              "tag: attribute is not a string. Leaving unchanged:",
               attribute
             );
             return attribute;
@@ -191,7 +191,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
             console.error(
-              "tag op: attribute does not contain '.json', leaving unchanged:",
+              "tag: attribute does not contain '.json'. Leaving unchanged:",
               attribute
             );
             return attribute;
@@ -236,7 +236,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         multiplyOrCreate: function (attribute, value) {
           if (!_.isNumber(attribute) && !isNullish(attribute)) {
             console.warn(
-              "multiplyOrCreate: attribute is not a number or nullish, leaving unchanged:",
+              "multiplyOrCreate: attribute is not a number or nullish. Leaving unchanged:",
               attribute
             );
             return attribute;
