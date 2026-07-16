@@ -126,7 +126,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var ops = {
         multiply: function (attribute, value) {
           if (!_.isNumber(attribute)) {
-            console.warn(
+            console.error(
               "multiply: attribute is not a number. Leaving unchanged:",
               attribute
             );
@@ -140,7 +140,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             !_.isString(attribute) &&
             !isNullish(attribute)
           ) {
-            console.warn(
+            console.error(
               "add: attribute is not a number, string, or nullish. Leaving unchanged:",
               attribute
             );
