@@ -100,6 +100,9 @@ function gwoBugfixes() {
     };
 
     var checkVersion = function (fixedVersion) {
+      if (!gwoSettings.version) {
+        return -1;
+      }
       return gwoSettings.version.localeCompare(fixedVersion, undefined, {
         numeric: true,
         sensitivity: "base",
