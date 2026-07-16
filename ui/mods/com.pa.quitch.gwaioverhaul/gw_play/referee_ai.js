@@ -22,9 +22,6 @@ define([
           } else {
             _.forEach(build.build_conditions, function (testArray) {
               _.forEach(testArray, function (test) {
-                // matchAll is the only way to reach every test unconditionally:
-                // an omitted refId must not match by itself, since test[refId]
-                // and refValue would then both simply be undefined.
                 var testMatches =
                   matchAll ||
                   (!_.isUndefined(refId) && test[refId] === refValue);
