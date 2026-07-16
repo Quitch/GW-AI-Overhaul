@@ -105,16 +105,23 @@ function gwoSetup() {
 
     var selectMinion = function (minions, minionName) {
       var isCluster = minionName === "Worker" || minionName === "Security";
+      var selectedMinion;
       if (isCluster) {
-        return _.cloneDeep(
+        selectedMinion = _.cloneDeep(
           _.sample(
             _.filter(minions, {
               name: minionName,
             })
           )
         );
+      } else {
+        selectedMinion = _.cloneDeep(_.sample(minions));
       }
-      return _.cloneDeep(_.sample(minions));
+      if (_.isUndefined(selectedMinion)) {
+        console.error("No minion found for faction " + aiFaction);
+        warGenerationFailed = true;
+      }
+      return selectedMinion;
     };
 
     var randomPercentageAdjustment = function (min, max) {
