@@ -64,17 +64,17 @@ define(function () {
     },
 
     loadoutIcon: function (loadoutId) {
-      var highestDifficultyDefeated = ko
-        .observableArray()
-        .extend({ local: "gwaio_victory_" + loadoutId });
+      var raw = window.localStorage["gwaio_victory_" + loadoutId];
+      var decoded = raw ? JSON.parse(raw) : undefined;
+
       var icon;
       var hardcore = false;
 
-      if (_.isArray(highestDifficultyDefeated())) {
-        icon = highestDifficultyDefeated()[0];
-        hardcore = highestDifficultyDefeated()[1];
+      if (_.isArray(decoded)) {
+        icon = decoded[0];
+        hardcore = decoded[1];
       } else {
-        icon = highestDifficultyDefeated();
+        icon = decoded;
       }
 
       var iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
