@@ -125,7 +125,7 @@ function gwoSetup() {
     };
 
     var randomPercentageAdjustment = function (min, max) {
-      return Math.random() * (max - min) + min;
+      return _.random(min, max, true);
     };
 
     var aiEcoMinionReduction = function (
@@ -176,7 +176,7 @@ function gwoSetup() {
     };
 
     var gameModeEnabled = function (gameModeChance) {
-      return Math.random() * 100 <= gameModeChance;
+      return _.random(100) <= gameModeChance;
     };
 
     var enableAnEradicationModeTypes = function (ai) {
@@ -241,7 +241,7 @@ function gwoSetup() {
       model.makeGameBusy(false);
       enableGoToWar(true);
       if (warGenerationAttempts < 5) {
-        model.newGameSeed(Math.floor(Math.random() * 1000000).toString());
+        model.newGameSeed(Math.floor(_.random(1000000, true)).toString());
         model.navToNewGame();
       } else {
         warGenerationAttempts = 0;
