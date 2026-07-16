@@ -192,17 +192,19 @@ function gwoSetup() {
     };
 
     var startCardAllyCompatibility = function (game) {
+      var gwoStarCardsWhichBreakAllies = [
+        "nem_start_deepspace",
+        "gwaio_start_tourist",
+      ];
       // global for modder compatibility
-      model.gwoStarCardsWhichBreakAllies = _.isArray(
+      gwoStarCardsWhichBreakAllies = _.isArray(
         model.gwoStarCardsWhichBreakAllies
       )
-        ? model.gwoStarCardsWhichBreakAllies
-        : [];
-      model.gwoStarCardsWhichBreakAllies.push(
-        "nem_start_deepspace",
-        "gwaio_start_tourist"
-      );
-      return _.some(model.gwoStarCardsWhichBreakAllies, function (card) {
+        ? gwoStarCardsWhichBreakAllies.concat(
+            model.gwoStarCardsWhichBreakAllies
+          )
+        : gwoStarCardsWhichBreakAllies;
+      return _.some(gwoStarCardsWhichBreakAllies, function (card) {
         return card === game.inventory().cards()[0].id;
       });
     };
@@ -611,6 +613,8 @@ function gwoSetup() {
               0
             );
 
+            var startCardBreaksAllies = startCardAllyCompatibility(game);
+
             // Set up the AI
             _.forEach(teamInfo, function (info) {
               var boss = info.boss;
@@ -799,8 +803,6 @@ function gwoSetup() {
                 });
 
                 // Set up allied commander
-                var startCardBreaksAllies = startCardAllyCompatibility(game);
-
                 if (
                   !startCardBreaksAllies &&
                   gameModeEnabled(difficulty.alliedCommanderChance())
