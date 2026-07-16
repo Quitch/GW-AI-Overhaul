@@ -311,11 +311,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             // a real "missing" signal for any op without a listed default, so
             // ops like multiplyOrCreate/add can tell "absent" from "present"
             // and run their own create-on-missing behavior correctly.
-            spec[step] = op
-              ? Object.prototype.hasOwnProperty.call(opDefaults, op)
-                ? opDefaults[op]
-                : undefined
-              : {};
+            if (!op) {
+              spec[step] = {};
+            } else if (Object.prototype.hasOwnProperty.call(opDefaults, op)) {
+              spec[step] = opDefaults[op];
+            } else {
+              spec[step] = undefined;
+            }
           }
           return step;
         };
