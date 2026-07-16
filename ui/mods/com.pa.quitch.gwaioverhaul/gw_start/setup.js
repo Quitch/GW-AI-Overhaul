@@ -180,15 +180,12 @@ function gwoSetup() {
     };
 
     var enableAnEradicationModeTypes = function (ai) {
-      while (
-        !ai.eradicationModeSubCommanders &&
-        !ai.eradicationModeFactories &&
-        !ai.eradicationModeFabbers
-      ) {
-        ai.eradicationModeSubCommanders = gameModeEnabled(50);
-        ai.eradicationModeFactories = gameModeEnabled(50);
-        ai.eradicationModeFabbers = gameModeEnabled(50);
-      }
+      var numberOfModes = _.random(1, 3);
+      var modes = ["SubCommanders", "Factories", "Fabbers"];
+
+      _.forEach(_.sample(modes, numberOfModes), function (mode) {
+        ai["eradicationMode" + mode] = true;
+      });
     };
 
     var startCardAllyCompatibility = function (game) {
