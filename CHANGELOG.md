@@ -14,6 +14,7 @@
 - Queller not always loading the right personality when playing as Legonis Machina
 - Remove pointless Commander modifiers from Cluster systems
 - Possible issue with a player's start card not receiving all the information it should in a co-op game
+- Fix numerous flaws in various mod functions which could cause issues if fed malformed data
 
 ## v6.2.0 - 2026-07-13
 
