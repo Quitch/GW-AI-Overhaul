@@ -288,6 +288,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         var opDefaults = {
           push: [],
           pull: [],
+          merge: {}, // merge's own check treats {} as a valid empty base
         };
 
         var cookStep = function (step, op) {
@@ -302,7 +303,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             path.length &&
             !Object.prototype.hasOwnProperty.call(spec, step)
           ) {
-            spec[step] = op ? opDefaults[op] || {} : {};
+            // Intermediate (non-leaf) segments always need a traversable {}
+            // (op is undefined for those calls). The leaf segment should see
+            // a real "missing" signal for any op without a listed default, so
+            // ops like multiplyOrCreate/add can tell "absent" from "present"
+            // and run their own create-on-missing behavior correctly.
+            spec[step] = op
+              ? Object.prototype.hasOwnProperty.call(opDefaults, op)
+                ? opDefaults[op]
+                : undefined
+              : {};
           }
           return step;
         };
