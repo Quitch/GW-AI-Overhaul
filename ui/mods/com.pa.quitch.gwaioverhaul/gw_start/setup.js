@@ -50,14 +50,7 @@ function gwoSetup() {
 
     api.mods.getMounted("client", true).then(onModsMounted);
 
-    var aiFaction = 0;
     var getQuellerAITag = function (faction) {
-      if (_.isNumber(faction)) {
-        // Minions don't have a faction number so use the previous one
-        // which should be from the primary AI and accurate
-        aiFaction = faction;
-      }
-
       var quellerTag = "queller";
       var legonisMachinaTags = ["tank", quellerTag];
       var foundationTags = ["air", quellerTag];
@@ -65,7 +58,7 @@ function gwoSetup() {
       var revenantsTags = ["orbital", quellerTag];
       var clusterTags = ["land", quellerTag];
 
-      switch (aiFaction) {
+      switch (faction) {
         case 0:
           return legonisMachinaTags;
         case 1:
@@ -77,7 +70,7 @@ function gwoSetup() {
         case 4:
           return clusterTags;
         default:
-          console.error("Undefined faction:", aiFaction);
+          console.error("Undefined faction:", faction);
           warGenerationFailed = true;
       }
     };
@@ -107,7 +100,7 @@ function gwoSetup() {
       return minionCount + Math.floor(bossCommanders / 2);
     };
 
-    var selectMinion = function (minions, minionName) {
+    var selectMinion = function (minions, faction, minionName) {
       var isCluster = minionName === "Worker" || minionName === "Security";
       var selectedMinion;
       if (isCluster) {
@@ -122,7 +115,7 @@ function gwoSetup() {
         selectedMinion = _.cloneDeep(_.sample(minions));
       }
       if (_.isUndefined(selectedMinion)) {
-        console.error("No minion found for faction " + aiFaction);
+        console.error("No minion found for faction " + faction);
         warGenerationFailed = true;
       }
       return selectedMinion;
@@ -374,7 +367,7 @@ function gwoSetup() {
           ai.penchantName = penchantValues.penchantName;
         };
 
-        var setAIPersonality = function (ai, difficulty) {
+        var setAIPersonality = function (ai, difficulty, faction) {
           var personalityId = "#gwo-personality-picker";
           var personality = ai.personality;
 
@@ -410,7 +403,7 @@ function gwoSetup() {
             case "Queller":
               personality.personality_tags =
                 personality.personality_tags.concat(
-                  getQuellerAITag(ai.faction)
+                  getQuellerAITag(faction)
                 );
               break;
             case "Titans":
@@ -655,7 +648,7 @@ function gwoSetup() {
               var difficulty = model.gwoDifficultySettings;
 
               // Set up boss system
-              setAIPersonality(boss, difficulty);
+              setAIPersonality(boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
@@ -701,8 +694,8 @@ function gwoSetup() {
                 }
 
                 _.times(totalMinions, function () {
-                  var minion = selectMinion(minions, clusterType);
-                  setAIPersonality(minion, difficulty);
+                  var minion = selectMinion(minions, boss.faction, clusterType);
+                  setAIPersonality(minion, difficulty, boss.faction);
                   minion.econ_rate = aiEconRate(maxDist, playerCount);
                   if (boss.isCluster === true) {
                     minion.commanderCount = numMinions;
@@ -734,7 +727,7 @@ function gwoSetup() {
 
                 numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
-                setAIPersonality(ai, difficulty);
+                setAIPersonality(ai, difficulty, ai.faction);
                 ai.econ_rate = aiEconRate(dist, playerCount);
 
                 ai.inventory = [];
@@ -772,8 +765,8 @@ function gwoSetup() {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
                     _.times(totalMinions, function () {
-                      var minion = selectMinion(minions, clusterType);
-                      setAIPersonality(minion, difficulty);
+                      var minion = selectMinion(minions, ai.faction, clusterType);
+                      setAIPersonality(minion, difficulty, ai.faction);
                       minion.econ_rate = aiEconRate(dist, playerCount);
                       if (ai.isCluster === true) {
                         minion.commanderCount = clusterWorkers;
@@ -794,10 +787,11 @@ function gwoSetup() {
                     availableFactions = _.shuffle(availableFactions);
                     var foeFaction = availableFactions.shift();
                     var foeCommander = selectMinion(
-                      GWFactions[foeFaction].minions
+                      GWFactions[foeFaction].minions,
+                      foeFaction
                     );
                     foeCommander.faction = foeFaction;
-                    setAIPersonality(foeCommander, difficulty);
+                    setAIPersonality(foeCommander, difficulty, foeCommander.faction);
                     foeCommander.econ_rate = aiEconRate(dist, playerCount);
                     var numFoes = Math.round((numMinions + 1) / 2);
                     // Cluster Workers get additional commanders in place of armies
@@ -832,7 +826,8 @@ function gwoSetup() {
                 ) {
                   var playerFaction = model.playerFactionIndex();
                   var allyCommander = selectMinion(
-                    GWFactions[playerFaction].minions
+                    GWFactions[playerFaction].minions,
+                    playerFaction
                   );
                   allyCommander.faction = playerFaction;
                   ai.ally = allyCommander;
