@@ -5,7 +5,7 @@ define([
   var applyAiMods = function (json, mods) {
     var ops = {
       // fabber/factory/platoon only
-      append: function (value, toBuild, idToMod, refId, refValue) {
+      append: function (value, toBuild, idToMod, refId, refValue, matchAll) {
         _.forEach(json.build_list, function (build) {
           if (build.to_build !== toBuild) {
             return;
@@ -13,7 +13,7 @@ define([
 
           var validMatch =
             (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            build[idToMod];
+            Object.prototype.hasOwnProperty.call(build, idToMod);
 
           if (validMatch && _.isArray(build[idToMod])) {
             build[idToMod] = build[idToMod].concat(value);
@@ -22,7 +22,13 @@ define([
           } else {
             _.forEach(build.build_conditions, function (testArray) {
               _.forEach(testArray, function (test) {
-                if (test[refId] === refValue) {
+                // matchAll is the only way to reach every test unconditionally:
+                // an omitted refId must not match by itself, since test[refId]
+                // and refValue would then both simply be undefined.
+                var testMatches =
+                  matchAll ||
+                  (!_.isUndefined(refId) && test[refId] === refValue);
+                if (testMatches) {
                   if (_.isArray(test[idToMod])) {
                     test[idToMod] = test[idToMod].concat(value);
                   } else if (test[idToMod]) {
@@ -35,7 +41,7 @@ define([
         });
       },
       // fabber/factory/platoon only
-      prepend: function (value, toBuild, idToMod, refId, refValue) {
+      prepend: function (value, toBuild, idToMod, refId, refValue, matchAll) {
         _.forEach(json.build_list, function (build) {
           if (build.to_build !== toBuild) {
             return;
@@ -43,7 +49,7 @@ define([
 
           var validMatch =
             (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            build[idToMod];
+            Object.prototype.hasOwnProperty.call(build, idToMod);
 
           if (validMatch && _.isArray(build[idToMod])) {
             build[idToMod] = value.concat(build[idToMod]);
@@ -52,7 +58,10 @@ define([
           } else {
             _.forEach(build.build_conditions, function (testArray) {
               _.forEach(testArray, function (test) {
-                if (test[refId] === refValue) {
+                var testMatches =
+                  matchAll ||
+                  (!_.isUndefined(refId) && test[refId] === refValue);
+                if (testMatches) {
                   if (_.isArray(test[idToMod])) {
                     test[idToMod] = value.concat(test[idToMod]);
                   } else if (test[idToMod]) {
@@ -65,7 +74,7 @@ define([
         });
       },
       // fabber/factory/platoon only
-      replace: function (value, toBuild, idToMod, refId, refValue) {
+      replace: function (value, toBuild, idToMod, refId, refValue, matchAll) {
         _.forEach(json.build_list, function (build) {
           if (build.to_build !== toBuild) {
             return;
@@ -73,14 +82,17 @@ define([
 
           var validMatch =
             (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            build[idToMod];
+            Object.prototype.hasOwnProperty.call(build, idToMod);
 
           if (validMatch) {
             build[idToMod] = value;
           } else {
             _.forEach(build.build_conditions, function (testArray) {
               _.forEach(testArray, function (test) {
-                if (test[refId] === refValue && test[idToMod]) {
+                var testMatches =
+                  matchAll ||
+                  (!_.isUndefined(refId) && test[refId] === refValue);
+                if (testMatches && test[idToMod]) {
                   test[idToMod] = value;
                 }
               });
@@ -129,7 +141,14 @@ define([
     };
 
     _.forEach(mods, function (mod) {
-      ops[mod.op](mod.value, mod.toBuild, mod.idToMod, mod.refId, mod.refValue);
+      ops[mod.op](
+        mod.value,
+        mod.toBuild,
+        mod.idToMod,
+        mod.refId,
+        mod.refValue,
+        mod.matchAll
+      );
     });
   };
 
@@ -314,6 +333,9 @@ define([
           toBuild: commander,
           idToMod: "priority",
           value: 0,
+          // No specific build_conditions entry to scope to here — zero out
+          // priority wherever it's set for this build, top-level or nested.
+          matchAll: true,
         };
       });
     };
