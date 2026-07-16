@@ -21,21 +21,23 @@ function gwoSetup() {
       return enableGoToWar() && !!model.activeStartCard();
     });
 
-    api.mods.getMounted("client", true).then(function (mods) {
+    var onSelectedNamesChanged = function (names) {
+      // No systems selected
+      if (_.isEmpty(names)) {
+        enableGoToWar(false);
+      } else {
+        enableGoToWar(true);
+      }
+    };
+
+    var onModsMounted = function (mods) {
       var modMounted = function (modIdentifier) {
         return _.some(mods, { identifier: modIdentifier });
       };
       // Shared Systems for Galactic War
       if (modMounted("com.wondible.pa.gw_shared_systems")) {
         sharedSystemsForGalacticWarActive = true;
-        model.selectedNames.subscribe(function (names) {
-          // No systems selected
-          if (_.isEmpty(names)) {
-            enableGoToWar(false);
-          } else {
-            enableGoToWar(true);
-          }
-        });
+        model.selectedNames.subscribe(onSelectedNamesChanged);
         // Remove features this mod can't use
         $("#system-scaling").closest(".gwo-game-option-row").remove();
         model.gwoDifficultySettings.systemScaling(false);
@@ -44,7 +46,9 @@ function gwoSetup() {
         $("#large-planets").closest(".gwo-game-option-row").remove();
         model.gwoDifficultySettings.largePlanets(false);
       }
-    });
+    };
+
+    api.mods.getMounted("client", true).then(onModsMounted);
 
     var aiFaction = 0;
     var getQuellerAITag = function (faction) {
@@ -336,7 +340,8 @@ function gwoSetup() {
 
         var gwoDealStartCard = function (params) {
           var result = $.Deferred();
-          loaded.then(function () {
+
+          var onCardsLoaded = function () {
             var card = _.find(processedStartCards, { id: params.id });
             if (!card) {
               console.error("No matching start card ID found");
@@ -353,7 +358,9 @@ function gwoSetup() {
             card.keep && card.keep(deal, context);
             card.releaseContext && card.releaseContext(context);
             result.resolve(product, deal);
-          });
+          };
+
+          loaded.then(onCardsLoaded);
           return result;
         };
 
@@ -495,7 +502,13 @@ function gwoSetup() {
             largePlanets: largePlanets,
           });
 
-          var dealStartCard = buildGalaxy.then(function (galaxy) {
+          var onStartCardDealt = function (startCardProduct) {
+            game
+              .inventory()
+              .cards.push(startCardProduct || { id: startCard.id() });
+          };
+
+          var onGalaxyBuilt = function (galaxy) {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
@@ -505,14 +518,12 @@ function gwoSetup() {
               inventory: game.inventory(),
               galaxy: galaxy,
               star: galaxy.stars()[galaxy.origin()],
-            }).then(function (startCardProduct) {
-              game
-                .inventory()
-                .cards.push(startCardProduct || { id: startCard.id() });
-            });
-          });
+            }).then(onStartCardDealt);
+          };
 
-          var moveIn = dealStartCard.then(function () {
+          var dealStartCard = buildGalaxy.then(onGalaxyBuilt);
+
+          var onStartCardApplied = function () {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
@@ -521,9 +532,11 @@ function gwoSetup() {
             var star = galaxy.stars()[game.currentStar()];
             star.explored(true);
             game.gameState(GW.Game.gameStates.active);
-          });
+          };
 
-          var populate = moveIn.then(function () {
+          var moveIn = dealStartCard.then(onStartCardApplied);
+
+          var onMovedIn = function () {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
@@ -544,6 +557,57 @@ function gwoSetup() {
               neutralStars = 4;
             }
 
+            var handleSpread = function (star, ai) {
+              var team = teams[ai.team];
+              // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
+              // to preserve personality_tags
+              var makeWorker = function () {
+                if (team.workers) {
+                  _.assign(ai, _.cloneDeep(_.sample(team.workers)));
+                } else if (team.remainingMinions) {
+                  var minion = _.sample(
+                    team.remainingMinions.length
+                      ? team.remainingMinions
+                      : team.faction.minions
+                  );
+                  _.assign(ai, _.cloneDeep(minion));
+                  _.remove(team.remainingMinions, { name: ai.name });
+                }
+                return $.when(ai);
+              };
+
+              var onWorkerMade = function () {
+                if (team.workers) {
+                  _.remove(team.workers, { name: ai.name });
+                }
+                ai.faction = teamInfo[ai.team].faction;
+                teamInfo[ai.team].workers.push({
+                  ai: ai,
+                  star: star,
+                });
+              };
+
+              return makeWorker().then(onWorkerMade);
+            };
+
+            var handleBoss = function (star, ai) {
+              var onBossMade = function () {
+                ai.faction = teamInfo[ai.team].faction;
+                teamInfo[ai.team].boss = ai;
+              };
+
+              return GWTeams.makeBoss(
+                star,
+                ai,
+                teams[ai.team],
+                systemTemplates
+              ).then(onBossMade);
+            };
+
+            var returnTeamInfo = function () {
+              return teamInfo;
+            };
+
             return GWBreeder.populate({
               galaxy: game.galaxy(),
               teams: teams,
@@ -551,53 +615,15 @@ function gwoSetup() {
               orderedSpawn: false,
               spawn: function () {},
               canSpread: _.constant(true),
-              spread: function (star, ai) {
-                var team = teams[ai.team];
-                // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
-                // to preserve personality_tags
-                var makeWorker = function () {
-                  if (team.workers) {
-                    _.assign(ai, _.cloneDeep(_.sample(team.workers)));
-                  } else if (team.remainingMinions) {
-                    var minion = _.sample(
-                      team.remainingMinions.length
-                        ? team.remainingMinions
-                        : team.faction.minions
-                    );
-                    _.assign(ai, _.cloneDeep(minion));
-                    _.remove(team.remainingMinions, { name: ai.name });
-                  }
-                  return $.when(ai);
-                };
-                return makeWorker().then(function () {
-                  if (team.workers) {
-                    _.remove(team.workers, { name: ai.name });
-                  }
-                  ai.faction = teamInfo[ai.team].faction;
-                  teamInfo[ai.team].workers.push({
-                    ai: ai,
-                    star: star,
-                  });
-                });
-              },
-              boss: function (star, ai) {
-                return GWTeams.makeBoss(
-                  star,
-                  ai,
-                  teams[ai.team],
-                  systemTemplates
-                ).then(function () {
-                  ai.faction = teamInfo[ai.team].faction;
-                  teamInfo[ai.team].boss = ai;
-                });
-              },
+              spread: handleSpread,
+              boss: handleBoss,
               breedToOrigin: game.isTutorial(),
-            }).then(function () {
-              return teamInfo;
-            });
-          });
+            }).then(returnTeamInfo);
+          };
 
-          var finishAis = populate.then(function (teamInfo) {
+          var populate = moveIn.then(onMovedIn);
+
+          var onPopulated = function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
@@ -910,9 +936,11 @@ function gwoSetup() {
                 loreEntry += 1;
               }
             });
-          });
+          };
 
-          var warInfo = finishAis.then(function () {
+          var finishAis = populate.then(onPopulated);
+
+          var onAisFinished = function () {
             if (warGenerationFailed === true) {
               return;
             }
@@ -951,9 +979,11 @@ function gwoSetup() {
             // We don't need to apply the hotfix as it's for v5.22.1 and earlier
             originSystem.gwaio.clusterFixed = true;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
-          });
+          };
 
-          var finishSetup = warInfo.then(function () {
+          var warInfo = finishAis.then(onAisFinished);
+
+          var onWarInfoStored = function () {
             if (
               model.makeGameBusy() !== busyToken ||
               warGenerationFailed === true
@@ -979,31 +1009,37 @@ function gwoSetup() {
               });
             }
             return game;
-          });
+          };
 
-          finishSetup
-            .then(function () {
-              if (warGenerationFailed === true) {
-                warGenerationFailure();
-                return;
-              }
+          var finishSetup = warInfo.then(onWarInfoStored);
 
-              saveDifficultySettings();
+          var onGameSaved = function () {
+            model.lastSceneUrl(
+              "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+            );
+            window.location.href =
+              "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+          };
 
-              var save = GW.manifest.saveGame(model.newGame());
-              model.activeGameId(model.newGame().id);
-              save.then(function () {
-                model.lastSceneUrl(
-                  "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
-                );
-                window.location.href =
-                  "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
-              });
-            })
-            .fail(function (err) {
-              console.error(err);
+          var onSetupFinished = function () {
+            if (warGenerationFailed === true) {
               warGenerationFailure();
-            });
+              return;
+            }
+
+            saveDifficultySettings();
+
+            var save = GW.manifest.saveGame(model.newGame());
+            model.activeGameId(model.newGame().id);
+            save.then(onGameSaved);
+          };
+
+          var onWarGenerationError = function (err) {
+            console.error(err);
+            warGenerationFailure();
+          };
+
+          finishSetup.then(onSetupFinished).fail(onWarGenerationError);
         };
       }
     );
