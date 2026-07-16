@@ -13,6 +13,7 @@ function gwoSetup() {
     var enableGoToWar = ko.observable(true);
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
+    var warGenerationFailed;
 
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
@@ -72,7 +73,8 @@ function gwoSetup() {
         case 4:
           return clusterTags;
         default:
-          throw new Error("Undefined faction: " + aiFaction);
+          console.error("Undefined faction:", aiFaction);
+          warGenerationFailed = true;
       }
     };
 
@@ -403,7 +405,8 @@ function gwoSetup() {
                 personality.personality_tags.concat(titansAITags);
               break;
             default:
-              throw new Error("Undefined AI type: " + difficulty.ai());
+              console.error("Undefined AI type:", difficulty.ai());
+              warGenerationFailed = true;
           }
         };
 
@@ -415,7 +418,7 @@ function gwoSetup() {
           }
 
           enableGoToWar(false);
-          var warGenerationFailed = false;
+          warGenerationFailed = false;
           warGenerationAttempts++;
 
           var busyToken = {};
@@ -606,7 +609,7 @@ function gwoSetup() {
               var boss = info.boss;
 
               if (!boss) {
-                console.warn(
+                console.error(
                   "No AI boss found for faction " +
                     info.faction +
                     ", terminating war generation"
@@ -972,24 +975,29 @@ function gwoSetup() {
             return game;
           });
 
-          finishSetup.then(function () {
-            if (warGenerationFailed === true) {
+          finishSetup
+            .then(function () {
+              if (warGenerationFailed === true) {
+                warGenerationFailure();
+                return;
+              }
+
+              saveDifficultySettings();
+
+              var save = GW.manifest.saveGame(model.newGame());
+              model.activeGameId(model.newGame().id);
+              save.then(function () {
+                model.lastSceneUrl(
+                  "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+                );
+                window.location.href =
+                  "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+              });
+            })
+            .fail(function (err) {
+              console.error(err);
               warGenerationFailure();
-              return;
-            }
-
-            saveDifficultySettings();
-
-            var save = GW.manifest.saveGame(model.newGame());
-            model.activeGameId(model.newGame().id);
-            save.then(function () {
-              model.lastSceneUrl(
-                "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
-              );
-              window.location.href =
-                "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
             });
-          });
         };
       }
     );
