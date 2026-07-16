@@ -220,14 +220,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return attribute.split(value[0]).join(value[1]);
         },
         // New op to prepend to arrays
-        prepend: function prepend(attribute, value) {
+        prepend: function (attribute, value) {
           if (!_.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
           }
-          attribute.unshift(value);
           if (_.isArray(value)) {
-            attribute = _.flatten(attribute);
+            return value.concat(attribute);
           }
+          attribute.unshift(value);
           return attribute;
         },
         multiplyOrCreate: function (attribute, value) {
