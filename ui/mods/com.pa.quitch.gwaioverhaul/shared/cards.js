@@ -189,7 +189,9 @@ define(function () {
       var connectedClients = getConnectedClients();
 
       return (
-        hostInventory.hasCard(cardId) ||
+        (hostInventory &&
+          _.isFunction(hostInventory.hasCard) &&
+          hostInventory.hasCard(cardId)) ||
         _.some(coopPlayerInventoryData, function (data) {
           if (!isConnectedPlayerInventory(data, connectedClients)) {
             return false;
