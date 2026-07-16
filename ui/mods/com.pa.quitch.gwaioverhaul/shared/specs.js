@@ -302,7 +302,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
         while (path.length > 1) {
           var level = cookStep(path.pop());
-          cookStep(level);
 
           if (_.isString(spec[level])) {
             var newSpec = load(spec[level]);
