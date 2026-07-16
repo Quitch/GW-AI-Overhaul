@@ -769,11 +769,11 @@ function gwoSetup() {
                     }
 
                     availableFactions = _.shuffle(availableFactions);
-                    var foeFaction = availableFactions.splice(0, 1);
+                    var foeFaction = availableFactions.shift();
                     var foeCommander = selectMinion(
                       GWFactions[foeFaction].minions
                     );
-                    foeCommander.faction = Number.parseInt(foeFaction);
+                    foeCommander.faction = foeFaction;
                     setAIPersonality(foeCommander, difficulty);
                     foeCommander.econ_rate = aiEconRate(dist, playerCount);
                     var numFoes = Math.round((numMinions + 1) / 2);
