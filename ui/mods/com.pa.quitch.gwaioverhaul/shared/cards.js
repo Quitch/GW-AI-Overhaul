@@ -29,13 +29,9 @@ define(function () {
       if (_.isString(units)) {
         return _.includes(inventoryUnits, units);
       }
-
-      for (var unit of units) {
-        if (_.includes(inventoryUnits, unit)) {
-          return true;
-        }
-      }
-      return false;
+      return _.some(units, function (unit) {
+        return _.includes(inventoryUnits, unit);
+      });
     },
 
     hasAllUnits: function (inventoryUnits, units) {
@@ -52,13 +48,9 @@ define(function () {
       if (_.isString(units)) {
         return !_.includes(inventoryUnits, units);
       }
-
-      for (var unit of units) {
-        if (!_.includes(inventoryUnits, unit)) {
-          return true;
-        }
-      }
-      return false;
+      return _.some(units, function (unit) {
+        return !_.includes(inventoryUnits, unit);
+      });
     },
 
     missingAllUnits: function (inventoryUnits, units) {
