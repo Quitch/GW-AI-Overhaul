@@ -37,6 +37,7 @@ function buildGlobalTags(commander, playerFaction) {
 function dealStartingCard(
   gwoDeal,
   loaded,
+  loadedCards,
   loadoutCardId,
   dealInventory,
   galaxy,
@@ -49,7 +50,8 @@ function dealStartingCard(
       galaxy: galaxy,
       star: star,
     },
-    loaded
+    loaded,
+    loadedCards
   );
 }
 
@@ -163,6 +165,7 @@ function gwoLoadouts() {
             dealStartingCard(
               gwoDeal,
               loaded,
+              cards,
               loadoutCardId,
               dealInventory,
               galaxy,

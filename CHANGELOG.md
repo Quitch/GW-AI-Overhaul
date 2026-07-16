@@ -13,6 +13,7 @@
 - Stopped Legonis Machina boss overriding certain difficulty settings
 - Queller not always loading the right personality when playing as Legonis Machina
 - Remove pointless Commander modifiers from Cluster systems
+- Possible issue with a player's start card not receiving all the information it should in a co-op game
 
 ## v6.2.0 - 2026-07-13
 
