@@ -114,6 +114,9 @@ define(function () {
       }
     },
 
+    // Must run inside inventory.applyCards()'s dull phase: relies on
+    // getTag/setTag's "" context resolving to the current card, and on
+    // buff() having already run for every card this cycle.
     applyDulls: function (card, inventory, units) {
       if (inventory.lookupCard(card) === 0) {
         var buffCount = inventory.getTag("", "buffCount", 0);
