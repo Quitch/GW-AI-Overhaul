@@ -285,6 +285,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           );
         };
 
+        // Handed out as-is (not cloned): opDefaults is fresh per applyMod call,
+        // and only the leaf's cookStep call ever reads opDefaults[op], so no
+        // two spec locations can ever alias the same array/object.
         var opDefaults = {
           push: [],
           pull: [],
