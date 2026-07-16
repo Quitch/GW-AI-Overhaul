@@ -178,10 +178,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
 
         tag: function (attribute) {
+          if (!_.isString(attribute)) {
+            console.error(
+              "tag op: attribute is not a string, leaving unchanged:",
+              attribute
+            );
+            return attribute;
+          }
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
             console.error(
-              "tag op: attribute does not contain '.json':",
+              "tag op: attribute does not contain '.json', leaving unchanged:",
               attribute
             );
             return attribute;
