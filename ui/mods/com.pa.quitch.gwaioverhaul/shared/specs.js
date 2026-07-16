@@ -205,7 +205,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         // New op to remove text in a string
         wipe: function (attribute, value) {
           if (!_.isString(attribute)) {
-            attribute = attribute.toString();
+            attribute = isNullish(attribute) ? "" : attribute.toString();
           }
           if (!_.isArray(value)) {
             value = [value, ""];
