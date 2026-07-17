@@ -205,5 +205,14 @@ define([
 
       return Math.max(aiEconRate, getAIEconFloor(difficultyName));
     },
+
+    quellerCompatibleMinions: function (minions) {
+      return _.filter(minions, function (minion) {
+        if (minion.ai) {
+          return minion.ai.personality.works_with_queller === true;
+        }
+        return minion.personality.works_with_queller === true;
+      });
+    },
   };
 });

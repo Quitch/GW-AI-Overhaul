@@ -402,9 +402,7 @@ function gwoSetup() {
               break;
             case "Queller":
               personality.personality_tags =
-                personality.personality_tags.concat(
-                  getQuellerAITag(faction)
-                );
+                personality.personality_tags.concat(getQuellerAITag(faction));
               break;
             case "Titans":
               personality.personality_tags =
@@ -537,6 +535,19 @@ function gwoSetup() {
             // Scatter some AIs
             aiFactions = _.shuffle(aiFactions);
             var teams = _.map(aiFactions, GWTeams.getTeam);
+            if (model.gwoDifficultySettings.ai() === "Queller") {
+              // Filter each team's minion pool (used by makeWorker below)
+              // before anything gets sampled from it, so Queller-incompatible
+              // minions can never be spread onto the galaxy as a worker AI.
+              _.forEach(teams, function (team) {
+                team.remainingMinions = gwoAI.quellerCompatibleMinions(
+                  team.remainingMinions
+                );
+                team.faction = _.assign({}, team.faction, {
+                  minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
+                });
+              });
+            }
             var teamInfo = _.map(teams, function (team, teamIndex) {
               return {
                 team: team,
@@ -646,6 +657,12 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
+              var workers = info.workers;
+              var minions = GWFactions[info.faction].minions;
+              if (difficulty.ai() === "Queller") {
+                workers = gwoAI.quellerCompatibleMinions(workers);
+                minions = gwoAI.quellerCompatibleMinions(minions);
+              }
 
               // Set up boss system
               setAIPersonality(boss, difficulty, boss.faction);
@@ -675,7 +692,6 @@ function gwoSetup() {
                 difficulty.mandatoryMinions() * playerCount;
               var minionMod =
                 Number.parseFloat(difficulty.minionMod()) * playerCount;
-              var minions = GWFactions[info.faction].minions;
               var clusterType = "";
               // Set up boss minions
               var numMinions = countMinions(
@@ -705,7 +721,7 @@ function gwoSetup() {
               }
 
               // Set up non-boss AI system
-              _.forEach(info.workers, function (worker) {
+              _.forEach(workers, function (worker) {
                 var ai = worker.ai;
 
                 ai.landAnywhere = gameModeEnabled(
@@ -765,7 +781,11 @@ function gwoSetup() {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
                     _.times(totalMinions, function () {
-                      var minion = selectMinion(minions, ai.faction, clusterType);
+                      var minion = selectMinion(
+                        minions,
+                        ai.faction,
+                        clusterType
+                      );
                       setAIPersonality(minion, difficulty, ai.faction);
                       minion.econ_rate = aiEconRate(dist, playerCount);
                       if (ai.isCluster === true) {
@@ -786,12 +806,17 @@ function gwoSetup() {
 
                     availableFactions = _.shuffle(availableFactions);
                     var foeFaction = availableFactions.shift();
-                    var foeCommander = selectMinion(
-                      GWFactions[foeFaction].minions,
-                      foeFaction
-                    );
+                    var foeMinions = GWFactions[foeFaction].minions;
+                    if (difficulty.ai() === "Queller") {
+                      foeMinions = gwoAI.quellerCompatibleMinions(foeMinions);
+                    }
+                    var foeCommander = selectMinion(foeMinions, foeFaction);
                     foeCommander.faction = foeFaction;
-                    setAIPersonality(foeCommander, difficulty, foeCommander.faction);
+                    setAIPersonality(
+                      foeCommander,
+                      difficulty,
+                      foeCommander.faction
+                    );
                     foeCommander.econ_rate = aiEconRate(dist, playerCount);
                     var numFoes = Math.round((numMinions + 1) / 2);
                     // Cluster Workers get additional commanders in place of armies
@@ -825,10 +850,11 @@ function gwoSetup() {
                   gameModeEnabled(difficulty.alliedCommanderChance())
                 ) {
                   var playerFaction = model.playerFactionIndex();
-                  var allyCommander = selectMinion(
-                    GWFactions[playerFaction].minions,
-                    playerFaction
-                  );
+                  var allyMinions = GWFactions[playerFaction].minions;
+                  if (difficulty.aiAlly() === "Queller") {
+                    allyMinions = gwoAI.quellerCompatibleMinions(allyMinions);
+                  }
+                  var allyCommander = selectMinion(allyMinions, playerFaction);
                   allyCommander.faction = playerFaction;
                   ai.ally = allyCommander;
                   if (difficulty.aiAlly() === "Penchant") {

@@ -74,9 +74,13 @@ define([
         chance = chance / (totalMinions + 1);
       }
 
-      var minion = _.cloneDeep(_.sample(GWFactions[context.faction].minions));
       var galaxy = model.game().galaxy();
       var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var minionPool = GWFactions[context.faction].minions;
+      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+        minionPool = gwoAI.quellerCompatibleMinions(minionPool);
+      }
+      var minion = _.cloneDeep(_.sample(minionPool));
 
       if (gwoSettings) {
         var ai = gwoSettings.ai;

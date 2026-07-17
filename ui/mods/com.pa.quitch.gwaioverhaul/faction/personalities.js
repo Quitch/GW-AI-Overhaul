@@ -51,6 +51,7 @@ define(function () {
       max_basic_fabbers: 4,
       min_advanced_fabbers: 3,
       max_advanced_fabbers: 3,
+      works_with_queller: true,
     },
     legonisMachinaBoss: {
       percent_naval: 0,
@@ -80,6 +81,7 @@ define(function () {
       percent_air: 0,
       percent_naval: 0,
       percent_orbital: 0,
+      works_with_queller: false,
     },
     roboticist: {
       percent_vehicle: 0,
@@ -87,6 +89,7 @@ define(function () {
       percent_air: 0,
       percent_naval: 0,
       percent_orbital: 0,
+      works_with_queller: false,
     },
 
     // Foundation
@@ -121,6 +124,7 @@ define(function () {
       max_basic_fabbers: 4,
       min_advanced_fabbers: 3,
       max_advanced_fabbers: 3,
+      works_with_queller: true,
     },
     foundationBoss: {
       adv_eco_mod: 1,
@@ -149,6 +153,7 @@ define(function () {
       percent_air: 1,
       percent_naval: 0,
       percent_orbital: 0,
+      works_with_queller: false,
     },
     navy: {
       percent_vehicle: 0,
@@ -156,6 +161,7 @@ define(function () {
       percent_air: 0,
       percent_naval: 1,
       percent_orbital: 0,
+      works_with_queller: false,
     },
 
     //Synchronous
@@ -190,6 +196,7 @@ define(function () {
       max_basic_fabbers: 4,
       min_advanced_fabbers: 3,
       max_advanced_fabbers: 3,
+      works_with_queller: true,
     },
     synchronousBoss: {
       percent_naval: 0,
@@ -215,6 +222,7 @@ define(function () {
       percent_air: 0.2,
       percent_naval: 0.05,
       percent_orbital: 0.05,
+      works_with_queller: false,
     },
     dragoon: {
       percent_vehicle: 0,
@@ -222,6 +230,7 @@ define(function () {
       percent_air: 0.7,
       percent_naval: 0.05,
       percent_orbital: 0.05,
+      works_with_queller: false,
     },
 
     // Revenants
@@ -256,6 +265,7 @@ define(function () {
       max_basic_fabbers: 4,
       min_advanced_fabbers: 3,
       max_advanced_fabbers: 3,
+      works_with_queller: true,
     },
     revenantsBoss: {
       adv_eco_mod: 1,
@@ -280,6 +290,7 @@ define(function () {
       percent_air: 0,
       percent_naval: 0,
       percent_orbital: 1,
+      works_with_queller: false,
     },
     astronaut: {
       percent_vehicle: 0,
@@ -287,6 +298,7 @@ define(function () {
       percent_air: 0.5,
       percent_naval: 0,
       percent_orbital: 0.5,
+      works_with_queller: false,
     },
 
     // Cluster
@@ -321,6 +333,7 @@ define(function () {
       max_basic_fabbers: 4,
       min_advanced_fabbers: 1,
       max_advanced_fabbers: 3,
+      works_with_queller: true,
     },
     clusterBoss: {
       adv_eco_mod: 2,
@@ -342,6 +355,7 @@ define(function () {
       fabber_to_factory_ratio_basic: 2,
       fabber_to_factory_ratio_advanced: 2,
       factory_alone_on_planet_mod: 0.25,
+      works_with_queller: false,
     },
     defender: {
       metal_drain_check: 0.71,
@@ -401,6 +415,7 @@ define(function () {
     swarm: {
       basic_to_advanced_factory_ratio: 10,
       fabber_to_factory_ratio_advanced: 3,
+      works_with_queller: false,
     },
     economist: {
       metal_drain_check: 0.71,

@@ -54,6 +54,9 @@ define([
 
     var buildGeneralCommanderMinions = function (factionIndex) {
       var minionPool = resolveFactionMinions(factionIndex);
+      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+        minionPool = gwoAI.quellerCompatibleMinions(minionPool);
+      }
       var minions = [];
       if (!minionPool.length) {
         return minions;
