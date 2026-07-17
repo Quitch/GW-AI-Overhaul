@@ -12,14 +12,11 @@ define([
     subcommanderTech.applySubcommanderDuplicationTech;
 
   var aiCommander = function (name, unit, landingOptions, commanderNumber) {
-    while (commanderNumber > landingOptions.length - 1) {
-      commanderNumber -= landingOptions.length;
-    }
     return {
       ai: true,
       name: name,
       commander: unit,
-      landing_policy: landingOptions[commanderNumber],
+      landing_policy: landingOptions[commanderNumber % landingOptions.length],
     };
   };
 
