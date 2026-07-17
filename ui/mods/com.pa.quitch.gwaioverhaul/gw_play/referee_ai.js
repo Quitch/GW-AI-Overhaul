@@ -261,6 +261,8 @@ define([
     scopeToken,
     nonLoadAiMods
   ) {
+    var aiTechPath = "/pa/ai_tech/";
+
     var filePathStarts = function (filePathFragment) {
       return _.startsWith(filePath, filePathFragment);
     };
@@ -343,16 +345,19 @@ define([
       configFiles[clusterFilePath] = clusterJson;
     };
 
-    return $.getJSON("coui:/" + filePath).then(function (json) {
-      var fileOwner = whoseFileIsItAnyway(aiPaths);
-      var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
-      var aiTechPath = "/pa/ai_tech/";
-      var isSubCommanderTechFile = filePathStarts(aiTechPath);
-      var aiJsonModsInScope = [];
+    // Determines which destination file path(s) this file's contents apply to, and
+    // which non-load AI mods (if any) are in scope, based on which AIs are being
+    // modified and who owns the file.
+    var resolveScopedFileUpdate = function (
+      json,
+      fileOwner,
+      isSubCommanderTechFile,
+      isSubCommanderDirectory
+    ) {
       var updatedFilePaths = [];
+      var aiJsonModsInScope = [];
       var pathLength = 0;
 
-      // Apply AI mods to the file
       if (aisToModify === "All") {
         if (isSubCommanderTechFile) {
           // File's source is not an AI path so it needs to be copied to the AIs' paths
@@ -382,35 +387,70 @@ define([
         aiJsonModsInScope = aiModsInScopeOfFile();
       }
 
-      // Scoped enemy destinations (such as Guardians) must include a full AI file tree
-      // so ai_path lookups resolve against the same destination directory.
+      return { filePaths: updatedFilePaths, aiMods: aiJsonModsInScope };
+    };
+
+    // Scoped enemy destinations (such as Guardians) must include a full AI file tree
+    // so ai_path lookups resolve against the same destination directory.
+    var scopedEnemyDestinationPath = function (fileOwner) {
       if (
-        fileOwner === "enemy" &&
-        aiPaths.enemyDestination !== aiPaths.enemySource
+        fileOwner !== "enemy" ||
+        aiPaths.enemyDestination === aiPaths.enemySource
       ) {
-        pathLength = aiPaths.enemySource.length;
-        updatedFilePaths.push(
-          changeFilePath(aiPaths.enemyDestination, pathLength)
-        );
+        return null;
       }
+      return changeFilePath(
+        aiPaths.enemyDestination,
+        aiPaths.enemySource.length
+      );
+    };
 
-      var finalFilePaths = _.isEmpty(updatedFilePaths)
-        ? [filePath]
-        : updatedFilePaths;
+    // Applies the in-scope AI mods and writes the resulting JSON to every resolved
+    // destination path (falling back to the original path if none were resolved).
+    var writeConfigFiles = function (json, filePaths, aiMods) {
+      var finalFilePaths = _.isEmpty(filePaths) ? [filePath] : filePaths;
 
-      applyAiMods(json, aiJsonModsInScope);
+      applyAiMods(json, aiMods);
       _.forEach(finalFilePaths, function (finalFilePath) {
         configFiles[finalFilePath] = json;
       });
+    };
 
+    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is present.
+    var applyClusterModsIfNeeded = function (
+      json,
+      fileOwner,
+      isSubCommanderTechFile
+    ) {
       if (clusterPresence === "Player" && fileOwner !== "enemy") {
-        pathLength = isSubCommanderTechFile
+        var pathLength = isSubCommanderTechFile
           ? aiTechPath.length
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
       } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
         processClusterJson(json, aiPaths.enemySource.length);
       }
+    };
+
+    return $.getJSON("coui:/" + filePath).then(function (json) {
+      var fileOwner = whoseFileIsItAnyway(aiPaths);
+      var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
+      var isSubCommanderTechFile = filePathStarts(aiTechPath);
+
+      var scopedUpdate = resolveScopedFileUpdate(
+        json,
+        fileOwner,
+        isSubCommanderTechFile,
+        isSubCommanderDirectory
+      );
+
+      var scopedEnemyPath = scopedEnemyDestinationPath(fileOwner);
+      if (scopedEnemyPath) {
+        scopedUpdate.filePaths.push(scopedEnemyPath);
+      }
+
+      writeConfigFiles(json, scopedUpdate.filePaths, scopedUpdate.aiMods);
+      applyClusterModsIfNeeded(json, fileOwner, isSubCommanderTechFile);
     });
   };
 
@@ -549,16 +589,15 @@ define([
         var viewerSmartSubcommanders = _.some(viewerCards, {
           id: "gwaio_upgrade_subcommander_tactics",
         });
-        var viewerSubCommanderDestination =
-          refereeAIPaths.getAIPathDestination(
-            "subcommander",
-            gwoAI.aiInUse("subcommander"),
-            {
-              aiMods: viewerAiMods,
-              smartSubcommanders: viewerSmartSubcommanders,
-              scopeToken: viewerPlayerTag,
-            }
-          );
+        var viewerSubCommanderDestination = refereeAIPaths.getAIPathDestination(
+          "subcommander",
+          gwoAI.aiInUse("subcommander"),
+          {
+            aiMods: viewerAiMods,
+            smartSubcommanders: viewerSmartSubcommanders,
+            scopeToken: viewerPlayerTag,
+          }
+        );
         var viewerAiPaths = _.assign({}, aiPaths, {
           subCommanderDestination: viewerSubCommanderDestination,
         });
