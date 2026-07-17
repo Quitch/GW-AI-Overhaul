@@ -123,7 +123,7 @@ define([
           var guardians = ai.mirrorMode;
           if (guardians) {
             aiInventory = aiInventory.concat(
-              guardianMods(game, inventory.mods)
+              guardianMods(game, inventory.mods())
             );
           }
           gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
