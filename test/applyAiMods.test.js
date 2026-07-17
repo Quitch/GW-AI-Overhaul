@@ -158,7 +158,9 @@ describe("applyAiMods - new", () => {
     applyAiMods(json, [
       { op: "new", toBuild: "Bot", value: [{ test_type: "NewTest" }] },
     ]);
-    assert.deepEqual(json.build_list[0].build_conditions, [[{ test_type: "NewTest" }]]);
+    assert.deepEqual(json.build_list[0].build_conditions, [
+      [{ test_type: "NewTest" }],
+    ]);
   });
 
   it("with idToMod, pushes into every existing build_conditions group", () => {
@@ -166,7 +168,12 @@ describe("applyAiMods - new", () => {
       { to_build: "Bot", build_conditions: [[{ test_type: "Existing" }]] },
     ]);
     applyAiMods(json, [
-      { op: "new", toBuild: "Bot", idToMod: true, value: { test_type: "Extra" } },
+      {
+        op: "new",
+        toBuild: "Bot",
+        idToMod: true,
+        value: { test_type: "Extra" },
+      },
     ]);
     assert.deepEqual(json.build_list[0].build_conditions, [
       [{ test_type: "Existing" }, { test_type: "Extra" }],
@@ -204,7 +211,9 @@ describe("applyAiMods - invalid input", () => {
   it("op: load is not handled by applyAiMods (filtered out upstream) and is reported as invalid", () => {
     const errorMock = mock.method(console, "error", () => {});
     const json = buildJson([{ to_build: "Bot", priority: 1 }]);
-    applyAiMods(json, [{ op: "load", type: "fabber", value: "some_file.json" }]);
+    applyAiMods(json, [
+      { op: "load", type: "fabber", value: "some_file.json" },
+    ]);
     assert.equal(json.build_list[0].priority, 1);
     assert.equal(errorMock.mock.callCount(), 1);
   });

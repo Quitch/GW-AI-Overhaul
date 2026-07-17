@@ -67,9 +67,12 @@ function collectAiMods(card) {
     try {
       card[method](inventory);
     } catch (e) {
-      throw new Error(method + "() threw against the mock inventory: " + e.message, {
-        cause: e,
-      });
+      throw new Error(
+        method + "() threw against the mock inventory: " + e.message,
+        {
+          cause: e,
+        }
+      );
     }
   }
 
@@ -84,21 +87,32 @@ function checkMod(mod, index) {
     problems.push(where + ": missing `type`");
   } else if (!VALID_TYPES.has(mod.type)) {
     problems.push(
-      where + ": invalid `type` \"" + mod.type + "\" (expected one of: " +
-        [...VALID_TYPES].join(", ") + ")"
+      where +
+        ': invalid `type` "' +
+        mod.type +
+        '" (expected one of: ' +
+        [...VALID_TYPES].join(", ") +
+        ")"
     );
   }
 
   const requiredFields = REQUIRED_FIELDS_BY_OP[mod.op];
   if (!requiredFields) {
     problems.push(
-      where + ": invalid `op` \"" + mod.op + "\" (expected one of: " +
-        Object.keys(REQUIRED_FIELDS_BY_OP).join(", ") + ")"
+      where +
+        ': invalid `op` "' +
+        mod.op +
+        '" (expected one of: ' +
+        Object.keys(REQUIRED_FIELDS_BY_OP).join(", ") +
+        ")"
     );
   } else {
     for (const field of requiredFields) {
-      if (!Object.prototype.hasOwnProperty.call(mod, field) || mod[field] === undefined) {
-        problems.push(where + ": op \"" + mod.op + "\" requires `" + field + "`");
+      if (
+        !Object.prototype.hasOwnProperty.call(mod, field) ||
+        mod[field] === undefined
+      ) {
+        problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
       }
     }
   }

@@ -19,7 +19,14 @@ const path = require("node:path");
 const { REPO_ROOT, loadCouiModule } = require("../lib/amd-loader.js");
 const { walkFiles } = require("../lib/walk.js");
 
-const CARDS_DIR = path.join(REPO_ROOT, "ui", "main", "game", "galactic_war", "cards");
+const CARDS_DIR = path.join(
+  REPO_ROOT,
+  "ui",
+  "main",
+  "game",
+  "galactic_war",
+  "cards"
+);
 const LOADOUTS_PATH = path.join(
   REPO_ROOT,
   "ui",
@@ -29,7 +36,13 @@ const LOADOUTS_PATH = path.join(
   "loadouts.js"
 );
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";
-const UNIT_MAP_PATH = path.join(REPO_ROOT, "pa", "ai_penchant", "unit_maps", "ai_unit_map.json");
+const UNIT_MAP_PATH = path.join(
+  REPO_ROOT,
+  "pa",
+  "ai_penchant",
+  "unit_maps",
+  "ai_unit_map.json"
+);
 
 // Referenced directly in referee_ai.js's clusterAIModsInScopeOfFile() as literal
 // commander/support-platform unit names, not resolved through the fabber/factory
@@ -59,17 +72,26 @@ function checkLoadoutCardsExist() {
   const ids = [...src.matchAll(/\bid:\s*"([^"]+)"/g)].map((m) => m[1]);
 
   if (!ids.length) {
-    fail("cross-refs: found no card ids in loadouts.js - the extraction pattern may be stale");
+    fail(
+      "cross-refs: found no card ids in loadouts.js - the extraction pattern may be stale"
+    );
     return;
   }
 
   for (const id of ids) {
     const cardPath = path.join(CARDS_DIR, id + ".js");
     if (!fs.existsSync(cardPath)) {
-      fail('cross-refs: loadouts.js references card id "' + id + '" with no matching file: ' + cardPath);
+      fail(
+        'cross-refs: loadouts.js references card id "' +
+          id +
+          '" with no matching file: ' +
+          cardPath
+      );
     }
   }
-  console.log("cross-refs: " + ids.length + " loadout card ids checked against cards/.");
+  console.log(
+    "cross-refs: " + ids.length + " loadout card ids checked against cards/."
+  );
 }
 
 // Finds the local parameter name a card bound shared/units.js to (by index-matching
@@ -79,7 +101,9 @@ function findUnitsParamName(src) {
   // Negated character classes ([^\]]/[^)]), not lazy dot-all ([\s\S]*?): deps arrays
   // and parameter lists here never contain a literal `]`/`)` in their content, and
   // this avoids the backtracking risk of lazy-matching-across-anything patterns.
-  const match = src.match(/define\(\s*\[([^\]]*)\]\s*,\s*function\s*\(([^)]*)\)/);
+  const match = src.match(
+    /define\(\s*\[([^\]]*)\]\s*,\s*function\s*\(([^)]*)\)/
+  );
   if (!match) {
     return null;
   }
@@ -112,7 +136,10 @@ function checkUnitReferencesInCards() {
     checkedCards++;
 
     const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const refPattern = new RegExp("\\b" + escaped + "\\.([A-Za-z_$][A-Za-z0-9_$]*)", "g");
+    const refPattern = new RegExp(
+      "\\b" + escaped + "\\.([A-Za-z_$][A-Za-z0-9_$]*)",
+      "g"
+    );
     const referenced = new Set(
       [...stripLineComments(src).matchAll(refPattern)].map((m) => m[1])
     );
@@ -121,7 +148,12 @@ function checkUnitReferencesInCards() {
       checkedRefs++;
       if (!unitKeys.has(key)) {
         fail(
-          "cross-refs: " + file + " references " + paramName + "." + key +
+          "cross-refs: " +
+            file +
+            " references " +
+            paramName +
+            "." +
+            key +
             ", which does not exist in units.js"
         );
       }
@@ -129,8 +161,13 @@ function checkUnitReferencesInCards() {
   }
 
   console.log(
-    "cross-refs: " + checkedRefs + " unit references across " + checkedCards +
-      " cards checked against units.js (" + unitKeys.size + " known units)."
+    "cross-refs: " +
+      checkedRefs +
+      " unit references across " +
+      checkedCards +
+      " cards checked against units.js (" +
+      unitKeys.size +
+      " known units)."
   );
 }
 
@@ -138,7 +175,9 @@ function checkBuilderRoles() {
   const unitMap = JSON.parse(fs.readFileSync(UNIT_MAP_PATH, "utf8")).unit_map;
   const roleKeys = new Set(Object.keys(unitMap));
 
-  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) => path.join(REPO_ROOT, "pa", d));
+  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
+    path.join(REPO_ROOT, "pa", d)
+  );
   const files = aiDirs.flatMap((dir) =>
     fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
   );
@@ -167,7 +206,11 @@ function checkBuilderRoles() {
     }
   }
 
-  console.log("cross-refs: " + checked + " builder role references checked against ai_unit_map.json.");
+  console.log(
+    "cross-refs: " +
+      checked +
+      " builder role references checked against ai_unit_map.json."
+  );
 }
 
 function main() {

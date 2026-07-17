@@ -24,33 +24,53 @@ afterEach(() => {
 describe("specs.mod - basic ops", () => {
   it("replace overwrites the value at path", () => {
     const data = { "unit.json": { hp: 100 } };
-    specs.mod(data, [{ file: "unit.json", path: "hp", op: "replace", value: 200 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "replace", value: 200 }],
+      ""
+    );
     assert.equal(data["unit.json"].hp, 200);
   });
 
   it("multiply scales a numeric value", () => {
     const data = { "unit.json": { hp: 100 } };
-    specs.mod(data, [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }],
+      ""
+    );
     assert.equal(data["unit.json"].hp, 200);
   });
 
   it("multiply on a non-number logs an error and leaves the value unchanged", () => {
     const errorMock = mock.method(console, "error", () => {});
     const data = { "unit.json": { hp: "not-a-number" } };
-    specs.mod(data, [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }],
+      ""
+    );
     assert.equal(data["unit.json"].hp, "not-a-number");
     assert.equal(errorMock.mock.callCount(), 1);
   });
 
   it("add sums a numeric value", () => {
     const data = { "unit.json": { hp: 100 } };
-    specs.mod(data, [{ file: "unit.json", path: "hp", op: "add", value: 50 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "add", value: 50 }],
+      ""
+    );
     assert.equal(data["unit.json"].hp, 150);
   });
 
   it("add on a nullish value sets it directly, creating the field", () => {
     const data = { "unit.json": {} };
-    specs.mod(data, [{ file: "unit.json", path: "newField", op: "add", value: 5 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "newField", op: "add", value: 5 }],
+      ""
+    );
     assert.equal(data["unit.json"].newField, 5);
   });
 
@@ -66,19 +86,31 @@ describe("specs.mod - basic ops", () => {
 
   it("push appends to an existing array", () => {
     const data = { "unit.json": { tags: ["a"] } };
-    specs.mod(data, [{ file: "unit.json", path: "tags", op: "push", value: "b" }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tags", op: "push", value: "b" }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].tags, ["a", "b"]);
   });
 
   it("push on a missing path creates the array", () => {
     const data = { "unit.json": {} };
-    specs.mod(data, [{ file: "unit.json", path: "tags", op: "push", value: "a" }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tags", op: "push", value: "a" }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].tags, ["a"]);
   });
 
   it("pull removes a matching element from an array", () => {
     const data = { "unit.json": { tags: ["a", "b", "c"] } };
-    specs.mod(data, [{ file: "unit.json", path: "tags", op: "pull", value: "b" }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tags", op: "pull", value: "b" }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].tags, ["a", "c"]);
   });
 
@@ -86,7 +118,14 @@ describe("specs.mod - basic ops", () => {
     const data = { "unit.json": { description: "hello world" } };
     specs.mod(
       data,
-      [{ file: "unit.json", path: "description", op: "wipe", value: ["world", "there"] }],
+      [
+        {
+          file: "unit.json",
+          path: "description",
+          op: "wipe",
+          value: ["world", "there"],
+        },
+      ],
       ""
     );
     assert.equal(data["unit.json"].description, "hello there");
@@ -94,7 +133,11 @@ describe("specs.mod - basic ops", () => {
 
   it("prepend adds to the front of an array", () => {
     const data = { "unit.json": { tags: ["b"] } };
-    specs.mod(data, [{ file: "unit.json", path: "tags", op: "prepend", value: "a" }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tags", op: "prepend", value: "a" }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].tags, ["a", "b"]);
   });
 
@@ -122,7 +165,14 @@ describe("specs.mod - basic ops", () => {
     const data = { "unit.json": { hp: 100 } };
     specs.mod(
       data,
-      [{ file: "unit.json", path: "hp", op: "eval", value: "return attribute + 50;" }],
+      [
+        {
+          file: "unit.json",
+          path: "hp",
+          op: "eval",
+          value: "return attribute + 50;",
+        },
+      ],
       ""
     );
     assert.equal(data["unit.json"].hp, 150);
@@ -136,7 +186,11 @@ describe("specs.mod - basic ops", () => {
 
   it("clone (pathless) deep-clones the whole spec under a new tagged key", () => {
     const data = { "unit.json": { hp: 100 } };
-    specs.mod(data, [{ file: "unit.json", op: "clone", value: "unit_copy.json" }], ".tag1");
+    specs.mod(
+      data,
+      [{ file: "unit.json", op: "clone", value: "unit_copy.json" }],
+      ".tag1"
+    );
     assert.deepEqual(data["unit_copy.json.tag1"], { hp: 100 });
     assert.notEqual(data["unit_copy.json.tag1"], data["unit.json"]); // real clone, not aliased
   });
@@ -145,20 +199,32 @@ describe("specs.mod - basic ops", () => {
 describe("specs.mod - path walking", () => {
   it("auto-creates intermediate objects for a nested path", () => {
     const data = { "unit.json": {} };
-    specs.mod(data, [{ file: "unit.json", path: "weapon.damage", op: "replace", value: 50 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "weapon.damage", op: "replace", value: 50 }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].weapon, { damage: 50 });
   });
 
   it("addresses an existing array element by numeric index", () => {
     const data = { "unit.json": { list: [{ a: 1 }, { a: 2 }] } };
-    specs.mod(data, [{ file: "unit.json", path: "list.0.a", op: "replace", value: 99 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.0.a", op: "replace", value: 99 }],
+      ""
+    );
     assert.equal(data["unit.json"].list[0].a, 99);
     assert.equal(data["unit.json"].list[1].a, 2);
   });
 
   it('appends a new array element via a "+" path segment', () => {
     const data = { "unit.json": { list: [] } };
-    specs.mod(data, [{ file: "unit.json", path: "list.+.a", op: "replace", value: 5 }], "");
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.+.a", op: "replace", value: 5 }],
+      ""
+    );
     assert.deepEqual(data["unit.json"].list, [{ a: 5 }]);
   });
 });
@@ -169,7 +235,11 @@ describe("specs.mod - base_spec inheritance", () => {
       "base.json": { hp: 100, tags: ["base"] },
       "child.json": { base_spec: "base.json", armor: 10 },
     };
-    specs.mod(data, [{ file: "child.json", path: "armor", op: "replace", value: 20 }], "");
+    specs.mod(
+      data,
+      [{ file: "child.json", path: "armor", op: "replace", value: 20 }],
+      ""
+    );
     assert.equal(data["child.json"].hp, 100);
     assert.deepEqual(data["child.json"].tags, ["base"]);
     assert.equal(data["child.json"].armor, 20);
@@ -182,7 +252,11 @@ describe("specs.mod - base_spec inheritance", () => {
       "base.json": { hp: 100 },
       "child.json": { base_spec: "base.json", armor: 5 },
     };
-    specs.mod(data, [{ file: "child.json", path: "armor", op: "replace", value: 5 }], ".mytag");
+    specs.mod(
+      data,
+      [{ file: "child.json", path: "armor", op: "replace", value: 5 }],
+      ".mytag"
+    );
     assert.equal(data["child.json"].hp, 200);
   });
 
@@ -191,14 +265,22 @@ describe("specs.mod - base_spec inheritance", () => {
       "base.json": { ammo_id: ["a", "b", "c"] },
       "child.json": { base_spec: "base.json", ammo_id: ["x"] },
     };
-    specs.mod(data, [{ file: "child.json", path: "other", op: "replace", value: 1 }], "");
+    specs.mod(
+      data,
+      [{ file: "child.json", path: "other", op: "replace", value: 1 }],
+      ""
+    );
     assert.deepEqual(data["child.json"].ammo_id, ["x"]);
   });
 
   it("drops an unresolvable base_spec and warns, rather than throwing", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = { "child.json": { base_spec: "missing.json", armor: 5 } };
-    specs.mod(data, [{ file: "child.json", path: "armor", op: "replace", value: 10 }], "");
+    specs.mod(
+      data,
+      [{ file: "child.json", path: "armor", op: "replace", value: 10 }],
+      ""
+    );
     assert.equal(data["child.json"].armor, 10);
     assert.equal("base_spec" in data["child.json"], false);
     assert.equal(warnMock.mock.callCount(), 1);
@@ -243,7 +325,11 @@ describe("specs.mod - error tolerance", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = {};
     assert.doesNotThrow(() => {
-      specs.mod(data, [{ file: "missing.json", path: "hp", op: "replace", value: 1 }], "");
+      specs.mod(
+        data,
+        [{ file: "missing.json", path: "hp", op: "replace", value: 1 }],
+        ""
+      );
     });
     assert.equal(warnMock.mock.callCount(), 1);
   });
@@ -254,7 +340,12 @@ describe("specs.mod - error tolerance", () => {
     specs.mod(
       data,
       [
-        { file: "unit.json", path: "hp", op: "eval", value: "this is not valid JS(((" },
+        {
+          file: "unit.json",
+          path: "hp",
+          op: "eval",
+          value: "this is not valid JS(((",
+        },
         { file: "unit.json", path: "hp", op: "replace", value: 999 },
       ],
       ""

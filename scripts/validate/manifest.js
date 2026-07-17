@@ -10,7 +10,12 @@ const path = require("node:path");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
 
 const MODINFO_PATH = path.join(REPO_ROOT, "modinfo.json");
-const REQUIRED_TOP_LEVEL_FIELDS = ["identifier", "display_name", "version", "scenes"];
+const REQUIRED_TOP_LEVEL_FIELDS = [
+  "identifier",
+  "display_name",
+  "version",
+  "scenes",
+];
 const COUI_PREFIX = "coui://";
 
 function main() {
@@ -27,7 +32,9 @@ function main() {
 
   for (const field of REQUIRED_TOP_LEVEL_FIELDS) {
     if (!Object.prototype.hasOwnProperty.call(modinfo, field)) {
-      failures.push("modinfo.json missing required top-level field `" + field + "`");
+      failures.push(
+        "modinfo.json missing required top-level field `" + field + "`"
+      );
     }
   }
 

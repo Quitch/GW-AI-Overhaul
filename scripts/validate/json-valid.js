@@ -21,7 +21,11 @@ function main() {
   }
 
   console.log(
-    "json-valid: " + files.length + " JSON files checked, " + failures.length + " invalid."
+    "json-valid: " +
+      files.length +
+      " JSON files checked, " +
+      failures.length +
+      " invalid."
   );
 
   if (failures.length) {

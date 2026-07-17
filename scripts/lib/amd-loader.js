@@ -53,7 +53,7 @@ function resolveBareId(entry) {
   throw new NotShippedError(
     'amd-loader: "' +
       entry +
-      '" is not shipped by this mod (likely a base-game module GWO doesn\'t override) - ' +
+      "\" is not shipped by this mod (likely a base-game module GWO doesn't override) - " +
       "not resolvable without the game's own base install, which CI does not have."
   );
 }
@@ -63,7 +63,10 @@ function resolveEntryPath(entry) {
     const fsPath = path.resolve(REPO_ROOT, entry.slice(COUI_PREFIX.length));
     if (!fs.existsSync(fsPath)) {
       throw new Error(
-        'amd-loader: "' + entry + '" resolved to a path that does not exist: ' + fsPath
+        'amd-loader: "' +
+          entry +
+          '" resolved to a path that does not exist: ' +
+          fsPath
       );
     }
     return fsPath;
@@ -89,7 +92,11 @@ function resolveEntryPath(entry) {
 // exact RequireJS module-id semantics elsewhere aren't needed.
 function moduleMetaFor(fsPath) {
   const base = fsPath.startsWith(GW_ROOT) ? GW_ROOT : REPO_ROOT;
-  const id = path.relative(base, fsPath).replace(/\.js$/, "").split(path.sep).join("/");
+  const id = path
+    .relative(base, fsPath)
+    .replace(/\.js$/, "")
+    .split(path.sep)
+    .join("/");
   return { id: id };
 }
 

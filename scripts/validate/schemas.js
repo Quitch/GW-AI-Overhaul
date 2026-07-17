@@ -50,7 +50,10 @@ function checkTypeConsistency(where, entries) {
     if (types.size > 1) {
       fail(
         where,
-        "field `" + key + "` has inconsistent types across entries: " + [...types].join(", ")
+        "field `" +
+          key +
+          "` has inconsistent types across entries: " +
+          [...types].join(", ")
       );
     }
   }
@@ -63,16 +66,32 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
   }
   buildConditions.forEach((testArray, i) => {
     if (!Array.isArray(testArray)) {
-      fail(where, entryLabel + ": build_conditions[" + i + "] must be an array");
+      fail(
+        where,
+        entryLabel + ": build_conditions[" + i + "] must be an array"
+      );
       return;
     }
     testArray.forEach((test, j) => {
       if (typeof test !== "object" || test === null) {
-        fail(where, entryLabel + ": build_conditions[" + i + "][" + j + "] must be an object");
+        fail(
+          where,
+          entryLabel +
+            ": build_conditions[" +
+            i +
+            "][" +
+            j +
+            "] must be an object"
+        );
       } else if (typeof test.test_type !== "string") {
         fail(
           where,
-          entryLabel + ": build_conditions[" + i + "][" + j + "] missing string `test_type`"
+          entryLabel +
+            ": build_conditions[" +
+            i +
+            "][" +
+            j +
+            "] missing string `test_type`"
         );
       }
     });
@@ -98,17 +117,27 @@ function checkBuildListFile(where, data) {
 
 function checkPlatoonTemplatesFile(where, data) {
   const entries = Object.entries(data.platoon_templates);
-  checkTypeConsistency(where, entries.map(([, v]) => v));
+  checkTypeConsistency(
+    where,
+    entries.map(([, v]) => v)
+  );
   for (const [name, entry] of entries) {
     if (!Array.isArray(entry.units) || entry.units.length === 0) {
-      fail(where, 'platoon_templates["' + name + '"]: missing non-empty `units` array');
+      fail(
+        where,
+        'platoon_templates["' + name + '"]: missing non-empty `units` array'
+      );
       continue;
     }
     entry.units.forEach((unit, i) => {
       if (typeof unit.unit_types !== "string") {
         fail(
           where,
-          'platoon_templates["' + name + '"].units[' + i + "]: missing string `unit_types`"
+          'platoon_templates["' +
+            name +
+            '"].units[' +
+            i +
+            "]: missing string `unit_types`"
         );
       }
     });
@@ -132,7 +161,9 @@ function checkUnitMapFile(where, data) {
 }
 
 function checkAiJsonFiles() {
-  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) => path.join(REPO_ROOT, "pa", d));
+  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
+    path.join(REPO_ROOT, "pa", d)
+  );
   const files = aiDirs.flatMap((dir) =>
     fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
   );
@@ -150,22 +181,31 @@ function checkAiJsonFiles() {
     if (Array.isArray(data.build_list)) {
       checkBuildListFile(where, data);
       checked++;
-    } else if (data.platoon_templates && typeof data.platoon_templates === "object") {
+    } else if (
+      data.platoon_templates &&
+      typeof data.platoon_templates === "object"
+    ) {
       checkPlatoonTemplatesFile(where, data);
       checked++;
     } else if (data.unit_map && typeof data.unit_map === "object") {
       checkUnitMapFile(where, data);
       checked++;
     } else {
-      fail(where, "unrecognized top-level shape (expected build_list, platoon_templates, or unit_map)");
+      fail(
+        where,
+        "unrecognized top-level shape (expected build_list, platoon_templates, or unit_map)"
+      );
     }
   }
 
-  console.log("schemas: " + checked + " / " + files.length + " AI JSON files checked.");
+  console.log(
+    "schemas: " + checked + " / " + files.length + " AI JSON files checked."
+  );
 }
 
 function checkDifficultyLevels() {
-  const where = "ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js";
+  const where =
+    "ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js";
   const data = loadCouiModule("coui://" + where);
 
   if (!Array.isArray(data.difficulties) || data.difficulties.length === 0) {
@@ -174,7 +214,8 @@ function checkDifficultyLevels() {
   }
 
   for (const [i, tier] of data.difficulties.entries()) {
-    const label = "difficulties[" + i + "] (" + (tier.difficultyName || "?") + ")";
+    const label =
+      "difficulties[" + i + "] (" + (tier.difficultyName || "?") + ")";
     if (typeof tier.difficultyName !== "string") {
       fail(where, label + ": missing string `difficultyName`");
     }
@@ -184,7 +225,11 @@ function checkDifficultyLevels() {
   }
 
   checkTypeConsistency(where, data.difficulties);
-  console.log("schemas: difficulty_levels.js checked (" + data.difficulties.length + " tiers).");
+  console.log(
+    "schemas: difficulty_levels.js checked (" +
+      data.difficulties.length +
+      " tiers)."
+  );
 }
 
 function checkPersonalities() {
@@ -193,7 +238,9 @@ function checkPersonalities() {
   const entries = Object.values(data);
 
   checkTypeConsistency(where, entries);
-  console.log("schemas: personalities.js checked (" + entries.length + " personalities).");
+  console.log(
+    "schemas: personalities.js checked (" + entries.length + " personalities)."
+  );
 }
 
 function main() {
