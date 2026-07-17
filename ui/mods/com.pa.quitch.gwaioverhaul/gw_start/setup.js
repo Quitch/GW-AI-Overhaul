@@ -657,8 +657,8 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
-              var workers = info.workers;
-              var minions = GWFactions[info.faction].minions;
+              var workerPool = info.workers;
+              var minionPool = GWFactions[info.faction].minions;
               if (difficulty.ai() === "Queller") {
                 // info.workers is already Queller-compatible: it's built via
                 // makeWorker() from team.remainingMinions/team.faction.minions,
@@ -667,8 +667,8 @@ function gwoSetup() {
                 // a modded one, in the style of the base game's gw_faction_credits_*
                 // "Credits War" factions) that populates team.workers instead,
                 // a path our pre-filter doesn't cover.
-                workers = gwoAI.quellerCompatibleMinions(workers);
-                minions = gwoAI.quellerCompatibleMinions(minions);
+                workerPool = gwoAI.quellerCompatibleMinions(workerPool);
+                minionPool = gwoAI.quellerCompatibleMinions(minionPool);
               }
 
               // Set up boss system
@@ -717,7 +717,11 @@ function gwoSetup() {
                 }
 
                 _.times(totalMinions, function () {
-                  var minion = selectMinion(minions, boss.faction, clusterType);
+                  var minion = selectMinion(
+                    minionPool,
+                    boss.faction,
+                    clusterType
+                  );
                   setAIPersonality(minion, difficulty, boss.faction);
                   minion.econ_rate = aiEconRate(maxDist, playerCount);
                   if (boss.isCluster === true) {
@@ -728,7 +732,7 @@ function gwoSetup() {
               }
 
               // Set up non-boss AI system
-              _.forEach(workers, function (worker) {
+              _.forEach(workerPool, function (worker) {
                 var ai = worker.ai;
 
                 ai.landAnywhere = gameModeEnabled(
@@ -789,7 +793,7 @@ function gwoSetup() {
                   } else {
                     _.times(totalMinions, function () {
                       var minion = selectMinion(
-                        minions,
+                        minionPool,
                         ai.faction,
                         clusterType
                       );
