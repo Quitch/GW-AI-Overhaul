@@ -22,7 +22,7 @@
 
 ### Known Issues
 
-- Cluster Worker and Security commanders will use the Angel and Colonel icons
+- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons
 
 ## v6.2.0 - 2026-07-13
 

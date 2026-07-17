@@ -142,7 +142,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 ### Known issues
 
 - Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting.
-- Cluster Worker and Security commanders will use the Angel and Colonel icons
+- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons
 
 ## Recommended mods
 
