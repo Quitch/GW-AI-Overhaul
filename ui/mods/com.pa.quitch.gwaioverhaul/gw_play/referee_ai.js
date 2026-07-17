@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-], function (gwoAI, refereeAIPaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (gwoAI, refereeAIPaths, refereeCoop) {
   var applyAiMods = function (json, mods) {
     var ops = {
       // fabber/factory/platoon only
@@ -168,26 +169,14 @@ define([
   var getConnectedClientAiMods = function (game, connectedClients) {
     var connectedClientAiMods = [];
 
-    _.forEach(connectedClients, function (client) {
-      if (!client || client.role !== "viewer") {
-        return;
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      function (viewer) {
+        connectedClientAiMods = connectedClientAiMods.concat(
+          getRefereeInventoryAiMods(viewer.inventory)
+        );
       }
-
-      var playerData =
-        game.findCoopPlayerInventoryData &&
-        game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
-
-      if (!playerData || !playerData.inventory) {
-        return;
-      }
-
-      connectedClientAiMods = connectedClientAiMods.concat(
-        getRefereeInventoryAiMods(playerData.inventory)
-      );
-    });
+    );
 
     return connectedClientAiMods;
   };
@@ -526,9 +515,7 @@ define([
     var game = model.game();
     var ai = game.galaxy().stars()[game.currentStar()].ai();
     var guardians = ai.mirrorMode;
-    var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
-      ? model.gwCampaignConnectedClients()
-      : [];
+    var connectedClients = refereeCoop.getConnectedViewers();
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
@@ -549,64 +536,49 @@ define([
       );
     });
 
-    var viewerIndex = 0;
-
-    _.forEach(connectedClients, function (client) {
-      if (!client || client.role !== "viewer") {
-        return;
-      }
-
-      var playerData =
-        game.findCoopPlayerInventoryData &&
-        game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      function (viewer, viewerIndex) {
+        var viewerInventory = viewer.inventory;
+        var viewerPlayerTag = ".player" + viewerIndex;
+        var viewerScopeToken = refereeAIPaths.getScopeToken(
+          viewerPlayerTag,
+          viewerPlayerTag
+        );
+        var viewerAiMods = getRefereeInventoryAiMods(viewerInventory);
+        var viewerCards = _.isFunction(viewerInventory.cards)
+          ? viewerInventory.cards()
+          : viewerInventory.cards || [];
+        var viewerSmartSubcommanders = _.some(viewerCards, {
+          id: "gwaio_upgrade_subcommander_tactics",
+        });
+        var viewerSubCommanderDestination =
+          refereeAIPaths.getAIPathDestination(
+            "subcommander",
+            gwoAI.aiInUse("subcommander"),
+            {
+              aiMods: viewerAiMods,
+              smartSubcommanders: viewerSmartSubcommanders,
+              scopeToken: viewerPlayerTag,
+            }
+          );
+        var viewerAiPaths = _.assign({}, aiPaths, {
+          subCommanderDestination: viewerSubCommanderDestination,
         });
 
-      if (!playerData || !playerData.inventory) {
-        return;
+        promises.push(
+          processDirectories(
+            aiPaths.subCommanderSource,
+            configFiles,
+            viewerAiPaths,
+            clusterPresence,
+            viewerInventory,
+            viewerScopeToken,
+            true
+          )
+        );
       }
-
-      var viewerInventory = playerData.inventory;
-      var viewerPlayerTag = ".player" + viewerIndex;
-      var viewerScopeToken = refereeAIPaths.getScopeToken(
-        viewerPlayerTag,
-        viewerPlayerTag
-      );
-      var viewerAiMods = getRefereeInventoryAiMods(viewerInventory);
-      var viewerCards = _.isFunction(viewerInventory.cards)
-        ? viewerInventory.cards()
-        : viewerInventory.cards || [];
-      var viewerSmartSubcommanders = _.some(viewerCards, {
-        id: "gwaio_upgrade_subcommander_tactics",
-      });
-      var viewerSubCommanderDestination = refereeAIPaths.getAIPathDestination(
-        "subcommander",
-        gwoAI.aiInUse("subcommander"),
-        {
-          aiMods: viewerAiMods,
-          smartSubcommanders: viewerSmartSubcommanders,
-          scopeToken: viewerPlayerTag,
-        }
-      );
-      var viewerAiPaths = _.assign({}, aiPaths, {
-        subCommanderDestination: viewerSubCommanderDestination,
-      });
-
-      promises.push(
-        processDirectories(
-          aiPaths.subCommanderSource,
-          configFiles,
-          viewerAiPaths,
-          clusterPresence,
-          viewerInventory,
-          viewerScopeToken,
-          true
-        )
-      );
-
-      viewerIndex += 1;
-    });
+    );
 
     Promise.all(promises).then(function () {
       deferred.resolve();

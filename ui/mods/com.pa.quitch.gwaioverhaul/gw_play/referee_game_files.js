@@ -2,7 +2,8 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
-], function (GW, gwoAI, gwoSpecs) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (GW, gwoAI, gwoSpecs, refereeCoop) {
   var getAIUnitMapPath = function (titans, aiInUse) {
     var append = titans ? "_x1.json" : ".json";
 
@@ -29,29 +30,13 @@ define([
       return hostMods;
     }
 
-    var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
-      ? model.gwCampaignConnectedClients()
-      : [];
-
     var mods = hostMods;
-    _.forEach(connectedClients, function (client) {
-      if (!client || client.role !== "viewer") {
-        return;
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game),
+      function (viewer) {
+        mods = mods.concat(viewer.inventory.mods);
       }
-
-      var playerData =
-        game.findCoopPlayerInventoryData &&
-        game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
-
-      if (!playerData || !playerData.inventory) {
-        return;
-      }
-
-      mods = mods.concat(playerData.inventory.mods);
-    });
+    );
 
     return mods;
   };
