@@ -258,8 +258,8 @@ define([
     aisToModify,
     aiPaths,
     clusterPresence,
-    inventory,
-    scopeToken
+    scopeToken,
+    nonLoadAiMods
   ) {
     var filePathStarts = function (filePathFragment) {
       return _.startsWith(filePath, filePathFragment);
@@ -281,11 +281,7 @@ define([
     };
 
     var aiModsInScopeOfFile = function () {
-      var aiMods = _.reject(getRefereeInventoryAiMods(inventory), {
-        op: "load",
-      });
-
-      if (!aiMods.length) {
+      if (!nonLoadAiMods.length) {
         return [];
       }
 
@@ -302,7 +298,7 @@ define([
             return filePathIncludes(key);
           }) || "";
 
-      return _.filter(aiMods, { type: pathTypeMap[aiManager] });
+      return _.filter(nonLoadAiMods, { type: pathTypeMap[aiManager] });
     };
 
     var changeFilePath = function (aiPath, pathLength) {
@@ -355,8 +351,6 @@ define([
       var aiJsonModsInScope = [];
       var updatedFilePaths = [];
       var pathLength = 0;
-
-      inventory = inventory || model.game().inventory();
 
       // Apply AI mods to the file
       if (aisToModify === "All") {
@@ -435,6 +429,9 @@ define([
       var aisToModify = forceSubCommanderScope
         ? "SubCommanders"
         : whichAIsAreBeingModified(clusterPresence, inventory);
+      var nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
+        op: "load",
+      });
 
       addApplicableAiLoadModsToFileList(
         aiPath,
@@ -458,8 +455,8 @@ define([
           aisToModify,
           aiPaths,
           clusterPresence,
-          inventory,
-          scopeToken
+          scopeToken,
+          nonLoadAiMods
         );
       });
 
