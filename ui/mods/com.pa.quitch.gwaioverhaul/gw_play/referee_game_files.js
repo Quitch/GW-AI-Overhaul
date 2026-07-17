@@ -22,34 +22,37 @@ define([
     return aiPath + "unit_maps/ai_unit_map" + append;
   };
 
-  var guardianMods = function (game, mods) {
+  var guardianMods = function (game, hostMods) {
+    // Viewers only have their own distinct inventory to fold in when per-player
+    // tech is enabled. Under shared control (the default, and solo play) every
+    // connected player draws from the host's inventory, already included below.
+    if (!game.perPlayerTechCards()) {
+      return hostMods;
+    }
+
     var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
       ? model.gwCampaignConnectedClients()
       : [];
 
-    if (connectedClients.length) {
-      var playerMods = [];
-      _.forEach(connectedClients, function (client) {
-        if (!client || client.role !== "viewer") {
-          return;
-        }
+    var mods = hostMods;
+    _.forEach(connectedClients, function (client) {
+      if (!client || client.role !== "viewer") {
+        return;
+      }
 
-        var playerData =
-          game.findCoopPlayerInventoryData &&
-          game.findCoopPlayerInventoryData({
-            id: client.id,
-            name: client.name,
-          });
+      var playerData =
+        game.findCoopPlayerInventoryData &&
+        game.findCoopPlayerInventoryData({
+          id: client.id,
+          name: client.name,
+        });
 
-        if (!playerData || !playerData.inventory) {
-          return;
-        }
+      if (!playerData || !playerData.inventory) {
+        return;
+      }
 
-        playerMods = playerMods.concat(playerData.inventory.mods);
-      });
-
-      return playerMods;
-    }
+      mods = mods.concat(playerData.inventory.mods);
+    });
 
     return mods;
   };

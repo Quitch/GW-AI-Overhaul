@@ -17,6 +17,7 @@
 - Fix numerous flaws in various mod functions which could cause issues if fed malformed data
 - Queller won't be assigned personalities that don't affect it
 - Correct missing icons/tooltips/build-bar data for units the player doesn't personally own but that show up in-game via an AI faction.
+- Fix Guardians not receiving the host player's mods
 
 ## v6.2.0 - 2026-07-13
 
