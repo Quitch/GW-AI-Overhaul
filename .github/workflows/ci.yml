@@ -15,7 +15,7 @@ jobs:
     name: Lint, validate, and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
@@ -36,7 +36,7 @@ jobs:
     name: Prettier (changed files)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Needed to diff against a base commit below - the verify job above never
           # touches git history, only format-changed-files does.
