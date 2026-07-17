@@ -138,6 +138,10 @@ define([
     };
 
     _.forEach(mods, function (mod) {
+      if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
+        console.error("Invalid AI mod operation:", mod);
+        return;
+      }
       ops[mod.op](
         mod.value,
         mod.toBuild,
