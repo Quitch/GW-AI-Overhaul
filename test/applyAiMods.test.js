@@ -79,10 +79,10 @@ describe("applyAiMods - append", () => {
 
 describe("applyAiMods - prepend", () => {
   // Unlike append (`build[idToMod].concat(value)`, array-first), prepend does
-  // `value.concat(build[idToMod])` - value-first. A single new element must be given
-  // as an array to get array semantics; a bare scalar dispatches to
-  // String.prototype.concat instead (see the next test). No shipped card currently
-  // uses op: "prepend", so this asymmetry with append has never been exercised.
+  // `value.concat(build[idToMod])` - value-first, so a bare scalar value must be
+  // normalized to a single-element array before concat or it dispatches to
+  // String.prototype.concat instead of Array.prototype.concat. Both the build-level
+  // branch and the build_conditions branch below pin that normalization.
   it("concatenates in front of an existing array field, given an array value", () => {
     const json = buildJson([{ to_build: "Bot", builders: ["B"] }]);
     applyAiMods(json, [
@@ -91,12 +91,34 @@ describe("applyAiMods - prepend", () => {
     assert.deepEqual(json.build_list[0].builders, ["A", "B"]);
   });
 
-  it("with a bare scalar value, string-concatenates instead of prepending an array element", () => {
+  it("with a bare scalar value, prepends it as a single array element", () => {
     const json = buildJson([{ to_build: "Bot", builders: ["B"] }]);
     applyAiMods(json, [
       { op: "prepend", toBuild: "Bot", idToMod: "builders", value: "A" },
     ]);
-    assert.equal(json.build_list[0].builders, "AB");
+    assert.deepEqual(json.build_list[0].builders, ["A", "B"]);
+  });
+
+  it("with a bare scalar value, prepends it as a single array element in a build_conditions test", () => {
+    const json = buildJson([
+      {
+        to_build: "Bot",
+        build_conditions: [[{ test_type: "SomeTest", builders: ["B"] }]],
+      },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "prepend",
+        toBuild: "Bot",
+        idToMod: "builders",
+        value: "A",
+        matchAll: true,
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].build_conditions[0][0].builders, [
+      "A",
+      "B",
+    ]);
   });
 });
 
