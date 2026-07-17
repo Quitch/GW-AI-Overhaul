@@ -660,6 +660,13 @@ function gwoSetup() {
               var workers = info.workers;
               var minions = GWFactions[info.faction].minions;
               if (difficulty.ai() === "Queller") {
+                // info.workers is already Queller-compatible: it's built via
+                // makeWorker() from team.remainingMinions/team.faction.minions,
+                // which we pre-filter above. This re-filter is a no-op for the
+                // built-in factions, kept as a safety net for any faction (e.g.
+                // a modded one, in the style of the base game's gw_faction_credits_*
+                // "Credits War" factions) that populates team.workers instead,
+                // a path our pre-filter doesn't cover.
                 workers = gwoAI.quellerCompatibleMinions(workers);
                 minions = gwoAI.quellerCompatibleMinions(minions);
               }
