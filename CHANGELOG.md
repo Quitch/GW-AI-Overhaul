@@ -20,6 +20,10 @@
 - Fix Guardians not receiving the host player's mods
 - Fix Guardians not working when enemy and ally AI used the same brain
 
+### Known Issues
+
+- Cluster Worker and Security commanders will use the Angel and Colonel icons
+
 ## v6.2.0 - 2026-07-13
 
 ### Changed
