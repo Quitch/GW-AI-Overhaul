@@ -62,7 +62,7 @@ define([
                   (!_.isUndefined(refId) && test[refId] === refValue);
                 if (testMatches) {
                   if (_.isArray(test[idToMod])) {
-                    value = _.isArray(value) ? value : [value]
+                    value = _.isArray(value) ? value : [value];
                     test[idToMod] = value.concat(test[idToMod]);
                   } else if (test[idToMod]) {
                     test[idToMod] = value + test[idToMod];
