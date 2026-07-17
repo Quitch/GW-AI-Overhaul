@@ -27,223 +27,48 @@ define([
   var workerCommander = gwoUnit.angel;
   var securityName = "Security";
   var securityCommander = gwoUnit.colonel;
-  var uber = "!LOC:Uber";
-  var fabber = "!LOC:Fabber";
-  var defender = "!LOC:Defender";
-  var luddite = "!LOC:Luddite";
-  var technologist = "!LOC:Technologist";
-  var cautious = "!LOC:Cautious";
-  var aggressive = "!LOC:Aggressive";
-  var rush = "!LOC:Rush";
-  var turtle = "!LOC:Turtle";
-  var absurd = "!LOC:Absurd";
-  var factory = "!LOC:Factory";
-  var swarm = "!LOC:Swarm";
-  var economist = "!LOC:Economist";
-  var random = "!LOC:Random";
-  var minions = [
-    {
-      name: workerName,
-      character: uber,
-      color: factionColour,
-      personality: personalities.uber,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: fabber,
-      color: factionColour,
-      personality: personalities.fabber,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: defender,
-      color: factionColour,
-      personality: personalities.defender,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: luddite,
-      color: factionColour,
-      personality: personalities.luddite,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: technologist,
-      color: factionColour,
-      personality: personalities.technologist,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: cautious,
-      color: factionColour,
-      personality: personalities.cautious,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: aggressive,
-      color: factionColour,
-      personality: personalities.aggressive,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: rush,
-      color: factionColour,
-      personality: personalities.rush,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: turtle,
-      color: factionColour,
-      personality: personalities.turtle,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: absurd,
-      color: factionColour,
-      personality: personalities.absurd,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: factory,
-      color: factionColour,
-      personality: personalities.factory,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: swarm,
-      color: factionColour,
-      personality: personalities.swarm,
-      commander: workerCommander,
-    },
-    {
-      name: workerName,
-      character: economist,
-      color: factionColour,
-      personality: personalities.economist,
-      commander: workerCommander,
-    },
-    {
-      name: securityName,
-      character: uber,
-      color: factionColour,
-      personality: personalities.uber,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: fabber,
-      color: factionColour,
-      personality: personalities.fabber,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: defender,
-      color: factionColour,
-      personality: personalities.defender,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: luddite,
-      color: factionColour,
-      personality: personalities.luddite,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: technologist,
-      color: factionColour,
-      personality: personalities.technologist,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: cautious,
-      color: factionColour,
-      personality: personalities.cautious,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: aggressive,
-      color: factionColour,
-      personality: personalities.aggressive,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: rush,
-      color: factionColour,
-      personality: personalities.rush,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: turtle,
-      color: factionColour,
-      personality: personalities.turtle,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: absurd,
-      color: factionColour,
-      personality: personalities.absurd,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: factory,
-      color: factionColour,
-      personality: personalities.factory,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: swarm,
-      color: factionColour,
-      personality: personalities.swarm,
-      commander: securityCommander,
-    },
-    {
-      name: securityName,
-      character: economist,
-      color: factionColour,
-      personality: personalities.economist,
-      commander: securityCommander,
-    },
+  var characterTypes = [
+    { character: "!LOC:Uber", personality: personalities.uber },
+    { character: "!LOC:Fabber", personality: personalities.fabber },
+    { character: "!LOC:Defender", personality: personalities.defender },
+    { character: "!LOC:Luddite", personality: personalities.luddite },
+    { character: "!LOC:Technologist", personality: personalities.technologist },
+    { character: "!LOC:Cautious", personality: personalities.cautious },
+    { character: "!LOC:Aggressive", personality: personalities.aggressive },
+    { character: "!LOC:Rush", personality: personalities.rush },
+    { character: "!LOC:Turtle", personality: personalities.turtle },
+    { character: "!LOC:Absurd", personality: personalities.absurd },
+    { character: "!LOC:Factory", personality: personalities.factory },
+    { character: "!LOC:Swarm", personality: personalities.swarm },
+    { character: "!LOC:Economist", personality: personalities.economist },
   ];
+  var roles = [
+    { name: workerName, commander: workerCommander },
+    { name: securityName, commander: securityCommander },
+  ];
+  var minions = _.flatten(
+    _.map(roles, function (role) {
+      return _.map(characterTypes, function (type) {
+        return {
+          name: role.name,
+          character: type.character,
+          personality: type.personality,
+          commander: role.commander,
+        };
+      });
+    })
+  );
+  var randomCharacter = "!LOC:Random";
+  var randomAIs = _.map(roles, function (role) {
+    return {
+      name: role.name,
+      character: randomCharacter,
+      personality: _.sample(characterTypes).personality,
+      commander: role.commander,
+    };
+  });
 
-  var shuffledPersonalties = _.shuffle(minions);
-  var randomWorkerPersonality = shuffledPersonalties[0].personality;
-  var randomSecurityPersonality = shuffledPersonalties[1].personality;
-  var randomWorkerAI = {
-    name: workerName,
-    character: random,
-    color: factionColour,
-    personality: randomWorkerPersonality,
-    commander: workerCommander,
-  };
-  var randomSecurityAI = {
-    name: securityName,
-    character: random,
-    color: factionColour,
-    personality: randomSecurityPersonality,
-    commander: securityCommander,
-  };
-  minions.push(randomWorkerAI, randomSecurityAI);
+  minions = minions.concat(randomAIs);
 
   return {
     name: factionName,

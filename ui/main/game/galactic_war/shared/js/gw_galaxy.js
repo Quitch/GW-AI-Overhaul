@@ -47,41 +47,37 @@ var GWGalaxy = function () {
       var path = workList.shift();
 
       var node = path[path.length - 1];
-      var nodeNeighbors = neighborsMap[node];
+      var nodeNeighbors = neighborsMap[node] || [];
 
       checked[node] = true;
 
       for (var neighbor of nodeNeighbors) {
-        var other = neighbor;
-
-        if (checked[other]) {
+        if (checked[neighbor]) {
           continue;
         } // ignore loop
 
-        if (other === to) {
-          var previous = _.last(path);
-
+        if (neighbor === to) {
           // prevent pathing through unexplored systems for fog of war
 
-          var explored = self.stars()[previous].explored() || toExplored;
+          var explored = self.stars()[node].explored() || toExplored;
 
           if (!explored && !noFog) {
             continue;
           }
 
-          path.push(other);
+          path.push(neighbor);
 
           return path;
         }
 
-        var otherStar = self.stars()[other];
+        var otherStar = self.stars()[neighbor];
         var otherVisited = otherStar.history().length > 0;
 
         var valid = noFog ? otherVisited : otherStar.explored();
 
         if (valid) {
           var newPath = _.cloneDeep(path);
-          newPath.push(other);
+          newPath.push(neighbor);
 
           workList.push(newPath);
         }
@@ -204,7 +200,7 @@ define([
       });
 
       self.stars(
-        _.map(builder.stars || [], function (star) {
+        _.map(builder.stars, function (star) {
           var result = new GWStar();
           result.coordinates(star.concat([rng()]));
           return result;
@@ -215,7 +211,7 @@ define([
       var bestStar = 0;
       var bestDistance = Infinity;
       _.forEach(self.stars(), function (star, index) {
-        var distance = star.coordinates()[0] + -star.coordinates()[1];
+        var distance = star.coordinates()[0] - star.coordinates()[1];
         if (distance < bestDistance) {
           bestDistance = distance;
           bestStar = index;
@@ -248,9 +244,7 @@ define([
           model.gwoDifficultySettings &&
           !model.gwoDifficultySettings.systemScaling()
         ) {
-          systemSize = Math.floor(
-            Math.random() * 10 + 1 + coopSystemPlayerBonus
-          );
+          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
         } else {
           systemSize = star.distance() + coopSystemPlayerBonus;
         }

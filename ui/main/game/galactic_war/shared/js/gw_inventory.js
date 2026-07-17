@@ -1,18 +1,15 @@
-// Add aiMods()
-
-var GWInventory = function () {
-  var self = this;
-  self.units = ko.observableArray();
-  // add location to store changes to AI based on cards held
-  self.aiMods = ko.observableArray();
-  self.mods = ko.observableArray();
-  self.maxCards = ko.observable(0);
-  self.cards = ko.observableArray();
-  self.minions = ko.observableArray([]);
-  self.tags = ko.observable({});
-};
-
 define(function () {
+  var GWInventory = function () {
+    var self = this;
+    self.units = ko.observableArray();
+    self.aiMods = ko.observableArray(); // GWO - add location to store changes to AI based on cards held
+    self.mods = ko.observableArray();
+    self.maxCards = ko.observable(0);
+    self.cards = ko.observableArray();
+    self.minions = ko.observableArray();
+    self.tags = ko.observable({});
+  };
+
   GWInventory.prototype = {
     load: function (config) {
       var self = this;
@@ -40,7 +37,7 @@ define(function () {
     removeUnits: function (remove) {
       var self = this;
       _.forEach(remove, function (unit) {
-        _.pull(self.units(), unit);
+        self.units.remove(unit);
       });
     },
     addAIMods: function (aiMods) {
@@ -72,6 +69,7 @@ define(function () {
       // Clean-up function that gets called when everything is done.
       var finishApplyCards = function () {
         delete self.getTag;
+        delete self.setTag;
         delete self.applyCards;
         delete self.isApplyingCards;
         if (dirty) {
@@ -155,6 +153,8 @@ define(function () {
         return id === card.id && !card.unique;
       });
     },
+    // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
+    // or in case the game itself uses it in the future. No idea why id() is a function here.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {
@@ -181,22 +181,23 @@ define(function () {
       }
       return self.cards().length < self.maxCards();
     },
-
     handIsFull: function () {
       var self = this;
       return self.cards().length >= self.maxCards();
     },
-
     // Get a tag value.  When called during card processing, an empty
     // context will be replaced with the current card.
     getTag: function (context, name, def) {
       var self = this;
       var tags = self.tags();
+      var mutated = false;
+
       if (!Object.prototype.hasOwnProperty.call(tags, context)) {
         if (_.isUndefined(def)) {
           return;
         }
         tags[context] = {};
+        mutated = true;
       }
       var tagContext = tags[context];
       if (!Object.prototype.hasOwnProperty.call(tagContext, name)) {
@@ -204,15 +205,23 @@ define(function () {
           return;
         }
         tagContext[name] = def;
+        mutated = true;
+      }
+
+      if (mutated) {
+        self.tags.valueHasMutated();
       }
       return tagContext[name];
     },
     setTag: function (context, name, value) {
       var self = this;
       var tags = self.tags();
+      var mutated = false;
+
       if (_.isUndefined(value)) {
         if (tags[context]) {
           delete tags[context][name];
+          mutated = true;
           if (_.isEmpty(tags[context])) {
             delete tags[context];
           }
@@ -222,6 +231,11 @@ define(function () {
           tags[context] = {};
         }
         tags[context][name] = value;
+        mutated = true;
+      }
+
+      if (mutated) {
+        self.tags.valueHasMutated();
       }
     },
   };

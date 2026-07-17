@@ -8,12 +8,33 @@ function gwoUI() {
   gwoUILoaded = true;
 
   try {
+    ko.extenders.stringBoolean = function (target) {
+      var result = ko.computed({
+        read: function () {
+          return target() ? "true" : "false";
+        },
+        write: function (newValue) {
+          target(newValue === true || newValue === "true");
+        },
+      });
+      result.raw = target;
+      return result;
+    };
+
+    var koStringBoolean = function (value) {
+      return ko.observable(value).extend({ stringBoolean: true });
+    };
+
     var koNumeric = function (value, precision) {
       return ko.observable(value).extend({ numeric: precision });
     };
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
+      // Holds a name-keyed snapshot of the last saved settings, e.g.
+      // { hardcore: true, factionScaling: false, ... } - see
+      // restorePreviousSettings/snapshotSettingsForSave below. May still
+      // contain a legacy positional array for players with v6.20 and earlier saves.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -30,15 +51,15 @@ function gwoUI() {
       paLore: ko.observable(true),
       techCardDeck: ko.observable("Expanded"),
       customDifficulty: ko.observable(false),
-      goForKill: ko.observable("false"),
+      goForKill: koStringBoolean(false),
       microType: koNumeric(0, 0),
       mandatoryMinions: koNumeric(0, 0),
       minionMod: koNumeric(0, 2),
-      priorityScoutMetalSpots: ko.observable("false"),
+      priorityScoutMetalSpots: koStringBoolean(false),
       factoryBuildDelayMin: koNumeric(0, 0),
       factoryBuildDelayMax: koNumeric(0, 0),
       unableToExpandDelay: koNumeric(0, 0),
-      enableCommanderDangerResponses: ko.observable("false"),
+      enableCommanderDangerResponses: koStringBoolean(false),
       perExpansionDelay: koNumeric(0, 0),
       econBase: koNumeric(0, 3),
       econRatePerDist: koNumeric(0, 3),
@@ -54,7 +75,7 @@ function gwoUI() {
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain previous settings integrity
+      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.20 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
@@ -71,6 +92,19 @@ function gwoUI() {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
+    // Restores previously-saved settings onto `settings`.
+    //
+    // previousSettings is expected to be a name-keyed object, e.g.
+    // { hardcore: true, factionScaling: false, ... }, so a value is only
+    // ever written into the setting it was saved from - adding, removing,
+    // or reordering settings in gwoDifficultySettings can never cause a
+    // saved value to be silently assigned to the wrong setting.
+    //
+    // Older saves (v6.20 and earlier) may still be sitting in
+    // localStorage as a positional array. That legacy shape is supported
+    // on a best-effort basis: restore only proceeds if the array length
+    // still matches the current setting count, otherwise it's treated as
+    // unusable and skipped rather than risk a mismatched restore.
     var restorePreviousSettings = function (settings) {
       var previousSettings = settings.previousSettings();
 
@@ -80,12 +114,32 @@ function gwoUI() {
 
       var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
-      _.forEach(settingNames, function (name, i) {
-        settings[name](previousSettings[i]);
-      });
+
+      if (_.isArray(previousSettings)) {
+        if (previousSettings.length !== settingNames.length) {
+          console.error(
+            "gwoUI: previousSettings is a legacy array of length " +
+              previousSettings.length +
+              " but there are now " +
+              settingNames.length +
+              " settings; skipping restore to avoid misassigning values."
+          );
+          return settings;
+        }
+        _.forEach(settingNames, function (name, i) {
+          settings[name](previousSettings[i]);
+        });
+      } else {
+        _.forEach(settingNames, function (name) {
+          if (_.has(previousSettings, name)) {
+            settings[name](previousSettings[name]);
+          }
+        });
+      }
+
       _.defer(function () {
         $("#gwo-personality-picker")
-          .selectpicker("val", model.gwoDifficultySettings.personalityTags())
+          .selectpicker("val", settings.personalityTags())
           .trigger("change");
       });
       model.playerFactionIndex(settings.playerFaction());
@@ -200,7 +254,9 @@ function gwoUI() {
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     } else {
-      $("select option[value*='Queller']").prop("disabled", true);
+      $("select option[value*='Queller']")
+        .prop("disabled", true)
+        .selectpicker("refresh");
     }
 
     // Track difficulty settings so AI Settings' fields display correct values

@@ -7,7 +7,7 @@ export default defineConfig([
   {
     files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 6, // only some ES6 support - PA uses Chrome 40
+      ecmaVersion: 6, // `for...of` loops and Promise usage only - PA uses Chrome 40, does not support ES2015 in full
       parserOptions: {
         ecmaFeatures: {
           impliedStrict: true,
@@ -46,6 +46,18 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+    },
+  },
+  {
+    // Node-side test/CI tooling - not shipped to the game, not bound to its Chrome 40
+    // constraint, so these get real Node globals instead of the browser/engine ones above.
+    files: ["scripts/**/*.js", "test/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+      },
     },
   },
   // Prettier config last to disable conflicting rules

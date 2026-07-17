@@ -39,13 +39,13 @@ define([
             {
               file: ammo,
               path: "armor_damage_map.AT_Hover",
-              op: "multiplyOrAdd",
+              op: "multiplyOrCreate",
               value: 0.5,
             },
             {
               file: ammo,
               path: "armor_damage_map.AT_Naval",
-              op: "multiplyOrAdd",
+              op: "multiplyOrCreate",
               value: 2,
             },
           ];

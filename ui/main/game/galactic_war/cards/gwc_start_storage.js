@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GW, GWCStart, GWCStorage, gwoCard, gwoUnit) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Storage Commander"),

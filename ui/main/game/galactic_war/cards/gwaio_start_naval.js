@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GW, GWCStart, gwoCard, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
     summarize: _.constant(loc("!LOC:Naval") + " " + loc("!LOC:Commander")), // scuffed translation using existing strings

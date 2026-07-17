@@ -269,13 +269,11 @@ define({
     });
   },
 
-  dealCard: function (params, loaded) {
+  dealCard: function (params, loaded, loadedCards) {
     console.debug("Dealing GWO card:", params.id, "with params:", params);
     var result = $.Deferred();
     loaded.then(function () {
-      var card = _.find(model.gwoCards, function (cardId) {
-        return cardId === params.id;
-      });
+      var card = _.find(loadedCards, { id: params.id });
 
       if (!card) {
         result.reject(new Error("GWO card not found: " + params.id));

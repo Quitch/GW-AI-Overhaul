@@ -70,6 +70,7 @@ define([
           toBuild: unit,
           idToMod: "builders",
           value: "BasicBotFabber",
+          matchAll: true,
         };
       });
       inventory.addAIMods(aiMods);

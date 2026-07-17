@@ -2,13 +2,20 @@
   "extends": ["stylelint-config-standard"],
   "rules": {
     "color-function-notation": "legacy",
+    "color-function-alias-notation": null,
     "alpha-value-notation": "number",
     "selector-class-pattern": "^([a-z][a-z0-9]*)((_|-)[a-z0-9]+)*$",
     "selector-id-pattern": "^([a-z][a-z0-9]*)((_|-)[a-z0-9]+)*$",
     "property-no-vendor-prefix": [
       true,
       {
-        "ignoreProperties": ["mask-image", "mask-size"]
+        "ignoreProperties": ["-webkit-mask-image", "-webkit-mask-size"]
+      }
+    ],
+    "declaration-block-no-redundant-longhand-properties": [
+      true,
+      {
+        "ignoreShorthands": ["overflow"]
       }
     ]
   }

@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
 
   return {
     visible: _.constant(false),
@@ -111,6 +111,7 @@ define([
               toBuild: structure,
               idToMod: "builders",
               value: "OrbitalFabber",
+              matchAll: true,
             };
           });
           inventory.addAIMods(aiMods);

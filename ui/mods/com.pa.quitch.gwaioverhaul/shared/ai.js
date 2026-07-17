@@ -1,37 +1,32 @@
-var getInventoryAiMods = function (inventory) {
-  if (!inventory) {
-    return [];
-  }
-
-  if (_.isFunction(inventory.aiMods)) {
-    return inventory.aiMods();
-  }
-
-  return inventory.aiMods || [];
-};
-
-var hasSmartSubcommanders = function (inventory) {
-  return _.some(inventory.cards(), {
-    id: "gwaio_upgrade_subcommander_tactics",
-  });
-};
-
-var aiInUse = function (alignment) {
-  var galaxy = model.game().galaxy();
-  var originSystem = galaxy.stars()[galaxy.origin()].system();
-  if (originSystem.gwaio) {
-    if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
-      return originSystem.gwaio.aiAlly;
-    }
-    return originSystem.gwaio.ai;
-  }
-  return "Titans";
-};
-
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
-], function (refereeAIPaths, gwoDifficulty) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+], function (refereeAIPaths, gwoDifficulty, subcommanderTech) {
+  var getInventoryAiMods = function (inventory) {
+    if (!inventory) {
+      return [];
+    }
+
+    if (_.isFunction(inventory.aiMods)) {
+      return inventory.aiMods();
+    }
+
+    return inventory.aiMods || [];
+  };
+
+  var aiInUse = function (alignment) {
+    var galaxy = model.game().galaxy();
+    var originSystem = galaxy.stars()[galaxy.origin()].system();
+    if (originSystem.gwaio) {
+      if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
+        return originSystem.gwaio.aiAlly;
+      }
+      return originSystem.gwaio.ai;
+    }
+    return "Titans";
+  };
+
   var getDifficultySettings = function (difficultyName) {
     return _.find(gwoDifficulty.difficulties, {
       difficultyName: difficultyName,
@@ -64,7 +59,7 @@ define([
         {
           guardians: !!ai.mirrorMode,
           aiMods: getInventoryAiMods(inventory),
-          smartSubcommanders: hasSmartSubcommanders(inventory),
+          smartSubcommanders: subcommanderTech.hasSmartSubcommanders(inventory),
           scopeToken:
             type === "enemy" && ai.mirrorMode ? "guardians" : undefined,
         },
@@ -209,6 +204,15 @@ define([
       var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
 
       return Math.max(aiEconRate, getAIEconFloor(difficultyName));
+    },
+
+    quellerCompatibleMinions: function (minions) {
+      return _.filter(minions, function (minion) {
+        if (minion.ai) {
+          return minion.ai.personality.works_with_queller === true;
+        }
+        return minion.personality.works_with_queller === true;
+      });
     },
   };
 });

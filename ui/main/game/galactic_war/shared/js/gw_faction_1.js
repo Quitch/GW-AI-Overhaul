@@ -25,7 +25,6 @@ define([
     {
       name: "Progenitor",
       character: "!LOC:Air Force",
-      color: factionColour,
       personality: personalities.airForce,
       commander:
         "/pa/units/commanders/imperial_progenitor/imperial_progenitor.json",
@@ -33,14 +32,12 @@ define([
     {
       name: "Sangudo",
       character: "!LOC:Navy",
-      color: factionColour,
       personality: personalities.navy,
       commander: "/pa/units/commanders/imperial_sangudo/imperial_sangudo.json",
     },
     {
       name: "Seniorhelix",
       character: "!LOC:Uber",
-      color: factionColour,
       personality: personalities.uber,
       commander:
         "/pa/units/commanders/imperial_seniorhelix/imperial_seniorhelix.json",
@@ -48,7 +45,6 @@ define([
     {
       name: "TheChessKnight",
       character: "!LOC:Fabber",
-      color: factionColour,
       personality: personalities.fabber,
       commander:
         "/pa/units/commanders/imperial_thechessknight/imperial_thechessknight.json",
@@ -56,14 +52,12 @@ define([
     {
       name: "Theta",
       character: "!LOC:Defender",
-      color: factionColour,
       personality: personalities.defender,
       commander: "/pa/units/commanders/imperial_theta/imperial_theta.json",
     },
     {
       name: "ToddFather",
       character: "!LOC:Luddite",
-      color: factionColour,
       personality: personalities.luddite,
       commander:
         "/pa/units/commanders/imperial_toddfather/imperial_toddfather.json",
@@ -71,35 +65,30 @@ define([
     {
       name: "Ajax",
       character: "!LOC:Technologist",
-      color: factionColour,
       personality: personalities.technologist,
       commander: "/pa/units/commanders/quad_ajax/quad_ajax.json",
     },
     {
       name: "Armalisk",
       character: "!LOC:Cautious",
-      color: factionColour,
       personality: personalities.cautious,
       commander: "/pa/units/commanders/quad_armalisk/quad_armalisk.json",
     },
     {
       name: "Calyx",
       character: "!LOC:Aggressive",
-      color: factionColour,
       personality: personalities.aggressive,
       commander: "/pa/units/commanders/quad_calyx/quad_calyx.json",
     },
     {
       name: "Gambitdfa",
       character: "!LOC:Rush",
-      color: factionColour,
       personality: personalities.rush,
       commander: "/pa/units/commanders/quad_gambitdfa/quad_gambitdfa.json",
     },
     {
       name: "Berlinetta",
       character: "!LOC:Turtle",
-      color: factionColour,
       personality: personalities.turtle,
       commander:
         "/pa/units/commanders/quad_mobiousblack/quad_mobiousblack.json",
@@ -107,21 +96,18 @@ define([
     {
       name: "Osiris",
       character: "!LOC:Original",
-      color: factionColour,
       personality: personalities.foundationOriginal,
       commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
     },
     {
       name: "Tykus24",
       character: "!LOC:Absurd",
-      color: factionColour,
       personality: personalities.absurd,
       commander: "/pa/units/commanders/imperial_tykus24/imperial_tykus24.json",
     },
     {
       name: "Vidicarus",
       character: "!LOC:Factory",
-      color: factionColour,
       personality: personalities.factory,
       commander:
         "/pa/units/commanders/imperial_vidicarus/imperial_vidicarus.json",
@@ -129,7 +115,6 @@ define([
     {
       name: "Visionik",
       character: "!LOC:Swarm",
-      color: factionColour,
       personality: personalities.swarm,
       commander:
         "/pa/units/commanders/imperial_visionik/imperial_visionik.json",
@@ -137,18 +122,15 @@ define([
     {
       name: "Commandonut",
       character: "!LOC:Economist",
-      color: factionColour,
       personality: personalities.economist,
       commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
     },
   ];
-
-  var randomMinion = _.sample(minions);
+  var randomPersonality = _.sample(minions).personality;
   var randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
-    color: factionColour,
-    personality: randomMinion.personality,
+    personality: randomPersonality,
     commander: "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
   };
   minions.push(randomAI);

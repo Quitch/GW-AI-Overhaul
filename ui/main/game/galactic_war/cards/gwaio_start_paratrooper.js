@@ -6,7 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: /[^/]+$/.exec(module.id).pop() };
+  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Paratrooper Commander"),
@@ -126,6 +126,7 @@ define([
               toBuild: structure,
               idToMod: "builders",
               value: "Commander",
+              matchAll: true,
             });
           });
           var mobileLand = [
@@ -146,6 +147,7 @@ define([
               toBuild: unit,
               idToMod: "builders",
               value: "UnitCannon",
+              matchAll: true,
             });
           });
           inventory.addAIMods(aiMods);

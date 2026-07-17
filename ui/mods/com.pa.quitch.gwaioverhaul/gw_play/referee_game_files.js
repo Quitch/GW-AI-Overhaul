@@ -1,59 +1,46 @@
-var getAIUnitMapPath = function (titans, aiInUse) {
-  var append = titans ? "_x1.json" : ".json";
-
-  switch (aiInUse) {
-    case "Queller":
-      return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
-    case "Penchant":
-      return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
-    default:
-      return "/pa/ai/unit_maps/ai_unit_map" + append;
-  }
-};
-
-var getAIUnitMapDestinationPath = function (titans, aiPath) {
-  var append = titans ? "_x1.json" : ".json";
-  return aiPath + "unit_maps/ai_unit_map" + append;
-};
-
-var guardianMods = function (game, mods) {
-  var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
-    ? model.gwCampaignConnectedClients()
-    : [];
-
-  if (connectedClients.length) {
-    var playerMods = [];
-    _.forEach(connectedClients, function (client) {
-      if (!client || client.role !== "viewer") {
-        return;
-      }
-
-      var playerData =
-        game.findCoopPlayerInventoryData &&
-        game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
-
-      if (!playerData || !playerData.inventory) {
-        return;
-      }
-
-      playerMods = playerMods.concat(playerData.inventory.mods);
-    });
-
-    return playerMods;
-  }
-
-  return mods;
-};
-
 define([
   "shared/gw_common",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
-], function (GW, gwoUnit, gwoAI, gwoSpecs) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (GW, gwoAI, gwoSpecs, refereeCoop) {
+  var getAIUnitMapPath = function (titans, aiInUse) {
+    var append = titans ? "_x1.json" : ".json";
+
+    switch (aiInUse) {
+      case "Queller":
+        return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
+      case "Penchant":
+        return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
+      default:
+        return "/pa/ai/unit_maps/ai_unit_map" + append;
+    }
+  };
+
+  var getAIUnitMapDestinationPath = function (titans, aiPath) {
+    var append = titans ? "_x1.json" : ".json";
+    return aiPath + "unit_maps/ai_unit_map" + append;
+  };
+
+  var guardianMods = function (game, hostMods) {
+    // Viewers only have their own distinct inventory to fold in when per-player
+    // tech is enabled. Under shared control (the default, and solo play) every
+    // connected player draws from the host's inventory, already included below.
+    if (!game.perPlayerTechCards()) {
+      return hostMods;
+    }
+
+    var mods = hostMods;
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game),
+      function (viewer) {
+        mods = mods.concat(viewer.inventory.mods);
+      }
+    );
+
+    return mods;
+  };
+
   var clusterArmyIndex = function (ai) {
     var guardians = ai.mirrorMode;
     if (guardians) {
@@ -123,7 +110,7 @@ define([
           var guardians = ai.mirrorMode;
           if (guardians) {
             aiInventory = aiInventory.concat(
-              guardianMods(game, inventory.mods)
+              guardianMods(game, inventory.mods())
             );
           }
           gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);

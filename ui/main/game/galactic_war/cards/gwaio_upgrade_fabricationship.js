@@ -69,6 +69,7 @@ define([
           toBuild: unit,
           idToMod: "builders",
           value: "BasicNavalFabber",
+          matchAll: true,
         };
       });
       inventory.addAIMods(aiMods);

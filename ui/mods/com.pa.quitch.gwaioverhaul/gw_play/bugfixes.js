@@ -26,44 +26,25 @@ function gwoBugfixes() {
     }
 
     var fixTreasurePlanetCardList = function (star) {
-      if (gwoSettings.treasurePlanetFixed) {
-        return;
-      }
-
       if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
       }
     };
 
-    var fixClusterType = function (mod, securityFix, workerFix) {
-      var security =
-        "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      var worker = "/pa/units/air/support_platform/support_platform.json";
-
-      if (
-        (securityFix === true || mod.file !== security) &&
-        (workerFix >= 2 || mod.file !== worker)
-      ) {
-        return;
-      }
-
+    var fixClusterType = function (mod, security) {
+      // Worker needs two fixes but each fix is applied in a separate mod
       if (mod.path === "buildable_types") {
         mod.value = mod.value + " & Custom58";
         return mod.file;
-      } else if (mod.path === "unit_types") {
+      } else if (mod.file === security && mod.path === "unit_types") {
         mod.value.push("UNITTYPE_Custom58");
         return mod.file;
       }
+      return null;
     };
 
-    var fixClusterCommanderTypes = function (star) {
-      var ai = star.ai();
-
-      if (gwoSettings.clusterFixed || !ai || !ai.isCluster) {
-        return;
-      }
-
+    var fixClusterCommanderTypes = function (ai) {
       var securityFix = false; // we have to fix `unit_types`
       var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
       var security =
@@ -71,16 +52,20 @@ function gwoBugfixes() {
       var worker = "/pa/units/air/support_platform/support_platform.json";
 
       for (var mod of ai.inventory) {
-        var result = fixClusterType(mod, securityFix, workerFix);
+        var isSecurityCandidate = securityFix !== true && mod.file === security;
+        var isWorkerCandidate = workerFix < 2 && mod.file === worker;
+
+        if (!isSecurityCandidate && !isWorkerCandidate) {
+          continue;
+        }
+
+        var result = fixClusterType(mod, security);
         switch (result) {
           case security:
             securityFix = true;
             break;
           case worker:
             workerFix += 1;
-            break;
-          default:
-            // falls through
             break;
         }
 
@@ -92,10 +77,6 @@ function gwoBugfixes() {
     };
 
     var fixLuckyCommanderLocalStorageVariable = function () {
-      if (luckyCommanderFixed()) {
-        return;
-      }
-
       var unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
@@ -119,6 +100,9 @@ function gwoBugfixes() {
     };
 
     var checkVersion = function (fixedVersion) {
+      if (!gwoSettings.version) {
+        return -1;
+      }
       return gwoSettings.version.localeCompare(fixedVersion, undefined, {
         numeric: true,
         sensitivity: "base",
@@ -131,8 +115,11 @@ function gwoBugfixes() {
 
       if (checkVersion("5.76.1") >= 0) {
         luckyCommanderFixed("true");
+        gwoSettings.clusterFixed = true;
+        gwoSettings.treasurePlanetFixed = true;
       } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
         gwoSettings.clusterFixed = true;
+        gwoSettings.treasurePlanetFixed = true;
       } else if (checkVersion("5.18.0") >= 0) {
         gwoSettings.treasurePlanetFixed = true;
       }
@@ -144,14 +131,25 @@ function gwoBugfixes() {
           break;
         }
 
-        fixTreasurePlanetCardList(star);
-        fixClusterCommanderTypes(star);
+        if (!gwoSettings.treasurePlanetFixed) {
+          fixTreasurePlanetCardList(star);
+        }
+
+        if (
+          !gwoSettings.clusterFixed &&
+          ko.isObservable(star.ai) &&
+          star.ai().isCluster
+        ) {
+          fixClusterCommanderTypes(star.ai());
+        }
       }
 
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
 
-      fixLuckyCommanderLocalStorageVariable();
+      if (luckyCommanderFixed() !== "true") {
+        fixLuckyCommanderLocalStorageVariable();
+      }
     };
 
     checkIfPatchesNeeded();

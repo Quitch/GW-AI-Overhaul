@@ -49,7 +49,7 @@ function gwoSystemChanges() {
       }
 
       result.color = ko.observable(params.color);
-      if (result.color) {
+      if (_.isArray(result.color())) {
         if (params.noCache) {
           throw new Error("noCache incompatible with color");
         }
@@ -83,7 +83,7 @@ function gwoSystemChanges() {
       if (!params.noCache) {
         // Note: Extra pixel compensates for bad filtering on the edges
         result.cache(-1, -1, params.size[0] + 2, params.size[1] + 2);
-        $(result.image).load(function () {
+        $(result.image).on("load", function () {
           result.updateCache();
         });
       }
@@ -207,47 +207,44 @@ function gwoSystemChanges() {
             var temperature = loc("!LOC:Temperature:");
             var waterHeight = loc("!LOC:Water Height:");
 
-            model.gwoPlanetData = _.map(
-              self.system().planets(),
-              function (planet) {
-                var tooltip = radius + " " + planet.generator.radius;
+            model.gwoPlanetData = _.map(newSystem.planets(), function (planet) {
+              var tooltip = radius + " " + planet.generator.radius;
 
-                if (planet.generator.biome === "gas") {
-                  return tooltip;
-                }
-
-                if (planet.metal_spots) {
-                  tooltip +=
-                    "<br>" + metalSpots + " " + planet.metal_spots.length;
-                } else {
-                  tooltip +=
-                    "<br>" +
-                    metalClusters +
-                    " " +
-                    Math.round(planet.generator.metalClusters) +
-                    "<br>" +
-                    metalDensity +
-                    " " +
-                    Math.round(planet.generator.metalDensity);
-                }
-                if (
-                  planet.generator.biome !== "metal" &&
-                  planet.generator.biome !== "metal_boss" &&
-                  planet.generator.biome !== "moon"
-                ) {
-                  tooltip +=
-                    "<br>" +
-                    temperature +
-                    " " +
-                    Math.round(planet.generator.temperature) +
-                    "<br>" +
-                    waterHeight +
-                    " " +
-                    Math.round(planet.generator.waterHeight);
-                }
+              if (planet.generator.biome === "gas") {
                 return tooltip;
               }
-            );
+
+              if (planet.metal_spots) {
+                tooltip +=
+                  "<br>" + metalSpots + " " + planet.metal_spots.length;
+              } else {
+                tooltip +=
+                  "<br>" +
+                  metalClusters +
+                  " " +
+                  Math.round(planet.generator.metalClusters) +
+                  "<br>" +
+                  metalDensity +
+                  " " +
+                  Math.round(planet.generator.metalDensity);
+              }
+              if (
+                planet.generator.biome !== "metal" &&
+                planet.generator.biome !== "metal_boss" &&
+                planet.generator.biome !== "moon"
+              ) {
+                tooltip +=
+                  "<br>" +
+                  temperature +
+                  " " +
+                  Math.round(planet.generator.temperature) +
+                  "<br>" +
+                  waterHeight +
+                  " " +
+                  Math.round(planet.generator.waterHeight);
+              }
+              return tooltip;
+            });
           }
         });
       }
@@ -267,22 +264,26 @@ function gwoSystemChanges() {
     });
 
     model.canMove = ko.computed(function () {
-      if (
-        model.player.moving() ||
-        (model.isCampaignViewer() && !model.gwCampaignReplayingAction)
-      ) {
+      if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
+        return false;
+      }
+
+      if (model.player.moving()) {
         return false;
       }
 
       var from = game.currentStar();
       var to = model.selection.star();
 
-      if (
-        to < 0 ||
-        to > galaxy.stars().length ||
-        !model.canSelectOrMovePrefix() ||
-        from === to
-      ) {
+      if (to < 0 || to >= galaxy.stars().length) {
+        return false;
+      }
+
+      if (!model.canSelectOrMovePrefix()) {
+        return false;
+      }
+
+      if (from === to) {
         return false;
       }
 
@@ -295,6 +296,7 @@ function gwoSystemChanges() {
 
     model.displayFight = ko.computed(function () {
       return (
+        model.canShowCampaignActionButtons() &&
         model.canFight() &&
         !model.allowLoad() &&
         model.selection.star() === game.currentStar()
@@ -322,15 +324,14 @@ function gwoSystemChanges() {
           if (ai && ai.team === defeatedTeam) {
             var replacementAI = _.first(ai.foes);
             if (replacementAI) {
-              _.forEach(_.keys(replacementAI), function (key) {
-                star.ai()[key] = replacementAI[key];
-              });
+              var newAI = _.extend({}, ai, replacementAI);
+              newAI.foes = _.rest(ai.foes);
+              delete newAI.minions;
 
-              var factionColor = normalizedColor(GWFactions[ai.faction]);
+              var factionColor = normalizedColor(GWFactions[newAI.faction]);
               system.ownerColor(factionColor.concat(3));
 
-              star.ai().foes = _.rest(ai.foes);
-              delete star.ai().minions;
+              star.ai(newAI);
             } else {
               star.ai(undefined);
               // Delete pre-dealt cards when boss defeated
@@ -356,24 +357,28 @@ function gwoSystemChanges() {
           return;
         }
 
-        // Colour inner ring to match ally or other faction present
-        var innerRing = {};
-        if (ai.ally || ai.foes) {
-          var innerColour = ai.ally
-            ? normalizedColor(GWFactions[ai.ally.faction])
-            : normalizedColor(GWFactions[ai.foes[0].faction]);
-          innerRing = createBitmap({
-            url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
-            size: [240, 240],
-            color: innerColour.concat(7),
-            scale: 0.71,
-            alpha: 0.8,
-          });
-          var scaleInnerRing = new createjs.Container();
-          scaleInnerRing.addChild(innerRing);
-          scaleInnerRing.z = 0;
-          system.systemDisplay.addChild(scaleInnerRing);
+        if (!ai.ally && !ai.foes) {
+          return;
         }
+
+        // Colour inner ring to match ally or other faction present
+        var innerColour = ai.ally
+          ? normalizedColor(GWFactions[ai.ally.faction])
+          : normalizedColor(GWFactions[ai.foes[0].faction]);
+
+        var innerRing = createBitmap({
+          url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
+          size: [240, 240],
+          color: innerColour.concat(7),
+          scale: 0.71,
+          alpha: 0.8,
+        });
+
+        var scaleInnerRing = new createjs.Container();
+        scaleInnerRing.addChild(innerRing);
+        scaleInnerRing.z = 0;
+        system.systemDisplay.addChild(scaleInnerRing);
+
         innerRing.visible = false;
 
         ko.computed(function () {

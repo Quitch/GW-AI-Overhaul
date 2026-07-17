@@ -1,26 +1,24 @@
-var multiply = function (units, multiplier, paths) {
-  var outputArray = [];
-  if (!_.isArray(paths)) {
-    paths = [paths];
-  }
-  _.forEach(paths, function (path) {
-    outputArray = outputArray.concat(
-      _.map(units, function (unit) {
-        return {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
+], function (inventory) {
+  var multiply = function (units, multiplier, paths) {
+    var outputArray = [];
+    if (!_.isArray(paths)) {
+      paths = [paths];
+    }
+    _.forEach(paths, function (path) {
+      _.forEach(units, function (unit) {
+        outputArray.push({
           file: unit,
           path: path,
           op: "multiply",
           value: multiplier,
-        };
-      })
-    );
-  });
-  return outputArray;
-};
+        });
+      });
+    });
+    return outputArray;
+  };
 
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
-], function (inventory) {
   var legonisTech = [];
   var foundationTech = [];
   var synchronousTech = [];
@@ -39,6 +37,12 @@ define([
     inventory.commanderUnits, // Synchronous
     inventory.commanderUnits, // Revenants
     inventory.clusterCommanders,
+  ];
+  var speedPaths = [
+    "navigation.move_speed",
+    "navigation.brake",
+    "navigation.acceleration",
+    "navigation.turn_speed",
   ];
 
   var setupAITech0FabricationTech = function () {
@@ -107,18 +111,12 @@ define([
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
     ];
-    var speedPaths = [
-      "navigation.move_speed",
-      "navigation.brake",
-      "navigation.acceleration",
-      "navigation.turn_speed",
-    ];
-    _.forEach(factionUnits, function (factionUnits, i) {
-      factionTechs[i][3] = multiply(factionUnits, 1.5, speedPaths);
+    _.forEach(factionUnits, function (units, i) {
+      factionTechs[i][3] = multiply(units, 1.5, speedPaths);
     });
-    _.forEach(factionCommanders, function (factionUnits, i) {
+    _.forEach(factionCommanders, function (commanders, i) {
       factionTechs[i][3] = factionTechs[i][3].concat(
-        multiply(factionUnits, 2, speedPaths)
+        multiply(commanders, 2, speedPaths)
       );
     });
     foundationTech[3] = foundationTech[3].concat(
@@ -151,23 +149,20 @@ define([
       inventory.revenantsUnitsMobile,
       inventory.clusterUnitsMobile,
     ];
-    var speedPaths = [
-      "navigation.move_speed",
-      "navigation.brake",
-      "navigation.acceleration",
-      "navigation.turn_speed",
-    ];
-    _.forEach(factionUnits, function (factionUnits, i) {
-      factionTechs[i][6] = multiply(factionUnits, 1.5, speedPaths);
+    _.forEach(factionUnits, function (units, i) {
+      factionTechs[i][6] = multiply(units, 1.5, speedPaths);
     });
-    _.forEach(factionCommanders, function (factionUnits, i) {
+    _.forEach(factionCommanders, function (commanders, i) {
       factionTechs[i][6] = factionTechs[i][6].concat(
-        multiply(factionUnits, 3, speedPaths)
+        multiply(commanders, 3, speedPaths)
       );
     });
     foundationTech[6] = foundationTech[6].concat(
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
+    // Requires setupAITech1AmmunitionTech and setupAITech2ArmourTech to have
+    // already populated faction[1]/faction[2] - do not reorder the setup
+    // calls below without keeping this after both.
     _.forEach(factionTechs, function (faction) {
       faction[6] = faction[6].concat(faction[1], faction[2]); // Add ammo and armour tech
     });
@@ -191,6 +186,9 @@ define([
   setupAITech2ArmourTech();
   setupAITech3EngineTech();
   setupAITech4EfficiencyTech();
+  // Tech5 was a tech that was removed, so it is intentionally missing.
+  // Tech6 reads faction[1] and faction[2], so it must run after both
+  // setupAITech1AmmunitionTech() and setupAITech2ArmourTech().
   setupAITech6CombatTech();
   setupAITech7CooldownTech();
 

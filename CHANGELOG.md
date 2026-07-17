@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## v6.2.1 - 2026-07-17
+
+### Bugfix
+
+- Correct an error in the base game's move validation
+- Align fight button detection with the latest game logic
+- Minor improvements to code performance
+- Fix a base game bug where the game could crash if you selected an isolated star
+- Distribution of planets will now always be the same for a given seed when system scaling is disabled
+- Properly notify UI of unit removal from inventory
+- Stopped Legonis Machina boss overriding certain difficulty settings
+- Queller not always loading the right personality when playing as Legonis Machina
+- Remove pointless Commander modifiers from Cluster systems
+- Possible issue with a player's start card not receiving all the information it should in a co-op game
+- Fix numerous flaws in various mod functions which could cause issues if fed malformed data
+- Queller won't be assigned personalities that don't affect it
+- Correct missing icons/tooltips/build-bar data for units the player doesn't personally own but that show up in-game via an AI faction.
+- Fix Guardians not receiving the host player's mods
+- Fix Guardians not working when enemy and ally AI used the same brain
+
+### Known Issues
+
+- Cluster Worker and Security commanders will use the Angel and Colonel icons
+
 ## v6.2.0 - 2026-07-13
 
 ### Changed

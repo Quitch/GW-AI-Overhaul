@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, validate, and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Full-repo hard gates: each of these is clean across the whole repo today, so
+      # any new violation anywhere is a real regression, not pre-existing debt.
+      - run: npm run lint:js
+      - run: npm run lint:css
+      - run: npm run lint:md
+      - run: npm run validate
+      - run: npm test
+
+  format-changed-files:
+    name: Prettier (changed files)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Needed to diff against a base commit below - the verify job above never
+          # touches git history, only format-changed-files does.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Most of this repo isn't Prettier-formatted (it predates any formatting gate,
+      # and some JSON data files are intentionally minified - see .prettierignore),
+      # so this checks formatting only for files a PR/push actually touches, mirroring
+      # CONTRIBUTING.md's "only modify what's necessary" convention instead of forcing
+      # an unrelated repo-wide reformat. See ci.yml's `verify` job for the checks that
+      # (being clean today) apply to the whole repo instead.
+      - name: Determine changed files and run Prettier on them
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASE_SHA=""
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="${{ github.event.before }}"
+          fi
+
+          if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA" 2>/dev/null; then
+            echo "Diffing against $BASE_SHA"
+            DIFF_RANGE="$BASE_SHA...HEAD"
+          else
+            echo "No usable base commit (first push, force-push/rewritten history, or a manual run) - falling back to the latest commit's diff."
+            DIFF_RANGE="HEAD~1...HEAD"
+          fi
+
+          CHANGED_FILES=$(git diff --name-only --diff-filter=d "$DIFF_RANGE" -- '*.js' '*.css' '*.md' '*.json' || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changed .js/.css/.md/.json files - nothing to format-check."
+            exit 0
+          fi
+
+          echo "Checking formatting of:"
+          echo "$CHANGED_FILES"
+          echo "$CHANGED_FILES" | xargs npx prettier --check
