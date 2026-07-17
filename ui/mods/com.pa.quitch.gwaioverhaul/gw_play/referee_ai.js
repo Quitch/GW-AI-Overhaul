@@ -50,6 +50,7 @@ define([
             Object.prototype.hasOwnProperty.call(build, idToMod);
 
           if (validMatch && _.isArray(build[idToMod])) {
+            value = _.isArray(value) ? value : [value];
             build[idToMod] = value.concat(build[idToMod]);
           } else if (validMatch) {
             build[idToMod] = value + build[idToMod];
@@ -61,6 +62,7 @@ define([
                   (!_.isUndefined(refId) && test[refId] === refValue);
                 if (testMatches) {
                   if (_.isArray(test[idToMod])) {
+                    value = _.isArray(value) ? value : [value]
                     test[idToMod] = value.concat(test[idToMod]);
                   } else if (test[idToMod]) {
                     test[idToMod] = value + test[idToMod];
