@@ -342,11 +342,7 @@ define([
     _.forEach(config.armies, function (army) {
       _.forEach(army.slots, function (slot) {
         if (slot.ai) {
-          if (army.alliance_group === 1) {
-            slot.commander += playerTag;
-          } else {
-            slot.commander += aiTag[army.alliance_group - 2];
-          }
+          slot.commander += army.spec_tag;
         }
       });
     });
