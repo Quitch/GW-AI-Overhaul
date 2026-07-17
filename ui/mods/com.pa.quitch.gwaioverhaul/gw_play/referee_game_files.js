@@ -1,9 +1,8 @@
 define([
   "shared/gw_common",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
-], function (GW, gwoUnit, gwoAI, gwoSpecs) {
+], function (GW, gwoAI, gwoSpecs) {
   var getAIUnitMapPath = function (titans, aiInUse) {
     var append = titans ? "_x1.json" : ".json";
 
