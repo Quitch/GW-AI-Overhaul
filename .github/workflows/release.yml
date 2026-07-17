@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+# This runs *after* the GitHub Release already exists, so it's a loud post-publish
+# alarm for "something's inconsistent," not a gate that can stop a bad release from
+# going out. Real prevention has to happen before a maintainer clicks "Publish
+# release," which for a single-maintainer manual release process is a local-checks
+# discipline question, not something a workflow triggered by that same publish can
+# solve.
+
+jobs:
+  verify:
+    name: Lint, validate, and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint:js
+      - run: npm run lint:css
+      - run: npm run lint:md
+      - run: npm run validate
+      - run: npm test
+
+  release-consistency:
+    name: Version and changelog consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: modinfo.json version matches the release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name }}"
+          EXPECTED="${TAG#v}"
+          ACTUAL="$(node -p "require('./modinfo.json').version")"
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::modinfo.json version is \"$ACTUAL\" but the release tag is \"$TAG\" (expected \"$EXPECTED\"). A version bump was likely missed before tagging."
+            exit 1
+          fi
+          echo "OK: modinfo.json version $ACTUAL matches tag $TAG"
+
+      - name: CHANGELOG.md has an entry for this release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name }}"
+          if ! grep -qE "^## ${TAG//./\\.} " CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no \"## $TAG\" heading. Either the changelog entry is missing, or it's still sitting under \"## Unreleased\"."
+            exit 1
+          fi
+          echo "OK: CHANGELOG.md has a heading for $TAG"

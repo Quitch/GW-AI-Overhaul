@@ -1,0 +1,33 @@
+{
+  "name": "gw-ai-overhaul",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Galactic War: AI Overhaul - Planetary Annihilation: TITANS client mod",
+  "scripts": {
+    "lint:js": "eslint .",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
+    "lint:css": "stylelint \"**/*.css\"",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "validate:json": "node scripts/validate/json-valid.js",
+    "validate:manifest": "node scripts/validate/manifest.js",
+    "validate:cards": "node scripts/validate/cards-contract.js",
+    "validate:ai-mods": "node scripts/validate/ai-mods-contract.js",
+    "validate:schemas": "node scripts/validate/schemas.js",
+    "validate:refs": "node scripts/validate/cross-refs.js",
+    "validate": "npm run validate:json && npm run validate:manifest && npm run validate:cards && npm run validate:ai-mods && npm run validate:schemas && npm run validate:refs",
+    "test": "node --test",
+    "verify": "npm run lint:js && npm run lint:css && npm run lint:md && npm run validate && npm run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.7.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.7.0",
+    "lodash": "3.9.3",
+    "markdownlint-cli2": "0.23.1",
+    "prettier": "3.9.5",
+    "stylelint": "17.14.0",
+    "stylelint-config-standard": "40.0.0"
+  }
+}
