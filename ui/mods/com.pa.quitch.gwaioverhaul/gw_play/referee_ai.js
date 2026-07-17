@@ -542,6 +542,17 @@ define([
     return "None";
   };
 
+  // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
+  // branch never executes in-game. It exposes applyAiMods (otherwise a private closure
+  // variable define() never returns) so it can be unit-tested outside the game - see
+  // test/applyAiMods.test.js. `module` is a Node/CommonJS test-only global, deliberately
+  // absent from this file's normal (game-runtime) globals, hence the disables below.
+  // eslint-disable-next-line no-undef
+  if (typeof module !== "undefined" && module.exports) {
+    // eslint-disable-next-line no-undef
+    module.exports = { applyAiMods: applyAiMods };
+  }
+
   // parse AI files, apply AI mods, and load the results into self.files()
   return function () {
     var deferred = $.Deferred();

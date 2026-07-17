@@ -48,6 +48,18 @@ export default defineConfig([
       sourceType: "module",
     },
   },
+  {
+    // Node-side test/CI tooling - not shipped to the game, not bound to its Chrome 40
+    // constraint, so these get real Node globals instead of the browser/engine ones above.
+    files: ["scripts/**/*.js", "test/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   // Prettier config last to disable conflicting rules
   prettier,
 ]);

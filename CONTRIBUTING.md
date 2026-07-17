@@ -4,18 +4,16 @@ This project welcomes any changes which aim to build upon existing features or s
 
 ## Tooling
 
-You will need the following to ensure your submissions adhere to the requirements and formatting of this project:
+Run `npm ci` once to install this project's tooling (eslint, stylelint, prettier, markdownlint) at the exact pinned versions CI checks against - versions are pinned in `package.json`/`package-lock.json` rather than floating on latest, so a local pass means CI will pass too. Dependabot proposes version bumps as reviewable PRs.
 
-- eslint
-- eslint-config-prettier
-- eslint-plugin-lodash
-- markdownlint
-- prettier
-- sonarlint
-- stylelint
-- stylelint-config-standard
+Before submitting a change, run:
 
-The project is not tied to a specific version of these tools and will use the latest versions where possible.
+- `npm run verify` - everything CI checks in one command: lint, structural/data validation, and unit tests.
+- `npm run format:write` - formats Prettier onto the files you touched. Most of the repo predates Prettier being enforced and isn't reformatted, so only stage the files your change actually touches, per the "only modify what's necessary" rule below.
+
+GitHub Actions runs the same checks automatically on every push, pull request, and release. `.stylelintrc.json` disables `color-function-alias-notation` entirely and scopes `declaration-block-no-redundant-longhand-properties` to ignore the `overflow` shorthand - both because PA's embedded Chrome 40 predates the modern CSS syntax those rules otherwise expect (an alpha channel on unprefixed `rgb()`, and the 2-value `overflow` shorthand, respectively). Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usages they cover as a drive-by.
+
+SonarLint remains useful as an editor extension for local feedback beyond what the above covers.
 
 ## Submissions
 
