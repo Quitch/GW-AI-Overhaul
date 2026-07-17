@@ -391,10 +391,13 @@ define([
     };
 
     // Scoped enemy destinations (such as Guardians) must include a full AI file tree
-    // so ai_path lookups resolve against the same destination directory.
+    // so ai_path lookups resolve against the same destination directory. This also
+    // applies when the enemy and subcommander share a source directory (fileOwner
+    // "shared", e.g. both using Penchant) - excluding only files owned exclusively
+    // by the subcommander tree.
     var scopedEnemyDestinationPath = function (fileOwner) {
       if (
-        fileOwner !== "enemy" ||
+        fileOwner === "subcommander" ||
         aiPaths.enemyDestination === aiPaths.enemySource
       ) {
         return null;
@@ -446,6 +449,13 @@ define([
 
       var scopedEnemyPath = scopedEnemyDestinationPath(fileOwner);
       if (scopedEnemyPath) {
+        // A shared source also serves as the subcommander/ally's own destination
+        // (it reads the source path directly), so keep that path in the write
+        // list alongside the Guardians' scoped copy rather than losing it to
+        // writeConfigFiles' empty-filePaths fallback.
+        if (_.isEmpty(scopedUpdate.filePaths) && fileOwner === "shared") {
+          scopedUpdate.filePaths.push(filePath);
+        }
         scopedUpdate.filePaths.push(scopedEnemyPath);
       }
 
