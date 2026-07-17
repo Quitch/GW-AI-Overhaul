@@ -8,6 +8,8 @@ updates:
       dev-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "lodash"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
