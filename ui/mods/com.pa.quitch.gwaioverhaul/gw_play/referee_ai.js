@@ -330,8 +330,6 @@ define([
           toBuild: commander,
           idToMod: "priority",
           value: 0,
-          // No specific build_conditions entry to scope to here — zero out
-          // priority wherever it's set for this build, top-level or nested.
           matchAll: true,
         };
       });
@@ -352,7 +350,6 @@ define([
         pathLength
       );
 
-      // apply AI mods to the file
       applyAiMods(clusterJson, clusterOps);
       configFiles[clusterFilePath] = clusterJson;
     };
