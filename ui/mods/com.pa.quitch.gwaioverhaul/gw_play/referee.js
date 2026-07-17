@@ -49,12 +49,21 @@ function gwoRefereeChanges() {
           // The player unit list needs to be the superset of units for proper UI behavior
           var unitList = "/pa/units/unit_list.json";
           var playerUnits = allFiles[unitList + ".player"];
-          var aiUnits = allFiles[unitList + ".ai"];
+
           if (playerUnits) {
             var allUnits = _.cloneDeep(playerUnits);
-            if (aiUnits && allUnits.units) {
-              allUnits.units = allUnits.units.concat(aiUnits.units);
-            }
+            // AI factions are tagged .ai0, .ai1, .ai2, ... (never a bare .ai),
+            // so every matching key needs to be folded in, not just one fixed tag.
+            _.forEach(allFiles, function (value, key) {
+              if (
+                _.startsWith(key, unitList + ".ai") &&
+                value &&
+                value.units &&
+                allUnits.units
+              ) {
+                allUnits.units = allUnits.units.concat(value.units);
+              }
+            });
             allFiles[unitList] = allUnits;
           }
 
