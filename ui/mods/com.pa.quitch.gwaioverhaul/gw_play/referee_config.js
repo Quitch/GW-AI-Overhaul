@@ -164,6 +164,9 @@ define([
     return planets;
   };
 
+  // The game guarantees the player and the enemy are never simultaneously Cluster,
+  // so returning the same unscoped ai_cluster path regardless of isPlayer is safe -
+  // there's only ever one Cluster side per match to route there.
   var setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
@@ -268,6 +271,21 @@ define([
       armies.push(aiArmy);
     });
   };
+
+  // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
+  // branch never executes in-game. It exposes the ai_path assignment helpers
+  // (otherwise private closure variables define() never returns) so they can be
+  // unit-tested outside the game - see test/referee_config_ai_paths.test.js.
+  // eslint-disable-next-line no-undef
+  if (typeof module !== "undefined" && module.exports) {
+    // eslint-disable-next-line no-undef
+    module.exports = {
+      setAIPath: setAIPath,
+      setupAlliedCommanders: setupAlliedCommanders,
+      setupPrimaryAiAndMinions: setupPrimaryAiAndMinions,
+      setupFfaAis: setupFfaAis,
+    };
+  }
 
   return function () {
     var self = this;
