@@ -56,9 +56,7 @@ var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
   var inventory = params.inventory;
   var titans = params.titans;
 
-  var playerIsCluster = gwoAI.isCluster({
-    faction: inventory.getTag("global", "playerFaction"),
-  });
+  var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
   var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
   var playerFilesClassic;
   var playerFilesX1;

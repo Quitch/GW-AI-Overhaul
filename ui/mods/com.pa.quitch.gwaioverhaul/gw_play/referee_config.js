@@ -214,7 +214,7 @@ define([
     playerTag
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
-    var playerIsCluster = gwoAI.isCluster({ faction: playerFaction });
+    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
 
     _.forEach(allies, function (ally, index) {
       ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
