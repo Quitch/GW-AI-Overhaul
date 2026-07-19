@@ -529,7 +529,7 @@ define([
       : inventory.minions().concat(ai.ally);
     var numberOfAllies = alliedCommanders.length;
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    var isEnemyCluster =
+    var enemyIsCluster =
       gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {
         return gwoAI.isCluster(foe);
@@ -538,7 +538,7 @@ define([
     if (playerIsCluster && numberOfAllies > 0) {
       return "Player";
     }
-    if (isEnemyCluster) {
+    if (enemyIsCluster) {
       return "Enemy";
     }
     return "None";
