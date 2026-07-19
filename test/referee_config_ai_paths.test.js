@@ -8,7 +8,10 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
-const { buildGame, installModel } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  buildGame,
+  installModel,
+} = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
@@ -55,10 +58,7 @@ describe("setAIPath", () => {
   it("routes isPlayer through to the subcommander destination", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
     restoreModel = installModel(fixture.game);
-    assert.equal(
-      refereeConfig.setAIPath(false, true),
-      "/pa/ai_subcommander/"
-    );
+    assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai_subcommander/");
   });
 
   it("routes non-player, non-cluster through to the enemy destination", () => {
@@ -74,9 +74,15 @@ describe("setupAlliedCommanders", () => {
     restoreModel = installModel(fixture.game);
 
     const allies = [
-      makeAiDescriptor({ personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 } }),
-      makeAiDescriptor({ personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 } }),
-      makeAiDescriptor({ personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 } }),
+      makeAiDescriptor({
+        personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+      }),
+      makeAiDescriptor({
+        personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+      }),
+      makeAiDescriptor({
+        personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+      }),
     ];
     const armies = [];
     refereeConfig.setupAlliedCommanders(
@@ -151,13 +157,24 @@ describe("setupFfaAis", () => {
     const normalFoeB = makeAiDescriptor();
     const foes = [normalFoeA, clusterFoe, normalFoeB];
 
-    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1", ".ai2", ".ai3"], "Titans", []);
+    refereeConfig.setupFfaAis(
+      foes,
+      [".ai0", ".ai1", ".ai2", ".ai3"],
+      "Titans",
+      []
+    );
 
     assert.equal(clusterFoe.personality.ai_path, "/pa/ai_cluster/");
     assert.equal(normalFoeA.personality.ai_path, "/pa/ai/");
     // Non-cluster foes share the enemy path with each other by design - they're
     // differentiated by spec_tag, not ai_path.
-    assert.equal(normalFoeB.personality.ai_path, normalFoeA.personality.ai_path);
-    assert.notEqual(clusterFoe.personality.ai_path, normalFoeA.personality.ai_path);
+    assert.equal(
+      normalFoeB.personality.ai_path,
+      normalFoeA.personality.ai_path
+    );
+    assert.notEqual(
+      clusterFoe.personality.ai_path,
+      normalFoeA.personality.ai_path
+    );
   });
 });

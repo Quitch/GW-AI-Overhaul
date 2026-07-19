@@ -70,7 +70,10 @@ describe("getScopeToken", () => {
   });
 
   it("uses identity directly when it is already a non-empty string", () => {
-    assert.equal(refereeAIPaths.getScopeToken(".player0", "fallback"), "player0");
+    assert.equal(
+      refereeAIPaths.getScopeToken(".player0", "fallback"),
+      "player0"
+    );
   });
 
   it("falls back to the literal 'player' when identity and fallback both resolve empty", () => {
@@ -113,16 +116,24 @@ describe("getAIPathDestination - Titans/Penchant subcommander aiMods gate", () =
   });
 
   it("Penchant + empty aiMods falls back to the shared /pa/ai_penchant/ path", () => {
-    const path = refereeAIPaths.getAIPathDestination("subcommander", "Penchant", {
-      aiMods: [],
-    });
+    const path = refereeAIPaths.getAIPathDestination(
+      "subcommander",
+      "Penchant",
+      {
+        aiMods: [],
+      }
+    );
     assert.equal(path, "/pa/ai_penchant/");
   });
 
   it("Penchant + non-empty aiMods routes to the dedicated subcommander path", () => {
-    const path = refereeAIPaths.getAIPathDestination("subcommander", "Penchant", {
-      aiMods: [{ op: "load" }],
-    });
+    const path = refereeAIPaths.getAIPathDestination(
+      "subcommander",
+      "Penchant",
+      {
+        aiMods: [{ op: "load" }],
+      }
+    );
     assert.equal(path, "/pa/ai_subcommander/");
   });
 
@@ -153,16 +164,24 @@ describe("getAIPathDestination - Queller", () => {
   });
 
   it("subcommander resolves to q_silver/ when smartSubcommanders is true", () => {
-    const path = refereeAIPaths.getAIPathDestination("subcommander", "Queller", {
-      smartSubcommanders: true,
-    });
+    const path = refereeAIPaths.getAIPathDestination(
+      "subcommander",
+      "Queller",
+      {
+        smartSubcommanders: true,
+      }
+    );
     assert.equal(path, "/pa/ai_queller/q_silver/");
   });
 
   it("subcommander resolves to q_bronze/ when smartSubcommanders is false", () => {
-    const path = refereeAIPaths.getAIPathDestination("subcommander", "Queller", {
-      smartSubcommanders: false,
-    });
+    const path = refereeAIPaths.getAIPathDestination(
+      "subcommander",
+      "Queller",
+      {
+        smartSubcommanders: false,
+      }
+    );
     assert.equal(path, "/pa/ai_queller/q_bronze/");
   });
 
@@ -174,9 +193,13 @@ describe("getAIPathDestination - Queller", () => {
     const enemyPath = refereeAIPaths.getAIPathDestination("enemy", "Queller", {
       aiMods: [],
     });
-    const subPath = refereeAIPaths.getAIPathDestination("subcommander", "Queller", {
-      aiMods: [],
-    });
+    const subPath = refereeAIPaths.getAIPathDestination(
+      "subcommander",
+      "Queller",
+      {
+        aiMods: [],
+      }
+    );
     assert.notEqual(enemyPath, subPath);
   });
 });
@@ -191,7 +214,10 @@ describe("getAIPathSource", () => {
 
   it("Titans (and any unrecognized brain) resolves to /pa/ai/", () => {
     assert.equal(refereeAIPaths.getAIPathSource("enemy", "Titans"), "/pa/ai/");
-    assert.equal(refereeAIPaths.getAIPathSource("enemy", "SomethingElse"), "/pa/ai/");
+    assert.equal(
+      refereeAIPaths.getAIPathSource("enemy", "SomethingElse"),
+      "/pa/ai/"
+    );
   });
 
   it("Queller enemy source is q_uber/, subcommander source is always q_bronze/", () => {

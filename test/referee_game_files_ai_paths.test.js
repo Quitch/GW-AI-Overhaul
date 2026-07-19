@@ -13,7 +13,10 @@ const {
   loadCouiModule,
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
-const { buildGame, installModel } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  buildGame,
+  installModel,
+} = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_files.js"
@@ -65,7 +68,9 @@ describe("getAIUnitMapPath", () => {
 
   it("titans=false never produces an _x1.json path", () => {
     for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
-      assert.ok(!refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1"));
+      assert.ok(
+        !refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1")
+      );
     }
   });
 });
@@ -73,14 +78,20 @@ describe("getAIUnitMapPath", () => {
 describe("getAIUnitMapDestinationPath", () => {
   it("appends unit_maps/ai_unit_map.json to the given aiPath", () => {
     assert.equal(
-      refereeGameFiles.getAIUnitMapDestinationPath(false, "/pa/ai_subcommander/"),
+      refereeGameFiles.getAIUnitMapDestinationPath(
+        false,
+        "/pa/ai_subcommander/"
+      ),
       "/pa/ai_subcommander/unit_maps/ai_unit_map.json"
     );
   });
 
   it("appends the _x1 suffix when titans is true", () => {
     assert.equal(
-      refereeGameFiles.getAIUnitMapDestinationPath(true, "/pa/ai_subcommander/"),
+      refereeGameFiles.getAIUnitMapDestinationPath(
+        true,
+        "/pa/ai_subcommander/"
+      ),
       "/pa/ai_subcommander/unit_maps/ai_unit_map_x1.json"
     );
   });
@@ -113,8 +124,14 @@ describe("clusterArmyIndex", () => {
 });
 
 describe("resolveAiUnitMapPaths", () => {
-  const normalPaths = { unitMapPath: "/normal/", unitMapTitansPath: "/normal-x1/" };
-  const clusterPaths = { unitMapPath: "/cluster/", unitMapTitansPath: "/cluster-x1/" };
+  const normalPaths = {
+    unitMapPath: "/normal/",
+    unitMapTitansPath: "/normal-x1/",
+  };
+  const clusterPaths = {
+    unitMapPath: "/cluster/",
+    unitMapTitansPath: "/cluster-x1/",
+  };
 
   it("returns the cluster path pair when clusterArmyIndex matches currentCount", () => {
     const ai = { faction: 4 };
@@ -143,7 +160,10 @@ describe("resolveAiUnitMapPaths", () => {
 
 describe("buildPlayerFiles", () => {
   it("Cluster player writes ai_unit_map under /pa/ai_cluster/", () => {
-    const fixture = buildGame({ aiInUse: "Titans", subcommanderType: "cluster" });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      subcommanderType: "cluster",
+    });
     restoreModel = installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
@@ -158,12 +178,8 @@ describe("buildPlayerFiles", () => {
       gwoSpecs
     );
 
-    assert.ok(
-      "/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files
-    );
-    assert.ok(
-      "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player" in files
-    );
+    assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files);
+    assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player" in files);
   });
 
   it("non-Cluster player writes ai_unit_map under the subcommander destination path", () => {
@@ -188,9 +204,7 @@ describe("buildPlayerFiles", () => {
 
     const expectedPath = gwoAI.getAIPathDestination("subcommander");
     assert.equal(expectedPath, "/pa/ai_subcommander/");
-    assert.ok(
-      (expectedPath + "unit_maps/ai_unit_map.json.player") in files
-    );
+    assert.ok(expectedPath + "unit_maps/ai_unit_map.json.player" in files);
     // titans=false: no _x1 variant should be present anywhere.
     for (const key of Object.keys(files)) {
       assert.ok(!key.includes("_x1"));

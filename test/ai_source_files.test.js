@@ -55,7 +55,10 @@ describe("pa/ai/ - files GWO shadows over the base game", () => {
   for (const relativePath of buildListFiles) {
     it(`${relativePath} exists with a top-level build_list array`, () => {
       const json = readJson(relativePath);
-      assert.ok(Array.isArray(json.build_list), "expected build_list to be an array");
+      assert.ok(
+        Array.isArray(json.build_list),
+        "expected build_list to be an array"
+      );
     });
   }
 

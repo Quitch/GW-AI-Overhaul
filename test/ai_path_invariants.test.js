@@ -88,9 +88,16 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
   }
 
   it("KNOWN: Titans, no guardians/cluster, no subcommander tech intentionally share a path - confirmed safe by design", () => {
-    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game);
-    assert.equal(refereeConfig.setAIPath(false, false), refereeConfig.setAIPath(false, true));
+    assert.equal(
+      refereeConfig.setAIPath(false, false),
+      refereeConfig.setAIPath(false, true)
+    );
     assert.equal(refereeConfig.setAIPath(false, false), "/pa/ai/");
   });
 
@@ -101,12 +108,19 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       aiMods: [],
     });
     restoreModel = installModel(fixture.game);
-    assert.equal(refereeConfig.setAIPath(false, false), refereeConfig.setAIPath(false, true));
+    assert.equal(
+      refereeConfig.setAIPath(false, false),
+      refereeConfig.setAIPath(false, true)
+    );
     assert.equal(refereeConfig.setAIPath(false, false), "/pa/ai_penchant/");
   });
 
   it("Queller never shares a path, even with no guardians/cluster/tech (structurally exempt)", () => {
-    const fixture = buildGame({ aiInUse: "Queller", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Queller",
+      enemyType: "neither",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game);
     assert.notEqual(
       refereeConfig.setAIPath(false, false),
@@ -133,7 +147,11 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
       )
     );
 
-    assert.equal(new Set(paths).size, paths.length, `expected all distinct, got: ${paths}`);
+    assert.equal(
+      new Set(paths).size,
+      paths.length,
+      `expected all distinct, got: ${paths}`
+    );
   });
 
   it("a large player count (8) does not wrap around or collide", () => {

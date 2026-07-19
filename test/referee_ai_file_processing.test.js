@@ -20,7 +20,10 @@ const {
   installModel,
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
-const { createFakeJQuery, createFakeApi } = require("../scripts/lib/fake-jquery.js");
+const {
+  createFakeJQuery,
+  createFakeApi,
+} = require("../scripts/lib/fake-jquery.js");
 
 const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
@@ -71,7 +74,11 @@ function run(filesObj) {
 
 describe("aisShareAPath", () => {
   it("Titans: enemy and subcommander share one source dir - api.file.list called once", async () => {
-    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game, []);
     const { listCalls } = installFakes({});
 
@@ -82,7 +89,11 @@ describe("aisShareAPath", () => {
   });
 
   it("Queller: enemy (q_uber) and subcommander (q_bronze) sources differ - listed separately", async () => {
-    const fixture = buildGame({ aiInUse: "Queller", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Queller",
+      enemyType: "neither",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game, []);
     const { listCalls } = installFakes({});
 
@@ -98,7 +109,11 @@ describe("aisShareAPath", () => {
 
 describe("file filtering", () => {
   it("skips /neural_networks/ files and non-.json files, never requesting them", async () => {
-    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game, []);
     const { getJSONCalls } = installFakes({
       fileListByPath: {
@@ -119,7 +134,11 @@ describe("file filtering", () => {
 
 describe("Guardians scoped destination", () => {
   it("writes a scoped copy under the guardians-scoped enemy destination, alongside the source copy", async () => {
-    const fixture = buildGame({ aiInUse: "Titans", enemyType: "guardians", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [],
+    });
     restoreModel = installModel(fixture.game, []);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
@@ -139,7 +158,11 @@ describe("Guardians scoped destination", () => {
 
 describe("per-player-tech viewer processing", () => {
   it("gives each connected viewer their own distinct destination, never colliding", async () => {
-    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither", aiMods: [] });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
     const viewer1Inventory = makeInventory({ aiModsList: [] });
     const viewer2Inventory = makeInventory({ aiModsList: [] });
     fixture.game.findCoopPlayerInventoryData = (client) => {

@@ -8,7 +8,10 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { buildGame, installModel } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  buildGame,
+  installModel,
+} = require("../scripts/lib/ai-path-fixtures.js");
 
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"

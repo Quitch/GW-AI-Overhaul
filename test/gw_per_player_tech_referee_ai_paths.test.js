@@ -21,7 +21,10 @@ const refereeAIPaths = loadCouiModule(
 );
 
 function makePlayerInventory(overrides) {
-  const data = Object.assign({ aiModsList: [], cardsList: [] }, overrides || {});
+  const data = Object.assign(
+    { aiModsList: [], cardsList: [] },
+    overrides || {}
+  );
   return {
     aiMods: () => data.aiModsList,
     cards: () => data.cardsList,
@@ -42,11 +45,17 @@ describe("getPlayerTagGivenIndex", () => {
 
 describe("stripKnownSpecTag", () => {
   it("strips a trailing .player", () => {
-    assert.equal(hook.stripKnownSpecTag("commander_uef.player"), "commander_uef");
+    assert.equal(
+      hook.stripKnownSpecTag("commander_uef.player"),
+      "commander_uef"
+    );
   });
 
   it("strips a trailing .playerN", () => {
-    assert.equal(hook.stripKnownSpecTag("commander_uef.player3"), "commander_uef");
+    assert.equal(
+      hook.stripKnownSpecTag("commander_uef.player3"),
+      "commander_uef"
+    );
   });
 
   it("passes through a value with no recognized spec tag", () => {
