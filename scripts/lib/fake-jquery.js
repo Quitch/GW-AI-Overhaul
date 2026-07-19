@@ -6,34 +6,35 @@
 // under the hood; `.then`/`.always` are exposed because production code calls
 // them directly on the values these return.
 
+// Returns the Promise itself (augmented with resolve/reject/promise/always) rather than
+// a separate plain object wrapping it, so `.then` stays the real, inherited
+// Promise.prototype.then instead of a hand-rolled look-alike (the shape SonarLint's
+// "objects should not have a then property" rule warns about).
 function makeDeferred() {
   var resolveFn;
   var rejectFn;
-  var promise = new Promise(function (resolve, reject) {
+  var deferred = new Promise(function (resolve, reject) {
     resolveFn = resolve;
     rejectFn = reject;
   });
 
-  return {
-    resolve: function (value) {
-      resolveFn(value);
-      return this;
-    },
-    reject: function (value) {
-      rejectFn(value);
-      return this;
-    },
-    promise: function () {
-      return promise;
-    },
-    then: function (onFulfilled, onRejected) {
-      return promise.then(onFulfilled, onRejected);
-    },
-    always: function (fn) {
-      promise.then(fn, fn);
-      return this;
-    },
+  deferred.resolve = function (value) {
+    resolveFn(value);
+    return this;
   };
+  deferred.reject = function (value) {
+    rejectFn(value);
+    return this;
+  };
+  deferred.promise = function () {
+    return deferred;
+  };
+  deferred.always = function (fn) {
+    deferred.then(fn, fn);
+    return this;
+  };
+
+  return deferred;
 }
 
 // createFakeJQuery(options) -> $-like object
