@@ -528,7 +528,9 @@ define([
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     var numberOfAllies = alliedCommanders.length;
-    var isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
+    var isPlayerCluster = gwoAI.isCluster({
+      faction: inventory.getTag("global", "playerFaction"),
+    });
     var isEnemyCluster =
       gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {
@@ -605,21 +607,9 @@ define([
           viewerPlayerTag,
           viewerPlayerTag
         );
-        var viewerAiMods = getRefereeInventoryAiMods(viewerInventory);
-        var viewerCards = _.isFunction(viewerInventory.cards)
-          ? viewerInventory.cards()
-          : viewerInventory.cards || [];
-        var viewerSmartSubcommanders = _.some(viewerCards, {
-          id: "gwaio_upgrade_subcommander_tactics",
-        });
-        var viewerSubCommanderDestination = refereeAIPaths.getAIPathDestination(
-          "subcommander",
-          gwoAI.aiInUse("subcommander"),
-          {
-            aiMods: viewerAiMods,
-            smartSubcommanders: viewerSmartSubcommanders,
-            scopeToken: viewerPlayerTag,
-          }
+        var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
+          viewerInventory,
+          viewerPlayerTag
         );
         var viewerAiPaths = _.assign({}, aiPaths, {
           subCommanderDestination: viewerSubCommanderDestination,

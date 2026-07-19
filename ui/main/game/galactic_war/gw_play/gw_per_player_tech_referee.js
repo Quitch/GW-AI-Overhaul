@@ -54,17 +54,25 @@ var stripKnownSpecTag = function (value) {
   return value;
 };
 
-// Resolves the ai_path a per-player-tech viewer's minions should use, scoped by that
-// viewer's own player tag so co-op subcommanders never collide with each other's
-// build orders/ai_unit_map (unlike shared-tech allies, who all use one unscoped
-// path - see referee_config.js's setupAlliedCommanders). Always passes
-// guardians:false, independent of the actual fight's guardians state - unlike
-// shared/ai.js's own getAIPathDestination("subcommander") wrapper, which derives
-// guardians from the enemy AI. That asymmetry is current, intentional-for-now
-// behavior (per-player-tech co-op does not currently vary subcommander scoping by
-// guardians), not something this function should paper over.
+// Resolves the ai_path a per-player-tech viewer should use - both for their own
+// unit map (see generateUnitSpecsForPlayer below) and for their minions (see
+// apply() below) - scoped by that viewer's own player tag so co-op subcommanders
+// never collide with each other's build orders/ai_unit_map (unlike shared-tech
+// allies, who all use one unscoped path - see referee_config.js's
+// setupAlliedCommanders). Always passes guardians:false, independent of the actual
+// fight's guardians state - unlike shared/ai.js's own
+// getAIPathDestination("subcommander") wrapper (and its own viewer-scoped sibling,
+// getSubcommanderPathForViewer, used by referee_ai.js), which derive guardians from
+// the enemy AI. That asymmetry is current, intentional-for-now behavior
+// (per-player-tech co-op does not currently vary subcommander scoping by
+// guardians), not something this function should paper over. Takes refereeAIPaths
+// and subcommanderTech as explicit parameters (rather than closing over the
+// define() factory's injected modules) so Node can reach it via
+// requireShippedModule() without shared/gw_common - see the module.exports hook
+// below.
 var getViewerSubcommanderAiPath = function (
   refereeAIPaths,
+  subcommanderTech,
   aiInUse,
   playerInventory,
   playerTag
@@ -72,9 +80,9 @@ var getViewerSubcommanderAiPath = function (
   return refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
     guardians: false,
     aiMods: playerInventory.aiMods(),
-    smartSubcommanders: _.some(playerInventory.cards(), {
-      id: "gwaio_upgrade_subcommander_tactics",
-    }),
+    smartSubcommanders: subcommanderTech.hasSmartSubcommanders(
+      playerInventory
+    ),
     scopeToken: playerTag === ".player" ? undefined : playerTag,
   });
 };
@@ -156,15 +164,12 @@ if (typeof module !== "undefined" && module.exports) {
                   playerX1AIUnitMap;
               }
             } else {
-              var aiInUse = gwoAI.aiInUse("subcommander");
-              var playerScopedPath = refereeAIPaths.getAIPathDestination(
-                "subcommander",
-                aiInUse,
-                {
-                  guardians: false,
-                  aiMods: inventory.aiMods(),
-                  scopeToken: playerTag,
-                }
+              var playerScopedPath = getViewerSubcommanderAiPath(
+                refereeAIPaths,
+                subcommanderTech,
+                gwoAI.aiInUse("subcommander"),
+                inventory,
+                playerTag
               );
 
               playerFilesClassic[
@@ -499,6 +504,7 @@ if (typeof module !== "undefined" && module.exports) {
           var thisPlayersInventory = playerInventories[index];
           var viewerAiPath = getViewerSubcommanderAiPath(
             refereeAIPaths,
+            subcommanderTech,
             gwoAI.aiInUse("subcommander"),
             thisPlayersInventory,
             playerTags[index]

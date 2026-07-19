@@ -35,7 +35,10 @@ define(function () {
   };
 
   var hasSmartSubcommanders = function (inventory) {
-    return _.some(inventory.cards(), {
+    var cards = _.isFunction(inventory && inventory.cards)
+      ? inventory.cards()
+      : (inventory && inventory.cards) || [];
+    return _.some(cards, {
       id: "gwaio_upgrade_subcommander_tactics",
     });
   };

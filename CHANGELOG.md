@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Smarter Subcommanders doing nothing for viewers when Queller was the allied AI
+
 ## v6.2.1 - 2026-07-17
 
 ### Bugfix

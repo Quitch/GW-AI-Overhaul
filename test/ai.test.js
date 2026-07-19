@@ -11,6 +11,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
+  makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const gwoAI = loadCouiModule(
@@ -96,6 +97,60 @@ describe("getAIPathSource / getAIPathDestination", () => {
     assert.equal(
       gwoAI.getAIPathDestination("subcommander"),
       "/pa/ai_subcommander/"
+    );
+  });
+});
+
+describe("getSubcommanderPathForViewer", () => {
+  it("the host tag (.player) never gets a scoped path", () => {
+    const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
+    restoreModel = installModel(fixture.game);
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
+    assert.equal(
+      gwoAI.getSubcommanderPathForViewer(inventory, ".player"),
+      "/pa/ai_subcommander/"
+    );
+  });
+
+  it("a non-host tag gets scoped by that raw tag", () => {
+    const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
+    restoreModel = installModel(fixture.game);
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
+    assert.equal(
+      gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
+      "/pa/ai_subcommander/player_.player0/"
+    );
+  });
+
+  it("is guardians-unaware by construction, unlike getAIPathDestination('subcommander')", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [{ op: "load" }],
+    });
+    restoreModel = installModel(fixture.game);
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
+    assert.equal(
+      gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
+      "/pa/ai_subcommander/player_.player0/"
+    );
+  });
+
+  it("derives smartSubcommanders from the given viewer's own inventory, not the current player's", () => {
+    const fixture = buildGame({ aiInUse: "Queller" });
+    restoreModel = installModel(fixture.game);
+    const smartInventory = makeInventory({
+      cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
+    });
+    const plainInventory = makeInventory({});
+
+    assert.equal(
+      gwoAI.getSubcommanderPathForViewer(smartInventory, ".player0"),
+      "/pa/ai_queller/q_silver/player_.player0/"
+    );
+    assert.equal(
+      gwoAI.getSubcommanderPathForViewer(plainInventory, ".player0"),
+      "/pa/ai_queller/q_bronze/player_.player0/"
     );
   });
 });

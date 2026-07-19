@@ -33,6 +33,9 @@ const gwoAI = loadCouiModule(
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
 );
+const subcommanderTech = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+);
 const perPlayerTechHook = requireShippedModule(
   "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
 );
@@ -141,6 +144,7 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
     const paths = players.map((player) =>
       perPlayerTechHook.getViewerSubcommanderAiPath(
         refereeAIPaths,
+        subcommanderTech,
         player.aiInUse,
         { aiMods: () => player.aiMods, cards: () => [] },
         player.tag
@@ -160,6 +164,7 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
       paths.push(
         perPlayerTechHook.getViewerSubcommanderAiPath(
           refereeAIPaths,
+          subcommanderTech,
           "Titans",
           { aiMods: () => [], cards: () => [] },
           perPlayerTechHook.getPlayerTagGivenIndex(i + 1)
@@ -176,12 +181,14 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
 
     const pathUnderGuardians = perPlayerTechHook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player0"
     );
     const pathWithoutGuardians = perPlayerTechHook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player0"

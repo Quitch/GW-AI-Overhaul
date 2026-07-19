@@ -19,6 +19,9 @@ const hook = requireShippedModule(
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
 );
+const subcommanderTech = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+);
 
 function makePlayerInventory(overrides) {
   const data = Object.assign(
@@ -73,6 +76,7 @@ describe("getViewerSubcommanderAiPath", () => {
     const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player"
@@ -84,6 +88,7 @@ describe("getViewerSubcommanderAiPath", () => {
     const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player0"
@@ -97,6 +102,7 @@ describe("getViewerSubcommanderAiPath", () => {
     const inventory = makePlayerInventory({ aiModsList: [] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player0"
@@ -122,6 +128,7 @@ describe("getViewerSubcommanderAiPath", () => {
     const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
+      subcommanderTech,
       "Titans",
       inventory,
       ".player0"
@@ -146,6 +153,7 @@ describe("getViewerSubcommanderAiPath", () => {
     assert.equal(
       hook.getViewerSubcommanderAiPath(
         refereeAIPaths,
+        subcommanderTech,
         "Queller",
         smartInventory,
         ".player0"
@@ -155,6 +163,7 @@ describe("getViewerSubcommanderAiPath", () => {
     assert.equal(
       hook.getViewerSubcommanderAiPath(
         refereeAIPaths,
+        subcommanderTech,
         "Queller",
         plainInventory,
         ".player0"
