@@ -25,11 +25,20 @@ Submissions must include a clear breakdown of the work done.
 
 Any submissions should follow the requirements below:
 
+- Code must comply with ES5/Chrome 40 support. `for...of` and `Promise` may be used.
 - Indent using two spaces (soft tabs).
 - All warnings and errors must be resolved prior to commit.
-  - SonarLint's complexity requirements can be ignored for the function encapsulating a file's try...catch.
 - HTML is loaded from a separate file, not included in the body of JavaScript.
-- File shadowing will not be used unless unavoidable.
-- Camel case will be used for variables.
-- Code must comply with lodash 3.9.3/Chrome 40 support.
+- File shadowing must not be used unless unavoidable.
+- Camel case must be used for JavaScript.
+- Kebab case must be used for CSS.
+- Code must be formatted using prettier.
 - Commit summaries must be informative but concise, with any required detail in the body.
+
+## Available Libraries
+
+- Those supported by Planetary Annihilation: TITANS - `media\ui\main\shared\js\thirdparty\`
+- lodash 3.9.3
+- jQuery 2.1.4
+- Knockout.js 3.5.1
+- RequireJS 2.1.11
