@@ -80,9 +80,7 @@ var getViewerSubcommanderAiPath = function (
   return refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
     guardians: false,
     aiMods: playerInventory.aiMods(),
-    smartSubcommanders: subcommanderTech.hasSmartSubcommanders(
-      playerInventory
-    ),
+    smartSubcommanders: subcommanderTech.hasSmartSubcommanders(playerInventory),
     scopeToken: playerTag === ".player" ? undefined : playerTag,
   });
 };
