@@ -9,6 +9,7 @@
 - Prevent creation of invalid duplicate unit maps
 - Cluster enemy behaviour would change to reflect tech it didn't have if the player had subcommanders
 - Add missing unit limit to Penchant AI
+- Removed race condition that could cause the Guardians to only receive a sub-section of the tech they should when per-player tech was active
 
 ## v6.2.1 - 2026-07-17
 

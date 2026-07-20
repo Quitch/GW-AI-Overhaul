@@ -261,7 +261,8 @@ define([
     aiPaths,
     clusterPresence,
     scopeToken,
-    nonLoadAiMods
+    nonLoadAiMods,
+    forceSubCommanderScope
   ) {
     var aiTechPath = "/pa/ai_tech/";
 
@@ -370,8 +371,17 @@ define([
         }
         aiJsonModsInScope = aiModsInScopeOfFile();
       } else if (aisToModify === "SubCommanders" && fileOwner !== "enemy") {
-        if (fileOwner === "shared") {
-          // Make a clean copy of the files for enemy AIs before modification of the JSON
+        if (fileOwner === "shared" && !forceSubCommanderScope) {
+          // Make a clean copy of the files for enemy AIs before modification of the
+          // JSON. Skipped during a per-viewer forced-subcommander pass
+          // (forceSubCommanderScope) - that pass exists only to populate ITS OWN
+          // viewer-scoped destination below. The shared plain key already got its one
+          // authoritative write from the base (non-per-player-tech) pass over this
+          // same source tree (pristine-preserved here when aisToModify is
+          // "SubCommanders", or combined with every connected player's mods when
+          // Guardians makes it "All" instead - see aisToModify's assignment above).
+          // Re-running this per viewer would reset that write back to pristine,
+          // discarding whatever the base pass combined there.
           configFiles[filePath] = _.cloneDeep(json);
         }
 
@@ -462,10 +472,15 @@ define([
         isSubCommanderDirectory
       );
 
-      var scopedEnemyPath = scopedEnemyDestinationPath(
-        fileOwner,
-        isSubCommanderTechFile
-      );
+      // A per-viewer forced-subcommander pass (forceSubCommanderScope) never owns the
+      // enemy's scoped destination (e.g. a Guardian's player_guardians/ tree) - the
+      // base pass's single walk over aiPathsToProcess already combines every
+      // connected player's mods and writes it there once. Computing/writing it again
+      // per viewer would race that combined write, each viewer's pass clobbering the
+      // last with only their own mods.
+      var scopedEnemyPath = forceSubCommanderScope
+        ? null
+        : scopedEnemyDestinationPath(fileOwner, isSubCommanderTechFile);
       if (scopedEnemyPath) {
         // A shared source also serves as the subcommander/ally's own destination
         // (it reads the source path directly), so keep that path in the write
@@ -530,7 +545,8 @@ define([
           aiPaths,
           clusterPresence,
           scopeToken,
-          nonLoadAiMods
+          nonLoadAiMods,
+          forceSubCommanderScope
         );
       });
 
