@@ -254,16 +254,15 @@ define([
     }
   };
 
-  var processFilesInDirectory = function (
-    filePath,
-    configFiles,
-    aisToModify,
-    aiPaths,
-    clusterPresence,
-    scopeToken,
-    nonLoadAiMods,
-    forceSubCommanderScope
-  ) {
+  var processFilesInDirectory = function (filePath, context) {
+    var configFiles = context.configFiles;
+    var aisToModify = context.aisToModify;
+    var aiPaths = context.aiPaths;
+    var clusterPresence = context.clusterPresence;
+    var scopeToken = context.scopeToken;
+    var nonLoadAiMods = context.nonLoadAiMods;
+    var forceSubCommanderScope = context.forceSubCommanderScope;
+
     var aiTechPath = "/pa/ai_tech/";
 
     var filePathStarts = function (filePathFragment) {
@@ -529,6 +528,16 @@ define([
         aiPaths
       );
 
+      var context = {
+        configFiles: configFiles,
+        aisToModify: aisToModify,
+        aiPaths: aiPaths,
+        clusterPresence: clusterPresence,
+        scopeToken: scopeToken,
+        nonLoadAiMods: nonLoadAiMods,
+        forceSubCommanderScope: forceSubCommanderScope,
+      };
+
       var promises = _.map(fileList, function (filePath) {
         if (
           !_.endsWith(filePath, ".json") ||
@@ -538,16 +547,7 @@ define([
           return;
         }
 
-        return processFilesInDirectory(
-          filePath,
-          configFiles,
-          aisToModify,
-          aiPaths,
-          clusterPresence,
-          scopeToken,
-          nonLoadAiMods,
-          forceSubCommanderScope
-        );
+        return processFilesInDirectory(filePath, context);
       });
 
       Promise.all(promises).then(function () {
