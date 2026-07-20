@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Smarter Subcommanders doing nothing for viewers when Queller was the allied AI
+- Guardians failing AI mods of the "load" type
 
 ## v6.2.1 - 2026-07-17
 

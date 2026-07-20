@@ -397,17 +397,20 @@ define([
     // applies when the enemy and subcommander share a source directory (fileOwner
     // "shared", e.g. both using Penchant) - excluding only files owned exclusively
     // by the subcommander tree.
-    var scopedEnemyDestinationPath = function (fileOwner) {
+    var scopedEnemyDestinationPath = function (
+      fileOwner,
+      isSubCommanderTechFile
+    ) {
       if (
         fileOwner === "subcommander" ||
         aiPaths.enemyDestination === aiPaths.enemySource
       ) {
         return null;
       }
-      return changeFilePath(
-        aiPaths.enemyDestination,
-        aiPaths.enemySource.length
-      );
+      var pathLength = isSubCommanderTechFile
+        ? aiTechPath.length
+        : aiPaths.enemySource.length;
+      return changeFilePath(aiPaths.enemyDestination, pathLength);
     };
 
     // Applies the in-scope AI mods and writes the resulting JSON to every resolved
@@ -433,7 +436,10 @@ define([
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
       } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
-        processClusterJson(json, aiPaths.enemySource.length);
+        var enemyPathLength = isSubCommanderTechFile
+          ? aiTechPath.length
+          : aiPaths.enemySource.length;
+        processClusterJson(json, enemyPathLength);
       }
     };
 
@@ -449,7 +455,10 @@ define([
         isSubCommanderDirectory
       );
 
-      var scopedEnemyPath = scopedEnemyDestinationPath(fileOwner);
+      var scopedEnemyPath = scopedEnemyDestinationPath(
+        fileOwner,
+        isSubCommanderTechFile
+      );
       if (scopedEnemyPath) {
         // A shared source also serves as the subcommander/ally's own destination
         // (it reads the source path directly), so keep that path in the write
