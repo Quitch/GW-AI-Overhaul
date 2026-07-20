@@ -424,9 +424,15 @@ define([
       });
     };
 
-    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is present.
+    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is
+    // present. The enemy branch takes originalJson - a snapshot from before
+    // writeConfigFiles applied the *subcommander's* aiMods to `json` - so an enemy
+    // Cluster foe never inherits tech it doesn't have. The player branch
+    // deliberately keeps using the mutated `json`: the player's own Cluster
+    // ally/subcommander is supposed to receive that tech.
     var applyClusterModsIfNeeded = function (
       json,
+      originalJson,
       fileOwner,
       isSubCommanderTechFile
     ) {
@@ -439,11 +445,12 @@ define([
         var enemyPathLength = isSubCommanderTechFile
           ? aiTechPath.length
           : aiPaths.enemySource.length;
-        processClusterJson(json, enemyPathLength);
+        processClusterJson(originalJson, enemyPathLength);
       }
     };
 
     return $.getJSON("coui:/" + filePath).then(function (json) {
+      var originalJson = _.cloneDeep(json);
       var fileOwner = whoseFileIsItAnyway(aiPaths);
       var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
       var isSubCommanderTechFile = filePathStarts(aiTechPath);
@@ -471,7 +478,12 @@ define([
       }
 
       writeConfigFiles(json, scopedUpdate.filePaths, scopedUpdate.aiMods);
-      applyClusterModsIfNeeded(json, fileOwner, isSubCommanderTechFile);
+      applyClusterModsIfNeeded(
+        json,
+        originalJson,
+        fileOwner,
+        isSubCommanderTechFile
+      );
     });
   };
 
