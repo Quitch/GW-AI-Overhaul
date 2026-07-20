@@ -70,6 +70,17 @@ var stripKnownSpecTag = function (value) {
 // define() factory's injected modules) so Node can reach it via
 // requireShippedModule() without shared/gw_common - see the module.exports hook
 // below.
+//
+// Deliberately never routes a Cluster-faction viewer to "cluster" type (unlike
+// referee_config.js's setupAlliedCommanders/referee_game_files.js's buildPlayerFiles,
+// which both check inventory.getTag("global", "playerFaction") for the host). That
+// Cluster-specific destination exists purely to keep a Cluster player's own AI-mod
+// writes from leaking into the shared brain-based destination tree other allies/
+// enemies also read from (see getAIPathSource, which never special-cases Cluster for
+// reads - only getAIPathDestination's write side does). Every per-player-tech viewer
+// already gets that same leak-proof isolation for free via their own player_.playerN
+// scope, regardless of faction, so a second Cluster-specific mechanism here would be
+// redundant.
 var getViewerSubcommanderAiPath = function (
   refereeAIPaths,
   subcommanderTech,
