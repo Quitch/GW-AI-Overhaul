@@ -41,6 +41,14 @@ describe("pa/ai_penchant/ - GWO-owned Penchant unit maps", () => {
   });
 });
 
+describe("pa/ai_penchant/ - AI config", () => {
+  it("ai_config.json exists with only a numeric unit_cap", () => {
+    const json = readJson("pa/ai_penchant/ai_config.json");
+    assert.deepEqual(Object.keys(json), ["unit_cap"]);
+    assert.equal(typeof json.unit_cap, "number");
+  });
+});
+
 describe("pa/ai/ - files GWO shadows over the base game", () => {
   const buildListFiles = [
     "pa/ai/fabber_builds/fabber_defense_builds.json",
