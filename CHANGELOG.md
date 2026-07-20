@@ -8,6 +8,7 @@
 - Guardians failing to process AI mods of the "load" type
 - Prevent creation of invalid duplicate unit maps
 - Cluster enemy behaviour would change to reflect tech it didn't have if the player had subcommanders
+- Add missing unit limit to Penchant AI
 
 ## v6.2.1 - 2026-07-17
 
