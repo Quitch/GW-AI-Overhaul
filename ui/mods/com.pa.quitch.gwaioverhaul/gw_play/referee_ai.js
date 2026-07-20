@@ -505,7 +505,8 @@ define([
       var promises = _.map(fileList, function (filePath) {
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/unit_maps/") // owned/tagged entirely by referee_game_files.js
         ) {
           return;
         }
