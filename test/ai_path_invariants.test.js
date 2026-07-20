@@ -21,8 +21,13 @@ const {
 const {
   buildGame,
   installModel,
+  makeInventory,
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  createFakeJQuery,
+  createFakeApi,
+} = require("../scripts/lib/fake-jquery.js");
 
 const refereeConfig = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
@@ -39,15 +44,51 @@ const subcommanderTech = loadCouiModule(
 const perPlayerTechHook = requireShippedModule(
   "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
 );
+const refereeAi = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+);
 
 let restoreModel;
+let previousDollar;
+let previousApi;
 
 afterEach(() => {
   if (restoreModel) {
     restoreModel();
     restoreModel = undefined;
   }
+  if (previousDollar !== undefined) {
+    global.$ = previousDollar;
+    previousDollar = undefined;
+  }
+  if (previousApi !== undefined) {
+    global.api = previousApi;
+    previousApi = undefined;
+  }
 });
+
+// Same fake-$/api wiring as test/referee_ai_file_processing.test.js, duplicated
+// locally rather than shared so this file's afterEach can restore all three
+// (model/$/api) through one mechanism.
+function installAiProcessingFakes({ fileListByPath, getJSON }) {
+  previousDollar = global.$;
+  previousApi = global.api;
+
+  global.api = createFakeApi({
+    file: {
+      list: (path) =>
+        Promise.resolve((fileListByPath && fileListByPath[path]) || []),
+    },
+  });
+
+  global.$ = createFakeJQuery({
+    getJSON: (url) => (getJSON ? getJSON(url) : { build_list: [] }),
+  });
+}
+
+function runRefereeAi(filesObj) {
+  return refereeAi.call({ files: () => filesObj || {} });
+}
 
 function isKnownOverlapCase(aiInUse, enemyType, techState) {
   // Same brain + no guardians/cluster + no active subcommander tech: confirmed
@@ -210,5 +251,171 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
     });
     restoreModel = installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai/");
+  });
+});
+
+describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide", () => {
+  // The existing sweep above only ever sets aiInUse, so subcommanderPath is always
+  // computed from the SAME brain as enemyPath (aiInUse("subcommander") falls back to
+  // aiInUse("enemy") whenever aiAlly is unset). Mixed-brain fights (system.gwaio.aiAlly
+  // set to a different brain than system.gwaio.ai) are a real, supported
+  // configuration - buildGame() already exposes aiAllyInUse for this - but were never
+  // swept. Differing brains resolve to structurally different base paths via
+  // getAIPathSource's switch, so unlike the same-brain sweep above, no
+  // isKnownOverlapCase-style exception is expected here at all.
+  for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+    for (const aiAllyInUse of SCENARIO_AXES.AI_BRAINS) {
+      if (aiInUse === aiAllyInUse) {
+        continue;
+      }
+
+      for (const enemyType of SCENARIO_AXES.ENEMY_TYPES) {
+        for (const techState of SCENARIO_AXES.SUBCOMMANDER_TECH_STATES) {
+          it(`enemy=${aiInUse}/ally=${aiAllyInUse}, enemyType=${enemyType}, subcommander tech=${techState}: paths differ`, () => {
+            const fixture = buildGame({
+              aiInUse: aiInUse,
+              aiAllyInUse: aiAllyInUse,
+              enemyType: enemyType,
+              aiMods: techState === "active" ? [{ op: "load" }] : [],
+            });
+            restoreModel = installModel(fixture.game);
+
+            const enemyIsCluster = gwoAI.isCluster(fixture.ai);
+            const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
+            const subcommanderPath = refereeConfig.setAIPath(false, true);
+
+            assert.notEqual(enemyPath, subcommanderPath);
+          });
+        }
+      }
+    }
+  }
+});
+
+describe("invariant: Guardians + matching brains + per-player tech never leaks one player's tech onto the Guardian's shared destination", () => {
+  // referee_ai.js's per-player-tech viewer loop (forceSubCommanderScope: true) exists
+  // solely to populate each viewer's OWN scoped destination. When the enemy and
+  // subcommander source trees are the same (brains match, fileOwner "shared") and
+  // Guardians is active (the enemy gets a player_guardians-scoped destination
+  // distinct from its source), the base pass over aiPathsToProcess is the ONE place
+  // that combines every connected player's mods (via getInventoryWithAllPlayerAiMods)
+  // and writes that combined result to both the plain shared key and the Guardian's
+  // scoped destination. A per-viewer pass must never also write to either of those
+  // keys - doing so would silently discard the combined write and leave the Guardian
+  // (or the plain shared key any non-scoped ally also reads) reflecting only one
+  // viewer's own tech instead of everyone's.
+  it("per-player tech disabled: the base pass alone writes one combined result to both the plain and Guardian-scoped keys", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [
+        {
+          op: "append",
+          type: "fabber",
+          toBuild: "Bot",
+          idToMod: "builders",
+          value: "hostMarker",
+        },
+      ],
+    });
+    restoreModel = installModel(fixture.game, []);
+    installAiProcessingFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
+    });
+
+    const filesObj = {};
+    return runRefereeAi(filesObj).then(() => {
+      assert.deepEqual(
+        filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
+        ["hostMarker"]
+      );
+      assert.deepEqual(
+        filesObj["/pa/ai/player_guardians/fabber_builds/x.json"].build_list[0]
+          .builders,
+        ["hostMarker"]
+      );
+    });
+  });
+
+  it("per-player tech enabled with 2 viewers: the Guardian's scoped destination reflects EVERY contributor, and each viewer's own scoped destination reflects only their own mod", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [
+        {
+          op: "append",
+          type: "fabber",
+          toBuild: "Bot",
+          idToMod: "builders",
+          value: "hostMarker",
+        },
+      ],
+    });
+    const viewer1Inventory = makeInventory({
+      aiModsList: [
+        {
+          op: "append",
+          type: "fabber",
+          toBuild: "Bot",
+          idToMod: "builders",
+          value: "v1Marker",
+        },
+      ],
+    });
+    const viewer2Inventory = makeInventory({
+      aiModsList: [
+        {
+          op: "append",
+          type: "fabber",
+          toBuild: "Bot",
+          idToMod: "builders",
+          value: "v2Marker",
+        },
+      ],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) => {
+      if (client.id === "v1") return { inventory: viewer1Inventory };
+      if (client.id === "v2") return { inventory: viewer2Inventory };
+      return undefined;
+    };
+    const connectedClients = [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+      { id: "v2", name: "Viewer2", role: "viewer" },
+    ];
+    restoreModel = installModel(fixture.game, connectedClients);
+    installAiProcessingFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
+    });
+
+    const filesObj = {};
+    return runRefereeAi(filesObj).then(() => {
+      // The Guardian must see every connected player's contribution, combined by the
+      // base pass alone - never clobbered down to a single viewer's own mod.
+      assert.deepEqual(
+        filesObj["/pa/ai/player_guardians/fabber_builds/x.json"].build_list[0]
+          .builders,
+        ["hostMarker", "v1Marker", "v2Marker"]
+      );
+      // The plain shared key (what a non-scoped ally reads) must match - never reset
+      // back to pristine by a viewer pass.
+      assert.deepEqual(
+        filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
+        ["hostMarker", "v1Marker", "v2Marker"]
+      );
+      // Each viewer's own scoped destination stays isolated to their own mod only.
+      assert.deepEqual(
+        filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
+          .build_list[0].builders,
+        ["v1Marker"]
+      );
+      assert.deepEqual(
+        filesObj["/pa/ai_subcommander/player_.player1/fabber_builds/x.json"]
+          .build_list[0].builders,
+        ["v2Marker"]
+      );
+    });
   });
 });
