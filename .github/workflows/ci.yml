@@ -22,7 +22,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
 
       # Full-repo hard gates: each of these is clean across the whole repo today, so
       # any new violation anywhere is a real regression, not pre-existing debt.
@@ -47,7 +47,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
 
       # Most of this repo isn't Prettier-formatted (it predates any formatting gate,
       # and some JSON data files are intentionally minified - see .prettierignore),

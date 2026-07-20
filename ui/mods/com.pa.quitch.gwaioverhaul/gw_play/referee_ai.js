@@ -254,15 +254,15 @@ define([
     }
   };
 
-  var processFilesInDirectory = function (
-    filePath,
-    configFiles,
-    aisToModify,
-    aiPaths,
-    clusterPresence,
-    scopeToken,
-    nonLoadAiMods
-  ) {
+  var processFilesInDirectory = function (filePath, context) {
+    var configFiles = context.configFiles;
+    var aisToModify = context.aisToModify;
+    var aiPaths = context.aiPaths;
+    var clusterPresence = context.clusterPresence;
+    var scopeToken = context.scopeToken;
+    var nonLoadAiMods = context.nonLoadAiMods;
+    var forceSubCommanderScope = context.forceSubCommanderScope;
+
     var aiTechPath = "/pa/ai_tech/";
 
     var filePathStarts = function (filePathFragment) {
@@ -370,8 +370,17 @@ define([
         }
         aiJsonModsInScope = aiModsInScopeOfFile();
       } else if (aisToModify === "SubCommanders" && fileOwner !== "enemy") {
-        if (fileOwner === "shared") {
-          // Make a clean copy of the files for enemy AIs before modification of the JSON
+        if (fileOwner === "shared" && !forceSubCommanderScope) {
+          // Make a clean copy of the files for enemy AIs before modification of the
+          // JSON. Skipped during a per-viewer forced-subcommander pass
+          // (forceSubCommanderScope) - that pass exists only to populate ITS OWN
+          // viewer-scoped destination below. The shared plain key already got its one
+          // authoritative write from the base (non-per-player-tech) pass over this
+          // same source tree (pristine-preserved here when aisToModify is
+          // "SubCommanders", or combined with every connected player's mods when
+          // Guardians makes it "All" instead - see aisToModify's assignment above).
+          // Re-running this per viewer would reset that write back to pristine,
+          // discarding whatever the base pass combined there.
           configFiles[filePath] = _.cloneDeep(json);
         }
 
@@ -397,17 +406,20 @@ define([
     // applies when the enemy and subcommander share a source directory (fileOwner
     // "shared", e.g. both using Penchant) - excluding only files owned exclusively
     // by the subcommander tree.
-    var scopedEnemyDestinationPath = function (fileOwner) {
+    var scopedEnemyDestinationPath = function (
+      fileOwner,
+      isSubCommanderTechFile
+    ) {
       if (
         fileOwner === "subcommander" ||
         aiPaths.enemyDestination === aiPaths.enemySource
       ) {
         return null;
       }
-      return changeFilePath(
-        aiPaths.enemyDestination,
-        aiPaths.enemySource.length
-      );
+      var pathLength = isSubCommanderTechFile
+        ? aiTechPath.length
+        : aiPaths.enemySource.length;
+      return changeFilePath(aiPaths.enemyDestination, pathLength);
     };
 
     // Applies the in-scope AI mods and writes the resulting JSON to every resolved
@@ -421,9 +433,15 @@ define([
       });
     };
 
-    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is present.
+    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is
+    // present. The enemy branch takes originalJson - a snapshot from before
+    // writeConfigFiles applied the *subcommander's* aiMods to `json` - so an enemy
+    // Cluster foe never inherits tech it doesn't have. The player branch
+    // deliberately keeps using the mutated `json`: the player's own Cluster
+    // ally/subcommander is supposed to receive that tech.
     var applyClusterModsIfNeeded = function (
       json,
+      originalJson,
       fileOwner,
       isSubCommanderTechFile
     ) {
@@ -433,11 +451,15 @@ define([
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
       } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
-        processClusterJson(json, aiPaths.enemySource.length);
+        var enemyPathLength = isSubCommanderTechFile
+          ? aiTechPath.length
+          : aiPaths.enemySource.length;
+        processClusterJson(originalJson, enemyPathLength);
       }
     };
 
     return $.getJSON("coui:/" + filePath).then(function (json) {
+      var originalJson = _.cloneDeep(json);
       var fileOwner = whoseFileIsItAnyway(aiPaths);
       var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
       var isSubCommanderTechFile = filePathStarts(aiTechPath);
@@ -449,7 +471,15 @@ define([
         isSubCommanderDirectory
       );
 
-      var scopedEnemyPath = scopedEnemyDestinationPath(fileOwner);
+      // A per-viewer forced-subcommander pass (forceSubCommanderScope) never owns the
+      // enemy's scoped destination (e.g. a Guardian's player_guardians/ tree) - the
+      // base pass's single walk over aiPathsToProcess already combines every
+      // connected player's mods and writes it there once. Computing/writing it again
+      // per viewer would race that combined write, each viewer's pass clobbering the
+      // last with only their own mods.
+      var scopedEnemyPath = forceSubCommanderScope
+        ? null
+        : scopedEnemyDestinationPath(fileOwner, isSubCommanderTechFile);
       if (scopedEnemyPath) {
         // A shared source also serves as the subcommander/ally's own destination
         // (it reads the source path directly), so keep that path in the write
@@ -462,7 +492,12 @@ define([
       }
 
       writeConfigFiles(json, scopedUpdate.filePaths, scopedUpdate.aiMods);
-      applyClusterModsIfNeeded(json, fileOwner, isSubCommanderTechFile);
+      applyClusterModsIfNeeded(
+        json,
+        originalJson,
+        fileOwner,
+        isSubCommanderTechFile
+      );
     });
   };
 
@@ -493,23 +528,26 @@ define([
         aiPaths
       );
 
+      var context = {
+        configFiles: configFiles,
+        aisToModify: aisToModify,
+        aiPaths: aiPaths,
+        clusterPresence: clusterPresence,
+        scopeToken: scopeToken,
+        nonLoadAiMods: nonLoadAiMods,
+        forceSubCommanderScope: forceSubCommanderScope,
+      };
+
       var promises = _.map(fileList, function (filePath) {
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/unit_maps/") // owned/tagged entirely by referee_game_files.js
         ) {
           return;
         }
 
-        return processFilesInDirectory(
-          filePath,
-          configFiles,
-          aisToModify,
-          aiPaths,
-          clusterPresence,
-          scopeToken,
-          nonLoadAiMods
-        );
+        return processFilesInDirectory(filePath, context);
       });
 
       Promise.all(promises).then(function () {
@@ -528,17 +566,17 @@ define([
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     var numberOfAllies = alliedCommanders.length;
-    var isPlayerCluster = inventory.getTag("global", "playerFaction") === 4;
-    var isEnemyCluster =
+    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var enemyIsCluster =
       gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {
         return gwoAI.isCluster(foe);
       });
 
-    if (isPlayerCluster && numberOfAllies > 0) {
+    if (playerIsCluster && numberOfAllies > 0) {
       return "Player";
     }
-    if (isEnemyCluster) {
+    if (enemyIsCluster) {
       return "Enemy";
     }
     return "None";
@@ -605,21 +643,9 @@ define([
           viewerPlayerTag,
           viewerPlayerTag
         );
-        var viewerAiMods = getRefereeInventoryAiMods(viewerInventory);
-        var viewerCards = _.isFunction(viewerInventory.cards)
-          ? viewerInventory.cards()
-          : viewerInventory.cards || [];
-        var viewerSmartSubcommanders = _.some(viewerCards, {
-          id: "gwaio_upgrade_subcommander_tactics",
-        });
-        var viewerSubCommanderDestination = refereeAIPaths.getAIPathDestination(
-          "subcommander",
-          gwoAI.aiInUse("subcommander"),
-          {
-            aiMods: viewerAiMods,
-            smartSubcommanders: viewerSmartSubcommanders,
-            scopeToken: viewerPlayerTag,
-          }
+        var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
+          viewerInventory,
+          viewerPlayerTag
         );
         var viewerAiPaths = _.assign({}, aiPaths, {
           subCommanderDestination: viewerSubCommanderDestination,

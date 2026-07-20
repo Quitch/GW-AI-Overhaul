@@ -1,0 +1,267 @@
+"use strict";
+
+// Unit tests for gw_per_player_tech_referee.js's per-viewer ai_path resolution,
+// reached via its test-only module.exports hook. This file depends on
+// shared/gw_common and shared/gw_inventory (base-game modules GWO doesn't ship), so
+// its define() call is gated the same way referee_game_files.js's is - see the
+// hook's own comment in gw_per_player_tech_referee.js.
+
+const { describe, it } = require("node:test");
+const assert = require("node:assert/strict");
+const {
+  loadCouiModule,
+  requireShippedModule,
+} = require("../scripts/lib/amd-loader.js");
+const {
+  makeInventory,
+  SCENARIO_AXES,
+} = require("../scripts/lib/ai-path-fixtures.js");
+
+const hook = requireShippedModule(
+  "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
+);
+const refereeAIPaths = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
+);
+const subcommanderTech = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+);
+
+function makePlayerInventory(overrides) {
+  const data = Object.assign(
+    { aiModsList: [], cardsList: [] },
+    overrides || {}
+  );
+  return {
+    aiMods: () => data.aiModsList,
+    cards: () => data.cardsList,
+  };
+}
+
+describe("getPlayerTagGivenIndex", () => {
+  it("index 0 is the host tag .player", () => {
+    assert.equal(hook.getPlayerTagGivenIndex(0), ".player");
+  });
+
+  it("subsequent indices are .player0, .player1, ...", () => {
+    assert.equal(hook.getPlayerTagGivenIndex(1), ".player0");
+    assert.equal(hook.getPlayerTagGivenIndex(2), ".player1");
+    assert.equal(hook.getPlayerTagGivenIndex(5), ".player4");
+  });
+});
+
+describe("stripKnownSpecTag", () => {
+  it("strips a trailing .player", () => {
+    assert.equal(
+      hook.stripKnownSpecTag("commander_uef.player"),
+      "commander_uef"
+    );
+  });
+
+  it("strips a trailing .playerN", () => {
+    assert.equal(
+      hook.stripKnownSpecTag("commander_uef.player3"),
+      "commander_uef"
+    );
+  });
+
+  it("passes through a value with no recognized spec tag", () => {
+    assert.equal(hook.stripKnownSpecTag("commander_uef"), "commander_uef");
+  });
+
+  it("passes through a non-string value unchanged", () => {
+    assert.equal(hook.stripKnownSpecTag(undefined), undefined);
+    assert.equal(hook.stripKnownSpecTag(42), 42);
+  });
+});
+
+describe("getViewerSubcommanderAiPath", () => {
+  it("the host tag (.player) never gets a scoped path, even with active tech", () => {
+    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const path = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      inventory,
+      ".player"
+    );
+    assert.equal(path, "/pa/ai_subcommander/");
+  });
+
+  it("a non-host tag with active tech gets scoped by that raw tag", () => {
+    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const path = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      inventory,
+      ".player0"
+    );
+    // Matches referee_ai_paths.test.js's pinned raw/unsanitized scopeToken behavior -
+    // the literal dot from the player tag is not stripped.
+    assert.equal(path, "/pa/ai_subcommander/player_.player0/");
+  });
+
+  it("a non-host tag with no active tech still gets scoped onto the vanilla brain path", () => {
+    const inventory = makePlayerInventory({ aiModsList: [] });
+    const path = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      inventory,
+      ".player0"
+    );
+    // Unlike shared/ai.js's getAIPathDestination("enemy") wrapper (which only
+    // auto-scopes under guardians), getViewerSubcommanderAiPath always passes a
+    // scopeToken for any non-host tag, regardless of the aiMods gate that picks the
+    // *base* path. So even when aiMods is empty and the base path falls back to the
+    // vanilla /pa/ai/ (same base as the enemy - the known Titans/Penchant overlap
+    // pinned in referee_ai_paths.test.js and ai_path_invariants.test.js), the scope
+    // suffix still makes this viewer's path distinct from the enemy's and from every
+    // other viewer's - this is precisely why per-player-tech subcommanders never
+    // collide with each other even without active tech.
+    assert.equal(path, "/pa/ai/player_.player0/");
+  });
+
+  it("is guardians-unaware by construction: always passes guardians:false", () => {
+    // getViewerSubcommanderAiPath has no guardians parameter at all - it can't
+    // vary by the fight's actual guardians state, unlike shared/ai.js's
+    // getAIPathDestination("subcommander") wrapper used for shared-tech allies.
+    // This pins that current, documented asymmetry (see the function's own
+    // comment in gw_per_player_tech_referee.js) rather than asserting it's correct.
+    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const path = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      inventory,
+      ".player0"
+    );
+    assert.equal(
+      path,
+      refereeAIPaths.getAIPathDestination("subcommander", "Titans", {
+        guardians: false,
+        aiMods: inventory.aiMods(),
+        smartSubcommanders: false,
+        scopeToken: ".player0",
+      })
+    );
+  });
+
+  it("smartSubcommanders toggles Queller q_silver/ vs q_bronze/ via the tactics card", () => {
+    const smartInventory = makePlayerInventory({
+      cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
+    });
+    const plainInventory = makePlayerInventory({ cardsList: [] });
+
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Queller",
+        smartInventory,
+        ".player0"
+      ),
+      "/pa/ai_queller/q_silver/player_.player0/"
+    );
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Queller",
+        plainInventory,
+        ".player0"
+      ),
+      "/pa/ai_queller/q_bronze/player_.player0/"
+    );
+  });
+
+  it("stays pairwise-distinct across a heterogeneous mix of brains and aiMods states, not just uniform Titans", () => {
+    const players = [
+      { tag: ".player0", aiInUse: "Titans", aiModsList: [] },
+      { tag: ".player1", aiInUse: "Titans", aiModsList: [{ op: "load" }] },
+      { tag: ".player2", aiInUse: "Penchant", aiModsList: [] },
+      { tag: ".player3", aiInUse: "Penchant", aiModsList: [{ op: "load" }] },
+      { tag: ".player4", aiInUse: "Queller", aiModsList: [] },
+      { tag: ".player5", aiInUse: "Queller", aiModsList: [{ op: "load" }] },
+    ];
+
+    const paths = players.map((player) =>
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        player.aiInUse,
+        makeInventory({ aiModsList: player.aiModsList }),
+        player.tag
+      )
+    );
+
+    assert.equal(
+      new Set(paths).size,
+      paths.length,
+      `expected all distinct, got: ${paths}`
+    );
+  });
+
+  it("every brain in SCENARIO_AXES.AI_BRAINS still isolates 2 viewers from each other, active tech or not", () => {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+      for (const aiModsList of [[], [{ op: "load" }]]) {
+        const pathA = hook.getViewerSubcommanderAiPath(
+          refereeAIPaths,
+          subcommanderTech,
+          aiInUse,
+          makeInventory({ aiModsList }),
+          ".player0"
+        );
+        const pathB = hook.getViewerSubcommanderAiPath(
+          refereeAIPaths,
+          subcommanderTech,
+          aiInUse,
+          makeInventory({ aiModsList }),
+          ".player1"
+        );
+        assert.notEqual(
+          pathA,
+          pathB,
+          `${aiInUse}, aiMods=${JSON.stringify(aiModsList)}`
+        );
+      }
+    }
+  });
+
+  it("a Cluster-faction viewer is NOT routed to /pa/ai_cluster/ - it gets the ordinary brain-based subcommander path, isolated the same way as any other viewer", () => {
+    // Confirms the reasoning in this function's own comment (gw_per_player_tech_referee.js):
+    // getAIPathSource never special-cases Cluster for reads, and the per-viewer
+    // player_.playerN scope already gives every viewer the same write-isolation
+    // /pa/ai_cluster/ exists to provide for the host - so no Cluster branch is needed
+    // (or present) here, regardless of what the inventory's playerFaction tag says.
+    const clusterInventory = makeInventory({
+      aiModsList: [{ op: "load" }],
+      tags: { "global:playerFaction": 4 },
+    });
+    const otherClusterInventory = makeInventory({
+      aiModsList: [{ op: "load" }],
+      tags: { "global:playerFaction": 4 },
+    });
+
+    const clusterViewerPath = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      clusterInventory,
+      ".player0"
+    );
+    const otherClusterViewerPath = hook.getViewerSubcommanderAiPath(
+      refereeAIPaths,
+      subcommanderTech,
+      "Titans",
+      otherClusterInventory,
+      ".player1"
+    );
+
+    assert.equal(clusterViewerPath, "/pa/ai_subcommander/player_.player0/");
+    assert.ok(!clusterViewerPath.includes("ai_cluster"));
+    // Two Cluster-faction viewers still never collide with each other.
+    assert.notEqual(clusterViewerPath, otherClusterViewerPath);
+  });
+});

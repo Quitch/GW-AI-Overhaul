@@ -7,12 +7,14 @@
 // wrong-typed value before it silently misbehaves in-game.
 //
 // Empirically tallied across the full corpus (573 build_list entries / 141
-// platoon_templates entries / 119 unit_map entries, all 85 pa/ai*/**/*.json files):
+// platoon_templates entries / 119 unit_map entries, all 86 pa/ai*/**/*.json files):
 //   - build_list: name/instance_count/priority/build_conditions are on every entry.
 //     to_build is on 566/573 - the 7 without it are non-unit "action" entries (e.g.
 //     "Teleport Commander To Planet", "Fabber Assist"), not a bug, so it's optional.
 //   - platoon_templates: every entry has `units` (array).
 //   - unit_map: every entry has exactly one of unit_types or spec_id.
+//   - unit_cap (ai_config.json): the file's full extent is a single numeric
+//     `unit_cap` key.
 // difficulty_levels.js/personalities.js entries don't share a single fixed key set
 // (e.g. the difficulties list ends in a minimal {difficultyName, customDifficulty}
 // "Custom" sentinel with none of the other ~25 tier fields) - so rather than a
@@ -160,6 +162,13 @@ function checkUnitMapFile(where, data) {
   }
 }
 
+function checkAiConfigFile(where, data) {
+  const keys = Object.keys(data);
+  if (keys.length !== 1 || keys[0] !== "unit_cap") {
+    fail(where, "expected exactly one key `unit_cap`, got: " + keys.join(", "));
+  }
+}
+
 function checkAiJsonFiles() {
   const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
     path.join(REPO_ROOT, "pa", d)
@@ -190,10 +199,13 @@ function checkAiJsonFiles() {
     } else if (data.unit_map && typeof data.unit_map === "object") {
       checkUnitMapFile(where, data);
       checked++;
+    } else if (typeof data.unit_cap === "number") {
+      checkAiConfigFile(where, data);
+      checked++;
     } else {
       fail(
         where,
-        "unrecognized top-level shape (expected build_list, platoon_templates, or unit_map)"
+        "unrecognized top-level shape (expected build_list, platoon_templates, unit_map, or unit_cap)"
       );
     }
   }
