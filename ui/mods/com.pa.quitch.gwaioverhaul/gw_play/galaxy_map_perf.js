@@ -16,11 +16,19 @@ var gwoGalaxyMapPerfLoaded;
 // createjs.Tween/ticker-driven animation on this layer), so diffing those
 // values against the last real draw tells us whether a redraw is actually
 // needed. While the camera is moving (drag/zoom/resize) or the mouse is
-// moving (parallax), this draws every tick, same as unpatched, so panning
-// and the parallax effect stay smooth. Only once everything is provably
-// static does it fall back to a slow heartbeat, which still picks up
+// moving (parallax), this still draws, but capped to an interactive frame
+// rate rather than the uncapped monitor refresh - at 4K a full redraw is
+// expensive, and 60 FPS keeps panning/parallax smooth while still cutting
+// redraw cost on higher-refresh displays. Only once everything is provably
+// static does it fall back to a slower heartbeat, which still picks up
 // hover-highlight changes (driven by EaselJS's own mouseover hit testing
 // inside update()) within one heartbeat interval.
+//
+// Separately, we lower EaselJS's mouseover hit-test rate: the base game
+// enables it with no argument (defaults to 20/sec), and every check runs a
+// hit test across the whole interactive display list (up to 234 systems).
+// Halving that to 10/sec cuts a recurring CPU cost that's independent of the
+// redraw loop, and hover highlighting stays responsive.
 function gwoGalaxyMapPerf() {
   var game = model.game();
 
@@ -34,8 +42,13 @@ function gwoGalaxyMapPerf() {
     var stage = model.galaxy.stage;
     var parallax = model.galaxy.parallax;
     var originalUpdate = stage.update;
+    var interactiveFrameIntervalMs = 1000 / 60;
     var idleFrameIntervalMs = 1000 / 10;
     var lastDraw = 0;
+
+    // Halve the mouseover hit-test rate (base game leaves it at the 20/sec default)
+    stage.enableMouseOver(10);
+
     var lastX, lastY, lastScaleX, lastScaleY, lastWidth, lastHeight;
     var lastParallaxX, lastParallaxY;
 
@@ -53,7 +66,8 @@ function gwoGalaxyMapPerf() {
         currentParallax[1] !== lastParallaxY;
 
       var now = window.performance.now();
-      if (!moved && now - lastDraw < idleFrameIntervalMs) {
+      var interval = moved ? interactiveFrameIntervalMs : idleFrameIntervalMs;
+      if (now - lastDraw < interval) {
         return;
       }
 
