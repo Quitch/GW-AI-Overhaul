@@ -424,10 +424,10 @@ function gwoCard() {
     };
 
     var testCardForMatches = function (inventory, card) {
-      model.currentSystemCardList().push(card);
-
       var cardsDealt = [card];
-      var duplicate = doNotDealCard(inventory, card, cardsDealt, false, true);
+      var duplicate = doNotDealCard(inventory, card, cardsDealt, false, true, [
+        card,
+      ]);
 
       if (!duplicate) {
         console.error(card.id, "failed duplication test");
@@ -1196,57 +1196,89 @@ function gwoCard() {
 
         var expandInventorySize = function (galaxy, inventory, star, maxCards) {
           var sizeDifference = inventory.cards().length - maxCards;
+          var deferredQueue = [];
           _.times(sizeDifference, function () {
-            gwoDeal
-              .dealCard(
-                {
-                  id: "gwc_add_card_slot",
-                  galaxy: galaxy,
-                  inventory: inventory,
-                  star: star,
-                },
-                loaded
-              )
-              .then(function (product) {
-                product = setupNewCardSlot(product);
-                applyCheatCards(product, inventory);
-              });
+            deferredQueue.push(
+              gwoDeal
+                .dealCard(
+                  {
+                    id: "gwc_add_card_slot",
+                    galaxy: galaxy,
+                    inventory: inventory,
+                    star: star,
+                  },
+                  loaded,
+                  cards
+                )
+                .then(function (product) {
+                  product = setupNewCardSlot(product);
+                  applyCheatCards(product, inventory);
+                })
+            );
           });
+          return $.when.apply($, deferredQueue);
         };
 
         // We need cheats to deal from our deck
         model.cheats.testCards = function () {
+          if (model.isCampaignViewer()) {
+            console.error(
+              "[GW COOP] cheats.testCards is unavailable for co-op viewers"
+            );
+            return;
+          }
+
           var star = galaxy.stars()[game.currentStar()];
           var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
+          var deferredQueue = [];
 
           _.forEach(model.gwoCards, function (cardId) {
-            gwoDeal
-              .dealCard(
-                {
-                  id: cardId,
-                  galaxy: galaxy,
-                  inventory: inventory,
-                  star: star,
-                },
-                loaded
-              )
-              .then(function (product) {
-                if (product.id === "gwc_minion") {
-                  testMinions(product, inventory);
-                  product = dealSubCommander(product);
-                } else if (product.id === "gwc_add_card_slot") {
-                  product = setupNewCardSlot(product);
-                }
-                applyCheatCards(product, inventory);
-                if (!product.unique) {
-                  testCardForMatches(inventory, product);
-                }
-              });
+            deferredQueue.push(
+              gwoDeal
+                .dealCard(
+                  {
+                    id: cardId,
+                    galaxy: galaxy,
+                    inventory: inventory,
+                    star: star,
+                  },
+                  loaded,
+                  cards
+                )
+                .then(function (product) {
+                  if (product.id === "gwc_minion") {
+                    testMinions(product, inventory);
+                    product = dealSubCommander(product);
+                  } else if (product.id === "gwc_add_card_slot") {
+                    product = setupNewCardSlot(product);
+                  }
+                  applyCheatCards(product, inventory);
+                  if (!product.unique) {
+                    testCardForMatches(inventory, product);
+                  }
+                })
+            );
           });
-          expandInventorySize(galaxy, inventory, star, maxCards);
+          deferredQueue.push(
+            expandInventorySize(galaxy, inventory, star, maxCards)
+          );
+
+          $.when.apply($, deferredQueue).then(function () {
+            dealCardToSelectableAI(false).then(function () {
+              model.sendCampaignSnapshot("gwo_cheat_test_cards", true);
+              gwoSave(game, true);
+            });
+          });
         };
 
         model.cheats.giveCard = function () {
+          if (model.isCampaignViewer()) {
+            console.error(
+              "[GW COOP] cheats.giveCard is unavailable for co-op viewers"
+            );
+            return;
+          }
+
           var id = model.cheats.giveCardId();
           var cardId = _.find(model.gwoCards, function (card) {
             return card === id;
@@ -1261,7 +1293,8 @@ function gwoCard() {
                   inventory: inventory,
                   star: galaxy.stars()[game.currentStar()],
                 },
-                loaded
+                loaded,
+                cards
               )
               .then(function (product) {
                 if (product.id === "gwc_minion") {
@@ -1272,6 +1305,7 @@ function gwoCard() {
                 inventory.cards.push(product);
                 inventory.applyCards();
                 dealCardToSelectableAI(false).then(function () {
+                  model.sendCampaignSnapshot("gwo_cheat_give_card", true);
                   gwoSave(game, true);
                 });
               });
