@@ -121,7 +121,35 @@ if (typeof module !== "undefined" && module.exports) {
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
-  ], function (GW, gwoAI, gwoSpecs, refereeCoop) {
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
+  ], function (GW, gwoAI, gwoSpecs, refereeCoop, gwoSpecCache) {
+    // Fetches an untagged spec file (parsed) for gwoSpecCache. Mirrors the fetch +
+    // JSON.parse + error handling the base game's genUnitSpecs does internally.
+    var specFetch = function (item) {
+      return new Promise(function (resolve, reject) {
+        $.ajax({
+          url: "coui:/" + item,
+          success: function (data) {
+            try {
+              data = JSON.parse(data);
+            } catch (e) {
+              // Mirror base behaviour: keep whatever came back if it won't parse.
+            }
+            resolve(data);
+          },
+          error: function (request, status, error) {
+            reject(error);
+          },
+        });
+      });
+    };
+
+    // Drop-in for GW.specs.genUnitSpecs that fetches+parses each spec file at most
+    // once and reuses it across every tag (player + each AI faction).
+    var genUnitSpecs = function (units, tag) {
+      return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
+    };
+
     var guardianMods = function (game, hostMods) {
       // Viewers only have their own distinct inventory to fold in when per-player
       // tech is enabled. Under shared control (the default, and solo play) every
@@ -167,9 +195,8 @@ if (typeof module !== "undefined" && module.exports) {
         aiTag[currentCount]
       );
 
-      return GW.specs
-        .genUnitSpecs(aiSpecs, aiTag[currentCount])
-        .then(function (aiSpecFiles) {
+      return genUnitSpecs(aiSpecs, aiTag[currentCount]).then(
+        function (aiSpecFiles) {
           var resolvedPaths = resolveAiUnitMapPaths(
             ai,
             currentCount,
@@ -212,7 +239,8 @@ if (typeof module !== "undefined" && module.exports) {
             gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
           }
           aiFactionDeferred.resolve(aiFiles);
-        });
+        }
+      );
     };
 
     // Files not assigned by default that we wish to mod - global for modder compatibility
@@ -272,9 +300,9 @@ if (typeof module !== "undefined" && module.exports) {
               "/pa/ai_cluster/unit_maps/ai_unit_map.json";
             var clusterUnitMapTitansPath =
               "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
+            // Identical for every faction - build it once rather than per iteration.
+            var aiSpecs = units.concat(model.gwoSpecs);
             _.times(aiFactionCount, function (n) {
-              var aiSpecs = units.concat(model.gwoSpecs);
-
               buildAiFactionFiles({
                 currentCount: n,
                 ai: ai,
@@ -304,9 +332,8 @@ if (typeof module !== "undefined" && module.exports) {
               : model.gwoSpecs.concat(ai.ally.commander);
             var playerSpecs = inventory.units().concat(additionalPlayerSpecs);
 
-            GW.specs
-              .genUnitSpecs(playerSpecs, playerTag)
-              .then(function (playerSpecFiles) {
+            genUnitSpecs(playerSpecs, playerTag).then(
+              function (playerSpecFiles) {
                 playerFileGen.resolve(
                   buildPlayerFiles(
                     {
@@ -320,7 +347,8 @@ if (typeof module !== "undefined" && module.exports) {
                     gwoSpecs
                   )
                 );
-              });
+              }
+            );
           }
         );
 

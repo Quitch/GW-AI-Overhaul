@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Greatly improve time to process unit and AI mods
+
 ## v6.2.3 - 2026-07-21
 
 ### Bugfix

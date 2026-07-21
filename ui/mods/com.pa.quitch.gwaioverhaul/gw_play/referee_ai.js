@@ -3,149 +3,173 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
 ], function (gwoAI, refereeAIPaths, refereeCoop) {
-  var applyAiMods = function (json, mods) {
-    var ops = {
-      // fabber/factory/platoon only
-      append: function (value, toBuild, idToMod, refId, refValue, matchAll) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build !== toBuild) {
-            return;
-          }
+  // fabber/factory/platoon ops. `json` is passed in (rather than closed over) so this
+  // table is built once at module load instead of rebuilt on every applyAiMods call.
+  var aiModOps = {
+    // fabber/factory/platoon only
+    append: function (
+      json,
+      value,
+      toBuild,
+      idToMod,
+      refId,
+      refValue,
+      matchAll
+    ) {
+      _.forEach(json.build_list, function (build) {
+        if (build.to_build !== toBuild) {
+          return;
+        }
 
-          var validMatch =
-            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            Object.prototype.hasOwnProperty.call(build, idToMod);
+        var validMatch =
+          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+          Object.prototype.hasOwnProperty.call(build, idToMod);
 
-          if (validMatch && _.isArray(build[idToMod])) {
-            build[idToMod] = build[idToMod].concat(value);
-          } else if (validMatch) {
-            build[idToMod] += value;
-          } else {
-            _.forEach(build.build_conditions, function (testArray) {
-              _.forEach(testArray, function (test) {
-                var testMatches =
-                  matchAll ||
-                  (!_.isUndefined(refId) && test[refId] === refValue);
-                if (testMatches) {
-                  if (_.isArray(test[idToMod])) {
-                    test[idToMod] = test[idToMod].concat(value);
-                  } else if (test[idToMod]) {
-                    test[idToMod] += value;
-                  }
-                }
-              });
-            });
-          }
-        });
-      },
-      // fabber/factory/platoon only
-      prepend: function (value, toBuild, idToMod, refId, refValue, matchAll) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build !== toBuild) {
-            return;
-          }
-
-          var validMatch =
-            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            Object.prototype.hasOwnProperty.call(build, idToMod);
-
-          if (validMatch && _.isArray(build[idToMod])) {
-            value = _.isArray(value) ? value : [value];
-            build[idToMod] = value.concat(build[idToMod]);
-          } else if (validMatch) {
-            build[idToMod] = value + build[idToMod];
-          } else {
-            _.forEach(build.build_conditions, function (testArray) {
-              _.forEach(testArray, function (test) {
-                var testMatches =
-                  matchAll ||
-                  (!_.isUndefined(refId) && test[refId] === refValue);
-                if (testMatches) {
-                  if (_.isArray(test[idToMod])) {
-                    value = _.isArray(value) ? value : [value];
-                    test[idToMod] = value.concat(test[idToMod]);
-                  } else if (test[idToMod]) {
-                    test[idToMod] = value + test[idToMod];
-                  }
-                }
-              });
-            });
-          }
-        });
-      },
-      // fabber/factory/platoon only
-      replace: function (value, toBuild, idToMod, refId, refValue, matchAll) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build !== toBuild) {
-            return;
-          }
-
-          var validMatch =
-            (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-            Object.prototype.hasOwnProperty.call(build, idToMod);
-
-          if (validMatch) {
-            build[idToMod] = value;
-          } else {
-            _.forEach(build.build_conditions, function (testArray) {
-              _.forEach(testArray, function (test) {
-                var testMatches =
-                  matchAll ||
-                  (!_.isUndefined(refId) && test[refId] === refValue);
-                if (testMatches && test[idToMod]) {
-                  test[idToMod] = value;
-                }
-              });
-            });
-          }
-        });
-      },
-      // fabber/factory/platoon only
-      remove: function (value, toBuild) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build !== toBuild) {
-            return;
-          }
-
+        if (validMatch && _.isArray(build[idToMod])) {
+          build[idToMod] = build[idToMod].concat(value);
+        } else if (validMatch) {
+          build[idToMod] += value;
+        } else {
           _.forEach(build.build_conditions, function (testArray) {
-            _.remove(testArray, function (object) {
-              if (_.isEqual(object, value)) {
-                return object;
+            _.forEach(testArray, function (test) {
+              var testMatches =
+                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
+              if (testMatches) {
+                if (_.isArray(test[idToMod])) {
+                  test[idToMod] = test[idToMod].concat(value);
+                } else if (test[idToMod]) {
+                  test[idToMod] += value;
+                }
               }
             });
           });
-        });
-      },
-      // fabber/factory/platoon only
-      new: function (value, toBuild, idToMod) {
-        _.forEach(json.build_list, function (build) {
-          if (build.to_build !== toBuild) {
-            return;
-          }
-
-          if (idToMod) {
-            _.forEach(build.build_conditions, function (testArray) {
-              testArray.push(value);
-            });
-          } else {
-            build.build_conditions.push(value);
-          }
-        });
-      },
-      // template only
-      squad: function (value, toBuild) {
-        if (json.platoon_templates[toBuild]) {
-          json.platoon_templates[toBuild].units.push(value);
         }
-      },
-    };
+      });
+    },
+    // fabber/factory/platoon only
+    prepend: function (
+      json,
+      value,
+      toBuild,
+      idToMod,
+      refId,
+      refValue,
+      matchAll
+    ) {
+      _.forEach(json.build_list, function (build) {
+        if (build.to_build !== toBuild) {
+          return;
+        }
 
+        var validMatch =
+          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+          Object.prototype.hasOwnProperty.call(build, idToMod);
+
+        if (validMatch && _.isArray(build[idToMod])) {
+          value = _.isArray(value) ? value : [value];
+          build[idToMod] = value.concat(build[idToMod]);
+        } else if (validMatch) {
+          build[idToMod] = value + build[idToMod];
+        } else {
+          _.forEach(build.build_conditions, function (testArray) {
+            _.forEach(testArray, function (test) {
+              var testMatches =
+                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
+              if (testMatches) {
+                if (_.isArray(test[idToMod])) {
+                  value = _.isArray(value) ? value : [value];
+                  test[idToMod] = value.concat(test[idToMod]);
+                } else if (test[idToMod]) {
+                  test[idToMod] = value + test[idToMod];
+                }
+              }
+            });
+          });
+        }
+      });
+    },
+    // fabber/factory/platoon only
+    replace: function (
+      json,
+      value,
+      toBuild,
+      idToMod,
+      refId,
+      refValue,
+      matchAll
+    ) {
+      _.forEach(json.build_list, function (build) {
+        if (build.to_build !== toBuild) {
+          return;
+        }
+
+        var validMatch =
+          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+          Object.prototype.hasOwnProperty.call(build, idToMod);
+
+        if (validMatch) {
+          build[idToMod] = value;
+        } else {
+          _.forEach(build.build_conditions, function (testArray) {
+            _.forEach(testArray, function (test) {
+              var testMatches =
+                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
+              if (testMatches && test[idToMod]) {
+                test[idToMod] = value;
+              }
+            });
+          });
+        }
+      });
+    },
+    // fabber/factory/platoon only
+    remove: function (json, value, toBuild) {
+      _.forEach(json.build_list, function (build) {
+        if (build.to_build !== toBuild) {
+          return;
+        }
+
+        _.forEach(build.build_conditions, function (testArray) {
+          _.remove(testArray, function (object) {
+            if (_.isEqual(object, value)) {
+              return object;
+            }
+          });
+        });
+      });
+    },
+    // fabber/factory/platoon only
+    new: function (json, value, toBuild, idToMod) {
+      _.forEach(json.build_list, function (build) {
+        if (build.to_build !== toBuild) {
+          return;
+        }
+
+        if (idToMod) {
+          _.forEach(build.build_conditions, function (testArray) {
+            testArray.push(value);
+          });
+        } else {
+          build.build_conditions.push(value);
+        }
+      });
+    },
+    // template only
+    squad: function (json, value, toBuild) {
+      if (json.platoon_templates[toBuild]) {
+        json.platoon_templates[toBuild].units.push(value);
+      }
+    },
+  };
+
+  var applyAiMods = function (json, mods) {
     _.forEach(mods, function (mod) {
-      if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
+      if (!Object.prototype.hasOwnProperty.call(aiModOps, mod.op)) {
         console.error("Invalid AI mod operation:", mod);
         return;
       }
-      ops[mod.op](
+      aiModOps[mod.op](
+        json,
         mod.value,
         mod.toBuild,
         mod.idToMod,
@@ -459,7 +483,10 @@ define([
     };
 
     return $.getJSON("coui:/" + filePath).then(function (json) {
-      var originalJson = _.cloneDeep(json);
+      // Only the Cluster-enemy branch of applyClusterModsIfNeeded reads a pristine
+      // pre-mod snapshot; skip the deep clone entirely otherwise (the common case).
+      var originalJson =
+        clusterPresence === "Enemy" ? _.cloneDeep(json) : undefined;
       var fileOwner = whoseFileIsItAnyway(aiPaths);
       var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
       var isSubCommanderTechFile = filePathStarts(aiTechPath);
