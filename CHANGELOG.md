@@ -6,6 +6,10 @@
 
 - Greatly improve time to process unit and AI mods
 
+### Bugfix
+
+- Fix Protocol Fortitude and Wrath causing buildings to drift and sometimes move
+
 ## v6.2.3 - 2026-07-21
 
 ### Bugfix

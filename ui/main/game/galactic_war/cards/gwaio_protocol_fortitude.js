@@ -5,7 +5,7 @@ define([
   var prepareMods = function (mods) {
     var percentageReduction = 0.85;
     var percentageIncrease = 1.3;
-    _.forEach(gwoGroup.combat, function (unit) {
+    _.forEach(gwoGroup.combatMobile, function (unit) {
       mods.push(
         {
           file: unit,
@@ -30,14 +30,16 @@ define([
           path: "navigation.turn_speed",
           op: "multiply",
           value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: percentageIncrease,
         }
       );
+    });
+    _.forEach(gwoGroup.combat, function (unit) {
+      mods.push({
+        file: unit,
+        path: "max_health",
+        op: "multiply",
+        value: percentageIncrease,
+      });
     });
   };
 

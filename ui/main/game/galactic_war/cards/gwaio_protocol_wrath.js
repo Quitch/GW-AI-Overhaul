@@ -9,6 +9,22 @@ define([
       mods.push(
         {
           file: unit,
+          path: "recon.observer.items.0.radius",
+          op: "multiply",
+          value: percentageReduction,
+        },
+        {
+          file: unit,
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: percentageReduction,
+        }
+      );
+    });
+    _.forEach(gwoGroup.combatMobile, function (unit) {
+      mods.push(
+        {
+          file: unit,
           path: "navigation.move_speed",
           op: "multiply",
           value: percentageIncrease,
@@ -30,18 +46,6 @@ define([
           path: "navigation.turn_speed",
           op: "multiply",
           value: percentageIncrease,
-        },
-        {
-          file: unit,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: percentageReduction,
         }
       );
     });
