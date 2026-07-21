@@ -270,7 +270,6 @@ define({
   },
 
   dealCard: function (params, loaded, loadedCards) {
-    console.debug("Dealing GWO card:", params.id, "with params:", params);
     var result = $.Deferred();
     loaded.then(function () {
       var card = _.find(loadedCards, { id: params.id });
