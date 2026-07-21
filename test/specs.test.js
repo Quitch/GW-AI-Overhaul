@@ -42,8 +42,8 @@ describe("specs.mod - basic ops", () => {
     assert.equal(data["unit.json"].hp, 200);
   });
 
-  it("multiply on a non-number logs an error and leaves the value unchanged", () => {
-    const errorMock = mock.method(console, "error", () => {});
+  it("multiply on a non-number logs a warning and leaves the value unchanged", () => {
+    const warnMock = mock.method(console, "warn", () => {});
     const data = { "unit.json": { hp: "not-a-number" } };
     specs.mod(
       data,
@@ -51,7 +51,7 @@ describe("specs.mod - basic ops", () => {
       ""
     );
     assert.equal(data["unit.json"].hp, "not-a-number");
-    assert.equal(errorMock.mock.callCount(), 1);
+    assert.equal(warnMock.mock.callCount(), 1);
   });
 
   it("add sums a numeric value", () => {
@@ -305,9 +305,9 @@ describe("specs.mod - operation ordering", () => {
   });
 });
 
-describe("specs.mod - error tolerance", () => {
+describe("specs.mod - warn tolerance", () => {
   it("logs and skips an unknown op without throwing or blocking later mods", () => {
-    const errorMock = mock.method(console, "error", () => {});
+    const warnMock = mock.method(console, "warn", () => {});
     const data = { "unit.json": { hp: 100 } };
     specs.mod(
       data,
@@ -318,7 +318,7 @@ describe("specs.mod - error tolerance", () => {
       ""
     );
     assert.equal(data["unit.json"].hp, 555);
-    assert.equal(errorMock.mock.callCount(), 1);
+    assert.equal(warnMock.mock.callCount(), 1);
   });
 
   it("warns and continues when the target file is missing", () => {
