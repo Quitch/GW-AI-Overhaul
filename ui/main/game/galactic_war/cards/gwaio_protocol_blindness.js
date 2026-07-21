@@ -88,6 +88,7 @@ define([
           op: "multiply", // can't use replace due to Planetary Radar using it - potential timing issue
           value: 0,
         },
+        // Most units don't have this so expect to see warnings from the referee in console
         {
           file: unit,
           path: "recon.observer.items.1.radius",

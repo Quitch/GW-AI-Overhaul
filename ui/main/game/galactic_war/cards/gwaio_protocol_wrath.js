@@ -13,6 +13,7 @@ define([
           op: "multiply",
           value: percentageReduction,
         },
+        // Most units don't have this so expect to see warnings from the referee in console
         {
           file: unit,
           path: "recon.observer.items.1.radius",
