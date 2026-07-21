@@ -38,7 +38,6 @@ Any submissions should follow the requirements below:
 ## Available Libraries
 
 - Those supported by Planetary Annihilation: TITANS - `media\ui\main\shared\js\thirdparty\`
-- lodash 3.9.3
-- jQuery 2.1.4
-- Knockout.js 3.5.1
-- RequireJS 2.1.11
+  - Where multiple libraries exist use the following:
+    - lodash 3.9.3
+    - Knockout.js 3.5.1
