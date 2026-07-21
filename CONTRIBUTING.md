@@ -35,6 +35,13 @@ Any submissions should follow the requirements below:
 - Code must be formatted using prettier.
 - Commit summaries must be informative but concise, with any required detail in the body.
 
+### Function scoping in shipped UI code (Sonar S7721)
+
+Shipped `ui/**` code is loaded by the game through stock RequireJS, which runs each module file by injecting a `<script>` element (`req.load` -> `req.createNode`; `node.src = url; head.appendChild(node)`). A `<script>` executes in **global scope**, so anything declared at a file's top level - outside its `define(...)` factory - becomes a property of the global `window` object. The mod's non-AMD scene scripts (e.g. `function gwoSetup()`) rely on exactly this. GWO's convention is therefore:
+
+- **Keep module-private helpers inside the `define(...)` factory.** Do not hoist a helper to file top level just to satisfy Sonar `javascript:S7721` ("Move function to the outer scope"). The factory body runs once per load, so a factory-scoped helper is created once regardless - there is no performance win - whereas hoisting it leaks a globally-named function (`multiply`, `isNullish`, `luminance`, ...) that can silently collide (last-loaded-wins) with the base game, other mods, or GWO's own files. S7721 is unsatisfiable in this runtime without creating such a global (hoisting only _within_ the factory does not clear it - the rule wants the outermost scope), so it is **accepted** (won't-fix) and scoped out of `ui/**`. It stays active for `scripts/**` and `test/**`, which are real CommonJS modules where Node wraps each file and hoisting is both safe and beneficial.
+- **Exception - Node test reach for base-game-shadowed modules.** A module whose `define(...)` dependencies cannot resolve in the Node test harness - it depends on an unshipped base-game module, so `amd-loader` throws `NotShippedError` before the factory can run (e.g. `gw_per_player_tech_referee.js`, `gw_galaxy.js`, `referee_game_files.js`) - may declare its testable helpers above `define(...)` and expose them through the dead-in-production `module.exports` hook. Such hoisted helpers must take their collaborators as explicit parameters (never close over the factory's injected modules) and use collision-resistant names.
+
 ## Available Libraries
 
 - Those supported by Planetary Annihilation: TITANS - `media\ui\main\shared\js\thirdparty\`

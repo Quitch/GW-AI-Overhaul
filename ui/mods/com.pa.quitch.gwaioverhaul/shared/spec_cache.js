@@ -17,71 +17,6 @@
 // The reference-tagging list in tagSpec() below MIRRORS base-game gw_specs.js:tagSpec
 // and must be kept in sync with it if the base game adds new spec reference fields.
 
-// Mirror of base-game gw_specs.js:tagSpec. Appends `tag` to every spec reference
-// inside `spec` (mutating it in place) and returns the list of untagged references
-// it discovered, so the caller can enqueue them for tagging too. Closes over nothing
-// from the define() factory (only its own params + global `_`), so it lives at module
-// scope rather than being re-created inside the factory.
-var tagSpec = function (specId, tag, spec) {
-  var moreWork = [];
-  if (typeof spec !== "object") {
-    return moreWork;
-  }
-  var applyTag = function (obj, key) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      if (typeof obj[key] === "string") {
-        moreWork.push(obj[key]);
-        obj[key] = obj[key] + tag;
-      } else if (_.isArray(obj[key])) {
-        obj[key] = _.map(obj[key], function (value) {
-          moreWork.push(value);
-          return value + tag;
-        });
-      }
-    }
-  };
-
-  // Units
-  applyTag(spec, "base_spec");
-  if (spec.tools) {
-    _.forEach(spec.tools, function (tool) {
-      applyTag(tool, "spec_id");
-    });
-  }
-  applyTag(spec, "replaceable_units");
-  applyTag(spec, "buildable_projectiles");
-  if (spec.factory && _.isString(spec.factory.initial_build_spec)) {
-    applyTag(spec.factory, "initial_build_spec");
-  }
-
-  // Tools
-  if (spec.ammo_id) {
-    if (_.isString(spec.ammo_id)) {
-      applyTag(spec, "ammo_id");
-    } else {
-      _.forEach(spec.ammo_id, function (ammo) {
-        applyTag(ammo, "id");
-      });
-    }
-  }
-
-  if (spec.death_weapon) {
-    if (_.isString(spec.death_weapon.ground_ammo_spec)) {
-      applyTag(spec.death_weapon, "ground_ammo_spec");
-    }
-    if (_.isString(spec.death_weapon.air_ammo_spec)) {
-      applyTag(spec.death_weapon, "air_ammo_spec");
-    }
-  }
-
-  // Projectiles such as Lob ammo can spawn units when they expire.
-  if (_.isString(spec.spawn_unit_on_death)) {
-    applyTag(spec, "spawn_unit_on_death");
-  }
-
-  return moreWork;
-};
-
 define(function () {
   // Untagged spec id -> Promise of the pristine parsed JSON. Module-level so the
   // cache is shared across every genUnitSpecs() call (all factions + player, and
@@ -103,6 +38,73 @@ define(function () {
       );
     }
     return rawCache[item];
+  };
+
+  // Mirror of base-game gw_specs.js:tagSpec. Appends `tag` to every spec reference
+  // inside `spec` (mutating it in place) and returns the list of untagged references
+  // it discovered, so the caller can enqueue them for tagging too. Closes over nothing
+  // from the factory (only its own params + global `_`), which Sonar S7721 flags as
+  // hoistable - but in PA's RequireJS runtime a file-top-level declaration is a window
+  // global, so GWO deliberately keeps such helpers module-private inside define() and
+  // accepts S7721 here. See CONTRIBUTING.md ("Function scoping in shipped UI code").
+  var tagSpec = function (specId, tag, spec) {
+    var moreWork = [];
+    if (typeof spec !== "object") {
+      return moreWork;
+    }
+    var applyTag = function (obj, key) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (typeof obj[key] === "string") {
+          moreWork.push(obj[key]);
+          obj[key] = obj[key] + tag;
+        } else if (_.isArray(obj[key])) {
+          obj[key] = _.map(obj[key], function (value) {
+            moreWork.push(value);
+            return value + tag;
+          });
+        }
+      }
+    };
+
+    // Units
+    applyTag(spec, "base_spec");
+    if (spec.tools) {
+      _.forEach(spec.tools, function (tool) {
+        applyTag(tool, "spec_id");
+      });
+    }
+    applyTag(spec, "replaceable_units");
+    applyTag(spec, "buildable_projectiles");
+    if (spec.factory && _.isString(spec.factory.initial_build_spec)) {
+      applyTag(spec.factory, "initial_build_spec");
+    }
+
+    // Tools
+    if (spec.ammo_id) {
+      if (_.isString(spec.ammo_id)) {
+        applyTag(spec, "ammo_id");
+      } else {
+        _.forEach(spec.ammo_id, function (ammo) {
+          applyTag(ammo, "id");
+        });
+      }
+    }
+
+    if (spec.death_weapon) {
+      if (_.isString(spec.death_weapon.ground_ammo_spec)) {
+        applyTag(spec.death_weapon, "ground_ammo_spec");
+      }
+      if (_.isString(spec.death_weapon.air_ammo_spec)) {
+        applyTag(spec.death_weapon, "air_ammo_spec");
+      }
+    }
+
+    // Projectiles such as Lob ammo can spawn units when they expire.
+    if (_.isString(spec.spawn_unit_on_death)) {
+      applyTag(spec, "spawn_unit_on_death");
+    }
+
+    return moreWork;
   };
 
   return {
