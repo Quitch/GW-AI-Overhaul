@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Greatly improve time to process unit and AI mods
+- Improve time to process unit and AI mods when entering battle
 
 ### Bugfix
 
