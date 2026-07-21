@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Fix Penchant AI, Cluster, and Guardians, doing nothing - sorry!
+
 ## v6.2.2 - 2026-07-20
 
 ### Bugfix
