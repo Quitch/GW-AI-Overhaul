@@ -154,6 +154,37 @@ describe("Guardians scoped destination", () => {
       build_list: [{ to_build: "Bot", priority: 1 }],
     });
   });
+
+  // unit_maps/ files aren't excluded from this sweep: referee_game_files.js only
+  // writes spec-tagged unit-map copies (ai_unit_map.json.ai0, ...json.player, etc.)
+  // for specific army instances - it never writes the untagged, scope-aware copy an
+  // ai_path-driven lookup at a moved (Guardians/Cluster/subcommander-tech) or
+  // mod-added (e.g. Penchant) destination needs. This sweep is what supplies that
+  // copy, via the same generic changeFilePath mechanism used for build-order files.
+  it("also copies a unit_maps file to the guardians-scoped destination, alongside the source copy", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [],
+    });
+    restoreModel = installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: {
+        "/pa/ai/": ["/pa/ai/unit_maps/ai_unit_map.json"],
+      },
+      getJSON: () => ({ unit_map: { some_unit: "/pa/units/x/x.json" } }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.ok("/pa/ai/unit_maps/ai_unit_map.json" in filesObj);
+    assert.ok("/pa/ai/player_guardians/unit_maps/ai_unit_map.json" in filesObj);
+    assert.deepEqual(
+      filesObj["/pa/ai/player_guardians/unit_maps/ai_unit_map.json"],
+      { unit_map: { some_unit: "/pa/units/x/x.json" } }
+    );
+  });
 });
 
 describe("per-player-tech viewer processing", () => {
