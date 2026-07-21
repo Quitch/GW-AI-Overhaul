@@ -506,6 +506,81 @@ function gwoCard() {
           var dealInventory = params.inventory || inventory;
           var cardContexts = {};
 
+          // One iteration of the deal loop below, pulled out of the nested
+          // loaded.then/_.times callbacks (and passed to _.times by reference) so its
+          // own map/filter/reduce callbacks don't sit six function-levels deep.
+          // `list` is the accumulating result array, threaded in explicitly because it
+          // lives inside the loaded.then closure rather than at this scope.
+          var dealOneCard = function (list) {
+            var fullHand = _.map(cards, function (card) {
+              var context = cardContexts[card.id];
+              var cardChance =
+                card.deal && card.deal(star, context, dealInventory);
+              var match = doNotDealCard(
+                dealInventory,
+                card,
+                list,
+                dealAddSlot,
+                false,
+                systemCards
+              );
+
+              if (match) {
+                cardChance.chance = 0;
+              }
+
+              return cardChance;
+            });
+
+            fullHand = _.map(fullHand, function (deal, i) {
+              deal.index = i;
+              return deal;
+            });
+
+            var hand = _.filter(fullHand, function (deal) {
+              return !!deal && !!deal.chance;
+            });
+
+            if (hand.length) {
+              var resultIndex;
+
+              var probability = _.reduce(
+                hand,
+                function (sum, card) {
+                  return sum + card.chance;
+                },
+                0
+              );
+              var roll = rng() * probability;
+              var index = 0;
+              for (
+                ;
+                index < hand.length && roll >= hand[index].chance;
+                ++index
+              ) {
+                roll -= hand[index].chance;
+              }
+              if (index < hand.length) {
+                resultIndex = hand[index].index;
+              }
+
+              if (!_.isUndefined(resultIndex)) {
+                var resultDeal = fullHand[resultIndex];
+                var cardParams = resultDeal && resultDeal.params;
+                var cardId = deck[resultIndex];
+                var systemCard = {
+                  id: cardId,
+                };
+
+                if (cardParams && _.isObject(cardParams)) {
+                  _.assign(systemCard, cardParams);
+                }
+
+                list.push(systemCard);
+              }
+            }
+          };
+
           var result = $.Deferred();
           loaded.then(function () {
             _.forEach(cards, function (card) {
@@ -516,75 +591,7 @@ function gwoCard() {
 
             var list = [];
 
-            _.times(count, function () {
-              var fullHand = _.map(cards, function (card) {
-                var context = cardContexts[card.id];
-                var cardChance =
-                  card.deal && card.deal(star, context, dealInventory);
-                var match = doNotDealCard(
-                  dealInventory,
-                  card,
-                  list,
-                  dealAddSlot,
-                  false,
-                  systemCards
-                );
-
-                if (match) {
-                  cardChance.chance = 0;
-                }
-
-                return cardChance;
-              });
-
-              fullHand = _.map(fullHand, function (deal, i) {
-                deal.index = i;
-                return deal;
-              });
-
-              var hand = _.filter(fullHand, function (deal) {
-                return !!deal && !!deal.chance;
-              });
-
-              if (hand.length) {
-                var resultIndex;
-
-                var probability = _.reduce(
-                  hand,
-                  function (sum, card) {
-                    return sum + card.chance;
-                  },
-                  0
-                );
-                var roll = rng() * probability;
-                var index = 0;
-                for (
-                  ;
-                  index < hand.length && roll >= hand[index].chance;
-                  ++index
-                ) {
-                  roll -= hand[index].chance;
-                }
-                if (index < hand.length) {
-                  resultIndex = hand[index].index;
-                }
-
-                if (!_.isUndefined(resultIndex)) {
-                  var resultDeal = fullHand[resultIndex];
-                  var cardParams = resultDeal && resultDeal.params;
-                  var cardId = deck[resultIndex];
-                  var systemCard = {
-                    id: cardId,
-                  };
-
-                  if (cardParams && _.isObject(cardParams)) {
-                    _.assign(systemCard, cardParams);
-                  }
-
-                  list.push(systemCard);
-                }
-              }
-            });
+            _.times(count, dealOneCard.bind(null, list));
 
             result.resolve(list);
           });
@@ -714,6 +721,36 @@ function gwoCard() {
             return result.promise();
           }
 
+          // Deals a viewer their pending tech cards. Defined here (a sibling of the
+          // per-target loop below) rather than inside that loop's callback, so its
+          // chooseCards().then() callback doesn't sit six function-levels deep. Takes
+          // the loop-local target/job/inventory explicitly; reads starIndex/star/
+          // updates from this enclosing scope.
+          var dealCardsForTarget = function (target, job, inventory) {
+            var client = target.client;
+            var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
+            chooseCards({
+              inventory: inventory,
+              count: cardsOffered,
+              star: star,
+              systemCards: [],
+            }).then(function (cards) {
+              var pendingTechCards = {
+                star: starIndex,
+                cards: cards || [],
+                dealIndex: target.dealIndex,
+                cardsOffered: cardsOffered,
+                updatedAt: _.now(),
+              };
+              updates.push({
+                client_id: client.id,
+                client_name: client.name,
+                pendingTechCards: pendingTechCards,
+              });
+              job.resolve();
+            });
+          };
+
           _.forEach(targets, function (target) {
             var client = target.client;
             var record = target.record;
@@ -740,34 +777,12 @@ function gwoCard() {
             var inventory = new GWInventory();
             inventory.load(_.cloneDeep(record.inventory));
 
-            var dealCards = function () {
-              var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
-              chooseCards({
-                inventory: inventory,
-                count: cardsOffered,
-                star: star,
-                systemCards: [],
-              }).then(function (cards) {
-                var pendingTechCards = {
-                  star: starIndex,
-                  cards: cards || [],
-                  dealIndex: target.dealIndex,
-                  cardsOffered: cardsOffered,
-                  updatedAt: _.now(),
-                };
-                updates.push({
-                  client_id: client.id,
-                  client_name: client.name,
-                  pendingTechCards: pendingTechCards,
-                });
-                job.resolve();
-              });
-            };
-
             if (inventory.cards().length) {
-              inventory.applyCards(dealCards);
+              inventory.applyCards(
+                dealCardsForTarget.bind(null, target, job, inventory)
+              );
             } else {
-              dealCards();
+              dealCardsForTarget(target, job, inventory);
             }
           });
 
@@ -1137,8 +1152,24 @@ function gwoCard() {
         /* Cheat code start */
 
         var testMinions = function (product, inventory) {
-          _.forEach(GWFactions, function (faction) {
-            _.forEach(faction.minions, function (minion) {
+          // Load units.js once and flatten the per-faction minion lists into a single
+          // pass, rather than re-require()ing it inside a doubly-nested loop (which
+          // both re-fetched the module per minion and nested six function-levels deep).
+          require([
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+          ], function (gwoUnit) {
+            var clusterSecurity = gwoUnit.colonel;
+            var clusterWorker = gwoUnit.angel;
+
+            var allMinions = _.reduce(
+              GWFactions,
+              function (collected, faction) {
+                return collected.concat(faction.minions || []);
+              },
+              []
+            );
+
+            _.forEach(allMinions, function (minion) {
               var minionStock = _.cloneDeep(product);
               minionStock.minion = minion;
               inventory.cards.push(minionStock);
@@ -1149,26 +1180,19 @@ function gwoCard() {
                 return;
               }
 
-              require([
-                "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-              ], function (gwoUnit) {
-                var clusterSecurity = gwoUnit.colonel;
-                var clusterWorker = gwoUnit.angel;
-
-                if (
-                  !CommanderUtility.bySpec.getObjectName(
-                    minionStock.minion.commander
-                  ) &&
-                  minionStock.minion.commander !== clusterSecurity &&
-                  minionStock.minion.commander !== clusterWorker
-                ) {
-                  console.error(
-                    "Minion commander unit spec " +
-                      minionStock.minion.commander +
-                      " invalid"
-                  );
-                }
-              });
+              if (
+                !CommanderUtility.bySpec.getObjectName(
+                  minionStock.minion.commander
+                ) &&
+                minionStock.minion.commander !== clusterSecurity &&
+                minionStock.minion.commander !== clusterWorker
+              ) {
+                console.error(
+                  "Minion commander unit spec " +
+                    minionStock.minion.commander +
+                    " invalid"
+                );
+              }
             });
           });
         };

@@ -96,6 +96,152 @@ var getViewerSubcommanderAiPath = function (
   });
 };
 
+// Validates every precondition apply() (below) needs before it starts generating
+// per-player tech files, so apply() no longer carries ~14 stacked guard clauses. Pure:
+// reads only referee/options and the game/inventory objects they expose - never the
+// define() factory's injected modules - so Node can reach every branch via the
+// module.exports hook. Returns either { ok: false, resolveValue, message, writeFailure
+// [, config] } (writeFailure means apply() should stamp per_player_tech_ready = false
+// onto config before resolving) or { ok: true, context } carrying the derived values
+// apply() goes on to use. Message text and resolve values mirror the original inline
+// guards one-for-one.
+var validatePerPlayerTechInputs = function (referee, options) {
+  var config = referee && _.isFunction(referee.config) && referee.config();
+
+  if (!config || !_.isArray(config.armies)) {
+    return {
+      ok: false,
+      resolveValue: false,
+      writeFailure: false,
+      message:
+        "[GW COOP] Per-player tech referee received invalid battle config.",
+    };
+  }
+
+  // Every failure from here on writes per_player_tech_ready = false back onto config,
+  // so build those results through one helper.
+  var failAfterConfig = function (message) {
+    return {
+      ok: false,
+      resolveValue: false,
+      writeFailure: true,
+      message: message,
+      config: config,
+    };
+  };
+
+  // No options means no co-op.
+  if (!options || !options.active) {
+    return {
+      ok: false,
+      resolveValue: true,
+      writeFailure: false,
+      message:
+        "[GW COOP] Per-player tech referee called without co-op options.",
+    };
+  }
+
+  // Likewise no per-player tech means this referee is out of a job.
+  if (!options.perPlayerTechCards) {
+    return {
+      ok: false,
+      resolveValue: true,
+      writeFailure: false,
+      message:
+        "[GW COOP] Per-player tech referee called without per-player tech enabled.",
+    };
+  }
+
+  var playerCount = getConnectedPlayerCount(options);
+  if (playerCount < 1) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has no connected players."
+    );
+  }
+
+  if (options.sharedControl) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee does not support shared control."
+    );
+  }
+
+  var humanArmies = collectHumanArmies(config);
+  if (humanArmies.length < 1) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has no human armies."
+    );
+  }
+
+  if (playerCount !== humanArmies.length) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has a mismatch between connected players and human armies."
+    );
+  }
+
+  var files = _.isFunction(referee.files) && referee.files();
+  if (!files || !_.isObject(files)) {
+    return failAfterConfig("[GW COOP] Per-player tech referee has no files.");
+  }
+
+  var game = _.isFunction(referee.game) && referee.game();
+  if (!game) {
+    return failAfterConfig("[GW COOP] Per-player tech referee has no game.");
+  }
+
+  var inventory = _.isFunction(game.inventory) && game.inventory();
+  if (!inventory) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has no inventory."
+    );
+  }
+
+  if (
+    !_.isFunction(inventory.units) ||
+    !_.isFunction(inventory.mods) ||
+    !_.isFunction(inventory.minions)
+  ) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: " +
+        JSON.stringify(inventory)
+    );
+  }
+
+  var player = config.player;
+  if (!player || !_.isObject(player)) {
+    return failAfterConfig("[GW COOP] Per-player tech referee has no player.");
+  }
+
+  var playerCommander = player.commander;
+  if (!playerCommander || !_.isString(playerCommander)) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has no player commander."
+    );
+  }
+
+  var playerColor = inventory.getTag("global", "playerColor");
+  if (!_.isArray(playerColor) || playerColor.length < 2) {
+    return failAfterConfig(
+      "[GW COOP] Per-player tech referee has no player color."
+    );
+  }
+
+  return {
+    ok: true,
+    context: {
+      config: config,
+      playerCount: playerCount,
+      connectedClients: options.connectedClients,
+      humanArmies: humanArmies,
+      files: files,
+      game: game,
+      inventory: inventory,
+      player: player,
+      playerColor: playerColor,
+      baseCommander: stripKnownSpecTag(playerCommander),
+    },
+  };
+};
+
 // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
 // branch never executes in-game. shared/gw_common and shared/gw_inventory are
 // base-game modules GWO does not ship, so amd-loader's dependency resolution throws
@@ -112,6 +258,7 @@ if (typeof module !== "undefined" && module.exports) {
     getPlayerTagGivenIndex: getPlayerTagGivenIndex,
     stripKnownSpecTag: stripKnownSpecTag,
     getViewerSubcommanderAiPath: getViewerSubcommanderAiPath,
+    validatePerPlayerTechInputs: validatePerPlayerTechInputs,
   };
 } else {
   define([
@@ -249,160 +396,34 @@ if (typeof module !== "undefined" && module.exports) {
       // ERROR CHECKING
       // ==============
 
-      var config = referee && _.isFunction(referee.config) && referee.config();
-
-      if (!config || !_.isArray(config.armies)) {
-        console.error(
-          "[GW COOP] Per-player tech referee received invalid battle config."
-        );
-        done.resolve(false);
-        return done.promise();
-      }
-
-      // No options means no co-op.
-      if (!options || !options.active) {
-        console.error(
-          "[GW COOP] Per-player tech referee called without co-op options."
-        );
-        done.resolve(true);
-        return done.promise();
-      }
-
-      // Likewise no per-player tech means this referee is out of a job.
-      if (!options.perPlayerTechCards) {
-        console.error(
-          "[GW COOP] Per-player tech referee called without per-player tech enabled."
-        );
-        done.resolve(true);
-        return done.promise();
-      }
-
-      var playerCount = getConnectedPlayerCount(options);
-      if (playerCount < 1) {
-        console.error(
-          "[GW COOP] Per-player tech referee has no connected players."
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var connectedClients = options.connectedClients;
-
-      var sharedControl = !!options.sharedControl;
-      if (sharedControl) {
-        console.error(
-          "[GW COOP] Per-player tech referee does not support shared control."
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var humanArmies = collectHumanArmies(config);
-      if (humanArmies.length < 1) {
-        console.error("[GW COOP] Per-player tech referee has no human armies.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      if (playerCount !== humanArmies.length) {
-        console.error(
-          "[GW COOP] Per-player tech referee has a mismatch between connected players and human armies."
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var files = _.isFunction(referee.files) && referee.files();
-
-      if (!files || !_.isObject(files)) {
-        console.error("[GW COOP] Per-player tech referee has no files.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var game = _.isFunction(referee.game) && referee.game();
-
-      if (!game) {
-        console.error("[GW COOP] Per-player tech referee has no game.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var inventory = _.isFunction(game.inventory) && game.inventory();
-
-      if (!inventory) {
-        console.error("[GW COOP] Per-player tech referee has no inventory.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      if (
-        !_.isFunction(inventory.units) ||
-        !_.isFunction(inventory.mods) ||
-        !_.isFunction(inventory.minions)
-      ) {
-        console.error(
-          "[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: " +
-            JSON.stringify(inventory)
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var player = config.player;
-
-      if (!player || !_.isObject(player)) {
-        console.error("[GW COOP] Per-player tech referee has no player.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var playerCommander = player.commander;
-
-      if (!playerCommander || !_.isString(playerCommander)) {
-        console.error(
-          "[GW COOP] Per-player tech referee has no player commander."
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
-      var playerColor = inventory.getTag("global", "playerColor");
-
-      if (!_.isArray(playerColor) || playerColor.length < 2) {
-        console.error("[GW COOP] Per-player tech referee has no player color.");
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
+      var validation = validatePerPlayerTechInputs(referee, options);
+      if (!validation.ok) {
+        console.error(validation.message);
+        if (validation.writeFailure) {
+          validation.config.per_player_tech_ready = false;
+          referee.config(validation.config);
+        }
+        done.resolve(validation.resolveValue);
         return done.promise();
       }
 
       // ERROR CHECKING DONE
       // ===================
 
+      var context = validation.context;
+      var config = context.config;
+      var connectedClients = context.connectedClients;
+      var humanArmies = context.humanArmies;
+      var files = context.files;
+      var game = context.game;
+      var inventory = context.inventory;
+      var player = context.player;
+      var playerColor = context.playerColor;
+      var playerCount = context.playerCount;
+
       var playerTags = _.map(_.range(0, playerCount), getPlayerTagGivenIndex);
 
-      var baseCommander = stripKnownSpecTag(playerCommander);
+      var baseCommander = context.baseCommander;
 
       var playerInventories = [];
       var playerCommanders = [];

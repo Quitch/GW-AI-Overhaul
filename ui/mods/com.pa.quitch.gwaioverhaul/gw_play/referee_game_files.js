@@ -95,6 +95,29 @@ var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
   return playerFiles;
 };
 
+// Fetches an untagged spec file (parsed) for gwoSpecCache. Mirrors the fetch +
+// JSON.parse + error handling the base game's genUnitSpecs does internally. Closes
+// over nothing from the define() factory (only $/Promise/JSON), so it lives above
+// define() with the other dependency-free helpers.
+var specFetch = function (item) {
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      url: "coui:/" + item,
+      success: function (data) {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          // Mirror base behaviour: keep whatever came back if it won't parse.
+        }
+        resolve(data);
+      },
+      error: function (request, status, error) {
+        reject(error);
+      },
+    });
+  });
+};
+
 // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
 // branch never executes in-game. shared/gw_common (aliased GW below) is a base-game
 // module GWO does not ship, so amd-loader's dependency resolution throws
@@ -114,6 +137,7 @@ if (typeof module !== "undefined" && module.exports) {
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,
+    specFetch: specFetch,
   };
 } else {
   define([
@@ -123,27 +147,6 @@ if (typeof module !== "undefined" && module.exports) {
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   ], function (GW, gwoAI, gwoSpecs, refereeCoop, gwoSpecCache) {
-    // Fetches an untagged spec file (parsed) for gwoSpecCache. Mirrors the fetch +
-    // JSON.parse + error handling the base game's genUnitSpecs does internally.
-    var specFetch = function (item) {
-      return new Promise(function (resolve, reject) {
-        $.ajax({
-          url: "coui:/" + item,
-          success: function (data) {
-            try {
-              data = JSON.parse(data);
-            } catch (e) {
-              // Mirror base behaviour: keep whatever came back if it won't parse.
-            }
-            resolve(data);
-          },
-          error: function (request, status, error) {
-            reject(error);
-          },
-        });
-      });
-    };
-
     // Drop-in for GW.specs.genUnitSpecs that fetches+parses each spec file at most
     // once and reuses it across every tag (player + each AI faction).
     var genUnitSpecs = function (units, tag) {
