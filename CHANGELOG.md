@@ -12,6 +12,7 @@
 - Fix Protocol Fortitude and Wrath causing buildings to drift and sometimes move
 - Viewers no longer trigger saves
 - Planetary Radar starting with global underwater vision
+- Fix base game bug where Orbital Speed and Combat Techs were adding navigation data to orbital structures
 
 ## v6.2.3 - 2026-07-21
 
