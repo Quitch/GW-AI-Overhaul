@@ -9,6 +9,7 @@
 ### Bugfix
 
 - Fix Protocol Fortitude and Wrath causing buildings to drift and sometimes move
+- Viewers no longer trigger saves
 
 ## v6.2.3 - 2026-07-21
 
