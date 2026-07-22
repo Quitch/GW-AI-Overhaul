@@ -66,7 +66,10 @@ function gwoGalaxyMapPerf() {
         currentParallax[1] !== lastParallaxY;
 
       var now = window.performance.now();
-      var interval = moved ? interactiveFrameIntervalMs : idleFrameIntervalMs;
+      var interval =
+        moved || model.player.moving()
+          ? interactiveFrameIntervalMs
+          : idleFrameIntervalMs;
       if (now - lastDraw < interval) {
         return;
       }
