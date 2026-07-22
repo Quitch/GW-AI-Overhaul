@@ -42,11 +42,10 @@ define([
           op: "multiply",
           value: percentageIncrease,
         },
-        // Most units don't have this so expect to see warnings from the referee in console
         {
           file: unit,
           path: "recon.observer.items.1.radius",
-          op: "multiply",
+          op: "multiplyOrCreate", // multiply alone results in errors as not all units have a second observer item
           value: percentageIncrease,
         }
       );
