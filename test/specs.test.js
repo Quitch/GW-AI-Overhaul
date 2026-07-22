@@ -227,6 +227,56 @@ describe("specs.mod - path walking", () => {
     );
     assert.deepEqual(data["unit.json"].list, [{ a: 5 }]);
   });
+
+  it("replace creates a full missing path, building an array where a segment indexes", () => {
+    const data = { "unit.json": {} };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "recon.observer.items.1.radius",
+          op: "replace",
+          value: 50,
+        },
+      ],
+      ""
+    );
+    const items = data["unit.json"].recon.observer.items;
+    assert.ok(Array.isArray(items), "items should be created as an array");
+    assert.equal(items[1].radius, 50);
+  });
+
+  it("multiplyOrCreate sets the value along a missing array path", () => {
+    const data = { "unit.json": {} };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiplyOrCreate",
+          value: 50,
+        },
+      ],
+      ""
+    );
+    const items = data["unit.json"].recon.observer.items;
+    assert.ok(Array.isArray(items), "items should be created as an array");
+    assert.equal(items[1].radius, 50);
+  });
+
+  it("populates a missing index in an existing array without disturbing others", () => {
+    const data = { "unit.json": { list: [{ a: 1 }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.1.a", op: "replace", value: 7 }],
+      ""
+    );
+    assert.ok(Array.isArray(data["unit.json"].list));
+    assert.equal(data["unit.json"].list[0].a, 1);
+    assert.equal(data["unit.json"].list[1].a, 7);
+  });
 });
 
 describe("specs.mod - base_spec inheritance", () => {
