@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Reduce CPU usage and improve responsiveness of galaxy map at higher resolutions and at larger star counts
+
 ## v6.2.3 - 2026-07-21
 
 ### Bugfix
