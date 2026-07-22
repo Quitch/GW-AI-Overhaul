@@ -16,11 +16,7 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_bot",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;

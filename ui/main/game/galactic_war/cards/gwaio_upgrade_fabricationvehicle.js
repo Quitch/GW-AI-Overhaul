@@ -16,11 +16,9 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_vehicle",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_vehicle",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;

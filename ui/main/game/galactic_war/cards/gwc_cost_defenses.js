@@ -11,11 +11,9 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_cost_reduction",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_cost_reduction",
+    }),
     getContext: gwoCard.getContext,
     deal: function () {
       var chance = 50;

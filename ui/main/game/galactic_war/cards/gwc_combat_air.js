@@ -11,11 +11,9 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
     ),
-    audio: function () {
-      return {
-        found: "PA/VO/Computer/gw/board_tech_available_combat",
-      };
-    },
+    audio: _.constant({
+      found: "PA/VO/Computer/gw/board_tech_available_combat",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;

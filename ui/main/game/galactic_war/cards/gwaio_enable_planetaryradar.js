@@ -12,11 +12,9 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_efficiency",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;

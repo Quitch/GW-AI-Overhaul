@@ -8,11 +8,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_slot_increased",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_slot_increased" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 300;
