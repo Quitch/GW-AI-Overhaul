@@ -117,6 +117,12 @@ define([
               },
               {
                 file: unit,
+                path: "physics.type",
+                op: "replace",
+                value: "Mobile",
+              },
+              {
+                file: unit,
                 path: "structure",
                 op: "replace",
                 value: null,
