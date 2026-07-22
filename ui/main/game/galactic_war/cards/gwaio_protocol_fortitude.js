@@ -2,47 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoGroup) {
-  var prepareMods = function (mods) {
-    var percentageReduction = 0.85;
-    var percentageIncrease = 1.3;
-    _.forEach(gwoGroup.combatMobile, function (unit) {
-      mods.push(
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: percentageReduction,
-        }
-      );
-    });
-    _.forEach(gwoGroup.combat, function (unit) {
-      mods.push({
-        file: unit,
-        path: "max_health",
-        op: "multiply",
-        value: percentageIncrease,
-      });
-    });
-  };
-
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -58,9 +17,24 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var mods = [];
-      prepareMods(mods);
-      inventory.addMods(mods);
+      var percentageReduction = 0.85;
+      var percentageIncrease = 1.3;
+
+      var speedMods = _.map(gwoGroup.combatMobile, function (unit) {
+        return gwoCard.mods(unit, "multiply", {
+          "navigation.move_speed": percentageReduction,
+          "navigation.brake": percentageReduction,
+          "navigation.acceleration": percentageReduction,
+          "navigation.turn_speed": percentageReduction,
+        });
+      });
+      var healthMods = _.map(gwoGroup.combat, function (unit) {
+        return gwoCard.mods(unit, "multiply", {
+          max_health: percentageIncrease,
+        });
+      });
+
+      inventory.addMods(_.flatten(speedMods.concat(healthMods)));
     },
     dull: function () {},
   };

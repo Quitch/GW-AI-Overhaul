@@ -3,60 +3,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoGroup, gwoUnit) {
-  var prepareMods = function (mods) {
-    var deathAmmo = [
-      gwoUnit.wyrmDeath,
-      gwoUnit.zeusDeath,
-      gwoUnit.commanderDeath,
-      gwoUnit.manhattanDeath,
-      gwoUnit.atlasDeath,
-      gwoUnit.aresDeath,
-      gwoUnit.jigDeath,
-      gwoUnit.kesslerAmmo,
-      gwoUnit.landMineAmmo,
-      gwoUnit.boomAmmo,
-    ];
-    _.forEach(deathAmmo, function (ammo) {
-      mods.push({
-        file: ammo,
-        path: "splash_damages_allies",
-        op: "replace",
-        value: true,
-      });
-    });
-
-    var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
-      return _.includes(
-        [
-          gwoUnit.wyrm,
-          gwoUnit.zeus,
-          gwoUnit.commander,
-          gwoUnit.manhattan,
-          gwoUnit.atlas,
-          gwoUnit.ares,
-          gwoUnit.jig,
-        ],
-        unit
-      );
-    });
-    _.forEach(unitsWithoutADeathWeapon, function (unit) {
-      mods.push(
-        {
-          file: unit,
-          path: "death_weapon.ground_ammo_spec",
-          op: "replace",
-          value: gwoUnit.kesslerAmmo,
-        },
-        {
-          file: unit,
-          path: "death_weapon.ground_ammo_spec",
-          op: "tag",
-          value: gwoUnit.kesslerAmmo,
-        }
-      );
-    });
-  };
-
   return {
     visible: _.constant(true),
     describe: _.constant("!LOC:All units explode on death."),
@@ -70,9 +16,49 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var mods = [];
-      prepareMods(mods);
-      inventory.addMods(mods);
+      var deathAmmo = [
+        gwoUnit.wyrmDeath,
+        gwoUnit.zeusDeath,
+        gwoUnit.commanderDeath,
+        gwoUnit.manhattanDeath,
+        gwoUnit.atlasDeath,
+        gwoUnit.aresDeath,
+        gwoUnit.jigDeath,
+        gwoUnit.kesslerAmmo,
+        gwoUnit.landMineAmmo,
+        gwoUnit.boomAmmo,
+      ];
+      var deathAmmoMods = _.map(deathAmmo, function (ammo) {
+        return gwoCard.mods(ammo, "replace", { splash_damages_allies: true });
+      });
+
+      var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
+        return _.includes(
+          [
+            gwoUnit.wyrm,
+            gwoUnit.zeus,
+            gwoUnit.commander,
+            gwoUnit.manhattan,
+            gwoUnit.atlas,
+            gwoUnit.ares,
+            gwoUnit.jig,
+          ],
+          unit
+        );
+      });
+      var deathWeaponMods = _.map(unitsWithoutADeathWeapon, function (unit) {
+        return gwoCard
+          .mods(unit, "replace", {
+            "death_weapon.ground_ammo_spec": gwoUnit.kesslerAmmo,
+          })
+          .concat(
+            gwoCard.mods(unit, "tag", {
+              "death_weapon.ground_ammo_spec": gwoUnit.kesslerAmmo,
+            })
+          );
+      });
+
+      inventory.addMods(_.flatten(deathAmmoMods.concat(deathWeaponMods)));
     },
     dull: function () {},
   };

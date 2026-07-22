@@ -2,80 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoGroup) {
-  var prepareMods = function (mods) {
-    var percentageReduction = 0.85;
-    var percentageIncrease = 1.15;
-    _.forEach(gwoGroup.combatMobile, function (unit) {
-      mods.push(
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: percentageReduction,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: percentageReduction,
-        }
-      );
-    });
-    _.forEach(gwoGroup.combat, function (unit) {
-      mods.push(
-        {
-          file: unit,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: percentageIncrease,
-        },
-        {
-          file: unit,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: percentageIncrease,
-        }
-      );
-    });
-    _.forEach(gwoGroup.weapons, function (weapon) {
-      mods.push({
-        file: weapon,
-        path: "max_range",
-        op: "multiply",
-        value: percentageIncrease,
-      });
-    });
-    // Try to make sure that units can use their full range
-    _.forEach(gwoGroup.ammo, function (ammo) {
-      mods.push(
-        {
-          file: ammo,
-          path: "lifetime",
-          op: "multiply",
-          value: percentageIncrease,
-        },
-        {
-          file: ammo,
-          path: "max_velocity",
-          op: "multiply",
-          value: percentageIncrease,
-        }
-      );
-    });
-  };
-
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -91,9 +17,39 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var mods = [];
-      prepareMods(mods);
-      inventory.addMods(mods);
+      var percentageReduction = 0.85;
+      var percentageIncrease = 1.15;
+
+      var speedMods = _.map(gwoGroup.combatMobile, function (unit) {
+        return gwoCard.mods(unit, "multiply", {
+          "navigation.move_speed": percentageReduction,
+          "navigation.brake": percentageReduction,
+          "navigation.acceleration": percentageReduction,
+          "navigation.turn_speed": percentageReduction,
+        });
+      });
+      var sightMods = _.map(gwoGroup.combat, function (unit) {
+        return gwoCard.mods(unit, "multiply", {
+          "recon.observer.items.0.radius": percentageIncrease,
+          "recon.observer.items.1.radius": percentageIncrease,
+        });
+      });
+      var rangeMods = _.map(gwoGroup.weapons, function (weapon) {
+        return gwoCard.mods(weapon, "multiply", {
+          max_range: percentageIncrease,
+        });
+      });
+      // Try to make sure that units can use their full range
+      var ammoMods = _.map(gwoGroup.ammo, function (ammo) {
+        return gwoCard.mods(ammo, "multiply", {
+          lifetime: percentageIncrease,
+          max_velocity: percentageIncrease,
+        });
+      });
+
+      inventory.addMods(
+        _.flatten(speedMods.concat(sightMods, rangeMods, ammoMods))
+      );
     },
     dull: function () {},
   };
