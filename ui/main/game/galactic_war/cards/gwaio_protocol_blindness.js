@@ -52,7 +52,7 @@ define([
             gwoUnit.hermes,
             gwoUnit.manhattan,
             gwoUnit.nyx,
-            // gwoUnit.planetaryRadar - uses slot 2+ for radar vision
+            // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
             gwoUnit.radar,
             gwoUnit.radarAdvanced,
             gwoUnit.radarSatelliteAdvanced,
