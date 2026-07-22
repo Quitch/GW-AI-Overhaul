@@ -5,8 +5,7 @@ define([
   var prepareMods = function (mods) {
     var percentageReduction = 0.85;
     var percentageIncrease = 1.15;
-    var mobileCombatUnits = _.xor(gwoGroup.combat, gwoGroup.structuresDefences);
-    _.forEach(mobileCombatUnits, function (unit) {
+    _.forEach(gwoGroup.combatMobile, function (unit) {
       mods.push(
         {
           file: unit,
