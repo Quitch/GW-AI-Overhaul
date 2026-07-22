@@ -97,7 +97,7 @@ define([
               layer: "underwater",
               channel: "sight",
               shape: "capsule",
-              radius: 9999,
+              radius: 300,
               uses_energy: true,
             },
             {

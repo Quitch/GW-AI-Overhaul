@@ -44,6 +44,12 @@ define([
         },
         {
           file: gwoUnit.deepSpaceOrbitalRadar,
+          path: "recon.observer.items.1.radius",
+          op: "multiply",
+          value: 33.33,
+        },
+        {
+          file: gwoUnit.deepSpaceOrbitalRadar,
           path: "recon.observer.items.2.radius",
           op: "multiply",
           value: 8.3325,
