@@ -17,6 +17,8 @@
     "validate:refs": "node scripts/validate/cross-refs.js",
     "validate": "npm run validate:json && npm run validate:manifest && npm run validate:cards && npm run validate:ai-mods && npm run validate:schemas && npm run validate:refs",
     "test": "node --test",
+    "pretest:coverage": "node -e \"require('fs').mkdirSync('coverage', { recursive: true })\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"ui/**/*.js\" --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info",
     "verify": "npm run lint:js && npm run lint:css && npm run lint:md && npm run validate && npm run test"
   },
   "devDependencies": {
