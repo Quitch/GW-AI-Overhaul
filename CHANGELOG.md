@@ -12,7 +12,6 @@
 - Fix Protocol Fortitude and Wrath causing buildings to drift and sometimes move
 - Viewers no longer trigger saves
 - Planetary Radar starting with global underwater vision
-- Correct physics type assigned to Nomad ground structures
 
 ## v6.2.3 - 2026-07-21
 
