@@ -398,10 +398,15 @@ if (typeof module !== "undefined" && module.exports) {
 
       var validation = validatePerPlayerTechInputs(referee, options);
       if (!validation.ok) {
-        console.error(validation.message);
+        // writeFailure marks a genuine failure that has to disable per-player tech;
+        // the remaining rejections (no co-op / feature disabled) are benign no-ops
+        // that still resolve success, so log those at warning level instead.
         if (validation.writeFailure) {
+          console.error(validation.message);
           validation.config.per_player_tech_ready = false;
           referee.config(validation.config);
+        } else {
+          console.warn(validation.message);
         }
         done.resolve(validation.resolveValue);
         return done.promise();

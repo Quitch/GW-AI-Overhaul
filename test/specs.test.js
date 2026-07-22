@@ -305,9 +305,9 @@ describe("specs.mod - operation ordering", () => {
   });
 });
 
-describe("specs.mod - warn tolerance", () => {
+describe("specs.mod - malformed-mod tolerance", () => {
   it("logs and skips an unknown op without throwing or blocking later mods", () => {
-    const warnMock = mock.method(console, "warn", () => {});
+    const errorMock = mock.method(console, "error", () => {});
     const data = { "unit.json": { hp: 100 } };
     specs.mod(
       data,
@@ -318,7 +318,36 @@ describe("specs.mod - warn tolerance", () => {
       ""
     );
     assert.equal(data["unit.json"].hp, 555);
-    assert.equal(warnMock.mock.callCount(), 1);
+    assert.equal(errorMock.mock.callCount(), 1);
+  });
+
+  it("logs and skips a pathless op that requires a path", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        { file: "unit.json", op: "multiply", value: 2 },
+        { file: "unit.json", path: "hp", op: "replace", value: 777 },
+      ],
+      ""
+    );
+    // The pathless multiply is a no-op; the later mod still applies.
+    assert.equal(data["unit.json"].hp, 777);
+    assert.equal(errorMock.mock.callCount(), 1);
+  });
+
+  it("logs and skips a mod whose intermediate path segment is not traversable", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { a: 5 } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "a.b", op: "replace", value: 1 }],
+      ""
+    );
+    // `a` is a primitive, so it can't be walked into; the mod aborts unchanged.
+    assert.equal(data["unit.json"].a, 5);
+    assert.equal(errorMock.mock.callCount(), 1);
   });
 
   it("warns and continues when the target file is missing", () => {

@@ -266,14 +266,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.warn("Warning: File not found in mod", mod);
         }
         if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
-          return console.warn("Invalid operation in mod", mod);
+          return console.error("Invalid operation in mod", mod);
         }
 
         var originalPath = (mod.path || "").split(".");
         var path = originalPath.slice().reverse();
 
         var reportError = function (error, step) {
-          console.warn(
+          console.error(
             error,
             spec[step],
             "spec",
@@ -346,7 +346,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         } else if (opsWithoutPath[mod.op]) {
           ops[mod.op](spec, mod.value);
         } else {
-          console.warn(
+          console.error(
             "Invalid mod: op '" +
               mod.op +
               "' requires a path, but none was given",

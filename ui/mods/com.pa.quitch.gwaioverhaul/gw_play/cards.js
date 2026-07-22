@@ -396,7 +396,7 @@ function gwoCard() {
 
         var cardName = loc(data.summarize());
         if (!applyCardNameToStarIndex(payload.star, cardName)) {
-          console.error(
+          console.warn(
             "[GW COOP] unable to apply synced star card name for star=" +
               payload.star
           );
@@ -690,7 +690,7 @@ function gwoCard() {
             var startLoadoutCard;
             if (startLoadoutCards.length) {
               if (!_.isArray(record.unlockedStartCardIds)) {
-                console.error(
+                console.warn(
                   "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
                     client.id +
                     " name=" +
