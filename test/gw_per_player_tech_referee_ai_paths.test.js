@@ -1,24 +1,20 @@
 "use strict";
 
-// Unit tests for gw_per_player_tech_referee.js's per-viewer ai_path resolution,
-// reached via its test-only module.exports hook. This file depends on
-// shared/gw_common and shared/gw_inventory (base-game modules GWO doesn't ship), so
-// its define() call is gated the same way referee_game_files.js's is - see the
-// hook's own comment in gw_per_player_tech_referee.js.
+// Unit tests for the per-player-tech referee's per-viewer ai_path resolution. The
+// testable helpers live in gw_play/per_player_tech.js (a plain define() over lodash
+// only); the referee file itself depends on the unshipped shared/gw_common and is
+// coverage-excluded glue, so this loads the extracted module directly.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const {
-  loadCouiModule,
-  requireShippedModule,
-} = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   makeInventory,
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
-const hook = requireShippedModule(
-  "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
+const hook = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
 );
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"

@@ -11,24 +11,21 @@
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const {
-  loadCouiModule,
-  requireShippedModule,
-} = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
-const refereeConfig = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
+const refereeConfig = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
 );
-const refereeGameFiles = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_files.js"
+const refereeGameFiles = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
 );
-const perPlayerTechHook = requireShippedModule(
-  "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
+const perPlayerTechHook = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
 );
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"

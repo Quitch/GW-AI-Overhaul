@@ -1,11 +1,12 @@
 "use strict";
 
 // Characterization tests for GWGalaxy.pathBetween (a fog-of-war-aware BFS over the
-// galaxy's star graph), reached via gw_galaxy.js's test-only module.exports hook. The
-// file's define() depends on base-game modules GWO doesn't ship, so we pull the
-// constructor through requireShippedModule() and drive it with a minimal ko stub plus
-// plain fake stars - no game/Chromium runtime needed. These tests pin current behavior
-// so the S3776 complexity refactor of pathBetween can be proven behavior-preserving.
+// galaxy's star graph). The GWGalaxy constructor lives in the measured, extracted
+// shared/gw_galaxy_graph.js (ko/lodash only); gw_galaxy.js augments it with the
+// base-game systems glue and is coverage-excluded. We load the graph module directly and
+// drive it with a minimal ko stub plus plain fake stars - no game/Chromium runtime
+// needed. These tests pin current behavior so pathBetween refactors stay
+// behavior-preserving.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -31,9 +32,9 @@ function makeObservable(initial) {
   };
 }
 
-const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
-const { GWGalaxy } = requireShippedModule(
-  "coui://ui/main/game/galactic_war/shared/js/gw_galaxy.js"
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const GWGalaxy = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js"
 );
 
 // A fake star: `explored` is the fog-of-war reveal flag; `history` (non-empty means the
@@ -136,5 +137,20 @@ describe("GWGalaxy.pathBetween", () => {
     // query yields null (pinned as current behavior).
     const galaxy = makeGalaxy([[0, 1]], [star(true), star(true)]);
     assert.equal(galaxy.pathBetween(0, 0, false), null);
+  });
+});
+
+describe("GWGalaxy.areNeighbors", () => {
+  it("reports adjacency symmetrically for gated stars and false otherwise", () => {
+    const galaxy = makeGalaxy([[0, 1]], [star(true), star(true), star(true)]);
+    assert.equal(galaxy.areNeighbors(0, 1), true);
+    assert.equal(galaxy.areNeighbors(1, 0), true); // edges go both directions
+    assert.equal(galaxy.areNeighbors(0, 2), false); // no gate between 0 and 2
+  });
+
+  it("returns undefined for a node that has no edges at all", () => {
+    // Node 2 never appears in a gate, so it is absent from neighborsMap.
+    const galaxy = makeGalaxy([[0, 1]], [star(true), star(true), star(true)]);
+    assert.equal(galaxy.areNeighbors(2, 0), undefined);
   });
 });

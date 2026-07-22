@@ -1,284 +1,193 @@
 // StarSystemTemplates.generate has systems scale with galaxy depth
 
-var GWGalaxy = function () {
-  var self = this;
-  self.stars = ko.observableArray();
-  self.gates = ko.observableArray();
-  self.origin = ko.observable(0);
-  self.radius = ko.observable([1, 1]);
-  self.saved = ko.observable(false);
-
-  // Map of node -> node list that share an edge, going both directions.
-  // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
-  self.neighborsMap = ko.computed(function () {
-    var edges = {};
-    _.forEach(self.gates(), function (gate) {
-      if (!_.has(edges, gate[0])) {
-        edges[gate[0]] = [];
-      }
-      if (!_.has(edges, gate[1])) {
-        edges[gate[1]] = [];
-      }
-
-      edges[gate[0]].push(gate[1]);
-      edges[gate[1]].push(gate[0]);
+// The testable graph core (the GWGalaxy constructor:
+// neighborsMap/areNeighbors/pathBetween, ko/lodash only) lives in the measured
+// shared/gw_galaxy_graph.js and is unit-tested by test/gw_galaxy_path_between.test.js.
+// This shadowed file augments that constructor with the systems load/save/build glue,
+// which depends on the unshipped shared/GalaxyBuilder, shared/gw_star and template-loader
+// (so it cannot load under the Node AMD harness) and is coverage-excluded. gw_game.js
+// consumes the fully-augmented GWGalaxy via its "shared/gw_galaxy" AMD dependency, so the
+// runtime contract is unchanged.
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
+  "shared/GalaxyBuilder",
+  "shared/gw_star",
+  "main/game/galactic_war/shared/js/systems/template-loader",
+], function (GWGalaxy, GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
+  GWGalaxy.loadSystems = function (systems, config) {
+    _.forEach(_.zip(systems.stars, config.stars), function (pair) {
+      GWStar.loadSystem(pair[0], pair[1]);
     });
-
-    return edges;
-  });
-
-  self.areNeighbors = function (a, b) {
-    var neighbors = self.neighborsMap();
-    if (_.has(neighbors, a)) {
-      return _.includes(neighbors[a], b);
-    }
+    config.saved = true;
   };
 
-  self.pathBetween = function (from, to, noFog) {
-    var stars = self.stars();
-    var neighborsMap = self.neighborsMap();
-    var toExplored = stars[to].explored();
-
-    // Fog of war: the final hop into the target is allowed if either endpoint is
-    // explored (or fog is off entirely).
-    var canEnterTarget = function (node) {
-      return noFog || stars[node].explored() || toExplored;
-    };
-
-    // Fog of war: an intermediate neighbor may be traversed if it has been visited
-    // (noFog) or is currently explored.
-    var canTraverse = function (neighbor) {
-      return noFog
-        ? stars[neighbor].history().length > 0
-        : stars[neighbor].explored();
-    };
-
-    var checked = {};
-    var workList = [[from]];
-
-    while (workList.length > 0) {
-      var path = workList.shift();
-      var node = path[path.length - 1];
-      checked[node] = true;
-
-      for (var neighbor of neighborsMap[node] || []) {
-        if (checked[neighbor]) {
-          continue; // ignore loop
-        }
-
-        if (neighbor === to) {
-          if (canEnterTarget(node)) {
-            return path.concat(neighbor);
-          }
-          continue;
-        }
-
-        if (canTraverse(neighbor)) {
-          workList.push(_.cloneDeep(path).concat(neighbor));
-        }
-      }
+  GWGalaxy.saveSystems = function (config) {
+    var stars = _.map(config.stars, GWStar.saveSystem);
+    // If we have already been saved, throw away the results.
+    if (config.saved) {
+      return {};
     }
-
-    return null;
+    return {
+      stars: stars,
+    };
   };
-};
 
-// Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
-// branch never executes in-game. This file's define() depends on shared/GalaxyBuilder,
-// shared/gw_star, and a template-loader - all base-game modules GWO does not ship - so
-// amd-loader's dependency resolution throws NotShippedError before the factory could
-// run under Node. GWGalaxy is a top-level var whose pathBetween/neighborsMap logic
-// needs none of those deps, so exposing the constructor here lets Node exercise it
-// (see test/gw_galaxy_path_between.test.js). The else branch is the real,
-// unmodified game-runtime path - `module` is always undefined there.
-// eslint-disable-next-line no-undef
-if (typeof module !== "undefined" && module.exports) {
-  // eslint-disable-next-line no-undef
-  module.exports = { GWGalaxy: GWGalaxy };
-} else {
-  define([
-    "shared/GalaxyBuilder",
-    "shared/gw_star",
-    "main/game/galactic_war/shared/js/systems/template-loader",
-  ], function (GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
-    GWGalaxy.loadSystems = function (systems, config) {
-      _.forEach(_.zip(systems.stars, config.stars), function (pair) {
-        GWStar.loadSystem(pair[0], pair[1]);
+  GWGalaxy.prototype = {
+    load: function (config) {
+      var self = this;
+      config = config || {};
+      self.stars(
+        _.map(config.stars || [], function (star) {
+          var result = new GWStar();
+          result.load(star);
+          return result;
+        })
+      );
+      self.gates(config.gates || []);
+      self.origin(config.origin || 0);
+      self.radius(config.radius || [1, 1]);
+      self.saved(!!config.saved);
+    },
+    save: function () {
+      var self = this;
+
+      // Handle the stars explicitly, since they tend to be big, and write differently when saved.
+      var stars = self.stars;
+      delete self.stars;
+      var result = ko.toJS(self);
+      self.stars = stars;
+
+      var saved = self.saved();
+      result.stars = _.map(stars(), function (star) {
+        return star.save(saved);
       });
-      config.saved = true;
-    };
 
-    GWGalaxy.saveSystems = function (config) {
-      var stars = _.map(config.stars, GWStar.saveSystem);
-      // If we have already been saved, throw away the results.
-      if (config.saved) {
-        return {};
-      }
-      return {
-        stars: stars,
-      };
-    };
+      return result;
+    },
+    build: function (config) {
+      var self = this;
+      config = config || {};
 
-    GWGalaxy.prototype = {
-      load: function (config) {
-        var self = this;
-        config = config || {};
-        self.stars(
-          _.map(config.stars || [], function (star) {
-            var result = new GWStar();
-            result.load(star);
-            return result;
-          })
-        );
-        self.gates(config.gates || []);
-        self.origin(config.origin || 0);
-        self.radius(config.radius || [1, 1]);
-        self.saved(!!config.saved);
-      },
-      save: function () {
-        var self = this;
+      var rng = new Math.seedrandom(config.seed || 0);
 
-        // Handle the stars explicitly, since they tend to be big, and write differently when saved.
-        var stars = self.stars;
-        delete self.stars;
-        var result = ko.toJS(self);
-        self.stars = stars;
+      var builder = new GalaxyBuilder(config);
+      builder.build();
 
-        var saved = self.saved();
-        result.stars = _.map(stars(), function (star) {
-          return star.save(saved);
-        });
+      // Re-normalize the stars
+      var min = builder.stars[0].slice(0);
+      var max = builder.stars[0].slice(0);
+      _.forEach(builder.stars, function (star) {
+        min[0] = Math.min(min[0], star[0]);
+        min[1] = Math.min(min[1], star[1]);
+        max[0] = Math.max(max[0], star[0]);
+        max[1] = Math.max(max[1], star[1]);
+      });
+      var radius = [(max[0] - min[0]) / 2, (max[1] - min[1]) / 2];
+      self.radius(radius);
 
-        return result;
-      },
-      build: function (config) {
-        var self = this;
-        config = config || {};
+      _.forEach(builder.stars, function (star, index) {
+        builder.stars[index][0] = (star[0] - min[0]) / radius[0] - 1;
+        builder.stars[index][1] = (star[1] - min[1]) / radius[1] - 1;
+      });
 
-        var rng = new Math.seedrandom(config.seed || 0);
+      // Transform the stars so that they are moved towards the center in proportion to there distance from the center.
+      // This moves outliers into the galaxy and will cluster more stars in the center
+      var center = _.reduce(builder.stars, function (total, element) {
+        return [total[0] + element[0], total[1] + element[1]];
+      });
+      center = [
+        center[0] / builder.stars.length,
+        center[1] / builder.stars.length,
+      ];
 
-        var builder = new GalaxyBuilder(config);
-        builder.build();
+      var deltas = _.map(builder.stars, function (element) {
+        var delta = [element[0] - center[0], element[1] - center[1]];
+        delta = Math.hypot(delta[0], delta[1]);
 
-        // Re-normalize the stars
-        var min = builder.stars[0].slice(0);
-        var max = builder.stars[0].slice(0);
-        _.forEach(builder.stars, function (star) {
-          min[0] = Math.min(min[0], star[0]);
-          min[1] = Math.min(min[1], star[1]);
-          max[0] = Math.max(max[0], star[0]);
-          max[1] = Math.max(max[1], star[1]);
-        });
-        var radius = [(max[0] - min[0]) / 2, (max[1] - min[1]) / 2];
-        self.radius(radius);
+        return delta;
+      });
 
-        _.forEach(builder.stars, function (star, index) {
-          builder.stars[index][0] = (star[0] - min[0]) / radius[0] - 1;
-          builder.stars[index][1] = (star[1] - min[1]) / radius[1] - 1;
-        });
+      var maxDelta = _.max(deltas);
+      var maxReduction = 0.35;
 
-        // Transform the stars so that they are moved towards the center in proportion to there distance from the center.
-        // This moves outliers into the galaxy and will cluster more stars in the center
-        var center = _.reduce(builder.stars, function (total, element) {
-          return [total[0] + element[0], total[1] + element[1]];
-        });
-        center = [
-          center[0] / builder.stars.length,
-          center[1] / builder.stars.length,
+      builder.stars = _.map(builder.stars, function (element, index) {
+        var delta = deltas[index];
+        var factor = Math.pow(maxReduction * (delta / maxDelta), 2);
+
+        return [
+          center[0] * factor + element[0] * (1 - factor) - 0.15,
+          center[1] * factor + element[1] * (1 - factor) + 0.15,
         ];
+      });
 
-        var deltas = _.map(builder.stars, function (element) {
-          var delta = [element[0] - center[0], element[1] - center[1]];
-          delta = Math.hypot(delta[0], delta[1]);
+      self.stars(
+        _.map(builder.stars, function (star) {
+          var result = new GWStar();
+          result.coordinates(star.concat([rng()]));
+          return result;
+        })
+      );
+      self.gates(builder.reducedGraph.getEdges());
 
-          return delta;
-        });
+      var bestStar = 0;
+      var bestDistance = Infinity;
+      _.forEach(self.stars(), function (star, index) {
+        var distance = star.coordinates()[0] - star.coordinates()[1];
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestStar = index;
+        }
+      });
+      self.origin(bestStar);
 
-        var maxDelta = _.max(deltas);
-        var maxReduction = 0.35;
+      var maxDist = 0;
+      builder.reducedGraph.calcDistance(self.origin(), function (s, distance) {
+        self.stars()[s].distance(distance);
+        if (maxDist < distance) {
+          maxDist = distance;
+        }
+      });
 
-        builder.stars = _.map(builder.stars, function (element, index) {
-          var delta = deltas[index];
-          var factor = Math.pow(maxReduction * (delta / maxDelta), 2);
+      self.difficultyIndex = config.difficultyIndex;
+      var StarSystemTemplates = chooseStarSystemTemplates(
+        config.content,
+        config.useEasierSystemTemplate
+      );
 
-          return [
-            center[0] * factor + element[0] * (1 - factor) - 0.15,
-            center[1] * factor + element[1] * (1 - factor) + 0.15,
-          ];
-        });
-
-        self.stars(
-          _.map(builder.stars, function (star) {
-            var result = new GWStar();
-            result.coordinates(star.concat([rng()]));
-            return result;
-          })
+      // Generate the planets, increasing the size based on the distance from the start.
+      var starGenerators = _.map(self.stars(), function (star) {
+        var systemSize;
+        var coopSystemPlayerBonus = Math.max(
+          0,
+          Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
         );
-        self.gates(builder.reducedGraph.getEdges());
-
-        var bestStar = 0;
-        var bestDistance = Infinity;
-        _.forEach(self.stars(), function (star, index) {
-          var distance = star.coordinates()[0] - star.coordinates()[1];
-          if (distance < bestDistance) {
-            bestDistance = distance;
-            bestStar = index;
-          }
+        if (
+          model.gwoDifficultySettings &&
+          !model.gwoDifficultySettings.systemScaling()
+        ) {
+          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
+        } else {
+          systemSize = star.distance() + coopSystemPlayerBonus;
+        }
+        if (
+          model.gwoDifficultySettings &&
+          model.gwoDifficultySettings.largePlanets()
+        ) {
+          systemSize += 4;
+        }
+        return StarSystemTemplates.generate({
+          players: systemSize,
+          seed: rng() * rng(),
+        }).then(function (system) {
+          star.system(system);
+          star.biome(system.planets[0].generator.biome);
         });
-        self.origin(bestStar);
+      });
 
-        var maxDist = 0;
-        builder.reducedGraph.calcDistance(
-          self.origin(),
-          function (s, distance) {
-            self.stars()[s].distance(distance);
-            if (maxDist < distance) {
-              maxDist = distance;
-            }
-          }
-        );
-
-        self.difficultyIndex = config.difficultyIndex;
-        var StarSystemTemplates = chooseStarSystemTemplates(
-          config.content,
-          config.useEasierSystemTemplate
-        );
-
-        // Generate the planets, increasing the size based on the distance from the start.
-        var starGenerators = _.map(self.stars(), function (star) {
-          var systemSize;
-          var coopSystemPlayerBonus = Math.max(
-            0,
-            Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
-          );
-          if (
-            model.gwoDifficultySettings &&
-            !model.gwoDifficultySettings.systemScaling()
-          ) {
-            systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
-          } else {
-            systemSize = star.distance() + coopSystemPlayerBonus;
-          }
-          if (
-            model.gwoDifficultySettings &&
-            model.gwoDifficultySettings.largePlanets()
-          ) {
-            systemSize += 4;
-          }
-          return StarSystemTemplates.generate({
-            players: systemSize,
-            seed: rng() * rng(),
-          }).then(function (system) {
-            star.system(system);
-            star.biome(system.planets[0].generator.biome);
-          });
-        });
-
-        return $.when.apply($, starGenerators).then(function () {
-          return self;
-        });
-      },
-    };
-    return GWGalaxy;
-  });
-}
+      return $.when.apply($, starGenerators).then(function () {
+        return self;
+      });
+    },
+  };
+  return GWGalaxy;
+});

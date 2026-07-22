@@ -1,17 +1,18 @@
 "use strict";
 
-// Branch tests for gw_per_player_tech_referee.js's validatePerPlayerTechInputs - the
-// pure precondition validator apply() delegates its ~14 guard clauses to. Reached via
-// the file's test-only module.exports hook (its define() depends on base-game modules
-// GWO doesn't ship). The validator touches only referee/options and the game/inventory
-// objects they expose, so plain fakes drive every branch with no game runtime.
+// Branch tests for validatePerPlayerTechInputs - the pure precondition validator the
+// per-player-tech referee's apply() delegates its ~14 guard clauses to. It lives in the
+// extracted gw_play/per_player_tech.js (a plain define() over lodash only); the referee
+// file itself depends on the unshipped shared/gw_common and is coverage-excluded glue.
+// The validator touches only referee/options and the game/inventory objects they
+// expose, so plain fakes drive every branch with no game runtime.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const hook = requireShippedModule(
-  "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
+const hook = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
 );
 const validate = hook.validatePerPlayerTechInputs;
 
