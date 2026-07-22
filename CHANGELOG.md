@@ -5,6 +5,7 @@
 ### Changed
 
 - Improve time to process unit and AI mods when entering battle
+- Reduce CPU usage and improve responsiveness of galaxy map at higher resolutions and at larger star counts
 
 ### Bugfix
 
