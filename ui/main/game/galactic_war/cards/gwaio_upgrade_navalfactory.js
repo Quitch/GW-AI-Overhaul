@@ -19,19 +19,11 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory)
-      ) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+          gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
@@ -67,14 +59,11 @@ define([
         })
       );
 
-      inventory.addMods([
-        {
-          file: gwoUnit.navalFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Naval & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.navalFactory, "add", {
+          buildable_types: " | (Naval & Mobile & FactoryBuild & Custom58)",
+        })
+      );
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

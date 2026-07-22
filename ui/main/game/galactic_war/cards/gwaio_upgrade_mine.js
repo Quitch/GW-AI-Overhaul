@@ -20,27 +20,17 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.landMine)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.landMine)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.landMineWeapon,
-          path: "self_destruct",
-          op: "replace",
-          value: false,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.landMineWeapon, "replace", {
+          self_destruct: false,
+        })
+      );
     },
     dull: function () {},
   };

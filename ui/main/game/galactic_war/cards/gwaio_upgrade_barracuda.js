@@ -20,27 +20,18 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.barracuda)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.barracuda),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.barracudaWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.barracudaWeapon, "multiply", {
+          rate_of_fire: 3,
+        })
+      );
     },
     dull: function () {},
   };

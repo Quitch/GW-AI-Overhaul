@@ -17,18 +17,13 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.botsBasic)) {
-        var dist = system.distance();
-        if (
-          (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
-          (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
-          (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
-          (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
-          dist > 6
-        ) {
-          chance = 100;
-        } else {
-          chance = 250;
-        }
+        chance = gwoCard.travelledFar(
+          system,
+          context,
+          GW.balance.numberOfSystems
+        )
+          ? 100
+          : 250;
       }
       return { chance: chance };
     },

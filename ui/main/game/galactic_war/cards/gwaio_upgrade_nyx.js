@@ -20,33 +20,22 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.nyx)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.nyx)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.nyx,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.nyx,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        _.map([1, 2], function (i) {
+          return {
+            file: gwoUnit.nyx,
+            path: "recon.observer.items." + i + ".radius",
+            op: "multiply",
+            value: 2,
+          };
+        })
+      );
     },
     dull: function () {},
   };

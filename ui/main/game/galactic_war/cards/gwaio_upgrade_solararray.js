@@ -18,25 +18,15 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.solarArray)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.solarArray)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.solarArray,
-          path: "tools",
-          op: "push",
-          value: [
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.solarArray, "push", {
+          tools: [
             {
               spec_id: gwoUnit.gileEBeam,
               aim_bone: "bone_root",
@@ -52,8 +42,8 @@ define([
               muzzle_bone: "bone_root",
             },
           ],
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

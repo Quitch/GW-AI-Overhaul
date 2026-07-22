@@ -16,11 +16,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster)) {
-        chance = 80;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster),
+        80
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.airMobile, function (unit) {

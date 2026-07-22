@@ -21,19 +21,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
-      ) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+          gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
@@ -76,14 +67,11 @@ define([
         })
       );
 
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Tank & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.vehicleFactory, "add", {
+          buildable_types: " | (Tank & Mobile & FactoryBuild & Custom58)",
+        })
+      );
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

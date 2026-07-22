@@ -20,32 +20,20 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.upgradeDeal(
         gwoCard.hasUnit(inventory.units(), gwoUnit.boom) &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.lob)
-      ) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+          gwoCard.hasUnit(inventory.units(), gwoUnit.lob)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoUnit.lob);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.lobAmmo,
-          path: "spawn_unit_on_death",
-          op: "replace",
-          value: gwoUnit.boom,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.lobAmmo, "replace", {
+          spawn_unit_on_death: gwoUnit.boom,
+        })
+      );
     },
     dull: function () {},
   };

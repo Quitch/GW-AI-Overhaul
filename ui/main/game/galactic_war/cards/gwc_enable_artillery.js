@@ -16,13 +16,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
-        gwoCard.missingUnit(inventory.units(), gwoGroup.structuresArtillery)
-      ) {
-        chance = 100;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.missingUnit(inventory.units(), gwoGroup.structuresArtillery),
+        100
+      );
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresArtillery);

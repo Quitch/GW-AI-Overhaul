@@ -17,11 +17,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons)) {
-        chance = 60;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons),
+        60
+      );
     },
     buff: function (inventory) {
       var units = gwoGroup.structuresSuperWeapons.concat(

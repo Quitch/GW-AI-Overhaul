@@ -19,30 +19,20 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_air" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.airFabber)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.airFabber)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.starterUnitsAdvanced);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.airFabber,
-          path: "buildable_types",
-          op: "add",
-          value:
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.airFabber, "add", {
+          buildable_types:
             " | (Land & Structure & Advanced - Factory | FabAdvBuild) & Custom58",
-        },
-      ]);
+        })
+      );
 
       var units = [
         "AdvancedAirDefense",

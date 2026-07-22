@@ -20,27 +20,18 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncher)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncher),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.torpedoLauncherWeapon,
-          path: "exclude_unit_types",
-          op: "replace",
-          value: "",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.torpedoLauncherWeapon, "replace", {
+          exclude_unit_types: "",
+        })
+      );
     },
     dull: function () {},
   };

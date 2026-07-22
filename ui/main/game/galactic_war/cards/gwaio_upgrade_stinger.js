@@ -20,25 +20,15 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.stinger,
-          path: "tools",
-          op: "replace",
-          value: [
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.stinger, "replace", {
+          tools: [
             {
               spec_id: gwoUnit.flakWeapon,
               aim_bone: "bone_turret",
@@ -46,8 +36,8 @@ define([
               muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],
             },
           ],
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

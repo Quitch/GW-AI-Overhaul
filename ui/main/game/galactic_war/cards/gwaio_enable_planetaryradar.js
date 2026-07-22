@@ -17,11 +17,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
-        chance = 100;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced),
+        100
+      );
     },
     buff: function (inventory) {
       inventory.addUnits(gwoUnit.deepSpaceOrbitalRadar);

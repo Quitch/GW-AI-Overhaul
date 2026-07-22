@@ -85,6 +85,121 @@ describe("missingAllUnits", () => {
   });
 });
 
+describe("upgradeDeal", () => {
+  it("returns the given chance, wrapped for overflow, when available", () => {
+    assert.deepEqual(cards.upgradeDeal(true, 30), {
+      params: { allowOverflow: true },
+      chance: 30,
+    });
+  });
+
+  it("defaults to a chance of 60 when none is given", () => {
+    assert.deepEqual(cards.upgradeDeal(true), {
+      params: { allowOverflow: true },
+      chance: 60,
+    });
+  });
+
+  it("returns a chance of 0 when unavailable", () => {
+    assert.deepEqual(cards.upgradeDeal(false, 30), {
+      params: { allowOverflow: true },
+      chance: 0,
+    });
+  });
+});
+
+describe("conditionalDeal", () => {
+  it("returns the given chance when available", () => {
+    assert.deepEqual(cards.conditionalDeal(true, 70), { chance: 70 });
+  });
+
+  it("returns a chance of 0 when unavailable", () => {
+    assert.deepEqual(cards.conditionalDeal(false, 70), { chance: 0 });
+  });
+});
+
+describe("travelledFar", () => {
+  const numberOfSystems = [10, 20, 30, 40];
+
+  function systemAt(dist) {
+    return { distance: () => dist };
+  }
+
+  it("is false for a nearby system in a large galaxy", () => {
+    assert.equal(
+      cards.travelledFar(systemAt(1), { totalSize: 50 }, numberOfSystems),
+      false
+    );
+  });
+
+  it("is true once distance exceeds the tier threshold for the galaxy size", () => {
+    assert.equal(
+      cards.travelledFar(systemAt(3), { totalSize: 10 }, numberOfSystems),
+      true
+    );
+  });
+
+  it("is true for any system beyond the final flat distance cutoff", () => {
+    assert.equal(
+      cards.travelledFar(systemAt(7), { totalSize: 1000 }, numberOfSystems),
+      true
+    );
+  });
+});
+
+describe("antiTechDeal", () => {
+  function inventoryWithCard(id) {
+    return { hasCard: (cardId) => cardId === id };
+  }
+
+  it("returns a chance of 0 when the excluded counterpart card is held", () => {
+    setGlobal("model", {});
+    assert.deepEqual(
+      cards.antiTechDeal(
+        inventoryWithCard("gwaio_anti_orbital"),
+        70,
+        "gwaio_anti_orbital"
+      ),
+      { chance: 0 }
+    );
+  });
+
+  it("halves the base chance once any anti_ tech card is already held", () => {
+    setGlobal("model", {
+      game: () => ({
+        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
+      }),
+    });
+    assert.deepEqual(
+      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      { chance: 35 }
+    );
+  });
+
+  it("returns the full base chance when no anti_ tech is held yet", () => {
+    setGlobal("model", {
+      game: () => ({ inventory: () => ({ cards: () => [] }) }),
+    });
+    assert.deepEqual(
+      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      { chance: 70 }
+    );
+  });
+});
+
+describe("mods", () => {
+  it("builds one addMods entry per prop, sharing the given file and op", () => {
+    assert.deepEqual(cards.mods("unit.json", "replace", { a: 1, b: 2 }), [
+      { file: "unit.json", path: "a", op: "replace", value: 1 },
+      { file: "unit.json", path: "b", op: "replace", value: 2 },
+    ]);
+  });
+
+  it("returns an empty array for an empty props object", () => {
+    assert.deepEqual(cards.mods("unit.json", "replace", {}), []);
+  });
+});
+
 describe("loadoutIcon", () => {
   const iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
   const fallback =

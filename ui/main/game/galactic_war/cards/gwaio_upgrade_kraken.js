@@ -18,27 +18,18 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.kraken)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.kraken),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.krakenMissile,
-          path: "max_range",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.krakenMissile, "multiply", {
+          max_range: 3,
+        })
+      );
     },
     dull: function () {},
   };

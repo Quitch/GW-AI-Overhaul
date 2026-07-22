@@ -18,25 +18,16 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.kaiju)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.kaiju),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.kaiju,
-          path: "tools",
-          op: "replace",
-          value: [
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.kaiju, "replace", {
+          tools: [
             {
               spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
               record_index: 0,
@@ -70,8 +61,8 @@ define([
               muzzle_bone: ["socket_leftMuzzle04", "socket_rightMuzzle04"],
             },
           ],
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

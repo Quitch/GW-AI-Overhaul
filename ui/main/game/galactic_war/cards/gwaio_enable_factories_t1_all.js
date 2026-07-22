@@ -18,25 +18,20 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
       var basicFactories = [
         gwoUnit.airFactory,
         gwoUnit.botFactory,
         gwoUnit.vehicleFactory,
       ];
+      var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
-        var dist = system.distance();
-        if (
-          (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
-          (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
-          (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 4) ||
-          (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 5) ||
-          dist > 6
-        ) {
-          chance = 25;
-        } else {
-          chance = 250;
-        }
+        chance = gwoCard.travelledFar(
+          system,
+          context,
+          GW.balance.numberOfSystems
+        )
+          ? 25
+          : 250;
       }
       if (gwoCard.missingAllUnits(inventory.units(), basicFactories)) {
         chance *= 3;

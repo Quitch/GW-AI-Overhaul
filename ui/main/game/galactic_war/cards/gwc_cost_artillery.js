@@ -16,11 +16,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery)) {
-        chance = 60;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery),
+        60
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.structuresArtillery, function (unit) {

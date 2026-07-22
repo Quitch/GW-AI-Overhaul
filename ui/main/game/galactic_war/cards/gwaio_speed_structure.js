@@ -14,11 +14,10 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (inventory.hasCard("gwaio_start_nomad")) {
-        chance = 70;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        inventory.hasCard("gwaio_start_nomad"),
+        70
+      );
     },
     buff: function (inventory) {
       var mods = _.flatten(

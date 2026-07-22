@@ -20,27 +20,17 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.ward)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.ward)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.wardWeapon,
-          path: "start_fully_charged",
-          op: "replace",
-          value: true,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.wardWeapon, "replace", {
+          start_fully_charged: true,
+        })
+      );
     },
     dull: function () {},
   };

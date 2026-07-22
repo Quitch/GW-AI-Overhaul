@@ -142,6 +142,62 @@ define(function () {
       };
     },
 
+    upgradeDeal: function (available, chance) {
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: available ? chance || 60 : 0,
+      };
+    },
+
+    conditionalDeal: function (available, chance) {
+      return { chance: available ? chance : 0 };
+    },
+
+    // Whether a system counts as "isolated" for deal chance scaling: distant
+    // enough, relative to how many systems the galaxy has, that a player could
+    // plausibly have skipped this tech tree so far. numberOfSystems is the
+    // caller's GW.balance.numberOfSystems tier table - passed in rather than
+    // imported so this module stays dependency-free (base-game "shared/gw_common"
+    // isn't shippable/loadable here, and every card transitively depends on
+    // this file - see amd-loader.js's NOT_SHIPPED note).
+    travelledFar: function (system, context, numberOfSystems) {
+      var dist = system.distance();
+      return (
+        (context.totalSize <= numberOfSystems[0] && dist > 2) ||
+        (context.totalSize <= numberOfSystems[1] && dist > 3) ||
+        (context.totalSize <= numberOfSystems[2] && dist > 4) ||
+        (context.totalSize <= numberOfSystems[3] && dist > 5) ||
+        dist > 6
+      );
+    },
+
+    // Builds an addMods() array for the common case of one file/op applied to
+    // several stat paths, e.g. mods(gwoUnit.x, "replace", { max_health: 100 }).
+    mods: function (file, op, props) {
+      return _.map(_.keys(props), function (path) {
+        return { file: file, path: path, op: op, value: props[path] };
+      });
+    },
+
+    // Shared deal() shape for the gwaio_anti_* counter-tech cards: each one is
+    // countered by a specific opposing anti_ card (chance drops to 0), and
+    // otherwise gets half its base chance once any anti_ tech is already held
+    // (so the deck doesn't keep offering more of them once the theme is set).
+    antiTechDeal: function (inventory, baseChance, excludedCardId) {
+      if (inventory.hasCard(excludedCardId)) {
+        return { chance: 0 };
+      }
+      var hasAntiTech = _.some(
+        model.game().inventory().cards(),
+        function (card) {
+          return _.startsWith(card.id, "gwaio_anti_");
+        }
+      );
+      return { chance: hasAntiTech ? baseChance / 2 : baseChance };
+    },
+
     hasT2Access: function (inventory) {
       return _.some(inventory.cards(), function (card) {
         return _.includes(model.gwoCardsGrantingAdvancedTech, card.id);

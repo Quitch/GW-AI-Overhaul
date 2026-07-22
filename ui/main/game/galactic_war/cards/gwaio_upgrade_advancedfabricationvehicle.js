@@ -20,27 +20,17 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFabberAdvancedBuildArm,
-          path: "max_range",
-          op: "multiply",
-          value: 2.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.vehicleFabberAdvancedBuildArm, "multiply", {
+          max_range: 2.5,
+        })
+      );
     },
     dull: function () {},
   };

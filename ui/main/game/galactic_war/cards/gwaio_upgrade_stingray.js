@@ -20,56 +20,40 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.stingray)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.stingray),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.stingray,
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id: gwoUnit.gileEBeam,
-            aim_bone: "socket_missile_muzzle01",
-            record_index: 0,
-            muzzle_bone: ["socket_missile_muzzle01", "socket_missile_muzzle02"],
+      inventory.addMods(
+        [
+          {
+            file: gwoUnit.stingray,
+            path: "tools",
+            op: "push",
+            value: {
+              spec_id: gwoUnit.gileEBeam,
+              aim_bone: "socket_missile_muzzle01",
+              record_index: 0,
+              muzzle_bone: [
+                "socket_missile_muzzle01",
+                "socket_missile_muzzle02",
+              ],
+            },
           },
-        },
-        {
-          file: gwoUnit.stingray,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.stingray,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.stingray,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.stingray,
-          path: "recon.observer.items.3.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-      ]);
+        ].concat(
+          _.times(4, function (i) {
+            return {
+              file: gwoUnit.stingray,
+              path: "recon.observer.items." + i + ".radius",
+              op: "multiply",
+              value: 1.5,
+            };
+          })
+        )
+      );
     },
     dull: function () {},
   };

@@ -20,33 +20,18 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.spark)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.spark)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.sparkAmmo,
-          path: "splash_radius",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.sparkAmmo,
-          path: "full_damage_splash_radius",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.sparkAmmo, "multiply", {
+          splash_radius: 3,
+          full_damage_splash_radius: 3,
+        })
+      );
     },
     dull: function () {},
   };

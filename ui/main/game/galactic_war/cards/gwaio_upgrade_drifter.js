@@ -20,27 +20,17 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.drifter)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.drifter)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.drifterWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.drifterWeapon, "multiply", {
+          max_range: 1.25,
+        })
+      );
     },
     dull: function () {},
   };

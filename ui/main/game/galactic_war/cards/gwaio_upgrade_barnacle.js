@@ -22,33 +22,19 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.barnacle)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.barnacle),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.barnacleBuildArm,
-          path: "can_only_assist_with_buildable_items",
-          op: "replace",
-          value: false,
-        },
-        {
-          file: gwoUnit.barnacleBuildArm,
-          path: "auto_repair",
-          op: "replace",
-          value: false,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.barnacleBuildArm, "replace", {
+          can_only_assist_with_buildable_items: false,
+          auto_repair: false,
+        })
+      );
     },
     dull: function () {},
   };

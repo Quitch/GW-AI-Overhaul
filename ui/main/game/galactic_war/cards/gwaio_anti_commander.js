@@ -16,40 +16,19 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 40;
-      var hasAntiTech = _.some(
-        model.game().inventory().cards(),
-        function (card) {
-          return _.startsWith(card.id, "gwaio_anti_");
-        }
-      );
-      if (inventory.hasCard("gwaio_anti_structure")) {
-        chance = 0;
-      } else if (hasAntiTech) {
-        chance /= 2;
-      }
-      return { chance: chance };
+      return gwoCard.antiTechDeal(inventory, 40, "gwaio_anti_structure");
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.ammo, function (ammo) {
-          return [
-            {
-              file: ammo,
-              path: "armor_damage_map.AT_Commander",
-              op: "multiplyOrCreate",
-              value: 2,
-            },
-            {
-              file: ammo,
-              path: "armor_damage_map.AT_Structure",
-              op: "multiplyOrCreate",
-              value: 0.5,
-            },
-          ];
-        })
+      inventory.addMods(
+        _.flatten(
+          _.map(gwoGroup.ammo, function (ammo) {
+            return gwoCard.mods(ammo, "multiplyOrCreate", {
+              "armor_damage_map.AT_Commander": 2,
+              "armor_damage_map.AT_Structure": 0.5,
+            });
+          })
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

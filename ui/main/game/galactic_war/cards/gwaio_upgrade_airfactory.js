@@ -19,19 +19,10 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_air" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)
-      ) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+          gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
@@ -68,14 +59,11 @@ define([
         })
       );
 
-      inventory.addMods([
-        {
-          file: gwoUnit.airFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Air & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.airFactory, "add", {
+          buildable_types: " | (Air & Mobile & FactoryBuild & Custom58)",
+        })
+      );
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

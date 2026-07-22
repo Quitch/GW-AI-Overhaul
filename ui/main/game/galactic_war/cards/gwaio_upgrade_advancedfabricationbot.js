@@ -18,39 +18,24 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.botFabberAdvanced,
-          path: "tools",
-          op: "push",
-          value: {
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.botFabberAdvanced, "push", {
+          tools: {
             spec_id:
               "/pa/units/land/bot_support_commander/bot_support_commander_tool_weapon.json",
             aim_bone: "bone_turret",
             muzzle_bone: "socket_rightMuzzle",
             primary_weapon: true,
           },
-        },
-        {
-          file: gwoUnit.botFabberAdvanced,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Attack",
-        },
-      ]);
+          command_caps: "ORDER_Attack",
+        })
+      );
     },
     dull: function () {},
   };

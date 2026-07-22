@@ -16,16 +16,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      var hasT2Access = gwoCard.hasT2Access(inventory);
-      var missingUnit = gwoCard.missingUnit(
-        inventory.units(),
-        gwoGroup.structuresDefencesAdvanced
+      return gwoCard.conditionalDeal(
+        gwoCard.missingUnit(
+          inventory.units(),
+          gwoGroup.structuresDefencesAdvanced
+        ) && gwoCard.hasT2Access(inventory),
+        100
       );
-      if (missingUnit && hasT2Access) {
-        chance = 100;
-      }
-      return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresDefencesAdvanced);

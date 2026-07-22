@@ -18,27 +18,17 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.sxx)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.sxx)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.sxx,
-          path: "planetary_arrival_cooldown_time",
-          op: "replace",
-          value: 0,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.sxx, "replace", {
+          planetary_arrival_cooldown_time: 0,
+        })
+      );
     },
     dull: function () {},
   };

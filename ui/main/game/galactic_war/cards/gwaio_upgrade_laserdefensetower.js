@@ -18,27 +18,17 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTower)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTower)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.laserDefenseTowerWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 1.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.laserDefenseTowerWeapon, "multiply", {
+          max_range: 1.5,
+        })
+      );
     },
     dull: function () {},
   };

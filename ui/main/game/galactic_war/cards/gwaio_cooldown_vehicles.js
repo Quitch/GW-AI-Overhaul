@@ -16,11 +16,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.vehicleFactories)) {
-        chance = 70;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.vehicleFactories),
+        70
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.vehicleFactories, function (unit) {

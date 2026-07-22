@@ -17,15 +17,12 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
-        (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber))
-      ) {
-        chance = 150;
-      }
-      return { chance: chance };
+          (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
+            gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)),
+        150
+      );
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.titans);

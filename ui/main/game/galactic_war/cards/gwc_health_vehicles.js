@@ -14,11 +14,10 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile)) {
-        chance = 70;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile),
+        70
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.vehiclesMobile, function (unit) {
