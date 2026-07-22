@@ -28,58 +28,44 @@ define([
         } else {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 2);
-          var mods = [
-            {
-              file: gwoUnit.commander,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 5,
-            },
-            {
-              file: gwoUnit.commander,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 5,
-            },
-            {
-              file: gwoUnit.commander,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 5,
-            },
-            {
-              file: gwoUnit.commander,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 5,
-            },
-            {
-              file: gwoUnit.commander,
-              path: "max_health",
-              op: "multiply",
-              value: 3,
-            },
+          var navigationAttributes = [
+            "navigation.move_speed",
+            "navigation.brake",
+            "navigation.acceleration",
+            "navigation.turn_speed",
           ];
+          var mods = _.map(
+            navigationAttributes,
+            function (navigationAttribute) {
+              return {
+                file: gwoUnit.commander,
+                path: navigationAttribute,
+                op: "multiply",
+                value: 5,
+              };
+            }
+          );
           var weapons = [gwoUnit.commanderSecondary, gwoUnit.commanderWeapon];
+          var ammoAttributes = [
+            "ammo_capacity",
+            "ammo_demand",
+            "ammo_per_shot",
+          ];
           _.forEach(weapons, function (weapon) {
+            _.forEach(ammoAttributes, function (ammoAttribute) {
+              mods.push({
+                file: weapon,
+                path: ammoAttribute,
+                op: "multiply",
+                value: 0.25,
+              });
+            });
             mods.push(
               {
-                file: weapon,
-                path: "ammo_capacity",
+                file: gwoUnit.commander,
+                path: "max_health",
                 op: "multiply",
-                value: 0.25,
-              },
-              {
-                file: weapon,
-                path: "ammo_demand",
-                op: "multiply",
-                value: 0.25,
-              },
-              {
-                file: weapon,
-                path: "ammo_per_shot",
-                op: "multiply",
-                value: 0.25,
+                value: 3,
               },
               {
                 file: weapon,
