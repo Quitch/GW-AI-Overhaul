@@ -45,7 +45,7 @@ define([
         {
           file: unit,
           path: "recon.observer.items.1.radius",
-          op: "multiplyOrCreate", // multiply alone results in errors as not all units have a second observer item
+          op: "multiply",
           value: percentageIncrease,
         }
       );

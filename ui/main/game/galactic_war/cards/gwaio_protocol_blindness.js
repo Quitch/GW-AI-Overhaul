@@ -85,13 +85,13 @@ define([
         {
           file: unit,
           path: "recon.observer.items.0.radius",
-          op: "multiply", // can't use replace due to Planetary Radar using it - potential timing issue
+          op: "multiply", // can't use replace due to Planetary Radar using it - multiply runs later
           value: 0,
         },
         {
           file: unit,
           path: "recon.observer.items.1.radius",
-          op: "multiplyOrCreate", // multiply alone results in errors as not all units have a second observer item
+          op: "multiply", // can't use replace due to Planetary Radar using it - multiply runs later
           value: 0,
         }
       );
