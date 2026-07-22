@@ -338,6 +338,7 @@ function gwoSetup() {
             var card = _.find(processedStartCards, { id: params.id });
             if (!card) {
               console.error("No matching start card ID found");
+              warGenerationFailed = true;
             }
             var context =
               card.getContext &&
