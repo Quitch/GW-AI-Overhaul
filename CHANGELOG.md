@@ -14,11 +14,11 @@
 
 ### Bugfix
 
-- Fix Protocol Fortitude and Wrath causing buildings to drift and sometimes move
+- Fix Protocol cards with speed bonuses causing buildings to drift and sometimes move
 - Viewers no longer trigger saves
 - Planetary Radar starting with global underwater vision
 - Fix base game bug where Orbital Speed and Combat Techs were adding navigation data to orbital structures
-- Fix Explore and Load/Save not always being displayed correctly
+- Fix Explore and Load/Save not always being displayed correctly after loading a save
 
 ## v6.2.3 - 2026-07-21
 
