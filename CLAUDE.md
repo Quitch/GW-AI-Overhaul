@@ -2,10 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Do not delete, rewrite, or restructure this file without the user's explicit permission first.** It has been
-> accidentally deleted before. Small factual edits/additions to keep it accurate as the repo changes are fine, but
-> ask before removing it or replacing large sections wholesale.
-
 ## What this is
 
 GW-AI-Overhaul (GWO/GWAIO) is a client mod for Planetary Annihilation: TITANS that
