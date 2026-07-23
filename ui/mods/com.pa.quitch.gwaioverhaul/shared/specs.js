@@ -112,6 +112,26 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     );
   }
 
+  // The game treats any unit with a navigation object - even an empty one - as
+  // mobile. A navigation.* mod applied to a unit that has no navigation object
+  // auto-creates an empty navigation container whose leaf is left undefined (e.g.
+  // multiply/add on a nonexistent numeric). JSON serialisation drops that
+  // undefined key, leaving navigation: {} - wrongly marking a structure as mobile
+  // and adding needless Nav Agent load - so strip the navigation object back off.
+  function pruneEmptyNavigation(spec) {
+    if (!_.isPlainObject(spec) || !_.isPlainObject(spec.navigation)) {
+      return;
+    }
+    // A key whose value is undefined is dropped by JSON serialisation, so
+    // navigation counts as "not empty" only if at least one value survives it.
+    var hasSerialisableValue = _.some(spec.navigation, function (value) {
+      return value !== undefined;
+    });
+    if (!hasSerialisableValue) {
+      delete spec.navigation;
+    }
+  }
+
   return {
     mod: function (specs, mods, specTag) {
       var load = function (specId) {
@@ -278,6 +298,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.error("Invalid operation in mod", mod);
         }
 
+        // Kept before the path walk reassigns `spec` to a nested container: the
+        // first path segment (e.g. "navigation") is always created on the file's
+        // top-level spec, so this is the object pruneEmptyNavigation must inspect.
+        var rootSpec = spec;
+
         var originalPath = (mod.path || "").split(".");
         var path = originalPath.slice().reverse();
 
@@ -385,6 +410,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
               "' requires a path, but none was given",
             mod
           );
+        }
+
+        if (originalPath[0] === "navigation") {
+          pruneEmptyNavigation(rootSpec);
         }
       };
 

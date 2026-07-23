@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Protection against cards creating empty navigation blocks making the engine think a static unit was mobile
+
 ### Changed
 
 - Improve time to process unit and AI mods when entering battle
