@@ -5,6 +5,7 @@
 ### Added
 
 - Protection against cards creating empty navigation blocks making the engine think a static unit was mobile
+- Future proofing against base game changes
 
 ### Changed
 
