@@ -434,6 +434,127 @@ describe("specs.mod - malformed-mod tolerance", () => {
   });
 });
 
+describe("specs.mod - navigation pruning", () => {
+  // The game treats any unit with a navigation object - even an empty one - as
+  // mobile, so a navigation.* mod applied to a structure (which has no navigation
+  // object) must not leave a stray navigation: {} behind once serialised.
+  it("removes a navigation object left empty by a mod on a structure", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    // multiply on a nonexistent numeric leaf leaves navigation.move_speed
+    // undefined - which serialises to navigation: {} - so navigation is stripped.
+    assert.equal("navigation" in data["struct.json"], false);
+    assert.equal(data["struct.json"].hp, 100);
+    // the multiply-on-missing warning still fires; pruning doesn't suppress it.
+    assert.ok(warnMock.mock.callCount() >= 1);
+  });
+
+  it("removes navigation after several navigation.* mods all resolve to undefined", () => {
+    mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    assert.equal("navigation" in data["struct.json"], false);
+  });
+
+  it("keeps a populated navigation object on a genuinely mobile unit", () => {
+    const data = { "unit.json": { navigation: { move_speed: 10 } } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    assert.equal("navigation" in data["unit.json"], true);
+    assert.equal(data["unit.json"].navigation.move_speed, 15);
+  });
+
+  it("keeps navigation when a replace sets a real value alongside an undefined leaf", () => {
+    mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.type",
+          op: "replace",
+          value: "Hover",
+        },
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    // navigation.type is a real value, so navigation must survive (JSON would only
+    // drop the undefined move_speed leaf, not the whole object).
+    assert.equal("navigation" in data["struct.json"], true);
+    assert.equal(data["struct.json"].navigation.type, "Hover");
+  });
+
+  it("leaves an existing empty navigation untouched for a non-navigation mod", () => {
+    const data = { "unit.json": { hp: 100, navigation: {} } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "replace", value: 200 }],
+      ""
+    );
+    // Pruning is scoped to navigation-targeting mods; unrelated mods don't trigger it.
+    assert.equal("navigation" in data["unit.json"], true);
+    assert.equal(data["unit.json"].hp, 200);
+  });
+});
+
 describe("specs.additionalSpecs", () => {
   it("is a fixed list of extra unit spec file paths", () => {
     assert.equal(specs.additionalSpecs.length, 6);
