@@ -1,5 +1,4 @@
 var gwoWarInfoPanelLoaded;
-var gwoViewerIdentityWarned;
 
 function gwoWarInfoPanel(gwoSettings) {
   try {
@@ -55,6 +54,8 @@ function gwoWarInfoPanel(gwoSettings) {
     // never match this Viewer's own record - its tech inventory, card offers, and
     // subcommander deals all silently no-op. Surface it once so the state is
     // diagnosable instead of looking like a GWO bug (the base game shares this).
+    var gwoViewerIdentityWarned;
+
     var warnIfViewerIdentityMissing = function () {
       if (gwoViewerIdentityWarned) {
         return;
