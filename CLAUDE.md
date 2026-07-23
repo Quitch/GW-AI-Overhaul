@@ -62,11 +62,23 @@ scene (`gw_start`, `gw_play`, `gw_war_over`, `live_game`, `shared_build`, `start
 there fails silently in-game with no error a contributor would see locally, which is
 what `validate:manifest` exists to catch.
 
+Shadowing files should be treated as a matter of last resort. A shadowed file is a
+full copy of the base file, not a diff - any future base-game update to the parts
+this mod didn't touch is silently lost until someone notices and manually re-syncs.
+There's no base install in CI to diff against, so that drift is invisible until it
+surfaces as an in-game bug. Always look to inject content into a scene, or hijack
+functions, as a first step; shadow only when neither is possible - e.g. the change
+alters markup/DOM structure the base file owns outright, or touches logic the base
+file keeps private and never exposes for hijacking (see below).
+
 ### Function hijacking
 
 Where the base game loads something into `self` this is usually in the context of
 the global `model`, which is how this mod will intercept and overwrite individual
-functions without needing to shadow an entire file.
+functions without needing to shadow an entire file. This only works for functions
+the base file actually assigns onto `self`/`model` (or a prototype) - a function
+kept as a private closure variable with no such assignment isn't reachable this way,
+and reaching it is a legitimate reason to fall back to shadowing.
 
 ### Tech card contract
 
