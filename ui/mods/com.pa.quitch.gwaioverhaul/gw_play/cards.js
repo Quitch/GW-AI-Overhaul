@@ -37,29 +37,10 @@ function gwoCard() {
     );
 
     var numCardsToOffer = 3;
-
-    var cardsOfferedCount = function (offer, techInventory) {
-      var cardsToOffer = offer;
-      var inventoryToCheck = techInventory || game.inventory();
-
-      if (
-        inventoryToCheck &&
-        _.isFunction(inventoryToCheck.handIsFull) &&
-        inventoryToCheck.handIsFull()
-      ) {
-        cardsToOffer++;
-      }
-
-      if (
-        inventoryToCheck &&
-        _.isFunction(inventoryToCheck.hasCard) &&
-        inventoryToCheck.hasCard("gwaio_start_lucky")
-      ) {
-        cardsToOffer++;
-      }
-
-      return cardsToOffer;
-    };
+    // Pure deal helpers (cards_deal_helpers.js), assigned at the top of the main
+    // requireGW below. Only referenced from function/computed bodies that run after
+    // that load resolves - never synchronously during scene setup.
+    var helpers;
 
     var currentCoopPendingTechCards = function () {
       if (
@@ -73,20 +54,11 @@ function gwoCard() {
       return undefined;
     };
 
-    var pendingCardsContainLoadout = function (pendingTechCards) {
-      return !!(
-        pendingTechCards &&
-        _.isArray(pendingTechCards.cards) &&
-        pendingTechCards.cards.length &&
-        _.includes(pendingTechCards.cards[0].id, "_start_")
-      );
-    };
-
     model.rerollTech = function () {
       var pendingTechCards = currentCoopPendingTechCards();
       if (pendingTechCards) {
         if (
-          pendingCardsContainLoadout(pendingTechCards) ||
+          helpers.pendingCardsContainLoadout(pendingTechCards) ||
           !model.sendCampaignViewerOperator ||
           !model.gwCampaignConnected() ||
           model.gwoRerollPending()
@@ -109,7 +81,10 @@ function gwoCard() {
         return;
       }
 
-      var cardsOffered = cardsOfferedCount(numCardsToOffer);
+      var cardsOffered = helpers.cardsOfferedCount(
+        numCardsToOffer,
+        game.inventory()
+      );
       var star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (model.gwoRerollsUsed() >= cardsOffered - 1) {
@@ -162,6 +137,14 @@ function gwoCard() {
           return;
         }
 
+        // This computed evaluates eagerly on creation (before the main requireGW
+        // assigns `helpers`), but only reaches helpers when pending co-op tech cards
+        // exist - which cannot happen that early. Guard defensively regardless; the
+        // read above already established the observable subscriptions.
+        if (!helpers) {
+          return;
+        }
+
         var key = [
           pendingTechCards.star,
           pendingTechCards.dealIndex,
@@ -183,7 +166,7 @@ function gwoCard() {
           : Math.max(0, cardsOffered - pendingTechCards.cards.length);
         model.gwoRerollsUsed(rerollsUsed);
         model.gwoOfferRerolls(
-          !pendingCardsContainLoadout(pendingTechCards) &&
+          !helpers.pendingCardsContainLoadout(pendingTechCards) &&
             rerollsUsed < cardsOffered - 1
         );
         model.gwoRerollPending(false);
@@ -272,217 +255,6 @@ function gwoCard() {
       });
     };
 
-    var doNotDealCard = function (
-      inventory,
-      card,
-      cardsDealt,
-      dealAddSlot,
-      testRun,
-      systemCards // allow duplicates across players, but not within a single player's deal
-    ) {
-      var cardsInSystem = _.isArray(systemCards)
-        ? systemCards
-        : model.currentSystemCardList();
-      var systemHasCard = _.some(cardsInSystem, function (systemCard) {
-        if (!systemCard) {
-          return false;
-        }
-
-        if (_.isFunction(systemCard.id)) {
-          return systemCard.id() === card.id;
-        }
-
-        return systemCard.id === card.id;
-      });
-
-      // Never deal Additional Data Bank as a system's pre-dealt card
-      if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
-        return true;
-      }
-
-      if (testRun) {
-        return (
-          inventory.hasCard(card.id) &&
-          _.some(cardsDealt, { id: card.id }) &&
-          systemHasCard
-        );
-      }
-
-      return (
-        inventory.hasCard(card.id) ||
-        _.some(cardsDealt, { id: card.id }) ||
-        systemHasCard
-      );
-    };
-
-    var setCardNameSyncOperator = "gwo_sync_star_card_name";
-
-    var sendSyncedStarCardName = function (starIndex, cardId) {
-      if (
-        !_.isNumber(starIndex) ||
-        _.isNaN(starIndex) ||
-        !_.isString(cardId) ||
-        !cardId.length ||
-        !model.sendCampaignHostOperator ||
-        !_.isFunction(model.isCampaignHost) ||
-        !_.isFunction(model.gwCampaignConnected)
-      ) {
-        return;
-      }
-
-      model.sendCampaignHostOperator(setCardNameSyncOperator, {
-        star: starIndex,
-        card_id: cardId,
-      });
-    };
-
-    var setAiCardName = function (star, cardName) {
-      if (!star || !_.isFunction(star.ai)) {
-        return false;
-      }
-
-      var ai = star.ai();
-      if (!ai) {
-        return false;
-      }
-
-      ai.cardName = cardName;
-      return true;
-    };
-
-    var applyCardNameToStarIndex = function (starIndex, cardName) {
-      var applied = false;
-
-      var systems =
-        model.galaxy && _.isFunction(model.galaxy.systems)
-          ? model.galaxy.systems()
-          : undefined;
-      var system = _.isArray(systems) ? systems[starIndex] : undefined;
-      if (system && system.star) {
-        applied = setAiCardName(system.star, cardName) || applied;
-      }
-
-      var gameGalaxy =
-        game && _.isFunction(game.galaxy) ? game.galaxy() : undefined;
-      var stars =
-        gameGalaxy && _.isFunction(gameGalaxy.stars)
-          ? gameGalaxy.stars()
-          : undefined;
-      var gameStar = _.isArray(stars) ? stars[starIndex] : undefined;
-      applied = setAiCardName(gameStar, cardName) || applied;
-
-      return applied;
-    };
-
-    var isValidSyncedStarCardNamePayload = function (payload) {
-      return (
-        _.isNumber(payload.star) &&
-        !_.isNaN(payload.star) &&
-        _.isString(payload.card_id) &&
-        !!payload.card_id.length
-      );
-    };
-
-    var applySyncedStarCardName = function (operator) {
-      var result = $.Deferred();
-      var payload = operator && operator.payload ? operator.payload : {};
-      if (!isValidSyncedStarCardNamePayload(payload)) {
-        console.error("[GW COOP] invalid synced star card name payload");
-        result.reject("Invalid synced star card name payload");
-        return result.promise();
-      }
-
-      requireGW(["cards/" + payload.card_id], function (data) {
-        if (!data || !_.isFunction(data.summarize)) {
-          console.error(
-            "[GW COOP] card summarize unavailable for synced card name id=" +
-              payload.card_id
-          );
-          result.reject("Card summarize unavailable for " + payload.card_id);
-          return;
-        }
-
-        var cardName = loc(data.summarize());
-        if (!applyCardNameToStarIndex(payload.star, cardName)) {
-          console.warn(
-            "[GW COOP] unable to apply synced star card name for star=" +
-              payload.star
-          );
-          result.reject("Unable to apply card name to star " + payload.star);
-          return;
-        }
-
-        result.resolve();
-      });
-
-      return result.promise();
-    };
-
-    var setCardName = function (system, card, starIndex) {
-      var deferred = $.Deferred();
-      var firstCard = card && card[0];
-      if (!firstCard || !firstCard.id) {
-        deferred.resolve();
-        return deferred.promise();
-      }
-
-      requireGW(["cards/" + firstCard.id], function (data) {
-        if (data && _.isFunction(data.summarize)) {
-          system.star.ai().cardName = loc(data.summarize());
-          sendSyncedStarCardName(starIndex, firstCard.id);
-        }
-        deferred.resolve();
-      });
-
-      return deferred.promise();
-    };
-
-    var testCardForMatches = function (inventory, card) {
-      var cardsDealt = [card];
-      var duplicate = doNotDealCard(inventory, card, cardsDealt, false, true, [
-        card,
-      ]);
-
-      if (!duplicate) {
-        console.error(card.id, "failed duplication test");
-      }
-    };
-
-    var applyCheatCards = function (product, inventory) {
-      inventory.cards.push(product);
-      inventory.applyCards();
-    };
-
-    var setupNewCardSlot = function (product) {
-      product.allowOverflow = true;
-      product.unique = Math.random();
-
-      return product;
-    };
-
-    var isStartLoadoutCardId = function (cardId) {
-      return _.isString(cardId) && _.includes(cardId, "_start_");
-    };
-
-    var filterStartLoadoutCards = function (cards) {
-      return _.filter(cards || [], function (card) {
-        return isStartLoadoutCardId(card.id);
-      });
-    };
-
-    var buildPendingStartLoadoutCard = function (card) {
-      var result = _.isString(card) ? { id: card } : _.cloneDeep(card);
-      if (
-        result &&
-        isStartLoadoutCardId(result.id) &&
-        _.isUndefined(result.allowOverflow)
-      ) {
-        result.allowOverflow = true;
-      }
-
-      return result;
-    };
-
     requireGW(
       [
         "shared/gw_common",
@@ -492,12 +264,35 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "shared/gw_inventory",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
       ],
-      function (GW, GWFactions, gwoAI, gwoSave, gwoBank, GWInventory, gwoDeal) {
+      function (
+        GW,
+        GWFactions,
+        gwoAI,
+        gwoSave,
+        gwoBank,
+        GWInventory,
+        gwoDeal,
+        cardsDealHelpers,
+        cardsCardNameSync,
+        cardsCoopDeal,
+        cardsCoopReroll,
+        cardsCheats
+      ) {
+        helpers = cardsDealHelpers;
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();
         var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+
+        // Registers the gwo_sync_star_card_name host handler; returns setCardName,
+        // used by the AI-dealing path below to name each star after its tech card.
+        var cardNameSync = cardsCardNameSync({ game: game });
 
         /* Start of GWO implementation of GWDealer */
 
@@ -530,7 +325,7 @@ function gwoCard() {
               var context = cardContexts[card.id];
               var cardChance =
                 card.deal && card.deal(star, context, dealInventory);
-              var match = doNotDealCard(
+              var match = helpers.doNotDealCard(
                 dealInventory,
                 card,
                 list,
@@ -612,500 +407,28 @@ function gwoCard() {
           return result;
         };
 
-        // GWO override of the host-side co-op pending tech deal path.
-        //
-        // In stock gw_play.js, the host always deals exactly 3 cards to viewers
-        // when creating pending tech cards. That base implementation does not
-        // account for GWO-specific bonus card rules
-        model.dealCoopPlayerPendingTechCards = function (
-          starIndex,
-          star,
-          options
-        ) {
-          var result = $.Deferred();
-          var dealOptions = options || {};
-          var startLoadoutCards = filterStartLoadoutCards(
-            dealOptions.startLoadoutCards
-          );
+        // Installs model.dealCoopPlayerPendingTechCards - the host-side co-op pending
+        // tech deal path (GWO's bonus-card-aware override of stock gw_play.js).
+        cardsCoopDeal({
+          game: game,
+          chooseCards: chooseCards,
+          helpers: helpers,
+          GWInventory: GWInventory,
+          numCardsToOffer: numCardsToOffer,
+        });
 
-          if (
-            !model.gwCampaignActive() ||
-            !model.isCampaignHost() ||
-            !model.gwCampaignPerPlayerTechCards()
-          ) {
-            result.resolve([]);
-            return result.promise();
-          }
-
-          var connectedClients = _.isArray(model.gwCampaignConnectedClients())
-            ? model.gwCampaignConnectedClients()
-            : [];
-          var sourceClients = _.isArray(dealOptions.clients)
-            ? dealOptions.clients
-            : connectedClients;
-          var viewers = _.filter(sourceClients, function (client) {
-            return client && client.role === "viewer";
-          });
-
-          if (!viewers.length) {
-            result.resolve([]);
-            return result.promise();
-          }
-
-          var updates = [];
-          var jobs = [];
-          var targets = [];
-          var validationError;
-
-          _.forEach(viewers, function (client) {
-            if (validationError) {
-              return;
-            }
-
-            var record = game.findCoopPlayerInventoryData({
-              id: client.id,
-              name: client.name,
-            });
-            if (!record) {
-              validationError =
-                "Missing inventory data for pending tech cards client=" +
-                client.id +
-                " name=" +
-                client.name;
-              return;
-            }
-
-            if (!record.inventory) {
-              validationError =
-                "Missing saved inventory for pending tech cards client=" +
-                client.id +
-                " name=" +
-                client.name;
-              return;
-            }
-
-            if (record.pendingTechCards) {
-              validationError =
-                "Client already has pending tech cards client=" +
-                client.id +
-                " name=" +
-                client.name;
-              return;
-            }
-
-            var dealIndex = dealOptions.dealIndex;
-            if (
-              _.isNumber(dealIndex) &&
-              model.getCoopPlayerTechCardDealCount(record) >= dealIndex
-            ) {
-              return;
-            }
-
-            var startLoadoutCard;
-            if (startLoadoutCards.length) {
-              if (!_.isArray(record.unlockedStartCardIds)) {
-                console.warn(
-                  "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
-                    client.id +
-                    " name=" +
-                    client.name
-                );
-              }
-
-              startLoadoutCard = _.find(startLoadoutCards, function (card) {
-                return !model.recordHasUnlockedStartCard(record, card);
-              });
-            }
-
-            targets.push({
-              client: client,
-              record: record,
-              dealIndex: dealIndex,
-              startLoadoutCard: startLoadoutCard,
-            });
-          });
-
-          if (validationError) {
-            result.reject(validationError);
-            return result.promise();
-          }
-
-          if (!targets.length) {
-            result.resolve([]);
-            return result.promise();
-          }
-
-          // Deals a viewer their pending tech cards. Defined here (a sibling of the
-          // per-target loop below) rather than inside that loop's callback, so its
-          // chooseCards().then() callback doesn't sit six function-levels deep. Takes
-          // the loop-local target/job/inventory explicitly; reads starIndex/star/
-          // updates from this enclosing scope.
-          var dealCardsForTarget = function (target, job, inventory) {
-            var client = target.client;
-            var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
-            chooseCards({
-              inventory: inventory,
-              count: cardsOffered,
-              star: star,
-              systemCards: [],
-            }).then(function (cards) {
-              var pendingTechCards = {
-                star: starIndex,
-                cards: cards || [],
-                dealIndex: target.dealIndex,
-                cardsOffered: cardsOffered,
-                updatedAt: _.now(),
-              };
-              updates.push({
-                client_id: client.id,
-                client_name: client.name,
-                pendingTechCards: pendingTechCards,
-              });
-              job.resolve();
-            });
-          };
-
-          _.forEach(targets, function (target) {
-            var client = target.client;
-            var record = target.record;
-            var job = $.Deferred();
-            jobs.push(job.promise());
-
-            if (target.startLoadoutCard) {
-              updates.push({
-                client_id: client.id,
-                client_name: client.name,
-                pendingTechCards: {
-                  star: starIndex,
-                  cards: [
-                    buildPendingStartLoadoutCard(target.startLoadoutCard),
-                  ],
-                  dealIndex: target.dealIndex,
-                  updatedAt: _.now(),
-                },
-              });
-              job.resolve();
-              return;
-            }
-
-            var inventory = new GWInventory();
-            inventory.load(_.cloneDeep(record.inventory));
-
-            if (inventory.cards().length) {
-              inventory.applyCards(
-                dealCardsForTarget.bind(null, target, job, inventory)
-              );
-            } else {
-              dealCardsForTarget(target, job, inventory);
-            }
-          });
-
-          $.when.apply($, jobs).then(function () {
-            if (!updates.length) {
-              result.resolve([]);
-              return;
-            }
-
-            var payload = {
-              players: updates,
-              host_tech_card_deal_count: game.hostTechCardDealCount(),
-              host_tech_card_deal_history: game.hostTechCardDealHistory(),
-            };
-
-            if (_.isFunction(model.send_message)) {
-              model.send_message(
-                "set_player_pending_tech_cards",
-                payload,
-                function (success, response) {
-                  if (!success) {
-                    result.reject(
-                      "set_player_pending_tech_cards failed response=" +
-                        JSON.stringify(response || {})
-                    );
-                    return;
-                  }
-
-                  result.resolve(updates);
-                }
-              );
-            } else {
-              model.sendCampaignAction(
-                "set_player_pending_tech_cards",
-                payload
-              );
-              result.resolve(updates);
-            }
-          });
-
-          return result.promise();
-        };
-
-        var rerollPendingTechRequest = "gwo_reroll_pending_tech";
-        var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
-
-        var sendPendingTechRerollResult = function (
-          clientId,
-          requestId,
-          payload
-        ) {
-          if (!model.sendCampaignHostOperator) {
-            return;
-          }
-
-          model.sendCampaignHostOperator(rerollPendingTechResult, payload, {
-            target_client_id: clientId,
-            request_id: requestId,
-          });
-        };
-
-        var failPendingTechReroll = function (operator, reason) {
-          console.error("[GW COOP] failed to reroll pending tech: " + reason);
-          if (_.isUndefined(operator.client_id)) {
-            return;
-          }
-
-          sendPendingTechRerollResult(operator.client_id, operator.request_id, {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            error: reason,
-          });
-        };
-
-        var applyPendingTechRerollResult = function (operator) {
-          var payload = operator.payload || {};
-          model.gwoRerollPending(false);
-
-          if (payload.error) {
-            console.error(
-              "[GW COOP] pending tech reroll failed: " + payload.error
-            );
-            model.scanning(false);
-            return;
-          }
-
-          var pendingTechCards = payload.pendingTechCards;
-          if (
-            !pendingTechCards ||
-            !_.isNumber(pendingTechCards.star) ||
-            !_.isArray(pendingTechCards.cards)
-          ) {
-            console.error("[GW COOP] invalid pending tech reroll result");
-            model.scanning(false);
-            return;
-          }
-
-          var record = game.findCoopPlayerInventoryData({
-            id: payload.client_id,
-            name: payload.client_name,
-          });
-          if (!record || !record.inventory) {
-            console.error(
-              "[GW COOP] missing inventory for pending tech reroll result"
-            );
-            model.scanning(false);
-            return;
-          }
-
-          var nextRecord = _.assign({}, _.cloneDeep(record), {
-            pendingTechCards: pendingTechCards,
-            updatedAt: payload.updated_at || _.now(),
-          });
-
-          if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
-            console.error(
-              "[GW COOP] failed to apply pending tech reroll result"
-            );
-            model.scanning(false);
-            return;
-          }
-
-          if (_.isNumber(payload.rerolls_used)) {
-            model.gwoRerollsUsed(payload.rerolls_used);
-          }
-          model.gwoOfferRerolls(payload.offer_rerolls === true);
-
-          // Match the host's own reroll/deal path (model.explore): keep the
-          // cards hidden behind the scanning overlay for a cosmetic 2s beat
-          // rather than popping them in the instant the result arrives. Not
-          // awaited - it must not hold up the campaign queue below.
-          _.delay(function () {
-            model.scanning(false);
-          }, 2000);
-
-          // Return the remaining display-prep + save work so the base campaign
-          // queue can order it. The record upsert above is the canonical (and
-          // synchronous) mutation, so early exits above may stay undefined.
-          return $.when(
-            model.prepareCoopPlayerInventories(),
-            GW.manifest.saveGame(game).then(null, function (err) {
-              console.error("[GW COOP] failed to save rerolled tech", err);
-              return $.Deferred().reject(err).promise();
-            })
-          );
-        };
-
-        var rerollPendingTechForCoopPlayer = function (operator) {
-          var result = $.Deferred();
-
-          // failPendingTechReroll still sends the error operator back to the
-          // requesting viewer; also reject so the base campaign queue can order
-          // this handler's async work.
-          var failReroll = function (reason) {
-            failPendingTechReroll(operator, reason);
-            result.reject(reason);
-          };
-
-          if (
-            !model.isCampaignHost() ||
-            !model.gwCampaignPerPlayerTechCards()
-          ) {
-            result.reject("not campaign host or per-player tech disabled");
-            return result.promise();
-          }
-
-          var payload = operator.payload || {};
-          var record = game.findCoopPlayerInventoryData({
-            id: operator.client_id,
-            name: operator.client_name,
-          });
-
-          if (!record || !record.inventory || !record.pendingTechCards) {
-            failReroll("missing pending tech cards");
-            return result.promise();
-          }
-
-          var pendingTechCards = record.pendingTechCards;
-          if (
-            !_.isNumber(pendingTechCards.star) ||
-            !_.isArray(pendingTechCards.cards)
-          ) {
-            failReroll("invalid pending tech cards");
-            return result.promise();
-          }
-
-          if (
-            _.isNumber(payload.star) &&
-            payload.star !== pendingTechCards.star
-          ) {
-            failReroll("stale pending tech star");
-            return result.promise();
-          }
-
-          if (
-            _.isNumber(payload.deal_index) &&
-            _.isNumber(pendingTechCards.dealIndex) &&
-            payload.deal_index !== pendingTechCards.dealIndex
-          ) {
-            failReroll("stale pending tech deal index");
-            return result.promise();
-          }
-
-          if (pendingCardsContainLoadout(pendingTechCards)) {
-            failReroll("loadout cards cannot be rerolled");
-            return result.promise();
-          }
-
-          var star = galaxy.stars()[pendingTechCards.star];
-          if (!star) {
-            failReroll("missing pending tech star");
-            return result.promise();
-          }
-
-          var playerInventory = new GWInventory();
-          playerInventory.load(_.cloneDeep(record.inventory));
-
-          var dealCards = function () {
-            var cardsOffered = cardsOfferedCount(
-              numCardsToOffer,
-              playerInventory
-            );
-            var rerollsUsed = Math.max(
-              0,
-              cardsOffered - pendingTechCards.cards.length
-            );
-            var nextRerollsUsed = rerollsUsed + 1;
-
-            if (nextRerollsUsed > cardsOffered - 1) {
-              failReroll("no pending tech rerolls remain");
-              return;
-            }
-
-            var cardCount = cardsOffered - nextRerollsUsed;
-            chooseCards({
-              inventory: playerInventory,
-              count: cardCount,
-              star: star,
-              systemCards: [],
-            }).then(function (cards) {
-              var updatedAt = _.now();
-              var nextPendingTechCards = {
-                star: pendingTechCards.star,
-                cards: cards || [],
-                dealIndex: pendingTechCards.dealIndex,
-                cardsOffered: cardsOffered,
-                rerollsUsed: nextRerollsUsed,
-                updatedAt: updatedAt,
-              };
-              var nextRecord = _.assign({}, _.cloneDeep(record), {
-                pendingTechCards: nextPendingTechCards,
-                updatedAt: updatedAt,
-              });
-
-              if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
-                failReroll("failed to store rerolled pending tech");
-                return;
-              }
-
-              model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
-              sendPendingTechRerollResult(
-                operator.client_id,
-                operator.request_id,
-                {
-                  client_id: operator.client_id,
-                  client_name: operator.client_name,
-                  pendingTechCards: nextPendingTechCards,
-                  rerolls_used: nextRerollsUsed,
-                  offer_rerolls: nextRerollsUsed < cardsOffered - 1,
-                  updated_at: updatedAt,
-                }
-              );
-              gwoSave(game, false).then(
-                function () {
-                  result.resolve();
-                },
-                function (error) {
-                  result.reject(error);
-                }
-              );
-            });
-          };
-
-          if (playerInventory.cards().length) {
-            playerInventory.applyCards(dealCards);
-          } else {
-            dealCards();
-          }
-
-          return result.promise();
-        };
-
-        if (model.registerCampaignViewerOperatorHandler) {
-          model.registerCampaignViewerOperatorHandler(
-            rerollPendingTechRequest,
-            rerollPendingTechForCoopPlayer
-          );
-        }
-
-        if (model.registerCampaignHostOperatorHandler) {
-          model.registerCampaignHostOperatorHandler(
-            rerollPendingTechResult,
-            applyPendingTechRerollResult
-          );
-          model.registerCampaignHostOperatorHandler(
-            setCardNameSyncOperator,
-            applySyncedStarCardName
-          );
-        }
+        // Registers the co-op pending-tech reroll operator handlers (viewer request +
+        // host result) and their host-side deal logic.
+        cardsCoopReroll({
+          game: game,
+          galaxy: galaxy,
+          chooseCards: chooseCards,
+          helpers: helpers,
+          GWInventory: GWInventory,
+          numCardsToOffer: numCardsToOffer,
+          gwoSave: gwoSave,
+          GW: GW,
+        });
 
         var dealCardToSelectableAI = function (win, turnState) {
           if (model.isCampaignViewer()) {
@@ -1124,7 +447,7 @@ function gwoCard() {
               var loadoutPresent =
                 treasurePlanet &&
                 !_.isEmpty(system.star.cardList()) &&
-                isStartLoadoutCardId(system.star.cardList()[0].id);
+                helpers.isStartLoadoutCardId(system.star.cardList()[0].id);
               var validForDeal =
                 gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
@@ -1150,7 +473,7 @@ function gwoCard() {
                       star: starIndex,
                       cards: system.star.cardList(),
                     });
-                    return setCardName(system, card, starIndex);
+                    return cardNameSync.setCardName(system, card, starIndex);
                   })
                 );
               }
@@ -1194,198 +517,23 @@ function gwoCard() {
 
         /* end of GWO implementation of GWDealer */
 
-        /* Cheat code start */
-
-        var testMinions = function (product, inventory) {
-          // Load units.js once and flatten the per-faction minion lists into a single
-          // pass, rather than re-require()ing it inside a doubly-nested loop (which
-          // both re-fetched the module per minion and nested six function-levels deep).
-          require([
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-          ], function (gwoUnit) {
-            var clusterSecurity = gwoUnit.colonel;
-            var clusterWorker = gwoUnit.angel;
-
-            var allMinions = _.reduce(
-              GWFactions,
-              function (collected, faction) {
-                return collected.concat(faction.minions || []);
-              },
-              []
-            );
-
-            _.forEach(allMinions, function (minion) {
-              var minionStock = _.cloneDeep(product);
-              minionStock.minion = minion;
-              inventory.cards.push(minionStock);
-              inventory.cards.pop();
-
-              if (!minionStock.minion.commander) {
-                // This will use the player's commander
-                return;
-              }
-
-              if (
-                !CommanderUtility.bySpec.getObjectName(
-                  minionStock.minion.commander
-                ) &&
-                minionStock.minion.commander !== clusterSecurity &&
-                minionStock.minion.commander !== clusterWorker
-              ) {
-                console.error(
-                  "Minion commander unit spec " +
-                    minionStock.minion.commander +
-                    " invalid"
-                );
-              }
-            });
-          });
-        };
-
-        var dealSubCommander = function (product) {
-          var subcommander = _.cloneDeep(
-            _.sample(GWFactions[playerFaction].minions)
-          );
-          var subcommanderAI = gwoSettings && gwoSettings.aiAlly;
-
-          if (subcommanderAI === "Penchant") {
-            var penchantValues = gwoAI.penchants();
-            subcommander.character =
-              subcommander.character + (" " + loc(penchantValues.penchantName));
-            subcommander.personality.personality_tags =
-              subcommander.personality.personality_tags.concat(
-                penchantValues.penchants
-              );
-          }
-          product.minion = subcommander;
-          product.unique = Math.random();
-
-          return product;
-        };
-
-        var expandInventorySize = function (galaxy, inventory, star, maxCards) {
-          var sizeDifference = inventory.cards().length - maxCards;
-          var deferredQueue = [];
-          _.times(sizeDifference, function () {
-            deferredQueue.push(
-              gwoDeal
-                .dealCard(
-                  {
-                    id: "gwc_add_card_slot",
-                    galaxy: galaxy,
-                    inventory: inventory,
-                    star: star,
-                  },
-                  loaded,
-                  cards
-                )
-                .then(function (product) {
-                  product = setupNewCardSlot(product);
-                  applyCheatCards(product, inventory);
-                })
-            );
-          });
-          return $.when.apply($, deferredQueue);
-        };
-
-        // We need cheats to deal from our deck
-        model.cheats.testCards = function () {
-          if (model.isCampaignViewer()) {
-            console.error(
-              "[GW COOP] cheats.testCards is unavailable for co-op viewers"
-            );
-            return;
-          }
-
-          var star = galaxy.stars()[game.currentStar()];
-          var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
-          var deferredQueue = [];
-
-          _.forEach(model.gwoCards, function (cardId) {
-            deferredQueue.push(
-              gwoDeal
-                .dealCard(
-                  {
-                    id: cardId,
-                    galaxy: galaxy,
-                    inventory: inventory,
-                    star: star,
-                  },
-                  loaded,
-                  cards
-                )
-                .then(function (product) {
-                  if (product.id === "gwc_minion") {
-                    testMinions(product, inventory);
-                    product = dealSubCommander(product);
-                  } else if (product.id === "gwc_add_card_slot") {
-                    product = setupNewCardSlot(product);
-                  }
-                  applyCheatCards(product, inventory);
-                  if (!product.unique) {
-                    testCardForMatches(inventory, product);
-                  }
-                })
-            );
-          });
-          deferredQueue.push(
-            expandInventorySize(galaxy, inventory, star, maxCards)
-          );
-
-          $.when.apply($, deferredQueue).then(function () {
-            dealCardToSelectableAI(false).then(function () {
-              model.sendCampaignSnapshot("gwo_cheat_test_cards", true);
-              gwoSave(game, true);
-            });
-          });
-        };
-
-        model.cheats.giveCard = function () {
-          if (model.isCampaignViewer()) {
-            console.error(
-              "[GW COOP] cheats.giveCard is unavailable for co-op viewers"
-            );
-            return;
-          }
-
-          var id = model.cheats.giveCardId();
-          var cardId = _.find(model.gwoCards, function (card) {
-            return card === id;
-          });
-
-          if (cardId) {
-            gwoDeal
-              .dealCard(
-                {
-                  id: cardId,
-                  galaxy: galaxy,
-                  inventory: inventory,
-                  star: galaxy.stars()[game.currentStar()],
-                },
-                loaded,
-                cards
-              )
-              .then(function (product) {
-                if (product.id === "gwc_minion") {
-                  product = dealSubCommander(product);
-                } else if (product.id === "gwc_add_card_slot") {
-                  product = setupNewCardSlot(product);
-                }
-                inventory.cards.push(product);
-                inventory.applyCards();
-                dealCardToSelectableAI(false).then(function () {
-                  model.sendCampaignSnapshot("gwo_cheat_give_card", true);
-                  gwoSave(game, true);
-                });
-              });
-          } else {
-            console.error(
-              "Unable to find a card called " + model.cheats.giveCardId()
-            );
-          }
-        };
-
-        /* Cheat code end */
+        // Installs model.cheats.testCards / model.cheats.giveCard - dev cheats that deal
+        // from GWO's own deck.
+        cardsCheats({
+          game: game,
+          galaxy: galaxy,
+          inventory: inventory,
+          gwoSettings: gwoSettings,
+          playerFaction: playerFaction,
+          gwoDeal: gwoDeal,
+          gwoAI: gwoAI,
+          GWFactions: GWFactions,
+          gwoSave: gwoSave,
+          cards: cards,
+          loaded: loaded,
+          dealCardToSelectableAI: dealCardToSelectableAI,
+          helpers: helpers,
+        });
 
         // gw_play self.explore - call our chooseCards()
         model.explore = function (force) {
@@ -1409,9 +557,12 @@ function gwoCard() {
 
           api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-          var cardsOffered = cardsOfferedCount(numCardsToOffer, inventory);
+          var cardsOffered = helpers.cardsOfferedCount(
+            numCardsToOffer,
+            inventory
+          );
           var star = game.galaxy().stars()[game.currentStar()];
-          var startLoadoutCards = filterStartLoadoutCards(
+          var startLoadoutCards = helpers.filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
           );
           var dealStarCards = chooseCards({
@@ -1424,7 +575,7 @@ function gwoCard() {
 
             _.forEach(star.cardList(), function (card) {
               if (
-                _.includes(card.id, "_start_") &&
+                helpers.isStartLoadoutCardId(card.id) &&
                 !GW.bank.hasStartCard(card) &&
                 !gwoBank.hasStartCard(card)
               ) {
