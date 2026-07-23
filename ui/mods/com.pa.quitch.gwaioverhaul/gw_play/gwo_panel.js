@@ -85,7 +85,15 @@ function gwoWarInfoPanel(gwoSettings) {
     if (_.isFunction(model.gwCampaignConnected)) {
       model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
     }
+
     var cheatsDetected = function () {
+      if (!model.devMode()) {
+        return;
+      }
+      if (_.isFunction(model.isCampaignViewer) && model.isCampaignViewer()) {
+        return;
+      }
+
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
         function (gwoSave) {
@@ -103,15 +111,8 @@ function gwoWarInfoPanel(gwoSettings) {
       );
     };
 
-    if (model.devMode()) {
-      cheatsDetected();
-    }
-
-    model.devMode.subscribe(function () {
-      if (model.devMode()) {
-        cheatsDetected();
-      }
-    });
+    cheatsDetected();
+    model.devMode.subscribe(cheatsDetected);
 
     var options = function (optionsList, setting, text) {
       if (setting) {
