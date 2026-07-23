@@ -144,7 +144,7 @@ define([
         model.prepareCoopPlayerInventories &&
         _.isFunction(model.prepareCoopPlayerInventories)
       ) {
-        model.prepareCoopPlayerInventories();
+        return model.prepareCoopPlayerInventories();
       }
     };
 
@@ -191,6 +191,7 @@ define([
     };
 
     var setupGeneralCommanderForCoopPlayer = function (operator) {
+      var result = $.Deferred();
       var record;
       var recordInventory;
       var cards;
@@ -200,12 +201,21 @@ define([
       var finish;
       var inventoryCards;
 
+      // failGeneralCommanderSetup still sends the error operator back to the
+      // requesting viewer; also reject so the base campaign queue can order this
+      // handler's async work.
+      var failSetup = function (reason) {
+        failGeneralCommanderSetup(operator, reason);
+        result.reject(reason);
+      };
+
       if (
         !model.isCampaignHost() ||
         !model.gwCampaignPerPlayerTechCards() ||
         !operator
       ) {
-        return;
+        result.reject("not campaign host or per-player tech disabled");
+        return result.promise();
       }
 
       record = game.findCoopPlayerInventoryData({
@@ -214,15 +224,15 @@ define([
       });
 
       if (!record || !record.inventory) {
-        failGeneralCommanderSetup(operator, "missing co-op player inventory");
-        return;
+        failSetup("missing co-op player inventory");
+        return result.promise();
       }
 
       recordInventory = _.cloneDeep(record.inventory);
       cards = recordInventory && recordInventory.cards;
       if (!_.isArray(cards)) {
-        failGeneralCommanderSetup(operator, "invalid co-op player inventory");
-        return;
+        failSetup("invalid co-op player inventory");
+        return result.promise();
       }
 
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
@@ -235,7 +245,8 @@ define([
             changed: false,
           }
         );
-        return;
+        result.resolve();
+        return result.promise();
       }
 
       recordFaction =
@@ -254,10 +265,7 @@ define([
         });
 
         if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
-          failGeneralCommanderSetup(
-            operator,
-            "failed to store co-op player inventory"
-          );
+          failSetup("failed to store co-op player inventory");
           return;
         }
 
@@ -272,7 +280,14 @@ define([
             updated_at: nextRecord.updatedAt,
           }
         );
-        gwoSave(game, false);
+        gwoSave(game, false).then(
+          function () {
+            result.resolve();
+          },
+          function (error) {
+            result.reject(error);
+          }
+        );
       };
 
       inventoryCards = playerInventory.cards();
@@ -286,10 +301,13 @@ define([
             changed: false,
           }
         );
-        return;
+        result.resolve();
+        return result.promise();
       }
 
       playerInventory.applyCards(finish);
+
+      return result.promise();
     };
 
     if (model.registerCampaignViewerOperatorHandler) {
