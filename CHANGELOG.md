@@ -5,7 +5,6 @@
 ### Added
 
 - Protection against cards creating empty navigation blocks making the engine think a static unit was mobile
-- Console error when a co-op Viewer runs on an unauthenticated profile, which breaks co-op tech inventory and card offers
 
 ### Changed
 
