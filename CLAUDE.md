@@ -14,11 +14,14 @@ tiers, tech cards, factions, planetary intel, etc). It ships as plain JS/CSS/JSO
 loaded by the game's embedded Chrome 40, not a bundled/transpiled app - there is no
 build step, only lint/validate/test.
 
-The sibling folder `../../../../Steam/steamapps/common/Planetary Annihilation Titans/media`
-(its own `CLAUDE.md` describes it) is the base game install. Treat it
-as read-only reference for what an unmodified file looked like before this mod
-shadowed it, or to find game systems (units, specs, AI) this mod doesn't touch. Never
-edit anything there.
+The base game install (a `media` folder under Steam's `.../Planetary Annihilation
+Titans/`) is not part of this repo and lives at a different path on every
+contributor's machine. If it's set up as an additional workspace root, it will
+appear in the "Additional working directories" list at the start of the session,
+and its own `CLAUDE.md` will identify it as the base game install - use that rather
+than assuming a fixed path here. Treat it as read-only reference for what an
+unmodified file looked like before this mod shadowed it, or to find game systems
+(units, specs, AI) this mod doesn't touch. Never edit anything there.
 
 ## Commands
 
