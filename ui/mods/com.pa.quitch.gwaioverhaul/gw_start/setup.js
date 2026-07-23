@@ -190,14 +190,12 @@ function gwoSetup() {
         "nem_start_deepspace",
         "gwaio_start_tourist",
       ];
-      // global for modder compatibility
-      gwoStarCardsWhichBreakAllies = _.isArray(
-        model.gwoStarCardsWhichBreakAllies
-      )
-        ? gwoStarCardsWhichBreakAllies.concat(
-            model.gwoStarCardsWhichBreakAllies
-          )
-        : gwoStarCardsWhichBreakAllies;
+      // global for modder compatibility - merge in any modder-added ids
+      if (_.isArray(model.gwoStarCardsWhichBreakAllies)) {
+        gwoStarCardsWhichBreakAllies = gwoStarCardsWhichBreakAllies.concat(
+          model.gwoStarCardsWhichBreakAllies
+        );
+      }
       return _.some(gwoStarCardsWhichBreakAllies, function (card) {
         return card === game.inventory().cards()[0].id;
       });
