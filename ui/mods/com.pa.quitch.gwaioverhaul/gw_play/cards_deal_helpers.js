@@ -109,5 +109,22 @@ define(function () {
         _.includes(pendingTechCards.cards[0].id, "_start_")
       );
     },
+
+    // Attach the co-op ally's penchant to a subcommander in place. Reads the runtime
+    // `loc` global; gwoSettings/gwoAI are injected so this stays pure and testable. A
+    // no-op unless the ally is Penchant.
+    applyPenchantToSubcommander: function (subcommander, gwoSettings, gwoAI) {
+      if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
+        return;
+      }
+
+      var penchantValues = gwoAI.penchants();
+      subcommander.character =
+        subcommander.character + (" " + loc(penchantValues.penchantName));
+      subcommander.personality.personality_tags =
+        subcommander.personality.personality_tags.concat(
+          penchantValues.penchants
+        );
+    },
   };
 });

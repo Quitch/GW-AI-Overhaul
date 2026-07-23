@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
   "shared/gw_inventory",
-], function (GWFactions, gwoAI, gwoSave, GWInventory) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+], function (GWFactions, gwoAI, gwoSave, GWInventory, helpers) {
   return function (params) {
     var game = params.game;
     var gwoSettings = params.gwoSettings;
@@ -23,21 +24,6 @@ define([
         cards[0].id === "gwc_start_subcdr" &&
         !cards[0].minions
       );
-    };
-
-    var applyPenchantToSubcommander = function (subcommander) {
-      var subcommanderAI = gwoSettings && gwoSettings.aiAlly;
-      if (subcommanderAI !== "Penchant") {
-        return;
-      }
-
-      var penchantValues = gwoAI.penchants();
-      subcommander.character =
-        subcommander.character + (" " + loc(penchantValues.penchantName));
-      subcommander.personality.personality_tags =
-        subcommander.personality.personality_tags.concat(
-          penchantValues.penchants
-        );
     };
 
     var resolveFactionMinions = function (factionIndex) {
@@ -69,7 +55,7 @@ define([
         }
 
         var subcommander = _.cloneDeep(baseSubcommander);
-        applyPenchantToSubcommander(subcommander);
+        helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
         minions.push({
           id: "gwc_minion",
           minion: subcommander,

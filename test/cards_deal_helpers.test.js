@@ -239,3 +239,45 @@ describe("pendingCardsContainLoadout", () => {
     assert.equal(helpers.pendingCardsContainLoadout(undefined), false);
   });
 });
+
+describe("applyPenchantToSubcommander", () => {
+  // The helper reads the runtime `loc` global; in-game it localises, here it just
+  // echoes the key so the appended name is assertable.
+  const gwoAI = {
+    penchants: () => ({ penchantName: "!LOC:Reckless", penchants: ["rush"] }),
+  };
+
+  function subcommander() {
+    return {
+      character: "Commander",
+      personality: { personality_tags: ["base"] },
+    };
+  }
+
+  it("appends the penchant name and tags for a Penchant ally", () => {
+    const priorLoc = global.loc;
+    global.loc = (key) => key;
+    try {
+      const sub = subcommander();
+      helpers.applyPenchantToSubcommander(sub, { aiAlly: "Penchant" }, gwoAI);
+      assert.equal(sub.character, "Commander !LOC:Reckless");
+      assert.deepEqual(sub.personality.personality_tags, ["base", "rush"]);
+    } finally {
+      global.loc = priorLoc;
+    }
+  });
+
+  it("is a no-op for a non-Penchant ally", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(sub, { aiAlly: "Queller" }, gwoAI);
+    assert.equal(sub.character, "Commander");
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
+  });
+
+  it("is a no-op when gwoSettings is missing", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(sub, undefined, gwoAI);
+    assert.equal(sub.character, "Commander");
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
+  });
+});

@@ -102,17 +102,7 @@ define(function () {
       var subcommander = _.cloneDeep(
         _.sample(GWFactions[playerFaction].minions)
       );
-      var subcommanderAI = gwoSettings && gwoSettings.aiAlly;
-
-      if (subcommanderAI === "Penchant") {
-        var penchantValues = gwoAI.penchants();
-        subcommander.character =
-          subcommander.character + (" " + loc(penchantValues.penchantName));
-        subcommander.personality.personality_tags =
-          subcommander.personality.personality_tags.concat(
-            penchantValues.penchants
-          );
-      }
+      helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
       product.minion = subcommander;
       product.unique = Math.random();
 
