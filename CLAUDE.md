@@ -73,7 +73,7 @@ functions without needing to shadow an entire file.
 Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
 (`define([deps], function(...) {...})`) returning an object with this fixed shape
 (enforced by `scripts/validate/cards-contract.js`, empirically confirmed across all
-223 cards):
+225 cards):
 
 - `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` - always
   functions.
