@@ -1,16 +1,6 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   gwoUnit
 ) {
-  model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-  model.gwoSpecs.push(
-    gwoUnit.fireflyAmmo,
-    gwoUnit.fireflyWeapon,
-    gwoUnit.orcaTorpedo,
-    gwoUnit.orcaTorpedoAmmo,
-    gwoUnit.skitterAmmo,
-    gwoUnit.skitterWeapon
-  );
-
   var orderOfOperations = function (mods) {
     var operationsContainer = {};
     operationsContainer.otherOperations = [];
@@ -436,5 +426,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       });
     },
+    additionalSpecs: [
+      gwoUnit.fireflyAmmo,
+      gwoUnit.fireflyWeapon,
+      gwoUnit.orcaTorpedo,
+      gwoUnit.orcaTorpedoAmmo,
+      gwoUnit.skitterAmmo,
+      gwoUnit.skitterWeapon,
+    ],
   };
 });
