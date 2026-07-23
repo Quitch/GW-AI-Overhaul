@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Viewers get the proper delay before a reroll displays new cards
+
 ## v6.3.0 - 2026-07-23
 
 ### Added

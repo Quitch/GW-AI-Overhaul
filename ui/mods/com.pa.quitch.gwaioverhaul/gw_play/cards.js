@@ -874,12 +874,12 @@ function gwoCard() {
         var applyPendingTechRerollResult = function (operator) {
           var payload = operator.payload || {};
           model.gwoRerollPending(false);
-          model.scanning(false);
 
           if (payload.error) {
             console.error(
               "[GW COOP] pending tech reroll failed: " + payload.error
             );
+            model.scanning(false);
             return;
           }
 
@@ -890,6 +890,7 @@ function gwoCard() {
             !_.isArray(pendingTechCards.cards)
           ) {
             console.error("[GW COOP] invalid pending tech reroll result");
+            model.scanning(false);
             return;
           }
 
@@ -901,6 +902,7 @@ function gwoCard() {
             console.error(
               "[GW COOP] missing inventory for pending tech reroll result"
             );
+            model.scanning(false);
             return;
           }
 
@@ -913,6 +915,7 @@ function gwoCard() {
             console.error(
               "[GW COOP] failed to apply pending tech reroll result"
             );
+            model.scanning(false);
             return;
           }
 
@@ -920,6 +923,14 @@ function gwoCard() {
             model.gwoRerollsUsed(payload.rerolls_used);
           }
           model.gwoOfferRerolls(payload.offer_rerolls === true);
+
+          // Match the host's own reroll/deal path (model.explore): keep the
+          // cards hidden behind the scanning overlay for a cosmetic 2s beat
+          // rather than popping them in the instant the result arrives. Not
+          // awaited - it must not hold up the campaign queue below.
+          _.delay(function () {
+            model.scanning(false);
+          }, 2000);
 
           // Return the remaining display-prep + save work so the base campaign
           // queue can order it. The record upsert above is the canonical (and
