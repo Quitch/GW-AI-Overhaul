@@ -17,6 +17,7 @@
 *.RTF	 diff=astextplain
 
 # Keep development junk out of our ZIP files
+.claude/ export-ignore
 .github/ export-ignore
 images/ export-ignore
 scripts/ export-ignore
