@@ -7,13 +7,15 @@
 // so it catches "wrong export shape" bugs (typos, missing/renamed fields, wrong
 // type), not runtime logic bugs.
 //
-// Empirically tallied across all 223 cards (see amd-loader.js's NOT_SHIPPED note for
+// Empirically tallied across all 225 cards (see amd-loader.js's NOT_SHIPPED note for
 // why not all of them can load here):
 //   - visible/describe/summarize/icon/deal/buff/dull: function, on every loadable card.
 //   - audio/getContext: function, on every loadable card except gwaio_enable_bot_aa.js
 //     (explicitly kept for save-compatibility with GWO v5.9.0 and earlier).
-//   - keep/discard: function, present on exactly one card each - legitimate optional
-//     extensions to the base contract, not typos.
+//   - keep/discard: function, present on exactly one loadable card each
+//     (gwc_add_card_slot.js) - legitimate optional extensions to the base contract,
+//     not typos. gwc_minion.js also carries both but is excluded as KNOWN_UNLOADABLE,
+//     so its shape is never checked here.
 
 const fs = require("node:fs");
 const path = require("node:path");
