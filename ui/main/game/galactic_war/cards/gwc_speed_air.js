@@ -11,18 +11,13 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_air_engine.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_speed",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster)) {
-        chance = 70;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster),
+        70
+      );
     },
     buff: function (inventory) {
       var mods = _.flatten(

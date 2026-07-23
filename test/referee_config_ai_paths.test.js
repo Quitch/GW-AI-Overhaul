@@ -1,20 +1,20 @@
 "use strict";
 
-// Unit tests for referee_config.js's ai_path assignment logic (setAIPath and the
-// army-setup functions that call it), reached via its test-only module.exports hook
-// (see the comment above that hook in referee_config.js, and referee_ai.js's
-// applyAiMods hook for the original pattern this follows).
+// Unit tests for the battle-config referee's ai_path assignment logic (setAIPath and
+// the army-setup functions that call it). These live in the extracted, measured
+// gw_play/referee_config_setup.js; referee_config.js itself keeps only the model/ko/api
+// glue and is coverage-excluded, so this loads the setup module directly.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
-const refereeConfig = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
+const refereeConfig = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
 );
 
 let restoreModel;
@@ -142,6 +142,54 @@ describe("setupPrimaryAiAndMinions", () => {
     const ai = makeAiDescriptor({ faction: 4, minions: [] });
     refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", []);
     assert.equal(ai.personality.ai_path, "/pa/ai_cluster/");
+  });
+
+  // A guardian (mirror-mode) primary AI derives its personality from the player's card
+  // composition: each unit-type card share becomes that type's percent_*, and under
+  // Queller the dominant share also picks a personality tag. penchantName additionally
+  // feeds the display_name (Show AI Personality Names support).
+  it("derives a Queller guardian's personality percentages and tag from the player's cards", () => {
+    const fixture = buildGame({ aiInUse: "Queller" });
+    restoreModel = installModel(fixture.game);
+
+    const ai = makeAiDescriptor({
+      mirrorMode: true,
+      minions: [],
+      character: "!LOC:Aggressor",
+      penchantName: "!LOC:Heavy",
+      personality: {
+        adv_eco_mod: 1,
+        adv_eco_mod_alone: 1,
+        percent_vehicle: 0,
+        percent_bot: 0,
+        percent_orbital: 0,
+        percent_air: 0,
+        percent_naval: 0,
+      },
+    });
+    // 2 air cards + 1 bot card => air is the dominant share (2/3), bot 1/3.
+    const cards = [
+      { id: "gwaio_upgrade_fighter_air" },
+      { id: "gwaio_upgrade_bomber_air" },
+      { id: "gwaio_upgrade_dox_bot" },
+    ];
+    const armies = [];
+
+    refereeConfig.setupPrimaryAiAndMinions(
+      ai,
+      cards,
+      [".ai0"],
+      "Queller",
+      armies
+    );
+
+    assert.ok(Math.abs(ai.personality.percent_air - 2 / 3) < 1e-9);
+    assert.ok(Math.abs(ai.personality.percent_bot - 1 / 3) < 1e-9);
+    assert.equal(ai.personality.percent_orbital, 0);
+    // Queller: dominant air share tags the personality "queller" + "air".
+    assert.deepEqual(ai.personality.personality_tags, ["queller", "air"]);
+    // penchantName is appended to the display_name via getAIPersonalityName.
+    assert.ok(armies[0].personality.display_name.includes("!LOC:Heavy"));
   });
 });
 

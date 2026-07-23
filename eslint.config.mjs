@@ -39,6 +39,12 @@ export default defineConfig([
     extends: ["js/recommended"],
     rules: {
       curly: ["error", "all"],
+      "no-unused-vars": [
+        "error",
+        {
+          caughtErrors: "none",
+        },
+      ],
     },
   },
   {

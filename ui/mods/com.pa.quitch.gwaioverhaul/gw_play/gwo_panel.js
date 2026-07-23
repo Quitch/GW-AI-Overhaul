@@ -1,4 +1,5 @@
 var gwoWarInfoPanelLoaded;
+var gwoViewerIdentityWarned;
 
 function gwoWarInfoPanel(gwoSettings) {
   try {
@@ -47,7 +48,52 @@ function gwoWarInfoPanel(gwoSettings) {
         );
       }
     });
+
+    // A Viewer whose PA profile has never been loaded by an authenticated user
+    // has an empty uberId/displayName (the base game falls back to "Player").
+    // Co-op records are keyed by identity, so findCoopPlayerInventoryData can
+    // never match this Viewer's own record - its tech inventory, card offers, and
+    // subcommander deals all silently no-op. Surface it once so the state is
+    // diagnosable instead of looking like a GWO bug (the base game shares this).
+    var warnIfViewerIdentityMissing = function () {
+      if (gwoViewerIdentityWarned) {
+        return;
+      }
+      if (!_.isFunction(model.isCampaignViewer) || !model.isCampaignViewer()) {
+        return;
+      }
+
+      var uberId = _.isFunction(model.uberId) ? model.uberId() : undefined;
+      var displayName = _.isFunction(model.displayName)
+        ? model.displayName()
+        : undefined;
+
+      if (uberId && displayName) {
+        return;
+      }
+
+      gwoViewerIdentityWarned = true;
+      console.error(
+        "[GW COOP] Viewer identity is missing (uberId/displayName empty) - this " +
+          "PA profile has not been loaded by an authenticated user. Co-op tech " +
+          "inventory, card offers, and subcommander deals will not work for this " +
+          "Viewer until it runs under an authenticated login."
+      );
+    };
+
+    warnIfViewerIdentityMissing();
+    if (_.isFunction(model.gwCampaignConnected)) {
+      model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
+    }
+
     var cheatsDetected = function () {
+      if (!model.devMode()) {
+        return;
+      }
+      if (_.isFunction(model.isCampaignViewer) && model.isCampaignViewer()) {
+        return;
+      }
+
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
         function (gwoSave) {
@@ -65,15 +111,8 @@ function gwoWarInfoPanel(gwoSettings) {
       );
     };
 
-    if (model.devMode()) {
-      cheatsDetected();
-    }
-
-    model.devMode.subscribe(function () {
-      if (model.devMode()) {
-        cheatsDetected();
-      }
-    });
+    cheatsDetected();
+    model.devMode.subscribe(cheatsDetected);
 
     var options = function (optionsList, setting, text) {
       if (setting) {
@@ -107,7 +146,7 @@ function gwoWarInfoPanel(gwoSettings) {
       ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
       function (gwoColour) {
         /* War Information */
-        model.gwoVersion = ko.observable("6.2.3");
+        model.gwoVersion = ko.observable("6.3.0");
 
         /* Co-op Information */
         var coopText = function (setting) {
@@ -363,7 +402,7 @@ var gwoPanelLoader = ko.computed(function () {
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
   if (
-    _.isObject(originSystem.gwaio) &&
+    _.isPlainObject(originSystem.gwaio) &&
     !game.isTutorial() &&
     !gwoWarInfoPanelLoaded
   ) {
@@ -378,7 +417,7 @@ var gwoPanelLoader = ko.computed(function () {
   } else {
     console.warn(
       "Tried to load GWO panel and failed. GWO settings found:",
-      _.isObject(originSystem.gwaio),
+      _.isPlainObject(originSystem.gwaio),
       "This is a Galactic War:",
       !game.isTutorial(),
       "GWO panel already loaded:",

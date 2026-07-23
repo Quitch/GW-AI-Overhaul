@@ -16,26 +16,15 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_factory_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_vehicle",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_vehicle",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
-      ) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+          gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
@@ -78,14 +67,11 @@ define([
         })
       );
 
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFactory,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Tank & Mobile & FactoryBuild & Custom58)",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.vehicleFactory, "add", {
+          buildable_types: " | (Tank & Mobile & FactoryBuild & Custom58)",
+        })
+      );
       inventory.addAIMods(aiMods);
     },
     dull: function () {},

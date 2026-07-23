@@ -35,10 +35,24 @@ Any submissions should follow the requirements below:
 - Code must be formatted using prettier.
 - Commit summaries must be informative but concise, with any required detail in the body.
 
+### Function scoping in shipped UI code (Sonar S7721)
+
+Shipped `ui/**` code is loaded by the game through stock RequireJS, which runs each module file by injecting a `<script>` element (`req.load` -> `req.createNode`; `node.src = url; head.appendChild(node)`). A `<script>` executes in **global scope**, so anything declared at a file's top level - outside its `define(...)` factory - becomes a property of the global `window` object. The mod's non-AMD scene scripts (e.g. `function gwoSetup()`) rely on exactly this. GWO's convention is therefore:
+
+- **Keep module-private helpers inside the `define(...)` factory.** Do not hoist a helper to file top level just to satisfy Sonar `javascript:S7721` ("Move function to the outer scope"). The factory body runs once per load, so a factory-scoped helper is created once regardless - there is no performance win - whereas hoisting it leaks a globally-named function (`multiply`, `isNullish`, `luminance`, ...) that can silently collide (last-loaded-wins) with the base game, other mods, or GWO's own files. S7721 is unsatisfiable in this runtime without creating such a global (hoisting only _within_ the factory does not clear it - the rule wants the outermost scope), so it is **accepted** (won't-fix) and scoped out of `ui/**`. It stays active for `scripts/**` and `test/**`, which are real CommonJS modules where Node wraps each file and hoisting is both safe and beneficial.
+- **Node test reach for base-game-shadowed modules.** A module whose `define(...)` dependencies cannot resolve in the Node test harness - it depends on an unshipped base-game module, so `amd-loader` throws `NotShippedError` before the factory can run (e.g. `gw_per_player_tech_referee.js`, `gw_galaxy.js`, `referee_game_files.js`, `referee_config.js`) - keeps its testable logic in a separate **measured** sibling module (`gw_play/{per_player_tech,referee_config_setup,referee_game_file_paths}.js`, `shared/gw_galaxy_graph.js`) that the shadowed file `require`s and that tests load directly via `loadCouiModule`. The residual model/ko/api glue stays in the shadowed file, which is coverage-excluded (see `sonar-project.properties`). The extracted module is a normal `define(...)` returning its helpers, so nothing is hoisted to file top level; helpers that need the shadowed file's collaborators take them as explicit parameters or (when all collaborators are themselves shipped mod modules) inject the same `define(...)` dependencies. The one remaining in-factory `module.exports` test hook is `referee_ai.js`'s `applyAiMods` (reached via `requireShippedModule`); prefer the extract-a-sibling approach for new cases.
+
+### Test coverage and new code
+
+CI runs SonarCloud's default quality gate, which requires **≥ 80% coverage on _new code_** (the lines a change adds or edits) - not on the whole repo, so the large body of pre-existing untested `ui/**` is not retroactively measured. The aim is honest coverage, never padding to hit the number:
+
+- **New/changed logic gets a unit test.** Add coverage under `test/**` for the branching you introduce in the measured logic layer (`shared/**` helpers, `gw_play/referee_*.js`, `gw_start/ai_tech.js`, and similar). Follow the existing harness in `test/*.test.js` (`node:test` + `scripts/lib/amd-loader.js`, engine globals stubbed only where a function reads them).
+- **Keep non-trivial logic in a measured `shared/` helper, not inline in a tech card.** Tech cards (`cards/**`) are excluded from the coverage metric because their contract and AI-mod behaviour are already enforced by `validate:cards`/`validate:ai-mods`; that exclusion is only honest while cards stay thin, so real logic belongs in a `shared/` module where it is both testable and tested.
+- **Genuinely-untestable new code is excluded, not faked.** DOM/knockout/createjs glue and pure `define({...})` data blobs (whose correctness is guarded by `validate:schemas`/`validate:refs`) belong in `sonar.coverage.exclusions` in `sonar-project.properties` - each with a one-line rationale matching the categories already documented there - rather than being given assertionless "tests" just to move coverage.
+
 ## Available Libraries
 
 - Those supported by Planetary Annihilation: TITANS - `media\ui\main\shared\js\thirdparty\`
-- lodash 3.9.3
-- jQuery 2.1.4
-- Knockout.js 3.5.1
-- RequireJS 2.1.11
+  - Where multiple libraries exist use the following:
+    - lodash 3.9.3
+    - Knockout.js 3.5.1

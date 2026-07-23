@@ -16,36 +16,24 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_sea",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.navalFabber)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.navalFabber),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.starterUnitsAdvanced);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.navalFabber,
-          path: "buildable_types",
-          op: "add",
-          value: " | (Naval & Structure & Advanced | FabAdvBuild) & Custom58",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.navalFabber, "add", {
+          buildable_types:
+            " | (Naval & Structure & Advanced | FabAdvBuild) & Custom58",
+        })
+      );
 
       var units = [
         "AdvancedAirDefense",

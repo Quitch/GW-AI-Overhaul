@@ -16,37 +16,25 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_vehicle",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_vehicle",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFabber)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFabber)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.starterUnitsAdvanced);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFabber,
-          path: "buildable_types",
-          op: "add",
-          value:
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.vehicleFabber, "add", {
+          buildable_types:
             " | (Structure & Land & Advanced - Factory | FabAdvBuild) & Custom58",
-        },
-      ]);
+        })
+      );
 
       var units = [
         "AdvancedAirDefense",

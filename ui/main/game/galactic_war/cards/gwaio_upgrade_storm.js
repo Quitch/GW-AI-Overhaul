@@ -15,32 +15,20 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.storm)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.storm)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.storm,
-          path: "tools",
-          op: "push",
-          value: {
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.storm, "push", {
+          tools: {
             spec_id: gwoUnit.gileEBeam,
             aim_bone: "socket_aim",
             muzzle_bone: [
@@ -50,8 +38,8 @@ define([
               "socket_muzzle04",
             ],
           },
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

@@ -117,7 +117,7 @@ function gwoUI() {
 
       if (_.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {
-          console.error(
+          console.warn(
             "gwoUI: previousSettings is a legacy array of length " +
               previousSettings.length +
               " but there are now " +

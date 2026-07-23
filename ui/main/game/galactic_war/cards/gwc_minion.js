@@ -42,11 +42,9 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_subcommander",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_subcommander",
+    }),
     getContext: function (galaxy, inventory) {
       return {
         totalSize: galaxy.stars().length,

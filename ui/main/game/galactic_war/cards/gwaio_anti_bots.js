@@ -11,47 +11,24 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 70;
-      var hasAntiTech = _.some(
-        model.game().inventory().cards(),
-        function (card) {
-          return _.startsWith(card.id, "gwaio_anti_");
-        }
-      );
-      if (inventory.hasCard("gwaio_anti_vehicles")) {
-        chance = 0;
-      } else if (hasAntiTech) {
-        chance /= 2;
-      }
-      return { chance: chance };
+      return gwoCard.antiTechDeal(inventory, 70, "gwaio_anti_vehicles");
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.ammo, function (ammo) {
-          return [
-            {
-              file: ammo,
-              path: "armor_damage_map.AT_Vehicle",
-              op: "multiplyOrCreate",
-              value: 0.5,
-            },
-            {
-              file: ammo,
-              path: "armor_damage_map.AT_Bot",
-              op: "multiplyOrCreate",
-              value: 2,
-            },
-          ];
-        })
+      inventory.addMods(
+        _.flatten(
+          _.map(gwoGroup.ammo, function (ammo) {
+            return gwoCard.mods(ammo, "multiplyOrCreate", {
+              "armor_damage_map.AT_Vehicle": 0.5,
+              "armor_damage_map.AT_Bot": 2,
+            });
+          })
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

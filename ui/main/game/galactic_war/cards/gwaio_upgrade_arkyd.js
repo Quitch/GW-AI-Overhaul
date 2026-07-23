@@ -15,58 +15,27 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_efficiency",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.arkyd)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.arkyd)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.3.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.arkyd,
-          path: "recon.observer.items.4.radius",
-          op: "multiply",
-          value: 1.5,
-        },
-      ]);
+      inventory.addMods(
+        _.times(5, function (i) {
+          return {
+            file: gwoUnit.arkyd,
+            path: "recon.observer.items." + i + ".radius",
+            op: "multiply",
+            value: 1.5,
+          };
+        })
+      );
     },
     dull: function () {},
   };

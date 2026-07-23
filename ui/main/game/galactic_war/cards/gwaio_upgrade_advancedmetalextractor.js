@@ -15,23 +15,14 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_storage_compression_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_efficiency",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.metalExtractorAdvanced)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.metalExtractorAdvanced)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);

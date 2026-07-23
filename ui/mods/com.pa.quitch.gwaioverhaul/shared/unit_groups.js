@@ -633,6 +633,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     structuresDefences,
     gwoUnit.commander
   );
+  var combatMobile = _.reject(combat, function (unit) {
+    return _.includes(structuresDefences, unit);
+  });
 
   return {
     air: air,
@@ -664,6 +667,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsWeapons: botsWeapons,
     clusterCommanders: clusterCommanders,
     combat: combat,
+    combatMobile: combatMobile,
     commanderAmmo: commanderAmmo,
     energyAll: energyAll,
     energyIntel: energyIntel,

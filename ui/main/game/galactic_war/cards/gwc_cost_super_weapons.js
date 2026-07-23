@@ -12,18 +12,15 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_super_weapons.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_cost_reduction",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_cost_reduction",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons)) {
-        chance = 60;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons),
+        60
+      );
     },
     buff: function (inventory) {
       var units = gwoGroup.structuresSuperWeapons.concat(

@@ -270,7 +270,6 @@ define({
   },
 
   dealCard: function (params, loaded, loadedCards) {
-    console.debug("Dealing GWO card:", params.id, "with params:", params);
     var result = $.Deferred();
     loaded.then(function () {
       var card = _.find(loadedCards, { id: params.id });
@@ -284,10 +283,10 @@ define({
       var context =
         card.getContext && card.getContext(params.galaxy, params.inventory);
 
-      var deal = card.deal && card.deal(params.star, context);
+      var deal = card.deal && card.deal(params.star, context, params.inventory);
       var product = { id: params.id };
       var cardParams = deal && deal.params;
-      if (cardParams && _.isObject(cardParams)) {
+      if (cardParams && _.isPlainObject(cardParams)) {
         _.assign(product, cardParams);
       }
       card.keep && card.keep(deal, context);

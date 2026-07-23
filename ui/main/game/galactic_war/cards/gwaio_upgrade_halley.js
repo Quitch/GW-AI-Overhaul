@@ -15,40 +15,21 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_super_weapons_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_armor",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.halley)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.halley)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.halley,
-          path: "max_health",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.halley,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.halley, "multiply", {
+          max_health: 2,
+          build_metal_cost: 0.5,
+        })
+      );
     },
     dull: function () {},
   };

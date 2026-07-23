@@ -103,6 +103,35 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     return value === undefined || value === null;
   }
 
+  // Whether a path segment denotes an array position ("+" appends, a numeric
+  // string indexes). Used to decide whether a missing intermediate container
+  // should be created as an array rather than a plain object.
+  function isIndexLike(segment) {
+    return (
+      segment === "+" || (segment !== "" && !Number.isNaN(Number(segment)))
+    );
+  }
+
+  // The game treats any unit with a navigation object - even an empty one - as
+  // mobile. A navigation.* mod applied to a unit that has no navigation object
+  // auto-creates an empty navigation container whose leaf is left undefined (e.g.
+  // multiply/add on a nonexistent numeric). JSON serialisation drops that
+  // undefined key, leaving navigation: {} - wrongly marking a structure as mobile
+  // and adding needless Nav Agent load - so strip the navigation object back off.
+  function pruneEmptyNavigation(spec) {
+    if (!_.isPlainObject(spec) || !_.isPlainObject(spec.navigation)) {
+      return;
+    }
+    // A key whose value is undefined is dropped by JSON serialisation, so
+    // navigation counts as "not empty" only if at least one value survives it.
+    var hasSerialisableValue = _.some(spec.navigation, function (value) {
+      return value !== undefined;
+    });
+    if (!hasSerialisableValue) {
+      delete spec.navigation;
+    }
+  }
+
   return {
     mod: function (specs, mods, specTag) {
       var load = function (specId) {
@@ -126,7 +155,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var ops = {
         multiply: function (attribute, value) {
           if (!_.isNumber(attribute)) {
-            console.error(
+            console.warn(
               "multiply: attribute is not a number. Leaving unchanged:",
               attribute
             );
@@ -140,7 +169,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             !_.isString(attribute) &&
             !isNullish(attribute)
           ) {
-            console.error(
+            console.warn(
               "add: attribute is not a number, string, or nullish. Leaving unchanged:",
               attribute
             );
@@ -154,8 +183,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return value;
         },
         merge: function (attribute, value) {
-          if (!_.isObject(attribute)) {
-            console.error(
+          if (!_.isPlainObject(attribute)) {
+            console.warn(
               "merge: attribute is not an object. Leaving unchanged:",
               attribute
             );
@@ -189,7 +218,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
         tag: function (attribute) {
           if (!_.isString(attribute)) {
-            console.error(
+            console.warn(
               "tag: attribute is not a string. Leaving unchanged:",
               attribute
             );
@@ -197,7 +226,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
-            console.error(
+            console.warn(
               "tag: attribute does not contain '.json'. Leaving unchanged:",
               attribute
             );
@@ -269,6 +298,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.error("Invalid operation in mod", mod);
         }
 
+        // Kept before the path walk reassigns `spec` to a nested container: the
+        // first path segment (e.g. "navigation") is always created on the file's
+        // top-level spec, so this is the object pruneEmptyNavigation must inspect.
+        var rootSpec = spec;
+
         var originalPath = (mod.path || "").split(".");
         var path = originalPath.slice().reverse();
 
@@ -294,32 +328,56 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           merge: {}, // merge's own check treats {} as a valid empty base
         };
 
-        var cookStep = function (step, op) {
-          if (_.isArray(spec)) {
-            if (step === "+") {
-              step = spec.length;
-              spec.push({});
-            } else {
-              step = Number(step);
-            }
-          } else if (
-            path.length &&
+        // A missing intermediate segment needs a traversable container: an
+        // array when the next segment indexes into it, otherwise a plain object.
+        var traversableFor = function (nextSegment) {
+          return isIndexLike(nextSegment) ? [] : {};
+        };
+
+        var cookArrayStep = function (step, op) {
+          if (step === "+") {
+            spec.push({});
+            return spec.length - 1;
+          }
+          step = Number(step);
+          // Intermediate (op undefined) index into an array with no element
+          // there yet: create a container so the path can continue.
+          if (
+            !op &&
+            !Number.isNaN(step) &&
             !Object.prototype.hasOwnProperty.call(spec, step)
           ) {
-            // Intermediate (non-leaf) segments always need a traversable {}
-            // (op is undefined for those calls). The leaf segment should see
-            // a real "missing" signal for any op without a listed default, so
-            // ops like multiplyOrCreate/add can tell "absent" from "present"
-            // and run their own create-on-missing behavior correctly.
-            if (!op) {
-              spec[step] = {};
-            } else if (Object.prototype.hasOwnProperty.call(opDefaults, op)) {
-              spec[step] = opDefaults[op];
-            } else {
-              spec[step] = undefined;
-            }
+            spec[step] = traversableFor(path[path.length - 1]);
           }
           return step;
+        };
+
+        var cookObjectStep = function (step, op) {
+          if (
+            !path.length ||
+            Object.prototype.hasOwnProperty.call(spec, step)
+          ) {
+            return step;
+          }
+          // Intermediate (non-leaf) segments always need a traversable
+          // container (op is undefined for those calls). The leaf segment
+          // should instead see a real "missing" signal for any op without a
+          // listed default, so ops like multiplyOrCreate/add can tell "absent"
+          // from "present" and run their own create-on-missing behavior.
+          if (!op) {
+            spec[step] = traversableFor(path[path.length - 1]);
+          } else if (Object.prototype.hasOwnProperty.call(opDefaults, op)) {
+            spec[step] = opDefaults[op];
+          } else {
+            spec[step] = undefined;
+          }
+          return step;
+        };
+
+        var cookStep = function (step, op) {
+          return _.isArray(spec)
+            ? cookArrayStep(step, op)
+            : cookObjectStep(step, op);
         };
 
         while (path.length > 1) {
@@ -352,6 +410,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
               "' requires a path, but none was given",
             mod
           );
+        }
+
+        if (originalPath[0] === "navigation") {
+          pruneEmptyNavigation(rootSpec);
         }
       };
 

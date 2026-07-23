@@ -14,10 +14,7 @@
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const {
-  loadCouiModule,
-  requireShippedModule,
-} = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
@@ -29,8 +26,8 @@ const {
   createFakeApi,
 } = require("../scripts/lib/fake-jquery.js");
 
-const refereeConfig = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
+const refereeConfig = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
 );
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
@@ -41,8 +38,8 @@ const refereeAIPaths = loadCouiModule(
 const subcommanderTech = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
 );
-const perPlayerTechHook = requireShippedModule(
-  "coui://ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js"
+const perPlayerTechHook = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
 );
 const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"

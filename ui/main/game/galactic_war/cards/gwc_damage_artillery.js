@@ -11,18 +11,15 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery)) {
-        chance = 50;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery),
+        50
+      );
     },
     buff: function (inventory) {
       var mods = [];

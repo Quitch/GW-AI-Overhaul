@@ -15,23 +15,13 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_speed",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.piranha)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.piranha),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);

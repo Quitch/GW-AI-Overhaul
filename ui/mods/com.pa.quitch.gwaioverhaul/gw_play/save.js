@@ -1,5 +1,10 @@
 define(["shared/gw_common"], function (GW) {
   return function (gameState, saveStars) {
+    if (model.isCampaignViewer()) {
+      model.driveAccessInProgress(false);
+      return;
+    }
+
     var starsSaved = !saveStars;
 
     model.game().saved(starsSaved);

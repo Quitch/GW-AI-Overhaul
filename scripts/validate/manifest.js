@@ -18,6 +18,35 @@ const REQUIRED_TOP_LEVEL_FIELDS = [
 ];
 const COUI_PREFIX = "coui://";
 
+// Validates one scene's file list, pushing any problems onto `failures`. Returns the
+// number of entries seen so main() can keep a running total.
+function validateScene(sceneName, files, failures) {
+  if (!Array.isArray(files)) {
+    failures.push("scene `" + sceneName + "` is not an array");
+    return 0;
+  }
+
+  for (const entry of files) {
+    if (!entry.startsWith(COUI_PREFIX)) {
+      failures.push(
+        "scene `" + sceneName + "` entry is not a coui:// path: " + entry
+      );
+      continue;
+    }
+    const fsPath = path.join(REPO_ROOT, entry.slice(COUI_PREFIX.length));
+    if (!fs.existsSync(fsPath)) {
+      failures.push(
+        "scene `" +
+          sceneName +
+          "` references a file that does not exist: " +
+          entry
+      );
+    }
+  }
+
+  return files.length;
+}
+
 function main() {
   const failures = [];
   let modinfo;
@@ -42,29 +71,7 @@ function main() {
   let fileCount = 0;
 
   for (const [sceneName, files] of Object.entries(scenes)) {
-    if (!Array.isArray(files)) {
-      failures.push("scene `" + sceneName + "` is not an array");
-      continue;
-    }
-
-    for (const entry of files) {
-      fileCount++;
-      if (!entry.startsWith(COUI_PREFIX)) {
-        failures.push(
-          "scene `" + sceneName + "` entry is not a coui:// path: " + entry
-        );
-        continue;
-      }
-      const fsPath = path.join(REPO_ROOT, entry.slice(COUI_PREFIX.length));
-      if (!fs.existsSync(fsPath)) {
-        failures.push(
-          "scene `" +
-            sceneName +
-            "` references a file that does not exist: " +
-            entry
-        );
-      }
-    }
+    fileCount += validateScene(sceneName, files, failures);
   }
 
   console.log(

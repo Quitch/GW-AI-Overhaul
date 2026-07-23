@@ -15,57 +15,30 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.ant)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.ant)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.antAmmo,
-          path: "splash_damage",
-          op: "replace",
-          value: 63,
-        },
-        {
-          file: gwoUnit.antAmmo,
-          path: "splash_radius",
-          op: "replace",
-          value: 10,
-        },
-        {
-          file: gwoUnit.antAmmo,
-          path: "full_damage_splash_radius",
-          op: "replace",
-          value: 2,
-        },
-        {
-          file: gwoUnit.antAmmo,
-          path: "events",
-          op: "replace",
-          value: {
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.antAmmo, "replace", {
+          splash_damage: 63,
+          splash_radius: 10,
+          full_damage_splash_radius: 2,
+          events: {
             died: {
               audio_cue: "/SE/Impacts/bot_spark_impact",
               effect_spec: "/pa/effects/specs/tesla_hit.pfx",
             },
           },
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

@@ -1,98 +1,19 @@
 // StarSystemTemplates.generate has systems scale with galaxy depth
 
-var GWGalaxy = function () {
-  var self = this;
-  self.stars = ko.observableArray();
-  self.gates = ko.observableArray();
-  self.origin = ko.observable(0);
-  self.radius = ko.observable([1, 1]);
-  self.saved = ko.observable(false);
-
-  // Map of node -> node list that share an edge, going both directions.
-  // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
-  self.neighborsMap = ko.computed(function () {
-    var edges = {};
-    _.forEach(self.gates(), function (gate) {
-      if (!_.has(edges, gate[0])) {
-        edges[gate[0]] = [];
-      }
-      if (!_.has(edges, gate[1])) {
-        edges[gate[1]] = [];
-      }
-
-      edges[gate[0]].push(gate[1]);
-      edges[gate[1]].push(gate[0]);
-    });
-
-    return edges;
-  });
-
-  self.areNeighbors = function (a, b) {
-    var neighbors = self.neighborsMap();
-    if (_.has(neighbors, a)) {
-      return _.includes(neighbors[a], b);
-    }
-  };
-
-  self.pathBetween = function (from, to, noFog) {
-    var toExplored = self.stars()[to].explored();
-
-    var neighborsMap = self.neighborsMap();
-
-    var checked = {};
-
-    var workList = [[from]];
-
-    while (workList.length > 0) {
-      var path = workList.shift();
-
-      var node = path[path.length - 1];
-      var nodeNeighbors = neighborsMap[node] || [];
-
-      checked[node] = true;
-
-      for (var neighbor of nodeNeighbors) {
-        if (checked[neighbor]) {
-          continue;
-        } // ignore loop
-
-        if (neighbor === to) {
-          // prevent pathing through unexplored systems for fog of war
-
-          var explored = self.stars()[node].explored() || toExplored;
-
-          if (!explored && !noFog) {
-            continue;
-          }
-
-          path.push(neighbor);
-
-          return path;
-        }
-
-        var otherStar = self.stars()[neighbor];
-        var otherVisited = otherStar.history().length > 0;
-
-        var valid = noFog ? otherVisited : otherStar.explored();
-
-        if (valid) {
-          var newPath = _.cloneDeep(path);
-          newPath.push(neighbor);
-
-          workList.push(newPath);
-        }
-      }
-    }
-
-    return null;
-  };
-};
-
+// The testable graph core (the GWGalaxy constructor:
+// neighborsMap/areNeighbors/pathBetween, ko/lodash only) lives in the measured
+// shared/gw_galaxy_graph.js and is unit-tested by test/gw_galaxy_path_between.test.js.
+// This shadowed file augments that constructor with the systems load/save/build glue,
+// which depends on the unshipped shared/GalaxyBuilder, shared/gw_star and template-loader
+// (so it cannot load under the Node AMD harness) and is coverage-excluded. gw_game.js
+// consumes the fully-augmented GWGalaxy via its "shared/gw_galaxy" AMD dependency, so the
+// runtime contract is unchanged.
 define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
   "shared/GalaxyBuilder",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
-], function (GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
+], function (GWGalaxy, GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
   GWGalaxy.loadSystems = function (systems, config) {
     _.forEach(_.zip(systems.stars, config.stars), function (pair) {
       GWStar.loadSystem(pair[0], pair[1]);

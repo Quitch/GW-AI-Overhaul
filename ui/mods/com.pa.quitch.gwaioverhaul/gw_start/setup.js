@@ -338,6 +338,7 @@ function gwoSetup() {
             var card = _.find(processedStartCards, { id: params.id });
             if (!card) {
               console.error("No matching start card ID found");
+              warGenerationFailed = true;
             }
             var context =
               card.getContext &&
@@ -345,7 +346,7 @@ function gwoSetup() {
             var deal = card.deal && card.deal(params.star, context);
             var product = { id: params.id };
             var cardParams = deal && deal.params;
-            if (cardParams && _.isObject(cardParams)) {
+            if (cardParams && _.isPlainObject(cardParams)) {
               _.assign(product, cardParams);
             }
             card.keep && card.keep(deal, context);
@@ -428,7 +429,7 @@ function gwoSetup() {
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          var version = "6.2.3";
+          var version = "6.3.0";
           console.log("War created using Galactic War Overhaul v" + version);
 
           var game = new GW.Game();
@@ -561,51 +562,55 @@ function gwoSetup() {
               neutralStars = 4;
             }
 
+            // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
+            // to preserve personality_tags. Defined here (a sibling of handleSpread
+            // below) rather than nested inside it, taking team/ai/star as explicit
+            // params, so the promise callbacks don't sit six function-levels deep.
+            var makeWorker = function (team, ai) {
+              if (team.workers) {
+                _.assign(ai, _.cloneDeep(_.sample(team.workers)));
+              } else if (team.remainingMinions) {
+                var minion = _.sample(
+                  team.remainingMinions.length
+                    ? team.remainingMinions
+                    : team.faction.minions
+                );
+                _.assign(ai, _.cloneDeep(minion));
+                _.remove(team.remainingMinions, { name: ai.name });
+              }
+              return $.when(ai);
+            };
+
+            var onWorkerMade = function (team, ai, star) {
+              if (team.workers) {
+                _.remove(team.workers, { name: ai.name });
+              }
+              ai.faction = teamInfo[ai.team].faction;
+              teamInfo[ai.team].workers.push({
+                ai: ai,
+                star: star,
+              });
+            };
+
+            var onBossMade = function (ai) {
+              ai.faction = teamInfo[ai.team].faction;
+              teamInfo[ai.team].boss = ai;
+            };
+
             var handleSpread = function (star, ai) {
               var team = teams[ai.team];
-              // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
-              // to preserve personality_tags
-              var makeWorker = function () {
-                if (team.workers) {
-                  _.assign(ai, _.cloneDeep(_.sample(team.workers)));
-                } else if (team.remainingMinions) {
-                  var minion = _.sample(
-                    team.remainingMinions.length
-                      ? team.remainingMinions
-                      : team.faction.minions
-                  );
-                  _.assign(ai, _.cloneDeep(minion));
-                  _.remove(team.remainingMinions, { name: ai.name });
-                }
-                return $.when(ai);
-              };
-
-              var onWorkerMade = function () {
-                if (team.workers) {
-                  _.remove(team.workers, { name: ai.name });
-                }
-                ai.faction = teamInfo[ai.team].faction;
-                teamInfo[ai.team].workers.push({
-                  ai: ai,
-                  star: star,
-                });
-              };
-
-              return makeWorker().then(onWorkerMade);
+              return makeWorker(team, ai).then(
+                onWorkerMade.bind(null, team, ai, star)
+              );
             };
 
             var handleBoss = function (star, ai) {
-              var onBossMade = function () {
-                ai.faction = teamInfo[ai.team].faction;
-                teamInfo[ai.team].boss = ai;
-              };
-
               return GWTeams.makeBoss(
                 star,
                 ai,
                 teams[ai.team],
                 systemTemplates
-              ).then(onBossMade);
+              ).then(onBossMade.bind(null, ai));
             };
 
             var returnTeamInfo = function () {
@@ -626,6 +631,25 @@ function gwoSetup() {
           };
 
           var populate = moveIn.then(onMovedIn);
+
+          // Sibling helpers for onPopulated's nested star/planet loops, defined here
+          // and passed by reference (bind) so the loop bodies don't sit six
+          // function-levels deep.
+          var setupPlanetForAI = function (ai, planet) {
+            planet.generator.shuffleLandingZones = true;
+            // Set up Foundation planets
+            if (
+              sharedSystemsForGalacticWarActive === false &&
+              ai.faction === 1 &&
+              !ai.boss
+            ) {
+              planet.generator.waterHeight = 50;
+            }
+          };
+
+          var isCardLocked = function (card) {
+            return !GW.bank.hasStartCard(card) && !gwoBank.hasStartCard(card);
+          };
 
           var onPopulated = function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
@@ -892,17 +916,10 @@ function gwoSetup() {
               var ai = star.ai();
               var system = star.system();
               if (ai) {
-                _.forEach(star.system().planets, function (planet) {
-                  planet.generator.shuffleLandingZones = true;
-                  // Set up Foundation planets
-                  if (
-                    sharedSystemsForGalacticWarActive === false &&
-                    ai.faction === 1 &&
-                    !ai.boss
-                  ) {
-                    planet.generator.waterHeight = 50;
-                  }
-                });
+                _.forEach(
+                  star.system().planets,
+                  setupPlanetForAI.bind(null, ai)
+                );
 
                 if (!ai.bossCommanders) {
                   var difficulty = model.gwoDifficultySettings;
@@ -936,12 +953,7 @@ function gwoSetup() {
                       "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
                     var lockedStartCards = _.filter(
                       treasureCards,
-                      function (card) {
-                        return (
-                          !GW.bank.hasStartCard(card) &&
-                          !gwoBank.hasStartCard(card)
-                        );
-                      }
+                      isCardLocked
                     );
 
                     // Deal a loadout to the treasure planet

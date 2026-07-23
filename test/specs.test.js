@@ -42,8 +42,8 @@ describe("specs.mod - basic ops", () => {
     assert.equal(data["unit.json"].hp, 200);
   });
 
-  it("multiply on a non-number logs an error and leaves the value unchanged", () => {
-    const errorMock = mock.method(console, "error", () => {});
+  it("multiply on a non-number logs a warning and leaves the value unchanged", () => {
+    const warnMock = mock.method(console, "warn", () => {});
     const data = { "unit.json": { hp: "not-a-number" } };
     specs.mod(
       data,
@@ -51,7 +51,7 @@ describe("specs.mod - basic ops", () => {
       ""
     );
     assert.equal(data["unit.json"].hp, "not-a-number");
-    assert.equal(errorMock.mock.callCount(), 1);
+    assert.equal(warnMock.mock.callCount(), 1);
   });
 
   it("add sums a numeric value", () => {
@@ -227,6 +227,56 @@ describe("specs.mod - path walking", () => {
     );
     assert.deepEqual(data["unit.json"].list, [{ a: 5 }]);
   });
+
+  it("replace creates a full missing path, building an array where a segment indexes", () => {
+    const data = { "unit.json": {} };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "recon.observer.items.1.radius",
+          op: "replace",
+          value: 50,
+        },
+      ],
+      ""
+    );
+    const items = data["unit.json"].recon.observer.items;
+    assert.ok(Array.isArray(items), "items should be created as an array");
+    assert.equal(items[1].radius, 50);
+  });
+
+  it("multiplyOrCreate sets the value along a missing array path", () => {
+    const data = { "unit.json": {} };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "recon.observer.items.1.radius",
+          op: "multiplyOrCreate",
+          value: 50,
+        },
+      ],
+      ""
+    );
+    const items = data["unit.json"].recon.observer.items;
+    assert.ok(Array.isArray(items), "items should be created as an array");
+    assert.equal(items[1].radius, 50);
+  });
+
+  it("populates a missing index in an existing array without disturbing others", () => {
+    const data = { "unit.json": { list: [{ a: 1 }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.1.a", op: "replace", value: 7 }],
+      ""
+    );
+    assert.ok(Array.isArray(data["unit.json"].list));
+    assert.equal(data["unit.json"].list[0].a, 1);
+    assert.equal(data["unit.json"].list[1].a, 7);
+  });
 });
 
 describe("specs.mod - base_spec inheritance", () => {
@@ -305,7 +355,7 @@ describe("specs.mod - operation ordering", () => {
   });
 });
 
-describe("specs.mod - error tolerance", () => {
+describe("specs.mod - malformed-mod tolerance", () => {
   it("logs and skips an unknown op without throwing or blocking later mods", () => {
     const errorMock = mock.method(console, "error", () => {});
     const data = { "unit.json": { hp: 100 } };
@@ -318,6 +368,35 @@ describe("specs.mod - error tolerance", () => {
       ""
     );
     assert.equal(data["unit.json"].hp, 555);
+    assert.equal(errorMock.mock.callCount(), 1);
+  });
+
+  it("logs and skips a pathless op that requires a path", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        { file: "unit.json", op: "multiply", value: 2 },
+        { file: "unit.json", path: "hp", op: "replace", value: 777 },
+      ],
+      ""
+    );
+    // The pathless multiply is a no-op; the later mod still applies.
+    assert.equal(data["unit.json"].hp, 777);
+    assert.equal(errorMock.mock.callCount(), 1);
+  });
+
+  it("logs and skips a mod whose intermediate path segment is not traversable", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { a: 5 } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "a.b", op: "replace", value: 1 }],
+      ""
+    );
+    // `a` is a primitive, so it can't be walked into; the mod aborts unchanged.
+    assert.equal(data["unit.json"].a, 5);
     assert.equal(errorMock.mock.callCount(), 1);
   });
 
@@ -352,6 +431,127 @@ describe("specs.mod - error tolerance", () => {
     );
     assert.equal(data["unit.json"].hp, 999);
     assert.equal(errorMock.mock.callCount(), 1);
+  });
+});
+
+describe("specs.mod - navigation pruning", () => {
+  // The game treats any unit with a navigation object - even an empty one - as
+  // mobile, so a navigation.* mod applied to a structure (which has no navigation
+  // object) must not leave a stray navigation: {} behind once serialised.
+  it("removes a navigation object left empty by a mod on a structure", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    // multiply on a nonexistent numeric leaf leaves navigation.move_speed
+    // undefined - which serialises to navigation: {} - so navigation is stripped.
+    assert.equal("navigation" in data["struct.json"], false);
+    assert.equal(data["struct.json"].hp, 100);
+    // the multiply-on-missing warning still fires; pruning doesn't suppress it.
+    assert.ok(warnMock.mock.callCount() >= 1);
+  });
+
+  it("removes navigation after several navigation.* mods all resolve to undefined", () => {
+    mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: "struct.json",
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    assert.equal("navigation" in data["struct.json"], false);
+  });
+
+  it("keeps a populated navigation object on a genuinely mobile unit", () => {
+    const data = { "unit.json": { navigation: { move_speed: 10 } } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "unit.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    assert.equal("navigation" in data["unit.json"], true);
+    assert.equal(data["unit.json"].navigation.move_speed, 15);
+  });
+
+  it("keeps navigation when a replace sets a real value alongside an undefined leaf", () => {
+    mock.method(console, "warn", () => {});
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "struct.json",
+          path: "navigation.type",
+          op: "replace",
+          value: "Hover",
+        },
+        {
+          file: "struct.json",
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ],
+      ""
+    );
+    // navigation.type is a real value, so navigation must survive (JSON would only
+    // drop the undefined move_speed leaf, not the whole object).
+    assert.equal("navigation" in data["struct.json"], true);
+    assert.equal(data["struct.json"].navigation.type, "Hover");
+  });
+
+  it("leaves an existing empty navigation untouched for a non-navigation mod", () => {
+    const data = { "unit.json": { hp: 100, navigation: {} } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "replace", value: 200 }],
+      ""
+    );
+    // Pruning is scoped to navigation-targeting mods; unrelated mods don't trigger it.
+    assert.equal("navigation" in data["unit.json"], true);
+    assert.equal(data["unit.json"].hp, 200);
   });
 });
 

@@ -1,25 +1,20 @@
 "use strict";
 
-// Unit tests for referee_game_files.js's ai_unit_map path logic, reached via its
-// test-only module.exports hook. Unlike referee_config.js/referee_ai.js,
-// referee_game_files.js depends on shared/gw_common (a base-game module GWO doesn't
-// ship), so its define() call is gated behind `typeof module !== "undefined"` and
-// the tested helpers are hoisted above define() - see the hook's own comment in
-// referee_game_files.js for the full explanation.
+// Unit tests for the game-files referee's ai_unit_map path logic. The tested helpers
+// live in the extracted gw_play/referee_game_file_paths.js (a plain define() over
+// lodash/$/Promise only); the referee file itself depends on the unshipped
+// shared/gw_common and is coverage-excluded glue, so this loads the extracted module.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const {
-  loadCouiModule,
-  requireShippedModule,
-} = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
-const refereeGameFiles = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_files.js"
+const refereeGameFiles = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
 );
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
@@ -209,5 +204,64 @@ describe("buildPlayerFiles", () => {
     for (const key of Object.keys(files)) {
       assert.ok(!key.includes("_x1"));
     }
+  });
+});
+
+describe("specFetch", () => {
+  // Drives specFetch with a fake $.ajax that invokes success/error synchronously, so we
+  // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without
+  // a real network/game runtime.
+  function withAjax(handler, run) {
+    const had = Object.prototype.hasOwnProperty.call(global, "$");
+    const previous = global.$;
+    global.$ = { ajax: handler };
+    return Promise.resolve()
+      .then(run)
+      .finally(() => {
+        if (had) {
+          global.$ = previous;
+        } else {
+          delete global.$;
+        }
+      });
+  }
+
+  it("parses a JSON response body and resolves the object", () => {
+    return withAjax(
+      (opts) => opts.success('{ "a": 1 }'),
+      () =>
+        refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
+          assert.deepEqual(data, { a: 1 });
+        })
+    );
+  });
+
+  it("resolves the raw body when it is not valid JSON (mirrors base behaviour)", () => {
+    return withAjax(
+      (opts) => opts.success("not json"),
+      () =>
+        refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
+          assert.equal(data, "not json");
+        })
+    );
+  });
+
+  it("prefixes the request url with coui:/ and rejects on an ajax error", () => {
+    let requestedUrl;
+    return withAjax(
+      (opts) => {
+        requestedUrl = opts.url;
+        opts.error({}, "error", "boom");
+      },
+      () =>
+        refereeGameFiles.specFetch("/pa/units/x.json").then(
+          () => assert.fail("expected specFetch to reject"),
+          (err) => {
+            assert.equal(err, "boom");
+            // "coui:/" + a leading-slash spec path yields a coui:// url.
+            assert.equal(requestedUrl, "coui://pa/units/x.json");
+          }
+        )
+    );
   });
 });

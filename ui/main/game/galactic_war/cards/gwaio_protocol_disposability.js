@@ -2,31 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoGroup) {
-  var prepareMods = function (mods) {
-    _.forEach(gwoGroup.structures, function (unit) {
-      mods.push(
-        {
-          file: unit,
-          path: "wreckage_health_frac",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.7,
-        },
-        {
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 0.5,
-        }
-      );
-    });
-  };
-
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -36,19 +11,26 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwaio_protocol.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_combat",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function () {
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var mods = [];
-      prepareMods(mods);
-      inventory.addMods(mods);
+      inventory.addMods(
+        _.flatten(
+          _.map(gwoGroup.structures, function (unit) {
+            return gwoCard
+              .mods(unit, "replace", { wreckage_health_frac: 0 })
+              .concat(
+                gwoCard.mods(unit, "multiply", {
+                  build_metal_cost: 0.7,
+                  max_health: 0.5,
+                })
+              );
+          })
+        )
+      );
     },
     dull: function () {},
   };

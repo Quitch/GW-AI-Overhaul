@@ -15,34 +15,22 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.spinner)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.spinner)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.spinnerWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.spinnerWeapon, "multiply", {
+          rate_of_fire: 3,
+        })
+      );
     },
     dull: function () {},
   };

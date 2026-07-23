@@ -303,6 +303,23 @@ function gwoSystemChanges() {
       );
     });
 
+    model.displayExplore = ko.computed(function () {
+      return (
+        model.canShowCampaignActionButtons() &&
+        model.canExplore() &&
+        model.selection.star() === game.currentStar()
+      );
+    });
+
+    model.displayLoadSave = ko.computed(function () {
+      return (
+        model.canShowCampaignActionButtons() &&
+        model.canFight() &&
+        model.allowLoad() &&
+        model.selection.star() === game.currentStar()
+      );
+    });
+
     // System colours
     requireGW(["shared/gw_factions"], function (GWFactions) {
       var normalizedColor = function (faction) {

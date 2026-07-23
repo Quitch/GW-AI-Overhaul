@@ -12,22 +12,17 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_titans_all",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_titans_all",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (
+      return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
-        (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber))
-      ) {
-        chance = 150;
-      }
-      return { chance: chance };
+          (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
+            gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)),
+        150
+      );
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.titans);

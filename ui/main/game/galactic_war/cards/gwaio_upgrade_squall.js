@@ -13,34 +13,27 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.squall)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.squall)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.squall,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Attack", "ORDER_Assist"],
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.squall, "push", {
+          command_caps: [
+            "ORDER_Move",
+            "ORDER_Patrol",
+            "ORDER_Attack",
+            "ORDER_Assist",
+          ],
+        })
+      );
     },
     dull: function () {},
   };

@@ -47,11 +47,11 @@ Temporary Items
 .apdisk
 .vscode/spellright.dict
 .vscode/settings.json
-CLAUDE.md
 
 # =========================
 # Node.js tooling (lint/test only - the mod itself has no build step)
 # =========================
 
 node_modules/
+coverage/
 .claude/settings.local.json

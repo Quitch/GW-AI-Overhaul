@@ -12,18 +12,15 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_efficiency",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced)) {
-        chance = 100;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced),
+        100
+      );
     },
     buff: function (inventory) {
       inventory.addUnits(gwoUnit.deepSpaceOrbitalRadar);
@@ -97,7 +94,7 @@ define([
               layer: "underwater",
               channel: "sight",
               shape: "capsule",
-              radius: 9999,
+              radius: 300,
               uses_energy: true,
             },
             {

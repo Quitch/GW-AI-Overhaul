@@ -15,34 +15,22 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_super_weapons_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_super_weapon",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_super_weapon",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.antiNukeLauncher)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.antiNukeLauncher)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.antiNukeLauncherAmmo,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.antiNukeLauncherAmmo, "multiply", {
+          build_metal_cost: 0.5,
+        })
+      );
     },
     dull: function () {},
   };

@@ -15,40 +15,23 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.spark)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.spark)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.sparkAmmo,
-          path: "splash_radius",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.sparkAmmo,
-          path: "full_damage_splash_radius",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.sparkAmmo, "multiply", {
+          splash_radius: 3,
+          full_damage_splash_radius: 3,
+        })
+      );
     },
     dull: function () {},
   };

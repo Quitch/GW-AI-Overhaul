@@ -15,34 +15,22 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_vehicle",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_vehicle",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.vehicleFabberAdvancedBuildArm,
-          path: "max_range",
-          op: "multiply",
-          value: 2.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.vehicleFabberAdvancedBuildArm, "multiply", {
+          max_range: 2.5,
+        })
+      );
     },
     dull: function () {},
   };

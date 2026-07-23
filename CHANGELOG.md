@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## v6.3.0 - 2026-07-23
+
+### Added
+
+- Protection against cards creating empty navigation blocks making the engine think a static unit was mobile
+- Future proofing against base game changes
+
+### Changed
+
+- Improve time to process unit and AI mods when entering battle
+- Reduce CPU usage and improve responsiveness of galaxy map at higher resolutions and at larger star counts
+- Improved safeguards in the code around the type of data certain checks should be receiving
+
+### Bugfix
+
+- Fix Protocol cards with speed bonuses causing buildings to drift and sometimes move
+- Viewers no longer trigger saves
+- Planetary Radar starting with global underwater vision
+- Fix base game bug where Orbital Speed and Combat Techs were adding navigation data to orbital structures
+- Fix Explore and Load/Save not always being displayed correctly after loading a save
+- Viewers no longer trip cheat detection as they cannot use cheats
+
 ## v6.2.3 - 2026-07-21
 
 ### Bugfix

@@ -13,34 +13,20 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_enable_titans_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_armor",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.atlas)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.atlas)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.atlas,
-          path: "max_health",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.atlas, "multiply", {
+          max_health: 2,
+        })
+      );
     },
     dull: function () {},
   };

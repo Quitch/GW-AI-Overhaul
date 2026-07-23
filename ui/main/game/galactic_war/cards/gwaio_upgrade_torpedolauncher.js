@@ -15,34 +15,23 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncher)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncher),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.torpedoLauncherWeapon,
-          path: "exclude_unit_types",
-          op: "replace",
-          value: "",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.torpedoLauncherWeapon, "replace", {
+          exclude_unit_types: "",
+        })
+      );
     },
     dull: function () {},
   };

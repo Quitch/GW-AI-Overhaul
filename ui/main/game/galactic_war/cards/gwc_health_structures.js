@@ -12,11 +12,7 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_armor",
-      };
-    },
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 28;

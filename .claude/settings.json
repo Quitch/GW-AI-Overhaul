@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run verify)",
+      "Bash(npm test)",
+      "Bash(npm run validate)",
+      "Bash(npm run validate:json)",
+      "Bash(npm run validate:manifest)",
+      "Bash(npm run validate:cards)",
+      "Bash(npm run validate:ai-mods)",
+      "Bash(npm run validate:schemas)",
+      "Bash(npm run validate:refs)",
+      "Bash(npm run lint:js)",
+      "Bash(npm run lint:css)",
+      "Bash(npm run lint:md)"
+    ]
+  }
+}

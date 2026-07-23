@@ -11,23 +11,18 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_defense.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_defence",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_defence",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      var hasT2Access = gwoCard.hasT2Access(inventory);
-      var missingUnit = gwoCard.missingUnit(
-        inventory.units(),
-        gwoGroup.structuresDefencesAdvanced
+      return gwoCard.conditionalDeal(
+        gwoCard.missingUnit(
+          inventory.units(),
+          gwoGroup.structuresDefencesAdvanced
+        ) && gwoCard.hasT2Access(inventory),
+        100
       );
-      if (missingUnit && hasT2Access) {
-        chance = 100;
-      }
-      return { chance: chance };
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresDefencesAdvanced);

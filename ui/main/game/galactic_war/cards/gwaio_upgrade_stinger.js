@@ -15,32 +15,20 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.stinger,
-          path: "tools",
-          op: "replace",
-          value: [
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.stinger, "replace", {
+          tools: [
             {
               spec_id: gwoUnit.flakWeapon,
               aim_bone: "bone_turret",
@@ -48,8 +36,8 @@ define([
               muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],
             },
           ],
-        },
-      ]);
+        })
+      );
     },
     dull: function () {},
   };

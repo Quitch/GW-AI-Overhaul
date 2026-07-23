@@ -9,18 +9,15 @@ define([
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_cost_titans.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_titan_cost_reduction",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_titan_cost_reduction",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoGroup.titans)) {
-        chance = 80;
-      }
-      return { chance: chance };
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.titans),
+        80
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.titans, function (unit) {

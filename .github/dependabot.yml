@@ -9,6 +9,11 @@ updates:
         patterns:
           - "*"
     ignore:
+      # lodash is pinned to 3.9.3 to match the version the base game ships and
+      # loads at runtime (see CONTRIBUTING.md "Available Libraries"). It's a
+      # devDependency used only to stub the game's global `_` for the Node test
+      # harness (scripts/lib/amd-loader.js) - never shipped to players, so
+      # upstream lodash CVEs don't apply here. See dismissed alerts for detail.
       - dependency-name: "lodash"
   - package-ecosystem: "github-actions"
     directory: "/"

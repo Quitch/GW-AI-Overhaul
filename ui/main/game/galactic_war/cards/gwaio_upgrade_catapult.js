@@ -15,32 +15,21 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_defense_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_ammunition",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_ammunition",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (gwoCard.hasUnit(inventory.units(), gwoUnit.catapult)) {
-        chance = 30;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.catapult),
+        30
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.catapult,
-          path: "tools",
-          op: "push",
-          value: {
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.catapult, "push", {
+          tools: {
             spec_id: gwoUnit.stormWeapon,
             aim_bone: "bone_missile01",
             projectiles_per_fire: 4,
@@ -51,14 +40,9 @@ define([
               "bone_missile01",
             ],
           },
-        },
-        {
-          file: gwoUnit.catapult,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_AirDefense",
-        },
-      ]);
+          unit_types: "UNITTYPE_AirDefense",
+        })
+      );
     },
     dull: function () {},
   };

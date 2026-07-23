@@ -17,6 +17,7 @@
 *.RTF	 diff=astextplain
 
 # Keep development junk out of our ZIP files
+.claude/ export-ignore
 .github/ export-ignore
 images/ export-ignore
 scripts/ export-ignore
@@ -28,6 +29,7 @@ test/ export-ignore
 .prettierignore export-ignore
 .prettierrc export-ignore
 .stylelintrc.json export-ignore
+CLAUDE.md export-ignore
 eslint.config.js export-ignore
 package-lock.json export-ignore
 package.json export-ignore

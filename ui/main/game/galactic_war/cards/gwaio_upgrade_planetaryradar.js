@@ -15,23 +15,14 @@ define([
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png"
     ),
-    audio: function () {
-      return {
-        found: "/VO/Computer/gw/board_tech_available_efficiency",
-      };
-    },
+    audio: _.constant({
+      found: "/VO/Computer/gw/board_tech_available_efficiency",
+    }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 0;
-      if (inventory.hasCard("gwaio_enable_planetaryradar")) {
-        chance = 60;
-      }
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: chance,
-      };
+      return gwoCard.upgradeDeal(
+        inventory.hasCard("gwaio_enable_planetaryradar")
+      );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
@@ -39,6 +30,12 @@ define([
         {
           file: gwoUnit.deepSpaceOrbitalRadar,
           path: "recon.observer.items.0.radius",
+          op: "multiply",
+          value: 33.33,
+        },
+        {
+          file: gwoUnit.deepSpaceOrbitalRadar,
+          path: "recon.observer.items.1.radius",
           op: "multiply",
           value: 33.33,
         },
