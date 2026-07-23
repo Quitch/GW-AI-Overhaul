@@ -40,12 +40,11 @@ function gwoCardTooltips() {
         model.gwoTechCardTooltip = ko.observableArray([]);
 
         // global for modder compatibility
+        var cards = gwoCardsToUnits.cards;
         model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
           ? model.gwoCardsToUnits
           : [];
-        model.gwoCardsToUnits = model.gwoCardsToUnits.concat(
-          gwoCardsToUnits.cards
-        );
+        Array.prototype.push.apply(model.gwoCardsToUnits, cards);
         // global for modder compatibility
         model.gwoCardsWithoutTooltip = _.isArray(model.gwoCardsWithoutTooltip)
           ? model.gwoCardsWithoutTooltip

@@ -112,10 +112,6 @@ define([
     );
   };
 
-  // Files not assigned by default that we wish to mod - global for modder compatibility
-  model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-  model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
-
   return function () {
     var self = this;
 

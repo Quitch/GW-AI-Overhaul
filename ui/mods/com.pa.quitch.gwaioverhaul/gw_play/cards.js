@@ -24,7 +24,7 @@ function gwoCard() {
     )
       ? model.gwoCardsGrantingAdvancedTech
       : [];
-    model.gwoCardsGrantingAdvancedTech = [
+    model.gwoCardsGrantingAdvancedTech.push(
       "gwc_enable_air_all",
       "gwc_enable_bots_all",
       "gwc_enable_sea_all",
@@ -33,8 +33,8 @@ function gwoCard() {
       "gwaio_upgrade_fabricationbot",
       "gwaio_upgrade_fabricationship",
       "gwaio_upgrade_fabricationvehicle",
-      "gwaio_start_hoarder",
-    ];
+      "gwaio_start_hoarder"
+    );
 
     var numCardsToOffer = 3;
 
