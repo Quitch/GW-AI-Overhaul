@@ -184,4 +184,3 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
 ## Requirements
 
 - Apply a prettier pass to all new and edited files of support types, including test scripts.
-- Line endings should be CRLF.
