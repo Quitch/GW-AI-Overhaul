@@ -20,9 +20,6 @@ as read-only reference for what an unmodified file looked like before this mod
 shadowed it, or to find game systems (units, specs, AI) this mod doesn't touch. Never
 edit anything there.
 
-Tech card compatibility for other mods/loadouts is documented in the separate
-[New GW Cards](https://github.com/Quitch/New-GW-Cards/) repository, not here.
-
 ## Commands
 
 ```bash
