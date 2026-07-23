@@ -189,7 +189,7 @@ define(function () {
     }
 
     var files = _.isFunction(referee.files) && referee.files();
-    if (!files || !_.isObject(files)) {
+    if (!files || !_.isPlainObject(files)) {
       return failAfterConfig("[GW COOP] Per-player tech referee has no files.");
     }
 
@@ -217,7 +217,7 @@ define(function () {
     }
 
     var player = config.player;
-    if (!player || !_.isObject(player)) {
+    if (!player || !_.isPlainObject(player)) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no player."
       );

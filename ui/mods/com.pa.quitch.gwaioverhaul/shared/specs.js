@@ -183,7 +183,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return value;
         },
         merge: function (attribute, value) {
-          if (!_.isObject(attribute)) {
+          if (!_.isPlainObject(attribute)) {
             console.warn(
               "merge: attribute is not an object. Leaving unchanged:",
               attribute

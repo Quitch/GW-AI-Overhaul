@@ -10,6 +10,7 @@
 
 - Improve time to process unit and AI mods when entering battle
 - Reduce CPU usage and improve responsiveness of galaxy map at higher resolutions and at larger star counts
+- Improved safeguards in the code around the type of data certain checks should be receiving
 
 ### Bugfix
 

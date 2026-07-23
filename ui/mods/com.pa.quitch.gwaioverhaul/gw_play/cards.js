@@ -572,7 +572,7 @@ function gwoCard() {
                   id: cardId,
                 };
 
-                if (cardParams && _.isObject(cardParams)) {
+                if (cardParams && _.isPlainObject(cardParams)) {
                   _.assign(systemCard, cardParams);
                 }
 

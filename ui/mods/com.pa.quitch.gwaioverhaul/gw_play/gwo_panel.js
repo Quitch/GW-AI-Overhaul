@@ -363,7 +363,7 @@ var gwoPanelLoader = ko.computed(function () {
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
   if (
-    _.isObject(originSystem.gwaio) &&
+    _.isPlainObject(originSystem.gwaio) &&
     !game.isTutorial() &&
     !gwoWarInfoPanelLoaded
   ) {
@@ -378,7 +378,7 @@ var gwoPanelLoader = ko.computed(function () {
   } else {
     console.warn(
       "Tried to load GWO panel and failed. GWO settings found:",
-      _.isObject(originSystem.gwaio),
+      _.isPlainObject(originSystem.gwaio),
       "This is a Galactic War:",
       !game.isTutorial(),
       "GWO panel already loaded:",
