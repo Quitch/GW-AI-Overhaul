@@ -45,8 +45,7 @@ Run a single test file: `node --test test/specs.test.js`. Run a single test by n
 CI (`.github/workflows/ci.yml`) runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test`
 as full-repo hard gates (clean today, so any new violation anywhere is a real
 regression), plus a separate Prettier check scoped only to files a PR/push actually
-changed (most of the repo predates Prettier enforcement and isn't reformatted).
-`npm run verify` mirrors the hard-gate job; run it before submitting a change.
+changed. `npm run verify` mirrors the hard-gate job; run it before submitting a change.
 
 ## Architecture
 

@@ -9,7 +9,7 @@ Run `npm ci` once to install this project's tooling (eslint, stylelint, prettier
 Before submitting a change, run:
 
 - `npm run verify` - everything CI checks in one command: lint, structural/data validation, and unit tests.
-- `npm run format:write` - formats Prettier onto the files you touched. Most of the repo predates Prettier being enforced and isn't reformatted, so only stage the files your change actually touches, per the "only modify what's necessary" rule below.
+- `npm run format:write` - formats Prettier onto the files you touched. Only stage the files your change actually touches, per the "only modify what's necessary" rule below.
 
 GitHub Actions runs the same checks automatically on every push, pull request, and release. `.stylelintrc.json` disables `color-function-alias-notation` entirely and scopes `declaration-block-no-redundant-longhand-properties` to ignore the `overflow` shorthand - both because PA's embedded Chrome 40 predates the modern CSS syntax those rules otherwise expect (an alpha channel on unprefixed `rgb()`, and the 2-value `overflow` shorthand, respectively). Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usages they cover as a drive-by.
 

@@ -2,15 +2,4 @@ node_modules
 package-lock.json
 
 # Intentionally minified single-line JSON data files - do not reformat.
-pa/ai_penchant/fabber_builds/commander_economy_builds.json
-pa/ai_penchant/fabber_builds/commander_misc_builds.json
-pa/ai_penchant/fabber_builds/fabber_air_builds.json
-pa/ai_penchant/fabber_builds/fabber_economy_builds.json
-pa/ai_penchant/fabber_builds/fabber_offense_builds.json
-pa/ai_penchant/fabber_builds/fabber_orbital_builds.json
-pa/ai_penchant/factory_builds/factory_misc_builds.json
-pa/ai_penchant/factory_builds/factory_orbital_builds.json
-pa/ai_penchant/factory_builds/factory_orbital_builds_x1.json
-pa/ai_penchant/platoon_builds/platoon_misc_builds.json
-pa/ai_penchant/platoon_builds/tutorial/platoon_tutorial_land_builds.json
-pa/ai_penchant/platoon_templates/tutorial/platoon_tutorial_templates.json
+pa/**
