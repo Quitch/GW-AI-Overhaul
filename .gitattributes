@@ -30,7 +30,7 @@ test/ export-ignore
 .prettierrc export-ignore
 .stylelintrc.json export-ignore
 CLAUDE.md export-ignore
-eslint.config.js export-ignore
+eslint.config.mjs export-ignore
 package-lock.json export-ignore
 package.json export-ignore
 sonar-project.properties export-ignore
