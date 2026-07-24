@@ -27,6 +27,7 @@ define([
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
   var getViewerSubcommanderAiPath = perPlayerTech.getViewerSubcommanderAiPath;
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
+
   // Files not assigned by default that we wish to mod - global for modder compatibility
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
   model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);

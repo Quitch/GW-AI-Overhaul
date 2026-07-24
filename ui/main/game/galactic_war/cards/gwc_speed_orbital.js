@@ -17,13 +17,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var dist = system.distance();
       var chance = context.totalSize <= GW.balance.numberOfSystems[1] ? 16 : 32;
 
       if (
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 6) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
-        (context.totalSize > GW.balance.numberOfSystems[3] && dist > 12)
+        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
       ) {
         chance = 166;
       }

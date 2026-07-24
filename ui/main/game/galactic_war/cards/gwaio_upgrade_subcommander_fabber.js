@@ -20,7 +20,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       var chance =
         gwoSettings && gwoSettings.aiAlly === "Queller"
           ? 0
-          : inventory.minions().length * 30;
+          : Math.min(inventory.minions().length * 30, 120);
       return { chance: chance };
     },
     buff: function () {

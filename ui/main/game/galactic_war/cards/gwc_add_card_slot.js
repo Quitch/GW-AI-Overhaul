@@ -11,10 +11,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     audio: _.constant({ found: "/VO/Computer/gw/board_slot_increased" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 300;
-      if (inventory.handIsFull()) {
-        chance = 100000;
-      }
+      // Surface expansion as the hand fills: 300 with one empty slot left, tapering
+      // by 25 per additional empty slot (floor 50). A full hand keeps the 100000
+      // guarantee so a maxed-out hand can always be expanded.
+      var emptySlots = inventory.maxCards() - inventory.cards().length;
+      var chance = inventory.handIsFull()
+        ? 100000
+        : Math.max(300 - (emptySlots - 1) * 25, 50);
       return {
         params: {
           allowOverflow: true,

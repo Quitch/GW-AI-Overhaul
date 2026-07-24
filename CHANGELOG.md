@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v6.4.0 - 2026-07-24
+
+### Changed
+
+- Rebalanced card deal chances:
+  - Overhauled the distance modifier system to more accurately align to galaxy sizes
+  - Scaled distance modifiers up to Marathon size (Bigger Galactic War)
+  - Additional Data Bank chance starts low and grows as your hand fills
+  - Tsunami Tech chance increases the more naval tech you have
+  - Storage Compression Tech less likely to appear
+  - Capped the chance of subcommander enhancement techs appearing
+
+### Bugfix
+
+- Viewers get the proper delay before a reroll displays new cards
+
 ## v6.3.0 - 2026-07-23
 
 ### Added

@@ -25,7 +25,7 @@ define([
       ];
       var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
-        chance = gwoCard.travelledFar(
+        chance = gwoCard.travelledShort(
           system,
           context,
           GW.balance.numberOfSystems

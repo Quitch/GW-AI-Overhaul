@@ -17,21 +17,9 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var dist = system.distance();
       var chance = 28;
-      var farDist = 13;
 
-      if (context.totalSize <= GW.balance.numberOfSystems[0]) {
-        farDist = 4;
-      } else if (context.totalSize <= GW.balance.numberOfSystems[1]) {
-        farDist = 6;
-      } else if (context.totalSize <= GW.balance.numberOfSystems[2]) {
-        farDist = 9;
-      } else if (context.totalSize <= GW.balance.numberOfSystems[3]) {
-        farDist = 11;
-      }
-
-      if (dist > farDist) {
+      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
         chance = 142;
       }
 
