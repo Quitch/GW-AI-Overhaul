@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- Rebalanced card deal chances
+  - Overhauled the distance modifier system to more accurately align to galaxy sizes
+  - Scaled distance modifiers up to Marathon size (Bigger Galactic War)
+
 ### Bugfix
 
 - Viewers get the proper delay before a reroll displays new cards

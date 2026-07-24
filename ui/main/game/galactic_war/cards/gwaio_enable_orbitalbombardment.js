@@ -15,7 +15,6 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 40;
-      var dist = system.distance();
       if (
         inventory.hasCard("gwaio_start_naval") ||
         inventory.hasCard("gwaio_enable_tsunami")
@@ -27,9 +26,12 @@ define([
       ) {
         chance = 20;
       } else if (
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 6) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 9) ||
-        dist > 7
+        gwoCard.farForSize(
+          system,
+          context,
+          GW.balance.numberOfSystems,
+          gwoCard.farLadders.moderate
+        )
       ) {
         chance = 80;
       }

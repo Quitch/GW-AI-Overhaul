@@ -18,21 +18,24 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var chance = 33;
-      var dist = system.distance();
+      // Outer edge -> 166; the mid-distance band peaks higher at 333 (preserving the
+      // original non-monotonic shape). Both ladders re-centred on star distance.
       if (
-        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
-        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 9) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 10) ||
-        dist > 12
+        gwoCard.farForSize(
+          system,
+          context,
+          GW.balance.numberOfSystems,
+          gwoCard.farLadders.spike
+        )
       ) {
         chance = 166;
       } else if (
-        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
-        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 5) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 6) ||
-        dist > 7
+        gwoCard.farForSize(
+          system,
+          context,
+          GW.balance.numberOfSystems,
+          [2, 3, 5, 6, 7, 8, 9, 10, 11]
+        )
       ) {
         chance = 333;
       }

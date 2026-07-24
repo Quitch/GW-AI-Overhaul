@@ -24,6 +24,34 @@ define(function () {
     });
   };
 
+  // Per-galaxy-size "far" thresholds for deal-chance scaling, indexed by size tier
+  // (a GW.balance.numberOfSystems index). Nine entries so they cover Bigger-GW's
+  // sizes (numberOfSystems[4..8]) as well as the base five; the final entry also
+  // applies to anything larger. Re-centred on the measured star-distance
+  // distribution (median star distance runs ~0.55x the galaxy's max eccentricity)
+  // so each branch fires for a roughly consistent share of stars across every
+  // size: gate ~45%, moderate ~30%, spike ~18%.
+  var farLadders = {
+    gate: [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    moderate: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+    spike: [4, 5, 6, 7, 8, 10, 11, 12, 13],
+  };
+
+  // Whether the explored system is beyond the size-appropriate "far" threshold.
+  // ladder is one of farLadders (or any 9-entry array); the size tier is the first
+  // numberOfSystems bucket >= totalSize, clamped to the last entry - so this works
+  // whether numberOfSystems holds the base five sizes or Bigger-GW's nine.
+  var farForSize = function (system, context, numberOfSystems, ladder) {
+    var tier = 0;
+    while (
+      tier < numberOfSystems.length - 1 &&
+      context.totalSize > numberOfSystems[tier]
+    ) {
+      tier++;
+    }
+    return system.distance() > ladder[tier];
+  };
+
   return {
     hasUnit: function (inventoryUnits, units) {
       if (_.isString(units)) {
@@ -155,6 +183,10 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
+    farLadders: farLadders,
+
+    farForSize: farForSize,
+
     // Whether a system counts as "isolated" for deal chance scaling: distant
     // enough, relative to how many systems the galaxy has, that a player could
     // plausibly have skipped this tech tree so far. numberOfSystems is the
@@ -163,14 +195,7 @@ define(function () {
     // isn't shippable/loadable here, and every card transitively depends on
     // this file - see amd-loader.js's NOT_SHIPPED note).
     travelledFar: function (system, context, numberOfSystems) {
-      var dist = system.distance();
-      return (
-        (context.totalSize <= numberOfSystems[0] && dist > 2) ||
-        (context.totalSize <= numberOfSystems[1] && dist > 3) ||
-        (context.totalSize <= numberOfSystems[2] && dist > 4) ||
-        (context.totalSize <= numberOfSystems[3] && dist > 5) ||
-        dist > 6
-      );
+      return farForSize(system, context, numberOfSystems, farLadders.gate);
     },
 
     // Builds an addMods() array for the common case of one file/op applied to
