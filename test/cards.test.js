@@ -148,11 +148,11 @@ describe("travelledShort", () => {
 });
 
 describe("farForSize", () => {
-  // Real nine-size table (base five + Bigger-GW's four). A distinct-per-tier ladder
-  // is used for the indexing assertions so they test the tier lookup itself, not the
-  // shipped threshold values (which are free to be retuned).
+  // Real nine-size table (base five + Bigger-GW's four). A distinct-per-tier
+  // thresholds array is used for the indexing assertions so they test the tier
+  // lookup itself, not the shipped threshold values (which are free to be retuned).
   const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
-  const ladder = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+  const thresholds = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 
   function systemAt(dist) {
     return { distance: () => dist };
@@ -163,11 +163,11 @@ describe("farForSize", () => {
       systemAt(dist),
       { totalSize: totalSize },
       numberOfSystems,
-      ladder
+      thresholds
     );
   }
 
-  it("uses the ladder entry for the galaxy's size tier", () => {
+  it("uses the thresholds entry for the galaxy's size tier", () => {
     // Large is index 2 -> threshold 30; Rediq is index 4 -> threshold 50.
     assert.equal(far(36, 30), false);
     assert.equal(far(36, 31), true);
@@ -186,26 +186,26 @@ describe("farForSize", () => {
   });
 
   it("indexes by the caller's table length (base five-size table)", () => {
-    // With only the base five sizes, Rediq (78) is the last tier -> ladder[4] = 50.
+    // With only the base five sizes, Rediq (78) is the last tier -> thresholds[4] = 50.
     const baseSizes = [18, 24, 36, 54, 78];
     assert.equal(
-      cards.farForSize(systemAt(50), { totalSize: 78 }, baseSizes, ladder),
+      cards.farForSize(systemAt(50), { totalSize: 78 }, baseSizes, thresholds),
       false
     );
     assert.equal(
-      cards.farForSize(systemAt(51), { totalSize: 78 }, baseSizes, ladder),
+      cards.farForSize(systemAt(51), { totalSize: 78 }, baseSizes, thresholds),
       true
     );
   });
 });
 
 describe("travelled* distance wrappers", () => {
-  // The named wrappers keep their ladder tables private, so their
+  // The named wrappers keep their distances tables private, so their
   // travelledShort <= travelledModerate <= travelledFar ordering is verified
   // behaviourally: with all three tested against the same system, the stricter
   // (larger-threshold) tier can only fire once the looser ones already have.
   // Sweeping distances and asserting that implication exercises the ordering
-  // without reaching into the ladders.
+  // without reaching into the distances tables.
   const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
 
   function systemAt(dist) {
