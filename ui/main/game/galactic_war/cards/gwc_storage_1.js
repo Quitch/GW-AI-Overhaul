@@ -18,16 +18,18 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 250;
-      var dist = system.distance();
+      // Base weight cut (was 250/125): storage is a low-priority eco card that was
+      // over-appearing, especially early. Threshold re-centred on star distance.
+      var chance = 130;
       if (
-        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
-        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 9) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 10) ||
-        dist > 12
+        gwoCard.farForSize(
+          system,
+          context,
+          GW.balance.numberOfSystems,
+          gwoCard.farLadders.moderate
+        )
       ) {
-        chance = 125;
+        chance = 70;
       }
       return { chance: chance };
     },
