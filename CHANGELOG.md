@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Prevent creation of galaxies with isolated stars
+
 ## v6.4.0 - 2026-07-24
 
 ### Changed

@@ -10,10 +10,17 @@
 // runtime contract is unchanged.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js",
   "shared/GalaxyBuilder",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
-], function (GWGalaxy, GalaxyBuilder, GWStar, chooseStarSystemTemplates) {
+], function (
+  GWGalaxy,
+  gwoGalaxyConnect,
+  GalaxyBuilder,
+  GWStar,
+  chooseStarSystemTemplates
+) {
   GWGalaxy.loadSystems = function (systems, config) {
     _.forEach(_.zip(systems.stars, config.stars), function (pair) {
       GWStar.loadSystem(pair[0], pair[1]);
@@ -72,6 +79,26 @@ define([
 
       var builder = new GalaxyBuilder(config);
       builder.build();
+
+      // buildGraph() strips every convex-hull edge, which leaves any hull star that
+      // belonged to a single Delaunay triangle with no edges at all: it gets no gate
+      // below, calcDistance never reaches it so it keeps gw_star's default distance of
+      // 0, and it generates a minimum-size system no route can ever enter. Restore its
+      // hull edges before anything reads the graph. This can take a neighbouring star
+      // one connection above config.maxConnections, which is well worth avoiding an
+      // unreachable star - or an unwinnable war, since the origin picked below is always
+      // a hull star and so is itself at risk.
+      var reconnect = gwoGalaxyConnect.reconnectingEdges(
+        builder.stars.length,
+        builder.graph.getEdges(),
+        builder.reducedGraph.getConnections()
+      );
+      if (reconnect.length > 0) {
+        _.forEach(reconnect, function (edge) {
+          builder.reducedGraph.addEdge(edge);
+        });
+        builder.reducedGraph.sortEdges();
+      }
 
       // Re-normalize the stars
       var min = builder.stars[0].slice(0);
