@@ -22,12 +22,7 @@ define([
       // over-appearing, especially early. Threshold re-centred on star distance.
       var chance = 130;
       if (
-        gwoCard.farForSize(
-          system,
-          context,
-          GW.balance.numberOfSystems,
-          gwoCard.farLadders.moderate
-        )
+        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
       ) {
         chance = 70;
       }

@@ -28,12 +28,7 @@ define([
       ) {
         chance = 12;
       } else if (
-        gwoCard.farForSize(
-          system,
-          context,
-          GW.balance.numberOfSystems,
-          gwoCard.farLadders.moderate
-        )
+        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
       ) {
         chance = 120;
       }

@@ -19,14 +19,7 @@ define([
     deal: function (system, context) {
       var chance = 28;
 
-      if (
-        gwoCard.farForSize(
-          system,
-          context,
-          GW.balance.numberOfSystems,
-          gwoCard.farLadders.spike
-        )
-      ) {
+      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
         chance = 142;
       }
 

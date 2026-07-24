@@ -31,14 +31,14 @@ define(function () {
   // distribution (median star distance runs ~0.55x the galaxy's max eccentricity)
   // so each branch fires for a roughly consistent share of stars across every
   // size: gate ~45%, moderate ~30%, spike ~18%.
-  var farLadders = {
-    gate: [2, 3, 4, 5, 6, 7, 8, 9, 10],
+  var distances = {
+    short: [2, 3, 4, 5, 6, 7, 8, 9, 10],
     moderate: [3, 4, 5, 6, 7, 8, 9, 10, 11],
-    spike: [4, 5, 6, 7, 8, 10, 11, 12, 13],
+    far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 
   // Whether the explored system is beyond the size-appropriate "far" threshold.
-  // ladder is one of farLadders (or any 9-entry array); the size tier is the first
+  // ladder is one of distances (or any 9-entry array); the size tier is the first
   // numberOfSystems bucket >= totalSize, clamped to the last entry - so this works
   // whether numberOfSystems holds the base five sizes or Bigger-GW's nine.
   var farForSize = function (system, context, numberOfSystems, ladder) {
@@ -183,19 +183,32 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
-    farLadders: farLadders,
-
+    // The general size-aware "far" test, exposed for the rare card whose deal-chance
+    // curve needs a bespoke distance ladder that isn't one of the named tiers below
+    // (e.g. a non-monotonic band - see gwc_energy_efficiency_all). Cards using a
+    // standard aggressiveness should prefer the travelled* wrappers, which keep the
+    // ladder tables private. numberOfSystems is the caller's
+    // GW.balance.numberOfSystems tier table - passed in rather than imported so this
+    // module stays dependency-free (base-game "shared/gw_common" isn't
+    // shippable/loadable here, and every card transitively depends on this file -
+    // see amd-loader.js's NOT_SHIPPED note).
     farForSize: farForSize,
 
-    // Whether a system counts as "far" for deal chance scaling: distant
-    // enough, relative to how many systems the galaxy has, that a player could
-    // plausibly have skipped this tech tree so far. numberOfSystems is the
-    // caller's GW.balance.numberOfSystems tier table - passed in rather than
-    // imported so this module stays dependency-free (base-game "shared/gw_common"
-    // isn't shippable/loadable here, and every card transitively depends on
-    // this file - see amd-loader.js's NOT_SHIPPED note).
+    // Named distance thresholds for deal-chance scaling, from least to most strict
+    // (travelledShort <= travelledModerate <= travelledFar, backed by the
+    // gate/moderate/spike ladders). Each answers "is this system distant enough,
+    // relative to how many systems the galaxy has, that a player could plausibly
+    // have skipped this tech tree so far?" - at an escalating distance cutoff.
+    travelledShort: function (system, context, numberOfSystems) {
+      return farForSize(system, context, numberOfSystems, distances.short);
+    },
+
+    travelledModerate: function (system, context, numberOfSystems) {
+      return farForSize(system, context, numberOfSystems, distances.moderate);
+    },
+
     travelledFar: function (system, context, numberOfSystems) {
-      return farForSize(system, context, numberOfSystems, farLadders.gate);
+      return farForSize(system, context, numberOfSystems, distances.far);
     },
 
     // Builds an addMods() array for the common case of one file/op applied to

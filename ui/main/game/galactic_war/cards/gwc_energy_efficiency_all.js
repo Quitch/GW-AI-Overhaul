@@ -20,14 +20,7 @@ define([
       var chance = 33;
       // Outer edge -> 166; the mid-distance band peaks higher at 333 (preserving the
       // original non-monotonic shape). Both ladders re-centred on star distance.
-      if (
-        gwoCard.farForSize(
-          system,
-          context,
-          GW.balance.numberOfSystems,
-          gwoCard.farLadders.spike
-        )
-      ) {
+      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
         chance = 166;
       } else if (
         gwoCard.farForSize(

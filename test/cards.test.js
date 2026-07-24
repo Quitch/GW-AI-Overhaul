@@ -118,7 +118,7 @@ describe("conditionalDeal", () => {
   });
 });
 
-describe("travelledFar", () => {
+describe("travelledShort", () => {
   const numberOfSystems = [10, 20, 30, 40];
 
   function systemAt(dist) {
@@ -127,21 +127,21 @@ describe("travelledFar", () => {
 
   it("is false for a nearby system in a large galaxy", () => {
     assert.equal(
-      cards.travelledFar(systemAt(1), { totalSize: 50 }, numberOfSystems),
+      cards.travelledShort(systemAt(1), { totalSize: 50 }, numberOfSystems),
       false
     );
   });
 
   it("is true once distance exceeds the tier threshold for the galaxy size", () => {
     assert.equal(
-      cards.travelledFar(systemAt(3), { totalSize: 10 }, numberOfSystems),
+      cards.travelledShort(systemAt(3), { totalSize: 10 }, numberOfSystems),
       true
     );
   });
 
   it("is true for any system beyond the final flat distance cutoff", () => {
     assert.equal(
-      cards.travelledFar(systemAt(7), { totalSize: 1000 }, numberOfSystems),
+      cards.travelledShort(systemAt(7), { totalSize: 1000 }, numberOfSystems),
       true
     );
   });
@@ -197,27 +197,53 @@ describe("farForSize", () => {
       true
     );
   });
+});
 
-  it("ships nine-entry gate/moderate/spike ladders in non-decreasing order", () => {
-    ["gate", "moderate", "spike"].forEach((name) => {
-      const shipped = cards.farLadders[name];
-      assert.equal(shipped.length, 9, name + " has nine tiers");
-      for (let i = 1; i < shipped.length; i++) {
-        assert.ok(shipped[i] >= shipped[i - 1], name + " is non-decreasing");
+describe("travelled* distance wrappers", () => {
+  // The named wrappers keep their ladder tables private, so their
+  // travelledShort <= travelledModerate <= travelledFar ordering is verified
+  // behaviourally: with all three tested against the same system, the stricter
+  // (larger-threshold) tier can only fire once the looser ones already have.
+  // Sweeping distances and asserting that implication exercises the ordering
+  // without reaching into the ladders.
+  const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
+
+  function systemAt(dist) {
+    return { distance: () => dist };
+  }
+
+  it("orders short <= moderate <= far (stricter implies looser)", () => {
+    const context = { totalSize: 36 };
+    let sawShort = false;
+    let sawFar = false;
+    for (let dist = 0; dist <= 20; dist++) {
+      const system = systemAt(dist);
+      const shortTravel = cards.travelledShort(
+        system,
+        context,
+        numberOfSystems
+      );
+      const moderate = cards.travelledModerate(
+        system,
+        context,
+        numberOfSystems
+      );
+      const far = cards.travelledFar(system, context, numberOfSystems);
+      if (far) {
+        assert.ok(moderate, "far implies moderate at distance " + dist);
+        sawFar = true;
       }
-    });
-  });
-
-  it("is what travelledFar delegates to (gate ladder)", () => {
-    assert.deepEqual(
-      cards.travelledFar(systemAt(5), { totalSize: 36 }, numberOfSystems),
-      cards.farForSize(
-        systemAt(5),
-        { totalSize: 36 },
-        numberOfSystems,
-        cards.farLadders.gate
-      )
-    );
+      if (moderate) {
+        assert.ok(shortTravel, "moderate implies short at distance " + dist);
+      }
+      if (shortTravel) {
+        sawShort = true;
+      }
+    }
+    // Guard against a vacuous pass: the sweep must reach both the loosest and the
+    // strictest tier for the implications above to mean anything.
+    assert.ok(sawShort, "sweep should trigger the short tier");
+    assert.ok(sawFar, "sweep should trigger the far tier");
   });
 });
 
