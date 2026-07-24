@@ -10,7 +10,7 @@
   - Additional Data Bank chance starts low and grows as your hand fills
   - Tsunami Tech chance increases the more naval tech you have
   - Storage Compression Tech less likely to appear
-  - Capped the chance of subcommander techs appearing
+  - Capped the chance of subcommander enhancement techs appearing
 
 ### Bugfix
 
