@@ -187,7 +187,7 @@ define(function () {
 
     farForSize: farForSize,
 
-    // Whether a system counts as "isolated" for deal chance scaling: distant
+    // Whether a system counts as "far" for deal chance scaling: distant
     // enough, relative to how many systems the galaxy has, that a player could
     // plausibly have skipped this tech tree so far. numberOfSystems is the
     // caller's GW.balance.numberOfSystems tier table - passed in rather than
