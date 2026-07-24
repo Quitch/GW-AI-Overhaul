@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Rebalanced card deal chances
+- Rebalanced card deal chances:
   - Overhauled the distance modifier system to more accurately align to galaxy sizes
   - Scaled distance modifiers up to Marathon size (Bigger Galactic War)
   - Additional Data Bank starts low and grows as your hand fills
