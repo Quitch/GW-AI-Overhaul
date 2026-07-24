@@ -147,6 +147,80 @@ describe("travelledFar", () => {
   });
 });
 
+describe("farForSize", () => {
+  // Real nine-size table (base five + Bigger-GW's four). A distinct-per-tier ladder
+  // is used for the indexing assertions so they test the tier lookup itself, not the
+  // shipped threshold values (which are free to be retuned).
+  const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
+  const ladder = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+
+  function systemAt(dist) {
+    return { distance: () => dist };
+  }
+
+  function far(totalSize, dist) {
+    return cards.farForSize(
+      systemAt(dist),
+      { totalSize: totalSize },
+      numberOfSystems,
+      ladder
+    );
+  }
+
+  it("uses the ladder entry for the galaxy's size tier", () => {
+    // Large is index 2 -> threshold 30; Rediq is index 4 -> threshold 50.
+    assert.equal(far(36, 30), false);
+    assert.equal(far(36, 31), true);
+    assert.equal(far(78, 50), false);
+    assert.equal(far(78, 51), true);
+  });
+
+  it("uses the final entry for the largest listed size", () => {
+    assert.equal(far(234, 90), false);
+    assert.equal(far(234, 91), true);
+  });
+
+  it("clamps galaxies larger than the whole table to the final tier", () => {
+    assert.equal(far(9999, 90), false);
+    assert.equal(far(9999, 91), true);
+  });
+
+  it("indexes by the caller's table length (base five-size table)", () => {
+    // With only the base five sizes, Rediq (78) is the last tier -> ladder[4] = 50.
+    const baseSizes = [18, 24, 36, 54, 78];
+    assert.equal(
+      cards.farForSize(systemAt(50), { totalSize: 78 }, baseSizes, ladder),
+      false
+    );
+    assert.equal(
+      cards.farForSize(systemAt(51), { totalSize: 78 }, baseSizes, ladder),
+      true
+    );
+  });
+
+  it("ships nine-entry gate/moderate/spike ladders in non-decreasing order", () => {
+    ["gate", "moderate", "spike"].forEach((name) => {
+      const shipped = cards.farLadders[name];
+      assert.equal(shipped.length, 9, name + " has nine tiers");
+      for (let i = 1; i < shipped.length; i++) {
+        assert.ok(shipped[i] >= shipped[i - 1], name + " is non-decreasing");
+      }
+    });
+  });
+
+  it("is what travelledFar delegates to (gate ladder)", () => {
+    assert.deepEqual(
+      cards.travelledFar(systemAt(5), { totalSize: 36 }, numberOfSystems),
+      cards.farForSize(
+        systemAt(5),
+        { totalSize: 36 },
+        numberOfSystems,
+        cards.farLadders.gate
+      )
+    );
+  });
+});
+
 describe("antiTechDeal", () => {
   function inventoryWithCard(id) {
     return { hasCard: (cardId) => cardId === id };
