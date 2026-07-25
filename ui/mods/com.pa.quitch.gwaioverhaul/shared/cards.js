@@ -197,11 +197,16 @@ define(function () {
     // referee_config.js's floodPlanets): a naval start, or Tsunami tech. Anywhere
     // else naval is a gamble on the map, and the card is offered proportionately
     // less rather than being withheld outright.
-    navalWeight: function (inventory, chance) {
+    // dryChance overrides the default 40% fallback for the rare card whose value
+    // collapses rather than merely dips without water (see gwaio_anti_sea).
+    navalWeight: function (inventory, chance, dryChance) {
       var floodsPlanets =
         inventory.hasCard("gwaio_start_naval") ||
         inventory.hasCard("gwaio_enable_tsunami");
-      return floodsPlanets ? chance : Math.round(chance * 0.4);
+      if (floodsPlanets) {
+        return chance;
+      }
+      return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
     },
 
     // The general size-aware "far" test, exposed for the rare card whose deal-chance

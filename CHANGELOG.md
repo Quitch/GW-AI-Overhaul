@@ -6,6 +6,7 @@
 
 - Rebalance card deal chances
   - Naval unit techs are only dealt once you can build ships, and are more likely when a naval loadout or Tsunami Tech floods the planets you fight on
+  - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
 
 ### Bugfix
 
