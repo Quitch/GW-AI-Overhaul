@@ -197,6 +197,43 @@ describe("subcommanderWeight", () => {
   });
 });
 
+describe("navalWeight", () => {
+  // Full weight is reserved for the two states that flood every planet fought on;
+  // anywhere else naval is a gamble on the map and the card is offered less rather
+  // than withheld.
+  const holding = (...cardIds) => ({
+    hasCard: (id) => cardIds.includes(id),
+  });
+
+  it("returns the full chance for a naval start", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_start_naval"), 70), 70);
+  });
+
+  it("returns the full chance for Tsunami tech", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_enable_tsunami"), 70), 70);
+  });
+
+  it("falls back to 40% of the base when neither floods planets", () => {
+    assert.equal(cards.navalWeight(holding(), 70), 28);
+    assert.equal(cards.navalWeight(holding("gwaio_start_air"), 30), 12);
+  });
+
+  it("rounds the fallback to a whole chance", () => {
+    // No shipped card passes a base that divides unevenly, so this pins the
+    // rounding for one that later does rather than describing today's callers.
+    assert.equal(cards.navalWeight(holding(), 33), 13);
+  });
+
+  it("uses an explicit dry chance in place of the fallback, including 0", () => {
+    assert.equal(cards.navalWeight(holding(), 70, 15), 15);
+    assert.equal(cards.navalWeight(holding(), 70, 0), 0);
+  });
+
+  it("ignores the dry chance once planets are flooded", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_start_naval"), 70, 15), 70);
+  });
+});
+
 describe("travelledShort", () => {
   const numberOfSystems = [10, 20, 30, 40];
 
