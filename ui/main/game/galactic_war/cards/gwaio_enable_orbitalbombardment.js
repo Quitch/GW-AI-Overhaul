@@ -33,7 +33,7 @@ define([
       return { chance: chance };
     },
     buff: function () {
-      // referee_config.js
+      // performed in referee_config.js
     },
     dull: function () {},
   };

@@ -13,17 +13,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Scaling with the retinue is right - every extra Sub Commander is another
-      // drop that gets to pick its own planet - but the old 30 + 30 each was
-      // uncapped, and gwc_minion never stops offering more minions, so a long run
-      // could push this past every other card in the deck. Capped like the
-      // gwaio_upgrade_subcommander_* line does.
       return {
         chance: Math.min(40 + 20 * inventory.minions().length, 100),
       };
     },
     buff: function () {
-      // referee_config.js
+      // performed in referee_config.js
     },
     dull: function () {},
   };
