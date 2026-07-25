@@ -178,12 +178,16 @@ define(function () {
       };
     },
 
+    // chance is optional and defaults to 60. Tested for undefined rather than for
+    // being falsy so a caller that computes its weight - navalWeight and friends
+    // can legitimately round down to 0 - gets the 0 it asked for, not the default.
     upgradeDeal: function (available, chance) {
+      var weight = _.isUndefined(chance) ? 60 : chance;
       return {
         params: {
           allowOverflow: true,
         },
-        chance: available ? chance || 60 : 0,
+        chance: available ? weight : 0,
       };
     },
 

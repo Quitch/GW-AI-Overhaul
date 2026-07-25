@@ -106,6 +106,13 @@ describe("upgradeDeal", () => {
       chance: 0,
     });
   });
+
+  it("honours an explicit chance of 0 rather than applying the default", () => {
+    assert.deepEqual(cards.upgradeDeal(true, 0), {
+      params: { allowOverflow: true },
+      chance: 0,
+    });
+  });
 });
 
 describe("conditionalDeal", () => {
