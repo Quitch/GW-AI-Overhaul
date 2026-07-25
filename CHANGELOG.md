@@ -9,14 +9,18 @@
   - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
   - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
   - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
-  - Efficiency Tech, Improved Commander Build Arm, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
+  - Efficiency Tech, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
+  - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, as they buff every Commander you field, instead of scaling with distance travelled
+  - Structure Armor and Defense Ammunition Techs are dealt a little more often
 
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
 - Efficiency Tech, Improved Commander Build Arm, and Improved Fabricator Build Arms each had a branch meant to lower their chance far from home that could never run, so they stayed at full chance across the whole galaxy
-- Improved Commander Build Arm and Improved Fabricator Build Arms treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
+- Improved Fabricator Build Arms treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Removes the Uber Cannon from Improved Commander Build Arm
+- Commander Upgrade Tech could not be taken when your Data Banks were full, despite granting a Data Bank of its own
+- Commander Combat Tech now boosts the damage of all your Commander's weapons, not just its main gun and Uber Cannon, matching Commander Ammunition Tech
 - Orbital Fabrication Tech became rarer the deeper you travelled, when bigger systems are exactly where orbital pays off
 - Orbital Ammunition and Fabrication Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs

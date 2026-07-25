@@ -191,6 +191,16 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
+    // Deal weight for a commander stat card. These all mod base_commander (or its
+    // ammo), the spec every Sub Commander inherits, so one card buffs every
+    // commander you field - which makes the size of your retinue, not how far you
+    // have travelled, the thing that decides how much the card is worth. Capped at
+    // double the base weight so a large retinue cannot crowd out the offer.
+    commanderWeight: function (inventory, chance) {
+      var commanders = inventory.minions().length;
+      return Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
+    },
+
     // Deal weight for a naval card. Owning ships is not the same as being able to
     // use them - most generated systems have little water - so the full weight is
     // reserved for the two states that flood every planet fought on (see

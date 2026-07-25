@@ -1,8 +1,7 @@
 define([
-  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwoCard, gwoUnit) {
+], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,17 +15,14 @@ define([
       found: "/VO/Computer/gw/board_tech_available_efficiency",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       // The base card ramped 50 -> 500, making this the single heaviest card in a
       // settled mid-game run. Its own "step back down further out" branch could
       // never fire: `if (dist > 5) 500; else if (dist > 9) 250;` - anything past 9
-      // is already past 5. Rebuilt on travelledModerate, which also covers the
-      // Bigger Galactic War sizes the base card's hand-rolled table stopped short
-      // of.
-      var sizes = GW.balance.numberOfSystems;
-      return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 120 : 24,
-      };
+      // is already past 5. This buffs commander_build_arm, which every Sub
+      // Commander carries, so it scales with the retinue like the other commander
+      // cards rather than with distance; see gwoCard.commanderWeight.
+      return { chance: gwoCard.commanderWeight(inventory, 50) };
     },
     buff: function (inventory) {
       inventory.addMods(

@@ -17,18 +17,17 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 24;
-      if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 12;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 120;
+      // Kept on distance: gw_galaxy.js sizes each system by its star distance, so
+      // deeper means more planets, more bases to hold and longer sieges. Rebased
+      // onto the same curve as gwc_health_structures. The old first test also
+      // checked numberOfSystems[0], which numberOfSystems[1] already covers.
+      var sizes = GW.balance.numberOfSystems;
+      if (context.totalSize <= sizes[1]) {
+        return { chance: 16 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
+      };
     },
     buff: function (inventory) {
       var mods = _.flatten(
