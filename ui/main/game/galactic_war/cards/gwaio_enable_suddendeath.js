@@ -1,6 +1,7 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
-) {
+define([
+  "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (GW, gwoCard) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -12,8 +13,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
-    deal: function () {
-      return { chance: 45 };
+    deal: function (system, context) {
+      var chance = 28;
+
+      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
+        chance = 120;
+      }
+      return { chance: chance };
     },
     buff: function () {
       // performed in referee_config.js
