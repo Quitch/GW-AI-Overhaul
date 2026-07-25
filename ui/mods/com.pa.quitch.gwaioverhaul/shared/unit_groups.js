@@ -565,7 +565,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
 
   var units = mobile.concat(immobile);
-  var unitsNoCluster = mobileNoCluster.concat(mobile);
+  var unitsNoCluster = mobileNoCluster.concat(immobile);
 
   var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
 

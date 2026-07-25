@@ -39,6 +39,7 @@
 - Economy and Intelligence Fabrication Techs became rarer the deeper you travelled
 - Storage Compression Tech became rarer the deeper you travelled
 - Economy Fabrication Tech treated every galaxy above Uber size the same, so its deal chance ignored distance on the largest galaxies (Bigger Galactic War)
+- Terminal Commander quartered mobile unit costs, left structure costs untouched, and still discounted the Angel and Colonel when playing as Cluster
 
 ## v6.4.0 - 2026-07-24
 
