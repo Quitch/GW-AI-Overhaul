@@ -15,18 +15,17 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 28;
-      if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 14;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 142;
+      // gw_galaxy.js sizes each system by its star distance, so travelling deeper
+      // means more planets per fight and more use for orbital. Small and Medium
+      // galaxies never get deep enough for that to pay off. The old first test also
+      // checked numberOfSystems[0], which numberOfSystems[1] already covers.
+      var sizes = GW.balance.numberOfSystems;
+      if (context.totalSize <= sizes[1]) {
+        return { chance: 16 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
+      };
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalMobile, function (unit) {

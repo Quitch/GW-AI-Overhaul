@@ -7,10 +7,15 @@
 - Rebalance card deal chances
   - Naval unit techs are more likely when you are using a naval loadout or own Tsunami Tech
   - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
+  - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
+  - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
 
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
+- Orbital Fabrication Tech became rarer the deeper you travelled, when bigger systems are exactly where orbital pays off
+- Orbital Ammunition and Fabrication Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
+- Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
 - Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
 

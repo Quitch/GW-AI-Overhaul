@@ -17,18 +17,16 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 24;
-      if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 12;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 120;
+      // Matches Orbital Armor Tech's curve - see gwc_health_orbital. The old first
+      // test also checked numberOfSystems[0], which numberOfSystems[1] already
+      // covers.
+      var sizes = GW.balance.numberOfSystems;
+      if (context.totalSize <= sizes[1]) {
+        return { chance: 16 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
+      };
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalFactories, function (unit) {
