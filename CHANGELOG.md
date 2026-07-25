@@ -9,10 +9,14 @@
   - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
   - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
   - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
+  - Efficiency Tech, Improved Commander Build Arm, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
 
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
+- Efficiency Tech, Improved Commander Build Arm, and Improved Fabricator Build Arms each had a branch meant to lower their chance far from home that could never run, so they stayed at full chance across the whole galaxy
+- Improved Commander Build Arm and Improved Fabricator Build Arms treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
+- Removes the Uber Cannon from Improved Commander Build Arm
 - Orbital Fabrication Tech became rarer the deeper you travelled, when bigger systems are exactly where orbital pays off
 - Orbital Ammunition and Fabrication Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
