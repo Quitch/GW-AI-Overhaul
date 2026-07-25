@@ -125,6 +125,44 @@ describe("conditionalDeal", () => {
   });
 });
 
+describe("commanderWeight", () => {
+  // Commander stat cards mod base_commander, the spec every Sub Commander
+  // inherits, so their worth tracks the size of the retinue. Faction index 4 is
+  // Cluster, whose Sub Commanders aren't commanders and so multiply nothing.
+  const CLUSTER = 4;
+  const withRetinue = (count, faction) => ({
+    minions: () => new Array(count).fill({}),
+    getTag: (scope, key) =>
+      scope === "global" && key === "playerFaction" ? faction : undefined,
+  });
+
+  it("returns the base weight when no Sub Commanders are fielded", () => {
+    assert.equal(cards.commanderWeight(withRetinue(0, 1), 45), 45);
+  });
+
+  it("adds a third of the base per commander, from the first one on", () => {
+    assert.equal(cards.commanderWeight(withRetinue(1, 1), 45), 60);
+    assert.equal(cards.commanderWeight(withRetinue(2, 1), 45), 75);
+  });
+
+  it("caps at double the base, not subcommanderWeight's flat 90", () => {
+    assert.equal(cards.commanderWeight(withRetinue(3, 1), 45), 90);
+    assert.equal(cards.commanderWeight(withRetinue(20, 1), 45), 90);
+    assert.equal(cards.commanderWeight(withRetinue(20, 1), 70), 140);
+  });
+
+  it("ignores the retinue for Cluster, which fields no extra commanders", () => {
+    assert.equal(cards.commanderWeight(withRetinue(0, CLUSTER), 45), 45);
+    assert.equal(cards.commanderWeight(withRetinue(5, CLUSTER), 45), 45);
+  });
+
+  it("scales for every other faction, and when the tag is unset", () => {
+    for (const faction of [0, 1, 2, 3, 5, undefined]) {
+      assert.equal(cards.commanderWeight(withRetinue(2, faction), 45), 75);
+    }
+  });
+});
+
 describe("subcommanderWeight", () => {
   const withMinions = (count) => ({
     minions: () => new Array(count).fill({}),
