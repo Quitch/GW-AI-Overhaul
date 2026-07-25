@@ -200,9 +200,14 @@ define(function () {
     // commander you field - which makes the size of your retinue, not how far you
     // have travelled, the thing that decides how much the card is worth. Capped at
     // double the base weight so a large retinue cannot crowd out the offer.
+    // Cluster ignores the multiplier as its subcommanders don't use commanders
     commanderWeight: function (inventory, chance) {
       var commanders = inventory.minions().length;
-      return Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
+      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+      var finalChance = playerIsCluster
+        ? chance
+        : Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
+      return finalChance;
     },
 
     // Deal weight for a card that only upgrades Sub Commanders.
