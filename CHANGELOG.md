@@ -11,7 +11,7 @@
 
 - Prevent creation of galaxies with isolated stars
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
-- Barnacle and Naval Fabricator had the effects of some techs applied to them twice
+- Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
 
 ## v6.4.0 - 2026-07-24
 

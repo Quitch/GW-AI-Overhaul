@@ -91,10 +91,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.mend,
     gwoUnit.slammer,
   ];
-  var botsAdvancedMobile = botsAdvancedCombat.concat(
-    gwoUnit.botFabberAdvanced,
-    gwoUnit.mend
-  );
+  var botsAdvancedMobile = botsAdvancedCombat.concat(gwoUnit.botFabberAdvanced);
   var botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
     gwoUnit.bluehawkAmmoOrbital,
@@ -129,14 +126,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.barnacle,
     gwoUnit.barracuda,
     gwoUnit.narwhal,
-    gwoUnit.navalFabber,
     gwoUnit.orca,
     gwoUnit.piranha,
   ];
-  var navalBasicMobile = navalBasicCombat.concat(
-    gwoUnit.barnacle,
-    gwoUnit.navalFabber
-  );
+  var navalBasicMobile = navalBasicCombat.concat(gwoUnit.navalFabber);
   var navalBasicAmmo = [
     gwoUnit.barracudaAmmo,
     gwoUnit.narwhalAAAmmo,
