@@ -191,6 +191,19 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
+    // Deal weight for a naval card. Owning ships is not the same as being able to
+    // use them - most generated systems have little water - so the full weight is
+    // reserved for the two states that flood every planet fought on (see
+    // referee_config.js's floodPlanets): a naval start, or Tsunami tech. Anywhere
+    // else naval is a gamble on the map, and the card is offered proportionately
+    // less rather than being withheld outright.
+    navalWeight: function (inventory, chance) {
+      var floodsPlanets =
+        inventory.hasCard("gwaio_start_naval") ||
+        inventory.hasCard("gwaio_enable_tsunami");
+      return floodsPlanets ? chance : Math.round(chance * 0.4);
+    },
+
     // The general size-aware "far" test, exposed for the rare card whose deal-chance
     // curve needs a bespoke thresholds array that isn't one of the named tiers below
     // (e.g. a non-monotonic band - see gwc_energy_efficiency_all). Cards using a

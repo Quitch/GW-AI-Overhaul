@@ -5,15 +5,13 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Naval Ammunition Tech increases the damage of all naval vessels by 25%"
+      "!LOC:Naval Armor Tech increases health of all naval units by 50%"
     ),
-    summarize: _.constant("!LOC:Naval Ammunition Tech"),
+    summarize: _.constant("!LOC:Naval Armor Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
     ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
+    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
@@ -22,25 +20,13 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.navalAmmo, function (ammo) {
-          return [
-            {
-              file: ammo,
-              path: "damage",
-              op: "multiply",
-              value: 1.25,
-            },
-            {
-              file: ammo,
-              path: "splash_damage",
-              op: "multiply",
-              value: 1.25,
-            },
-          ];
-        })
+      inventory.addMods(
+        _.flatten(
+          _.map(gwoGroup.navalMobile, function (unit) {
+            return gwoCard.mods(unit, "multiply", { max_health: 1.5 });
+          })
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

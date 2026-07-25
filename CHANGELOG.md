@@ -2,10 +2,16 @@
 
 ## Unreleased
 
+### Changed
+
+- Rebalance card deal chances
+  - Naval unit techs are only dealt once you can build ships, and are more likely when a naval loadout or Tsunami Tech floods the planets you fight on
+
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
+- Barnacle and Naval Fabricator had the effects of some techs applied to them twice
 
 ## v6.4.0 - 2026-07-24
 
