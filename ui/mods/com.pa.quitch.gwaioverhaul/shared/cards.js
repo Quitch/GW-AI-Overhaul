@@ -201,6 +201,25 @@ define(function () {
       return Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
     },
 
+    // Deal weight for a card that only upgrades Sub Commanders.
+    // referee_config_setup.js applies each of these to every ally in turn, so the
+    // value does scale with the retinue - but the card is worth nothing at all
+    // until you field one, hence the 0. Past that it opens at its full base weight
+    // instead of creeping up from near-nothing the way a bare "minions * n" does,
+    // which left a card that had just become live still being offered at a
+    // throwaway weight. Each further Sub Commander adds a third of the base, and
+    // the whole line stops at 90 so a large retinue cannot crowd out the deck.
+    subcommanderWeight: function (inventory, chance) {
+      var subcommanders = inventory.minions().length;
+      if (subcommanders === 0) {
+        return 0;
+      }
+      return Math.min(
+        chance + Math.round(chance / 3) * (subcommanders - 1),
+        90
+      );
+    },
+
     // Deal weight for a naval card. Owning ships is not the same as being able to
     // use them - most generated systems have little water - so the full weight is
     // reserved for the two states that flood every planet fought on (see

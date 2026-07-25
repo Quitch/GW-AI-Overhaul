@@ -13,6 +13,7 @@
   - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, as they buff every Commander you field, instead of scaling with distance travelled
   - Structure Armor and Defense Ammunition Techs are dealt a little more often
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
+  - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single Sub Commander, rather than being rare until you have several, and are now dealt relative to how much each one gives you
 
 ### Bugfix
 

@@ -118,6 +118,40 @@ describe("conditionalDeal", () => {
   });
 });
 
+describe("subcommanderWeight", () => {
+  const withMinions = (count) => ({
+    minions: () => new Array(count).fill({}),
+  });
+
+  it("returns 0 with no Sub Commanders, as the card does nothing", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(0), 45), 0);
+  });
+
+  it("opens at the full base weight for the first Sub Commander", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(1), 45), 45);
+  });
+
+  it("adds a third of the base for each Sub Commander after the first", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(2), 45), 60);
+    assert.equal(cards.subcommanderWeight(withMinions(3), 45), 75);
+  });
+
+  it("never exceeds the shared ceiling, however large the retinue", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(4), 45), 90);
+    assert.equal(cards.subcommanderWeight(withMinions(20), 45), 90);
+    assert.equal(cards.subcommanderWeight(withMinions(20), 55), 90);
+  });
+
+  it("keeps a lower base below a higher one at every retinue size", () => {
+    for (let n = 1; n <= 6; n++) {
+      assert.ok(
+        cards.subcommanderWeight(withMinions(n), 35) <=
+          cards.subcommanderWeight(withMinions(n), 55)
+      );
+    }
+  });
+});
+
 describe("travelledShort", () => {
   const numberOfSystems = [10, 20, 30, 40];
 

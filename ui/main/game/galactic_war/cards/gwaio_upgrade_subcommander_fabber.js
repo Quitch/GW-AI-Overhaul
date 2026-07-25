@@ -17,11 +17,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     deal: function (system, context, inventory) {
       var galaxy = model.game().galaxy();
       var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-      var chance =
-        gwoSettings && gwoSettings.aiAlly === "Queller"
-          ? 0
-          : Math.min(inventory.minions().length * 30, 120);
-      return { chance: chance };
+      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+        return { chance: 0 };
+      }
+      return { chance: gwoCard.subcommanderWeight(inventory, 55) };
     },
     buff: function () {
       // performed in referee_config.js
