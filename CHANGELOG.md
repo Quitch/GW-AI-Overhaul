@@ -12,6 +12,7 @@
   - Efficiency Tech, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
   - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, as they buff every Commander you field, instead of scaling with distance travelled
   - Structure Armor and Defense Ammunition Techs are dealt a little more often
+  - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
 
 ### Bugfix
 
@@ -26,6 +27,7 @@
 - Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
 - Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
+- Sudden Death Tech was offered more often the more Sub Commanders you had, when each Sub Commander is another Commander whose death loses you the battle
 
 ## v6.4.0 - 2026-07-24
 

@@ -23,12 +23,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       }
       // Scale with the player's naval commitment, matched by the common "_sea" token
       // (their ships, naval enablement, or anti-ship tech that wants ships to fight)
-      // so future/modder naval cards count with no explicit support. Mirrors the
-      // landanywhere/suddendeath "30 + 30 * count" idiom.
+      // so future/modder naval cards count with no explicit support. Eight cards
+      // carry that token today, so the old uncapped "+ 30 each" topped out at 270 -
+      // a lock rather than a preference. Capped like the gwaio_upgrade_subcommander_*
+      // line does, still tripling the weight for a committed naval run.
       var navalBonuses = _.filter(inventory.cards(), function (card) {
         return _.includes(card.id, "_sea");
       }).length;
-      return { chance: 30 + navalBonuses * 30 };
+      return { chance: Math.min(30 + navalBonuses * 15, 90) };
     },
     buff: function () {
       // referee_config.js
