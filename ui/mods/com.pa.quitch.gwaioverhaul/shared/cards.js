@@ -27,13 +27,21 @@ define(function () {
   // Per-galaxy-size "far" thresholds for deal-chance scaling, indexed by size tier
   // (a GW.balance.numberOfSystems index). Nine entries so they cover Bigger-GW's
   // sizes (numberOfSystems[4..8]) as well as the base five; the final entry also
-  // applies to anything larger. Re-centred on the measured star-distance
-  // distribution (median star distance runs ~0.55x the galaxy's max eccentricity)
-  // so each branch fires for a roughly consistent share of stars across every
-  // size: short ~45%, moderate ~30%, far ~18%.
+  // applies to anything larger. Centred on the star-distance distribution measured
+  // over 1000 generated galaxies per size, so each branch fires for a roughly
+  // consistent share of stars across every size: short ~45%, moderate ~30%,
+  // far ~18%. Measured share of stars past each threshold, Small -> Marathon:
+  //   short     38 50 45 45 45 45 45 46 46  (mean error 1.6pp)
+  //   moderate  38 28 27 29 32 34 26 28 30  (mean error 2.9pp)
+  //   far       15 11 13 16 20 13 17 20 22  (mean error 3.3pp)
+  // Star distance is integer and Small spans only ~8 values, so its bands cannot be
+  // separated to better than one step: short and moderate deliberately share a
+  // threshold there (37.6% - the closest either can get to its target) rather than
+  // firing short for 61% of stars. far is left as-is; no integer change improves it
+  // by more than 0.1pp.
   var distances = {
-    short: [2, 3, 4, 5, 6, 7, 8, 9, 10],
-    moderate: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+    short: [3, 3, 4, 5, 6, 7, 8, 9, 10],
+    moderate: [3, 4, 5, 6, 7, 8, 10, 11, 12],
     far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 

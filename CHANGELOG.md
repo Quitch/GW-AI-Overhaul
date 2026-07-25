@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
+- Realigned some distance measures for deals to better align to the intended galaxy percentages
 
 ## v6.4.0 - 2026-07-24
 

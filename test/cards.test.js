@@ -134,7 +134,7 @@ describe("travelledShort", () => {
 
   it("is true once distance exceeds the tier threshold for the galaxy size", () => {
     assert.equal(
-      cards.travelledShort(systemAt(3), { totalSize: 10 }, numberOfSystems),
+      cards.travelledShort(systemAt(4), { totalSize: 10 }, numberOfSystems),
       true
     );
   });
