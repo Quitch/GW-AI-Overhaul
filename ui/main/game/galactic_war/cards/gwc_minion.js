@@ -109,11 +109,5 @@ define([
       }
     },
     dull: function () {},
-    keep: function (params, context) {
-      context.chance = 50;
-    },
-    discard: function (params, context) {
-      context.chance *= Math.log(context.totalSize) * 0.25;
-    },
   };
 });
