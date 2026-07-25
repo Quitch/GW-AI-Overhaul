@@ -1,9 +1,8 @@
 define([
-  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoUnit, gwoGroup) {
+], function (gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -17,16 +16,12 @@ define([
       found: "/VO/Computer/gw/board_tech_available_economy",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
-      // Base weight cut (was 250/125): storage is a low-priority eco card that was
-      // over-appearing, especially early. Threshold re-centred on star distance.
-      var chance = 130;
-      if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 70;
-      }
-      return { chance: chance };
+    deal: function () {
+      // Flat, for the same reason as gwc_storage_and_buff: storage capacity is worth
+      // the same at every distance. The earlier 130/70 cut from the base card's
+      // 500/250 kept its shape, which ran backwards, and still averaged ~112 - above
+      // every other card of its weight class for a niche eco tech.
+      return { chance: 45 };
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresEcoStorage);
