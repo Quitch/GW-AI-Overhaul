@@ -17,22 +17,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 33;
-      // Outer edge -> 166; the mid-distance band peaks higher at 333 (preserving the
-      // original non-monotonic shape). Both ladders re-centred on star distance.
-      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
-        chance = 166;
-      } else if (
-        gwoCard.farForSize(
-          system,
-          context,
-          GW.balance.numberOfSystems,
-          [2, 3, 5, 6, 7, 8, 9, 10, 11]
-        )
-      ) {
-        chance = 333;
+      var sizes = GW.balance.numberOfSystems;
+      if (gwoCard.travelledFar(system, context, sizes)) {
+        return { chance: 90 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 45 : 18,
+      };
     },
     buff: function (inventory) {
       var mods = [];

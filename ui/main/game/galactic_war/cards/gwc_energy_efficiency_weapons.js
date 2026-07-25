@@ -17,26 +17,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 33;
-      var dist = system.distance();
-      if (
-        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 4) ||
-        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 6) ||
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 9) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 10) ||
-        dist > 12
-      ) {
-        chance = 166;
-      } else if (
-        (context.totalSize <= GW.balance.numberOfSystems[0] && dist > 2) ||
-        (context.totalSize <= GW.balance.numberOfSystems[1] && dist > 3) ||
-        (context.totalSize <= GW.balance.numberOfSystems[2] && dist > 5) ||
-        (context.totalSize <= GW.balance.numberOfSystems[3] && dist > 6) ||
-        dist > 7
-      ) {
-        chance = 333;
+      var sizes = GW.balance.numberOfSystems;
+      if (gwoCard.travelledFar(system, context, sizes)) {
+        return { chance: 130 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 65 : 28,
+      };
     },
     buff: function (inventory) {
       var mods = _.flatten(

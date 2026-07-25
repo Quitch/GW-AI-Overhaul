@@ -238,11 +238,10 @@ define(function () {
       return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
     },
 
-    // The general size-aware "far" test, exposed for the rare card whose deal-chance
-    // curve needs a bespoke thresholds array that isn't one of the named tiers below
-    // (e.g. a non-monotonic band - see gwc_energy_efficiency_all). Cards using a
-    // standard aggressiveness should prefer the travelled* wrappers, which keep the
-    // distances tables private. numberOfSystems is the caller's
+    // The general size-aware "far" test that backs the travelled* wrappers below,
+    // exported so it can be tested directly and so a card needing a bespoke
+    // thresholds array still can. No card needs one today - prefer the wrappers,
+    // which keep the distances tables private. numberOfSystems is the caller's
     // GW.balance.numberOfSystems tier table - passed in rather than imported so this
     // module stays dependency-free (base-game "shared/gw_common" isn't
     // shippable/loadable here, and every card transitively depends on this file -

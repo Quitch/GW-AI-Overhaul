@@ -14,6 +14,7 @@
   - Structure Armor and Defense Ammunition Techs are dealt a little more often
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
   - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single Sub Commander, rather than being rare until you have several, and are now dealt relative to how much each one gives you
+  - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs were three of the most commonly dealt cards in the deck and are now dealt far less often, and relative to how much each one gives you
 
 ### Bugfix
 
@@ -29,6 +30,8 @@
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
 - Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
 - Sudden Death Tech was offered more often the more Sub Commanders you had, when each Sub Commander is another Commander whose death loses you the battle
+- Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs all became rarer the deeper you travelled, when longer sieges in bigger systems are exactly where energy costs bite
+- Improved Intelligence and Improved Energy Weapons Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 
 ## v6.4.0 - 2026-07-24
 
