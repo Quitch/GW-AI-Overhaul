@@ -17,13 +17,7 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // Same distance-means-more-planets curve as the other orbital cards, but
-      // rebased: a single stat is worth roughly half what Orbital Armor Tech is,
-      // and this was previously the heaviest of the six.
       var sizes = GW.balance.numberOfSystems;
-      if (context.totalSize <= sizes[1]) {
-        return { chance: 10 };
-      }
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 100 : 20,
       };

@@ -17,17 +17,7 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // Matches Orbital Armor Tech's curve - see gwc_health_orbital. The base card
-      // hard-coded its own size ladder, which stopped at numberOfSystems[3] and so
-      // lumped every Bigger Galactic War size into one bucket; travelledModerate
-      // covers all nine. The base card's "distance must be non-zero" guard is kept.
       var sizes = GW.balance.numberOfSystems;
-      if (system.distance() === 0) {
-        return { chance: 0 };
-      }
-      if (context.totalSize <= sizes[1]) {
-        return { chance: 16 };
-      }
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
       };

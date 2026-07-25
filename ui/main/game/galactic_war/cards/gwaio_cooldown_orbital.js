@@ -17,13 +17,7 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // Matches Orbital Armor Tech's curve - see gwc_health_orbital. The old first
-      // test also checked numberOfSystems[0], which numberOfSystems[1] already
-      // covers.
       var sizes = GW.balance.numberOfSystems;
-      if (context.totalSize <= sizes[1]) {
-        return { chance: 16 };
-      }
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
       };

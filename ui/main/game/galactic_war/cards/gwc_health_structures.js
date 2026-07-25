@@ -15,14 +15,7 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // Kept on distance: gw_galaxy.js sizes each system by its star distance, so
-      // deeper means more planets, more bases to hold and longer sieges. Rebased
-      // onto the same curve as the other armour cards. The old first test also
-      // checked numberOfSystems[0], which numberOfSystems[1] already covers.
       var sizes = GW.balance.numberOfSystems;
-      if (context.totalSize <= sizes[1]) {
-        return { chance: 16 };
-      }
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
       };

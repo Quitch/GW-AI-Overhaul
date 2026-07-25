@@ -17,6 +17,7 @@
   - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs were three of the most commonly dealt cards in the deck and are now dealt far less often, and are now staggered by usefulness
   - Economy and Intelligence Fabrication Techs are dealt less often overall
   - Storage Compression Tech is dealt at the same chance everywhere, and less often
+  - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt
 
 ### Bugfix
 

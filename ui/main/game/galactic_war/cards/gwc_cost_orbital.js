@@ -17,18 +17,7 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // The base card ran its ladder backwards - 100 near the origin, halved to 50
-      // once past the threshold - so orbital got cheaper to unlock exactly where it
-      // mattered least. Inverted to match the other five orbital cards, and moved
-      // onto travelledModerate so Bigger Galactic War sizes are covered. The base
-      // card's "distance must be non-zero" guard is kept.
       var sizes = GW.balance.numberOfSystems;
-      if (system.distance() === 0) {
-        return { chance: 0 };
-      }
-      if (context.totalSize <= sizes[1]) {
-        return { chance: 16 };
-      }
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
       };
