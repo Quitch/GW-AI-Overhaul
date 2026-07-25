@@ -18,9 +18,11 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
+      // Hovering lets the finished fabber leave the water, but you still need water
+      // to build the advanced naval factory that makes it.
       return gwoCard.upgradeDeal(
         gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced),
-        30
+        gwoCard.navalWeight(inventory, 30)
       );
     },
     buff: function (inventory) {

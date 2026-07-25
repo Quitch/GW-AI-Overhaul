@@ -15,15 +15,18 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
+      // Unlocking a fleet is only worth a data bank if there is water to sail it on,
+      // so the distance ladder is scaled by the same water test as the other naval
+      // cards. Full weight needs Tsunami here: a naval start already owns the lot,
+      // which fails the missingUnit test above and zeroes this anyway.
       var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.naval)) {
-        chance = gwoCard.travelledShort(
-          system,
-          context,
-          GW.balance.numberOfSystems
-        )
-          ? 200
-          : 25;
+        chance = gwoCard.navalWeight(
+          inventory,
+          gwoCard.travelledShort(system, context, GW.balance.numberOfSystems)
+            ? 200
+            : 25
+        );
       }
       return { chance: chance };
     },

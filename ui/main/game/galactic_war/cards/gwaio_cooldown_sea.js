@@ -14,9 +14,12 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
+      // gwc_start grants navalFactory to every loadout, and hasUnit matches any one
+      // of the group, so that test is always true - this was a flat offer whether or
+      // not the run would ever see water.
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.navalFactories),
-        35
+        gwoCard.navalWeight(inventory, 35)
       );
     },
     buff: function (inventory) {

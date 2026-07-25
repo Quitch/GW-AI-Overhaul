@@ -19,10 +19,12 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
+      // gwc_start grants navalFactory to every loadout, so that test is always true
+      // and this was a flat offer whether or not the run would ever see water.
       return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
           gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
-        30
+        gwoCard.navalWeight(inventory, 30)
       );
     },
     buff: function (inventory) {
