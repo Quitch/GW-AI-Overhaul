@@ -18,9 +18,6 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context) {
       var sizes = GW.balance.numberOfSystems;
-      if (system.distance() === 0) {
-        return { chance: 0 };
-      }
       if (gwoCard.travelledFar(system, context, sizes)) {
         return { chance: 90 };
       }
