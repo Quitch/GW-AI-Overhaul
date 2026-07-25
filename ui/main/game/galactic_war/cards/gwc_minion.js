@@ -52,7 +52,7 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      var chance = 100;
+      var chance = 80;
       var aiOpeningFactories = [
         gwoUnit.vehicleFactory,
         gwoUnit.botFactory,
