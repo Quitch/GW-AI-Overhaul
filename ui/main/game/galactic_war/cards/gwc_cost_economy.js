@@ -17,12 +17,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // The base card ran its ladder backwards - 100 near the origin, halved to 50
-      // once past the threshold - so the cheapest expansion came where there was
-      // least to expand onto. Its size ladder also lumped every galaxy above Uber
-      // size together under one "dist > 13" test. The base card's "distance must be
-      // non-zero" guard is kept. Halving the cost of every extractor and energy
-      // plant is the broadest eco swing in the deck, so the weights are low.
       var sizes = GW.balance.numberOfSystems;
       if (system.distance() === 0) {
         return { chance: 0 };

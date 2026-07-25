@@ -20,8 +20,6 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      // Scales with Sub Commanders rather than distance; see
-      // gwoCard.commanderWeight.
       return { chance: gwoCard.commanderWeight(inventory, 70) };
     },
     buff: function (inventory) {

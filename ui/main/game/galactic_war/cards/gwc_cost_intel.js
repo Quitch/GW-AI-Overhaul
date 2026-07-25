@@ -18,8 +18,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // Ran backwards: a build cost reduction is worth more the more you build, and
-      // deeper systems have more planets to cover with radar.
       var sizes = GW.balance.numberOfSystems;
       if (gwoCard.travelledFar(system, context, sizes)) {
         return { chance: 120 };

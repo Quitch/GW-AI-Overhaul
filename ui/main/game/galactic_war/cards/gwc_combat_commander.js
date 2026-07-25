@@ -15,10 +15,6 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Speed, health and damage in one card, on a unit you always have - the same
-      // three-stat bundle that puts gwc_combat_air and friends at the top of the
-      // deck, so it shares their weight. Scales with Sub Commanders rather than
-      // distance; see gwoCard.commanderWeight.
       return { chance: gwoCard.commanderWeight(inventory, 35) };
     },
     buff: function (inventory) {

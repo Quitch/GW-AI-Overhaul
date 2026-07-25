@@ -14,8 +14,6 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Scales with Sub Commanders rather than distance; see
-      // gwoCard.commanderWeight.
       return { chance: gwoCard.commanderWeight(inventory, 45) };
     },
     buff: function (inventory) {

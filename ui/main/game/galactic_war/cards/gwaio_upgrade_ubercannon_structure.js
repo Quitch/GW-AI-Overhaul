@@ -21,13 +21,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Both halves scale with the retinue: every commander carries an Uber Cannon,
-      // and reclaiming friendly commanders needs a friendly commander to reclaim -
-      // with no Sub Commanders that half does nothing. See gwoCard.commanderWeight.
-      // allowOverflow because buff() grants the slot this card occupies, matching
-      // every other self-slotting upgrade (they get it from gwoCard.upgradeDeal);
-      // without it canFitCard() refused the card on a full hand, which is exactly
-      // when a free slot is worth most.
       return {
         params: {
           allowOverflow: true,

@@ -48,13 +48,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      // +50% build speed across every fabber and factory is the widest economy
-      // effect in the deck, so it is rarer than the cards it outclasses. The base
-      // card's "step back down further out" branch could never fire:
-      // `if (dist > 5) 250; else if (dist > 9) 125;` - anything past 9 is already
-      // past 5. Rebuilt on travelledModerate, which also covers the Bigger Galactic
-      // War sizes the base card's hand-rolled table stopped short of. The "distance
-      // must be non-zero" guard is the base card's and is kept.
       var sizes = GW.balance.numberOfSystems;
       return {
         chance: gwoCard.travelledModerate(system, context, sizes) ? 80 : 16,

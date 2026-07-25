@@ -16,12 +16,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system) {
-      // A flat +25% to both resources compounds for the rest of the run, which put
-      // this among the three heaviest cards in the deck at 250 - roughly one offer
-      // in eighteen. Flat, because economy is worth the same at every distance: the
-      // base card's own "halve it further out" branch was unreachable anyway, sitting
-      // behind a `dist > N` test that an earlier `dist > 0` had already passed. The
-      // "distance must be non-zero" guard is the base card's and is kept.
       return gwoCard.conditionalDeal(system.distance() > 0, 35);
     },
     buff: function (inventory) {

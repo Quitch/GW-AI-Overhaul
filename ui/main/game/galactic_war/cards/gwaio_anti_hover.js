@@ -16,8 +16,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Hover is a near-empty armour class on a dry map - the Kaiju and Piranha are
-      // both naval - so this tracks the same water test as its Anti-Ship opposite.
       return gwoCard.antiTechDeal(
         inventory,
         gwoCard.navalWeight(inventory, 70, 15),

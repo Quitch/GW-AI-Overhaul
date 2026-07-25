@@ -16,12 +16,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      // Doubling damage against ships is only worth a data bank when there are
-      // ships to shoot at. A naval loadout or Tsunami Tech floods every planet
-      // fought on (referee_config.js's floodPlanets), which is what puts enemy
-      // naval on the board; without one this stays in the deck for variety but at
-      // a fraction of the weight. Owning ships yourself is deliberately not the
-      // test - this modifies damage you deal, not damage you take.
       return gwoCard.antiTechDeal(
         inventory,
         gwoCard.navalWeight(inventory, 70, 15),

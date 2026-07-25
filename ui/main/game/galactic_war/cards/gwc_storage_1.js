@@ -17,10 +17,6 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function () {
-      // Flat, for the same reason as gwc_storage_and_buff: storage capacity is worth
-      // the same at every distance. The earlier 130/70 cut from the base card's
-      // 500/250 kept its shape, which ran backwards, and still averaged ~112 - above
-      // every other card of its weight class for a niche eco tech.
       return { chance: 45 };
     },
     buff: function (inventory) {
