@@ -10,10 +10,10 @@
   - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
   - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
   - Efficiency Tech, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
-  - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, as they buff every Commander you field, instead of scaling with distance travelled
+  - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
   - Structure Armor and Defense Ammunition Techs are dealt a little more often
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
-  - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single Sub Commander, rather than being rare until you have several, and are now staggered by usefulness
+  - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several, and are now staggered by usefulness
   - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs were three of the most commonly dealt cards in the deck and are now dealt far less often, and are now staggered by usefulness
   - Economy and Intelligence Fabrication Techs are dealt less often overall
   - Storage Compression Tech is dealt at the same chance everywhere, and less often
@@ -33,7 +33,7 @@
 - Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
 - Realigned some distance measures for deals to better align to the intended galaxy percentages
 - Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
-- Sudden Death Tech was offered more often the more Sub Commanders you had, when each Sub Commander is another Commander whose death loses you the battle
+- Sudden Death Tech was offered more often the more Sub Commanders you had, when each subcommander is another Commander whose death loses you the battle
 - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs all became rarer the deeper you travelled
 - Improved Intelligence and Improved Energy Weapons Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Economy and Intelligence Fabrication Techs became rarer the deeper you travelled
@@ -691,7 +691,7 @@ At this point support for all features in co-op has been implemented
 - Tourist Commander is no longer offered subcommanders
 - Intelligence Fabrication Tech no longer applies to the Stingray
 - Decreased chance of allied commanders on Diamond
-- The more subcommanders you have the more likely you are to be offered subcommander tech
+- The more subcommanders you have the more likely you are to be offered Sub Commander Tech
 - Reduced the number of boss commanders on Uber
 - Updated incompatible mods list
 - Upgrade techs for individual units no longer use a Data Bank
@@ -1477,7 +1477,7 @@ At this point support for all features in co-op has been implemented
 
 ### Changed
 
-- Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
+- Sub Commander Tactics Tech improves non-Queller subcommander eco wastage handling
 - Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
 - Platinum gains slightly less eco as you get deeper into the galaxy
 - Queller updated to version 5.20-beta
@@ -2411,7 +2411,7 @@ At this point support for all features in co-op has been implemented
 ### Changed
 
 - Always offer Additional Data Bank as a fourth card when the inventory is full
-- Each Sub Commander in your tech banks reduces the chance of finding another
+- Each subcommander in your tech banks reduces the chance of finding another
 - Nomad Commander loadout can no longer move metal extractors
 
 ### Fixed
@@ -2615,7 +2615,7 @@ At this point support for all features in co-op has been implemented
 
 ### Fixed
 
-- Hide tooltip from Sub Commander cards in your inventory
+- Hide tooltip from subcommander cards in your inventory
 
 ## v4.7.1 - 2020-08-24
 
@@ -2969,7 +2969,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 
 ## v2.3.2 - 2020-06-26
 
-- Fix sub commander personalities not being translated
+- Fix subcommander personalities not being translated
 
 ## v2.3.1 - 2020-06-26
 
@@ -3023,7 +3023,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 ## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
-- You will no longer be offered a Sub Commander if you don't have a factory they can open with (air/bot/vehicle)
+- You will no longer be offered a subcommander if you don't have a factory they can open with (air/bot/vehicle)
 
 ## v2.0 - 2019-11-03
 
@@ -3245,9 +3245,9 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 
 ## v0.5 - 2019-01-13
 
-- Fixed issue with turtling Sub Commander personalities only building a single factory
+- Fixed issue with turtling subcommander personalities only building a single factory
 - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
-- Updated Queller Sub Commander personalities with latest Queller personality settings
+- Updated Queller subcommander personalities with latest Queller personality settings
 - Updated difficulty levels to use the latest Queller economic personality settings
 
 ## v0.4 - 2018-04-17
@@ -3279,5 +3279,5 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Reduce the number of minions per faction to 13
 - Assign a unique commander model to each minion
 - Name minion after commander to allow identification
-- Assign a unique personality to each Sub Commander
+- Assign a unique personality to each subcommander
 - Append five new difficulty levels to Galactic War
