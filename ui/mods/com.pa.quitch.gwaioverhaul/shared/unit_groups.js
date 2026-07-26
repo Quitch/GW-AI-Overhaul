@@ -500,6 +500,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesMobile,
     gwoUnit.atlas,
     gwoUnit.ares,
+    gwoUnit.helios,
     gwoUnit.zeus
   );
   var immobile = structures.concat(gwoUnit.ragnarok);
@@ -510,6 +511,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesMobile,
     gwoUnit.atlas,
     gwoUnit.ares,
+    gwoUnit.helios,
     gwoUnit.zeus
   );
 
