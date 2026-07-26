@@ -168,6 +168,7 @@ define({
   halley: "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
   helios: "/pa/units/orbital/titan_orbital/titan_orbital.json",
   heliosAmmo: "/pa/units/orbital/titan_orbital/titan_orbital_ammo.json",
+  heliosDeath: "/pa/units/orbital/titan_orbital/titan_orbital_ammo_death.json",
   heliosWeapon:
     "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_orbital.json",
   hermes: "/pa/units/orbital/orbital_probe/orbital_probe.json",

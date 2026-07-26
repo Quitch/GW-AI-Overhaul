@@ -19,6 +19,7 @@
   - Storage Compression Tech is dealt at the same chance everywhere, and less often
   - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt
   - Sudden Death Tech chance is now tied to galaxy size and distance travelled
+- Updated Protocol Kill-switch for addition of Helios death weapon
 
 ### Bugfix
 
