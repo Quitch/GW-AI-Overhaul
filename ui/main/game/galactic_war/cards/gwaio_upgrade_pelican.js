@@ -8,6 +8,8 @@ define([
       loc(
         "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
       ) +
+        " " +
+        loc("!LOC:Every unit can shoot while being transported.") +
         "<br> <br>" +
         loc("!LOC:Adds a new slot for another technology.")
     ),
@@ -30,6 +32,12 @@ define([
           path: "transporter.transportable_unit_types",
           op: "wipe",
           value: " - Commander",
+        },
+        {
+          file: gwoUnit.pelican,
+          path: "fire_while_loaded.unit_types",
+          op: "replace",
+          value: "Land & Mobile",
         },
       ]);
     },
