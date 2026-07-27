@@ -19,7 +19,7 @@ define([
         return { chance: 120 };
       }
       return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 60 : 28,
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 40 : 20,
       };
     },
     buff: function () {

@@ -19,10 +19,10 @@ define([
     deal: function (system, context) {
       var sizes = GW.balance.numberOfSystems;
       if (gwoCard.travelledFar(system, context, sizes)) {
-        return { chance: 142 };
+        return { chance: 120 };
       }
       return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 71 : 28,
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 40 : 20,
       };
     },
     buff: function (inventory) {
