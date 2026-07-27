@@ -23,6 +23,7 @@
   - Storage Compression Tech is dealt at the same chance everywhere, and less often
   - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt
   - Sudden Death Tech chance is now tied to galaxy size and distance travelled
+  - Sudden Death, Orbital Combat, and Structure Combat Techs are dealt at half their full chance at moderate distances, rather than jumping straight from their base chance to their full one
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 
