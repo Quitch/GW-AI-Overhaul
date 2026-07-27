@@ -570,7 +570,7 @@ function gwoSetup() {
             minStarDistance: 2,
             maxStarDistance: 4,
             maxConnections: 4,
-            minimumDistanceBonus: 8,
+            minimumDistanceBonus: 8, // this is inert
             largePlanets: largePlanets,
           });
 
