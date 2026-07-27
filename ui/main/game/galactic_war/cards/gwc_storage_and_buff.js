@@ -15,8 +15,8 @@ define([
       found: "/VO/Computer/gw/board_tech_available_economy",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system) {
-      return gwoCard.conditionalDeal(system.distance() > 0, 35);
+    deal: function () {
+      return { chance: 35 };
     },
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresEcoStorage);
