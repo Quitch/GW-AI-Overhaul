@@ -8,6 +8,72 @@ function gwoSetup() {
   gwoSetupLoaded = true;
 
   try {
+    var cardId = function (card) {
+      return card && card.id ? card.id() : undefined;
+    };
+
+    // Set once shared/favourites.js and shared/favourite_loadouts.js finish
+    // loading (see the requireGW call below) - kept as plain closure
+    // variables (not per-card properties) so model.gwoIsFavourite/
+    // model.gwoToggleFavourite are safe to bind against immediately, rather
+    // than depending on Knockout's foreach clone/bind timing lining up with
+    // an async module load.
+    var gwoFavourites;
+    var gwoFavouriteLoadouts;
+
+    model.gwoIsFavourite = function (card) {
+      return !!gwoFavourites && gwoFavourites.has(cardId(card));
+    };
+
+    model.gwoToggleFavourite = function (card) {
+      if (!gwoFavourites) {
+        return;
+      }
+
+      var activeCard = model.activeStartCard();
+      var activeId = activeCard && cardId(activeCard);
+
+      gwoFavourites.toggle(cardId(card));
+
+      model.startCards(
+        gwoFavouriteLoadouts.sortCardsByFavourite(
+          model.startCards(),
+          gwoFavourites.ids(),
+          cardId
+        )
+      );
+
+      // Reordering can move the active card to a new index; keep the same
+      // loadout selected (by id, not stale index).
+      if (activeId) {
+        var newIndex = _.findIndex(model.startCards(), function (c) {
+          return cardId(c) === activeId;
+        });
+        if (newIndex !== -1) {
+          model.activeStartCardIndex(newIndex);
+        }
+      }
+    };
+
+    // Injected into the still-unbound #start-cards .card template before
+    // ko.applyBindings(model) runs (loadMods always executes before
+    // applyBindings, in the same document.ready flow in gw_start.js), so
+    // Knockout's foreach clones this markup, correctly bound per-card, for
+    // every unlocked loadout automatically. Targets only .card, never
+    // .card_locked, so locked loadouts structurally never get the button.
+    // Routed through model.gwoToggleFavourite/model.gwoIsFavourite (always
+    // defined, above) rather than a per-card toggleFavourite/isFavourite
+    // property, so this binding never depends on per-card attachment timing.
+    $("#start-cards .card").prepend(
+      '<div class="gwo-favourite-btn" data-bind="' +
+        "click: function () { model.gwoToggleFavourite($data); }, " +
+        "clickBubble: false, " +
+        "css: { on: model.gwoIsFavourite($data) }, " +
+        "click_sound: 'default', rollover_sound: 'default', " +
+        "tooltip: '!LOC:Toggle Favourite'" +
+        '"></div>'
+    );
+
     model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
 
     var enableGoToWar = ko.observable(true);
@@ -297,6 +363,8 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
       ],
       function (
         GW,
@@ -311,9 +379,23 @@ function gwoSetup() {
         gwoLore,
         gwoDifficulty,
         gwoAI,
-        loadouts
+        loadouts,
+        favouriteLoadoutsModule,
+        favouritesModule
       ) {
-        model.startCards(loadouts.startCards);
+        // Assign the outer closure vars (declared at the top of gwoSetup(),
+        // where model.gwoIsFavourite/model.gwoToggleFavourite are defined)
+        // now that these async dependencies have actually loaded.
+        gwoFavouriteLoadouts = favouriteLoadoutsModule;
+        gwoFavourites = favouritesModule;
+
+        model.startCards(
+          gwoFavouriteLoadouts.sortCardsByFavourite(
+            loadouts.startCards,
+            gwoFavourites.ids(),
+            cardId
+          )
+        );
         var processedStartCards = {};
         var loadCount = loadouts.allCards.length;
         var loaded = $.Deferred();
