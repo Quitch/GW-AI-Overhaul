@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- You can tag loadouts as favourites to move them to the top of the loadout list (see top right of each loadout)
+
 ### Changed
 
 - Rebalance card deal chances
