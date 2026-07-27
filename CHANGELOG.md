@@ -13,7 +13,7 @@
   - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
   - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
   - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
-  - Efficiency Tech, and Improved Fabricator Build Arms were three of the most common cards in the deck and are now dealt far less often
+  - Efficiency Tech and Improved Fabricator Build Arms were two of the most common cards in the deck and are now dealt far less often
   - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
   - Structure Armor and Defense Ammunition Techs are dealt a little more often
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
