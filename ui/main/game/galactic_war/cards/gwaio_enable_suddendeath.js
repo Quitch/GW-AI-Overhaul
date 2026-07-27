@@ -14,12 +14,10 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 28;
-
-      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
-        chance = 120;
-      }
-      return { chance: chance };
+      var sizes = GW.balance.numberOfSystems;
+      return {
+        chance: gwoCard.travelledFar(system, context, sizes) ? 120 : 28,
+      };
     },
     buff: function () {
       // performed in referee_config.js
