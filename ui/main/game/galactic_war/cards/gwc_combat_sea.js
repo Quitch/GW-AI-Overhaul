@@ -1,7 +1,8 @@
 define([
+  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
+], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,9 +17,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
+      var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.navalMobile),
-        gwoCard.navalWeight(inventory, 70)
+        gwoCard.navalWeight(
+          inventory,
+          gwoCard.travelledModerate(system, context, sizes) ? 70 : 35
+        )
       );
     },
     buff: function (inventory) {
