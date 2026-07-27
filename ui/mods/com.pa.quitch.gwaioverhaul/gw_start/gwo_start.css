@@ -79,3 +79,24 @@
 #loadouts.col {
   width: calc(100% - 900px);
 }
+
+.gwo-favourite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 45px;
+  height: 21px;
+  background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_silver.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.gwo-favourite-btn:hover {
+  filter: brightness(1.2);
+}
+
+.gwo-favourite-btn.on {
+  background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_uber.png");
+}
