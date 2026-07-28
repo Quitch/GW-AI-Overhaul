@@ -26,7 +26,10 @@
   text-transform: uppercase;
 }
 
-.gwo-game-options-modal-panel {
+/* gwo_start.css is injected ahead of the scene's own gw_start.css, so this has
+   to out-specify .gw-start-coop-settings-panel's 460px rather than rely on
+   source order. */
+.gw-start-coop-settings-panel.gwo-game-options-modal-panel {
   width: 520px;
 }
 

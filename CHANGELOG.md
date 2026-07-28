@@ -47,6 +47,7 @@
 - Economy Fabrication Tech treated every galaxy above Uber size the same, so its deal chance ignored distance on the largest galaxies (Bigger Galactic War)
 - Terminal Commander quartered mobile unit costs, left structure costs untouched, and still discounted the Angel and Colonel when playing as Cluster
 - Helios was not being changed when modifications were applied to all units and all mobile units
+- Game Options' width was not being applied
 
 ## v6.4.0 - 2026-07-24
 
