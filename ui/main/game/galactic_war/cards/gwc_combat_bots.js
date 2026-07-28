@@ -20,7 +20,7 @@ define([
       var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.botsMobileNoCluster),
-        gwoCard.travelledModerate(system, context, sizes) ? 70 : 35
+        gwoCard.travelledShort(system, context, sizes) ? 60 : 30
       );
     },
     buff: function (inventory) {

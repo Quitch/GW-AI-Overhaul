@@ -22,7 +22,7 @@ define([
         gwoCard.hasUnit(inventory.units(), gwoGroup.navalMobile),
         gwoCard.navalWeight(
           inventory,
-          gwoCard.travelledModerate(system, context, sizes) ? 70 : 35
+          gwoCard.travelledShort(system, context, sizes) ? 60 : 30
         )
       );
     },
