@@ -38,8 +38,6 @@
 }
 
 .gwo-game-option-row {
-  margin: 0;
-  padding: 4px 0;
   border-bottom: 1px solid #2d3840;
 }
 
@@ -77,17 +75,12 @@
   text-transform: uppercase;
 }
 
-#custom-difficulty-settings select:disabled {
-  color: #666;
-}
-
 /* #tab3 is a flexbox, so let Loadout take whatever the other columns leave
-   rather than tracking their combined width by hand. The zero flex-basis
-   matters: the cards inside make Loadout's content width far wider than the
-   viewport, so an auto basis would squash the fixed columns to nothing. */
+   rather than tracking their combined width by hand. This supersedes the base
+   rule's fixed width. The zero flex-basis matters: the cards inside make
+   Loadout's content width far wider than the viewport, so an auto basis would
+   squash the fixed columns to nothing. */
 #loadouts.col {
-  width: auto;
-  min-width: 0;
   flex: 1 1 0;
 }
 
@@ -152,7 +145,9 @@
   flex-shrink: 0;
 }
 
-.gwo-commander-picker-item {
+/* Qualified with .btn_std_ix because boot.css loads after this file and its
+   .btn_std_ix sets a transparent border. */
+.gwo-commander-picker-item.btn_std_ix {
   display: inline-block;
   box-sizing: content-box;
   width: 150px;
@@ -162,7 +157,7 @@
   vertical-align: top;
 }
 
-.gwo-commander-picker-item.selected {
+.gwo-commander-picker-item.btn_std_ix.selected {
   border-color: #fff;
   box-shadow:
     inset 0 0 12px rgba(0, 179, 255, 0.45),
