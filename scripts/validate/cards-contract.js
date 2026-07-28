@@ -7,8 +7,11 @@
 // so it catches "wrong export shape" bugs (typos, missing/renamed fields, wrong
 // type), not runtime logic bugs.
 //
-// Empirically tallied across all 225 cards (see amd-loader.js's NOT_SHIPPED note for
-// why not all of them can load here):
+// Empirically tallied across all 237 cards - 178 of which load and are shape-checked
+// here, 58 excluded as NOT_SHIPPED and 1 as KNOWN_UNLOADABLE (see amd-loader.js's
+// NOT_SHIPPED note for why not all of them can load here). Cards get added over time,
+// so treat these numbers as a snapshot: the run prints the live tally, and that - not
+// this comment - is the source of truth.
 //   - visible/describe/summarize/icon/deal/buff/dull: function, on every loadable card.
 //   - audio/getContext: function, on every loadable card except gwaio_enable_bot_aa.js
 //     (explicitly kept for save-compatibility with GWO v5.9.0 and earlier).
