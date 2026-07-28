@@ -18,7 +18,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.antiTechDeal(
         inventory,
-        gwoCard.navalWeight(inventory, 70, 15),
+        gwoCard.navalWeight(inventory, 40, 15),
         "gwaio_anti_hover"
       );
     },

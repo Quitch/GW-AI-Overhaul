@@ -21,6 +21,7 @@
   - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt at small and medium sizes
   - Sudden Death Tech chance is now tied to galaxy size and distance travelled
   - Super Weapon Fabrication Tech chance increases over distance
+  - Anti-X Tech is less likely to appear
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 
