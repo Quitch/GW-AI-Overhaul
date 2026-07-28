@@ -1,8 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-  "shared/gw_common",
-], function (gwoCard, gwoGroup, GW) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,11 +15,8 @@ define([
       found: "/VO/Computer/gw/board_tech_available_orbital",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
-      var sizes = GW.balance.numberOfSystems;
-      return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
-      };
+    deal: function () {
+      return { chance: 70 };
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalFactories, function (unit) {

@@ -19,7 +19,7 @@ define([
     deal: function (system, context) {
       var sizes = GW.balance.numberOfSystems;
       return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
+        chance: gwoCard.travelledShort(system, context, sizes) ? 70 : 35,
       };
     },
     buff: function (inventory) {

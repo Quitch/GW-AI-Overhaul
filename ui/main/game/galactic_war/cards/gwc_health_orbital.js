@@ -1,8 +1,7 @@
 define([
-  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoGroup) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -14,11 +13,8 @@ define([
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
-      var sizes = GW.balance.numberOfSystems;
-      return {
-        chance: gwoCard.travelledModerate(system, context, sizes) ? 160 : 32,
-      };
+    deal: function () {
+      return { chance: 70 };
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalMobile, function (unit) {

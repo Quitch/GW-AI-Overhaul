@@ -11,11 +11,12 @@
 - Rebalance card deal chances
   - Naval unit techs are more likely when you are using a naval loadout or own Tsunami Tech
   - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
-  - Orbital Engine Tech is dealt less often, bringing it into line with the other orbital techs
-  - Orbital Armor, Ammunition, and Cooldown Techs are dealt a little more often
+  - Air, Bot, Naval, Orbital, and Vehicle Ammunition, Armor, Cooldown, Engine, and Fabrication Techs are all dealt at the same chance, which no longer changes with distance travelled
+  - Orbital techs are dealt far more often close to home, and less often deep into a war, as a result
+  - Air, Bot, and Vehicle Fabrication Techs are dealt a little less often
   - Efficiency Tech and Improved Fabricator Build Arms were two of the most common cards in the deck and are now dealt far less often
   - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
-  - Structure Armor and Defense Ammunition Techs are dealt a little more often
+  - Artillery and Defense Ammunition and Fabrication Techs, and Structure Armor Tech, are all dealt at the same chance, and at half that chance until you have travelled a short distance
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
   - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several, and are now staggered by usefulness
   - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs were three of the most commonly dealt cards in the deck and are now dealt far less often, and are now staggered by usefulness

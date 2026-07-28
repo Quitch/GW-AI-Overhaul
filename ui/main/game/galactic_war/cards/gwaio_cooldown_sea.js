@@ -16,7 +16,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.navalFactories),
-        gwoCard.navalWeight(inventory, 35)
+        gwoCard.navalWeight(inventory, 70)
       );
     },
     buff: function (inventory) {

@@ -94,7 +94,7 @@ and reaching it is a legitimate reason to fall back to shadowing.
 Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
 (`define([deps], function(...) {...})`) returning an object with this fixed shape
 (enforced by `scripts/validate/cards-contract.js`, empirically confirmed across all
-237 cards - of which the validator shape-checks 178, the rest being excluded as
+237 cards - of which the validator shape-checks 180, the rest being excluded as
 `NOT_SHIPPED` or `KNOWN_UNLOADABLE`; the run prints that tally):
 
 - `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` - always
