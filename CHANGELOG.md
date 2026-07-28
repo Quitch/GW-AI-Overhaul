@@ -9,24 +9,18 @@
 ### Changed
 
 - Rebalance card deal chances
-  - Naval unit techs are more likely when you are using a naval loadout or own Tsunami Tech
-  - Anti-Ship and Anti-Hover Ammo Techs are weighted towards a naval loadout and Tsunami Tech
-  - Air, Bot, Naval, and Vehicle Ammunition, Armor, Cooldown, Engine, and Fabrication Techs are all dealt at the same chance, which no longer changes with distance travelled
-  - Orbital techs are always dealt one distance step behind the same tech for other mobile units, so they arrive at half chance to begin with and reach their full chance only once you have travelled
-  - Air, Bot, and Vehicle Fabrication Techs are dealt a little less often
+  - Naval and anti-naval unit techs are more likely when you are using a naval loadout or own Tsunami Tech
+  - Ammunition, armor, cooldown, engine, and fabrication techs for mobile units no longer changes its deal chance with distance travelled
+  - Orbital, artillery, defense, and structure techs arrive at half chance to begin with and reach their full chance only once you have travelled far enough
+  - Air, bot, and vehicle Fabrication Techs are dealt a little less often
   - Efficiency Tech and Improved Fabricator Build Arms were two of the most common cards in the deck and are now dealt far less often
-  - Commander techs, Improved Commander Build Arm, and Commander Upgrade Tech are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
-  - Artillery and Defense Ammunition and Fabrication Techs, and Structure Armor Tech, are all dealt at the same chance, and at half that chance until you have travelled a short distance
+  - Commander upgrade techs are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
   - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
-  - Sub Commander Duplication, Tactics, and Fabber Techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several, and are now staggered by usefulness
-  - Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs were three of the most commonly dealt cards in the deck and are now dealt far less often, and are now staggered by usefulness
-  - Economy and Intelligence Fabrication Techs are dealt less often overall
-  - Storage Compression Tech is dealt at the same chance everywhere, and less often
-  - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt
+  - Sub Commander upgrade techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several
+  - Energy, intelligence, economy, and storage techs are dealt less often
+  - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt at small and medium sizes
   - Sudden Death Tech chance is now tied to galaxy size and distance travelled
-  - Sudden Death Tech is dealt at half its full chance at moderate distances, rather than jumping straight from its base chance to its full one
   - Super Weapon Fabrication Tech chance increases over distance
-  - Anti-Structure Tech is less likely to appear
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 
