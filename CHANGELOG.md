@@ -24,6 +24,7 @@
   - Anti-X Tech is less likely to appear
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
+- Commander selection has moved from its own column into a Commander button above Game Options
 
 ### Bugfix
 

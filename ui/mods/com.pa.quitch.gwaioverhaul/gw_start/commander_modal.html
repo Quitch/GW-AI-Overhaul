@@ -1,0 +1,56 @@
+<div
+  id="gwo-commander-modal"
+  class="gw-start-coop-settings-modal attendmouse"
+  data-bind="visible: gwoCommanderModalVisible()"
+  style="display: none"
+>
+  <div class="gw-start-coop-settings-panel gwo-commander-modal-panel">
+    <div
+      class="gw-start-coop-settings-close"
+      data-bind="click: closeGwoCommanderModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <noloc>X</noloc>
+    </div>
+    <div class="gw-start-coop-settings-title"><loc>Commander</loc></div>
+
+    <div id="gwo-commander-preview-cont">
+      <p
+        id="gwo-commander-preview-name"
+        data-bind="text: gwoDraftCommanderName"
+      ></p>
+      <p id="game-commander-preview">
+        <img
+          src=""
+          data-bind="attr: { src: CommanderUtility.bySpec.getImage(gwoCommanderDraft()) }, style: { webkitFilter: gwoCommanderTintFilter }"
+        />
+      </p>
+    </div>
+
+    <div class="gw-start-coop-settings-body gwo-commander-picker">
+      <!-- ko foreach: model.commanders -->
+      <div
+        class="gwo-commander-picker-item btn_std_ix"
+        data-bind="click: function () { $root.gwoCommanderDraft($data); }, css: { selected: $root.gwoCommanderDraft() === $data }, click_sound: 'default', rollover_sound: 'default'"
+      >
+        <img
+          class="gwo-profile-commander"
+          data-bind="attr: { src: CommanderUtility.bySpec.getProfileImage($data) }"
+        />
+        <div
+          class="gwo-profile-commander-name"
+          data-bind="text: CommanderUtility.bySpec.getName($data)"
+        ></div>
+      </div>
+      <!-- /ko -->
+    </div>
+
+    <div
+      class="gw-start-coop-settings-apply btn_hero"
+      data-bind="click: applyGwoCommanderModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <div class="btn_label" style="padding: 0px 40px">
+        <loc>Apply Settings</loc>
+      </div>
+    </div>
+  </div>
+</div>

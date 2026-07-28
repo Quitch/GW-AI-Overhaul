@@ -1,6 +1,7 @@
 #new-game-right.col {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   max-height: 100%;
 }
 
@@ -54,6 +55,7 @@
 #gwo-ai-settings.col {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   max-height: 100%;
 }
 
@@ -76,8 +78,104 @@
   color: #666;
 }
 
+/* #tab3 is a flexbox, so let Loadout take whatever the other columns leave
+   rather than tracking their combined width by hand. The zero flex-basis
+   matters: the cards inside make Loadout's content width far wider than the
+   viewport, so an auto basis would squash the fixed columns to nothing. */
 #loadouts.col {
-  width: calc(100% - 900px);
+  width: auto;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+#gwo-commander-panel {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#gwo-commander-panel .coop-setup-configure {
+  text-transform: uppercase;
+}
+
+/* gwo_start.css is injected ahead of the scene's own gw_start.css, so anything
+   overriding a base rule has to out-specify it rather than rely on order. */
+.gw-start-coop-settings-panel.gwo-commander-modal-panel {
+  display: flex;
+  flex-direction: column;
+  width: 96vw;
+  max-width: 1600px;
+  max-height: 94vh;
+}
+
+#gwo-commander-preview-cont {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+#gwo-commander-preview-name {
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#gwo-commander-modal #game-commander-preview {
+  margin: 0;
+  padding: 10px 0;
+}
+
+#gwo-commander-modal #game-commander-preview img {
+  width: 26vh;
+  height: 26vh;
+  max-width: 240px;
+  max-height: 240px;
+}
+
+/* Laid out as inline-blocks rather than a flexbox so the tiles pack from the
+   top: a wrapping flexbox would stretch its rows apart whenever the picker has
+   spare height. */
+.gw-start-coop-settings-body.gwo-commander-picker {
+  flex: 1 1 auto;
+  padding: 10px;
+  overflow-y: auto;
+  background: #0b1a1f;
+  text-align: center;
+}
+
+.gwo-commander-modal-panel .gw-start-coop-settings-apply {
+  flex-shrink: 0;
+}
+
+.gwo-commander-picker-item {
+  display: inline-block;
+  box-sizing: content-box;
+  width: 150px;
+  border: 1px solid rgba(0, 179, 255, 0.5);
+  background: #0b1a1f;
+  text-align: left;
+  vertical-align: top;
+}
+
+.gwo-commander-picker-item.selected {
+  border-color: #fff;
+  box-shadow:
+    inset 0 0 12px rgba(0, 179, 255, 0.45),
+    0 0 14px rgba(0, 179, 255, 0.5);
+}
+
+.gwo-profile-commander {
+  height: 38px;
+}
+
+.gwo-profile-commander-name {
+  padding: 0 0 0 4px;
+  border-top: 1px solid rgba(0, 179, 255, 0.15);
+  font-family: Sansation, sans-serif;
+  font-size: 13px;
+  text-shadow: 0 0 0;
 }
 
 .gwo-favourite-btn {
