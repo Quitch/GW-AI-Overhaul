@@ -35,6 +35,7 @@ npm run validate:ai-mods  # every card's buff()/dull() emits AI-mod descriptors 
 npm run validate:schemas  # AI build-order JSON + difficulty/personality data: type-consistency checks
 npm run validate:refs     # cross-references: loadout ids <-> card files, unit keys, AI builder roles <-> unit_map
 npm test                  # node --test (runs everything under test/)
+npm run test:coverage     # same tests + lcov to coverage/lcov.info (what the Sonar job uploads)
 npm run format:check      # prettier --check .
 npm run format:write      # prettier --write . (only stage files your change actually touches - see below)
 ```
@@ -46,6 +47,15 @@ CI (`.github/workflows/ci.yml`) runs `lint:js`/`lint:css`/`lint:md`/`validate`/`
 as full-repo hard gates (clean today, so any new violation anywhere is a real
 regression), plus a separate Prettier check scoped only to files a PR/push actually
 changed. `npm run verify` mirrors the hard-gate job; run it before submitting a change.
+
+`.github/workflows/build.yml` is a second CI job: it runs `npm run test:coverage` and
+then `SonarSource/sonarqube-scan-action`, so `sonar-project.properties` is genuinely
+read and enforced by the scanner (its exclusions, coverage exclusions and the S7721
+issue-ignore are live config, not just documentation). The quality gate requires ~80%
+coverage on _new code_ only - see CONTRIBUTING.md's "Test coverage and new code" for
+what to test and what to legitimately exclude. Do not run the `sonar` CLI locally; it
+does not perform real rule analysis for this org. `.github/workflows/release.yml`
+re-runs the hard gates against a published release tag as a post-publish alarm.
 
 ## Architecture
 
@@ -84,7 +94,8 @@ and reaching it is a legitimate reason to fall back to shadowing.
 Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
 (`define([deps], function(...) {...})`) returning an object with this fixed shape
 (enforced by `scripts/validate/cards-contract.js`, empirically confirmed across all
-225 cards):
+237 cards - of which the validator shape-checks 178, the rest being excluded as
+`NOT_SHIPPED` or `KNOWN_UNLOADABLE`; the run prints that tally):
 
 - `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` - always
   functions.
@@ -127,9 +138,16 @@ vs. enemy):
 - `pa/ai_penchant/` - GWO's own personality-driven build trees, shipped in full.
   `shared/ai.js`'s `penchants()` table maps a personality name to build-file tags
   drawn from this tree.
-- `pa_ex1/ai_queller/` - base game's Queller AI data (also not shipped here).
-- `pa/ai_tech/` - destination tree AI-mod `load` descriptors and card-driven output
-  resolve against; not a source tree in this repo.
+- `/pa/ai_queller/` - base game's Queller AI data (not shipped here). Note the path:
+  on disk in the install these files live under `pa_ex1/ai_queller/`, but the
+  expansion overlay is addressed through `/pa/...` at runtime, so that is the path
+  both the base game and `referee_ai_paths.js` use. `getQuellerPath()` picks a skill
+  tier below it - `q_uber/` for enemies, `q_silver/` with Smart Subcommanders,
+  otherwise `q_bronze/`.
+- `pa/ai_tech/` - the tree AI-mod `load` descriptors and card-driven output resolve
+  against. Both a destination and a small source tree: this repo ships the build
+  files `load` descriptors name (currently 8, under `fabber_builds/` and
+  `factory_builds/`), and `referee_ai.js` also writes generated output here.
 - `pa/ai_subcommander/`, `pa/ai_cluster/` - purely runtime-synthesized virtual mount
   paths `referee_ai.js` writes to; no on-disk existence in this repo at all.
 
@@ -140,9 +158,11 @@ Runtime-only paths (with no filesystem backing) are instead covered by
 
 ### Difficulty & personality tuning data
 
-`gw_start/difficulty_levels.js` (nine tiers, Beginner through Uber plus a minimal
-"Custom" sentinel) and `faction/personalities.js` are declarative data, each wrapped
-in `define({...})`. They don't share one fixed key set across entries (the Custom
+`gw_start/difficulty_levels.js` (a `difficulties` array: nine tiers, Beginner /
+Casual / Iron / Bronze / Silver / Gold / Platinum / Diamond / Uber, plus a minimal
+"Custom" sentinel) and `faction/personalities.js` - both under
+`ui/mods/com.pa.quitch.gwaioverhaul/` - are declarative data, each wrapped in
+`define({...})`. They don't share one fixed key set across entries (the Custom
 tier intentionally has far fewer fields than the rest), so `validate:schemas` checks
 type _consistency_ instead of required fields: any field appearing with more than one
 `typeof` across entries that have it is almost certainly a typo, not a legitimate
@@ -180,8 +200,10 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
   because PA's embedded Chrome 40 predates the modern CSS syntax those rules assume.
   Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usage
   they cover as a drive-by.
-- Several `pa/ai_penchant/**/*.json` files are intentionally minified to a single
-  line (see `.prettierignore`) - don't reformat them.
+- The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
+  Those JSON files are intentionally minified to a single line, matching the base
+  game's own convention - don't reformat them, and don't narrow the exclusion back
+  to an enumerated file list.
 - Sonar `javascript:S7721` (function scoping): keep module-private helpers inside the
   `define(...)` factory. In PA's RequireJS runtime a file-top-level declaration is a
   `window` global, so hoisting to the "outer scope" the rule wants leaks a global for
