@@ -40,8 +40,6 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
   - Queller: a greater challenge at the cost of performance
   - Penchant: increased personality
 
-Be sure to check out my guide on [adding more maps to Galactic War](https://planetaryannihilation.com/guides/galactic-war-difficulty-and-adding-more-maps/) to enhance the experience further.
-
 ## Installation
 
 You should download and install this mod via the Planetary Annihilation: TITANS in-game [Community Mods](https://steamcommunity.com/sharedfiles/filedetails/?id=1417396826).
