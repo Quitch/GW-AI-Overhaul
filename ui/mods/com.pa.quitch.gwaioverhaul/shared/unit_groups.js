@@ -497,15 +497,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
+  // titansMobile rather than a restated list of the four, so a titan added there is
+  // picked up here automatically.
   var mobile = airMobile.concat(
     botsMobile,
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    gwoUnit.atlas,
-    gwoUnit.ares,
-    gwoUnit.helios,
-    gwoUnit.zeus
+    titansMobile
   );
   var immobile = structures.concat(gwoUnit.ragnarok);
   var mobileNoCluster = airMobileNoCluster.concat(
@@ -513,10 +512,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    gwoUnit.atlas,
-    gwoUnit.ares,
-    gwoUnit.helios,
-    gwoUnit.zeus
+    titansMobile
   );
 
   var energyIntel = structuresIntel.concat(
