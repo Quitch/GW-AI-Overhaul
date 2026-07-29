@@ -1,89 +1,5 @@
 var gwoLoadoutsLoaded;
 
-function validateStartingInventory(savedInventory, loadoutCardId) {
-  var cards = savedInventory.cards || [];
-  if (
-    !cards.length ||
-    cards[0].id !== loadoutCardId ||
-    !_.isNumber(savedInventory.maxCards) ||
-    savedInventory.maxCards <= cards.length
-  ) {
-    console.error(
-      "[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=" +
-        loadoutCardId +
-        " maxCards=" +
-        savedInventory.maxCards +
-        " cards=" +
-        JSON.stringify(cards)
-    );
-    return false;
-  }
-
-  return true;
-}
-
-function buildGlobalTags(commander, playerFaction) {
-  var globalTags = {
-    commander: commander,
-  };
-
-  if (_.isNumber(playerFaction)) {
-    globalTags.playerFaction = playerFaction;
-  }
-
-  return globalTags;
-}
-
-function dealStartingCard(
-  gwoDeal,
-  loaded,
-  loadedCards,
-  loadoutCardId,
-  dealInventory,
-  galaxy,
-  star
-) {
-  return gwoDeal.dealCard(
-    {
-      id: loadoutCardId,
-      inventory: dealInventory,
-      galaxy: galaxy,
-      star: star,
-    },
-    loaded,
-    loadedCards
-  );
-}
-
-function applyStartingInventory(
-  GWInventory,
-  loadoutCardId,
-  globalTags,
-  startCardProduct,
-  result
-) {
-  var inventory = new GWInventory();
-
-  inventory.load({
-    cards: [startCardProduct || { id: loadoutCardId }],
-    tags: {
-      global: globalTags,
-    },
-  });
-
-  inventory.applyCards(function () {
-    var savedInventory = inventory.save();
-    if (!validateStartingInventory(savedInventory, loadoutCardId)) {
-      result.reject(
-        "Co-op loadout inventory did not produce empty tech banks."
-      );
-      return;
-    }
-
-    result.resolve(savedInventory);
-  });
-}
-
 function gwoLoadouts() {
   if (gwoLoadoutsLoaded) {
     return;
@@ -92,6 +8,90 @@ function gwoLoadouts() {
   gwoLoadoutsLoaded = true;
 
   try {
+    var validateStartingInventory = function (savedInventory, loadoutCardId) {
+      var cards = savedInventory.cards || [];
+      if (
+        !cards.length ||
+        cards[0].id !== loadoutCardId ||
+        !_.isNumber(savedInventory.maxCards) ||
+        savedInventory.maxCards <= cards.length
+      ) {
+        console.error(
+          "[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=" +
+            loadoutCardId +
+            " maxCards=" +
+            savedInventory.maxCards +
+            " cards=" +
+            JSON.stringify(cards)
+        );
+        return false;
+      }
+
+      return true;
+    };
+
+    var buildGlobalTags = function (commander, playerFaction) {
+      var globalTags = {
+        commander: commander,
+      };
+
+      if (_.isNumber(playerFaction)) {
+        globalTags.playerFaction = playerFaction;
+      }
+
+      return globalTags;
+    };
+
+    var dealStartingCard = function (
+      gwoDeal,
+      loaded,
+      loadedCards,
+      loadoutCardId,
+      dealInventory,
+      galaxy,
+      star
+    ) {
+      return gwoDeal.dealCard(
+        {
+          id: loadoutCardId,
+          inventory: dealInventory,
+          galaxy: galaxy,
+          star: star,
+        },
+        loaded,
+        loadedCards
+      );
+    };
+
+    var applyStartingInventory = function (
+      GWInventory,
+      loadoutCardId,
+      globalTags,
+      startCardProduct,
+      result
+    ) {
+      var inventory = new GWInventory();
+
+      inventory.load({
+        cards: [startCardProduct || { id: loadoutCardId }],
+        tags: {
+          global: globalTags,
+        },
+      });
+
+      inventory.applyCards(function () {
+        var savedInventory = inventory.save();
+        if (!validateStartingInventory(savedInventory, loadoutCardId)) {
+          result.reject(
+            "Co-op loadout inventory did not produce empty tech banks."
+          );
+          return;
+        }
+
+        result.resolve(savedInventory);
+      });
+    };
+
     requireGW(
       [
         "shared/gw_common",
