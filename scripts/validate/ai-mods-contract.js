@@ -74,7 +74,15 @@ function collectAiMods(card) {
   const inventory = new Proxy(
     {
       addAIMods: function (mods) {
-        captured.push.apply(captured, mods || []);
+        // gw_inventory.js's addAIMods is aiMods().concat(mods), which accepts a
+        // bare descriptor as readily as an array. push.apply on a non-array
+        // spread its indices and captured nothing, so a card passing one object
+        // went entirely unvalidated while production applied it.
+        if (Array.isArray(mods)) {
+          captured.push.apply(captured, mods);
+        } else if (mods) {
+          captured.push(mods);
+        }
         return createAutoStub();
       },
     },
