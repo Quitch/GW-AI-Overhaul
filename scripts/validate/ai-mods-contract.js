@@ -32,6 +32,15 @@ const CARDS_DIR = path.join(
   "cards"
 );
 
+// Mirrors validate/cards-contract.js's list: cards that fail to load for a reviewed
+// reason other than a missing base-game module.
+const KNOWN_UNLOADABLE = {
+  "gwc_minion.js":
+    "transitively depends on shared/gw_factions.js, which calls " +
+    "api.content.usingTitans() directly at define-time (real engine coupling, " +
+    "not just a missing file)",
+};
+
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 // op -> extra fields required beyond `type` + `op` (mirrors referee_ai.js exactly).
 const REQUIRED_FIELDS_BY_OP = {
@@ -120,6 +129,23 @@ function checkMod(mod, index) {
   return problems;
 }
 
+// Same shim coverage boundary as validate/cards-contract.js, but discriminating on
+// the reason. A bare catch here also swallowed syntax errors and genuine breakage,
+// quietly reporting them as "excluded" with the run still green.
+function loadCard(file) {
+  try {
+    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
+  } catch (e) {
+    if (
+      e.code === "NOT_SHIPPED" ||
+      Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)
+    ) {
+      return { excluded: true };
+    }
+    return { error: "failed to load: " + e.message };
+  }
+}
+
 function main() {
   const files = fs
     .readdirSync(CARDS_DIR)
@@ -132,13 +158,16 @@ function main() {
   const failures = [];
 
   for (const file of files) {
-    let card;
-    try {
-      card = loadCouiModule(path.join(CARDS_DIR, file));
-    } catch {
-      excluded++; // same shim coverage boundary as validate/cards-contract.js
+    const loaded = loadCard(file);
+    if (loaded.excluded) {
+      excluded++;
       continue;
     }
+    if (loaded.error) {
+      failures.push({ file, problems: [loaded.error] });
+      continue;
+    }
+    const card = loaded.card;
 
     let mods;
     try {
