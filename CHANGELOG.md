@@ -71,6 +71,7 @@
 - A co-op player whose stored id no longer matched their connection had their tech ignored, rather than being matched by name
 - A corrupted victory or loadout unlock record broke the loadout list, or the whole war setup screen, instead of being ignored
 - A malformed co-op player record stopped tech being offered at all, rather than just being skipped
+- A treasure planet holding a loadout you had unlocked since the war began offered it again as a bonus card alongside a short hand of tech; it now deals a full hand you can reroll, matching how co-op treats a player who already owns the loadout
 
 ## v6.4.0 - 2026-07-24
 

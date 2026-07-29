@@ -553,6 +553,13 @@ function gwoCard() {
           helpers: helpers,
         });
 
+        // The host-side equivalent of cards_coop_deal.js's per-viewer
+        // recordHasUnlockedStartCard test. Both banks are consulted because base game
+        // and GWO loadouts unlock into separate localStorage records.
+        var startCardUnlocked = function (card) {
+          return GW.bank.hasStartCard(card) || gwoBank.hasStartCard(card);
+        };
+
         // gw_play self.explore - call our chooseCards()
         model.explore = function (force) {
           // game.explore() is not a query - it advances turnState from "begin" to
@@ -588,9 +595,22 @@ function gwoCard() {
             inventory
           );
           var star = game.galaxy().stars()[game.currentStar()];
+          // Left unfiltered: the co-op deal picks each viewer a loadout by their own
+          // unlock record, so one the host already owns can still be treasure for a
+          // viewer (cards_coop_deal.js collectPendingTechTargets).
           var startLoadoutCards = helpers.filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
           );
+
+          // Mirror that rule for the host's own offer: a loadout already in the bank
+          // is no longer treasure, so drop it before the deal is sized and the star
+          // deals a full, rerollable hand instead. A still-locked loadout stays and
+          // takes over the offer on its own, as the ok test below leaves it.
+          var unlockedLoadouts = _.filter(startLoadoutCards, startCardUnlocked);
+          if (unlockedLoadouts.length) {
+            star.cardList(_.difference(star.cardList(), unlockedLoadouts));
+          }
+
           var dealStarCards = chooseCards({
             count:
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
@@ -602,8 +622,7 @@ function gwoCard() {
             _.forEach(star.cardList(), function (card) {
               if (
                 helpers.isStartLoadoutCardId(card.id) &&
-                !GW.bank.hasStartCard(card) &&
-                !gwoBank.hasStartCard(card)
+                !startCardUnlocked(card)
               ) {
                 ok = false;
               }
