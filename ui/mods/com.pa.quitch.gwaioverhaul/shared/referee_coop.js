@@ -1,9 +1,9 @@
-define(function () {
-  var getConnectedViewers = function () {
-    return _.isFunction(model.gwCampaignConnectedClients)
-      ? model.gwCampaignConnectedClients()
-      : [];
-  };
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
+  gwoCard
+) {
+  // Shared with shared/cards.js rather than reimplemented - the two copies had
+  // already drifted, this one missing the guard against a non-array value.
+  var getConnectedViewers = gwoCard.getConnectedClients;
 
   // Resolves each connected viewer-role client to its co-op inventory data,
   // dropping clients that aren't viewers or have no resolvable inventory yet.

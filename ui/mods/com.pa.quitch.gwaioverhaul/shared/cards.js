@@ -69,6 +69,8 @@ define(function () {
   };
 
   return {
+    getConnectedClients: getConnectedClients,
+
     hasUnit: function (inventoryUnits, units) {
       if (_.isString(units)) {
         return _.includes(inventoryUnits, units);
