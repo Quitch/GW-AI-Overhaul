@@ -106,16 +106,6 @@ function gwoCard() {
       if (game.turnState() === "begin") {
         model.gwoRerollsUsed(0);
       }
-      // Avoid incorrect rerolls when loading an exploration save game
-      else if (game.turnState() === "explore") {
-        var star = game.galaxy().stars()[game.currentStar()];
-        model.gwoRerollsUsed = ko.observable(
-          numCardsToOffer - star.cardList().length
-        );
-        if (model.gwoRerollsUsed() >= numCardsToOffer - 1) {
-          model.gwoOfferRerolls(false);
-        }
-      }
 
       ko.computed(function () {
         if (game.turnState() === "end") {
@@ -177,6 +167,29 @@ function gwoCard() {
       locTree($(".div_options_bar"));
     };
     setupTechRerolls();
+
+    // Loading a save taken mid-exploration: the offer on disk is short by however
+    // many rerolls were already spent, so recover the count from its length. The
+    // offer size is bonus-aware (full hand, Lucky Commander), which is why this
+    // waits for helpers rather than running inside setupTechRerolls - against the
+    // bare constant a 4-card offer yields -1, making the next reroll free.
+    // Assign through the observable; replacing it would drop the session extender
+    // that stops a UI refresh restoring spent rerolls.
+    var restoreExploreSaveRerolls = function () {
+      if (game.turnState() !== "explore") {
+        return;
+      }
+
+      var star = game.galaxy().stars()[game.currentStar()];
+      var cardsOffered = helpers.cardsOfferedCount(
+        numCardsToOffer,
+        game.inventory()
+      );
+      model.gwoRerollsUsed(cardsOffered - star.cardList().length);
+      if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+        model.gwoOfferRerolls(false);
+      }
+    };
 
     // modified to recognise mod loadouts
     globals.CardViewModel = function (params) {
@@ -282,6 +295,7 @@ function gwoCard() {
         cardsCheats
       ) {
         helpers = cardsDealHelpers;
+        restoreExploreSaveRerolls();
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();

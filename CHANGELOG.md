@@ -51,6 +51,7 @@
 - Anti-X Tech deal chances in co-op with per-player tech were weighted by the host's anti-tech rather than your own
 - Exploring in co-op while players were still choosing loadouts left the star stuck with no cards offered and no battle available
 - Rerolling on a treasure star could permanently discard the loadout it was offering
+- Loading a save taken mid-exploration miscounted rerolls already spent when your hand was full or you had Lucky Commander, granting a free full-size reroll, and let a UI refresh restore spent rerolls
 
 ## v6.4.0 - 2026-07-24
 
