@@ -569,8 +569,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var units = mobile.concat(immobile);
   var unitsNoCluster = mobileNoCluster.concat(immobile);
 
-  var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
-
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
     gwoUnit.airFabberBuildArm,
@@ -660,7 +658,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobile: botsMobile,
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
-    clusterCommanders: clusterCommanders,
     combat: combat,
     combatMobile: combatMobile,
     commanderAmmo: commanderAmmo,

@@ -150,6 +150,6 @@ define([
   });
 
   return {
-    clusterCommanders: clusterSubCommanderTech,
+    clusterCommanderMods: clusterSubCommanderTech,
   };
 });

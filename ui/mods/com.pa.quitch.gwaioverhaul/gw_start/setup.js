@@ -814,7 +814,7 @@ function gwoSetup() {
               boss.inventory = [];
 
               if (boss.isCluster === true) {
-                boss.inventory = gwoCluster.clusterCommanders;
+                boss.inventory = gwoCluster.clusterCommanderMods;
               }
 
               var factionTechHandicap = Number.parseFloat(
@@ -897,7 +897,7 @@ function gwoSetup() {
                 ai.inventory = [];
 
                 if (ai.isCluster === true) {
-                  ai.inventory = gwoCluster.clusterCommanders;
+                  ai.inventory = gwoCluster.clusterCommanderMods;
                 }
 
                 var workerBuffs = setupAIBuffs(dist, factionTechHandicap);
@@ -984,7 +984,7 @@ function gwoSetup() {
 
                     foeCommander.inventory = [];
                     if (foeCommander.isCluster === true) {
-                      foeCommander.inventory = gwoCluster.clusterCommanders;
+                      foeCommander.inventory = gwoCluster.clusterCommanderMods;
                     }
 
                     foeCommander.inventory = aiTech(
