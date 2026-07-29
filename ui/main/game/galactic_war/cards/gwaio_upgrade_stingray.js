@@ -34,7 +34,7 @@ define([
             path: "tools",
             op: "push",
             value: {
-              spec_id: gwoUnit.gileEBeam,
+              spec_id: gwoUnit.gilEBeam,
               aim_bone: "socket_missile_muzzle01",
               record_index: 0,
               muzzle_bone: [

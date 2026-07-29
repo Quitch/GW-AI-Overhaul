@@ -28,7 +28,7 @@ define([
         gwoCard.mods(gwoUnit.solarArray, "push", {
           tools: [
             {
-              spec_id: gwoUnit.gileEBeam,
+              spec_id: gwoUnit.gilEBeam,
               aim_bone: "bone_root",
               record_index: 0,
               fire_event: "fired",

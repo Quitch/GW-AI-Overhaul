@@ -106,7 +106,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
-    gwoUnit.gileEWeapon,
+    gwoUnit.gilEWeapon,
     gwoUnit.locustsWeapon,
     gwoUnit.slammerTorpedo,
     gwoUnit.slammerWeapon,
