@@ -68,6 +68,7 @@
 - Intelligence panel labelled surface area k² instead of km²
 - Allied commanders, and any AI given the vanilla penchant, were assigned an empty personality tag
 - Opponent AI and Ally AI labels, their tooltips, and the AI Settings header stayed in English in other languages
+- Winning a Custom difficulty war recorded a meaningless loadout badge, which could overwrite a real one
 
 ## v6.4.0 - 2026-07-24
 

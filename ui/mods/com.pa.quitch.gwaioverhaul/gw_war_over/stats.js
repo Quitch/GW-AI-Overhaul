@@ -39,26 +39,39 @@ function gwoWarOverLoadoutStats() {
       );
     };
 
-    var difficultyLevels = [
-      "!LOC:Beginner",
-      "!LOC:Casual",
-      "!LOC:Iron",
-      "!LOC:Bronze",
-      "!LOC:Silver",
-      "!LOC:Gold",
-      "!LOC:Platinum",
-      "!LOC:Diamond",
-      "!LOC:Uber",
-    ];
-    var currentDifficultyIndex =
-      _.findIndex(difficultyLevels, function (difficulty) {
-        return difficulty === gwoSettings.difficulty;
-      }) - 1; // Adjust for added "Beginner" level
+    requireGW(
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+      ],
+      function (gwoDifficulty) {
+        // Read the tiers from the difficulty data rather than restating them, so
+        // renaming or inserting one cannot silently shift everybody's badge history.
+        var tierIndex = _.findIndex(
+          gwoDifficulty.difficulties,
+          function (tier) {
+            return (
+              !tier.customDifficulty &&
+              tier.difficultyName === gwoSettings.difficulty
+            );
+          }
+        );
 
-    defeatedDifficulties(
-      isNewHighScore(currentDifficultyIndex, previousBest)
-        ? [currentDifficultyIndex, game.hardcore()]
-        : defeatedDifficulties()
+        // Custom carries no difficulty rating, so there is nothing to rank it
+        // against - recording it produced an index of -2, which no badge matches.
+        if (tierIndex === -1) {
+          return;
+        }
+
+        // Badge indices run from -1 (Beginner) so that Casual is 0 - see the
+        // loadoutIcon switch in shared/cards.js.
+        var currentDifficultyIndex = tierIndex - 1;
+
+        defeatedDifficulties(
+          isNewHighScore(currentDifficultyIndex, previousBest)
+            ? [currentDifficultyIndex, game.hardcore()]
+            : defeatedDifficulties()
+        );
+      }
     );
   } catch (e) {
     console.error(e);
