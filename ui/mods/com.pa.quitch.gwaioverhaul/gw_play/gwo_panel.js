@@ -31,6 +31,9 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwCampaignConnectedClients.subscribe(function () {
       var playerScaling = gwoSettings.coopPlayerScalingCount;
       if (
+        // tooManyPlayers is a latch: once set, the war is flagged for good. Without
+        // this the save is rewritten on every join and leave for the rest of the war.
+        !gwoSettings.tooManyPlayers &&
         model.gwCampaignConnectedClients &&
         _.isFunction(model.gwCampaignConnectedClients) &&
         playerScaling &&
