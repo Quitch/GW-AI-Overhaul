@@ -145,10 +145,13 @@ function gwoWarInfoPanel(gwoSettings) {
     }
 
     requireGW(
-      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"],
-      function (gwoColour) {
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
+      ],
+      function (gwoColour, gwoVersion) {
         /* War Information */
-        model.gwoVersion = ko.observable("6.4.0");
+        model.gwoVersion = ko.observable(gwoVersion);
 
         /* Co-op Information */
         var coopText = function (setting) {

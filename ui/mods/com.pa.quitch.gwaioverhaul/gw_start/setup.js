@@ -376,6 +376,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
       function (
         GW,
@@ -392,7 +393,8 @@ function gwoSetup() {
         gwoAI,
         loadouts,
         favouriteLoadoutsModule,
-        favouritesModule
+        favouritesModule,
+        gwoVersion
       ) {
         // Assign the outer closure vars (declared at the top of gwoSetup(),
         // where model.gwoIsFavourite/model.gwoToggleFavourite are defined)
@@ -536,8 +538,7 @@ function gwoSetup() {
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          var version = "6.4.0";
-          console.log("War created using Galactic War Overhaul v" + version);
+          console.log("War created using Galactic War Overhaul v" + gwoVersion);
 
           var game = new GW.Game();
           game.mode(model.mode());
@@ -1111,7 +1112,7 @@ function gwoSetup() {
             var galaxy = game.galaxy();
             var originSystem = galaxy.stars()[galaxy.origin()].system();
             originSystem.gwaio = {};
-            originSystem.gwaio.version = version;
+            originSystem.gwaio.version = gwoVersion;
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
             originSystem.gwaio.galaxySize =
