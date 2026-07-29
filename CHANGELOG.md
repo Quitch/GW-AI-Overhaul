@@ -46,6 +46,7 @@
 - Loadout icons remain in a consistent position regardless of text quantity
 - Bionic Augmentation Commander Of Neutralizing was receiving 9x health rather than 3x
 - Co-op hosts had battle setup applied twice, over-applying Sub Commander Fabber and Tactics Tech and the enemy AI's understanding of when to tech up
+- Custom difficulty broke the AI economy handicap in every battle, and left the intelligence panel reporting a nonsense threat level
 
 ## v6.4.0 - 2026-07-24
 
