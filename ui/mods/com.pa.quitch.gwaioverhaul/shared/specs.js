@@ -248,7 +248,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return _.pull.apply(null, args);
         },
-        // New op to remove text in a string
+        // GWO addition: substitutes within a string spec value, which the base ops
+        // cannot do - they replace the whole value. Takes [from, to]; a bare value
+        // means "delete every occurrence".
         wipe: function (attribute, value) {
           if (!_.isString(attribute)) {
             attribute = isNullish(attribute) ? "" : attribute.toString();
@@ -258,7 +260,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return attribute.split(value[0]).join(value[1]);
         },
-        // New op to prepend to arrays
+        // GWO addition, the counterpart to the base game's append. Order matters for
+        // buildable_types and build lists, where the engine takes the first match.
         prepend: function (attribute, value) {
           if (!_.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
