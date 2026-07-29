@@ -42,9 +42,13 @@ describe("pa/ai_penchant/ - GWO-owned Penchant unit maps", () => {
 });
 
 describe("pa/ai_penchant/ - AI config", () => {
+  // Membership, not key order: deepEqual on Object.keys also pinned insertion order,
+  // so a re-minify that reordered the file would have failed for no real reason.
+  // The shape itself is validated by scripts/validate/schemas.js; what this adds is
+  // that the file exists on disk where the AI path resolution expects it.
   it("ai_config.json exists with only a numeric unit_cap", () => {
     const json = readJson("pa/ai_penchant/ai_config.json");
-    assert.deepEqual(Object.keys(json), ["unit_cap"]);
+    assert.deepEqual(Object.keys(json).sort(), ["unit_cap"]);
     assert.equal(typeof json.unit_cap, "number");
   });
 });

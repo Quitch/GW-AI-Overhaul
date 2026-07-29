@@ -556,11 +556,20 @@ describe("specs.mod - navigation pruning", () => {
 });
 
 describe("specs.additionalSpecs", () => {
-  it("is a fixed list of extra unit spec file paths", () => {
-    assert.equal(specs.additionalSpecs.length, 6);
-    for (const entry of specs.additionalSpecs) {
-      assert.equal(typeof entry, "string");
-      assert.match(entry, /^\/pa\//);
-    }
+  // Pinned by content, not by count. A length check passes just as happily when an
+  // entry is swapped for an unrelated /pa/ path, which is the mistake worth catching;
+  // adding a genuinely new spec is a deliberate one-line edit here.
+  it("holds the weapon and ammo specs for the Firefly, Orca torpedo and Skitter", () => {
+    assert.deepEqual(
+      [...specs.additionalSpecs].sort(),
+      [
+        "/pa/units/air/air_scout/air_scout_ammo.json",
+        "/pa/units/air/air_scout/air_scout_tool_weapon.json",
+        "/pa/units/land/land_scout/land_scout_ammo.json",
+        "/pa/units/land/land_scout/land_scout_tool_weapon.json",
+        "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
+        "/pa/units/sea/destroyer/destroyer_torpedo_ammo.json",
+      ].sort()
+    );
   });
 });
