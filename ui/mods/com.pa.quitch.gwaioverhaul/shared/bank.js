@@ -40,8 +40,19 @@ define(function () {
         return;
       }
 
-      var config = JSON.parse(bankJson);
-      self.startCards(config.startCards);
+      // This runs during AMD load, so an unreadable value would reject the module
+      // and take down every gw_start module that requires bank.js - a corrupt
+      // unlock list must degrade to an empty one, not to a broken scene.
+      var config;
+      try {
+        config = JSON.parse(bankJson);
+      } catch (e) {
+        console.warn("Ignoring unreadable loadout unlock record", e);
+      }
+
+      self.startCards(
+        config && _.isArray(config.startCards) ? config.startCards : []
+      );
       loading = false;
     },
 

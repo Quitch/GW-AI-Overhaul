@@ -101,7 +101,19 @@ define(function () {
 
     loadoutIcon: function (loadoutId) {
       var raw = window.localStorage["gwaio_victory_" + loadoutId];
-      var decoded = raw ? JSON.parse(raw) : undefined;
+      var decoded;
+
+      // localStorage is user-writable and survives across versions, so one corrupt
+      // badge record must not throw here - this runs while building the loadout
+      // list and would take the whole list down with it.
+      try {
+        decoded = raw ? JSON.parse(raw) : undefined;
+      } catch (e) {
+        console.warn(
+          "Ignoring unreadable victory record for loadout " + loadoutId,
+          e
+        );
+      }
 
       var icon;
       var hardcore = false;
