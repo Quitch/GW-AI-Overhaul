@@ -28,6 +28,117 @@ const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { walkFiles } = require("../lib/walk.js");
 
+// Every `test_type` the engine implements, harvested from the base game's own AI
+// data (media/pa/ai/ plus media/pa_ex1/ai_queller/). An unrecognised value is not an
+// error the engine reports - the condition simply never validates, so the whole build
+// entry silently never fires. That is how "HasEcoForAdvanced" (the real test is
+// HaveEcoForAdvanced) went unnoticed. CI has no base install, so this list has to be
+// committed; re-harvest it after a PA patch adds tests.
+// `UnitCountonPlanet` is a base-game spelling variant, kept because the engine
+// accepts what its own data ships.
+const KNOWN_TEST_TYPES = new Set([
+  "AllMetalSpotsFull",
+  "AlliedUnitCountOnPlanet",
+  "AloneOnPlanet",
+  "BaseThreat",
+  "BaseThreatRatio",
+  "BaseThreatened",
+  "CanAffordBuildDemand",
+  "CanAffordPotentialDrain",
+  "CanAttackWithPoolUnits",
+  "CanAttackWithPoolUnitsBomber",
+  "CanAttackWithPoolUnitsFighter",
+  "CanAttackWithPoolUnitsLand",
+  "CanDeployLandFromBase",
+  "CanDeployNavalFromBase",
+  "CanFindControlPointToBuild",
+  "CanFindMetalSpotToBuildAdvanced",
+  "CanFindMetalSpotToBuildBasic",
+  "CanFindPlaceToBuild",
+  "CanProvideAirSupportWithPoolUnits",
+  "CanProvideLandUnitAssistance",
+  "CurrentEnergyEfficiency",
+  "CurrentMetalEfficiency",
+  "DesireEnergy",
+  "DesireMetal",
+  "DistFromMainBase",
+  "DistFromNearestEnemyThreat",
+  "EnemyAirPresenceOnPlanet",
+  "EnemyOrbitalPresenceOnPlanet",
+  "EnemyPresenceOnPlanet",
+  "EnemySurfacePresenceOnPlanet",
+  "EnergyStorageFrac",
+  "EnergyStorageToProductionRatio",
+  "FactoryHasOpenSlot",
+  "FactorySlotsEmpty",
+  "FocusTargetThreat",
+  "FocusTargetThreatRatio",
+  "HasPersonalityTag",
+  "HaveEcoForAdvanced",
+  "HaveFullPlanetIntel",
+  "HaveHadANukeEvent",
+  "HaveSeenEnemyUnits",
+  "HaveThrustToMovePlanet",
+  "MetMinAdvancedFabberCount",
+  "MetMinBasicFabberCount",
+  "MetalStorageFrac",
+  "MetalStorageToProductionRatio",
+  "NeedAdvancedAirFabber",
+  "NeedAdvancedAirFactory",
+  "NeedAdvancedBotFabber",
+  "NeedAdvancedBotFactory",
+  "NeedAdvancedNavalFactory",
+  "NeedAdvancedVehicleFabber",
+  "NeedAdvancedVehicleFactory",
+  "NeedBasicAirFabber",
+  "NeedBasicAirFactory",
+  "NeedBasicBotFabber",
+  "NeedBasicBotFactory",
+  "NeedBasicNavalFactory",
+  "NeedBasicVehicleFabber",
+  "NeedBasicVehicleFactory",
+  "NeedOrbitalFactory",
+  "NeedOrbitalLauncher",
+  "OtherPlanetCanProvideLandUnitAssistance",
+  "OtherPlanetCanReceiveLandUnitAssistance",
+  "OtherPlanetNeedsLandUnitAssistance",
+  "OtherPlanetNeedsOrbitalUnitAssistance",
+  "OtherPlanetNeedsReconAssistance",
+  "PlanetCanBeUsedAsKineticWeapon",
+  "PlanetCount",
+  "PlanetHasUseablePlanetWeapon",
+  "PlanetHighestEnemyArmyThreat",
+  "PlanetHighestEnemyArmyThreatRatio",
+  "PlanetIsGasGiant",
+  "PlanetIsMainEcoBase",
+  "PlanetIsRespawnable",
+  "PlanetOrGasGiantWithoutPresence",
+  "PlanetThreat",
+  "PlanetWithoutFabberWithTeleporter",
+  "PlanetWithoutPresence",
+  "PotentialEnergyEfficiency",
+  "PotentialMetalEfficiency",
+  "PresenceOnOtherPlanet",
+  "SafePlanetOrGasGiantWithoutPresence",
+  "SystemThreat",
+  "SystemToPlanetThreatRatio",
+  "ThisPlanetNeedsLandUnitAssistance",
+  "ThisPlanetNeedsOrbitalUnitAssistance",
+  "ThisPlanetNeedsReconAssistance",
+  "UnableToExpand",
+  "UnitCount",
+  "UnitCountAroundBase",
+  "UnitCountInBase",
+  "UnitCountInCelestialTransit",
+  "UnitCountOnPlanet",
+  "UnitCountPerPlanetRadius",
+  "UnitCountonPlanet",
+  "UnitPoolCount",
+  "UnitRatioOnPlanet",
+  "WantCommanderOffPlanet",
+  "WantCommanderOffPlanetByTeleporter",
+]);
+
 const failures = [];
 
 function fail(where, message) {
@@ -94,6 +205,18 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
             "][" +
             j +
             "] missing string `test_type`"
+        );
+      } else if (!KNOWN_TEST_TYPES.has(test.test_type)) {
+        fail(
+          where,
+          entryLabel +
+            ": build_conditions[" +
+            i +
+            "][" +
+            j +
+            '] unknown test_type "' +
+            test.test_type +
+            '" - the engine ignores it, so the condition group can never validate'
         );
       }
     });
