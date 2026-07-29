@@ -58,13 +58,7 @@ define([
   var clusterUnitsImmobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
   var clusterUnitsFactories = gwoGroup.factories;
 
-  var commanderAmmo = [
-    gwoUnit.commanderAAAmmo,
-    gwoUnit.commanderAmmo,
-    gwoUnit.commanderSecondaryAmmo,
-    gwoUnit.commanderTorpedoLandAmmo,
-    gwoUnit.commanderTorpedoWaterAmmo,
-  ];
+  var commanderAmmo = gwoGroup.commanderAmmo;
   var legonisAmmo = gwoGroup.vehiclesAmmo.concat(
     gwoUnit.aresAmmo,
     gwoUnit.aresSecondaryAmmo
