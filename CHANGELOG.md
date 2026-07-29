@@ -54,6 +54,7 @@
 - Loading a save taken mid-exploration miscounted rerolls already spent when your hand was full or you had Lucky Commander, granting a free full-size reroll, and let a UI refresh restore spent rerolls
 - Game mode chances were slightly over-weighted, and a mode set to 0% still appeared on around one star in a hundred
 - The AI received text rather than true/false for whether it goes for the kill, prioritises scouting metal spots, and reacts to Commander danger
+- In-game menu kept the base game's Surrender and Continue War buttons, so they still misbehaved with more than two teams and for a defeated co-op player
 
 ## v6.4.0 - 2026-07-24
 

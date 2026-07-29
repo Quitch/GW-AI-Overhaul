@@ -23,7 +23,11 @@ function gwoMenu() {
         tutorial(game.isTutorial());
       });
 
-      model.menuConfigGenerator = ko.observable(function () {
+      // Write into the existing observable rather than replacing it. The base
+      // game's menuConfig computed (live_game.js) subscribed to the original, so
+      // a replacement leaves that subscription pointing at the old one and the
+      // patched menu only appears once some unrelated dependency happens to fire.
+      model.menuConfigGenerator(function () {
         var overString = getMenuString(
           tutorial(),
           "!LOC:Continue Tutorial",
