@@ -69,6 +69,7 @@
 - Allied commanders, and any AI given the vanilla penchant, were assigned an empty personality tag
 - Opponent AI and Ally AI labels, their tooltips, and the AI Settings header stayed in English in other languages
 - Winning a Custom difficulty war recorded a meaningless loadout badge, which could overwrite a real one
+- A co-op player whose stored id no longer matched their connection had their tech ignored, rather than being matched by name
 
 ## v6.4.0 - 2026-07-24
 

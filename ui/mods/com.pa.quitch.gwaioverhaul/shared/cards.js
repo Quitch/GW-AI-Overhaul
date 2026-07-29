@@ -12,10 +12,17 @@ define(function () {
         return false;
       }
 
+      // Match on id when both sides have one, but fall through to the name rather
+      // than returning on a mismatch. Ids and names have historically drifted apart
+      // in co-op, and a short-circuit there silently drops the viewer's cards.
       var clientId = client.id;
       var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
-      if (!_.isUndefined(clientId) && !_.isUndefined(dataId)) {
-        return clientId === dataId;
+      if (
+        !_.isUndefined(clientId) &&
+        !_.isUndefined(dataId) &&
+        clientId === dataId
+      ) {
+        return true;
       }
 
       var clientName = client.name;
