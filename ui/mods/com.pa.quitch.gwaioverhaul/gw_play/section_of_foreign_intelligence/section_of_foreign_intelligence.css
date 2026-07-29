@@ -31,12 +31,15 @@
   opacity: 1;
 }
 
+/* Inherited from the base game's players list. The prefixed properties are the ones
+   that do the work; PA's Chrome 40 has no unprefixed mask support, and there is no
+   <mask id="player-mask"> anywhere in this mod or the base game, so the shorthand
+   that used to sit here was inert twice over while reading as a fallback. */
 .player-masked {
   height: 16px;
   width: 16px;
   -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
   -webkit-mask-size: cover;
-  mask: url("#player-mask");
 }
 
 .div-player-icon .fill,
