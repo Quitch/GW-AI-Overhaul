@@ -52,6 +52,7 @@
 - Exploring in co-op while players were still choosing loadouts left the star stuck with no cards offered and no battle available
 - Rerolling on a treasure star could permanently discard the loadout it was offering
 - Loading a save taken mid-exploration miscounted rerolls already spent when your hand was full or you had Lucky Commander, granting a free full-size reroll, and let a UI refresh restore spent rerolls
+- Game mode chances were slightly over-weighted, and a mode set to 0% still appeared on around one star in a hundred
 
 ## v6.4.0 - 2026-07-24
 

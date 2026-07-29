@@ -238,8 +238,11 @@ function gwoSetup() {
       return Math.max(ecoBase, eco);
     };
 
+    // _.random's bounds are both inclusive, so _.random(100) has 101 outcomes and
+    // a chance of N would fire at (N+1)/101 - a 0% setting still landing roughly
+    // one roll in a hundred, which a large galaxy rolls hundreds of times.
     var gameModeEnabled = function (gameModeChance) {
-      return _.random(100) <= gameModeChance;
+      return _.random(1, 100) <= gameModeChance;
     };
 
     var enableAnEradicationModeTypes = function (ai) {
