@@ -64,6 +64,7 @@
 - Barnacle Upgrade Tech's "Which Units?" tooltip named and highlighted the Mend
 - Artillery personality built Long Range Artillery against any nearby enemy structure, rather than excluding metal extractors as intended
 - Ten AI personalities built roughly twice as many Frigates as intended in naval games, from a retired build file that was not gated to the personality it belongs to
+- Co-op war information panel did not update when a player changed their name or colour
 
 ## v6.4.0 - 2026-07-24
 

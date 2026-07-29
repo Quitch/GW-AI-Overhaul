@@ -271,8 +271,11 @@ function gwoWarInfoPanel(gwoSettings) {
 
           if (!commander) {
             commander = {
-              name: client.name,
-              color: playerColour,
+              // Observables, not plain properties: the cache deliberately returns the
+              // same object identity across reevaluations, so Knockout's array diff
+              // sees no change and a rename or recolour would never re-render.
+              name: ko.observable(client.name),
+              color: ko.observable(playerColour),
               // The host's own loadout is already resolved locally via model.gwoLoadout.
               // game.findCoopPlayerInventoryData never returns a record for the host
               // (it only tracks synced remote clients), so without this the host's
@@ -285,8 +288,8 @@ function gwoWarInfoPanel(gwoSettings) {
             coopCommanderCache[cacheKey] = commander;
           }
 
-          commander.name = client.name;
-          commander.color = playerColour;
+          commander.name(client.name);
+          commander.color(playerColour);
 
           if (!commander.loadoutResolved) {
             record =
