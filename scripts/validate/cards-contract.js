@@ -51,6 +51,13 @@ const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 // entry here; the loader already identifies those precisely and they're tolerated
 // generically below. Only non-NOT_SHIPPED failures need a reviewed, named entry -
 // anything else that fails to load is treated as a real regression.
+// Floor on how many cards this check actually covers. NOT_SHIPPED is swallowed
+// generically above, so a mod-shipped dependency breaking demotes every card that
+// requires it from "checked" to "excluded" with CI still green - coverage can shrink
+// silently and has (178 -> 175). Raise this when the checked count genuinely rises;
+// never lower it to make a run pass.
+const MIN_CHECKED = 175;
+
 const KNOWN_UNLOADABLE = {
   "gwc_minion.js":
     "transitively depends on shared/gw_factions.js, which calls " +
@@ -146,6 +153,17 @@ function main() {
       failures.length +
       " failed."
   );
+
+  if (checked < MIN_CHECKED) {
+    console.error(
+      "cards-contract: coverage dropped - " +
+        checked +
+        " cards shape-checked, expected at least " +
+        MIN_CHECKED +
+        ". A card that stopped loading is now silently excluded rather than checked."
+    );
+    process.exitCode = 1;
+  }
 
   if (failures.length) {
     console.error("");
