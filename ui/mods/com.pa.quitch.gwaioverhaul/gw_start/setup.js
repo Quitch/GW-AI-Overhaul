@@ -298,6 +298,22 @@ function gwoSetup() {
 
     var saveDifficultySettings = function () {
       var settings = model.gwoDifficultySettings;
+
+      // The personality picker has no data-bind, so its value only reaches the
+      // snapshot below if we push it back - otherwise a Custom difficulty player's
+      // modifier picks revert to the last preset's on the next scene load.
+      //
+      // Do it here, once, and only when it actually changed. personalityTags is a
+      // dependency of the difficulty computed in gw_start/ui.js, which calls
+      // $("select").selectpicker("refresh") on every re-evaluation. Writing it from
+      // setAIPersonality instead - which runs per AI, per minion, per foe and per
+      // ally - re-rendered every dropdown on the page hundreds of times and added
+      // ten seconds to Go To War.
+      var pickedTags = $("#gwo-personality-picker").val() || [];
+      if (!_.isEqual(pickedTags, settings.personalityTags())) {
+        settings.personalityTags(pickedTags);
+      }
+
       var settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
       var snapshot = {};
@@ -491,14 +507,10 @@ function gwoSetup() {
           personality.per_expansion_delay = difficulty.perExpansionDelay();
           personality.max_basic_fabbers = difficulty.maxBasicFabbers();
           personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
-          var personalityTags =
+          // Read only. The write back into gwoDifficultySettings.personalityTags
+          // happens once in saveDifficultySettings - see the note there.
+          personality.personality_tags =
             $(personalityId).val() === null ? [] : $(personalityId).val();
-          // The picker has no data-bind, so its value only reaches the saved
-          // settings if we push it back. Without this saveDifficultySettings
-          // snapshots whatever the last preset wrote and a Custom difficulty
-          // player's modifier picks silently revert on the next scene load.
-          difficulty.personalityTags(personalityTags);
-          personality.personality_tags = personalityTags;
           // We treat 0 as undefined, which means the AI examines the
           // radius of the spawn zone
           if (difficulty.startingLocationEvaluationRadius() > 0) {
