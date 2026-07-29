@@ -61,6 +61,7 @@
 - Vehicle Ammunition and Combat Techs did nothing for the Manhattan, whose damage all comes from its death explosion
 - Rapid Deployment Commander's orbital fabricators could always build advanced orbital, ignoring the check for whether you had unlocked it
 - Assault Commander lost the land mine granted by Bumblebee, Grenadier, and Sheller Upgrade Tech
+- Barnacle Upgrade Tech's "Which Units?" tooltip named and highlighted the Mend
 
 ## v6.4.0 - 2026-07-24
 

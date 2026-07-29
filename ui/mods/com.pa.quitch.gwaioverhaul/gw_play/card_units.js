@@ -339,7 +339,7 @@ define([
       { id: "gwaio_upgrade_arkyd", units: [gwoUnit.arkyd] },
       { id: "gwaio_upgrade_stitch", units: [gwoUnit.stitch] },
       { id: "gwaio_upgrade_mend", units: [gwoUnit.mend] },
-      { id: "gwaio_upgrade_barnacle", units: [gwoUnit.mend] },
+      { id: "gwaio_upgrade_barnacle", units: [gwoUnit.barnacle] },
       { id: "gwaio_upgrade_mine", units: [gwoUnit.landMine] },
       { id: "gwaio_upgrade_wall", units: [gwoUnit.wall] },
       { id: "gwaio_upgrade_zeus", units: [gwoUnit.zeus] },
