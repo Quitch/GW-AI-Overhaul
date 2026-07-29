@@ -638,11 +638,20 @@ function gwoCard() {
           // hold the queue.
           return $.when(dealStarCards).then(
             function () {
-              if (
-                model.currentSystemCardList() &&
-                model.currentSystemCardList()[0] &&
-                model.currentSystemCardList()[0].isLoadout()
-              ) {
+              // The pre-dealt loadout card is appended after the fresh deal above,
+              // so it is not necessarily first. Scan the whole offer, matching the
+              // co-op path's pendingCardsContainLoadout - a position-sensitive check
+              // leaves Reroll live and rerollTech's star.cardList([]) then discards
+              // the loadout offer for good.
+              var offer = model.currentSystemCardList();
+              var offerHasLoadout =
+                _.isArray(offer) &&
+                _.some(offer, function (card) {
+                  return (
+                    card && _.isFunction(card.isLoadout) && card.isLoadout()
+                  );
+                });
+              if (offerHasLoadout) {
                 model.gwoOfferRerolls(false);
               }
               _.delay(function () {

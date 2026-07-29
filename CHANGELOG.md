@@ -50,6 +50,7 @@
 - Paratrooper Commander's Unit Cannon priority never reached the Queller AI, because of a mistyped condition
 - Anti-X Tech deal chances in co-op with per-player tech were weighted by the host's anti-tech rather than your own
 - Exploring in co-op while players were still choosing loadouts left the star stuck with no cards offered and no battle available
+- Rerolling on a treasure star could permanently discard the loadout it was offering
 
 ## v6.4.0 - 2026-07-24
 
