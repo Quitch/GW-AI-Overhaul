@@ -7,18 +7,17 @@
 // so it catches "wrong export shape" bugs (typos, missing/renamed fields, wrong
 // type), not runtime logic bugs.
 //
-// Empirically tallied across all 237 cards - 178 of which load and are shape-checked
-// here, 58 excluded as NOT_SHIPPED and 1 as KNOWN_UNLOADABLE (see amd-loader.js's
+// Empirically tallied across all 237 cards - 175 of which load and are shape-checked
+// here, 61 excluded as NOT_SHIPPED and 1 as KNOWN_UNLOADABLE (see amd-loader.js's
 // NOT_SHIPPED note for why not all of them can load here). Cards get added over time,
 // so treat these numbers as a snapshot: the run prints the live tally, and that - not
-// this comment - is the source of truth.
+// this comment - is the source of truth. MIN_CHECKED below is the enforced floor.
 //   - visible/describe/summarize/icon/deal/buff/dull: function, on every loadable card.
 //   - audio/getContext: function, on every loadable card except gwaio_enable_bot_aa.js
 //     (explicitly kept for save-compatibility with GWO v5.9.0 and earlier).
-//   - keep/discard: function, present on exactly one loadable card each
-//     (gwc_add_card_slot.js) - legitimate optional extensions to the base contract,
-//     not typos. gwc_minion.js also carries both but is excluded as KNOWN_UNLOADABLE,
-//     so its shape is never checked here.
+// No card carries keep/discard any more; both were dropped in the minion and card-slot
+// redesigns. gw_inventory.js still calls them when present, so a card is free to
+// reintroduce one - but they are not part of the shape this check expects to see.
 
 const fs = require("node:fs");
 const path = require("node:path");

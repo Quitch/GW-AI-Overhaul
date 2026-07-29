@@ -101,10 +101,10 @@ Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
   functions.
 - `audio`, `getContext` - functions on every card except one legacy exception kept
   for save-compatibility.
-- `keep`, `discard` - optional; legitimate extensions, not typos. Present on exactly
-  one loadable card (`gwc_add_card_slot.js`), which is what the contract validator
-  sees and counts; `gwc_minion.js` also carries both but is excluded from the check
-  as `KNOWN_UNLOADABLE`, so a source grep finds two cards with each field.
+- `keep`, `discard` - optional; legitimate extensions, not typos. No card carries
+  either today (both were dropped in the minion and card-slot redesigns), but
+  `gw_inventory.js` and `gw_start/setup.js` still call them when present, so the
+  contract validator continues to accept them.
 
 `buff(inventory)` mutates game state via `inventory.addMods(...)` (unit-spec stat
 mods) and/or `inventory.addAIMods(...)` (AI build-order mod descriptors - see below).
