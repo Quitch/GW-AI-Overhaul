@@ -70,6 +70,8 @@
 - Opponent AI and Ally AI labels, their tooltips, and the AI Settings header stayed in English in other languages
 - Winning a Custom difficulty war recorded a meaningless loadout badge, which could overwrite a real one
 - A co-op player whose stored id no longer matched their connection had their tech ignored, rather than being matched by name
+- A corrupted victory or loadout unlock record broke the loadout list, or the whole war setup screen, instead of being ignored
+- A malformed co-op player record stopped tech being offered at all, rather than just being skipped
 
 ## v6.4.0 - 2026-07-24
 
