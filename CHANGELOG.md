@@ -27,6 +27,7 @@
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 - Commander selection has moved from its own column into a Commander button above Game Options
+- Loadout column tries to avoid dead space
 
 ### Bugfix
 
@@ -42,6 +43,7 @@
 - Terminal Commander quartered mobile unit costs, left structure costs untouched, and incorrectly discounted the Angel and Colonel when playing as Cluster
 - Helios was not being changed when modifications were applied to all units and all mobile units
 - Game Options modal was narrower than intended, because its width was being overridden by the base game's
+- Loadout icons remain in a consistent position regardless of text quantity
 
 ## v6.4.0 - 2026-07-24
 

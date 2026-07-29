@@ -84,6 +84,34 @@
   flex: 1 1 0;
 }
 
+/* Cards are border-box, so the base rule's max-width of 640px plus their 16px
+   margin means a card claims 656px of a flex line. At 1920 the line is 1271px
+   wide, so two cards miss fitting by a mere 20.5px each and a whole column's
+   worth of space goes unused - and the same near-miss repeats at every 16:9
+   step up. Giving the cards a flex-basis below that break-even moves the wrap
+   decision off max-width, which is then free to stay as a ceiling on how wide a
+   lone card may grow, so narrow displays that cannot gain a column keep today's
+   layout. flex-grow shares out whatever the line has left, so the row still
+   fills exactly. 530px is the basis that yields precisely one extra column at
+   1920/2560/2880/3072/3840 rather than overshooting to two at 4K. All three
+   card states need the rule: they share a flex line, and the base stylesheet
+   styles card_active and card_locked as standalone states. */
+#loadouts #start-cards > .card,
+#loadouts #start-cards > .card_active,
+#loadouts #start-cards > .card_locked {
+  flex: 1 1 530px;
+}
+
+/* The shared card template centres its columns, and the icon column is a fixed
+   90px against a text column that grows with the description, so the icon sank
+   further down the taller the card - by up to 26px here, which reads as jitter
+   once the cards sit side by side. Pin the icon column to the top instead. Only
+   that column is realigned: the text column is the one setting the height in
+   every case where centring did anything, so leaving it centred is a no-op. */
+#loadouts #start-cards .col1 {
+  align-self: flex-start;
+}
+
 #gwo-commander-panel {
   margin: 0 0 16px;
   padding: 0;
