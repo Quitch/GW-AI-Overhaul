@@ -123,6 +123,10 @@ function gwoWarInfoPanel(gwoSettings) {
     };
 
     model.gwoOptions = ko.observableArray([]);
+    // Several war settings below are read once rather than subscribed to. They are
+    // observables, but each is fixed for the lifetime of a war - it is decided at
+    // creation and never changes - so unwrapping them here is deliberate, not a
+    // missed subscription.
     var optionDefs = [
       [model.gwoSettings.factionScaling, "!LOC:Faction scaling"],
       [model.gwoSettings.systemScaling, "!LOC:System scaling"],
@@ -131,7 +135,7 @@ function gwoWarInfoPanel(gwoSettings) {
       [model.gwoSettings.easierStart, "!LOC:Easier start"],
       [model.gwoSettings.staticTech, "!LOC:Static tech"],
       [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
-      [game.hardcore(), "!LOC:Hardcore mode"], // despite being an observable, this is a static value
+      [game.hardcore(), "!LOC:Hardcore mode"],
       [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
     ];
     for (var element of optionDefs) {
@@ -165,9 +169,9 @@ function gwoWarInfoPanel(gwoSettings) {
           return coopText(model.gwCampaignSharedControl());
         });
         model.gwoCoopTechControl = coopText(
-          !model.gwCampaignPerPlayerTechCards() // despite being an observable, this is a static value
+          !model.gwCampaignPerPlayerTechCards()
         );
-        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked() // despite being an observable, this is a static value
+        model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
           ? loc("!LOC:Locked")
           : loc("!LOC:Unlocked");
 

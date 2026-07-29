@@ -42,11 +42,9 @@ define(function () {
 
   // Mirror of base-game gw_specs.js:tagSpec. Appends `tag` to every spec reference
   // inside `spec` (mutating it in place) and returns the list of untagged references
-  // it discovered, so the caller can enqueue them for tagging too. Closes over nothing
-  // from the factory (only its own params + global `_`), which Sonar S7721 flags as
-  // hoistable - but in PA's RequireJS runtime a file-top-level declaration is a window
-  // global, so GWO deliberately keeps such helpers module-private inside define() and
-  // accepts S7721 here. See CONTRIBUTING.md ("Function scoping in shipped UI code").
+  // it discovered, so the caller can enqueue them for tagging too. Kept inside
+  // define() despite closing over nothing - see CONTRIBUTING.md ("Function scoping in
+  // shipped UI code") for why that is the repo-wide rule.
   var tagSpec = function (specId, tag, spec) {
     var moreWork = [];
     if (typeof spec !== "object") {
