@@ -46,15 +46,16 @@ define(function () {
   };
 
   // Whether the explored system is beyond the size-appropriate "far" threshold.
-  // thresholds is one of the distances arrays (or any 9-entry array); the size tier
-  // is the first numberOfSystems bucket >= totalSize, clamped to the last entry - so
-  // this works whether numberOfSystems holds the base five sizes or Bigger-GW's nine.
+  // thresholds is one of the distances arrays; the size tier is the first
+  // numberOfSystems bucket >= totalSize - so this works whether numberOfSystems holds
+  // the base five sizes or Bigger-GW's nine. The walk is clamped against thresholds,
+  // not numberOfSystems: a third-party size table longer than thresholds would
+  // otherwise index past the end, and `distance > undefined` is silently false, which
+  // switches the distance tiers off rather than saturating them.
   var farForSize = function (system, context, numberOfSystems, thresholds) {
+    var lastTier = Math.min(numberOfSystems.length, thresholds.length) - 1;
     var tier = 0;
-    while (
-      tier < numberOfSystems.length - 1 &&
-      context.totalSize > numberOfSystems[tier]
-    ) {
+    while (tier < lastTier && context.totalSize > numberOfSystems[tier]) {
       tier++;
     }
     return system.distance() > thresholds[tier];
