@@ -131,25 +131,27 @@ function gwoCardTooltips() {
           }
 
           var units = model.gwoCardsToUnits[cardUnitsIndex].units;
+          var tooltip;
           if (units) {
             var affectedUnits = sortUnitNames(units);
-
-            // set up the final tooltip
-            model.gwoTechCardTooltip()[hoverIndex] = _.map(
-              affectedUnits,
-              function (unitName, index) {
-                if (affectedUnits.length < 13) {
-                  return unitName.concat("<br>");
-                } else if (index < affectedUnits.length - 1) {
-                  return unitName.concat(" | ");
-                } else {
-                  return unitName;
-                }
+            tooltip = _.map(affectedUnits, function (unitName, index) {
+              if (affectedUnits.length < 13) {
+                return unitName.concat("<br>");
+              } else if (index < affectedUnits.length - 1) {
+                return unitName.concat(" | ");
+              } else {
+                return unitName;
               }
-            );
-          } else {
-            model.gwoTechCardTooltip()[hoverIndex] = undefined;
+            });
           }
+
+          // Write through the observableArray rather than assigning into the array
+          // it returns. The latter skips valueHasMutated, so nothing is notified -
+          // which only goes unnoticed because the tooltip binding happens to read
+          // lazily at hover time.
+          var tooltips = model.gwoTechCardTooltip().slice();
+          tooltips[hoverIndex] = tooltip;
+          model.gwoTechCardTooltip(tooltips);
         };
 
         model.showSystemCard.subscribe(function () {
