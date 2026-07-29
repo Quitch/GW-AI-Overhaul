@@ -112,10 +112,7 @@ function gwoCard() {
         model.gwoRerollsUsed = ko.observable(
           numCardsToOffer - star.cardList().length
         );
-        if (
-          model.gwoRerollsUsed() >= numCardsToOffer - 1 ||
-          (self.isLoadout && self.isLoadout())
-        ) {
+        if (model.gwoRerollsUsed() >= numCardsToOffer - 1) {
           model.gwoOfferRerolls(false);
         }
       }
