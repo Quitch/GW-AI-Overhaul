@@ -138,6 +138,10 @@ function gwoSetup() {
         default:
           console.error("Undefined faction:", faction);
           warGenerationFailed = true;
+          // warGenerationFailed aborts the run, but the caller concats this
+          // result straight into personality_tags first - returning undefined
+          // there would append a literal undefined tag.
+          return [];
       }
     };
 
@@ -180,6 +184,10 @@ function gwoSetup() {
       } else {
         selectedMinion = _.cloneDeep(_.sample(minions));
       }
+      // Returns undefined on failure. Every call site must check before using the
+      // result: these run inside jQuery deferred callbacks, where a throw is not
+      // converted into a rejection, so a TypeError here escapes
+      // .fail(onWarGenerationError) entirely - no seed retry, and Go To War hangs.
       if (_.isUndefined(selectedMinion)) {
         console.error("No minion found for faction " + faction);
         warGenerationFailed = true;
@@ -422,6 +430,12 @@ function gwoSetup() {
             if (!card) {
               console.error("No matching start card ID found");
               warGenerationFailed = true;
+              // Must reject rather than fall through. jQuery 2.x does not convert a
+              // throw inside a deferred callback into a rejection, so dereferencing
+              // the missing card here would escape .fail(onWarGenerationError) and
+              // leave Go To War spinning with no seed retry.
+              result.reject("no matching start card ID: " + params.id);
+              return;
             }
             var context =
               card.getContext &&
@@ -839,6 +853,9 @@ function gwoSetup() {
                     boss.faction,
                     clusterType
                   );
+                  if (!minion) {
+                    return;
+                  }
                   setAIPersonality(minion, difficulty, boss.faction);
                   minion.econ_rate = aiEconRate(maxDist, playerCount);
                   if (boss.isCluster === true) {
@@ -914,6 +931,9 @@ function gwoSetup() {
                         ai.faction,
                         clusterType
                       );
+                      if (!minion) {
+                        return;
+                      }
                       setAIPersonality(minion, difficulty, ai.faction);
                       minion.econ_rate = aiEconRate(dist, playerCount);
                       if (ai.isCluster === true) {
@@ -939,6 +959,9 @@ function gwoSetup() {
                       foeMinions = gwoAI.quellerCompatibleMinions(foeMinions);
                     }
                     var foeCommander = selectMinion(foeMinions, foeFaction);
+                    if (!foeCommander) {
+                      return;
+                    }
                     foeCommander.faction = foeFaction;
                     setAIPersonality(
                       foeCommander,
@@ -983,10 +1006,12 @@ function gwoSetup() {
                     allyMinions = gwoAI.quellerCompatibleMinions(allyMinions);
                   }
                   var allyCommander = selectMinion(allyMinions, playerFaction);
-                  allyCommander.faction = playerFaction;
-                  ai.ally = allyCommander;
-                  if (difficulty.aiAlly() === "Penchant") {
-                    setupPenchantAI(ai.ally);
+                  if (allyCommander) {
+                    allyCommander.faction = playerFaction;
+                    ai.ally = allyCommander;
+                    if (difficulty.aiAlly() === "Penchant") {
+                      setupPenchantAI(ai.ally);
+                    }
                   }
                 }
 
