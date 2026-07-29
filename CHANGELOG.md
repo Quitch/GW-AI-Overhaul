@@ -62,6 +62,7 @@
 - Rapid Deployment Commander's orbital fabricators could always build advanced orbital, ignoring the check for whether you had unlocked it
 - Assault Commander lost the land mine granted by Bumblebee, Grenadier, and Sheller Upgrade Tech
 - Barnacle Upgrade Tech's "Which Units?" tooltip named and highlighted the Mend
+- Artillery personality built Long Range Artillery against any nearby enemy structure, rather than excluding metal extractors as intended
 
 ## v6.4.0 - 2026-07-24
 
