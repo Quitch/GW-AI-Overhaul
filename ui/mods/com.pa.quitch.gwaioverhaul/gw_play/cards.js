@@ -55,6 +55,13 @@ function gwoCard() {
     };
 
     model.rerollTech = function () {
+      // The Reroll button's HTML is injected by setupTechRerolls below, which runs
+      // before the main requireGW assigns helpers. A click in that window would
+      // otherwise throw on the first helpers call.
+      if (!helpers) {
+        return;
+      }
+
       var pendingTechCards = currentCoopPendingTechCards();
       if (pendingTechCards) {
         if (
