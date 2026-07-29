@@ -45,6 +45,7 @@
 - Game Options modal was narrower than intended, because its width was being overridden by the base game's
 - Loadout icons remain in a consistent position regardless of text quantity
 - Bionic Augmentation Commander Of Neutralizing was receiving 9x health rather than 3x
+- Co-op hosts had battle setup applied twice, over-applying Sub Commander Fabber and Tactics Tech and the enemy AI's understanding of when to tech up
 
 ## v6.4.0 - 2026-07-24
 
