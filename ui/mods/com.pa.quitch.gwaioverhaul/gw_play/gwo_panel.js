@@ -401,32 +401,47 @@ function gwoWarInfoPanel(gwoSettings) {
 
 var gwoPanelLoaderInitialized = false;
 var gwoPanelLoaderNeedsDispose = false;
+var gwoPanelLoadWarned = false;
+
+// The computed can dispose itself on its very first evaluation, which happens inside
+// the ko.computed() call below - before gwoPanelLoader has been assigned. Defer to
+// the flag in that case.
+var disposeGwoPanelLoader = function () {
+  if (gwoPanelLoaderInitialized) {
+    gwoPanelLoader.dispose();
+  } else {
+    gwoPanelLoaderNeedsDispose = true;
+  }
+};
 
 var gwoPanelLoader = ko.computed(function () {
   var game = model.game();
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
-  if (
-    _.isPlainObject(originSystem.gwaio) &&
-    !game.isTutorial() &&
-    !gwoWarInfoPanelLoaded
-  ) {
+
+  // Nothing left to wait for: the panel is already up, or this war will never
+  // have one.
+  if (gwoWarInfoPanelLoaded || game.isTutorial()) {
+    disposeGwoPanelLoader();
+    return;
+  }
+
+  if (_.isPlainObject(originSystem.gwaio)) {
     console.log("GWO settings found and panel loading");
     gwoWarInfoPanel(originSystem.gwaio);
     gwoWarInfoPanelLoaded = true;
-    if (gwoPanelLoaderInitialized) {
-      gwoPanelLoader.dispose();
-    } else {
-      gwoPanelLoaderNeedsDispose = true;
-    }
-  } else {
+    disposeGwoPanelLoader();
+    return;
+  }
+
+  // The galaxy may still be loading, so stay subscribed and re-check - but report
+  // the miss once rather than on every galaxy observable change for the rest of
+  // the scene, which is what a war created without GWO used to produce.
+  if (!gwoPanelLoadWarned) {
+    gwoPanelLoadWarned = true;
     console.warn(
-      "Tried to load GWO panel and failed. GWO settings found:",
-      _.isPlainObject(originSystem.gwaio),
-      "This is a Galactic War:",
-      !game.isTutorial(),
-      "GWO panel already loaded:",
-      gwoWarInfoPanelLoaded
+      "No GWO settings on the origin system yet; the war information panel will " +
+        "load if they appear."
     );
   }
 });
