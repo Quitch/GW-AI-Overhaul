@@ -48,10 +48,57 @@ export default defineConfig([
     },
   },
   {
-    files: ["eslint.config.js"],
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
+    // Shipped game code. ecmaVersion 6 is set above only so `for...of` and Promise
+    // parse; it also makes the parser accept the rest of ES2015, none of which PA's
+    // Chrome 40 can run. Without this block an arrow function or template literal
+    // passes CI and then SyntaxErrors at scene load, taking the whole file with it.
+    files: ["ui/**/*.js"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "ArrowFunctionExpression",
+          message:
+            "Arrow functions are ES2015; PA runs Chrome 40. Use function.",
+        },
+        {
+          selector: "VariableDeclaration[kind!='var']",
+          message: "let/const are ES2015; PA runs Chrome 40. Use var.",
+        },
+        {
+          selector: ":matches(TemplateLiteral, TaggedTemplateExpression)",
+          message:
+            "Template literals are ES2015; PA runs Chrome 40. Use string concatenation.",
+        },
+        {
+          selector: ":matches(ClassDeclaration, ClassExpression)",
+          message:
+            "class is ES2015; PA runs Chrome 40. Use a constructor function and prototype.",
+        },
+        {
+          selector: ":matches(ObjectPattern, ArrayPattern)",
+          message: "Destructuring is ES2015; PA runs Chrome 40.",
+        },
+        {
+          selector: ":matches(AssignmentPattern, RestElement, SpreadElement)",
+          message:
+            "Default, rest and spread arguments are ES2015; PA runs Chrome 40.",
+        },
+        {
+          selector: "Property[shorthand=true], Property[method=true]",
+          message:
+            "Shorthand properties and methods are ES2015; PA runs Chrome 40. Write key: value.",
+        },
+        {
+          selector: "Property[computed=true]",
+          message: "Computed property names are ES2015; PA runs Chrome 40.",
+        },
+        {
+          selector:
+            ":matches(FunctionDeclaration, FunctionExpression)[generator=true]",
+          message: "Generators are ES2015; PA runs Chrome 40.",
+        },
+      ],
     },
   },
   {
