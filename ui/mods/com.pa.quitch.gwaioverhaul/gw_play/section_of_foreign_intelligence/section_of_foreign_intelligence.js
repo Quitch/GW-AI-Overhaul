@@ -93,13 +93,14 @@ function gwoIntelligence() {
       return Math.floor(number);
     };
 
+    // Every planet entry a Galactic War system holds carries `generator` - the base
+    // game's own panel binds $data.generator.biome with no guard, and GWO's explicit
+    // Cluster planets use the same shape. Anything else would have broken long
+    // before reaching here, so there is no second shape to support.
     var calculateSurfaceArea = function (system) {
       var area = 0;
       _.forEach(system.planets(), function (world) {
-        if (
-          (world.generator && world.generator.biome !== "gas") ||
-          (world.planet && world.planet.biome !== "gas")
-        ) {
+        if (world.generator && world.generator.biome !== "gas") {
           area += 4 * Math.PI * Math.pow(world.generator.radius, 2);
         }
       });
