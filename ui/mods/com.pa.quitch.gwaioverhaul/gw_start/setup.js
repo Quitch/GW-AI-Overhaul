@@ -473,8 +473,14 @@ function gwoSetup() {
           personality.per_expansion_delay = difficulty.perExpansionDelay();
           personality.max_basic_fabbers = difficulty.maxBasicFabbers();
           personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
-          personality.personality_tags =
+          var personalityTags =
             $(personalityId).val() === null ? [] : $(personalityId).val();
+          // The picker has no data-bind, so its value only reaches the saved
+          // settings if we push it back. Without this saveDifficultySettings
+          // snapshots whatever the last preset wrote and a Custom difficulty
+          // player's modifier picks silently revert on the next scene load.
+          difficulty.personalityTags(personalityTags);
+          personality.personality_tags = personalityTags;
           // We treat 0 as undefined, which means the AI examines the
           // radius of the spawn zone
           if (difficulty.startingLocationEvaluationRadius() > 0) {

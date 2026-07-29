@@ -55,6 +55,7 @@
 - Game mode chances were slightly over-weighted, and a mode set to 0% still appeared on around one star in a hundred
 - The AI received text rather than true/false for whether it goes for the kill, prioritises scouting metal spots, and reacts to Commander danger
 - In-game menu kept the base game's Surrender and Continue War buttons, so they still misbehaved with more than two teams and for a defeated co-op player
+- Custom AI personality modifier choices were not remembered, reverting to the last preset's the next time you opened the war setup screen
 
 ## v6.4.0 - 2026-07-24
 
