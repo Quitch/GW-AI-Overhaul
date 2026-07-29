@@ -19,9 +19,11 @@
   - Sub Commander upgrade techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several
   - Energy, intelligence, economy, and storage techs are dealt less often
   - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt at small and medium sizes
-  - Sudden Death Tech chance is now tied to galaxy size and distance travelled
+  - Sudden Death Tech chance is now tied to galaxy size and distance travelled, not number of subcommanders
   - Super Weapon Fabrication Tech chance increases over distance
   - Anti-X Tech is less likely to appear
+  - Economy and Intelligence Fabrication Techs no longer became rarer the deeper you travel
+  - Storage Compression Tech no longer became rarer the deeper you travel
 - Updated Protocol Kill-switch for addition of Helios death weapon
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 - Commander selection has moved from its own column into a Commander button above Game Options
@@ -29,23 +31,15 @@
 ### Bugfix
 
 - Prevent creation of galaxies with isolated stars
-- Efficiency Tech, Improved Commander Build Arm, and Improved Fabricator Build Arms each had a branch meant to lower their chance far from home that could never run, so they stayed at full chance across the whole galaxy
 - Improved Fabricator Build Arms treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Removes the Uber Cannon from Improved Commander Build Arm
 - Commander Upgrade Tech could not be taken when your Data Banks were full, despite granting a Data Bank of its own
-- Commander Combat Tech now boosts the damage of all your Commander's weapons, not just its main gun and Uber Cannon, matching Commander Ammunition Tech
+- Commander Combat Tech boosts the damage of the Commander's anti-air
 - Orbital Fabrication Tech became rarer the deeper you travelled, when bigger systems are exactly where orbital pays off
-- Orbital Ammunition and Fabrication Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
 - Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
-- Realigned some distance measures for deals to better align to the intended galaxy percentages
+- Realigned some distance measures for deals to better align to the intended galaxy percentages and expanded support to include Bigger Galactic War sizes
 - Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
-- Sudden Death Tech was offered more often the more Sub Commanders you had, when each subcommander is another Commander whose death loses you the battle
-- Complete Energy, Improved Intelligence, and Improved Energy Weapons Techs all became rarer the deeper you travelled
-- Improved Intelligence and Improved Energy Weapons Techs treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
-- Economy and Intelligence Fabrication Techs became rarer the deeper you travelled
-- Storage Compression Tech became rarer the deeper you travelled
-- Economy Fabrication Tech treated every galaxy above Uber size the same, so its deal chance ignored distance on the largest galaxies (Bigger Galactic War)
-- Terminal Commander quartered mobile unit costs, left structure costs untouched, and still discounted the Angel and Colonel when playing as Cluster
+- Terminal Commander quartered mobile unit costs, left structure costs untouched, and incorrectly discounted the Angel and Colonel when playing as Cluster
 - Helios was not being changed when modifications were applied to all units and all mobile units
 - Game Options modal was narrower than intended, because its width was being overridden by the base game's
 
