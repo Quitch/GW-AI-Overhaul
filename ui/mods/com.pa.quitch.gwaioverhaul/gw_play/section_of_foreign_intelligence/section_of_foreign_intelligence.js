@@ -205,7 +205,7 @@ function gwoIntelligence() {
           ko.applyBindings(model, $fi[0]);
         });
 
-        var convertGameMModifiersToName = function (ai, inventory) {
+        var convertGameModifiersToName = function (ai, inventory) {
           var gameModifiers = [];
 
           if (
@@ -371,7 +371,7 @@ function gwoIntelligence() {
           model.gwoSystemThreat(measureThreat(ai));
           model.gwoAvailableTech(availableTech(star));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
-          model.gwoGameModifiers(convertGameMModifiersToName(ai, inventory));
+          model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));
         });
       }

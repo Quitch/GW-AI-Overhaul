@@ -114,7 +114,7 @@ describe("specs.mod - basic ops", () => {
     assert.deepEqual(data["unit.json"].tags, ["a", "c"]);
   });
 
-  it("wipe removes a substring", () => {
+  it("wipe substitutes one substring for another, given a [from, to] pair", () => {
     const data = { "unit.json": { description: "hello world" } };
     specs.mod(
       data,
