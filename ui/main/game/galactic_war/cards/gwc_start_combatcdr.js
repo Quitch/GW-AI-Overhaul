@@ -60,20 +60,18 @@ define([
                 value: 0.25,
               });
             });
-            mods.push(
-              {
-                file: gwoUnit.commander,
-                path: "max_health",
-                op: "multiply",
-                value: 3,
-              },
-              {
-                file: weapon,
-                path: "rate_of_fire",
-                op: "multiply",
-                value: 2,
-              }
-            );
+            mods.push({
+              file: weapon,
+              path: "rate_of_fire",
+              op: "multiply",
+              value: 2,
+            });
+          });
+          mods.push({
+            file: gwoUnit.commander,
+            path: "max_health",
+            op: "multiply",
+            value: 3,
           });
           inventory.addMods(mods);
         }

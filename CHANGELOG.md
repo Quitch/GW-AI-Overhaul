@@ -44,6 +44,7 @@
 - Helios was not being changed when modifications were applied to all units and all mobile units
 - Game Options modal was narrower than intended, because its width was being overridden by the base game's
 - Loadout icons remain in a consistent position regardless of text quantity
+- Bionic Augmentation Commander Of Neutralizing was receiving 9x health rather than 3x
 
 ## v6.4.0 - 2026-07-24
 
