@@ -14,7 +14,16 @@ define([
         : [];
     var minionCount = 0;
     _.forEach(coopPlayerInventoryData, function (playerData) {
-      minionCount += playerData.inventory.minions.length;
+      // Guard the record shape, as shared/cards.js does for the same source. One
+      // malformed co-op inventory record would otherwise throw here and abort the
+      // whole deal rather than just contributing nothing.
+      if (
+        playerData &&
+        playerData.inventory &&
+        _.isArray(playerData.inventory.minions)
+      ) {
+        minionCount += playerData.inventory.minions.length;
+      }
     });
     return minionCount;
   };
