@@ -417,6 +417,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
   var vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
+    // The Manhattan self-destructs: its weapon borrows the Dox's ammo spec and
+    // all its real damage is the death burst, so that is the spec vehicle damage
+    // cards have to reach. It has no ammo entry of its own to list here.
+    gwoUnit.manhattanDeath,
     gwoUnit.shellerAmmo,
     gwoUnit.stormAmmo,
     gwoUnit.vanguardAmmo,

@@ -58,6 +58,7 @@
 - Custom AI personality modifier choices were not remembered, reverting to the last preset's the next time you opened the war setup screen
 - Queller still looked selectable in the AI dropdowns when playing without TITANS
 - A war generation failure could leave Go To War stuck busy instead of retrying with a new seed
+- Vehicle Ammunition and Combat Techs did nothing for the Manhattan, whose damage all comes from its death explosion
 
 ## v6.4.0 - 2026-07-24
 
