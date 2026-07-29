@@ -537,15 +537,23 @@ function gwoCard() {
 
         // gw_play self.explore - call our chooseCards()
         model.explore = function (force) {
-          if (
-            !game ||
-            !game.explore() ||
-            (model.isCampaignViewer() && !model.gwCampaignReplayingAction) ||
-            // For normal player-triggered exploration, block if co-op players
-            // are still selecting loadouts or pending tech cards. For a host
-            // reroll, force the correct deal path even while that state is set.
-            (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked())
-          ) {
+          // game.explore() is not a query - it advances turnState from "begin" to
+          // "explore" (gw_game.js). It must therefore stay last, after every guard
+          // that can refuse the action, or a refused call still consumes the star's
+          // begin state and leaves it inert with no deal. The base game orders these
+          // the same way (gw_play.js self.explore).
+          if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
+            return;
+          }
+
+          // For normal player-triggered exploration, block if co-op players are
+          // still selecting loadouts or pending tech cards. For a host reroll,
+          // force the correct deal path even while that state is set.
+          if (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked()) {
+            return;
+          }
+
+          if (!game || !game.explore()) {
             return;
           }
 
