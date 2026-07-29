@@ -1,11 +1,11 @@
-var gwoMenuLoaded;
+var gwoLiveGameMenuLoaded;
 
-function gwoMenu() {
-  if (gwoMenuLoaded || model.gameType() !== "Galactic War") {
+function gwoLiveGameMenu() {
+  if (gwoLiveGameMenuLoaded || model.gameType() !== "Galactic War") {
     return;
   }
 
-  gwoMenuLoaded = true;
+  gwoLiveGameMenuLoaded = true;
 
   try {
     var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
@@ -109,4 +109,4 @@ function gwoMenu() {
     console.error(JSON.stringify(e));
   }
 }
-gwoMenu();
+gwoLiveGameMenu();

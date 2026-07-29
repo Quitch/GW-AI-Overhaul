@@ -1,11 +1,11 @@
-var gwoMenuLoaded;
+var gwoStartMenuLoaded;
 
-function gwoMenu() {
-  if (gwoMenuLoaded) {
+function gwoStartMenu() {
+  if (gwoStartMenuLoaded) {
     return;
   }
 
-  gwoMenuLoaded = true;
+  gwoStartMenuLoaded = true;
 
   try {
     var $gwNav = $("#nav-gw");
@@ -30,4 +30,4 @@ function gwoMenu() {
     console.error(JSON.stringify(e));
   }
 }
-gwoMenu();
+gwoStartMenu();
