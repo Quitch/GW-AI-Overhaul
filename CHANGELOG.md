@@ -56,6 +56,7 @@
 - The AI received text rather than true/false for whether it goes for the kill, prioritises scouting metal spots, and reacts to Commander danger
 - In-game menu kept the base game's Surrender and Continue War buttons, so they still misbehaved with more than two teams and for a defeated co-op player
 - Custom AI personality modifier choices were not remembered, reverting to the last preset's the next time you opened the war setup screen
+- Queller still looked selectable in the AI dropdowns when playing without TITANS
 
 ## v6.4.0 - 2026-07-24
 

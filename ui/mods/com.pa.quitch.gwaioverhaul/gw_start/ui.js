@@ -337,9 +337,13 @@ function gwoUI() {
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     } else {
-      $("select option[value*='Queller']")
-        .prop("disabled", true)
-        .selectpicker("refresh");
+      // bootstrap-select ignores a non-select receiver, so the refresh has to be
+      // called on the parent selects - chaining it off the options left the
+      // rendered dropdown still showing Queller as selectable.
+      $("select option[value*='Queller']").prop("disabled", true);
+      $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
+        "refresh"
+      );
     }
 
     // Track difficulty settings so AI Settings' fields display correct values
