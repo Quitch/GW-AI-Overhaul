@@ -22,9 +22,9 @@ const {
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
-  createFakeJQuery,
-  createFakeApi,
-} = require("../scripts/lib/fake-jquery.js");
+  installRefereeFakes,
+  runRefereeAi,
+} = require("../scripts/lib/referee-fakes.js");
 
 const refereeConfig = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
@@ -46,45 +46,25 @@ const refereeAi = loadCouiModule(
 );
 
 let restoreModel;
-let previousDollar;
-let previousApi;
+let restoreFakes;
 
 afterEach(() => {
   if (restoreModel) {
     restoreModel();
     restoreModel = undefined;
   }
-  if (previousDollar !== undefined) {
-    global.$ = previousDollar;
-    previousDollar = undefined;
-  }
-  if (previousApi !== undefined) {
-    global.api = previousApi;
-    previousApi = undefined;
+  if (restoreFakes) {
+    restoreFakes();
+    restoreFakes = undefined;
   }
 });
 
-// Same fake-$/api wiring as test/referee_ai_file_processing.test.js, duplicated
-// locally rather than shared so this file's afterEach can restore all three
-// (model/$/api) through one mechanism.
-function installAiProcessingFakes({ fileListByPath, getJSON }) {
-  previousDollar = global.$;
-  previousApi = global.api;
-
-  global.api = createFakeApi({
-    file: {
-      list: (path) =>
-        Promise.resolve((fileListByPath && fileListByPath[path]) || []),
-    },
-  });
-
-  global.$ = createFakeJQuery({
-    getJSON: (url) => (getJSON ? getJSON(url) : { build_list: [] }),
-  });
+function installAiProcessingFakes(options) {
+  restoreFakes = installRefereeFakes(options).restore;
 }
 
-function runRefereeAi(filesObj) {
-  return refereeAi.call({ files: () => filesObj || {} });
+function runRefereeAiHere(filesObj) {
+  return runRefereeAi(refereeAi, filesObj);
 }
 
 function isKnownOverlapCase(aiInUse, enemyType, techState) {
@@ -322,7 +302,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
     });
 
     const filesObj = {};
-    return runRefereeAi(filesObj).then(() => {
+    return runRefereeAiHere(filesObj).then(() => {
       assert.deepEqual(
         filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
         ["hostMarker"]
@@ -388,7 +368,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
     });
 
     const filesObj = {};
-    return runRefereeAi(filesObj).then(() => {
+    return runRefereeAiHere(filesObj).then(() => {
       // The Guardian must see every connected player's contribution, combined by the
       // base pass alone - never clobbered down to a single viewer's own mod.
       assert.deepEqual(

@@ -21,55 +21,36 @@ const {
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
-  createFakeJQuery,
-  createFakeApi,
-} = require("../scripts/lib/fake-jquery.js");
+  installRefereeFakes,
+  runRefereeAi,
+} = require("../scripts/lib/referee-fakes.js");
 
 const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
 );
 
 let restoreModel;
-let previousDollar;
-let previousApi;
+let restoreFakes;
 
 afterEach(() => {
   if (restoreModel) {
     restoreModel();
     restoreModel = undefined;
   }
-  global.$ = previousDollar;
-  global.api = previousApi;
+  if (restoreFakes) {
+    restoreFakes();
+    restoreFakes = undefined;
+  }
 });
 
-function installFakes({ fileListByPath, getJSON }) {
-  previousDollar = global.$;
-  previousApi = global.api;
-
-  const listCalls = [];
-  const getJSONCalls = [];
-
-  global.api = createFakeApi({
-    file: {
-      list: (path) => {
-        listCalls.push(path);
-        return Promise.resolve((fileListByPath && fileListByPath[path]) || []);
-      },
-    },
-  });
-
-  global.$ = createFakeJQuery({
-    getJSON: (url) => {
-      getJSONCalls.push(url);
-      return getJSON ? getJSON(url) : { build_list: [] };
-    },
-  });
-
-  return { listCalls, getJSONCalls };
+function installFakes(options) {
+  const fakes = installRefereeFakes(options);
+  restoreFakes = fakes.restore;
+  return fakes;
 }
 
 function run(filesObj) {
-  return refereeAi.call({ files: () => filesObj || {} });
+  return runRefereeAi(refereeAi, filesObj);
 }
 
 describe("aisShareAPath", () => {
