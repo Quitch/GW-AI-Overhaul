@@ -1,29 +1,22 @@
-#new-game-right.col {
+/* The loadout column and the AI settings column are laid out identically. */
+#new-game-right.col,
+#gwo-ai-settings.col {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   max-height: 100%;
 }
 
+/* An id plus .header already out-specifies the base game's bare .header rule, so no
+   !important is needed here. The two columns' alpha values differ deliberately -
+   the loadout column reads brighter than the AI settings beside it. */
 #new-game-right .header {
-  background: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 #new-game-right .header + * {
   overflow-y: auto;
   flex-grow: 1;
-}
-
-#gwo-game-options-panel {
-  margin: 0 0 16px;
-  padding: 0;
-  border: 0;
-  background: none;
-  box-shadow: none;
-}
-
-#gwo-game-options-panel .coop-setup-configure {
-  text-transform: uppercase;
 }
 
 /* gwo_start.css is injected ahead of the scene's own gw_start.css, so this has
@@ -51,13 +44,6 @@
 
 #gwo-ai-settings {
   width: 300px;
-}
-
-#gwo-ai-settings.col {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  max-height: 100%;
 }
 
 #gwo-ai-settings .header {
@@ -115,6 +101,8 @@
   align-self: flex-start;
 }
 
+/* The Game Options and Commander buttons are the same control in two places. */
+#gwo-game-options-panel,
 #gwo-commander-panel {
   margin: 0 0 16px;
   padding: 0;
@@ -123,6 +111,7 @@
   box-shadow: none;
 }
 
+#gwo-game-options-panel .coop-setup-configure,
 #gwo-commander-panel .coop-setup-configure {
   text-transform: uppercase;
 }
