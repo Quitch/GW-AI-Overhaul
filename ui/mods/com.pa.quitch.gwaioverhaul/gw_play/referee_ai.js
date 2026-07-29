@@ -56,6 +56,12 @@ define([
       refValue,
       matchAll
     ) {
+      // Kept separate from `value` rather than coercing the parameter in place. One
+      // descriptor can match both array and string targets, and reassigning the
+      // shared parameter on the first array target made every later string target
+      // concatenate an array instead.
+      var arrayValue = _.isArray(value) ? value : [value];
+
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
           return;
@@ -66,8 +72,7 @@ define([
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
         if (validMatch && _.isArray(build[idToMod])) {
-          value = _.isArray(value) ? value : [value];
-          build[idToMod] = value.concat(build[idToMod]);
+          build[idToMod] = arrayValue.concat(build[idToMod]);
         } else if (validMatch) {
           build[idToMod] = value + build[idToMod];
         } else {
@@ -77,8 +82,7 @@ define([
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches) {
                 if (_.isArray(test[idToMod])) {
-                  value = _.isArray(value) ? value : [value];
-                  test[idToMod] = value.concat(test[idToMod]);
+                  test[idToMod] = arrayValue.concat(test[idToMod]);
                 } else if (test[idToMod]) {
                   test[idToMod] = value + test[idToMod];
                 }

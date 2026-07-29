@@ -120,6 +120,22 @@ describe("applyAiMods - prepend", () => {
       "B",
     ]);
   });
+
+  // One descriptor can match both an array target and a non-array target. Normalizing
+  // by reassigning the shared `value` parameter leaked the wrapped array into every
+  // later non-array target. A string target hides this - ["A"] + "B" and "A" + "B"
+  // both give "AB" - so pin it on a numeric target, where [1] + 2 is "12", not 3.
+  it("does not let an array target corrupt a later non-array target", () => {
+    const json = buildJson([
+      { to_build: "Bot", priority: [10] },
+      { to_build: "Bot", priority: 2 },
+    ]);
+    applyAiMods(json, [
+      { op: "prepend", toBuild: "Bot", idToMod: "priority", value: 1 },
+    ]);
+    assert.deepEqual(json.build_list[0].priority, [1, 10]);
+    assert.equal(json.build_list[1].priority, 3);
+  });
 });
 
 describe("applyAiMods - replace", () => {
