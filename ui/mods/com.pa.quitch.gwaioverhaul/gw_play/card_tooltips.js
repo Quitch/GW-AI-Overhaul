@@ -16,15 +16,24 @@ function gwoCardTooltips() {
     );
     locTree($("#system-card"));
 
-    var unitInPlayerInventory = function (unit) {
+    // Built once per tooltip rather than once per unit in it: the old form rebuilt
+    // and concatenated the whole inventory for every unit a card affects, so a card
+    // covering most of the unit list rescanned it on every hover.
+    var playerUnitLookup = function () {
+      var owned = {};
       var playerUnits = model
         .game()
         .inventory()
         .units()
         .concat("/pa/units/commanders/base_commander/base_commander.json");
-      return _.some(playerUnits, function (playerUnit) {
-        return playerUnit === unit;
+      _.forEach(playerUnits, function (playerUnit) {
+        owned[playerUnit] = true;
       });
+      return owned;
+    };
+
+    var lookupHas = function (lookup, key) {
+      return Object.prototype.hasOwnProperty.call(lookup, key);
     };
 
     var highlightUnitName = function (unitName) {
@@ -72,24 +81,40 @@ function gwoCardTooltips() {
           "gwc_minion"
         );
 
-        var sortUnitNames = function (units) {
-          return _.map(units, function (unit) {
-            var unitNameIndex = _.findIndex(gwoUnitToNames.units, {
-              path: unit,
+        // path -> name, replacing a linear scan of the whole name table per unit.
+        // gwoUnitToNames.units is a modder extension point, so rebuild whenever it
+        // grows rather than caching it once and missing late additions.
+        var unitNamesByPath = {};
+        var unitNamesIndexedCount = -1;
+        var unitNameFor = function (unit) {
+          if (unitNamesIndexedCount !== gwoUnitToNames.units.length) {
+            unitNamesByPath = {};
+            _.forEach(gwoUnitToNames.units, function (entry) {
+              unitNamesByPath[entry.path] = entry.name;
             });
+            unitNamesIndexedCount = gwoUnitToNames.units.length;
+          }
+          return lookupHas(unitNamesByPath, unit)
+            ? unitNamesByPath[unit]
+            : undefined;
+        };
 
-            if (unitNameIndex === -1) {
+        var sortUnitNames = function (units) {
+          var owned = playerUnitLookup();
+          return _.map(units, function (unit) {
+            var name = unitNameFor(unit);
+
+            if (_.isUndefined(name)) {
               console.warn(
                 unit + " is invalid or missing from GWO unit_names.js"
               );
               return loc("!LOC:Unknown Unit");
             }
 
-            var translatedName = loc(gwoUnitToNames.units[unitNameIndex].name);
-            var formattedName = unitInPlayerInventory(unit)
+            var translatedName = loc(name);
+            return lookupHas(owned, unit)
               ? translatedName
               : highlightUnitName(translatedName);
-            return formattedName;
           }).sort();
         };
 
