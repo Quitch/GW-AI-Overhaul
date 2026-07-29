@@ -290,6 +290,7 @@ define([
     var scopeToken = context.scopeToken;
     var nonLoadAiMods = context.nonLoadAiMods;
     var forceSubCommanderScope = context.forceSubCommanderScope;
+    var treeCache = context.treeCache;
 
     var aiTechPath = "/pa/ai_tech/";
 
@@ -486,7 +487,7 @@ define([
       }
     };
 
-    return $.getJSON("coui:/" + filePath).then(function (json) {
+    return treeCache.getJSON(filePath).then(function (json) {
       // Only the Cluster-enemy branch of applyClusterModsIfNeeded reads a pristine
       // pre-mod snapshot; skip the deep clone entirely otherwise (the common case).
       var originalJson =
@@ -532,6 +533,41 @@ define([
     });
   };
 
+  // One battle launch walks and reads the same build trees several times over: the
+  // enemy tree, the subcommander tree, and one further pass per connected viewer.
+  // Listing and fetching each file once per launch instead makes that cost flat
+  // rather than growing with co-op size.
+  var createTreeCache = function () {
+    var listings = {};
+    var files = {};
+    var cached = function (store, key, produce) {
+      if (!Object.prototype.hasOwnProperty.call(store, key)) {
+        store[key] = produce(key);
+      }
+      return store[key];
+    };
+
+    return {
+      list: function (aiPath) {
+        return cached(listings, aiPath, function (path) {
+          return api.file.list(path, true);
+        });
+      },
+      // Every pass mutates the JSON it is handed - applyAiMods writes in place and
+      // the result is stored in configFiles - so the cache keeps the pristine parse
+      // and hands out a copy, which is exactly what a re-fetch used to provide.
+      getJSON: function (filePath) {
+        // .then on a jQuery promise returns a new promise each time, so the stored
+        // request can be chained off repeatedly without being consumed.
+        return cached(files, filePath, function (path) {
+          return $.getJSON("coui:/" + path);
+        }).then(function (json) {
+          return _.cloneDeep(json);
+        });
+      },
+    };
+  };
+
   var processDirectories = function (
     aiPath,
     configFiles,
@@ -539,11 +575,12 @@ define([
     clusterPresence,
     inventory,
     scopeToken,
-    forceSubCommanderScope
+    forceSubCommanderScope,
+    treeCache
   ) {
     var deferred = $.Deferred();
 
-    api.file.list(aiPath, true).then(function (fileList) {
+    treeCache.list(aiPath).then(function (fileList) {
       var aisToModify = forceSubCommanderScope
         ? "SubCommanders"
         : whichAIsAreBeingModified(clusterPresence, inventory);
@@ -567,6 +604,7 @@ define([
         scopeToken: scopeToken,
         nonLoadAiMods: nonLoadAiMods,
         forceSubCommanderScope: forceSubCommanderScope,
+        treeCache: treeCache,
       };
 
       var promises = _.map(fileList, function (filePath) {
@@ -652,6 +690,9 @@ define([
         )
       : game.inventory();
 
+    // Scoped to this launch, so a later battle always re-reads the tree from disk.
+    var treeCache = createTreeCache();
+
     var promises = _.map(aiPathsToProcess, function (aiPath) {
       return processDirectories(
         aiPath,
@@ -660,7 +701,8 @@ define([
         clusterPresence,
         playerAiModInventory,
         undefined,
-        false
+        false,
+        treeCache
       );
     });
 
@@ -689,7 +731,8 @@ define([
             clusterPresence,
             viewerInventory,
             viewerScopeToken,
-            true
+            true,
+            treeCache
           )
         );
       }

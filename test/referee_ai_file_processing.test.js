@@ -222,4 +222,80 @@ describe("per-player-tech viewer processing", () => {
       "/pa/ai/player_.player1/fabber_builds/x.json",
     ]);
   });
+
+  // The base pass plus one pass per viewer all walk the same tree. Reading it once
+  // per launch keeps co-op launch cost flat instead of growing with viewer count.
+  it("lists and fetches the shared tree once, not once per viewer", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.role === "viewer"
+        ? { inventory: makeInventory({ aiModsList: [] }) }
+        : undefined;
+    const connectedClients = [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+      { id: "v2", name: "Viewer2", role: "viewer" },
+    ];
+    restoreModel = installModel(fixture.game, connectedClients);
+    const { listCalls, getJSONCalls } = installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(listCalls, ["/pa/ai/"]);
+    assert.deepEqual(getJSONCalls, ["coui://pa/ai/fabber_builds/x.json"]);
+  });
+
+  // Each pass mutates the JSON it is given, so a shared cache must hand out copies.
+  it("gives each viewer's pass its own copy of a cached file", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    const viewerInventory = makeInventory({
+      aiModsList: [
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "Bot",
+          idToMod: "priority",
+          value: 42,
+        },
+      ],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1" ? { inventory: viewerInventory } : undefined;
+    restoreModel = installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({
+        build_list: [{ to_build: "Bot", priority: 1 }],
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    // The viewer's scoped copy took the mod; the base copy must be untouched. A
+    // cache handing out the same object would leave both reading 42.
+    assert.equal(
+      filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
+        .build_list[0].priority,
+      42
+    );
+    assert.equal(
+      filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].priority,
+      1
+    );
+  });
 });
