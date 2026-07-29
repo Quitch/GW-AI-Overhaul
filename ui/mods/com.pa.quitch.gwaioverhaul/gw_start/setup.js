@@ -456,16 +456,20 @@ function gwoSetup() {
           var personality = ai.personality;
 
           personality.micro_type = difficulty.microType();
-          personality.go_for_the_kill = difficulty.goForKill();
+          // The stringBoolean extender reads back "true"/"false" strings so the
+          // dropdowns can bind to it; the AI personality contract is real booleans
+          // (see referee_subcommander_tech.js and the base game's gw_balance.js).
+          // .raw is the underlying observable the extender wraps.
+          personality.go_for_the_kill = difficulty.goForKill.raw();
           personality.priority_scout_metal_spots =
-            difficulty.priorityScoutMetalSpots();
+            difficulty.priorityScoutMetalSpots.raw();
           personality.factory_build_delay_min =
             difficulty.factoryBuildDelayMin();
           personality.factory_build_delay_max =
             difficulty.factoryBuildDelayMax();
           personality.unable_to_expand_delay = difficulty.unableToExpandDelay();
           personality.enable_commander_danger_responses =
-            difficulty.enableCommanderDangerResponses();
+            difficulty.enableCommanderDangerResponses.raw();
           personality.per_expansion_delay = difficulty.perExpansionDelay();
           personality.max_basic_fabbers = difficulty.maxBasicFabbers();
           personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
