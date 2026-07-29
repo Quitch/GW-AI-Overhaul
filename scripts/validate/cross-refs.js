@@ -5,7 +5,7 @@
 // check, which would need the player's local Steam install and can't run in CI; see
 // this repo's docs for that as a separate, local-only script).
 //
-//   1. Every loadout card id (shared/loadouts.js) has a matching file under
+//   1. Every loadout card id (shared/loadout_ids.js) has a matching file under
 //      ui/main/game/galactic_war/cards/.
 //   2. Every `<unitsParam>.someKey` reference in a card that imports shared/units.js
 //      actually exists as a key in units.js (a typo here is `undefined` at runtime
@@ -27,14 +27,8 @@ const CARDS_DIR = path.join(
   "galactic_war",
   "cards"
 );
-const LOADOUTS_PATH = path.join(
-  REPO_ROOT,
-  "ui",
-  "mods",
-  "com.pa.quitch.gwaioverhaul",
-  "shared",
-  "loadouts.js"
-);
+const LOADOUT_IDS_COUI =
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";
 const UNIT_MAP_PATH = path.join(
   REPO_ROOT,
@@ -66,15 +60,13 @@ function stripLineComments(src) {
 }
 
 function checkLoadoutCardsExist() {
-  // loadouts.js itself needs shared/gw_common (an unshipped base-game module), so it
-  // can't be loaded through the AMD shim - read its source directly instead.
-  const src = fs.readFileSync(LOADOUTS_PATH, "utf8");
-  const ids = [...src.matchAll(/\bid:\s*"([^"]+)"/g)].map((m) => m[1]);
+  // loadouts.js itself needs shared/gw_common (an unshipped base-game module) and so
+  // cannot load through the AMD shim, but loadout_ids.js is plain data with no engine
+  // coupling - load it rather than scraping source for id literals.
+  const ids = loadCouiModule(LOADOUT_IDS_COUI).all;
 
   if (!ids.length) {
-    fail(
-      "cross-refs: found no card ids in loadouts.js - the extraction pattern may be stale"
-    );
+    fail("cross-refs: loadout_ids.js exported no card ids");
     return;
   }
 
@@ -82,7 +74,7 @@ function checkLoadoutCardsExist() {
     const cardPath = path.join(CARDS_DIR, id + ".js");
     if (!fs.existsSync(cardPath)) {
       fail(
-        'cross-refs: loadouts.js references card id "' +
+        'cross-refs: loadout_ids.js references card id "' +
           id +
           '" with no matching file: ' +
           cardPath
