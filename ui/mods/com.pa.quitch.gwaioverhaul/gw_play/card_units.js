@@ -100,14 +100,7 @@ define([
       },
       {
         id: "gwc_damage_orbital",
-        units: [
-          gwoUnit.anchor,
-          gwoUnit.artemis,
-          gwoUnit.avenger,
-          gwoUnit.kessler,
-          gwoUnit.omega,
-          gwoUnit.sxx,
-        ],
+        units: gwoGroup.orbitalCombat,
       },
       {
         id: "gwc_damage_sea",
