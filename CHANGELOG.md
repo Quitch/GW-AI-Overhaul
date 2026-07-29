@@ -59,6 +59,7 @@
 - Queller still looked selectable in the AI dropdowns when playing without TITANS
 - A war generation failure could leave Go To War stuck busy instead of retrying with a new seed
 - Vehicle Ammunition and Combat Techs did nothing for the Manhattan, whose damage all comes from its death explosion
+- Rapid Deployment Commander's orbital fabricators could always build advanced orbital, ignoring the check for whether you had unlocked it
 
 ## v6.4.0 - 2026-07-24
 

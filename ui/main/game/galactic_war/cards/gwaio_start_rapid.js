@@ -184,11 +184,13 @@ define([
               value: "WL_Orbital",
             },
           ];
-          // Orbital Launcher Upgrade Tech support
-          if (
-            gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher) ||
-            inventory.hasCard("gwaio_upgrade_orbitallauncher")
-          ) {
+          // Let orbital fabbers build advanced orbital once the player has T2
+          // orbital access. This has to be a card check, not a unit check: buff()
+          // runs with a units list that applyCards has just cleared and refilled
+          // with the loadout's own grants only, so no other card's units are
+          // visible yet. Complete Orbital Tech is the only route here - Orbital
+          // Launcher Upgrade Tech is never offered to Rapid holders (see its deal).
+          if (inventory.hasCard("gwc_enable_orbital_all")) {
             mods.push({
               file: gwoUnit.orbitalFabber,
               path: "buildable_types",
