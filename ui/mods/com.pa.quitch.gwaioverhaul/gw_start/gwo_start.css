@@ -84,15 +84,18 @@
   flex: 1 1 0;
 }
 
-/* Cards are border-box, so the base rule's max-width of 640px plus their 16px
-   margin means a card claims 656px of a flex line. At 1920 the line is 1271px
-   wide, so two cards miss fitting by a mere 20.5px each and a whole column's
-   worth of space goes unused - and the same near-miss repeats at every 16:9
+/* boot.css sets box-sizing: border-box on everything, so the base rule's
+   max-width of 640px plus a card's 16px margin means a card claims 656px of a
+   flex line. The pixel figures below are for the columns this stylesheet
+   actually ships alongside - Setup 320px and AI Settings 300px, with the base
+   game's Commander column removed in ui.js - which leaves the card line 1271px
+   wide at 1920. Two cards therefore miss fitting by a mere 20.5px each and a
+   column's worth of space goes unused, and the near-miss repeats at every 16:9
    step up. Giving the cards a flex-basis below that break-even moves the wrap
-   decision off max-width, which is then free to stay as a ceiling on how wide a
-   lone card may grow, so narrow displays that cannot gain a column keep today's
-   layout. flex-grow shares out whatever the line has left, so the row still
-   fills exactly. 530px is the basis that yields precisely one extra column at
+   decision off max-width, which is then free to stay a ceiling on how wide a
+   lone card may grow, so displays too narrow to gain a column are unaffected.
+   flex-grow shares out whatever the line has left, so a row still fills
+   exactly. 530px is the basis yielding precisely one extra column at
    1920/2560/2880/3072/3840 rather than overshooting to two at 4K. All three
    card states need the rule: they share a flex line, and the base stylesheet
    styles card_active and card_locked as standalone states. */
