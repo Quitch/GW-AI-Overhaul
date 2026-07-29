@@ -42,6 +42,7 @@ const KNOWN_UNLOADABLE = {
 };
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
+const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
 // op -> extra fields required beyond `type` + `op` (mirrors referee_ai.js exactly).
 const REQUIRED_FIELDS_BY_OP = {
   load: ["value"],
@@ -51,6 +52,21 @@ const REQUIRED_FIELDS_BY_OP = {
   remove: ["value", "toBuild"],
   new: ["value", "toBuild"],
   squad: ["value", "toBuild"],
+};
+
+// Which `type` each op can legally target. referee_ai.js's ops table walks
+// json.build_list for the build ops and json.platoon_templates for squad, so a
+// mismatched pair validates on field shape alone and then throws at runtime.
+// `load` is not an op in that table at all - it routes through managerPath(), which
+// accepts every type.
+const VALID_TYPES_BY_OP = {
+  load: VALID_TYPES,
+  append: BUILD_LIST_TYPES,
+  prepend: BUILD_LIST_TYPES,
+  replace: BUILD_LIST_TYPES,
+  remove: BUILD_LIST_TYPES,
+  new: BUILD_LIST_TYPES,
+  squad: new Set(["template"]),
 };
 
 function collectAiMods(card) {
@@ -123,6 +139,20 @@ function checkMod(mod, index) {
       ) {
         problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
       }
+    }
+
+    const allowedTypes = VALID_TYPES_BY_OP[mod.op];
+    if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
+      problems.push(
+        where +
+          ': op "' +
+          mod.op +
+          '" cannot target type "' +
+          mod.type +
+          '" (expected one of: ' +
+          [...allowedTypes].join(", ") +
+          ")"
+      );
     }
   }
 
