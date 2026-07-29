@@ -221,7 +221,8 @@
 }
 
 .gwo-favourite-btn:hover {
-  filter: brightness(1.2);
+  /* PA's Chrome 40 only knows the prefixed form; unprefixed filter does nothing. */
+  -webkit-filter: brightness(1.2);
 }
 
 .gwo-favourite-btn.on {

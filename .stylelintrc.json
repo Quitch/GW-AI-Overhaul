@@ -9,7 +9,11 @@
     "property-no-vendor-prefix": [
       true,
       {
-        "ignoreProperties": ["-webkit-mask-image", "-webkit-mask-size"]
+        "ignoreProperties": [
+          "-webkit-filter",
+          "-webkit-mask-image",
+          "-webkit-mask-size"
+        ]
       }
     ],
     "declaration-block-no-redundant-longhand-properties": [
