@@ -286,16 +286,15 @@ define(function () {
     // countered by a specific opposing anti_ card (chance drops to 0), and
     // otherwise gets half its base chance once any anti_ tech is already held
     // (so the deck doesn't keep offering more of them once the theme is set).
+    // Both checks must read the passed inventory: under per-player tech in co-op
+    // this runs for each viewer, and model.game().inventory() is always the host's.
     antiTechDeal: function (inventory, baseChance, excludedCardId) {
       if (inventory.hasCard(excludedCardId)) {
         return { chance: 0 };
       }
-      var hasAntiTech = _.some(
-        model.game().inventory().cards(),
-        function (card) {
-          return _.startsWith(card.id, "gwaio_anti_");
-        }
-      );
+      var hasAntiTech = _.some(inventory.cards(), function (card) {
+        return _.startsWith(card.id, "gwaio_anti_");
+      });
       return { chance: hasAntiTech ? baseChance / 2 : baseChance };
     },
 

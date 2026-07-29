@@ -48,6 +48,7 @@
 - Co-op hosts had battle setup applied twice, over-applying Sub Commander Fabber and Tactics Tech and the enemy AI's understanding of when to tech up
 - Custom difficulty broke the AI economy handicap in every battle, and left the intelligence panel reporting a nonsense threat level
 - Paratrooper Commander's Unit Cannon priority never reached the Queller AI, because of a mistyped condition
+- Anti-X Tech deal chances in co-op with per-player tech were weighted by the host's anti-tech rather than your own
 
 ## v6.4.0 - 2026-07-24
 

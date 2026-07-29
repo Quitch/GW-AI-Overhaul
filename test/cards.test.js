@@ -364,15 +364,29 @@ describe("travelled* distance wrappers", () => {
 });
 
 describe("antiTechDeal", () => {
-  function inventoryWithCard(id) {
-    return { hasCard: (cardId) => cardId === id };
+  function inventoryWith(cardIds) {
+    return {
+      hasCard: (cardId) => cardIds.indexOf(cardId) !== -1,
+      cards: () => cardIds.map((id) => ({ id })),
+    };
+  }
+
+  // A host inventory that would flip every assertion below if it were consulted.
+  // Installed on every case so a regression back to model.game().inventory() fails
+  // rather than coincidentally agreeing with the per-player inventory.
+  function installContradictingHost() {
+    setGlobal("model", {
+      game: () => ({
+        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
+      }),
+    });
   }
 
   it("returns a chance of 0 when the excluded counterpart card is held", () => {
-    setGlobal("model", {});
+    installContradictingHost();
     assert.deepEqual(
       cards.antiTechDeal(
-        inventoryWithCard("gwaio_anti_orbital"),
+        inventoryWith(["gwaio_anti_orbital"]),
         70,
         "gwaio_anti_orbital"
       ),
@@ -382,23 +396,31 @@ describe("antiTechDeal", () => {
 
   it("halves the base chance once any anti_ tech card is already held", () => {
     setGlobal("model", {
-      game: () => ({
-        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
-      }),
+      game: () => ({ inventory: () => ({ cards: () => [] }) }),
     });
     assert.deepEqual(
-      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      cards.antiTechDeal(
+        inventoryWith(["gwaio_anti_air"]),
+        70,
+        "gwaio_anti_orbital"
+      ),
       { chance: 35 }
     );
   });
 
   it("returns the full base chance when no anti_ tech is held yet", () => {
-    setGlobal("model", {
-      game: () => ({ inventory: () => ({ cards: () => [] }) }),
-    });
+    installContradictingHost();
     assert.deepEqual(
-      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
+    );
+  });
+
+  it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
+    installContradictingHost();
+    assert.deepEqual(
+      cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
+      40
     );
   });
 });
