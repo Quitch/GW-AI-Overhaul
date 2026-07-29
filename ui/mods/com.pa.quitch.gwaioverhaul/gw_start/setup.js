@@ -457,12 +457,14 @@ function gwoSetup() {
           return result;
         };
 
+        // titansAITags is optional: concat would otherwise append a literal undefined
+        // to personality_tags, which the save round-trips back as null.
         var setupPenchantAI = function (ai, titansAITags) {
           var penchantValues = gwoAI.penchants();
           ai.personality.personality_tags =
             ai.personality.personality_tags.concat(
               penchantValues.penchants,
-              titansAITags
+              titansAITags || []
             );
           ai.penchantName = penchantValues.penchantName;
         };

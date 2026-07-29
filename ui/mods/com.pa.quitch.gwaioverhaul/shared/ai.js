@@ -107,7 +107,10 @@ define([
 
     penchants: function () {
       var penchants = [
-        { name: "", tags: "" }, // Vanilla - no changes
+        // Vanilla - no changes. tags must be an array like every other entry; the
+        // caller concats it onto personality_tags, and an empty string concats as
+        // one empty-string tag rather than as nothing.
+        { name: "", tags: [] },
         { name: "!LOC:Artillery", tags: ["Artillery"] },
         {
           name: "!LOC:Fortress",
