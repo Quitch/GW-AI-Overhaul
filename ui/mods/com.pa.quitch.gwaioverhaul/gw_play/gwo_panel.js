@@ -23,9 +23,7 @@ function gwoWarInfoPanel(gwoSettings) {
     var playerCount = coopPlayerScalingCount || 1;
     var playerOrPlayers =
       playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
-    model.gwoCoopPlayerScaling = playerCount
-      ? playerCount + " " + playerOrPlayers
-      : loc("!LOC:Unknown");
+    model.gwoCoopPlayerScaling = playerCount + " " + playerOrPlayers;
     var lobbyTitle =
       "GWO Co-op - " + loc("!LOC:Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
