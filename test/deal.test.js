@@ -11,30 +11,17 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { createFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const deal = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js"
 );
 
-const restores = [];
-function setGlobal(name, value) {
-  const had = Object.prototype.hasOwnProperty.call(global, name);
-  const previous = global[name];
-  global[name] = value;
-  restores.push(function () {
-    if (had) {
-      global[name] = previous;
-    } else {
-      delete global[name];
-    }
-  });
-}
-afterEach(() => {
-  while (restores.length) {
-    restores.pop()();
-  }
-});
+// Shared save/restore for the engine globals these helpers read at call time, so
+// no test leaks a model/window stub into the next one.
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
 // dealCard runs its body inside loaded.then(...). In the not-found path that callback
 // returns the (already-rejected) result deferred; jQuery's Deferred.then absorbs that,

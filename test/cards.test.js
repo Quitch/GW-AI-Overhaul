@@ -11,31 +11,16 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
 
-// Save/restore engine globals the functions under test read at call time, so no test
-// leaks a model/window stub into the next one.
-const restores = [];
-function setGlobal(name, value) {
-  const had = Object.prototype.hasOwnProperty.call(global, name);
-  const previous = global[name];
-  global[name] = value;
-  restores.push(function () {
-    if (had) {
-      global[name] = previous;
-    } else {
-      delete global[name];
-    }
-  });
-}
-afterEach(() => {
-  while (restores.length) {
-    restores.pop()();
-  }
-});
+// Shared save/restore for the engine globals these helpers read at call time, so
+// no test leaks a model/window stub into the next one.
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
 describe("hasUnit", () => {
   it("matches a single unit passed as a string", () => {
