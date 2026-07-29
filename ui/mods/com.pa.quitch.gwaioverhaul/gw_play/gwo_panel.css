@@ -24,12 +24,14 @@
   color: red;
 }
 
-/* This allows us to format text after it has been translated (which is case sensitive) */
-#options {
+/* This allows us to format text after it has been translated (which is case
+   sensitive). A class, not an id: the markup sits inside a ko foreach, so one row
+   per option is rendered and an id would be duplicated across all of them. */
+.gwo-option {
   text-transform: lowercase;
 }
 
-#options::first-letter {
+.gwo-option::first-letter {
   text-transform: uppercase;
 }
 
