@@ -23,7 +23,7 @@ unmodified file looked like before this mod shadowed it, or to find game systems
 
 ```bash
 npm ci                    # install pinned tooling (only needed once / after deps change)
-npm run verify            # everything CI checks: lint + validate + test
+npm run verify            # everything CI checks: lint + format:check + validate + test
 npm run lint:js           # eslint .
 npm run lint:css          # stylelint "**/*.css"
 npm run lint:md           # markdownlint-cli2
@@ -192,9 +192,10 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting
-  (submit those separately). Most of the repo predates Prettier enforcement and
-  isn't reformatted; `format:write` and the CI Prettier check both scope to
-  changed files only, not the whole repo.
+  (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
+  run it and then stage only the files your change actually touches. The whole repo
+  now passes `prettier --check .`, which `npm run verify` enforces; CI additionally
+  runs a changed-files-only Prettier job.
 - `.stylelintrc.json` disables `color-function-alias-notation` and scopes
   `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
   because PA's embedded Chrome 40 predates the modern CSS syntax those rules assume.
