@@ -1118,7 +1118,7 @@ function gwoSetup() {
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
             originSystem.gwaio.galaxySize =
-              galaxySizeNames[model.newGameSizeIndex()];
+              galaxySizeNames[model.newGameSizeIndex()] || galaxySizeNames[1];
             originSystem.gwaio.factionScaling =
               model.gwoDifficultySettings.factionScaling();
             originSystem.gwaio.systemScaling =
