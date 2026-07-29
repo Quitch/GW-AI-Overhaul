@@ -48,15 +48,18 @@ function fail(message) {
   failures.push(message);
 }
 
-// Strips `//` line comments before reference extraction - not a real JS parser, so a
-// `//` inside a string literal would (harmlessly) also get stripped, but this repo's
+// Strips comments before reference extraction - not a real JS parser, so a `//`
+// inside a string literal would (harmlessly) also get stripped, but this repo's
 // files don't do that near unit references. Without this, a reference intentionally
-// commented out (e.g. "// gwoUnit.x - explanation") reads as a live one. Matches up to
-// (not through) the next line terminator directly, rather than splitting on "\n" and
-// anchoring on $ per line - these files are CRLF, and "." never matches "\r", so a
-// $-anchored per-line replace silently fails to reach end-of-line on a \r\n file.
-function stripLineComments(src) {
-  return src.replace(/\/\/[^\n\r]*/g, "");
+// commented out (e.g. "// gwoUnit.x - explanation") reads as a live one.
+//
+// Line comments match up to (not through) the next line terminator directly, rather
+// than splitting on "\n" and anchoring on $ per line - these files are CRLF, and "."
+// never matches "\r", so a $-anchored per-line replace silently fails to reach
+// end-of-line on a \r\n file. Block comments are stripped first, so a `//` inside one
+// cannot swallow the block's closing delimiter.
+function stripComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n\r]*/g, "");
 }
 
 function checkLoadoutCardsExist() {
@@ -133,7 +136,7 @@ function checkUnitReferencesInCards() {
       "g"
     );
     const referenced = new Set(
-      [...stripLineComments(src).matchAll(refPattern)].map((m) => m[1])
+      [...stripComments(src).matchAll(refPattern)].map((m) => m[1])
     );
 
     for (const key of referenced) {
