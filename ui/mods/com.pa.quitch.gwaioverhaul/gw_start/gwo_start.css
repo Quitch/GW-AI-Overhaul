@@ -69,6 +69,30 @@
   text-transform: uppercase;
 }
 
+/* Same reason, for the AI Settings labels: those <loc> ids spell the label the way the
+   translation entry does, and the uppercase this panel displays is applied here. The
+   class goes on the <loc> element itself - locTree only rewrites its innerHTML, so
+   attributes on it survive translation. */
+.gwo-uppercase {
+  text-transform: uppercase;
+}
+
+/* And again for the option text in these four AI Settings dropdowns, which is spelled
+   to match a translation entry rather than the uppercase the panel shows. An <option>
+   is not a reliable CSS hook once selectpicker has rewritten it into a menu, so the
+   rule hangs off the enclosing form-group instead, as #difficulty-cards above does.
+   button is listed because selectpicker renders the current value into a .btn. */
+#gwo-economy-growth,
+#gwo-economy-growth button,
+#gwo-micro-type,
+#gwo-micro-type button,
+#gwo-commander-response,
+#gwo-commander-response button,
+#gwo-personality,
+#gwo-personality button {
+  text-transform: uppercase;
+}
+
 /* #tab3 is a flexbox, so let Loadout take whatever the other columns leave
    rather than tracking their combined width by hand. This supersedes the base
    rule's fixed width. The zero flex-basis matters: the cards inside make

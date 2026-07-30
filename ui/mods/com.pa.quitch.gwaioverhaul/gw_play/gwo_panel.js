@@ -21,9 +21,13 @@ function gwoWarInfoPanel(gwoSettings) {
     var coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
     var playerCount = coopPlayerScalingCount || 1;
+    // i18n lookups are case sensitive, and the two forms are covered under different
+    // casings: PLAYER has entries in 20 locales where Player has 14, while the plural
+    // is only ever Players. gwo_panel.html cases the word back down after translation.
     var playerOrPlayers =
-      playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:Player");
-    model.gwoCoopPlayerScaling = playerCount + " " + playerOrPlayers;
+      playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:PLAYER");
+    model.gwoCoopPlayerScalingCount = playerCount;
+    model.gwoCoopPlayerScalingUnit = playerOrPlayers;
     var lobbyTitle =
       "GWO Co-op - " + loc("!LOC:Difficulty:") + " " + model.gwoDifficulty;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
@@ -173,8 +177,12 @@ function gwoWarInfoPanel(gwoSettings) {
         model.gwoCoopTechControl = coopText(
           !model.gwCampaignPerPlayerTechCards()
         );
+        // LOCKED is asked for rather than Locked because i18n lookups are case
+        // sensitive and that casing has entries in four more locales; gwo_panel.html
+        // cases it back down. Unlocked has no entry under any casing, so locales that
+        // gain a translated "Locked" will still show it in English beside it.
         model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
-          ? loc("!LOC:Locked")
+          ? loc("!LOC:LOCKED")
           : loc("!LOC:Unlocked");
 
         /* Incompatible Mods */

@@ -326,7 +326,9 @@ function gwoUI() {
     locTree($("#gwo-game-options-panel"));
     locTree($("#gwo-game-options-modal"));
     locTree($("#difficulty-options"));
-    locTree($("#custom-difficulty-settings"));
+    // #gwo-ai-settings, not #custom-difficulty-settings: the latter starts below the
+    // panel's own header, so the header's <loc> was reached by no locTree call at all.
+    locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
     locTree($("#difficulty-ai-enemy"));
     locTree($("#difficulty-ai-ally"));

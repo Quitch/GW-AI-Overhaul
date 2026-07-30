@@ -29,6 +29,7 @@
 - Commander selection has moved from its own column into a Commander button above Game Options
 - Loadout column tries to avoid dead space
 - A system's allied commander is coloured after every player's Sub Commanders, not just the host's
+- The Avoid Eco Waste AI personality modifier is now called Prevent Waste so that it can be translated
 
 ### Bugfix
 
@@ -78,6 +79,8 @@
 - A co-op host whose turn ended or moved on while a star's cards were still being chosen recorded the deal anyway, so every other player was later offered a hand of tech for an exploration that never finished
 - When system scaling was disabled the largest systems were not selected as often as the other types
 - Faction Scaling is now always translated to Italian
+- Seven AI Settings labels and six of its dropdown options asked the game for a translation under a spelling it does not ship, so they stayed in English; five of them already had a GWO translation that could never be found, and up to 20 languages now show them translated
+- The Scaling For and Player Slots rows of the war information panel stayed in English in up to six languages, for the same reason
 
 ## v6.4.0 - 2026-07-24
 
